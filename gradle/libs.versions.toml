@@ -1,0 +1,141 @@
+[versions]
+
+# @keep
+compileSdk = "35"
+# @keep
+minSdk = "24"
+# @keep
+targetSdk = "35"
+
+agp = "8.13.0"
+kotlin = "2.1.0"
+coreKtx = "1.13.1"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.5.1"
+lifecycleRuntimeKtx = "2.8.3"
+activityCompose = "1.8.0"
+constraintlayout = "2.1.4"
+coroutines = "1.10.2"
+androidx-lifecycle = "2.8.3"
+appcompat = "1.7.0"
+material = "1.12.0"
+composeBom = "2024.09.00"
+room_version = "2.6.1"
+ksp = "2.1.0-1.0.29"
+google_service_version = "4.3.15"
+
+glide = "4.16.0"
+fragmentKtx = "1.8.2"
+webkit = "1.11.0"
+
+navigation_version = "2.7.7"
+lottie = "6.6.7"
+utilcodex = "1.31.1"
+stringfog = "5.1.0"
+xor = "5.0.0"
+aabresguard = "0.1.10"
+mmkv = "2.2.3"
+firebase_crashlytics_version = "3.0.4"
+firebase_bom_verison = "33.10.0"
+firebase_mock_version = "2.0.5"
+
+multidex = "2.0.1"
+gson = "2.13.1"
+log-debug = "1.0-debug"
+log-release = "1.0.2"
+hilt_version = "2.56.2"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+
+lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
+stringfogPlugin = { module = "com.github.megatronking.stringfog:gradle-plugin", version.ref = "stringfog" }
+utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
+xorLibrary = { module = "com.github.megatronking.stringfog:xor", version.ref = "xor" }
+aabresguardPlugin = { group = "com.bytedance.android", name = "aabresguard-plugin", version.ref = "aabresguard" }
+mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
+glide-okhttp3-integration = { module = "com.github.bumptech.glide:okhttp3-integration", version.ref = "glide" }
+
+
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase_bom_verison" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
+firebase-analytics-mock = { module = "com.google.firebase:firebase-analytics-mock", version.ref = "firebase_mock_version" }
+
+log-debug = { group = "com.android.common", name = "build", version.ref = "log-debug" }
+log-release = { group = "com.android.common", name = "build", version.ref = "log-release" }
+
+
+#room
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room_version" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room_version" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room_version" }
+
+#navigation
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation_version" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation_version" }
+androidx-navigation-runtime-ktx = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "navigation_version" }
+
+androidx-navigation-safeargs-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigation_version" }
+firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase_crashlytics_version" }
+
+webviewProgress = {module = "com.github.youlookwhat:WebProgress",version = "1.2.0"}
+unPeekLiveData = {group = "com.kunminx.arch",name = "unpeek-livedata",version = "7.8.0"}
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version = "1.1.0" }
+
+androidx-palette-ktx = { group = "androidx.palette", name = "palette-ktx", version = "1.0.0" }
+work-runtime = {module =  "androidx.work:work-runtime-ktx", version = "2.8.1"}
+app-update = {module = "com.google.android.play:app-update-ktx",version = "2.1.0"}
+
+#反射处理SDK中SP阻塞主线程
+spwaitkiller = {module = "io.github.knight-zxw:spwaitkiller",version = "0.0.8"}
+hiddenapibypass = {module = "org.lsposed.hiddenapibypass:hiddenapibypass",version = "4.3"}
+#监控ANR
+anr-watchdog = {module = "com.github.anrwatchdog:anrwatchdog",version = "1.4.0"}
+debug_blockcanary = {module = "com.github.xuexiangjys.BlockCanary:blockcanary-android",version = "1.0.0"}
+release_blockcanary = {module = "com.github.xuexiangjys.BlockCanary:blockcanary-no-op",version = "1.0.0"}
+#内存泄漏监测
+leakCanry = {module = "com.squareup.leakcanary:leakcanary-android",version = "2.14"}
+
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+androidx-room = { id = "androidx.room", version.ref = "room_version" }
+google-service = { id = "com.google.gms.google-services", version.ref = "google_service_version" }
+
