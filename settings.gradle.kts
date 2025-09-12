@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "HealthTracker"
 include(":app")
+include(":framework")
+
  

@@ -17,7 +17,7 @@ plugins {
     alias(libs.plugins.devtools.ksp)
     id("com.google.firebase.crashlytics")
     kotlin("plugin.serialization")
-
+    alias(libs.plugins.hilt)
 }
 
 val configPropertiesFile = File(projectDir,"/assets/config.properties")
@@ -47,11 +47,13 @@ configure<StringFogExtension> {
 
 android {
     namespace = "com.healthtracker.blood.suger"
+    //noinspection GradleDependency
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.healthtracker.blood.suger"
         minSdk = libs.versions.minSdk.get().toInt()
+        //noinspection OldTargetApi,GradleDependency
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
@@ -95,8 +97,10 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("include" to listOf("*.jar", "*.aar"), "dir" to "libs")))
+    api(project(":framework"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -108,7 +112,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     implementation(libs.xorLibrary)
-    implementation(libs.gson)
     implementation(libs.multidex)
 
     implementation(libs.lottie)
@@ -117,7 +120,6 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.unPeekLiveData)
@@ -128,17 +130,14 @@ dependencies {
     implementation(libs.spwaitkiller)
     implementation(libs.hiddenapibypass)
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.config)
-    implementation(libs.firebase.analytics.ktx)
-    implementation(libs.firebase.crashlytics.ktx)
+    // Hilt 依赖
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
-//    if(isRelease){
-//        println("******************* [HIDE LOG] *******************")
-//        releaseApi(libs.log.release)
-//    }else{
-//        println("******************** SHOW LOG ********************")
-//    }
+    implementation(libs.work.runtime)
+
+    implementation(libs.lifecycle.process)
+
 }
 
 fun DefaultConfig.buildConfig(configure: BuildConfigFieldsBuilder.() -> Unit) {

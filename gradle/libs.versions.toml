@@ -13,23 +13,23 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.8.3"
-activityCompose = "1.8.0"
-constraintlayout = "2.1.4"
+lifecycleRuntimeKtx = "2.9.3"
+activityCompose = "1.10.0"
+constraintlayout = "2.2.1"
 coroutines = "1.10.2"
-androidx-lifecycle = "2.8.3"
-appcompat = "1.7.0"
-material = "1.12.0"
-composeBom = "2024.09.00"
-room_version = "2.6.1"
+androidx-lifecycle = "2.9.3"
+appcompat = "1.7.1"
+material = "1.13.0"
+composeBom = "2025.09.00"
+room_version = "2.8.0"
 ksp = "2.1.0-1.0.29"
-google_service_version = "4.3.15"
+google_service_version = "4.4.3"
 
-glide = "4.16.0"
-fragmentKtx = "1.8.2"
+glide = "5.0.4"
+fragmentKtx = "1.8.9"
 webkit = "1.11.0"
 
-navigation_version = "2.7.7"
+navigation_version = "2.9.4"
 lottie = "6.6.7"
 utilcodex = "1.31.1"
 stringfog = "5.1.0"
@@ -41,10 +41,8 @@ firebase_bom_verison = "33.10.0"
 firebase_mock_version = "2.0.5"
 
 multidex = "2.0.1"
-gson = "2.13.1"
-log-debug = "1.0-debug"
-log-release = "1.0.2"
-hilt_version = "2.56.2"
+gson = "2.13.2"
+hilt_version = "2.57.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,6 +50,7 @@ androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayo
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityCompose" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -89,9 +88,6 @@ firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-
 firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
 firebase-analytics-mock = { module = "com.google.firebase:firebase-analytics-mock", version.ref = "firebase_mock_version" }
 
-log-debug = { group = "com.android.common", name = "build", version.ref = "log-debug" }
-log-release = { group = "com.android.common", name = "build", version.ref = "log-release" }
-
 
 #room
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room_version" }
@@ -111,12 +107,14 @@ unPeekLiveData = {group = "com.kunminx.arch",name = "unpeek-livedata",version = 
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version = "1.1.0" }
 
 androidx-palette-ktx = { group = "androidx.palette", name = "palette-ktx", version = "1.0.0" }
-work-runtime = {module =  "androidx.work:work-runtime-ktx", version = "2.8.1"}
+work-runtime = {module =  "androidx.work:work-runtime-ktx", version = "2.10.4"}
 app-update = {module = "com.google.android.play:app-update-ktx",version = "2.1.0"}
+
+lifecycle-process = {module = "androidx.lifecycle:lifecycle-process",version = "2.9.3"}
 
 #反射处理SDK中SP阻塞主线程
 spwaitkiller = {module = "io.github.knight-zxw:spwaitkiller",version = "0.0.8"}
-hiddenapibypass = {module = "org.lsposed.hiddenapibypass:hiddenapibypass",version = "4.3"}
+hiddenapibypass = {module = "org.lsposed.hiddenapibypass:hiddenapibypass",version = "6.1"}
 #监控ANR
 anr-watchdog = {module = "com.github.anrwatchdog:anrwatchdog",version = "1.4.0"}
 debug_blockcanary = {module = "com.github.xuexiangjys.BlockCanary:blockcanary-android",version = "1.0.0"}
@@ -126,6 +124,9 @@ leakCanry = {module = "com.squareup.leakcanary:leakcanary-android",version = "2.
 
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt_version" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt_version" }
+
 
 
 [plugins]
@@ -138,4 +139,5 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room", version.ref = "room_version" }
 google-service = { id = "com.google.gms.google-services", version.ref = "google_service_version" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt_version" }
 

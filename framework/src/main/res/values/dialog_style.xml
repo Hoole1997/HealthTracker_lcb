@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+
+        <!--背景阴影-->
+        <item name="android:backgroundDimEnabled">true</item>
+
+        <!--状态栏与导航栏状态-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+
+        <!--底部弹出条的样式（相当于背景）-->
+        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
+
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+
+    <style name="CommonDialogStyle" parent="@style/Theme.AppCompat.Dialog">
+        <!--不限制弹窗尺寸-->
+        <!--        <item name="android:windowIsFloating">false</item>-->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--背景阴影-->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!--状态栏与导航栏状态-->
+        <!--        <item name="android:windowFullscreen">false</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+
+        <item name="android:windowAnimationStyle">@style/CommonDialogAnimation</item>
+    </style>
+
+    <style name="FullScreenDialogStyleBase" parent="@style/Theme.AppCompat.Dialog">
+        <!--不限制弹窗尺寸-->
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--背景阴影-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <!--状态栏与导航栏状态-->
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowAnimationStyle">@style/CommonDialogAnimation</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="FullScreenDialogStyle" parent="FullScreenDialogStyleBase" />
+
+
+    <style name="CommonDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/stand_common_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/stand_common_dialog_out</item>
+    </style>
+
+
+    <item name="docs_dialog_dismiss" type="id"/>
+</resources>

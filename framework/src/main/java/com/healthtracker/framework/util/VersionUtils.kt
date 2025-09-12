@@ -1,0 +1,72 @@
+package com.healthtracker.framework.util
+
+import android.os.Build
+import androidx.annotation.ChecksSdkIntAtLeast
+
+/**
+ * @author JiaoYun
+ */
+
+/**
+ * @return true if device is running API >= 25
+ */
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.N_MR1)
+fun hasNougatMR(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
+}
+
+/**
+ * @return true if device is running API >= 26
+ */
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
+fun hasOreo(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+}
+
+/**
+ * @return true if device is running API >= 27
+ */
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O_MR1)
+fun hasOreoMR1(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
+}
+
+/**
+ * @return true if device is running API >= 28
+ */
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.P)
+fun hasP(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+}
+
+/**
+ * @return true if device is running API >= 29
+ */
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
+fun hasQ(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+}
+
+/**
+ * @return true if device is running API >= 30
+ */
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.R)
+fun hasR(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+}
+
+/**
+ * @return true if device is running API >= 31
+ */
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
+fun hasS(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+}
+
+/**
+ * @return true if device is running API >= 33
+ */
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
+fun hasT(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+}
