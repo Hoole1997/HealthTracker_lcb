@@ -1,23 +1,10 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    // 使用自定义插件
+    alias(libs.plugins.android.library.convention)
 }
 
 android {
     namespace = "com.healthtracker.framework"
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
-    buildFeatures{
-        buildConfig = true
-    }
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
 
     buildTypes {
         release {
@@ -28,38 +15,36 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-
-    }
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
-        }
-    }
 
     buildFeatures {
-        viewBinding = true
+        buildConfig = true
     }
 }
+
 dependencies {
+    // Core Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
+    // Kotlin Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Activity
+    api(libs.androidx.activity.ktx)
+
+    // 数据存储
     implementation(libs.mmkv)
     implementation(libs.gson)
+
+    // Firebase - API 导出给其他模块使用
     api(platform(libs.firebase.bom))
     api(libs.firebase.config)
     api(libs.firebase.analytics.ktx)
     api(libs.firebase.crashlytics.ktx)
     api(libs.firebase.perf.ktx)
-    api(libs.androidx.activity.ktx)
-
-
-
-
 }

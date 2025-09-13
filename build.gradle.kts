@@ -20,7 +20,6 @@ buildscript {
 //        classpath(libs.aabresguardPlugin)
         classpath(libs.androidx.navigation.safeargs.plugin)
         classpath(libs.firebase.crashlytics.gradle)
-
     }
 }
 

@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-common")
     repositories {
         google()
         mavenCentral()

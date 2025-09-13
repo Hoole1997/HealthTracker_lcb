@@ -127,6 +127,12 @@ multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt_version" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt_version" }
 
+# Gradle Plugins (for build-common)
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room_version" }
 
 
 [plugins]
@@ -140,4 +146,12 @@ devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room", version.ref = "room_version" }
 google-service = { id = "com.google.gms.google-services", version.ref = "google_service_version" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt_version" }
+
+# Custom Convention Plugins
+android-app = { id = "android.app", version = "unspecified" }
+android-library-convention = { id = "android.library", version = "unspecified" }
+android-compose-convention = { id = "android.compose", version = "unspecified" }
+android-hilt-convention = { id = "android.hilt", version = "unspecified" }
+android-room-convention = { id = "android.room", version = "unspecified" }
+android-firebase-convention = { id = "android.firebase", version = "unspecified" }
 
