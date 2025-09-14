@@ -1,0 +1,67 @@
+
+/**
+ * 统一的签名配置脚本
+ * 根据不同的flavor从对应目录读取sign.properties配置
+ */
+
+ext.setupSigningConfigs = { android ->
+    android.signingConfigs {
+        // 内部测试签名配置
+        internal {
+            def internalPropsFile = file("${project.projectDir}/src/internal/sign.properties")
+            if (internalPropsFile.exists()) {
+                def props = new Properties()
+                internalPropsFile.withInputStream { props.load(it) }
+
+                storeFile = file("${project.projectDir}/src/internal/" + props.getProperty('keystore').replace('../config/', ''))
+                storePassword = props.getProperty('keystore.password')
+                keyAlias = props.getProperty('keyAlias')
+                keyPassword = props.getProperty('keyPassword')
+            } else {
+                // 兜底配置，避免构建失败
+                storeFile = file("${project.projectDir}/src/internal/pdfreader.jks")
+                storePassword = "pdfreader"
+                keyAlias = "pdfreader"
+                keyPassword = "pdfreader"
+            }
+        }
+
+        // Play 市场签名配置
+        playstore {
+            def playstorePropsFile = file("${project.projectDir}/src/playstore/sign.properties")
+            if (playstorePropsFile.exists()) {
+                def props = new Properties()
+                playstorePropsFile.withInputStream { props.load(it) }
+
+                storeFile = file("${project.projectDir}/src/playstore/" + props.getProperty('keystore').replace('../config/', ''))
+                storePassword = props.getProperty('keystore.password')
+                keyAlias = props.getProperty('keyAlias')
+                keyPassword = props.getProperty('keyPassword')
+            } else {
+                // 兜底配置，避免构建失败
+                storeFile = file("${project.projectDir}/src/playstore/center.jks")
+                storePassword = "center123"
+                keyAlias = "center123"
+                keyPassword = "center123"
+            }
+        }
+    }
+
+    // 配置 productFlavors 使用对应的签名配置
+    android.productFlavors {
+        internal {
+            signingConfig = android.signingConfigs.internal
+        }
+
+        playstore {
+            signingConfig = android.signingConfigs.playstore
+        }
+    }
+
+    // 配置 buildTypes - debug 版本使用 internal 签名
+    android.buildTypes {
+        debug {
+            signingConfig = android.signingConfigs.internal
+        }
+    }
+}

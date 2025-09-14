@@ -1,0 +1,17 @@
+ext {
+    // AdMob配置
+    admob = [applicationId: "ca-app-pub-3940256099942544~3347511713", // 测试应用ID，请替换为实际的AdMob应用ID
+             adUnitIds    : [banner      : "ca-app-pub-3940256099942544/9214589741",        // 横幅广告测试ID
+                             interstitial: "ca-app-pub-3940256099942544/1033173712", // 插页广告测试ID
+                             splash      : "ca-app-pub-3940256099942544/9257395921",       // 开屏广告测试ID
+                             native      : "ca-app-pub-3940256099942544/2247696110"        // 原生广告测试ID
+             ]
+    ]
+    // 应用版本配置
+    app = [applicationId    : "com.healthtracker.blood.suger",
+           stable_release   : true
+    ]
+
+    url = [privacyUrl: "https://www.google.com",
+           teamUrl   : "https://www.google.com",]
+}

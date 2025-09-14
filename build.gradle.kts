@@ -26,3 +26,16 @@ buildscript {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+
+// 根据构建任务自动选择配置文件
+val taskNames = gradle.startParameter.taskNames
+val configFile = when {
+    taskNames.any { it.contains("Playstore") && !it.contains("Internal") } -> file("app/src/playstore/config.gradle")
+    taskNames.any { it.contains("Internal") && !it.contains("Playstore") } -> file("app/src/internal/config.gradle")
+    // 如果同时包含多个变种或者是 assembleRelease，使用更通用的配置方式
+    else -> file("app/src/internal/config.gradle") // 默认使用内部测试配置
+}
+
+apply {
+    from(configFile)
+}

@@ -2,8 +2,7 @@ import com.android.build.api.dsl.DefaultConfig
 import com.github.megatronking.stringfog.plugin.StringFogExtension
 import com.github.megatronking.stringfog.plugin.StringFogMode
 import com.github.megatronking.stringfog.plugin.kg.RandomKeyGenerator
-import java.io.FileInputStream
-import java.util.Properties
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 
 plugins {
     // 使用自定义插件
@@ -18,16 +17,14 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-val configPropertiesFile = File(projectDir,"/assets/config.properties")
-val configProperties = Properties().apply {
-    load(FileInputStream(configPropertiesFile))
-}
+// 引入统一的签名配置脚本
+apply(from = "../scripts/sign.gradle")
 
-val isRelease = "true" == configProperties["stable_release"]
+// 使用默认配置，避免不同变种间的冲突
+val isRelease = findProperty("app")?.let { (it as Map<*, *>)["stable_release"] as Boolean } ?: false
+
 
 println("isRelease = $isRelease")
-
-apply(from = "../config/sign.gradle")
 configure<StringFogExtension> {
     // 必要：加解密库的实现类路径，需和上面配置的加解密算法库一致。
     implementation = "com.github.megatronking.stringfog.xor.StringFogImpl"
@@ -47,12 +44,81 @@ android {
     namespace = "com.healthtracker.blood.suger"
 
     defaultConfig {
-        applicationId = "com.healthtracker.blood.suger"
         versionCode = 1
         versionName = "1.0"
-
         buildConfig {
             boolean("StableRelease", isRelease)
+        }
+
+        ndk {
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
+        }
+
+    }
+
+    // Flavor 配置
+    flavorDimensions += "distribution"
+
+    productFlavors {
+        // 内部测试版本
+        create("internal") {
+            dimension = "distribution"
+            applicationId = "com.healthtracker.blood.suger.internal"
+            versionNameSuffix = "-internal"
+        }
+
+        // Play 市场版本
+        create("playstore") {
+            dimension = "distribution"
+            applicationId = "com.healthtracker.blood.suger"
+            versionNameSuffix = ""
+        }
+    }
+
+    buildTypes {
+        release {
+            isShrinkResources = true
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+            }
+        }
+    }
+
+
+    // 设置APK输出文件名
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                val outputFileName = "HealthTracker-${variant.baseName}-${variant.versionName}.apk"
+                output.outputFileName = outputFileName
+            }
+    }
+
+    bundle {
+        language {
+            enableSplit = false
+        }
+        density {
+            enableSplit = true
+        }
+        abi {
+            enableSplit = true
+        }
+    }
+}
+
+// 调用统一签名配置脚本设置签名
+apply<Any> {
+    extensions.extraProperties["setupSigningConfigs"]?.let { setupFn ->
+        if (setupFn is groovy.lang.Closure<*>) {
+            setupFn.call(android)
         }
     }
 }

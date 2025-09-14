@@ -43,9 +43,6 @@ google-services.json
 /.idea/misc.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-*/sign.properties
-*/google-services.json
-/config
 /captures
 .externalNativeBuild
 .cxx

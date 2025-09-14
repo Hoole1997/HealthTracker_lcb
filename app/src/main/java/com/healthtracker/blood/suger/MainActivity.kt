@@ -18,6 +18,7 @@ import com.healthtracker.framework.ext.logd
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        "初始化首页".logd(TAG)
         enableEdgeToEdge()
         setContent {
             HealthTrackerTheme {
