@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.HealthTracker" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="AppTheme" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/color_tap_ripple</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="toolbarNavigationButtonStyle">@style/toolbar_nav_button</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+    </style>
+
+    <style name="SplashTheme" parent="@style/TransparentTheme">
+        <item name="android:windowBackground">@color/c1</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="TransparentTheme" parent="@style/AppTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="toolbar_nav_button" parent="@style/Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:paddingLeft">@dimen/nav_button_margin</item>
+        <item name="android:paddingRight">@dimen/nav_button_margin</item>
+        <item name="android:minWidth">56dp</item>
+    </style>
 </resources>

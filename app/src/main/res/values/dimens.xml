@@ -1,0 +1,19 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+    <dimen name="nav_button_margin">@dimen/dp_16</dimen>
+    <dimen name="actionBarSize">@dimen/dp_48</dimen>
+
+    <dimen name="button_padding_start_end">@dimen/dp_5</dimen>
+    <dimen name="button_padding_top_bottom">@dimen/dp_3</dimen>
+
+    <dimen name="home_nav_bar_height">@dimen/dp_56</dimen>
+    <dimen name="home_top_bar_height">@dimen/actionBarSize</dimen>
+    <dimen name="home_top_tab_height">@dimen/dp_42</dimen>
+    <dimen name="doc_list_item_height">@dimen/dp_84</dimen>
+
+    <integer name="lottle_scalex">1</integer>
+</resources>

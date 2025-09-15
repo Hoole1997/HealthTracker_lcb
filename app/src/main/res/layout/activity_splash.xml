@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/v_center_guide"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.33" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="@dimen/dp_96"
+        android:layout_height="@dimen/dp_96"
+        android:layout_marginBottom="@dimen/dp_13"
+        android:alpha="0"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@id/v_center_guide"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        tools:alpha="1" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_app_name"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_13"
+        android:alpha="0"
+        android:gravity="center"
+        android:text="@string/app_name"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/v_center_guide"
+        tools:alpha="1" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_bottom"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.92" />
+
+    <ProgressBar
+        android:id="@+id/ad_loading_view"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_32"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/bg_progressbar_custom"
+        android:indeterminateDuration="1500"
+        android:indeterminateTintMode="src_atop"
+        app:layout_constraintBottom_toBottomOf="@id/guide_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guide_bottom"
+        app:layout_constraintWidth_percent="0.4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

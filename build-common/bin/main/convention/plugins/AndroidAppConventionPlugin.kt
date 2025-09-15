@@ -20,7 +20,6 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
                 configureApplicationExtension(this)
 
-                @Suppress("UnstableApiUsage")
                 buildFeatures {
                     buildConfig = true
                     viewBinding = true
