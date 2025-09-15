@@ -134,6 +134,7 @@ dependencies {
 
     implementation(libs.xorLibrary)
     implementation(libs.multidex)
+    implementation(libs.material)
     implementation(libs.lottie)
 
     // Glide

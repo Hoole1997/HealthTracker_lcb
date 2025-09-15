@@ -1,50 +1,151 @@
 package com.healthtracker.blood.suger
 
+import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.healthtracker.blood.suger.ui.theme.HealthTrackerTheme
-import com.healthtracker.framework.ext.TAG
+import androidx.core.view.get
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
+import com.healthtracker.blood.suger.databinding.ActivityMainBinding
+import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
+import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
+import com.healthtracker.blood.suger.ui.fragment.HomeFragment
+import com.healthtracker.blood.suger.ui.fragment.RecordFragment
+import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.util.Restore
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        "初始化首页".logd(TAG)
-        enableEdgeToEdge()
-        setContent {
-            HealthTrackerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
+
+    companion object{
+        private const val TAG = "MainActivity"
+    }
+
+    private var homeFrg: HomeFragment? = null
+    private var recordFrg: RecordFragment? = null
+
+    @Restore
+    private var currentTabIndex = 0
+
+
+    internal val homeFragmentAdapter =
+        FragmentsAdapter(supportFragmentManager, 2, object : FragmentsAdapter.Callback {
+            override fun createInstance(position: Int) =
+                if (position == 0) HomeFragment() else RecordFragment()
+
+            override fun onInstance(position: Int, fragment: Fragment) {
+                when (fragment) {
+                    is HomeFragment -> homeFrg = fragment
+                    is RecordFragment -> recordFrg = fragment
                 }
+            }
+        })
+
+    override fun createViewBinding() = ActivityMainBinding.inflate(layoutInflater)
+
+    override fun getVMModelClass() = BaseViewModel::class.java
+
+    override fun initView(savedInstanceState: Bundle?) {
+        with(mViewBind){
+            ivSetting.clickWithDuration {
+                "setting click".logd(TAG)
+            }
+
+            ivRemind.clickWithDuration {
+                "remind click".logd(TAG)
+            }
+
+            setupBottomNavBar()
+            setupViewPager()
+        }
+    }
+
+    /**
+     * 设置底部导航栏
+     */
+    private fun setupBottomNavBar() {
+
+
+        mViewBind.tbNav.apply {
+            tabMode = TabLayout.MODE_FIXED
+            tabGravity = TabLayout.GRAVITY_FILL
+            removeAllTabs()
+
+            val tabs = arrayListOf(
+                Pair(R.drawable.selector_nav_home, R.string.home),
+                Pair(R.drawable.selector_nav_record, R.string.record),
+
+            )
+
+            for (tab in tabs) {
+                addBottomNavTab(this, tab.first, getString(tab.second))
+            }
+
+            addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    tab?.let {
+                        mViewBind.viewPagerHome.currentItem = it.position
+                    }
+                }
+            })
+
+            if (currentTabIndex != 0) {
+                getTabAt(currentTabIndex)?.select()
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    /**
+     * 添加底部导航Tab
+     */
+    private fun addBottomNavTab(tabLayout: TabLayout, icon: Int, title: String) {
+        tabLayout.addTab(tabLayout.newTab().apply {
+            text = title
+            customView = LayoutHomeTabItemBinding.inflate(layoutInflater, tabLayout, false).let {
+                it.tvTabText.text = title
+                it.ivTabIcon.setImageResource(icon)
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HealthTrackerTheme {
-        Greeting("Android")
+                it.root
+            }
+            view.apply {
+                isLongClickable = false
+                if (Build.VERSION.SDK_INT > 26) {
+                    tooltipText = ""
+                }
+            }
+        })
     }
+
+    /**
+     * 设置ViewPager
+     */
+    private fun setupViewPager() {
+        mViewBind.viewPagerHome.apply {
+            offscreenPageLimit = homeFragmentAdapter.count
+            adapter = homeFragmentAdapter
+            isEnableScroll = true
+            isSmoothScroll = true
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {}
+
+                override fun onPageSelected(position: Int) {
+                    mViewBind.tbNav.getTabAt(position)?.select()
+
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {}
+
+            })
+        }
+    }
+
+
 }

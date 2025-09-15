@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">HealthTracker</string>
+    <string name="blood_suger">Blood Sugar</string>
+    <string name="blood_pressure">Blood Pressure</string>
+    <string name="home">Home</string>
+    <string name="record">Record</string>
 </resources>

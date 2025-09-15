@@ -10,5 +10,9 @@
     <color name="c5">#02BC77</color>
     <color name="t1">#333333</color>
     <color name="ic_launcher_background">@color/c5</color>
-    <color name="color_tap_ripple">#331B1254</color>
+    <color name="color_tap_ripple">@color/transparent10</color>
+
+    <color name="color_4ACA8F">#4ACA8F</color>
+    <color name="color_FF2020">#FF2020</color>
+    <color name="color_CCCCCC">#CCCCCC</color>
 </resources>

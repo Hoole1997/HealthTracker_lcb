@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/area_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/home_top_bar_height"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_setting"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="@id/area_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/area_bar"
+            app:srcCompat="@drawable/ic_setting"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_remind"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="@id/area_bar"
+            app:layout_constraintEnd_toStartOf="@id/iv_setting"
+            app:layout_constraintTop_toTopOf="@+id/area_bar"
+            app:srcCompat="@drawable/ic_remind" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.healthtracker.blood.suger.ui.weight.CustomViewPager
+        android:id="@+id/view_pager_home"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tb_nav"
+        app:layout_constraintTop_toBottomOf="@id/area_bar" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tb_nav"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/home_nav_bar_height"
+        android:background="@color/white"
+        android:elevation="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:tabIndicator="@null"
+        app:tabIndicatorHeight="0dp"
+        app:tabMaxWidth="0dp"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp"
+        app:tabRippleColor="@color/color_tap_ripple" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
