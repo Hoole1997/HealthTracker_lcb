@@ -1,18 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingHorizontal="@dimen/dp_16"
+    android:paddingVertical="@dimen/dp_10">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="@color/c5"
-        android:textSize="@dimen/sp_32"
-        android:text="@string/home"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_home_blood_suger"
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingVertical="@dimen/dp_25">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_blood_suger"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/blood_suger"
+                android:textColor="@color/color_4ACA8F"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toStartOf="@id/iv_blood_suger"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_latest_bs_value"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:textColor="@color/color_4ACA8F"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_blood_suger"
+                tools:text="71.0" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_latest_bs_unit"
+                style="@style/TextViewFont_RobotoRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_10"
+                android:alpha="0.7"
+                android:textColor="@color/color_4ACA8F"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toEndOf="@id/tv_latest_bs_value"
+                app:layout_constraintTop_toBottomOf="@id/tv_blood_suger"
+                tools:text="mg/dL" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@id/iv_blood_suger"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_latest_bs_value">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_record_now"
+                    style="@style/MaterialButton.b2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_44"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/record_now"
+                    app:autoSizeMaxTextSize="@dimen/sp_20"
+                    app:autoSizeMinTextSize="@dimen/sp_10"
+                    app:autoSizeStepGranularity="1sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_latest_bs_unit" />
+
+                <Space
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_blood_suger"
+                android:layout_width="@dimen/dp_121"
+                android:layout_height="@dimen/dp_121"
+                android:scaleType="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@mipmap/ic_blood_suger" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:background="@drawable/bg_home_blood_pressure"
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingVertical="@dimen/dp_12">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_h_center"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_bp"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:text="@string/blood_pressure"
+                android:textColor="@color/color_FF2020"
+                android:textSize="@dimen/sp_16"
+                app:layout_constraintBottom_toTopOf="@id/guide_h_center"
+                app:layout_constraintEnd_toStartOf="@id/iv_bp"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_latest_bp_value"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:textColor="@color/color_FF2020"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guide_h_center"
+                tools:text="100/70" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_latest_bp_unit"
+                style="@style/TextViewFont_RobotoRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_10"
+                android:alpha="0.6"
+                android:textColor="@color/color_FF2020"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toEndOf="@id/tv_latest_bp_value"
+                app:layout_constraintTop_toBottomOf="@id/tv_bp"
+                tools:text="mmHg" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_bp"
+                android:layout_width="@dimen/dp_72"
+                android:layout_height="@dimen/dp_72"
+                android:scaleType="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@mipmap/ic_blood_pressure" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</androidx.core.widget.NestedScrollView>

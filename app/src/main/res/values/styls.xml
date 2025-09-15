@@ -4,4 +4,24 @@
     <style name="BaseTextAlignStart">
         <item name="android:gravity">start</item>
     </style>
+
+    <style name="MaterialButton" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">@dimen/dp_39</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="MaterialButton.b2">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/c5</item>
+        <item name="cornerRadius">@dimen/dp_8</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:paddingStart">@dimen/dp_20</item>
+        <item name="android:paddingEnd">@dimen/dp_20</item>
+
+    </style>
+
 </resources>
