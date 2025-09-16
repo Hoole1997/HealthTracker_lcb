@@ -21,6 +21,7 @@
         <item name="android:textSize">@dimen/sp_14</item>
         <item name="android:paddingStart">@dimen/dp_20</item>
         <item name="android:paddingEnd">@dimen/dp_20</item>
+        <item name="rippleColor">@color/c5_8</item>
 
     </style>
 
