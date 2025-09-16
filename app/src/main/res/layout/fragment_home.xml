@@ -18,15 +18,17 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_home_blood_suger"
             android:paddingHorizontal="@dimen/dp_16"
-            android:paddingVertical="@dimen/dp_25">
+            android:paddingVertical="@dimen/dp_12">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_blood_suger"
                 style="@style/TextViewFont_RobotoBold"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_13"
                 android:text="@string/blood_suger"
-                android:textColor="@color/color_4ACA8F"
+                android:textColor="@color/c5"
                 android:textSize="@dimen/sp_20"
                 app:layout_constraintEnd_toStartOf="@id/iv_blood_suger"
                 app:layout_constraintStart_toStartOf="parent"
@@ -38,9 +40,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:textColor="@color/color_4ACA8F"
+                android:textColor="@color/c5"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_blood_suger"
                 app:layout_constraintTop_toBottomOf="@id/tv_blood_suger"
                 tools:text="71.0" />
 
@@ -52,64 +54,100 @@
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginTop="@dimen/dp_10"
                 android:alpha="0.7"
-                android:textColor="@color/color_4ACA8F"
+                android:text="@string/mg_dl"
+                android:textColor="@color/c5"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toEndOf="@id/tv_latest_bs_value"
-                app:layout_constraintTop_toBottomOf="@id/tv_blood_suger"
-                android:text="@string/mg_dl" />
+                app:layout_constraintTop_toBottomOf="@id/tv_blood_suger" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="@dimen/dp_0"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_history"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@id/iv_blood_suger"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_latest_bs_value">
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@drawable/bg_home_blood_suger_history"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:minHeight="@dimen/dp_32"
+                android:paddingHorizontal="@dimen/dp_10"
+                android:paddingVertical="@dimen/dp_8"
+                app:layout_constraintTop_toBottomOf="@id/iv_blood_suger">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_record_now"
-                    style="@style/MaterialButton.b2"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_latest_record_date"
+                    style="@style/TextViewFont_RobotoRegular"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_44"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@string/record_now"
-                    app:autoSizeMaxTextSize="@dimen/sp_20"
-                    app:autoSizeMinTextSize="@dimen/sp_10"
-                    app:autoSizeStepGranularity="1sp"
-                    app:autoSizeTextType="uniform"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_latest_bs_unit" />
-
-                <Space
-                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                    android:textColor="@color/c5"
+                    android:textSize="@dimen/sp_12"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="2 days age" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_history"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_6"
+                    android:drawableEnd="@drawable/ic_blood_suger_history_arrow"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text="@string/history"
+                    android:textColor="@color/c5"
+                    android:textSize="@dimen/sp_12"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_record_now"
+                style="@style/MaterialButton.b2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_44"
+                android:layout_marginTop="@dimen/dp_20"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/record_now"
+                app:autoSizeMaxTextSize="@dimen/sp_20"
+                app:autoSizeMinTextSize="@dimen/sp_10"
+                app:autoSizeStepGranularity="1sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_history" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_blood_suger"
-                android:layout_width="@dimen/dp_121"
-                android:layout_height="@dimen/dp_121"
+                android:layout_width="@dimen/dp_82"
+                android:layout_height="@dimen/dp_83"
                 android:scaleType="center"
-                app:layout_constraintBottom_toBottomOf="parent"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@mipmap/ic_blood_suger" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_4"
+                app:layout_constraintTop_toBottomOf="@id/btn_record_now" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_blood_pressure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
             android:background="@drawable/bg_home_blood_pressure"
-            android:paddingHorizontal="@dimen/dp_16"
-            android:paddingVertical="@dimen/dp_12">
+            android:foreground="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="@dimen/dp_16">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guide_h_center"
@@ -121,14 +159,15 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_bp"
                 style="@style/TextViewFont_RobotoBold"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_5"
+                android:drawableEnd="@drawable/ic_blood_pressure_arrow"
+                android:drawablePadding="@dimen/dp_10"
                 android:text="@string/blood_pressure"
-                android:textColor="@color/color_FF2020"
+                android:textColor="@color/color_2AA1FC"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintBottom_toTopOf="@id/guide_h_center"
-                app:layout_constraintEnd_toStartOf="@id/iv_bp"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -137,7 +176,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_5"
-                android:textColor="@color/color_FF2020"
+                android:textColor="@color/color_2AA1FC"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/guide_h_center"
@@ -151,17 +190,17 @@
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginTop="@dimen/dp_10"
                 android:alpha="0.6"
-                android:textColor="@color/color_FF2020"
+                android:text="@string/mmHg"
+                android:textColor="@color/color_2AA1FC"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toEndOf="@id/tv_latest_bp_value"
-                app:layout_constraintTop_toBottomOf="@id/tv_bp"
-                android:text="@string/mmHg" />
+                app:layout_constraintTop_toBottomOf="@id/tv_bp" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_bp"
-                android:layout_width="@dimen/dp_72"
-                android:layout_height="@dimen/dp_72"
+                android:layout_width="@dimen/dp_95"
+                android:layout_height="@dimen/dp_95"
                 android:scaleType="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

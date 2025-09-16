@@ -6,11 +6,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
+import com.healthtracker.framework.ext.clickWithDuration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -25,6 +27,8 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
        private const val TAG = "HomeFragment"
    }
 
+    private var hasLatestRecord = false
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -34,6 +38,21 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun getVMModelClass() = HomeViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        mViewBind?.run {
+            clHistory.clickWithDuration {
+
+            }
+
+            btnRecordNow.clickWithDuration {
+
+            }
+
+            clBloodPressure.clickWithDuration {
+
+            }
+
+
+        }
         observeData()
     }
 
@@ -66,8 +85,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun updateBloodSugarUI(record: BloodSugarRecord?) {
         if (record == null) {
             mViewBind?.tvLatestBsValue?.text = "--"
+            mViewBind?.tvLatestRecordDate?.text = getString(R.string.click_to_record)
             return
         }
+        hasLatestRecord = true
         // 根据用户选择的单位显示血糖值（保留一位小数）
         mViewBind?.tvLatestBsValue?.text = record.getFormattedDisplayValue()
     }

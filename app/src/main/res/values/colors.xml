@@ -15,7 +15,8 @@
 
     <color name="color_4ACA8F">#4ACA8F</color>
     <color name="color_FF2020">#FF2020</color>
+    <color name="color_2AA1FC">#2AA1FC</color>
     <color name="color_CCCCCC">#CCCCCC</color>
-    <color name="color_E6F5E9">#E6F5E9</color>
-    <color name="color_FFEEEE">#FFEEEE</color>
+    <color name="color_DAFFE5">#DAFFE5</color>
+    <color name="color_DFF5FF">#DFF5FF</color>
 </resources>
