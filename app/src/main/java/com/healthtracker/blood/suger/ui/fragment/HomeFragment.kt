@@ -12,12 +12,14 @@ import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.logd
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /**
  * 首页Fragment
  * 显示最近一次的血糖和血压记录
  */
+@AndroidEntryPoint
 class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
 
    companion object{

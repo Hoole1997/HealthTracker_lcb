@@ -12,9 +12,11 @@ import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.startActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
     override fun createViewBinding() = ActivitySplashBinding.inflate(layoutInflater)
 
