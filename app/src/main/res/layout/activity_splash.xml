@@ -3,15 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg_splash">
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@mipmap/bg_splash_top_start"/>
 
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@mipmap/bg_splash_top_end"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/v_center_guide"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.33" />
+        app:layout_constraintGuide_percent="0.22" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_logo"
@@ -20,10 +36,10 @@
         android:layout_marginBottom="@dimen/dp_13"
         android:alpha="0"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@id/v_center_guide"
+        app:layout_constraintTop_toTopOf="@id/v_center_guide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@mipmap/ic_launcher"
+        app:srcCompat="@mipmap/ic_logo_sq"
         tools:alpha="1" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -31,15 +47,15 @@
         style="@style/TextViewFont_RobotoBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_20"
         android:alpha="0"
         android:gravity="center"
         android:text="@string/app_name"
-        android:textColor="@color/t1"
-        android:textSize="@dimen/sp_24"
+        android:textColor="@color/c5"
+        android:textSize="@dimen/sp_22"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/v_center_guide"
+        app:layout_constraintTop_toBottomOf="@+id/iv_logo"
         tools:alpha="1" />
 
 
@@ -48,7 +64,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.92" />
+        app:layout_constraintGuide_percent="0.82" />
 
     <ProgressBar
         android:id="@+id/ad_loading_view"
@@ -64,6 +80,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guide_bottom"
-        app:layout_constraintWidth_percent="0.4" />
+        app:layout_constraintWidth_percent="0.75" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#666"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="@id/ad_loading_view"
+        app:layout_constraintEnd_toEndOf="@id/ad_loading_view"
+        app:layout_constraintTop_toBottomOf="@id/ad_loading_view"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/loading"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,6 +31,8 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
         SysBarUtils.hideNavigationBar(this)
     }
 
+    override fun isFullscreen() = true
+
     /**
      * 播放所有启动动画
      */
