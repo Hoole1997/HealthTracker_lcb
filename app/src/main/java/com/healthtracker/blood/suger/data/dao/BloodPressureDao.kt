@@ -92,12 +92,20 @@ interface BloodPressureDao {
     fun getRecordsByTag(tag: String): Flow<List<BloodPressureRecord>>
 
     /**
-     * 根据阶段分类获取血压记录
-     * @param stage 阶段分类
+     * 根据血压分类获取血压记录
+     * @param bpCategory 血压分类code
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE stage = :stage ORDER BY record_time DESC")
-    fun getRecordsByStage(stage: String): Flow<List<BloodPressureRecord>>
+    @Query("SELECT * FROM blood_pressure_records WHERE bp_category = :bpCategory ORDER BY record_time DESC")
+    fun getRecordsByBloodPressureCategory(bpCategory: String): Flow<List<BloodPressureRecord>>
+
+    /**
+     * 根据脉搏分类获取血压记录
+     * @param pulseCategory 脉搏分类code
+     * @return Flow形式的血压记录列表
+     */
+    @Query("SELECT * FROM blood_pressure_records WHERE pulse_category = :pulseCategory ORDER BY record_time DESC")
+    fun getRecordsByPulseCategory(pulseCategory: String): Flow<List<BloodPressureRecord>>
 
     /**
      * 根据收缩压范围获取血压记录
@@ -209,6 +217,21 @@ interface BloodPressureDao {
      */
     @Query("UPDATE blood_pressure_records SET show_in_chart = :showInChart WHERE id = :id")
     suspend fun updateChartVisibility(id: Long, showInChart: Boolean): Int
+
+    /**
+     * 根据标签ID获取血压记录
+     * @param tagId 标签ID
+     * @return 包含该标签的血压记录列表
+     */
+    @Query("SELECT * FROM blood_pressure_records WHERE tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC")
+    suspend fun getRecordsByTagId(tagId: String): List<BloodPressureRecord>
+
+    /**
+     * 获取包含标签的血压记录数量
+     * @return 包含标签的记录数量
+     */
+    @Query("SELECT COUNT(*) FROM blood_pressure_records WHERE tag_ids IS NOT NULL AND tag_ids != ''")
+    suspend fun getRecordsWithTagsCount(): Int
 }
 
 /**

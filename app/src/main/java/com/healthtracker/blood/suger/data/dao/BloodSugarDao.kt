@@ -92,12 +92,12 @@ interface BloodSugarDao {
     fun getRecordsByTag(tag: String): Flow<List<BloodSugarRecord>>
 
     /**
-     * 根据阶段分类获取血糖记录
-     * @param stage 阶段分类
+     * 根据血糖等级获取血糖记录
+     * @param glucoseLevel 血糖等级code
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE stage = :stage ORDER BY record_time DESC")
-    fun getRecordsByStage(stage: String): Flow<List<BloodSugarRecord>>
+    @Query("SELECT * FROM blood_sugar_records WHERE glucose_level = :glucoseLevel ORDER BY record_time DESC")
+    fun getRecordsByGlucoseLevel(glucoseLevel: String): Flow<List<BloodSugarRecord>>
 
     /**
      * 获取血糖值范围内的记录
@@ -159,4 +159,26 @@ interface BloodSugarDao {
      */
     @Query("UPDATE blood_sugar_records SET show_in_chart = :showInChart WHERE id = :id")
     suspend fun updateChartVisibility(id: Long, showInChart: Boolean): Int
+
+    /**
+     * 根据标签ID获取血糖记录
+     * @param tagId 标签ID
+     * @return 包含该标签的血糖记录列表
+     */
+    @Query("SELECT * FROM blood_sugar_records WHERE tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC")
+    suspend fun getRecordsByTagId(tagId: String): List<BloodSugarRecord>
+
+    /**
+     * 获取所有包含标签的血糖记录
+     * @return 包含标签的血糖记录列表
+     */
+    @Query("SELECT * FROM blood_sugar_records WHERE tag_ids IS NOT NULL AND tag_ids != '' ORDER BY record_time DESC")
+    suspend fun getAllRecordsWithTags(): List<BloodSugarRecord>
+
+    /**
+     * 获取包含标签的血糖记录数量
+     * @return 包含标签的记录数量
+     */
+    @Query("SELECT COUNT(*) FROM blood_sugar_records WHERE tag_ids IS NOT NULL AND tag_ids != ''")
+    suspend fun getRecordsWithTagsCount(): Int
 }

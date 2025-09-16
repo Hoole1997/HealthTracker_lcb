@@ -10,8 +10,10 @@ import android.content.Context
 import com.healthtracker.blood.suger.data.converter.DateTimeConverter
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
+import com.healthtracker.blood.suger.data.dao.HealthTagDao
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
+import com.healthtracker.blood.suger.data.entity.HealthTag
 
 /**
  * 健康数据Room数据库
@@ -20,14 +22,16 @@ import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
  * 包含的表:
  * - blood_sugar_records: 血糖记录表
  * - blood_pressure_records: 血压记录表
+ * - health_tags: 健康标签表
  */
 @Database(
     entities = [
         BloodSugarRecord::class,
-        BloodPressureRecord::class
+        BloodPressureRecord::class,
+        HealthTag::class
     ],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
 abstract class HealthDatabase : RoomDatabase() {
@@ -41,6 +45,11 @@ abstract class HealthDatabase : RoomDatabase() {
      * 获取血压记录DAO
      */
     abstract fun bloodPressureDao(): BloodPressureDao
+
+    /**
+     * 获取健康标签DAO
+     */
+    abstract fun healthTagDao(): HealthTagDao
 
     companion object {
         /**
@@ -90,10 +99,17 @@ abstract class HealthDatabase : RoomDatabase() {
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_record_time ON blood_sugar_records(record_time)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_show_in_chart ON blood_sugar_records(show_in_chart)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_measurement_tag ON blood_sugar_records(measurement_tag)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_glucose_level ON blood_sugar_records(glucose_level)")
 
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_record_time ON blood_pressure_records(record_time)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_show_in_chart ON blood_pressure_records(show_in_chart)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_measurement_tag ON blood_pressure_records(measurement_tag)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_bp_category ON blood_pressure_records(bp_category)")
+
+                // 标签表索引
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_health_tags_is_predefined ON health_tags(is_predefined)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_health_tags_name ON health_tags(name)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_health_tags_create_time ON health_tags(create_time)")
             }
 
             override fun onOpen(db: SupportSQLiteDatabase) {
