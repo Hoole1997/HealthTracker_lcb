@@ -5,4 +5,11 @@
     <string name="home">Home</string>
     <string name="record">Record</string>
     <string name="record_now">Record Now</string>
+    <!-- 血糖和血压的单位不用翻译   -->
+    <string name="mg_dl" translatable="false">mg/dL</string>
+    <string name="mmol_l" translatable="false">mmol/L</string>
+    <string name="mmHg" translatable="false">mmHg</string>
+    <string name="loading">Loading</string>
+
+
 </resources>
