@@ -1,8 +1,6 @@
 package com.healthtracker.blood.suger.di
 
 import android.content.Context
-import androidx.room.Room
-import com.healthtracker.blood.suger.data.converter.DateTimeConverter
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
@@ -30,13 +28,7 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideHealthDatabase(@ApplicationContext context: Context): HealthDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            HealthDatabase::class.java,
-            "health_database"
-        )
-        .addTypeConverter(DateTimeConverter())
-        .build()
+        return HealthDatabase.getDatabase(context)
     }
 
     /**
