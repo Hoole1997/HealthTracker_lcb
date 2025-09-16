@@ -4,4 +4,39 @@
     <declare-styleable name="MaxHeightFrameLayout">
         <attr name="maxHeight" format="dimension" />
     </declare-styleable>
+
+
+    <declare-styleable name="RulerView">
+        <attr name="rulerHeight" format="dimension" />               <!--尺子的高度-->
+        <attr name="scaleGap" format="dimension" />                  <!--刻度间距-->
+        <attr name="scaleCount" format="integer" />                  <!--刻度数-->
+        <attr name="firstScale" format="float" />                    <!--默认选中的刻度-->
+        <attr name="maxScale" format="float" />                      <!--最大刻度-->
+        <attr name="minScale" format="float" />                      <!--最小刻度-->
+        <attr name="scrollableMinScale" format="float" />            <!--可滚动的最小刻度-->
+        <attr name="scrollableMaxScale" format="float" />            <!--可滚动的最大刻度-->
+        <attr name="scaleStep" format="float" />                     <!--刻度步长-->
+        <attr name="bgColor" format="color" />                       <!--背景色-->
+        <attr name="smallScaleColor" format="color" />               <!--小刻度的颜色-->
+        <attr name="midScaleColor" format="color" />                 <!--中刻度的颜色-->
+        <attr name="largeScaleColor" format="color" />               <!--大刻度的颜色-->
+        <attr name="scaleNumColor" format="color" />                 <!--刻度数的颜色-->
+        <attr name="indicatorColor" format="color" />                <!--指示线颜色-->
+        <attr name="smallScaleStroke" format="dimension" />          <!--小刻度的宽度-->
+        <attr name="midScaleStroke" format="dimension" />            <!--中刻度的宽度-->
+        <attr name="largeScaleStroke" format="dimension" />          <!--大刻度的宽度-->
+        <attr name="indicatorStroke" format="dimension" />           <!--指示线的宽度-->
+        <attr name="smallScaleHeight" format="dimension" />          <!--小刻度的高度-->
+        <attr name="midScaleHeight" format="dimension" />            <!--中刻度的高度-->
+        <attr name="largeScaleHeight" format="dimension" />          <!--大刻度的高度-->
+        <attr name="indicatorHeight" format="dimension" />           <!--指示线的高度-->
+        <attr name="scaleNumTextSize" format="dimension" />          <!--刻度字体大小-->
+        <attr name="scaleTextMargin" format="dimension" />           <!--刻度值与刻度线的间距-->
+        <attr name="rulerPaddingHorizontal" format="dimension" />    <!--尺子水平内边距-->
+        <attr name="rulerPaddingVertical" format="dimension" />      <!--尺子垂直内边距-->
+        <attr name="isBgRoundRect" format="boolean" />               <!--背景是否圆角-->
+        <attr name="decimalPlaces" format="integer" />               <!--小数点位数-->
+        <attr name="scaleLimit" format="integer" />                  <!--相邻2个刻度之间的数量-->
+
+    </declare-styleable>
 </resources>

@@ -1,0 +1,544 @@
+package com.healthtracker.blood.suger.ui.weight
+
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
+import android.content.Context
+import android.content.res.TypedArray
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.RectF
+import android.util.AttributeSet
+import android.util.TypedValue
+import android.view.MotionEvent
+import android.view.VelocityTracker
+import android.view.View
+import android.view.animation.DecelerateInterpolator
+import com.healthtracker.blood.suger.R
+import kotlin.math.abs
+import kotlin.math.roundToInt
+
+class BloodSugarRulerView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
+
+    companion object {
+        private const val TAG = "BloodSugarRulerView"
+        private const val DEFAULT_SCALE_STEP = 0.1f
+        private const val DEFAULT_SCALE_COUNT = 10
+        private const val DEFAULT_SCALE_GAP = 20f
+        private const val ANIMATION_DURATION = 300L
+        private const val MIN_VELOCITY_THRESHOLD = 50
+    }
+
+    // 基础配置
+    private var scaleStep = DEFAULT_SCALE_STEP
+    private var rulerHeight = 50f
+    private var scaleCount = DEFAULT_SCALE_COUNT
+    private var scaleGap = DEFAULT_SCALE_GAP
+    private var minScale = 0f
+    private var maxScale = 100f
+    private var scrollableMinScale = 0f
+    private var scrollableMaxScale = 100f
+    private var firstScale = 50f
+
+    // 颜色配置
+    private var bgColor = 0xfffcfffc.toInt()
+    private var smallScaleColor = 0xff999999.toInt()
+    private var midScaleColor = 0xff666666.toInt()
+    private var largeScaleColor = 0xff50b586.toInt()
+    private var scaleNumColor = 0xff333333.toInt()
+    private var indicatorColor = 0xff50b586.toInt()
+
+    // 尺寸配置
+    private var smallScaleStroke = 1f
+    private var midScaleStroke = 2f
+    private var largeScaleStroke = 3f
+    private var indicatorStroke = 3f
+    private var scaleNumTextSize = 16f
+    private var scaleTextMargin = 8f
+    private var rulerPaddingHorizontal = 0f
+    private var rulerPaddingVertical = 0f
+
+    // 高度配置
+    private var smallScaleHeight = rulerHeight / 4
+    private var midScaleHeight = rulerHeight / 2
+    private var largeScaleHeight = rulerHeight / 2 + 5
+    private var indicatorHeight = rulerHeight
+
+    // 其他配置
+    private var isBgRoundRect = true
+    private var decimalPlaces = 1
+
+    // 回调接口
+    private var onChooseResultListener: OnChooseResultListener? = null
+
+    // 滑动控制
+    private var computeScale = -1f
+    private var currentScale = firstScale
+    private var valueAnimator: ValueAnimator? = null
+    private var velocityTracker: VelocityTracker? = null
+
+    // 绘制对象
+    private lateinit var bgPaint: Paint
+    private lateinit var smallScalePaint: Paint
+    private lateinit var midScalePaint: Paint
+    private lateinit var largeScalePaint: Paint
+    private lateinit var scaleNumPaint: Paint
+    private lateinit var indicatorPaint: Paint
+    private lateinit var scaleNumRect: Rect
+    private lateinit var bgRect: RectF
+
+    // 尺寸
+    private var viewWidth = 0
+    private var viewHeight = 0
+    private var centerX = 0f
+
+    // 触摸控制
+    private var downX = 0f
+    private var moveX = 0f
+    private var currentX = 0f
+    private var lastMoveX = 0f
+    private var isUp = false
+    private var isFirstScale = true
+
+    init {
+        setAttr(attrs, defStyleAttr)
+        initPaints()
+    }
+
+    private fun setAttr(attrs: AttributeSet?, defStyleAttr: Int) {
+        attrs?.let {
+            val typedArray = context.theme.obtainStyledAttributes(
+                attrs, R.styleable.RulerView, defStyleAttr, 0
+            )
+
+            scaleStep = typedArray.getFloat(R.styleable.RulerView_scaleStep, DEFAULT_SCALE_STEP)
+
+            rulerHeight = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_rulerHeight,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, rulerHeight, resources.displayMetrics).toInt()
+            ).toFloat()
+
+
+            scaleCount = typedArray.getInt(R.styleable.RulerView_scaleCount, DEFAULT_SCALE_COUNT)
+
+            scaleGap = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_scaleGap,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_SCALE_GAP, resources.displayMetrics).toInt()
+            ).toFloat()
+
+            minScale = typedArray.getFloat(R.styleable.RulerView_minScale, 0f)
+            maxScale = typedArray.getFloat(R.styleable.RulerView_maxScale, 100f)
+            scrollableMinScale = typedArray.getFloat(R.styleable.RulerView_scrollableMinScale, minScale)
+            scrollableMaxScale = typedArray.getFloat(R.styleable.RulerView_scrollableMaxScale, maxScale)
+            firstScale = typedArray.getFloat(R.styleable.RulerView_firstScale, 50f)
+
+            bgColor = typedArray.getColor(R.styleable.RulerView_bgColor, bgColor)
+            smallScaleColor = typedArray.getColor(R.styleable.RulerView_smallScaleColor, smallScaleColor)
+            midScaleColor = typedArray.getColor(R.styleable.RulerView_midScaleColor, midScaleColor)
+            largeScaleColor = typedArray.getColor(R.styleable.RulerView_largeScaleColor, largeScaleColor)
+            scaleNumColor = typedArray.getColor(R.styleable.RulerView_scaleNumColor, scaleNumColor)
+            indicatorColor = typedArray.getColor(R.styleable.RulerView_indicatorColor, indicatorColor)
+
+            smallScaleStroke = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_smallScaleStroke,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, smallScaleStroke, resources.displayMetrics).toInt()
+            ).toFloat()
+
+            midScaleStroke = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_midScaleStroke,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, midScaleStroke, resources.displayMetrics).toInt()
+            ).toFloat()
+
+            largeScaleStroke = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_largeScaleStroke,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, largeScaleStroke, resources.displayMetrics).toInt()
+            ).toFloat()
+
+            indicatorStroke = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_indicatorStroke,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, indicatorStroke, resources.displayMetrics).toInt()
+            ).toFloat()
+
+            scaleNumTextSize = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_scaleNumTextSize,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, scaleNumTextSize, resources.displayMetrics).toInt()
+            ).toFloat()
+
+            scaleTextMargin = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_scaleTextMargin,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, scaleTextMargin, resources.displayMetrics).toInt()
+            ).toFloat()
+
+            rulerPaddingHorizontal = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_rulerPaddingHorizontal,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, rulerPaddingHorizontal, resources.displayMetrics).toInt()
+            ).toFloat()
+
+            rulerPaddingVertical = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_rulerPaddingVertical,
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, rulerPaddingVertical, resources.displayMetrics).toInt()
+            ).toFloat()
+
+            smallScaleHeight = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_smallScaleHeight,
+                (rulerHeight / 4).toInt()
+            ).toFloat()
+
+            midScaleHeight = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_midScaleHeight,
+                (rulerHeight / 2).toInt()
+            ).toFloat()
+
+            largeScaleHeight = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_largeScaleHeight,
+                (rulerHeight / 2 + 5).toInt()
+            ).toFloat()
+
+            indicatorHeight = typedArray.getDimensionPixelSize(
+                R.styleable.RulerView_indicatorHeight,
+                rulerHeight.toInt()
+            ).toFloat()
+
+            isBgRoundRect = typedArray.getBoolean(R.styleable.RulerView_isBgRoundRect, true)
+            decimalPlaces = typedArray.getInt(R.styleable.RulerView_decimalPlaces, 1)
+
+            typedArray.recycle()
+        }
+
+        currentScale = firstScale.coerceIn(scrollableMinScale, scrollableMaxScale)
+    }
+
+    private fun initPaints() {
+        bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = bgColor
+            style = Paint.Style.FILL
+        }
+
+        smallScalePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = smallScaleColor
+            style = Paint.Style.FILL
+            strokeWidth = smallScaleStroke
+            strokeCap = Paint.Cap.ROUND
+        }
+
+        midScalePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = midScaleColor
+            style = Paint.Style.FILL
+            strokeWidth = midScaleStroke
+            strokeCap = Paint.Cap.ROUND
+        }
+
+        largeScalePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = largeScaleColor
+            style = Paint.Style.FILL
+            strokeWidth = largeScaleStroke
+            strokeCap = Paint.Cap.ROUND
+        }
+
+        scaleNumPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = scaleNumColor
+            textSize = scaleNumTextSize
+        }
+
+        indicatorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = indicatorColor
+            style = Paint.Style.FILL
+            strokeWidth = indicatorStroke
+            strokeCap = Paint.Cap.ROUND
+        }
+
+        scaleNumRect = Rect()
+        bgRect = RectF()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+
+        viewHeight = when (heightMode) {
+            MeasureSpec.AT_MOST, MeasureSpec.UNSPECIFIED -> {
+                (rulerHeight + rulerPaddingVertical * 2 + paddingTop + paddingBottom).toInt()
+            }
+            else -> heightSize
+        }
+
+        viewWidth = widthSize
+        centerX = viewWidth / 2f
+
+        setMeasuredDimension(viewWidth, viewHeight)
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        drawBg(canvas)
+        drawScalesAndNumbers(canvas)
+        drawIndicator(canvas)
+    }
+
+    private fun drawBg(canvas: Canvas) {
+        bgRect.set(0f, 0f, viewWidth.toFloat(), viewHeight.toFloat())
+        if (isBgRoundRect) {
+            canvas.drawRoundRect(bgRect, 20f, 20f, bgPaint)
+        } else {
+            canvas.drawRect(bgRect, bgPaint)
+        }
+    }
+
+    private fun drawScalesAndNumbers(canvas: Canvas) {
+        canvas.save()
+        canvas.translate(rulerPaddingHorizontal, rulerPaddingVertical)
+
+        if (isFirstScale) {
+            moveX = getScalePosition(firstScale)
+            lastMoveX = moveX
+            isFirstScale = false
+        }
+
+        if (computeScale != -1f) {
+            animateToScale(computeScale)
+            computeScale = -1f
+        }
+
+        val scaleIndex = -(moveX / scaleGap).toInt()
+        val offset = moveX % scaleGap
+
+        canvas.save()
+        canvas.translate(offset, 0f)
+
+        var drawPosition = 0f
+        var currentIndex = scaleIndex
+        val availableWidth = viewWidth - rulerPaddingHorizontal * 2
+
+        while (drawPosition < availableWidth) {
+            val scaleValue = getScaleValue(currentIndex)
+
+            if (scaleValue >= minScale && scaleValue <= maxScale) {
+                when {
+                    currentIndex % scaleCount == 0 -> {
+                        canvas.drawLine(0f, 0f, 0f, largeScaleHeight, largeScalePaint)
+
+                        val scaleText = formatScaleValue(scaleValue)
+                        scaleNumPaint.getTextBounds(scaleText, 0, scaleText.length, scaleNumRect)
+                        canvas.drawText(
+                            scaleText,
+                            -scaleNumRect.width() / 2f,
+                            largeScaleHeight + scaleTextMargin + scaleNumRect.height(),
+                            scaleNumPaint
+                        )
+                    }
+                    currentIndex % (scaleCount / 2) == 0 -> {
+                        canvas.drawLine(0f, 0f, 0f, midScaleHeight, midScalePaint)
+                    }
+                    else -> {
+                        canvas.drawLine(0f, 0f, 0f, smallScaleHeight, smallScalePaint)
+                    }
+                }
+            }
+
+            currentIndex++
+            drawPosition += scaleGap
+            canvas.translate(scaleGap, 0f)
+        }
+
+        canvas.restore()
+
+        updateCurrentScale()
+
+        if (isUp) {
+            snapToNearestScale()
+            isUp = false
+        }
+
+        canvas.restore()
+    }
+
+    private fun drawIndicator(canvas: Canvas) {
+        canvas.drawLine(
+            centerX, rulerPaddingVertical,
+            centerX, rulerPaddingVertical + indicatorHeight,
+            indicatorPaint
+        )
+    }
+
+    private fun getScaleValue(index: Int): Float {
+        return minScale + index * scaleStep
+    }
+
+    private fun getScalePosition(scale: Float): Float {
+        val index = ((scale - minScale) / scaleStep).roundToInt()
+        return centerX - scaleGap * index - rulerPaddingHorizontal
+    }
+
+    private fun formatScaleValue(value: Float): String {
+        return String.format("%.${decimalPlaces}f", value)
+    }
+
+    private fun updateCurrentScale() {
+        val index = -((moveX - centerX) / scaleGap).roundToInt()
+        currentScale = (minScale + index * scaleStep).coerceIn(scrollableMinScale, scrollableMaxScale)
+
+        onChooseResultListener?.onScrollResult(formatScaleValue(currentScale))
+    }
+
+    private fun snapToNearestScale() {
+        val targetIndex = -((moveX - centerX) / scaleGap).roundToInt()
+        val targetScale = (minScale + targetIndex * scaleStep).coerceIn(scrollableMinScale, scrollableMaxScale)
+        val targetPosition = getScalePosition(targetScale)
+
+        if (abs(moveX - targetPosition) > 0.1f) {
+            valueAnimator?.cancel()
+            valueAnimator = ValueAnimator.ofFloat(moveX, targetPosition).apply {
+                duration = ANIMATION_DURATION
+                addUpdateListener { animation ->
+                    moveX = animation.animatedValue as Float
+                    lastMoveX = moveX
+                    invalidate()
+                }
+                addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        updateCurrentScale()
+                        onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+                    }
+                })
+                start()
+            }
+        } else {
+            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+        }
+    }
+
+    private fun animateToScale(targetScale: Float) {
+        val clampedScale = targetScale.coerceIn(scrollableMinScale, scrollableMaxScale)
+        val targetPosition = getScalePosition(clampedScale)
+
+        valueAnimator?.cancel()
+        valueAnimator = ValueAnimator.ofFloat(moveX, targetPosition).apply {
+            duration = (abs(targetPosition - moveX) / 100 * ANIMATION_DURATION).toLong().coerceIn(100, 1000)
+            addUpdateListener { animation ->
+                moveX = animation.animatedValue as Float
+                lastMoveX = moveX
+                invalidate()
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    updateCurrentScale()
+                    onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+                }
+            })
+            start()
+        }
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (velocityTracker == null) {
+            velocityTracker = VelocityTracker.obtain()
+        }
+
+        currentX = event.x
+        isUp = false
+        velocityTracker?.addMovement(event)
+
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                valueAnimator?.cancel()
+                downX = event.x
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                val deltaX = currentX - downX + lastMoveX
+                val minPosition = getScalePosition(scrollableMaxScale)
+                val maxPosition = getScalePosition(scrollableMinScale)
+
+                moveX = deltaX.coerceIn(minPosition, maxPosition)
+            }
+
+            MotionEvent.ACTION_UP -> {
+                lastMoveX = moveX
+                velocityTracker?.computeCurrentVelocity(500)
+                val xVelocity = velocityTracker?.xVelocity?.toInt() ?: 0
+                autoVelocityScroll(xVelocity)
+                velocityTracker?.clear()
+            }
+        }
+
+        invalidate()
+        return true
+    }
+
+    private fun autoVelocityScroll(xVelocity: Int) {
+        if (abs(xVelocity) < MIN_VELOCITY_THRESHOLD) {
+            isUp = true
+            return
+        }
+
+        valueAnimator?.cancel()
+        valueAnimator = ValueAnimator.ofInt(0, xVelocity / 20).apply {
+            duration = abs(xVelocity / 10).toLong()
+            interpolator = DecelerateInterpolator()
+            addUpdateListener { animation ->
+                moveX += animation.animatedValue as Int
+
+                val minPosition = getScalePosition(scrollableMaxScale)
+                val maxPosition = getScalePosition(scrollableMinScale)
+                moveX = moveX.coerceIn(minPosition, maxPosition)
+
+                lastMoveX = moveX
+                invalidate()
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    isUp = true
+                    invalidate()
+                }
+            })
+            start()
+        }
+    }
+
+    fun setOnChooseResultListener(listener: OnChooseResultListener) {
+        this.onChooseResultListener = listener
+    }
+
+    fun scrollToScale(scale: Float) {
+        computeScale = scale.coerceIn(scrollableMinScale, scrollableMaxScale)
+        invalidate()
+    }
+
+    fun getCurrentScale(): Float = currentScale
+
+    fun setScaleRange(min: Float, max: Float) {
+        this.minScale = min
+        this.maxScale = max
+        invalidate()
+    }
+
+    fun setScrollableRange(min: Float, max: Float) {
+        this.scrollableMinScale = min.coerceAtLeast(minScale)
+        this.scrollableMaxScale = max.coerceAtMost(maxScale)
+
+        currentScale = currentScale.coerceIn(scrollableMinScale, scrollableMaxScale)
+        invalidate()
+    }
+
+    fun setScaleStep(step: Float) {
+        this.scaleStep = step
+        invalidate()
+    }
+
+    fun setDecimalPlaces(places: Int) {
+        this.decimalPlaces = places
+        invalidate()
+    }
+
+    interface OnChooseResultListener {
+        fun onEndResult(result: String)
+        fun onScrollResult(result: String)
+    }
+}

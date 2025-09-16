@@ -10,6 +10,7 @@
     <color name="c5">#02BC77</color>
     <color name="c5_8">#5DD4A8</color>
     <color name="t1">#333333</color>
+    <color name="color_999">#999999</color>
     <color name="ic_launcher_background">@color/c5</color>
     <color name="color_tap_ripple">@color/transparent10</color>
 
@@ -19,4 +20,5 @@
     <color name="color_CCCCCC">#CCCCCC</color>
     <color name="color_DAFFE5">#DAFFE5</color>
     <color name="color_DFF5FF">#DFF5FF</color>
+    <color name="color_E5F9F2">#E5F9F2</color>
 </resources>

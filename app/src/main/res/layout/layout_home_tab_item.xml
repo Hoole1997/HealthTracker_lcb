@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/pdfs_selector_tab_color"
+        app:tint="@color/selector_tab_color"
         tools:src="@drawable/ic_tab_home_selected"/>
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -27,7 +27,7 @@
         android:gravity="center"
         android:maxLines="1"
         android:text="@string/home"
-        android:textColor="@color/pdfs_selector_tab_color"
+        android:textColor="@color/selector_tab_color"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
