@@ -1,0 +1,151 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "88c087635430ed49c2c2c83ee402993c",
+    "entities": [
+      {
+        "tableName": "blood_sugar_records",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `record_time` INTEGER NOT NULL, `glucose_value` REAL NOT NULL, `measurement_tag` TEXT NOT NULL, `stage` TEXT NOT NULL, `show_in_chart` INTEGER NOT NULL, `ext1` TEXT, `ext2` TEXT, `ext3` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recordTime",
+            "columnName": "record_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "glucoseValue",
+            "columnName": "glucose_value",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "measurementTag",
+            "columnName": "measurement_tag",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stage",
+            "columnName": "stage",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showInChart",
+            "columnName": "show_in_chart",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ext1",
+            "columnName": "ext1",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ext2",
+            "columnName": "ext2",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ext3",
+            "columnName": "ext3",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "blood_pressure_records",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `record_time` INTEGER NOT NULL, `systolic_pressure` INTEGER NOT NULL, `diastolic_pressure` INTEGER NOT NULL, `pulse_rate` INTEGER NOT NULL, `measurement_tag` TEXT NOT NULL, `stage` TEXT NOT NULL, `show_in_chart` INTEGER NOT NULL, `ext1` TEXT, `ext2` TEXT, `ext3` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recordTime",
+            "columnName": "record_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "systolicPressure",
+            "columnName": "systolic_pressure",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "diastolicPressure",
+            "columnName": "diastolic_pressure",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pulseRate",
+            "columnName": "pulse_rate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "measurementTag",
+            "columnName": "measurement_tag",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stage",
+            "columnName": "stage",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showInChart",
+            "columnName": "show_in_chart",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ext1",
+            "columnName": "ext1",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ext2",
+            "columnName": "ext2",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ext3",
+            "columnName": "ext3",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '88c087635430ed49c2c2c83ee402993c')"
+    ]
+  }
+}
