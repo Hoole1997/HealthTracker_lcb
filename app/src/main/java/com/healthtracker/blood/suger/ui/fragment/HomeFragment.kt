@@ -11,7 +11,6 @@ import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
-import com.healthtracker.framework.ext.logd
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -66,17 +65,11 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
      */
     private fun updateBloodSugarUI(record: BloodSugarRecord?) {
         if (record == null) {
-            // TODO: 显示无记录状态
-            "没有血糖记录".logd(TAG)
-
+            mViewBind?.tvLatestBsValue?.text = "--"
             return
         }
-        "latest blood suger = $record".logd(TAG)
-
-        // TODO: 根据实际的ViewBinding属性更新UI
-        // 显示血糖值: ${record.glucoseValue} mg/dL
-        // 显示记录时间: ${dateFormat.format(record.recordTime)}
-        // 显示测量标签: ${record.measurementTag}
+        // 根据用户选择的单位显示血糖值（保留一位小数）
+        mViewBind?.tvLatestBsValue?.text = record.getFormattedDisplayValue()
     }
 
     /**
@@ -84,15 +77,12 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
      */
     private fun updateBloodPressureUI(record: BloodPressureRecord?) {
         if (record == null) {
-            // TODO: 显示无记录状态
-            "没有血压记录".logd(TAG)
+            mViewBind?.tvLatestBpValue?.text = "-/-"
             return
         }
-        "latest blood pressure = $record".logd(TAG)
-        // TODO: 根据实际的ViewBinding属性更新UI
-        // 显示血压值: ${record.systolicPressure}/${record.diastolicPressure} mmHg
-        // 显示脉搏: ${record.pulseRate} bpm
-        // 显示记录时间: ${dateFormat.format(record.recordTime)}
-        // 显示测量标签: ${record.measurementTag}
+        "${record.systolicPressure}/${record.diastolicPressure}".also {
+            mViewBind?.tvLatestBpValue?.text = it
+        }
+
     }
 }
