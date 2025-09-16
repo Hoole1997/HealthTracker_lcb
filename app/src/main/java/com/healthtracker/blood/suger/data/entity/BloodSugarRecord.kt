@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.healthtracker.blood.suger.data.enums.GlucoseLevel
+import com.healthtracker.blood.suger.data.enums.GlucoseUnit
 import com.healthtracker.blood.suger.data.enums.MeasurementTag
 import java.util.*
 
@@ -77,14 +78,49 @@ data class BloodSugarRecord(
      * 可用于存储其他相关信息
      */
     @ColumnInfo(name = "ext3")
-    val ext3: String? = null
+    val ext3: String? = null,
+
+    /**
+     * 用户新增时选择的单位类型
+     * 0: mg/dL, 1: mmol/L
+     * 默认为 mg/dL
+     */
+    @ColumnInfo(name = "selected_unit", defaultValue = "0")
+    val selectedUnit: Int = GlucoseUnit.MG_DL.value
 ) {
     /**
-     * 获取血糖值的mmol/L单位表示
+     * 获取用户选择的单位类型
+     * @return GlucoseUnit枚举
+     */
+    fun getSelectedUnitEnum(): GlucoseUnit {
+        return GlucoseUnit.fromValue(selectedUnit)
+    }
+
+
+    /**
+     * 根据用户选择的单位获取血糖数值（不含单位）
+     * @return 根据选择单位转换后的数值
+     */
+    fun getDisplayGlucoseValue(): Double {
+        return getSelectedUnitEnum().convertFromMgdl(glucoseValue)
+    }
+
+    /**
+     * 获取格式化的血糖值字符串（保留一位小数）
+     * @return 格式化的血糖值字符串，不含单位
+     */
+    fun getFormattedDisplayValue(): String {
+        val displayValue = getDisplayGlucoseValue()
+        return String.format("%.1f", displayValue)
+    }
+
+    /**
+     * 获取血糖值的mmol/L单位表示（保持向后兼容）
      * @return mmol/L单位的血糖值
      */
+    @Deprecated("使用 getDisplayGlucoseValue() 和 getSelectedUnitEnum() 替代")
     fun getGlucoseInMmol(): Double {
-        return glucoseValue * 0.0555
+        return glucoseValue / GlucoseUnit.CONVERSION_FACTOR
     }
 
     /**
@@ -155,11 +191,21 @@ data class BloodSugarRecord(
         /**
          * 创建血糖记录的工厂方法
          * 自动计算血糖等级
+         * @param recordTime 记录时间
+         * @param glucoseValue 血糖值（总是以mg/dL存储）
+         * @param measurementTag 测量标签
+         * @param selectedUnit 用户选择的单位类型
+         * @param tagIds 关联标签ID列表
+         * @param showInChart 是否在图表中显示
+         * @param ext1 扩展字段1
+         * @param ext2 扩展字段2
+         * @param ext3 扩展字段3
          */
         fun create(
             recordTime: Date,
             glucoseValue: Double,
             measurementTag: String,
+            selectedUnit: GlucoseUnit = GlucoseUnit.MG_DL,
             tagIds: List<Long>? = null,
             showInChart: Boolean = true,
             ext1: String? = null,
@@ -175,6 +221,7 @@ data class BloodSugarRecord(
                 glucoseLevel = glucoseLevel.code,
                 tagIds = tagIdsString,
                 showInChart = showInChart,
+                selectedUnit = selectedUnit.value,
                 ext1 = ext1,
                 ext2 = ext2,
                 ext3 = ext3
