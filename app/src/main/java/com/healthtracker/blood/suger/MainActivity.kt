@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
+import com.healthtracker.blood.suger.ui.fragment.MedsFragment
 import com.healthtracker.blood.suger.ui.fragment.RecordFragment
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
@@ -26,6 +27,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
     }
 
     private var homeFrg: HomeFragment? = null
+    private var medFrg: MedsFragment? = null
     private var recordFrg: RecordFragment? = null
 
     @Restore
@@ -33,14 +35,19 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
 
 
     internal val homeFragmentAdapter =
-        FragmentsAdapter(supportFragmentManager, 2, object : FragmentsAdapter.Callback {
-            override fun createInstance(position: Int) =
-                if (position == 0) HomeFragment() else RecordFragment()
+        FragmentsAdapter(supportFragmentManager, 3, object : FragmentsAdapter.Callback {
+            override fun createInstance(position: Int) = when(position){
+                0 -> HomeFragment()
+                1 -> MedsFragment()
+                2 -> RecordFragment()
+                else -> throw IllegalArgumentException("Invalid position: $position")
+            }
 
             override fun onInstance(position: Int, fragment: Fragment) {
                 when (fragment) {
                     is HomeFragment -> homeFrg = fragment
                     is RecordFragment -> recordFrg = fragment
+                    is MedsFragment -> medFrg = fragment
                 }
             }
         })
@@ -77,6 +84,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
 
             val tabs = arrayListOf(
                 Pair(R.drawable.selector_nav_home, R.string.home),
+                Pair(R.drawable.selector_nav_meds, R.string.meds),
                 Pair(R.drawable.selector_nav_record, R.string.record),
 
             )

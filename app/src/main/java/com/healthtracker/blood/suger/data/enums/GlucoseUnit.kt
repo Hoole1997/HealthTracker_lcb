@@ -8,19 +8,17 @@ package com.healthtracker.blood.suger.data.enums
  * @param name 单位名称
  */
 enum class GlucoseUnit(
-    val value: Int,
-    val symbol: String,
-    val name: String
+    val value: Int
 ) {
     /**
      * mg/dL 单位
      */
-    MG_DL(0, "mg/dL", "毫克每分升"),
+    MG_DL(0),
 
     /**
      * mmol/L 单位
      */
-    MMOL_L(1, "mmol/L", "毫摩尔每升");
+    MMOL_L(1);
 
     companion object {
         /**
@@ -29,7 +27,7 @@ enum class GlucoseUnit(
          * @return 对应的枚举，默认为 MG_DL
          */
         fun fromValue(value: Int): GlucoseUnit {
-            return values().find { it.value == value } ?: MG_DL
+            return entries.find { it.value == value } ?: MG_DL
         }
 
         /**

@@ -8,7 +8,7 @@ object SpUtils {
     private var _mv: MMKV? = null
 
     fun init(context: Context) {
-        MMKV.mmkvWithID("DefaultMMKV",MMKV.MULTI_PROCESS_MODE)
+        MMKV.initialize(context)
     }
 
 
@@ -16,7 +16,7 @@ object SpUtils {
         if (_mv == null) {
             synchronized(SpUtils::class.java) {
                 if (_mv == null) {
-                    _mv = MMKV.defaultMMKV(MMKV.MULTI_PROCESS_MODE,"DefaultMMKV")
+                    _mv = MMKV.defaultMMKV()
                 }
             }
         }
