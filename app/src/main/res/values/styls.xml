@@ -12,6 +12,15 @@
         <item name="cornerRadius">@dimen/dp_39</item>
         <item name="android:textAllCaps">false</item>
     </style>
+
+    <style name="MaterialButton.b1">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/c5</item>
+        <item name="rippleColor">@color/c5_8</item>
+    </style>
     <style name="MaterialButton.b2">
         <item name="android:fontFamily">@font/roboto_medium</item>
         <item name="fontFamily">@font/roboto_medium</item>

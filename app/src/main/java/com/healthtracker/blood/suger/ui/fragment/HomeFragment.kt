@@ -14,7 +14,6 @@ import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
-import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -29,7 +28,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
        private const val TAG = "HomeFragment"
    }
 
-    private var hasLatestRecord = false
+    private var latestSugerID :Long? = null
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -42,11 +41,11 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind?.run {
             clHistory.clickWithDuration {
-                activity?.startActivity<BsRecordActivity>()
+                BsRecordActivity.start(requireActivity(), latestSugerID)
             }
 
             btnRecordNow.clickWithDuration {
-                activity?.startActivity<BsRecordActivity>()
+                BsRecordActivity.start(requireActivity())
 
             }
 
@@ -91,7 +90,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             mViewBind?.tvLatestRecordDate?.text = getString(R.string.click_to_record)
             return
         }
-        hasLatestRecord = true
+        latestSugerID = record.id
         // 根据用户选择的单位显示血糖值（保留一位小数）
         mViewBind?.tvLatestBsValue?.text = record.getFormattedDisplayValue()
     }

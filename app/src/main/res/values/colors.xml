@@ -25,4 +25,6 @@
     <color name="color_normal">@color/c5</color>
     <color name="color_prediabetes">#FFB901</color>
     <color name="color_diabetes">#FA0202</color>
+
+    <color name="primary">@color/c5</color>
 </resources>

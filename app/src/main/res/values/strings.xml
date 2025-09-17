@@ -33,4 +33,9 @@
     <string name="blood_sugar_status_before_exercise">Before exercise</string>
     <string name="blood_sugar_status_two_hours_after_meal">2h after meal</string>
 
+    <!-- 按钮和操作 -->
+    <string name="save">Save</string>
+    <string name="saving">Saving...</string>
+    <string name="save_failed">Save failed, please try again</string>
+
 </resources>

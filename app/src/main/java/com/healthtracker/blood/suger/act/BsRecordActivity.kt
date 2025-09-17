@@ -1,29 +1,45 @@
 package com.healthtracker.blood.suger.act
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.blood.suger.enum.BloodSugarUnit
+import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class BsRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityBsRecordBinding>() {
+class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
 
-    private var currentUnit = BloodSugarUnit.MMOL_L
-    private var currentValue = 4.2f
-    private var currentStatus = BloodSugarStatus.DEFAULT
+    companion object {
+        const val EXTRA_RECORD_ID = "extra_record_id"
+        // 启动编辑模式
+        fun start(context: Context, recordId: Long? = null) {
+            context.startActivity<BsRecordActivity>(EXTRA_RECORD_ID to recordId)
+        }
+    }
 
     override fun createViewBinding() = ActivityBsRecordBinding.inflate(layoutInflater)
 
-    override fun getVMModelClass() = BaseViewModel::class.java
+    override fun getVMModelClass() = BsRecordViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        // 获取传入的记录ID（如果有）
+        val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L)
+        val editRecordId = if (recordId == -1L) null else recordId
+
+        // 初始化ViewModel
+        mViewModel.initializeWithRecord(editRecordId)
+
         with(mViewBind) {
             btnBack.click {
                 finish()
@@ -33,20 +49,17 @@ class BsRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityBsRecordBinding>
             setupUnitSwitcher()
             setupRangeView()
             setupStatusSelector()
+            setupSaveButton()
+            observeViewModel()
         }
     }
 
     private fun setupRulerView() {
         with(mViewBind) {
-            // 初始化为 mmol/L 模式
-            configureRulerForUnit(BloodSugarUnit.MMOL_L)
-
             rulerView.setOnChooseResultListener(object : BloodSugarRulerView.OnChooseResultListener {
                 override fun onEndResult(result: String) {
                     try {
-                        currentValue = result.toFloat()
-                        updateDisplayValues()
-                        updateRangeView()
+                        mViewModel.updateValue(result.toFloat())
                     } catch (e: NumberFormatException) {
                         // 处理转换异常
                     }
@@ -55,8 +68,8 @@ class BsRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityBsRecordBinding>
                 override fun onScrollResult(result: String) {
                     try {
                         val value = result.toFloat()
+                        val currentUnit = mViewModel.currentUnit.value
                         tvSelectValue.text = BloodSugarUnit.formatValue(value, currentUnit)
-                        // 实时更新范围显示
                         rangeView.updateValue(value)
                     } catch (e: NumberFormatException) {
                         // 处理转换异常
@@ -75,30 +88,71 @@ class BsRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityBsRecordBinding>
                     else -> return@setOnCheckedChangeListener
                 }
 
-                if (newUnit != currentUnit) {
-                    switchToUnit(newUnit)
+                if (newUnit != mViewModel.currentUnit.value) {
+                    mViewModel.switchUnit(newUnit)
                 }
             }
         }
     }
 
-    private fun switchToUnit(newUnit: BloodSugarUnit) {
-        // 转换当前值到新单位
-        val convertedValue = BloodSugarUnit.convertValue(currentValue, currentUnit, newUnit)
+    private fun setupSaveButton() {
+        mViewBind.btnSave.click {
+            lifecycleScope.launch {
+                val success = mViewModel.saveRecord()
+                if (success) {
+                    finish()
+                } else {
+                    // 显示保存失败提示
+                    // TODO: 添加Toast显示
+                }
+            }
+        }
+    }
 
-        // 更新当前单位和值
-        currentUnit = newUnit
-        currentValue = convertedValue
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            mViewModel.currentValue.collect { value ->
+                updateDisplayValues()
+                updateRangeView()
+                // 更新刻度尺位置
+                mViewBind.rulerView.scrollToScale(value)
+            }
+        }
 
-        // 重新配置刻度尺
-        configureRulerForUnit(newUnit)
+        lifecycleScope.launch {
+            mViewModel.currentUnit.collect { unit ->
+                configureRulerForUnit(unit)
+                updateUnitRadioButtons(unit)
+                updateDisplayValues()
+            }
+        }
 
-        // 设置转换后的值到刻度尺
-        mViewBind.rulerView.scrollToScale(convertedValue)
+        lifecycleScope.launch {
+            mViewModel.currentStatus.collect { status ->
+                mViewBind.tvStatus.text = getStatusDisplayText(status.statusType)
+                updateRangeView()
+            }
+        }
 
-        // 更新显示的值
-        updateDisplayValues()
-        updateRangeView()
+        lifecycleScope.launch {
+            mViewModel.isLoading.collect { isLoading ->
+                mViewBind.btnSave.isEnabled = !isLoading
+                mViewBind.btnSave.text = if (isLoading) {
+                    getString(R.string.saving)
+                } else {
+                    getString(R.string.save)
+                }
+            }
+        }
+    }
+
+    private fun updateUnitRadioButtons(unit: BloodSugarUnit) {
+        mViewBind.rgUnit.check(
+            when (unit) {
+                BloodSugarUnit.MG_DL -> mViewBind.rbMgdl.id
+                BloodSugarUnit.MMOL_L -> mViewBind.rbMmol.id
+            }
+        )
     }
 
     private fun configureRulerForUnit(unit: BloodSugarUnit) {
@@ -106,10 +160,7 @@ class BsRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityBsRecordBinding>
     }
 
     private fun setupRangeView() {
-        with(mViewBind) {
-            // 初始化范围视图
-            rangeView.setCurrentState(currentValue, currentUnit, currentStatus)
-        }
+        // 范围视图将通过observeViewModel自动更新
     }
 
     private fun setupStatusSelector() {
@@ -119,33 +170,28 @@ class BsRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityBsRecordBinding>
                 // TODO: 显示状态选择弹窗
                 // 这里暂时模拟切换到不同状态进行测试
                 val statuses = BloodSugarStatus.values()
-                val currentIndex = statuses.indexOf(currentStatus)
+                val currentIndex = statuses.indexOf(mViewModel.currentStatus.value)
                 val nextIndex = (currentIndex + 1) % statuses.size
                 val newStatus = statuses[nextIndex]
 
-                switchToStatus(newStatus)
+                mViewModel.updateStatus(newStatus)
             }
         }
     }
 
-    private fun switchToStatus(newStatus: BloodSugarStatus) {
-        if (newStatus != currentStatus) {
-            currentStatus = newStatus
-
-            // 更新状态显示
-            mViewBind.tvStatus.text = getStatusDisplayText(newStatus.statusType)
-
-            // 更新范围视图
-            updateRangeView()
-        }
-    }
 
     private fun updateDisplayValues() {
+        val currentValue = mViewModel.currentValue.value
+        val currentUnit = mViewModel.currentUnit.value
         mViewBind.tvSelectValue.text = BloodSugarUnit.formatValue(currentValue, currentUnit)
     }
 
     private fun updateRangeView() {
-        mViewBind.rangeView.setCurrentState(currentValue, currentUnit, currentStatus)
+        mViewBind.rangeView.setCurrentState(
+            mViewModel.currentValue.value,
+            mViewModel.currentUnit.value,
+            mViewModel.currentStatus.value
+        )
     }
 
     private fun getStatusDisplayText(statusType: Int): String {
