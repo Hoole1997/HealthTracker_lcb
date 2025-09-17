@@ -1,9 +1,9 @@
 package com.healthtracker.blood.suger.act
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import com.blankj.utilcode.util.CollectionUtils.collect
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
@@ -13,15 +13,21 @@ import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 @AndroidEntryPoint
 class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
 
     companion object {
-        const val EXTRA_RECORD_ID = "extra_record_id"
+        private const val TAG = "BsRecordActivity"
+        private const val EXTRA_RECORD_ID = "extra_record_id"
         // 启动编辑模式
         fun start(context: Context, recordId: Long? = null) {
             context.startActivity<BsRecordActivity>(EXTRA_RECORD_ID to recordId)
@@ -59,7 +65,9 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             rulerView.setOnChooseResultListener(object : BloodSugarRulerView.OnChooseResultListener {
                 override fun onEndResult(result: String) {
                     try {
+                        "onEndResult result = $result".logd(TAG)
                         mViewModel.updateValue(result.toFloat())
+                        rangeView.updateValue(result.toFloat())
                     } catch (e: NumberFormatException) {
                         // 处理转换异常
                     }
@@ -67,10 +75,11 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
 
                 override fun onScrollResult(result: String) {
                     try {
+                        "onScrollResult result = $result".logd(TAG)
                         val value = result.toFloat()
                         val currentUnit = mViewModel.currentUnit.value
                         tvSelectValue.text = BloodSugarUnit.formatValue(value, currentUnit)
-                        rangeView.updateValue(value)
+
                     } catch (e: NumberFormatException) {
                         // 处理转换异常
                     }
@@ -111,7 +120,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
 
     private fun observeViewModel() {
         lifecycleScope.launch {
-            mViewModel.currentValue.collect { value ->
+            mViewModel.currentValue.debounce(50L).distinctUntilChanged().collect { value ->
                 updateDisplayValues()
                 updateRangeView()
                 // 更新刻度尺位置
