@@ -35,7 +35,7 @@ enum class BloodSugarUnit(
     );
 
     companion object {
-        private const val CONVERSION_FACTOR = 18.0182f
+        const val CONVERSION_FACTOR = 18.0182f
 
         /**
          * 从 mmol/L 转换为 mg/dL

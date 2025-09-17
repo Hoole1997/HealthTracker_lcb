@@ -136,6 +136,7 @@ dependencies {
     implementation(libs.multidex)
     implementation(libs.material)
     implementation(libs.lottie)
+    implementation(libs.gson)
 
     // Glide
     implementation(libs.glide)

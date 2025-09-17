@@ -39,4 +39,21 @@
         <attr name="scaleLimit" format="integer" />                  <!--相邻2个刻度之间的数量-->
 
     </declare-styleable>
+
+    <declare-styleable name="BloodSugarRangeView">
+        <attr name="itemHeight" format="dimension" />               <!--每个条目的高度-->
+        <attr name="itemSpacing" format="dimension" />              <!--条目间距-->
+        <attr name="dotRadius" format="dimension" />                <!--圆点半径-->
+        <attr name="itemPaddingHorizontal" format="dimension" />    <!--条目水平内边距-->
+        <attr name="itemPaddingVertical" format="dimension" />      <!--条目垂直内边距-->
+        <attr name="cornerRadius" format="dimension" />             <!--背景圆角半径-->
+        <attr name="rangeTextSize" format="dimension" />            <!--范围文字大小-->
+        <attr name="rangeTextStyle" format="enum">                  <!--文字样式-->
+            <enum name="normal" value="0" />
+            <enum name="bold" value="1" />
+            <enum name="italic" value="2" />
+        </attr>
+        <attr name="dotMarginEnd" format="dimension" />             <!--圆点右边距-->
+    </declare-styleable>
+
 </resources>

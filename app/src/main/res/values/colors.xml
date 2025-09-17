@@ -21,4 +21,8 @@
     <color name="color_DAFFE5">#DAFFE5</color>
     <color name="color_DFF5FF">#DFF5FF</color>
     <color name="color_E5F9F2">#E5F9F2</color>
+    <color name="color_low">#3489FE</color>
+    <color name="color_normal">@color/c5</color>
+    <color name="color_prediabetes">#FFB901</color>
+    <color name="color_diabetes">#FA0202</color>
 </resources>
