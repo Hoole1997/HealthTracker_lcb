@@ -1,8 +1,6 @@
 package com.healthtracker.blood.suger.ui.weight
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
+import android.widget.Scroller
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Canvas
@@ -17,6 +15,7 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.enum.BloodSugarUnit
+import com.healthtracker.framework.ext.logd
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -81,7 +80,7 @@ class BloodSugarRulerView @JvmOverloads constructor(
     // 滑动控制
     private var computeScale = -1f
     private var currentScale = firstScale
-    private var valueAnimator: ValueAnimator? = null
+    private lateinit var scroller: Scroller
     private var velocityTracker: VelocityTracker? = null
 
     // 绘制对象
@@ -110,6 +109,7 @@ class BloodSugarRulerView @JvmOverloads constructor(
     init {
         setAttr(attrs, defStyleAttr)
         initPaints()
+        scroller = Scroller(context, DecelerateInterpolator())
     }
 
     private fun setAttr(attrs: AttributeSet?, defStyleAttr: Int) {
@@ -282,6 +282,23 @@ class BloodSugarRulerView @JvmOverloads constructor(
         drawBg(canvas)
         drawScalesAndNumbers(canvas)
         drawIndicator(canvas)
+    }
+
+    override fun computeScroll() {
+        if (scroller.computeScrollOffset()) {
+            moveX = scroller.currX.toFloat()
+            lastMoveX = moveX
+            invalidate()
+
+            // 检查是否滑动完成
+            if (!scroller.isFinished) {
+                postInvalidateOnAnimation()
+            } else {
+                // 滑动完成，进行对齐处理
+                isUp = true
+                invalidate()
+            }
+        }
     }
 
     private fun drawBg(canvas: Canvas) {
@@ -535,47 +552,43 @@ class BloodSugarRulerView @JvmOverloads constructor(
     }
 
     private fun animateToPosition(targetPosition: Float) {
-        valueAnimator?.cancel()
-        valueAnimator = ValueAnimator.ofFloat(moveX, targetPosition).apply {
-            duration = ANIMATION_DURATION
-            addUpdateListener { animation ->
-                moveX = animation.animatedValue as Float
-                lastMoveX = moveX
-                invalidate()
-            }
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    updateCurrentScale()
-                    onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
-                }
-            })
-            start()
+        val startX = moveX.toInt()
+        val targetX = targetPosition.toInt()
+        val deltaX = targetX - startX
+
+        if (abs(deltaX) < 1) {
+            updateCurrentScale()
+            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+            return
         }
+
+        scroller.startScroll(startX, 0, deltaX, 0, ANIMATION_DURATION.toInt())
+        postInvalidateOnAnimation()
     }
 
     private fun animateToScale(targetScale: Float) {
         val clampedScale = targetScale.coerceIn(scrollableMinScale, scrollableMaxScale)
         val targetPosition = getScalePosition(clampedScale)
 
-        valueAnimator?.cancel()
-        valueAnimator = ValueAnimator.ofFloat(moveX, targetPosition).apply {
-            duration = (abs(targetPosition - moveX) / 100 * ANIMATION_DURATION).toLong().coerceIn(100, 1000)
-            addUpdateListener { animation ->
-                moveX = animation.animatedValue as Float
-                lastMoveX = moveX
-                invalidate()
-            }
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    updateCurrentScale()
-                    onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
-                }
-            })
-            start()
+        val startX = moveX.toInt()
+        val targetX = targetPosition.toInt()
+        val deltaX = targetX - startX
+
+        if (abs(deltaX) < 1) {
+            updateCurrentScale()
+            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+            return
         }
+
+        val duration = (abs(deltaX) / 100 * ANIMATION_DURATION).toLong().coerceIn(100, 1000)
+        scroller.startScroll(startX, 0, deltaX, 0, duration.toInt())
+        postInvalidateOnAnimation()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        "onTouchEvent action=${event.action}".logd(TAG)
+
+        // 确保 VelocityTracker 正确初始化
         if (velocityTracker == null) {
             velocityTracker = VelocityTracker.obtain()
         }
@@ -584,10 +597,13 @@ class BloodSugarRulerView @JvmOverloads constructor(
         isUp = false
         velocityTracker?.addMovement(event)
 
-        when (event.action) {
+        when (event.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
-                valueAnimator?.cancel()
+                "ACTION_DOWN".logd(TAG)
+                scroller.forceFinished(true)
                 downX = event.x
+                // 请求父View不要拦截后续事件
+                parent?.requestDisallowInterceptTouchEvent(true)
             }
 
             MotionEvent.ACTION_MOVE -> {
@@ -596,14 +612,26 @@ class BloodSugarRulerView @JvmOverloads constructor(
                 val maxPosition = getScalePosition(scrollableMinScale)
 
                 moveX = deltaX.coerceIn(minPosition, maxPosition)
+                "ACTION_MOVE moveX = $moveX".logd(TAG)
             }
 
-            MotionEvent.ACTION_UP -> {
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                "ACTION_UP/CANCEL".logd(TAG)
                 lastMoveX = moveX
-                velocityTracker?.computeCurrentVelocity(500)
-                val xVelocity = velocityTracker?.xVelocity?.toInt() ?: 0
-                autoVelocityScroll(xVelocity)
-                velocityTracker?.clear()
+
+                // 安全处理 VelocityTracker
+                try {
+                    velocityTracker?.computeCurrentVelocity(500)
+                    val xVelocity = velocityTracker?.xVelocity?.toInt() ?: 0
+                    autoVelocityScroll(xVelocity)
+                } finally {
+                    // 正确释放 VelocityTracker 资源
+                    velocityTracker?.recycle()
+                    velocityTracker = null
+                }
+
+                // 允许父View重新拦截事件
+                parent?.requestDisallowInterceptTouchEvent(false)
             }
         }
 
@@ -612,33 +640,26 @@ class BloodSugarRulerView @JvmOverloads constructor(
     }
 
     private fun autoVelocityScroll(xVelocity: Int) {
+        "autoVelocityScroll start".logd(TAG)
         if (abs(xVelocity) < MIN_VELOCITY_THRESHOLD) {
+            "autoVelocityScroll".logd(TAG)
             isUp = true
             return
         }
 
-        valueAnimator?.cancel()
-        valueAnimator = ValueAnimator.ofInt(0, xVelocity / 20).apply {
-            duration = abs(xVelocity / 10).toLong()
-            interpolator = DecelerateInterpolator()
-            addUpdateListener { animation ->
-                moveX += animation.animatedValue as Int
+        val startX = moveX.toInt()
+        val minPosition = getScalePosition(scrollableMaxScale).toInt()
+        val maxPosition = getScalePosition(scrollableMinScale).toInt()
+        "startX = $startX,xVelocity = $xVelocity,minPosition = $minPosition,maxPosition = $maxPosition".logd(TAG)
 
-                val minPosition = getScalePosition(scrollableMaxScale)
-                val maxPosition = getScalePosition(scrollableMinScale)
-                moveX = moveX.coerceIn(minPosition, maxPosition)
+        scroller.fling(
+            startX, 0,  // 起始位置
+            xVelocity, 0,  // 初始速度
+            minPosition, maxPosition,  // X范围
+            0, 0  // Y范围（不使用）
+        )
 
-                lastMoveX = moveX
-                invalidate()
-            }
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    isUp = true
-                    invalidate()
-                }
-            })
-            start()
-        }
+        postInvalidateOnAnimation()
     }
 
     fun setOnChooseResultListener(listener: OnChooseResultListener) {
