@@ -1,12 +1,10 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
-import com.healthtracker.blood.suger.data.enums.GlucoseUnit
+import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.enums.MeasurementTag
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
-import com.healthtracker.blood.suger.enum.BloodSugarUnit
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +24,11 @@ class BsRecordViewModel @Inject constructor(
     private var editingRecordId: Long? = null
 
     // 使用StateFlow管理状态
-    private val _currentUnit = MutableStateFlow(BloodSugarUnit.MMOL_L)
-    val currentUnit: StateFlow<BloodSugarUnit> = _currentUnit.asStateFlow()
+    private val _currentUnit = MutableStateFlow(BsUnit.MMOL_L)
+    val currentUnit: StateFlow<BsUnit> = _currentUnit.asStateFlow()
 
     private val _currentValue = MutableStateFlow(
-        BloodSugarScaleHelper.getDefaultValueForUnit(BloodSugarUnit.getPreferredUnit())
+        BloodSugarScaleHelper.getDefaultValueForUnit(BsUnit.getPreferredUnit())
     )
     val currentValue: StateFlow<Float> = _currentValue.asStateFlow()
 
@@ -65,7 +63,7 @@ class BsRecordViewModel @Inject constructor(
                     val selectedUnit = it.getSelectedUnitEnum()
                     val displayValue = it.getDisplayGlucoseValue().toFloat()
 
-                    _currentUnit.value = convertGlucoseUnitToBloodSugarUnit(selectedUnit)
+                    _currentUnit.value = selectedUnit
                     _currentValue.value = displayValue
                     _currentStatus.value = convertMeasurementTagToBloodSugarStatus(it.measurementTag)
                     _recordTime.value = it.recordTime
@@ -81,7 +79,7 @@ class BsRecordViewModel @Inject constructor(
 
     private fun initializeWithDefaults() {
         // 使用用户偏好的血糖单位，如果没有设置偏好则使用默认值
-        _currentUnit.value = BloodSugarUnit.getPreferredUnit()
+        _currentUnit.value = BsUnit.getPreferredUnit()
         val defaultValue = BloodSugarScaleHelper.getDefaultValueForUnit(_currentUnit.value)
         _currentValue.value = defaultValue
         _currentStatus.value = BloodSugarStatus.DEFAULT
@@ -93,8 +91,8 @@ class BsRecordViewModel @Inject constructor(
         _currentValue.value = value
     }
 
-    fun switchUnit(newUnit: BloodSugarUnit) {
-        val convertedValue = BloodSugarUnit.convertValue(
+    fun switchUnit(newUnit: BsUnit) {
+        val convertedValue = BsUnit.convertValue(
             _currentValue.value,
             _currentUnit.value,
             newUnit
@@ -103,7 +101,7 @@ class BsRecordViewModel @Inject constructor(
         _currentValue.value = convertedValue
 
         // 保存用户偏好的单位选择
-        BloodSugarUnit.savePreferredUnit(newUnit)
+        BsUnit.savePreferredUnit(newUnit)
     }
 
     fun updateStatus(status: BloodSugarStatus) {
@@ -138,25 +136,26 @@ class BsRecordViewModel @Inject constructor(
         val existingRecord = bloodSugarRepository.getBloodSugarRecordById(recordId) ?: return
 
         // 将当前单位的值转换为mg/dL存储
-        val valueInMgdl = convertToMgdl(_currentValue.value, _currentUnit.value)
+        val valueInMgdl = _currentUnit.value.convertToMgdl(_currentValue.value.toDouble())
 
         val updatedRecord = existingRecord.copy(
             glucoseValue = valueInMgdl.toDouble(),
             measurementTag = convertBloodSugarStatusToMeasurementTag(_currentStatus.value),
             recordTime = _recordTime.value,
-            selectedUnit = convertBloodSugarUnitToGlucoseUnit(_currentUnit.value).value
+            selectedUnit = _currentUnit.value.value
         )
         bloodSugarRepository.updateBloodSugarRecord(updatedRecord)
     }
 
     private suspend fun createNewRecord() {
         // 将当前单位的值转换为mg/dL存储
-        val valueInMgdl = convertToMgdl(_currentValue.value, _currentUnit.value)
+        val valueInMgdl = _currentUnit.value.convertToMgdl(_currentValue.value.toDouble())
 
         bloodSugarRepository.addBloodSugarRecord(
-            glucoseValue = valueInMgdl.toDouble(),
+            glucoseValue = valueInMgdl,
             measurementTag = convertBloodSugarStatusToMeasurementTag(_currentStatus.value),
-            selectedTime = _recordTime.value
+            selectedTime = _recordTime.value,
+            selectedUnit = _currentUnit.value
         )
     }
 
@@ -164,19 +163,6 @@ class BsRecordViewModel @Inject constructor(
     fun isEditMode(): Boolean = editingRecordId != null
 
     // 辅助转换方法
-    private fun convertGlucoseUnitToBloodSugarUnit(glucoseUnit: GlucoseUnit): BloodSugarUnit {
-        return when (glucoseUnit) {
-            GlucoseUnit.MG_DL -> BloodSugarUnit.MG_DL
-            GlucoseUnit.MMOL_L -> BloodSugarUnit.MMOL_L
-        }
-    }
-
-    private fun convertBloodSugarUnitToGlucoseUnit(bloodSugarUnit: BloodSugarUnit): GlucoseUnit {
-        return when (bloodSugarUnit) {
-            BloodSugarUnit.MG_DL -> GlucoseUnit.MG_DL
-            BloodSugarUnit.MMOL_L -> GlucoseUnit.MMOL_L
-        }
-    }
 
     private fun convertMeasurementTagToBloodSugarStatus(measurementTag: String): BloodSugarStatus {
         val tag = MeasurementTag.fromString(measurementTag)
@@ -204,10 +190,5 @@ class BsRecordViewModel @Inject constructor(
         return tag.code
     }
 
-    private fun convertToMgdl(value: Float, unit: BloodSugarUnit): Float {
-        return when (unit) {
-            BloodSugarUnit.MG_DL -> value
-            BloodSugarUnit.MMOL_L -> value * GlucoseUnit.CONVERSION_FACTOR.toFloat()
-        }
-    }
+
 }

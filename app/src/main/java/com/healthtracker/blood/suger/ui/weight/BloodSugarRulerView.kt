@@ -2,7 +2,6 @@ package com.healthtracker.blood.suger.ui.weight
 
 import android.widget.Scroller
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
@@ -14,7 +13,7 @@ import android.view.VelocityTracker
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.enum.BloodSugarUnit
+import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.framework.ext.logd
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -72,7 +71,7 @@ class BloodSugarRulerView @JvmOverloads constructor(
     // 其他配置
     private var isBgRoundRect = true
     private var decimalPlaces = 1
-    private var currentUnit = BloodSugarUnit.MMOL_L
+    private var currentUnit = BsUnit.MMOL_L
 
     // 回调接口
     private var onChooseResultListener: OnChooseResultListener? = null
@@ -406,11 +405,11 @@ class BloodSugarRulerView @JvmOverloads constructor(
      */
     private fun shouldDrawLargeScale(index: Int, value: Float): Boolean {
         return when (currentUnit) {
-            BloodSugarUnit.MMOL_L -> {
+            BsUnit.MMOL_L -> {
                 // mmol/L: 每5个小刻度绘制大刻度 (0.5间隔)
                 index % scaleCount == 0
             }
-            BloodSugarUnit.MG_DL -> {
+            BsUnit.MG_DL -> {
                 // mg/dL: 每50个小刻度绘制大刻度 (5单位间隔)
                 val intValue = value.roundToInt()
                 intValue % 5 == 0 && abs(value - intValue) < 0.01f
@@ -423,11 +422,11 @@ class BloodSugarRulerView @JvmOverloads constructor(
      */
     private fun shouldDrawSmallScale(index: Int, value: Float): Boolean {
         return when (currentUnit) {
-            BloodSugarUnit.MMOL_L -> {
+            BsUnit.MMOL_L -> {
                 // mmol/L: 每个0.1都绘制小刻度线
                 !shouldDrawLargeScale(index, value)
             }
-            BloodSugarUnit.MG_DL -> {
+            BsUnit.MG_DL -> {
                 // mg/dL: 只在0.5的倍数位置绘制小刻度线（不包括大刻度）
                 val remainder = ((value * 10).roundToInt() % 5)
                 remainder == 0 && !shouldDrawLargeScale(index, value)
@@ -440,11 +439,11 @@ class BloodSugarRulerView @JvmOverloads constructor(
      */
     private fun shouldShowScaleText(value: Float): Boolean {
         return when (currentUnit) {
-            BloodSugarUnit.MMOL_L -> {
+            BsUnit.MMOL_L -> {
                 // mmol/L: 所有大刻度都显示文字
                 true
             }
-            BloodSugarUnit.MG_DL -> {
+            BsUnit.MG_DL -> {
                 // mg/dL: 只在5的倍数整数位置显示文字
                 val intValue = value.roundToInt()
                 intValue % 5 == 0 && abs(value - intValue) < 0.01f
@@ -457,11 +456,11 @@ class BloodSugarRulerView @JvmOverloads constructor(
      */
     private fun formatScaleValueForDisplay(value: Float): String {
         return when (currentUnit) {
-            BloodSugarUnit.MMOL_L -> {
+            BsUnit.MMOL_L -> {
                 // mmol/L: 显示一位小数
                 String.format("%.1f", value)
             }
-            BloodSugarUnit.MG_DL -> {
+            BsUnit.MG_DL -> {
                 // mg/dL: 只显示整数
                 value.roundToInt().toString()
             }
@@ -474,11 +473,11 @@ class BloodSugarRulerView @JvmOverloads constructor(
         val clampedValue = exactValue.coerceIn(scrollableMinScale, scrollableMaxScale)
 
         currentScale = when (currentUnit) {
-            BloodSugarUnit.MMOL_L -> {
+            BsUnit.MMOL_L -> {
                 // mmol/L: 直接按0.1精度四舍五入
                 (clampedValue * 10).roundToInt() / 10f
             }
-            BloodSugarUnit.MG_DL -> {
+            BsUnit.MG_DL -> {
                 // mg/dL: 支持0.1精度，但需要智能处理
                 calculateMgDlValue(clampedValue)
             }
@@ -509,11 +508,11 @@ class BloodSugarRulerView @JvmOverloads constructor(
 
     private fun snapToNearestScale() {
         when (currentUnit) {
-            BloodSugarUnit.MMOL_L -> {
+            BsUnit.MMOL_L -> {
                 // mmol/L: 对齐到最近的0.1刻度
                 snapToNearestStep()
             }
-            BloodSugarUnit.MG_DL -> {
+            BsUnit.MG_DL -> {
                 // mg/dL: 智能对齐逻辑
                 snapToNearestMgDlPosition()
             }
@@ -737,7 +736,7 @@ class BloodSugarRulerView @JvmOverloads constructor(
         invalidate()
     }
 
-    fun setCurrentUnit(unit: BloodSugarUnit) {
+    fun setCurrentUnit(unit: BsUnit) {
         this.currentUnit = unit
         invalidate()
     }

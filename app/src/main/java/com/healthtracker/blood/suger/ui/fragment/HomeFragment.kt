@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.act.BsRecordActivity
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
+import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
@@ -93,6 +94,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         latestSugerID = record.id
         // 根据用户选择的单位显示血糖值（保留一位小数）
         mViewBind?.tvLatestBsValue?.text = record.getFormattedDisplayValue()
+        mViewBind?.tvLatestBsUnit?.text = if(record.selectedUnit == BsUnit.MG_DL.value) BsUnit.MG_DL.displayName else BsUnit.MMOL_L.displayName
     }
 
     /**

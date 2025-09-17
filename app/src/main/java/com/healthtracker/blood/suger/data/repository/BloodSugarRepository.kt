@@ -5,10 +5,10 @@ import com.healthtracker.blood.suger.data.dao.HealthTagDao
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.GlucoseLevel
+import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.TagUtils
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,6 +28,7 @@ class BloodSugarRepository @Inject constructor(
      * @param glucoseValue 血糖值
      * @param measurementTag 测量标签
      * @param selectedTime 记录时间
+     * @param selectedUnit 血糖单位
      * @param tagIds 关联的标签ID列表
      * @param showInChart 是否在图表中显示
      * @param ext1 扩展字段1
@@ -39,6 +40,7 @@ class BloodSugarRepository @Inject constructor(
         glucoseValue: Double,
         measurementTag: String,
         selectedTime: Date,
+        selectedUnit: BsUnit,
         tagIds: List<Long>? = null,
         showInChart: Boolean = true,
         ext1: String? = null,
@@ -50,6 +52,7 @@ class BloodSugarRepository @Inject constructor(
             recordTime = selectedTime,
             glucoseValue = glucoseValue,
             measurementTag = measurementTag,
+            selectedUnit = selectedUnit,
             tagIds = tagIds,
             showInChart = showInChart,
             ext1 = ext1,

@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.enum
 
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.BloodSugarRangeManager
+import com.healthtracker.blood.suger.data.enums.BsUnit
 
 /**
  * 血糖测量状态枚举
@@ -191,7 +192,7 @@ enum class BloodSugarStatus(
      * 根据单位获取范围
      * 优先使用用户自定义值，否则使用默认值
      */
-    fun getRangesForUnit(unit: BloodSugarUnit): BloodSugarRanges {
+    fun getRangesForUnit(unit: BsUnit): BloodSugarRanges {
         // 检查是否有用户自定义范围
         val customRanges = BloodSugarRangeManager.getCustomRangesForStatus(this, unit)
         if (customRanges != null) {
@@ -200,15 +201,15 @@ enum class BloodSugarStatus(
 
         // 使用默认值：直接根据单位返回对应的边界值
         return when (unit) {
-            BloodSugarUnit.MG_DL -> defaultMgdlRanges
-            BloodSugarUnit.MMOL_L -> defaultMmolRanges
+            BsUnit.MG_DL -> defaultMgdlRanges
+            BsUnit.MMOL_L -> defaultMmolRanges
         }
     }
 
     /**
      * 判断血糖值属于哪个等级
      */
-    fun getBloodSugarLevel(value: Float, unit: BloodSugarUnit): BloodSugarLevel {
+    fun getBloodSugarLevel(value: Float, unit: BsUnit): BloodSugarLevel {
         val ranges = getRangesForUnit(unit)
         return when {
             value < ranges.lowHigh -> BloodSugarLevel.LOW

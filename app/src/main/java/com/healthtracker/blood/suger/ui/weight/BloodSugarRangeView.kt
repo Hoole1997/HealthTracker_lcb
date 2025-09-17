@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.enum.BloodSugarLevel
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
-import com.healthtracker.blood.suger.enum.BloodSugarUnit
+import com.healthtracker.blood.suger.data.enums.BsUnit
 
 class BloodSugarRangeView @JvmOverloads constructor(
     context: Context,
@@ -21,7 +21,7 @@ class BloodSugarRangeView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private var currentValue: Float = 0f
-    private var currentUnit: BloodSugarUnit = BloodSugarUnit.MMOL_L
+    private var currentUnit: BsUnit = BsUnit.MMOL_L
     private var currentStatus: BloodSugarStatus = BloodSugarStatus.DEFAULT
 
     // 可配置的属性
@@ -166,7 +166,7 @@ class BloodSugarRangeView @JvmOverloads constructor(
     }
 
     private fun formatValue(value: Float): String {
-        return BloodSugarUnit.formatValue(value, currentUnit)
+        return BsUnit.formatValue(value, currentUnit)
     }
 
     private fun getTextCenterOffsetY(): Float {
@@ -197,7 +197,7 @@ class BloodSugarRangeView @JvmOverloads constructor(
         }
     }
 
-    fun updateUnit(unit: BloodSugarUnit) {
+    fun updateUnit(unit: BsUnit) {
         if (this.currentUnit != unit) {
             this.currentUnit = unit
             invalidate()
@@ -211,7 +211,7 @@ class BloodSugarRangeView @JvmOverloads constructor(
         }
     }
 
-    fun setCurrentState(value: Float, unit: BloodSugarUnit, status: BloodSugarStatus) {
+    fun setCurrentState(value: Float, unit: BsUnit, status: BloodSugarStatus) {
         var needsRedraw = false
 
         if (this.currentValue != value) {

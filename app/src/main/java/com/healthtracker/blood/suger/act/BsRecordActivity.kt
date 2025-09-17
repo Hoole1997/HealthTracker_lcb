@@ -3,11 +3,10 @@ package com.healthtracker.blood.suger.act
 import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import com.blankj.utilcode.util.CollectionUtils.collect
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
-import com.healthtracker.blood.suger.enum.BloodSugarUnit
+import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
@@ -78,7 +77,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                         "onScrollResult result = $result".logd(TAG)
                         val value = result.toFloat()
                         val currentUnit = mViewModel.currentUnit.value
-                        tvSelectValue.text = BloodSugarUnit.formatValue(value, currentUnit)
+                        tvSelectValue.text = BsUnit.formatValue(value, currentUnit)
 
                     } catch (e: NumberFormatException) {
                         // 处理转换异常
@@ -92,8 +91,8 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         with(mViewBind) {
             rgUnit.setOnCheckedChangeListener { _, checkedId ->
                 val newUnit = when (checkedId) {
-                    rbMgdl.id -> BloodSugarUnit.MG_DL
-                    rbMmol.id -> BloodSugarUnit.MMOL_L
+                    rbMgdl.id -> BsUnit.MG_DL
+                    rbMmol.id -> BsUnit.MMOL_L
                     else -> return@setOnCheckedChangeListener
                 }
 
@@ -157,16 +156,16 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         }
     }
 
-    private fun updateUnitRadioButtons(unit: BloodSugarUnit) {
+    private fun updateUnitRadioButtons(unit: BsUnit) {
         mViewBind.rgUnit.check(
             when (unit) {
-                BloodSugarUnit.MG_DL -> mViewBind.rbMgdl.id
-                BloodSugarUnit.MMOL_L -> mViewBind.rbMmol.id
+                BsUnit.MG_DL -> mViewBind.rbMgdl.id
+                BsUnit.MMOL_L -> mViewBind.rbMmol.id
             }
         )
     }
 
-    private fun configureRulerForUnit(unit: BloodSugarUnit) {
+    private fun configureRulerForUnit(unit: BsUnit) {
         BloodSugarScaleHelper.configureRulerForUnit(mViewBind.rulerView, unit)
     }
 
@@ -194,7 +193,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
     private fun updateDisplayValues() {
         val currentValue = mViewModel.currentValue.value
         val currentUnit = mViewModel.currentUnit.value
-        mViewBind.tvSelectValue.text = BloodSugarUnit.formatValue(currentValue, currentUnit)
+        mViewBind.tvSelectValue.text = BsUnit.formatValue(currentValue, currentUnit)
     }
 
     private fun updateRangeView() {

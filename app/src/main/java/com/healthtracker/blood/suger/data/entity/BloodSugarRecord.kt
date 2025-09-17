@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.healthtracker.blood.suger.data.enums.GlucoseLevel
-import com.healthtracker.blood.suger.data.enums.GlucoseUnit
+import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.enums.MeasurementTag
 import java.util.*
 
@@ -86,14 +86,14 @@ data class BloodSugarRecord(
      * 默认为 mg/dL
      */
     @ColumnInfo(name = "selected_unit", defaultValue = "0")
-    val selectedUnit: Int = GlucoseUnit.MG_DL.value
+    val selectedUnit: Int = BsUnit.MG_DL.value
 ) {
     /**
      * 获取用户选择的单位类型
      * @return GlucoseUnit枚举
      */
-    fun getSelectedUnitEnum(): GlucoseUnit {
-        return GlucoseUnit.fromValue(selectedUnit)
+    fun getSelectedUnitEnum(): BsUnit {
+        return BsUnit.fromValue(selectedUnit)
     }
 
 
@@ -120,7 +120,7 @@ data class BloodSugarRecord(
      */
     @Deprecated("使用 getDisplayGlucoseValue() 和 getSelectedUnitEnum() 替代")
     fun getGlucoseInMmol(): Double {
-        return glucoseValue / GlucoseUnit.CONVERSION_FACTOR
+        return glucoseValue / BsUnit.CONVERSION_FACTOR
     }
 
     /**
@@ -205,7 +205,7 @@ data class BloodSugarRecord(
             recordTime: Date,
             glucoseValue: Double,
             measurementTag: String,
-            selectedUnit: GlucoseUnit = GlucoseUnit.MG_DL,
+            selectedUnit: BsUnit = BsUnit.MG_DL,
             tagIds: List<Long>? = null,
             showInChart: Boolean = true,
             ext1: String? = null,
