@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
+import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 
 @HiltViewModel
 class BsRecordViewModel @Inject constructor(
@@ -28,7 +29,9 @@ class BsRecordViewModel @Inject constructor(
     private val _currentUnit = MutableStateFlow(BloodSugarUnit.MMOL_L)
     val currentUnit: StateFlow<BloodSugarUnit> = _currentUnit.asStateFlow()
 
-    private val _currentValue = MutableStateFlow(4.2f)
+    private val _currentValue = MutableStateFlow(
+        BloodSugarScaleHelper.getDefaultValueForUnit(BloodSugarUnit.getPreferredUnit())
+    )
     val currentValue: StateFlow<Float> = _currentValue.asStateFlow()
 
     private val _currentStatus = MutableStateFlow(BloodSugarStatus.DEFAULT)
@@ -79,7 +82,8 @@ class BsRecordViewModel @Inject constructor(
     private fun initializeWithDefaults() {
         // 使用用户偏好的血糖单位，如果没有设置偏好则使用默认值
         _currentUnit.value = BloodSugarUnit.getPreferredUnit()
-        _currentValue.value = 4.2f
+        val defaultValue = BloodSugarScaleHelper.getDefaultValueForUnit(_currentUnit.value)
+        _currentValue.value = defaultValue
         _currentStatus.value = BloodSugarStatus.DEFAULT
         _recordTime.value = Date()
     }

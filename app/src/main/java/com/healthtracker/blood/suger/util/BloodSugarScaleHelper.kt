@@ -64,7 +64,7 @@ object BloodSugarScaleHelper {
     fun getDefaultValueForUnit(unit: BloodSugarUnit): Float {
         return when (unit) {
             BloodSugarUnit.MMOL_L -> 4.2f    // 正常血糖值
-            BloodSugarUnit.MG_DL -> 76f      // 对应的 mg/dL 值
+            BloodSugarUnit.MG_DL -> 80f      // 对应的 mg/dL 值（按需求修正）
         }
     }
 
