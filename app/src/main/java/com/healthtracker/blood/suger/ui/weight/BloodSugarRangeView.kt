@@ -141,14 +141,17 @@ class BloodSugarRangeView @JvmOverloads constructor(
     }
 
     private fun getLevelDisplayText(level: BloodSugarLevel): String {
-        // TODO: 这里应该通过level.level的Int值从string资源获取多语言文本
-        // 暂时使用硬编码文本，后续需要改为 context.getString(getLevelStringRes(level.level))
-        return when (level.level) {
-            0 -> "Low"
-            1 -> "Normal"
-            2 -> "Prediabetes"
-            3 -> "Diabetes"
-            else -> ""
+        val stringRes = getLevelStringRes(level.level)
+        return context.getString(stringRes)
+    }
+
+    private fun getLevelStringRes(level: Int): Int {
+        return when (level) {
+            0 -> R.string.blood_sugar_level_low
+            1 -> R.string.blood_sugar_level_normal
+            2 -> R.string.blood_sugar_level_prediabetes
+            3 -> R.string.blood_sugar_level_diabetes
+            else -> R.string.blood_sugar_level_normal
         }
     }
 

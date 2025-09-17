@@ -1,7 +1,7 @@
 package com.healthtracker.blood.suger.act
 
 import android.os.Bundle
-import android.widget.RadioGroup
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.blood.suger.enum.BloodSugarUnit
@@ -133,8 +133,6 @@ class BsRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityBsRecordBinding>
             currentStatus = newStatus
 
             // 更新状态显示
-            // TODO: 这里应该通过newStatus.statusType的Int值从string资源获取多语言文本
-            // 暂时使用硬编码文本，后续需要改为 getString(getStatusStringRes(newStatus.statusType))
             mViewBind.tvStatus.text = getStatusDisplayText(newStatus.statusType)
 
             // 更新范围视图
@@ -151,18 +149,21 @@ class BsRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityBsRecordBinding>
     }
 
     private fun getStatusDisplayText(statusType: Int): String {
-        // TODO: 这里应该通过statusType的Int值从string资源获取多语言文本
-        // 暂时使用硬编码文本，后续需要改为 getString(getStatusStringRes(statusType))
+        val stringRes = getStatusStringRes(statusType)
+        return getString(stringRes)
+    }
+
+    private fun getStatusStringRes(statusType: Int): Int {
         return when (statusType) {
-            0 -> "默认"
-            1 -> "禁食"
-            2 -> "吃饭前"
-            3 -> "睡前"
-            4 -> "运动后"
-            5 -> "饭后1小时"
-            6 -> "运动前"
-            7 -> "饭后2小时"
-            else -> "默认"
+            0 -> R.string.blood_sugar_status_default
+            1 -> R.string.blood_sugar_status_fasting
+            2 -> R.string.blood_sugar_status_before_meal
+            3 -> R.string.blood_sugar_status_bedtime
+            4 -> R.string.blood_sugar_status_after_exercise
+            5 -> R.string.blood_sugar_status_one_hour_after_meal
+            6 -> R.string.blood_sugar_status_before_exercise
+            7 -> R.string.blood_sugar_status_two_hours_after_meal
+            else -> R.string.blood_sugar_status_default
         }
     }
 }

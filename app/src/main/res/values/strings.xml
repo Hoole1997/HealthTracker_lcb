@@ -17,5 +17,20 @@
     <string name="status">Status</string>
     <string name="text_default">Default</string>
 
+    <!-- 血糖等级 -->
+    <string name="blood_sugar_level_low">Low</string>
+    <string name="blood_sugar_level_normal">Normal</string>
+    <string name="blood_sugar_level_prediabetes">Pre-diabetes</string>
+    <string name="blood_sugar_level_diabetes">Diabetes</string>
+
+    <!-- 血糖测量状态 -->
+    <string name="blood_sugar_status_default">Default</string>
+    <string name="blood_sugar_status_fasting">Fasting</string>
+    <string name="blood_sugar_status_before_meal">Before meal</string>
+    <string name="blood_sugar_status_bedtime">Before bedtime</string>
+    <string name="blood_sugar_status_after_exercise">After exercise</string>
+    <string name="blood_sugar_status_one_hour_after_meal">1h after meal</string>
+    <string name="blood_sugar_status_before_exercise">Before exercise</string>
+    <string name="blood_sugar_status_two_hours_after_meal">2h after meal</string>
 
 </resources>
