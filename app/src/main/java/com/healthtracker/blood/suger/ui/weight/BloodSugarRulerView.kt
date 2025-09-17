@@ -671,6 +671,36 @@ class BloodSugarRulerView @JvmOverloads constructor(
         invalidate()
     }
 
+    /**
+     * 立即设置刻度位置，无动画效果
+     * 用于初始化和单位切换时的直接定位
+     * @param scale 目标刻度值
+     */
+    fun setScaleImmediately(scale: Float) {
+        val clampedScale = scale.coerceIn(scrollableMinScale, scrollableMaxScale)
+        val targetPosition = getScalePosition(clampedScale)
+        
+        // 直接设置位置，跳过动画
+        moveX = targetPosition
+        lastMoveX = moveX
+        currentScale = clampedScale
+        
+        // 停止任何正在进行的滚动动画
+        if (scroller.isFinished.not()) {
+            scroller.abortAnimation()
+        }
+        
+        // 重置动画相关标志
+        computeScale = -1f
+        isFirstScale = false
+        
+        // 立即更新显示
+        invalidate()
+        
+        // 通知监听器最终结果
+        onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+    }
+
     fun getCurrentScale(): Float = currentScale
 
     fun setScaleRange(min: Float, max: Float) {

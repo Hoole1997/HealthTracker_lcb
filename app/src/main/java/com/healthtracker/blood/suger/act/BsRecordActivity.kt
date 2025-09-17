@@ -123,8 +123,8 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             mViewModel.currentValue.debounce(50L).distinctUntilChanged().collect { value ->
                 updateDisplayValues()
                 updateRangeView()
-                // 更新刻度尺位置
-                mViewBind.rulerView.scrollToScale(value)
+                // 使用无动画方式更新刻度尺位置
+                mViewBind.rulerView.setScaleImmediately(value)
             }
         }
 
@@ -133,6 +133,8 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                 configureRulerForUnit(unit)
                 updateUnitRadioButtons(unit)
                 updateDisplayValues()
+                // 单位切换后，立即设置当前值位置（无动画）
+                mViewBind.rulerView.setScaleImmediately(mViewModel.currentValue.value)
             }
         }
 
