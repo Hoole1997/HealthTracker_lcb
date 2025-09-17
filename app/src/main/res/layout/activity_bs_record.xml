@@ -126,6 +126,7 @@
                         android:background="@drawable/selector_unit_tab"
                         android:button="@null"
                         android:paddingHorizontal="@dimen/dp_12"
+                        android:checked="true"
                         android:text="@string/mg_dl"
                         android:textColor="@color/selector_unit_text_color"
                         android:textSize="@dimen/sp_12" />
@@ -136,7 +137,6 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/selector_unit_tab"
                         android:button="@null"
-                        android:checked="true"
                         android:paddingHorizontal="@dimen/dp_12"
                         android:text="@string/mmol_l"
                         android:textColor="@color/selector_unit_text_color"
