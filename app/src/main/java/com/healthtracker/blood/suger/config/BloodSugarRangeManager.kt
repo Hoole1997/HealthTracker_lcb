@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.config
 import com.google.gson.Gson
 import com.healthtracker.blood.suger.enum.BloodSugarRanges
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
+import com.healthtracker.blood.suger.enum.BloodSugarUnit
 import com.healthtracker.framework.util.SpUtils
 
 /**
@@ -13,58 +14,68 @@ object BloodSugarRangeManager {
 
     private const val KEY_PREFIX = "blood_sugar_ranges_"
     private val gson = Gson()
-    private val rangeCache = mutableMapOf<Int, BloodSugarRanges>()
+    private val rangeCache = mutableMapOf<String, BloodSugarRanges>()
 
     /**
-     * 获取指定状态的血糖范围
+     * 获取指定状态和单位的血糖范围
      * 优先返回用户自定义值，否则返回默认值
      */
-    fun getRangesForStatus(status: BloodSugarStatus): BloodSugarRanges {
-        val statusType = status.statusType
+    fun getCustomRangesForStatus(status: BloodSugarStatus, unit: BloodSugarUnit): BloodSugarRanges? {
+        val cacheKey = getCacheKey(status.statusType, unit)
 
         // 先检查内存缓存
-        rangeCache[statusType]?.let { return it }
+        rangeCache[cacheKey]?.let { return it }
 
         // 尝试从MMKV读取用户自定义值
-        val customRanges = loadCustomRanges(statusType)
+        val customRanges = loadCustomRanges(status.statusType, unit)
         if (customRanges != null) {
-            rangeCache[statusType] = customRanges
+            rangeCache[cacheKey] = customRanges
             return customRanges
         }
 
-        // 使用默认值
-        val defaultRanges = status.defaultMgdlRanges
-        rangeCache[statusType] = defaultRanges
-        return defaultRanges
+        return null
     }
 
     /**
-     * 更新指定状态的自定义血糖范围
+     * 兼容性方法：获取指定状态的血糖范围（mg/dL单位）
+     * @deprecated 使用 getCustomRangesForStatus(status, unit) 代替
      */
-    fun updateCustomRanges(statusType: Int, ranges: BloodSugarRanges) {
+    @Deprecated("Use getCustomRangesForStatus(status, unit) instead")
+    fun getRangesForStatus(status: BloodSugarStatus): BloodSugarRanges {
+        return getCustomRangesForStatus(status, BloodSugarUnit.MG_DL) ?: status.defaultMgdlRanges
+    }
+
+    /**
+     * 更新指定状态和单位的自定义血糖范围
+     */
+    fun updateCustomRanges(statusType: Int, unit: BloodSugarUnit, ranges: BloodSugarRanges) {
+        val cacheKey = getCacheKey(statusType, unit)
+
         // 更新内存缓存
-        rangeCache[statusType] = ranges
+        rangeCache[cacheKey] = ranges
 
         // 保存到MMKV
-        saveCustomRanges(statusType, ranges)
+        saveCustomRanges(statusType, unit, ranges)
     }
 
     /**
-     * 检查指定状态是否有自定义范围
+     * 检查指定状态和单位是否有自定义范围
      */
-    fun hasCustomRanges(statusType: Int): Boolean {
-        return SpUtils.contain(getKey(statusType))
+    fun hasCustomRanges(statusType: Int, unit: BloodSugarUnit): Boolean {
+        return SpUtils.contain(getKey(statusType, unit))
     }
 
     /**
-     * 重置指定状态为默认值
+     * 重置指定状态和单位为默认值
      */
-    fun resetToDefault(statusType: Int) {
+    fun resetToDefault(statusType: Int, unit: BloodSugarUnit) {
+        val cacheKey = getCacheKey(statusType, unit)
+
         // 清除内存缓存
-        rangeCache.remove(statusType)
+        rangeCache.remove(cacheKey)
 
         // 删除MMKV中的自定义值
-        SpUtils.remove(getKey(statusType))
+        SpUtils.remove(getKey(statusType, unit))
     }
 
     /**
@@ -73,16 +84,18 @@ object BloodSugarRangeManager {
     fun clearAllCache() {
         rangeCache.clear()
         BloodSugarStatus.entries.forEach { status ->
-            SpUtils.remove(getKey(status.statusType))
+            BloodSugarUnit.entries.forEach { unit ->
+                SpUtils.remove(getKey(status.statusType, unit))
+            }
         }
     }
 
     /**
      * 从MMKV加载自定义范围
      */
-    private fun loadCustomRanges(statusType: Int): BloodSugarRanges? {
+    private fun loadCustomRanges(statusType: Int, unit: BloodSugarUnit): BloodSugarRanges? {
         return try {
-            val json = SpUtils.getString(getKey(statusType))
+            val json = SpUtils.getString(getKey(statusType, unit))
             if (json.isNotEmpty()) {
                 gson.fromJson(json, BloodSugarRanges::class.java)
             } else {
@@ -97,10 +110,10 @@ object BloodSugarRangeManager {
     /**
      * 保存自定义范围到MMKV
      */
-    private fun saveCustomRanges(statusType: Int, ranges: BloodSugarRanges) {
+    private fun saveCustomRanges(statusType: Int, unit: BloodSugarUnit, ranges: BloodSugarRanges) {
         try {
             val json = gson.toJson(ranges)
-            SpUtils.putString(getKey(statusType), json)
+            SpUtils.putString(getKey(statusType, unit), json)
         } catch (e: Exception) {
             // 序列化失败，忽略
         }
@@ -109,7 +122,14 @@ object BloodSugarRangeManager {
     /**
      * 生成存储key
      */
-    private fun getKey(statusType: Int): String {
-        return "$KEY_PREFIX$statusType"
+    private fun getKey(statusType: Int, unit: BloodSugarUnit): String {
+        return "${KEY_PREFIX}${statusType}_${unit.name}"
+    }
+
+    /**
+     * 生成缓存key
+     */
+    private fun getCacheKey(statusType: Int, unit: BloodSugarUnit): String {
+        return "${statusType}_${unit.name}"
     }
 }

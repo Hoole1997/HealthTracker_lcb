@@ -77,7 +77,8 @@ class BsRecordViewModel @Inject constructor(
     }
 
     private fun initializeWithDefaults() {
-        _currentUnit.value = BloodSugarUnit.MMOL_L
+        // 使用用户偏好的血糖单位，如果没有设置偏好则使用默认值
+        _currentUnit.value = BloodSugarUnit.getPreferredUnit()
         _currentValue.value = 4.2f
         _currentStatus.value = BloodSugarStatus.DEFAULT
         _recordTime.value = Date()
@@ -96,6 +97,9 @@ class BsRecordViewModel @Inject constructor(
         )
         _currentUnit.value = newUnit
         _currentValue.value = convertedValue
+
+        // 保存用户偏好的单位选择
+        BloodSugarUnit.savePreferredUnit(newUnit)
     }
 
     fun updateStatus(status: BloodSugarStatus) {

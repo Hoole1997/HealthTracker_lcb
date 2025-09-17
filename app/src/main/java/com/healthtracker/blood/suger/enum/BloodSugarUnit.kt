@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.enum
 
+import com.healthtracker.framework.util.SpUtils
 import kotlin.math.roundToInt
 
 enum class BloodSugarUnit(
@@ -36,6 +37,7 @@ enum class BloodSugarUnit(
 
     companion object {
         const val CONVERSION_FACTOR = 18.0182f
+        private const val KEY_PREFERRED_UNIT = "blood_sugar_preferred_unit"
 
         /**
          * 从 mmol/L 转换为 mg/dL
@@ -92,6 +94,45 @@ enum class BloodSugarUnit(
                 decimalPlaces = unit.decimalPlaces,
                 scaleCount = unit.scaleCount
             )
+        }
+
+        /**
+         * 保存用户偏好的血糖单位
+         */
+        fun savePreferredUnit(unit: BloodSugarUnit) {
+            SpUtils.putString(KEY_PREFERRED_UNIT, unit.name)
+        }
+
+        /**
+         * 获取用户偏好的血糖单位
+         * 如果未设置偏好，默认返回 MMOL_L
+         */
+        fun getPreferredUnit(): BloodSugarUnit {
+            val savedUnitName = SpUtils.getString(KEY_PREFERRED_UNIT)
+            return if (savedUnitName.isNotEmpty()) {
+                try {
+                    valueOf(savedUnitName)
+                } catch (e: IllegalArgumentException) {
+                    // 如果保存的单位名称无效，返回默认值
+                    MMOL_L
+                }
+            } else {
+                MMOL_L  // 默认使用 mmol/L
+            }
+        }
+
+        /**
+         * 检查是否已设置用户偏好
+         */
+        fun hasPreferredUnit(): Boolean {
+            return SpUtils.contain(KEY_PREFERRED_UNIT)
+        }
+
+        /**
+         * 清除用户偏好设置
+         */
+        fun clearPreferredUnit() {
+            SpUtils.remove(KEY_PREFERRED_UNIT)
         }
     }
 

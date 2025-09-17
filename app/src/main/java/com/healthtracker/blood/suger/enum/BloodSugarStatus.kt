@@ -8,7 +8,8 @@ import com.healthtracker.blood.suger.config.BloodSugarRangeManager
  */
 enum class BloodSugarStatus(
     val statusType: Int,
-    val defaultMgdlRanges: BloodSugarRanges
+    val defaultMgdlRanges: BloodSugarRanges,
+    val defaultMmolRanges: BloodSugarRanges
 ) {
     DEFAULT(
         statusType = 0,
@@ -20,6 +21,15 @@ enum class BloodSugarStatus(
             prediabetesLow = 99.0f,
             prediabetesHigh = 126.0f,
             diabetesLow = 126.0f
+        ),
+        defaultMmolRanges = BloodSugarRanges(
+            low = 0f,
+            lowHigh = 4.0f,       // < 4.0 mmol/L
+            normalLow = 4.0f,     // 4.0 mmol/L
+            normalHigh = 5.5f,    // 5.5 mmol/L
+            prediabetesLow = 5.5f,  // 5.5 mmol/L
+            prediabetesHigh = 7.0f, // 7.0 mmol/L
+            diabetesLow = 7.0f    // ≥ 7.0 mmol/L
         )
     ),
 
@@ -33,6 +43,15 @@ enum class BloodSugarStatus(
             prediabetesLow = 99.0f,
             prediabetesHigh = 126.0f,
             diabetesLow = 126.0f
+        ),
+        defaultMmolRanges = BloodSugarRanges(
+            low = 0f,
+            lowHigh = 4.0f,       // < 4.0 mmol/L
+            normalLow = 4.0f,     // 4.0 mmol/L
+            normalHigh = 5.5f,    // 5.5 mmol/L
+            prediabetesLow = 5.5f,  // 5.5 mmol/L
+            prediabetesHigh = 7.0f, // 7.0 mmol/L
+            diabetesLow = 7.0f    // ≥ 7.0 mmol/L
         )
     ),
 
@@ -46,6 +65,15 @@ enum class BloodSugarStatus(
             prediabetesLow = 99.0f,
             prediabetesHigh = 126.0f,
             diabetesLow = 126.0f
+        ),
+        defaultMmolRanges = BloodSugarRanges(
+            low = 0f,
+            lowHigh = 4.0f,       // < 4.0 mmol/L
+            normalLow = 4.0f,     // 4.0 mmol/L
+            normalHigh = 5.5f,    // 5.5 mmol/L
+            prediabetesLow = 5.5f,  // 5.5 mmol/L
+            prediabetesHigh = 7.0f, // 7.0 mmol/L
+            diabetesLow = 7.0f    // ≥ 7.0 mmol/L
         )
     ),
 
@@ -59,6 +87,15 @@ enum class BloodSugarStatus(
             prediabetesLow = 99.0f,
             prediabetesHigh = 126.0f,
             diabetesLow = 126.0f
+        ),
+        defaultMmolRanges = BloodSugarRanges(
+            low = 0f,
+            lowHigh = 4.0f,       // < 4.0 mmol/L
+            normalLow = 4.0f,     // 4.0 mmol/L
+            normalHigh = 5.5f,    // 5.5 mmol/L
+            prediabetesLow = 5.5f,  // 5.5 mmol/L
+            prediabetesHigh = 7.0f, // 7.0 mmol/L
+            diabetesLow = 7.0f    // ≥ 7.0 mmol/L
         )
     ),
 
@@ -72,6 +109,15 @@ enum class BloodSugarStatus(
             prediabetesLow = 99.0f,
             prediabetesHigh = 126.0f,
             diabetesLow = 126.0f
+        ),
+        defaultMmolRanges = BloodSugarRanges(
+            low = 0f,
+            lowHigh = 4.0f,       // < 4.0 mmol/L
+            normalLow = 4.0f,     // 4.0 mmol/L
+            normalHigh = 5.5f,    // 5.5 mmol/L
+            prediabetesLow = 5.5f,  // 5.5 mmol/L
+            prediabetesHigh = 7.0f, // 7.0 mmol/L
+            diabetesLow = 7.0f    // ≥ 7.0 mmol/L
         )
     ),
 
@@ -85,6 +131,15 @@ enum class BloodSugarStatus(
             prediabetesLow = 140.5f,
             prediabetesHigh = 153.0f,
             diabetesLow = 153.0f
+        ),
+        defaultMmolRanges = BloodSugarRanges(
+            low = 0f,
+            lowHigh = 4.0f,       // < 4.0 mmol/L
+            normalLow = 4.0f,     // 4.0 mmol/L
+            normalHigh = 7.8f,    // 7.8 mmol/L
+            prediabetesLow = 7.8f,  // 7.8 mmol/L
+            prediabetesHigh = 8.5f, // 8.5 mmol/L
+            diabetesLow = 8.5f    // ≥ 8.5 mmol/L
         )
     ),
 
@@ -98,6 +153,15 @@ enum class BloodSugarStatus(
             prediabetesLow = 99.0f,
             prediabetesHigh = 126.0f,
             diabetesLow = 126.0f
+        ),
+        defaultMmolRanges = BloodSugarRanges(
+            low = 0f,
+            lowHigh = 5.3f,       // < 5.3 mmol/L
+            normalLow = 5.3f,     // 5.3 mmol/L
+            normalHigh = 5.5f,    // 5.5 mmol/L
+            prediabetesLow = 5.5f,  // 5.5 mmol/L
+            prediabetesHigh = 7.0f, // 7.0 mmol/L
+            diabetesLow = 7.0f    // ≥ 7.0 mmol/L
         )
     ),
 
@@ -111,6 +175,15 @@ enum class BloodSugarStatus(
             prediabetesLow = 84.7f,
             prediabetesHigh = 126.0f,
             diabetesLow = 126.0f
+        ),
+        defaultMmolRanges = BloodSugarRanges(
+            low = 0f,
+            lowHigh = 4.0f,       // < 4.0 mmol/L
+            normalLow = 4.0f,     // 4.0 mmol/L
+            normalHigh = 4.7f,    // 4.7 mmol/L
+            prediabetesLow = 4.7f,  // 4.7 mmol/L
+            prediabetesHigh = 7.0f, // 7.0 mmol/L
+            diabetesLow = 7.0f    // ≥ 7.0 mmol/L
         )
     );
 
@@ -119,10 +192,16 @@ enum class BloodSugarStatus(
      * 优先使用用户自定义值，否则使用默认值
      */
     fun getRangesForUnit(unit: BloodSugarUnit): BloodSugarRanges {
-        val ranges = BloodSugarRangeManager.getRangesForStatus(this)
+        // 检查是否有用户自定义范围
+        val customRanges = BloodSugarRangeManager.getCustomRangesForStatus(this, unit)
+        if (customRanges != null) {
+            return customRanges
+        }
+
+        // 使用默认值：直接根据单位返回对应的边界值
         return when (unit) {
-            BloodSugarUnit.MG_DL -> ranges
-            BloodSugarUnit.MMOL_L -> ranges.convertToMmolL()
+            BloodSugarUnit.MG_DL -> defaultMgdlRanges
+            BloodSugarUnit.MMOL_L -> defaultMmolRanges
         }
     }
 
@@ -160,23 +239,7 @@ data class BloodSugarRanges(
     val prediabetesLow: Float,
     val prediabetesHigh: Float,
     val diabetesLow: Float
-) {
-    /**
-     * 转换为mmol/L单位
-     */
-    fun convertToMmolL(): BloodSugarRanges {
-        val factor = BloodSugarUnit.CONVERSION_FACTOR
-        return BloodSugarRanges(
-            low = (low / factor * 10).toInt() / 10f,
-            lowHigh = (lowHigh / factor * 10).toInt() / 10f,
-            normalLow = (normalLow / factor * 10).toInt() / 10f,
-            normalHigh = (normalHigh / factor * 10).toInt() / 10f,
-            prediabetesLow = (prediabetesLow / factor * 10).toInt() / 10f,
-            prediabetesHigh = (prediabetesHigh / factor * 10).toInt() / 10f,
-            diabetesLow = (diabetesLow / factor * 10).toInt() / 10f
-        )
-    }
-}
+)
 
 /**
  * 血糖等级枚举
