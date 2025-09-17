@@ -16,6 +16,7 @@ import android.view.VelocityTracker
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.enum.BloodSugarUnit
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -72,6 +73,7 @@ class BloodSugarRulerView @JvmOverloads constructor(
     // 其他配置
     private var isBgRoundRect = true
     private var decimalPlaces = 1
+    private var currentUnit = BloodSugarUnit.MMOL_L
 
     // 回调接口
     private var onChooseResultListener: OnChooseResultListener? = null
@@ -321,22 +323,24 @@ class BloodSugarRulerView @JvmOverloads constructor(
 
             if (scaleValue >= minScale && scaleValue <= maxScale) {
                 when {
-                    currentIndex % scaleCount == 0 -> {
+                    shouldDrawLargeScale(currentIndex, scaleValue) -> {
+                        // 绘制大刻度线
                         canvas.drawLine(0f, 0f, 0f, largeScaleHeight, largeScalePaint)
 
-                        val scaleText = formatScaleValue(scaleValue)
-                        scaleNumPaint.getTextBounds(scaleText, 0, scaleText.length, scaleNumRect)
-                        canvas.drawText(
-                            scaleText,
-                            -scaleNumRect.width() / 2f,
-                            largeScaleHeight + scaleTextMargin + scaleNumRect.height(),
-                            scaleNumPaint
-                        )
+                        // 根据单位决定是否显示刻度值文字
+                        if (shouldShowScaleText(scaleValue)) {
+                            val scaleText = formatScaleValueForDisplay(scaleValue)
+                            scaleNumPaint.getTextBounds(scaleText, 0, scaleText.length, scaleNumRect)
+                            canvas.drawText(
+                                scaleText,
+                                -scaleNumRect.width() / 2f,
+                                largeScaleHeight + scaleTextMargin + scaleNumRect.height(),
+                                scaleNumPaint
+                            )
+                        }
                     }
-                    currentIndex % (scaleCount / 2) == 0 -> {
-                        canvas.drawLine(0f, 0f, 0f, midScaleHeight, midScalePaint)
-                    }
-                    else -> {
+                    shouldDrawSmallScale(currentIndex, scaleValue) -> {
+                        // 绘制小刻度线（根据单位决定绘制规则）
                         canvas.drawLine(0f, 0f, 0f, smallScaleHeight, smallScalePaint)
                     }
                 }
@@ -380,37 +384,172 @@ class BloodSugarRulerView @JvmOverloads constructor(
         return String.format("%.${decimalPlaces}f", value)
     }
 
+    /**
+     * 判断是否应该绘制大刻度线
+     */
+    private fun shouldDrawLargeScale(index: Int, value: Float): Boolean {
+        return when (currentUnit) {
+            BloodSugarUnit.MMOL_L -> {
+                // mmol/L: 每5个小刻度绘制大刻度 (0.5间隔)
+                index % scaleCount == 0
+            }
+            BloodSugarUnit.MG_DL -> {
+                // mg/dL: 每50个小刻度绘制大刻度 (5单位间隔)
+                val intValue = value.roundToInt()
+                intValue % 5 == 0 && abs(value - intValue) < 0.01f
+            }
+        }
+    }
+
+    /**
+     * 判断是否应该绘制小刻度线
+     */
+    private fun shouldDrawSmallScale(index: Int, value: Float): Boolean {
+        return when (currentUnit) {
+            BloodSugarUnit.MMOL_L -> {
+                // mmol/L: 每个0.1都绘制小刻度线
+                !shouldDrawLargeScale(index, value)
+            }
+            BloodSugarUnit.MG_DL -> {
+                // mg/dL: 只在0.5的倍数位置绘制小刻度线（不包括大刻度）
+                val remainder = ((value * 10).roundToInt() % 5)
+                remainder == 0 && !shouldDrawLargeScale(index, value)
+            }
+        }
+    }
+
+    /**
+     * 判断是否应该显示刻度值文字
+     */
+    private fun shouldShowScaleText(value: Float): Boolean {
+        return when (currentUnit) {
+            BloodSugarUnit.MMOL_L -> {
+                // mmol/L: 所有大刻度都显示文字
+                true
+            }
+            BloodSugarUnit.MG_DL -> {
+                // mg/dL: 只在5的倍数整数位置显示文字
+                val intValue = value.roundToInt()
+                intValue % 5 == 0 && abs(value - intValue) < 0.01f
+            }
+        }
+    }
+
+    /**
+     * 格式化用于显示的刻度值
+     */
+    private fun formatScaleValueForDisplay(value: Float): String {
+        return when (currentUnit) {
+            BloodSugarUnit.MMOL_L -> {
+                // mmol/L: 显示一位小数
+                String.format("%.1f", value)
+            }
+            BloodSugarUnit.MG_DL -> {
+                // mg/dL: 只显示整数
+                value.roundToInt().toString()
+            }
+        }
+    }
+
     private fun updateCurrentScale() {
-        val index = -((moveX - centerX) / scaleGap).roundToInt()
-        currentScale = (minScale + index * scaleStep).coerceIn(scrollableMinScale, scrollableMaxScale)
+        // 根据滑动位置计算精确的刻度值
+        val exactValue = minScale - ((moveX - centerX) / scaleGap) * scaleStep
+        val clampedValue = exactValue.coerceIn(scrollableMinScale, scrollableMaxScale)
+
+        currentScale = when (currentUnit) {
+            BloodSugarUnit.MMOL_L -> {
+                // mmol/L: 直接按0.1精度四舍五入
+                (clampedValue * 10).roundToInt() / 10f
+            }
+            BloodSugarUnit.MG_DL -> {
+                // mg/dL: 支持0.1精度，但需要智能处理
+                calculateMgDlValue(clampedValue)
+            }
+        }
 
         onChooseResultListener?.onScrollResult(formatScaleValue(currentScale))
     }
 
+    /**
+     * 计算mg/dL模式下的值
+     * 支持0.1精度，但会根据距离刻度线的位置进行智能估算
+     */
+    private fun calculateMgDlValue(exactValue: Float): Float {
+        // 四舍五入到0.1精度
+        val roundedValue = (exactValue * 10).roundToInt() / 10f
+
+        // 检查是否正好在0.5倍数的刻度线上
+        val remainder = ((roundedValue * 10).roundToInt() % 5)
+
+        return if (remainder == 0) {
+            // 在刻度线上或很接近刻度线，返回精确值
+            roundedValue
+        } else {
+            // 在两个刻度线之间，保持0.1精度
+            roundedValue
+        }
+    }
+
     private fun snapToNearestScale() {
+        when (currentUnit) {
+            BloodSugarUnit.MMOL_L -> {
+                // mmol/L: 对齐到最近的0.1刻度
+                snapToNearestStep()
+            }
+            BloodSugarUnit.MG_DL -> {
+                // mg/dL: 智能对齐逻辑
+                snapToNearestMgDlPosition()
+            }
+        }
+    }
+
+    private fun snapToNearestStep() {
         val targetIndex = -((moveX - centerX) / scaleGap).roundToInt()
         val targetScale = (minScale + targetIndex * scaleStep).coerceIn(scrollableMinScale, scrollableMaxScale)
         val targetPosition = getScalePosition(targetScale)
 
         if (abs(moveX - targetPosition) > 0.1f) {
-            valueAnimator?.cancel()
-            valueAnimator = ValueAnimator.ofFloat(moveX, targetPosition).apply {
-                duration = ANIMATION_DURATION
-                addUpdateListener { animation ->
-                    moveX = animation.animatedValue as Float
-                    lastMoveX = moveX
-                    invalidate()
-                }
-                addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        updateCurrentScale()
-                        onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
-                    }
-                })
-                start()
-            }
+            animateToPosition(targetPosition)
         } else {
             onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+        }
+    }
+
+    private fun snapToNearestMgDlPosition() {
+        // 计算当前精确位置对应的值
+        val exactValue = minScale - ((moveX - centerX) / scaleGap) * scaleStep
+        val clampedValue = exactValue.coerceIn(scrollableMinScale, scrollableMaxScale)
+
+        // 四舍五入到0.1精度
+        val roundedValue = (clampedValue * 10).roundToInt() / 10f
+
+        // 计算对应的目标位置
+        val targetPosition = getScalePosition(roundedValue)
+
+        if (abs(moveX - targetPosition) > 0.1f) {
+            animateToPosition(targetPosition)
+        } else {
+            updateCurrentScale()
+            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+        }
+    }
+
+    private fun animateToPosition(targetPosition: Float) {
+        valueAnimator?.cancel()
+        valueAnimator = ValueAnimator.ofFloat(moveX, targetPosition).apply {
+            duration = ANIMATION_DURATION
+            addUpdateListener { animation ->
+                moveX = animation.animatedValue as Float
+                lastMoveX = moveX
+                invalidate()
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    updateCurrentScale()
+                    onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+                }
+            })
+            start()
         }
     }
 
@@ -534,6 +673,21 @@ class BloodSugarRulerView @JvmOverloads constructor(
 
     fun setDecimalPlaces(places: Int) {
         this.decimalPlaces = places
+        invalidate()
+    }
+
+    fun setScaleCount(count: Int) {
+        this.scaleCount = count
+        invalidate()
+    }
+
+    fun setScaleGap(gap: Float) {
+        this.scaleGap = gap
+        invalidate()
+    }
+
+    fun setCurrentUnit(unit: BloodSugarUnit) {
+        this.currentUnit = unit
         invalidate()
     }
 
