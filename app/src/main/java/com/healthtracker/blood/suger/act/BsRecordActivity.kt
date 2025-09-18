@@ -4,9 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
+import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
+import com.healthtracker.blood.suger.enum.getStatusStringRes
+import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
@@ -177,14 +178,10 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         with(mViewBind) {
             // 设置状态选择点击事件
             clStatu.click {
-                // TODO: 显示状态选择弹窗
-                // 这里暂时模拟切换到不同状态进行测试
-                val statuses = BloodSugarStatus.values()
-                val currentIndex = statuses.indexOf(mViewModel.currentStatus.value)
-                val nextIndex = (currentIndex + 1) % statuses.size
-                val newStatus = statuses[nextIndex]
+                StatusSelectDialog.show(supportFragmentManager,mViewModel.currentStatus.value){
+                    mViewModel.updateStatus(it)
+                }
 
-                mViewModel.updateStatus(newStatus)
             }
         }
     }
@@ -209,17 +206,5 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         return getString(stringRes)
     }
 
-    private fun getStatusStringRes(statusType: Int): Int {
-        return when (statusType) {
-            0 -> R.string.blood_sugar_status_default
-            1 -> R.string.blood_sugar_status_fasting
-            2 -> R.string.blood_sugar_status_before_meal
-            3 -> R.string.blood_sugar_status_bedtime
-            4 -> R.string.blood_sugar_status_after_exercise
-            5 -> R.string.blood_sugar_status_one_hour_after_meal
-            6 -> R.string.blood_sugar_status_before_exercise
-            7 -> R.string.blood_sugar_status_two_hours_after_meal
-            else -> R.string.blood_sugar_status_default
-        }
-    }
+
 }

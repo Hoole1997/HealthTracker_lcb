@@ -128,8 +128,8 @@ enum class BloodSugarStatus(
             low = 0f,
             lowHigh = 72.0f,
             normalLow = 72.0f,
-            normalHigh = 140.5f,
-            prediabetesLow = 140.5f,
+            normalHigh = 140.0f,
+            prediabetesLow = 140.0f,
             prediabetesHigh = 153.0f,
             diabetesLow = 153.0f
         ),
@@ -148,8 +148,8 @@ enum class BloodSugarStatus(
         statusType = 6,
         defaultMgdlRanges = BloodSugarRanges(
             low = 0f,
-            lowHigh = 95.5f,
-            normalLow = 95.5f,
+            lowHigh = 95.0f,
+            normalLow = 95.0f,
             normalHigh = 99.0f,
             prediabetesLow = 99.0f,
             prediabetesHigh = 126.0f,
@@ -172,8 +172,8 @@ enum class BloodSugarStatus(
             low = 0f,
             lowHigh = 72.0f,
             normalLow = 72.0f,
-            normalHigh = 84.7f,
-            prediabetesLow = 84.7f,
+            normalHigh = 85.0f,
+            prediabetesLow = 85.0f,
             prediabetesHigh = 126.0f,
             diabetesLow = 126.0f
         ),
@@ -187,6 +187,8 @@ enum class BloodSugarStatus(
             diabetesLow = 7.0f    // ≥ 7.0 mmol/L
         )
     );
+
+
 
     /**
      * 根据单位获取范围
@@ -253,4 +255,19 @@ enum class BloodSugarLevel(
     NORMAL(1, R.color.color_normal),
     PREDIABETES(2, R.color.color_prediabetes),
     DIABETES(3, R.color.color_diabetes)
+}
+
+
+fun getStatusStringRes(statusType: Int): Int {
+    return when (statusType) {
+        0 -> R.string.blood_sugar_status_default
+        1 -> R.string.blood_sugar_status_fasting
+        2 -> R.string.blood_sugar_status_before_meal
+        3 -> R.string.blood_sugar_status_bedtime
+        4 -> R.string.blood_sugar_status_after_exercise
+        5 -> R.string.blood_sugar_status_one_hour_after_meal
+        6 -> R.string.blood_sugar_status_before_exercise
+        7 -> R.string.blood_sugar_status_two_hours_after_meal
+        else -> R.string.blood_sugar_status_default
+    }
 }
