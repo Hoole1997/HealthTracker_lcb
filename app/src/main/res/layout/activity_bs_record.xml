@@ -237,6 +237,7 @@
                     app:layout_constraintTop_toTopOf="@id/tv_date"
                     app:layout_constraintBottom_toBottomOf="@id/tv_date"/>
                 <com.healthtracker.blood.suger.ui.weight.DateTimePicker
+                    android:id="@+id/dateTimePicker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_12"

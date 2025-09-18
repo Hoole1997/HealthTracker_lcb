@@ -55,6 +55,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             setupUnitSwitcher()
             setupRangeView()
             setupStatusSelector()
+            setupDateTimePicker()
             setupSaveButton()
             observeViewModel()
         }
@@ -104,9 +105,18 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         }
     }
 
+    private fun setupDateTimePicker() {
+        // DateTimePicker初始化在observeViewModel中处理
+    }
+
     private fun setupSaveButton() {
         mViewBind.btnSave.click {
             lifecycleScope.launch {
+                // 保存前先获取DateTimePicker的时间并更新到ViewModel
+                val selectedDateTime = mViewBind.dateTimePicker.getDateTime()
+                val selectedDate = selectedDateTime.toCalendar().time
+                mViewModel.updateRecordTime(selectedDate)
+
                 val success = mViewModel.saveRecord()
                 if (success) {
                     finish()
@@ -153,6 +163,21 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                 } else {
                     getString(R.string.save)
                 }
+            }
+        }
+
+        lifecycleScope.launch {
+            mViewModel.recordTime.collect { recordTime ->
+                // 将Date转换为DateTimePicker需要的参数
+                val calendar = java.util.Calendar.getInstance()
+                calendar.time = recordTime
+                mViewBind.dateTimePicker.initView(
+                    year = calendar.get(java.util.Calendar.YEAR),
+                    month = calendar.get(java.util.Calendar.MONTH) + 1,
+                    day = calendar.get(java.util.Calendar.DAY_OF_MONTH),
+                    hour = calendar.get(java.util.Calendar.HOUR_OF_DAY),
+                    minute = calendar.get(java.util.Calendar.MINUTE)
+                )
             }
         }
     }
