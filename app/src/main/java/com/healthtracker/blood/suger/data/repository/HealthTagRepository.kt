@@ -23,7 +23,7 @@ class HealthTagRepository @Inject constructor(
      */
     suspend fun initializePredefinedTags() {
         // 检查是否已经有预定义标签
-        val predefinedTags = healthTagDao.getPredefinedTags().first()
+        val predefinedTags = healthTagDao.getAllTags().first()
         if (predefinedTags.isEmpty()) {
             val predefinedTagList = HealthTag.createAllPredefinedTags()
             healthTagDao.insertAll(predefinedTagList)
@@ -36,22 +36,6 @@ class HealthTagRepository @Inject constructor(
      */
     fun getAllTags(): Flow<List<HealthTag>> {
         return healthTagDao.getAllTags()
-    }
-
-    /**
-     * 获取预定义标签
-     * @return Flow形式的预定义标签列表
-     */
-    fun getPredefinedTags(): Flow<List<HealthTag>> {
-        return healthTagDao.getPredefinedTags()
-    }
-
-    /**
-     * 获取自定义标签
-     * @return Flow形式的自定义标签列表
-     */
-    fun getCustomTags(): Flow<List<HealthTag>> {
-        return healthTagDao.getCustomTags()
     }
 
     /**
@@ -99,43 +83,15 @@ class HealthTagRepository @Inject constructor(
         }
 
         // 检查是否已存在
-        if (healthTagDao.isNameExists(cleanName)) {
-            return null
+        healthTagDao.getCustomByName(name)?.run {
+            if(isDelete == 1){
+                healthTagDao.update(this.copy(isDelete = 0))
+                return id
+            }
         }
 
         val tag = HealthTag.createCustom(cleanName)
         return healthTagDao.insert(tag)
-    }
-
-    /**
-     * 更新标签
-     * @param tag 标签实体
-     * @return 是否成功
-     */
-    suspend fun updateTag(tag: HealthTag): Boolean {
-        // 只允许更新自定义标签
-        if (tag.isPredefinedTag()) {
-            return false
-        }
-
-        // 验证标签名称
-        val cleanName = TagUtils.cleanTagName(tag.name)
-        if (cleanName == null || !TagUtils.isValidTagName(cleanName)) {
-            return false
-        }
-
-        // 检查名称是否与其他标签冲突
-        val existingTag = healthTagDao.getByName(cleanName)
-        if (existingTag != null && existingTag.id != tag.id) {
-            return false
-        }
-
-        try {
-            healthTagDao.update(tag.copy(name = cleanName))
-            return true
-        } catch (e: Exception) {
-            return false
-        }
     }
 
     /**
@@ -146,13 +102,8 @@ class HealthTagRepository @Inject constructor(
     suspend fun deleteCustomTag(tagId: Long): Boolean {
         val tag = healthTagDao.getById(tagId) ?: return false
 
-        // 只允许删除自定义标签
-        if (tag.isPredefinedTag()) {
-            return false
-        }
-
         try {
-            healthTagDao.deleteById(tagId)
+            healthTagDao.update(tag.copy(isDelete = 1))
             return true
         } catch (e: Exception) {
             return false
@@ -169,48 +120,7 @@ class HealthTagRepository @Inject constructor(
         return healthTagDao.isNameExists(cleanName)
     }
 
-    /**
-     * 搜索标签
-     * @param keyword 搜索关键词
-     * @return 匹配的标签列表
-     */
-    suspend fun searchTags(keyword: String): List<HealthTag> {
-        return if (keyword.isBlank()) {
-            emptyList()
-        } else {
-            healthTagDao.searchTags(keyword.trim())
-        }
-    }
 
-    /**
-     * 获取最常用的标签
-     * @param limit 返回数量限制
-     * @return 最常用的标签列表
-     */
-    suspend fun getMostUsedTags(limit: Int = 10): List<HealthTag> {
-        return healthTagDao.getMostUsedTags(limit)
-    }
-
-    /**
-     * 获取自定义标签数量
-     * @return 自定义标签数量
-     */
-    suspend fun getCustomTagCount(): Int {
-        return healthTagDao.getCustomTagCount()
-    }
-
-    /**
-     * 删除所有自定义标签（谨慎使用）
-     * @return 是否成功
-     */
-    suspend fun deleteAllCustomTags(): Boolean {
-        return try {
-            healthTagDao.deleteAllCustomTags()
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
 
     /**
      * 批量创建自定义标签

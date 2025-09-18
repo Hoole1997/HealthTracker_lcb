@@ -4,15 +4,18 @@ import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.enum.getStatusStringRes
+import com.healthtracker.blood.suger.ui.dialog.LabelDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +27,10 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 @AndroidEntryPoint
 class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
+
+
+    private val healthTags = mutableListOf<HealthTag>()
+    private val addTagIds = mutableListOf<Long>()
 
     companion object {
         private const val TAG = "BsRecordActivity"
@@ -51,11 +58,25 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                 finish()
             }
 
+            tvLabel.clickWithDuration {
+                val addTags = if(addTagIds.isEmpty()) null else {
+                    val tempTags = mutableListOf<HealthTag>()
+                    for(id in addTagIds){
+                        healthTags.find { it.id == id }?.let {
+                            tempTags.add(it)
+                        }
+                    }
+                    tempTags
+                }
+                LabelDialog.show(supportFragmentManager,healthTags,addTags){
+                    mViewModel.updateTags(it)
+                }
+            }
+
             setupRulerView()
             setupUnitSwitcher()
             setupRangeView()
             setupStatusSelector()
-            setupDateTimePicker()
             setupSaveButton()
             observeViewModel()
         }
@@ -103,10 +124,6 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                 }
             }
         }
-    }
-
-    private fun setupDateTimePicker() {
-        // DateTimePicker初始化在observeViewModel中处理
     }
 
     private fun setupSaveButton() {
@@ -183,6 +200,20 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                     hour = calendar.get(java.util.Calendar.HOUR_OF_DAY),
                     minute = calendar.get(java.util.Calendar.MINUTE)
                 )
+            }
+        }
+
+        lifecycleScope.launch {
+            mViewModel.getHealthTags().collectLifecycle {
+                healthTags.clear()
+                healthTags.addAll(it)
+            }
+        }
+
+        lifecycleScope.launch {
+            mViewModel.healthTags.collectLifecycle { tagIds ->
+                addTagIds.clear()
+                addTagIds.addAll(tagIds)
             }
         }
     }

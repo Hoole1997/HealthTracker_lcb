@@ -3,6 +3,8 @@ package com.healthtracker.blood.suger.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.healthtracker.blood.suger.App
+import com.healthtracker.blood.suger.R
 import java.util.*
 
 /**
@@ -28,11 +30,9 @@ data class HealthTag(
     @ColumnInfo(name = "is_predefined")
     val isPreDefined: Int,
 
-    /**
-     * 创建时间
-     */
-    @ColumnInfo(name = "create_time")
-    val createTime: Date
+
+    @ColumnInfo(name = "is_delete")
+    val isDelete:Int
 ) {
     /**
      * 判断是否为预定义标签
@@ -60,7 +60,8 @@ data class HealthTag(
             return HealthTag(
                 name = name,
                 isPreDefined = 1,
-                createTime = Date()
+                isDelete = 0
+
             )
         }
 
@@ -73,7 +74,7 @@ data class HealthTag(
             return HealthTag(
                 name = name,
                 isPreDefined = 0,
-                createTime = Date()
+                isDelete = 0
             )
         }
 
@@ -81,18 +82,7 @@ data class HealthTag(
          * 获取所有预定义标签名称
          * @return 预定义标签名称列表
          */
-        fun getPredefinedTagNames(): List<String> {
-            return listOf(
-                "兴奋状态",
-                "沮丧",
-                "平静的",
-                "剧烈运动后",
-                "有氧运动后",
-                "无氧运动后",
-                "节食",
-                "酒后"
-            )
-        }
+        fun getPredefinedTagNames() = App.INSTANCE.resources.getStringArray(R.array.labels)
 
         /**
          * 创建所有预定义标签

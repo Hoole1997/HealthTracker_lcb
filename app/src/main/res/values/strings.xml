@@ -35,6 +35,7 @@
 
     <!-- 按钮和操作 -->
     <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
     <string name="saving">Saving...</string>
     <string name="save_failed">Save failed, please try again</string>
     <string name="date_time"><![CDATA[Date&Time]]></string>
@@ -46,5 +47,17 @@
     <string name="minutes_ago">%d minutes ago</string>
     <string name="hours_ago">%d hours ago</string>
     <string name="days_ago">%d days ago</string>
+
+    <string-array name="labels">
+        <item>Excited</item>
+        <item>After Cardio</item>
+        <item>Upset</item>
+        <item>Calm</item>
+        <item>After Anaerobic Exercise</item>
+        <item>After Intense Workout</item>
+        <item>Dieting</item>
+        <item>After Alcohol</item>
+    </string-array>
+
 
 </resources>

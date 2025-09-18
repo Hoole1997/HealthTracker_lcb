@@ -230,6 +230,7 @@
                     android:id="@+id/tv_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:text="@string/label"
                     android:textColor="@color/c5"
                     android:textSize="@dimen/sp_14"

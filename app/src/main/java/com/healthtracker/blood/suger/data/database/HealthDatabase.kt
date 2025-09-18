@@ -106,7 +106,6 @@ abstract class HealthDatabase : RoomDatabase() {
                 // 标签表索引
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_health_tags_is_predefined ON health_tags(is_predefined)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_health_tags_name ON health_tags(name)")
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_health_tags_create_time ON health_tags(create_time)")
             }
 
             override fun onOpen(db: SupportSQLiteDatabase) {

@@ -150,6 +150,8 @@ dependencies {
     implementation(libs.hiddenapibypass)
     implementation(libs.work.runtime)
     implementation(libs.lifecycle.process)
+
+    api(libs.flexbox)
 }
 
 // BuildConfig 扩展函数

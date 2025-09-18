@@ -1,23 +1,26 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
-import com.healthtracker.blood.suger.data.enums.MeasurementTag
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
+import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
+import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
-import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 
 @HiltViewModel
 class BsRecordViewModel @Inject constructor(
-    private val bloodSugarRepository: BloodSugarRepository
+    private val bloodSugarRepository: BloodSugarRepository,
+    private val healthTagRepository: HealthTagRepository
 ) : BaseViewModel() {
 
     // 编辑模式的记录ID
@@ -41,15 +44,26 @@ class BsRecordViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _healthTags = MutableStateFlow<List<Long>>(emptyList())
+
+    val healthTags = _healthTags.asStateFlow()
+
+
+
+
     // 初始化方法，支持编辑模式
     fun initializeWithRecord(recordId: Long?) {
         editingRecordId = recordId
+
         if (recordId != null) {
             // 编辑模式：加载现有记录
             loadExistingRecord(recordId)
         } else {
             // 新增模式：使用默认值
             initializeWithDefaults()
+        }
+        viewModelScope.launch(IO){
+            healthTagRepository.initializePredefinedTags()
         }
     }
 
@@ -67,6 +81,13 @@ class BsRecordViewModel @Inject constructor(
                     _currentValue.value = displayValue
                     _currentStatus.value = convertMeasurementTagToBloodSugarStatus(it.satus)
                     _recordTime.value = it.recordTime
+                    it.tagIds?.let { tags ->
+                        val split = tags.split(",")
+                        if(split.isNotEmpty()){
+                            _healthTags.value = split.map { id -> id.toLong() }
+                        }
+
+                    }
                 }
             } catch (e: Exception) {
                 // 加载失败，使用默认值
@@ -89,6 +110,10 @@ class BsRecordViewModel @Inject constructor(
     // 状态更新方法
     fun updateValue(value: Float) {
         _currentValue.value = value
+    }
+
+    fun updateTags(tags:List<HealthTag>){
+        _healthTags.value = tags.map { it.id }
     }
 
     fun switchUnit(newUnit: BsUnit) {
@@ -142,7 +167,8 @@ class BsRecordViewModel @Inject constructor(
             glucoseValue = valueInMgdl,
             satus = _currentStatus.value.statusType,
             recordTime = _recordTime.value,
-            selectedUnit = _currentUnit.value.value
+            selectedUnit = _currentUnit.value.value,
+            tagIds = _healthTags.value.joinToString(",")
         )
         bloodSugarRepository.updateBloodSugarRecord(updatedRecord)
     }
@@ -155,7 +181,8 @@ class BsRecordViewModel @Inject constructor(
             glucoseValue = valueInMgdl,
             status = _currentStatus.value.statusType,
             selectedTime = _recordTime.value,
-            selectedUnit = _currentUnit.value
+            selectedUnit = _currentUnit.value,
+            tagIds = _healthTags.value
         )
     }
 
@@ -166,6 +193,8 @@ class BsRecordViewModel @Inject constructor(
 
     private fun convertMeasurementTagToBloodSugarStatus(status: Int) = BloodSugarStatus.entries.first { it.statusType == status }
 
+
+   suspend fun getHealthTags() = healthTagRepository.getAllTags()
 
 
 
