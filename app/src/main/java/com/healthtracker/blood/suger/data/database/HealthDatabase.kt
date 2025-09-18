@@ -98,12 +98,9 @@ abstract class HealthDatabase : RoomDatabase() {
                 // 创建查询优化索引
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_record_time ON blood_sugar_records(record_time)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_show_in_chart ON blood_sugar_records(show_in_chart)")
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_measurement_tag ON blood_sugar_records(measurement_tag)")
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_glucose_level ON blood_sugar_records(glucose_level)")
 
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_record_time ON blood_pressure_records(record_time)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_show_in_chart ON blood_pressure_records(show_in_chart)")
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_measurement_tag ON blood_pressure_records(measurement_tag)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_bp_category ON blood_pressure_records(bp_category)")
 
                 // 标签表索引

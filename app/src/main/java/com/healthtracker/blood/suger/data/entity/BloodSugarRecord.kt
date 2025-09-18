@@ -3,10 +3,8 @@ package com.healthtracker.blood.suger.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.healthtracker.blood.suger.data.enums.GlucoseLevel
 import com.healthtracker.blood.suger.data.enums.BsUnit
-import com.healthtracker.blood.suger.data.enums.MeasurementTag
-import java.util.*
+import java.util.Date
 
 /**
  * 血糖记录数据实体
@@ -33,18 +31,12 @@ data class BloodSugarRecord(
     val glucoseValue: Double,
 
     /**
-     * 测量标签/类型
+     * 状态类型
      * 存储枚举的code值，支持国际化
      */
-    @ColumnInfo(name = "measurement_tag")
-    val measurementTag: String,
+    @ColumnInfo(name = "status")
+    val satus: Int,
 
-    /**
-     * 血糖等级分类
-     * 存储枚举的code值，支持国际化
-     */
-    @ColumnInfo(name = "glucose_level")
-    val glucoseLevel: String,
 
     /**
      * 是否在图表中显示此数据点
@@ -124,49 +116,6 @@ data class BloodSugarRecord(
     }
 
     /**
-     * 获取测量标签枚举
-     * @return MeasurementTag枚举
-     */
-    fun getMeasurementTagEnum(): MeasurementTag {
-        return MeasurementTag.fromString(measurementTag)
-    }
-
-    /**
-     * 获取血糖等级枚举
-     * @return GlucoseLevel枚举
-     */
-    fun getGlucoseLevelEnum(): GlucoseLevel {
-        return GlucoseLevel.entries.find { it.code == glucoseLevel } ?: GlucoseLevel.NORMAL
-    }
-
-    /**
-     * 判断是否为正常血糖
-     * @return 是否正常
-     */
-    fun isNormal(): Boolean {
-        return getGlucoseLevelEnum() == GlucoseLevel.NORMAL
-    }
-
-    /**
-     * 判断是否为低血糖
-     * @return 是否低血糖
-     */
-    fun isHypoglycemia(): Boolean {
-        return getGlucoseLevelEnum() == GlucoseLevel.HYPOGLYCEMIA
-    }
-
-    /**
-     * 判断是否为高血糖（糖尿病或糖尿病前期）
-     * @return 是否高血糖
-     */
-    fun isHyperglycemia(): Boolean {
-        val level = getGlucoseLevelEnum()
-        return level == GlucoseLevel.PREDIABETES ||
-               level == GlucoseLevel.DIABETES ||
-               level == GlucoseLevel.SEVERE_HYPERGLYCEMIA
-    }
-
-    /**
      * 获取关联的标签ID列表
      * @return 标签ID列表
      */
@@ -193,7 +142,7 @@ data class BloodSugarRecord(
          * 自动计算血糖等级
          * @param recordTime 记录时间
          * @param glucoseValue 血糖值（总是以mg/dL存储）
-         * @param measurementTag 测量标签
+         * @param status 测量状态
          * @param selectedUnit 用户选择的单位类型
          * @param tagIds 关联标签ID列表
          * @param showInChart 是否在图表中显示
@@ -204,7 +153,7 @@ data class BloodSugarRecord(
         fun create(
             recordTime: Date,
             glucoseValue: Double,
-            measurementTag: String,
+            status: Int,
             selectedUnit: BsUnit = BsUnit.MG_DL,
             tagIds: List<Long>? = null,
             showInChart: Boolean = true,
@@ -212,13 +161,11 @@ data class BloodSugarRecord(
             ext2: String? = null,
             ext3: String? = null
         ): BloodSugarRecord {
-            val glucoseLevel = GlucoseLevel.fromGlucoseValue(glucoseValue, measurementTag)
             val tagIdsString = tagIds?.joinToString(",")
             return BloodSugarRecord(
                 recordTime = recordTime,
                 glucoseValue = glucoseValue,
-                measurementTag = measurementTag,
-                glucoseLevel = glucoseLevel.code,
+                satus = status,
                 tagIds = tagIdsString,
                 showInChart = showInChart,
                 selectedUnit = selectedUnit.value,

@@ -88,16 +88,8 @@ interface BloodSugarDao {
      * @param tag 测量标签
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE measurement_tag = :tag ORDER BY record_time DESC")
-    fun getRecordsByTag(tag: String): Flow<List<BloodSugarRecord>>
-
-    /**
-     * 根据血糖等级获取血糖记录
-     * @param glucoseLevel 血糖等级code
-     * @return Flow形式的血糖记录列表
-     */
-    @Query("SELECT * FROM blood_sugar_records WHERE glucose_level = :glucoseLevel ORDER BY record_time DESC")
-    fun getRecordsByGlucoseLevel(glucoseLevel: String): Flow<List<BloodSugarRecord>>
+    @Query("SELECT * FROM blood_sugar_records WHERE status = :status ORDER BY record_time DESC")
+    fun getRecordsByTag(status: Int): Flow<List<BloodSugarRecord>>
 
     /**
      * 获取血糖值范围内的记录

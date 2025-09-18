@@ -4,12 +4,11 @@ import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
-import com.healthtracker.blood.suger.data.enums.GlucoseLevel
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.TagUtils
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,7 +25,7 @@ class BloodSugarRepository @Inject constructor(
     /**
      * 添加血糖记录（支持标签）
      * @param glucoseValue 血糖值
-     * @param measurementTag 测量标签
+     * @param status 测量标签
      * @param selectedTime 记录时间
      * @param selectedUnit 血糖单位
      * @param tagIds 关联的标签ID列表
@@ -38,7 +37,7 @@ class BloodSugarRepository @Inject constructor(
      */
     suspend fun addBloodSugarRecord(
         glucoseValue: Double,
-        measurementTag: String,
+        status: Int,
         selectedTime: Date,
         selectedUnit: BsUnit,
         tagIds: List<Long>? = null,
@@ -51,7 +50,7 @@ class BloodSugarRepository @Inject constructor(
         val record = BloodSugarRecord.create(
             recordTime = selectedTime,
             glucoseValue = glucoseValue,
-            measurementTag = measurementTag,
+            status = status,
             selectedUnit = selectedUnit,
             tagIds = tagIds,
             showInChart = showInChart,
@@ -141,15 +140,6 @@ class BloodSugarRepository @Inject constructor(
      */
     fun getBloodSugarRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>> {
         return bloodSugarDao.getRecordsByTimeRange(startTime, endTime)
-    }
-
-    /**
-     * 根据血糖等级获取记录
-     * @param glucoseLevel 血糖等级
-     * @return Flow形式的血糖记录列表
-     */
-    fun getBloodSugarRecordsByLevel(glucoseLevel: GlucoseLevel): Flow<List<BloodSugarRecord>> {
-        return bloodSugarDao.getRecordsByGlucoseLevel(glucoseLevel.code)
     }
 
     /**

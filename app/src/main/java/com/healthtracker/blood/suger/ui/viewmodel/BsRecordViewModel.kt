@@ -5,7 +5,6 @@ import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.enums.MeasurementTag
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
-import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
+import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 
 @HiltViewModel
 class BsRecordViewModel @Inject constructor(
@@ -65,7 +65,7 @@ class BsRecordViewModel @Inject constructor(
 
                     _currentUnit.value = selectedUnit
                     _currentValue.value = displayValue
-                    _currentStatus.value = convertMeasurementTagToBloodSugarStatus(it.measurementTag)
+                    _currentStatus.value = convertMeasurementTagToBloodSugarStatus(it.satus)
                     _recordTime.value = it.recordTime
                 }
             } catch (e: Exception) {
@@ -139,8 +139,8 @@ class BsRecordViewModel @Inject constructor(
         val valueInMgdl = _currentUnit.value.convertToMgdl(_currentValue.value.toDouble())
 
         val updatedRecord = existingRecord.copy(
-            glucoseValue = valueInMgdl.toDouble(),
-            measurementTag = convertBloodSugarStatusToMeasurementTag(_currentStatus.value),
+            glucoseValue = valueInMgdl,
+            satus = _currentStatus.value.statusType,
             recordTime = _recordTime.value,
             selectedUnit = _currentUnit.value.value
         )
@@ -153,7 +153,7 @@ class BsRecordViewModel @Inject constructor(
 
         bloodSugarRepository.addBloodSugarRecord(
             glucoseValue = valueInMgdl,
-            measurementTag = convertBloodSugarStatusToMeasurementTag(_currentStatus.value),
+            status = _currentStatus.value.statusType,
             selectedTime = _recordTime.value,
             selectedUnit = _currentUnit.value
         )
@@ -164,31 +164,9 @@ class BsRecordViewModel @Inject constructor(
 
     // 辅助转换方法
 
-    private fun convertMeasurementTagToBloodSugarStatus(measurementTag: String): BloodSugarStatus {
-        val tag = MeasurementTag.fromString(measurementTag)
-        return when (tag) {
-            MeasurementTag.FASTING -> BloodSugarStatus.FASTING
-            MeasurementTag.BEFORE_BREAKFAST, MeasurementTag.BEFORE_LUNCH, MeasurementTag.BEFORE_DINNER -> BloodSugarStatus.BEFORE_MEAL
-            MeasurementTag.AFTER_BREAKFAST, MeasurementTag.AFTER_LUNCH, MeasurementTag.AFTER_DINNER -> BloodSugarStatus.TWO_HOURS_AFTER_MEAL
-            MeasurementTag.BEDTIME -> BloodSugarStatus.BEDTIME
-            MeasurementTag.AFTER_EXERCISE -> BloodSugarStatus.AFTER_EXERCISE
-            else -> BloodSugarStatus.DEFAULT
-        }
-    }
+    private fun convertMeasurementTagToBloodSugarStatus(status: Int) = BloodSugarStatus.entries.first { it.statusType == status }
 
-    private fun convertBloodSugarStatusToMeasurementTag(status: BloodSugarStatus): String {
-        val tag = when (status) {
-            BloodSugarStatus.FASTING -> MeasurementTag.FASTING
-            BloodSugarStatus.BEFORE_MEAL -> MeasurementTag.BEFORE_BREAKFAST
-            BloodSugarStatus.ONE_HOUR_AFTER_MEAL -> MeasurementTag.AFTER_BREAKFAST
-            BloodSugarStatus.TWO_HOURS_AFTER_MEAL -> MeasurementTag.AFTER_BREAKFAST
-            BloodSugarStatus.BEDTIME -> MeasurementTag.BEDTIME
-            BloodSugarStatus.BEFORE_EXERCISE -> MeasurementTag.BEFORE_MEDICATION
-            BloodSugarStatus.AFTER_EXERCISE -> MeasurementTag.AFTER_EXERCISE
-            else -> MeasurementTag.OTHER
-        }
-        return tag.code
-    }
+
 
 
 }
