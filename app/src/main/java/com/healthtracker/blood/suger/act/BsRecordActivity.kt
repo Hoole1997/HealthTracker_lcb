@@ -114,7 +114,12 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             lifecycleScope.launch {
                 // 保存前先获取DateTimePicker的时间并更新到ViewModel
                 val selectedDateTime = mViewBind.dateTimePicker.getDateTime()
-                val selectedDate = selectedDateTime.toCalendar().time
+                val currentTime = java.util.Calendar.getInstance()
+                val selectedCalendar = selectedDateTime.toCalendar()
+                // 保留当前时间的秒和毫秒
+                selectedCalendar.set(java.util.Calendar.SECOND, currentTime.get(java.util.Calendar.SECOND))
+                selectedCalendar.set(java.util.Calendar.MILLISECOND, currentTime.get(java.util.Calendar.MILLISECOND))
+                val selectedDate = selectedCalendar.time
                 mViewModel.updateRecordTime(selectedDate)
 
                 val success = mViewModel.saveRecord()
