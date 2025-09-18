@@ -17,6 +17,7 @@ import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.*
 
 /**
  * 首页Fragment
@@ -95,6 +96,8 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         // 根据用户选择的单位显示血糖值（保留一位小数）
         mViewBind?.tvLatestBsValue?.text = record.getFormattedDisplayValue()
         mViewBind?.tvLatestBsUnit?.text = if(record.selectedUnit == BsUnit.MG_DL.value) BsUnit.MG_DL.displayName else BsUnit.MMOL_L.displayName
+        // 显示相对时间
+        mViewBind?.tvLatestRecordDate?.text = formatRelativeTime(record.recordTime)
     }
 
     /**
@@ -108,6 +111,45 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         "${record.systolicPressure}/${record.diastolicPressure}".also {
             mViewBind?.tvLatestBpValue?.text = it
         }
+    }
 
+    /**
+     * 格式化相对时间显示
+     * @param recordTime 记录时间
+     * @return 格式化后的时间字符串
+     */
+    private fun formatRelativeTime(recordTime: Date): String {
+        val currentTime = System.currentTimeMillis()
+        val recordTimeMs = recordTime.time
+        val timeDiff = currentTime - recordTimeMs
+
+        // 如果记录时间在当前时间之后，显示Latest
+        if (timeDiff < 0) {
+            return getString(R.string.latest)
+        }
+
+        // 转换为秒
+        val seconds = timeDiff / 1000
+        return when {
+            seconds < 60 -> {
+                // 不满1分钟：x秒前
+                getString(R.string.seconds_ago, seconds.toInt())
+            }
+            seconds < 3600 -> {
+                // 不满1小时：x分钟前
+                val minutes = seconds / 60
+                getString(R.string.minutes_ago, minutes.toInt())
+            }
+            seconds < 86400 -> {
+                // 不满1天：x小时前
+                val hours = seconds / 3600
+                getString(R.string.hours_ago, hours.toInt())
+            }
+            else -> {
+                // 超过1天：x天前
+                val days = seconds / 86400
+                getString(R.string.days_ago, days.toInt())
+            }
+        }
     }
 }
