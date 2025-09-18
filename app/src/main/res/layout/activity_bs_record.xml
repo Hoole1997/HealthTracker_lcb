@@ -102,10 +102,11 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_value_select"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
-                android:background="@drawable/bg_rect_white_8"
+                android:background="@drawable/bg_rect_white_12"
                 android:padding="@dimen/dp_16"
                 app:layout_constraintTop_toBottomOf="@id/cl_statu">
 
@@ -201,6 +202,45 @@
                     app:layout_constraintTop_toBottomOf="@id/rulerView"
                     app:rangeTextSize="@dimen/sp_16" />
 
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rect_white_12"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_12"
+                app:layout_constraintTop_toBottomOf="@id/cl_value_select"
+                android:padding="@dimen/dp_16">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:text="@string/date_time"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label"
+                    android:textColor="@color/c5"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_date"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_date"/>
+                <com.healthtracker.blood.suger.ui.weight.DateTimePicker
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_12"
+                    app:layout_constraintTop_toBottomOf="@id/tv_date"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

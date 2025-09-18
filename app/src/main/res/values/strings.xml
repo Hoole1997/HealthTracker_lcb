@@ -37,5 +37,7 @@
     <string name="save">Save</string>
     <string name="saving">Saving...</string>
     <string name="save_failed">Save failed, please try again</string>
+    <string name="date_time"><![CDATA[Date&Time]]></string>
+    <string name="label">Label</string>
 
 </resources>

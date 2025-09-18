@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_16"
+    android:gravity="center_horizontal"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <!-- 年份选择器 -->
+    <com.peppa.widget.picker.NumberPickerView
+        android:id="@+id/yearPicker"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:npv_DividerColor="@color/picker_divider_color"
+        app:npv_ItemPaddingHorizontal="@dimen/dp_5"
+        app:npv_ItemPaddingVertical="@dimen/dp_12"
+        app:npv_ShowDivider="false"
+        app:npv_ShownCount="3"
+        app:npv_TextColorNormal="@color/color_BFBFBF"
+        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextSizeNormal="@dimen/sp_14"
+        app:npv_TextSizeSelected="@dimen/sp_14"
+        app:npv_WrapSelectorWheel="false" />
+
+    <!-- 月份选择器 -->
+    <com.peppa.widget.picker.NumberPickerView
+        android:id="@+id/monthPicker"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+
+        app:layout_constraintStart_toEndOf="@+id/yearPicker"
+        app:layout_constraintTop_toTopOf="parent"
+        app:npv_DividerColor="@color/picker_divider_color"
+        app:npv_ItemPaddingHorizontal="@dimen/dp_5"
+        app:npv_ItemPaddingVertical="@dimen/dp_12"
+        app:npv_ShowDivider="false"
+        app:npv_ShownCount="3"
+        app:npv_TextColorNormal="@color/color_BFBFBF"
+        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextSizeNormal="@dimen/sp_14"
+        app:npv_TextSizeSelected="@dimen/sp_14"
+        app:npv_WrapSelectorWheel="true" />
+
+    <!-- 日期选择器 -->
+    <com.peppa.widget.picker.NumberPickerView
+        android:id="@+id/dayPicker"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+
+        app:layout_constraintStart_toEndOf="@+id/monthPicker"
+        app:layout_constraintTop_toTopOf="parent"
+        app:npv_DividerColor="@color/picker_divider_color"
+        app:npv_ItemPaddingHorizontal="@dimen/dp_5"
+        app:npv_ItemPaddingVertical="@dimen/dp_12"
+        app:npv_ShowDivider="false"
+        app:npv_ShownCount="3"
+        app:npv_TextColorNormal="@color/color_BFBFBF"
+        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextSizeNormal="@dimen/sp_14"
+        app:npv_TextSizeSelected="@dimen/sp_14"
+        app:npv_WrapSelectorWheel="true" />
+
+    <!-- 小时选择器 -->
+    <com.peppa.widget.picker.NumberPickerView
+        android:id="@+id/hourPicker"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:layout_constraintEnd_toStartOf="@+id/minutePicker"
+        app:layout_constraintTop_toTopOf="parent"
+        app:npv_DividerColor="@color/picker_divider_color"
+        app:npv_ItemPaddingHorizontal="@dimen/dp_5"
+        app:npv_ItemPaddingVertical="@dimen/dp_12"
+        app:npv_ShowDivider="false"
+        app:npv_ShownCount="3"
+        app:npv_TextColorNormal="@color/color_BFBFBF"
+        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextSizeNormal="@dimen/sp_14"
+        app:npv_TextSizeSelected="@dimen/sp_14"
+        app:npv_WrapSelectorWheel="true" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        style="@style/TextViewFont_RobotoBlack"
+        android:paddingBottom="@dimen/dp_3"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/t1"
+        android:text=":"
+        app:layout_constraintStart_toEndOf="@id/hourPicker"
+        app:layout_constraintEnd_toStartOf="@id/minutePicker"
+        app:layout_constraintTop_toTopOf="@id/hourPicker"
+        app:layout_constraintBottom_toBottomOf="@id/hourPicker"/>
+
+    <!-- 分钟选择器 -->
+    <com.peppa.widget.picker.NumberPickerView
+        android:id="@+id/minutePicker"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/dp_20"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:npv_DividerColor="@color/picker_divider_color"
+        app:npv_ItemPaddingHorizontal="@dimen/dp_5"
+        app:npv_ItemPaddingVertical="@dimen/dp_12"
+        app:npv_ShowDivider="false"
+        app:npv_ShownCount="3"
+        app:npv_TextColorNormal="@color/color_BFBFBF"
+        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextSizeNormal="@dimen/sp_14"
+        app:npv_TextSizeSelected="@dimen/sp_14"
+        app:npv_WrapSelectorWheel="true" />
+
+    <!-- 顶部渐变遮罩 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/gradient_npv_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/yearPicker" />
+
+    <!-- 底部渐变遮罩 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/gradient_npv_bottom"
+        app:layout_constraintBottom_toBottomOf="@id/yearPicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</merge>
