@@ -60,38 +60,3 @@ enum class PulseCategory(val code: String) {
         }
     }
 }
-
-/**
- * 测量标签枚举
- * 标准化的测量时机标签
- */
-enum class MeasurementTag(val code: String) {
-    FASTING("fasting"),                  // 空腹
-    BEFORE_BREAKFAST("before_breakfast"), // 早餐前
-    AFTER_BREAKFAST("after_breakfast"),   // 早餐后
-    BEFORE_LUNCH("before_lunch"),        // 午餐前
-    AFTER_LUNCH("after_lunch"),          // 午餐后
-    BEFORE_DINNER("before_dinner"),      // 晚餐前
-    AFTER_DINNER("after_dinner"),        // 晚餐后
-    BEDTIME("bedtime"),                  // 睡前
-    MORNING("morning"),                  // 晨起
-    AFTER_EXERCISE("after_exercise"),    // 运动后
-    BEFORE_MEDICATION("before_medication"), // 服药前
-    AFTER_MEDICATION("after_medication"),   // 服药后
-    RANDOM("random"),                    // 随机
-    OTHER("other");                      // 其他
-
-    companion object {
-        /**
-         * 从字符串获取测量标签枚举
-         * @param tagString 标签字符串
-         * @return 测量标签枚举
-         */
-        fun fromString(tagString: String): MeasurementTag {
-            return entries.find {
-                it.code.equals(tagString, ignoreCase = true) ||
-                tagString.contains(it.code, ignoreCase = true)
-            } ?: OTHER
-        }
-    }
-}

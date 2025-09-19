@@ -1,21 +1,19 @@
 package com.healthtracker.blood.suger.data.database
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
-import android.content.Context
 import com.healthtracker.blood.suger.data.converter.DateTimeConverter
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
+import com.healthtracker.blood.suger.data.dao.BloodPressureTagDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarTagDao
-import com.healthtracker.blood.suger.data.dao.BloodPressureTagDao
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
+import com.healthtracker.blood.suger.data.entity.BloodPressureTag
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarTag
-import com.healthtracker.blood.suger.data.entity.BloodPressureTag
 
 /**
  * 健康数据Room数据库
@@ -33,7 +31,7 @@ import com.healthtracker.blood.suger.data.entity.BloodPressureTag
         BloodSugarTag::class,
         BloodPressureTag::class
     ],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -85,8 +83,7 @@ abstract class HealthDatabase : RoomDatabase() {
                     HealthDatabase::class.java,
                     DATABASE_NAME
                 )
-                    // 如果需要支持数据库升级，可以添加migration
-                    // .addMigrations(MIGRATION_1_2)
+//                    .addMigrations(MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 instance
@@ -94,19 +91,47 @@ abstract class HealthDatabase : RoomDatabase() {
         }
 
 
-        /**
-         * 示例数据库迁移
-         * 从版本1升级到版本2的迁移策略
-         */
-        /*
-        private val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // 添加新字段的示例
-                database.execSQL("ALTER TABLE blood_sugar_records ADD COLUMN new_field TEXT")
-                database.execSQL("ALTER TABLE blood_pressure_records ADD COLUMN new_field TEXT")
-            }
-        }
-        */
+//        /**
+//         * 数据库迁移：从版本2升级到版本3
+//         * 移除measurement_tag字段
+//         */
+//        private val MIGRATION_2_3 = object : Migration(2, 3) {
+//            override fun migrate(database: SupportSQLiteDatabase) {
+//                // 创建新的血压记录表（不包含measurement_tag字段）
+//                database.execSQL("""
+//                    CREATE TABLE blood_pressure_records_new (
+//                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+//                        record_time INTEGER NOT NULL,
+//                        systolic_pressure INTEGER NOT NULL,
+//                        diastolic_pressure INTEGER NOT NULL,
+//                        pulse_rate INTEGER NOT NULL,
+//                        bp_category TEXT NOT NULL,
+//                        pulse_category TEXT NOT NULL,
+//                        show_in_chart INTEGER NOT NULL DEFAULT 1,
+//                        tag_ids TEXT,
+//                        ext1 TEXT,
+//                        ext2 TEXT,
+//                        ext3 TEXT
+//                    )
+//                """)
+//
+//                // 复制数据（排除measurement_tag字段）
+//                database.execSQL("""
+//                    INSERT INTO blood_pressure_records_new
+//                    (id, record_time, systolic_pressure, diastolic_pressure, pulse_rate,
+//                     bp_category, pulse_category, show_in_chart, tag_ids, ext1, ext2, ext3)
+//                    SELECT id, record_time, systolic_pressure, diastolic_pressure, pulse_rate,
+//                           bp_category, pulse_category, show_in_chart, tag_ids, ext1, ext2, ext3
+//                    FROM blood_pressure_records
+//                """)
+//
+//                // 删除旧表
+//                database.execSQL("DROP TABLE blood_pressure_records")
+//
+//                // 重命名新表
+//                database.execSQL("ALTER TABLE blood_pressure_records_new RENAME TO blood_pressure_records")
+//            }
+//        }
 
         /**
          * 清除数据库实例（用于测试）

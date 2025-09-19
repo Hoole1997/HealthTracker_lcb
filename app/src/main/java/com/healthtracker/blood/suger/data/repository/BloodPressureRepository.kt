@@ -29,7 +29,6 @@ class BloodPressureRepository @Inject constructor(
      * @param systolic 收缩压
      * @param diastolic 舒张压
      * @param pulse 脉搏
-     * @param measurementTag 测量标签
      * @param selectedTime 记录时间
      * @param tagIds 关联的标签ID列表
      * @param showInChart 是否在图表中显示
@@ -42,7 +41,6 @@ class BloodPressureRepository @Inject constructor(
         systolic: Int,
         diastolic: Int,
         pulse: Int,
-        measurementTag: String,
         selectedTime: Date,
         tagIds: List<Long>? = null,
         showInChart: Boolean = true,
@@ -56,7 +54,6 @@ class BloodPressureRepository @Inject constructor(
             systolicPressure = systolic,
             diastolicPressure = diastolic,
             pulseRate = pulse,
-            measurementTag = measurementTag,
             tagIds = tagIds,
             showInChart = showInChart,
             ext1 = ext1,

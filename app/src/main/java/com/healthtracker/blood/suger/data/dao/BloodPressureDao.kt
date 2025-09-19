@@ -83,13 +83,7 @@ interface BloodPressureDao {
     @Query("SELECT * FROM blood_pressure_records WHERE record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC")
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodPressureRecord>>
 
-    /**
-     * 根据测量标签获取血压记录
-     * @param tag 测量标签
-     * @return Flow形式的血压记录列表
-     */
-    @Query("SELECT * FROM blood_pressure_records WHERE measurement_tag = :tag ORDER BY record_time DESC")
-    fun getRecordsByTag(tag: String): Flow<List<BloodPressureRecord>>
+
 
     /**
      * 根据血压分类获取血压记录

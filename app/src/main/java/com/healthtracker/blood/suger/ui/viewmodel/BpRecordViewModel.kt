@@ -77,11 +77,9 @@ class BpRecordViewModel @Inject constructor(
 
     /**
      * 保存血压记录
-     * @param measurementTag 测量标签
      * @param tagIds 关联的标签ID列表
      */
     fun saveBloodPressureRecord(
-        measurementTag: String = "手动测量",
         tagIds: List<Long>? = null
     ) {
         viewModelScope.launch {
@@ -96,8 +94,7 @@ class BpRecordViewModel @Inject constructor(
                             systolicPressure = _systolicPressure.value,
                             diastolicPressure = _diastolicPressure.value,
                             pulseRate = _pulseRate.value,
-                            recordTime = _recordTime.value,
-                            measurementTag = measurementTag
+                            recordTime = _recordTime.value
                         )
                         bloodPressureRepository.updateBloodPressureRecord(updatedRecord)
                     }
@@ -107,7 +104,6 @@ class BpRecordViewModel @Inject constructor(
                         systolic = _systolicPressure.value,
                         diastolic = _diastolicPressure.value,
                         pulse = _pulseRate.value,
-                        measurementTag = measurementTag,
                         selectedTime = _recordTime.value,
                         tagIds = tagIds
                     )

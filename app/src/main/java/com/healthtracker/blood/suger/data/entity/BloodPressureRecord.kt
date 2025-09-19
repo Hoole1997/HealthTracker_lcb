@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
 import com.healthtracker.blood.suger.data.enums.PulseCategory
-import com.healthtracker.blood.suger.data.enums.MeasurementTag
 import java.util.*
 
 /**
@@ -46,12 +45,7 @@ data class BloodPressureRecord(
     @ColumnInfo(name = "pulse_rate")
     val pulseRate: Int,
 
-    /**
-     * 测量标签/类型
-     * 存储枚举的code值，支持国际化
-     */
-    @ColumnInfo(name = "measurement_tag")
-    val measurementTag: String,
+
 
     /**
      * 血压分类
@@ -101,13 +95,7 @@ data class BloodPressureRecord(
     @ColumnInfo(name = "ext3")
     val ext3: String? = null
 ) {
-    /**
-     * 获取测量标签枚举
-     * @return MeasurementTag枚举
-     */
-    fun getMeasurementTagEnum(): MeasurementTag {
-        return MeasurementTag.fromString(measurementTag)
-    }
+
 
     /**
      * 获取血压分类枚举
@@ -201,7 +189,6 @@ data class BloodPressureRecord(
             systolicPressure: Int,
             diastolicPressure: Int,
             pulseRate: Int,
-            measurementTag: String,
             tagIds: List<Long>? = null,
             showInChart: Boolean = true,
             ext1: String? = null,
@@ -217,7 +204,6 @@ data class BloodPressureRecord(
                 systolicPressure = systolicPressure,
                 diastolicPressure = diastolicPressure,
                 pulseRate = pulseRate,
-                measurementTag = measurementTag,
                 bpCategory = bpCategory.code,
                 pulseCategory = pulseCategory.code,
                 tagIds = tagIdsString,
