@@ -56,4 +56,19 @@
         <attr name="dotMarginEnd" format="dimension" />             <!--圆点右边距-->
     </declare-styleable>
 
+    <!-- BloodPressureLevelBar 自定义属性 -->
+    <declare-styleable name="BloodPressureLevelBar">
+        <!-- 进度条属性 -->
+        <attr name="barHeight" format="dimension" />                  <!--进度条高度-->
+        <attr name="barCornerRadius" format="dimension" />            <!--进度条圆角半径-->
+        
+        <!-- 指示器属性 -->
+        <attr name="bpIndicatorWidth" format="dimension" />           <!--指示器宽度-->
+        <attr name="bpIndicatorHeight" format="dimension" />          <!--指示器高度-->
+        <attr name="bpIndicatorFillColor" format="color" />          <!--指示器填充颜色-->
+        <attr name="bpIndicatorStrokeColor" format="color" />        <!--指示器描边颜色-->
+        <attr name="bpIndicatorStrokeWidth" format="dimension" />     <!--指示器描边宽度-->
+        <attr name="bpIndicatorCornerRadius" format="dimension" />    <!--指示器圆角半径-->
+    </declare-styleable>
+
 </resources>

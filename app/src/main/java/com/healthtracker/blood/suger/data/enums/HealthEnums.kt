@@ -6,11 +6,12 @@ package com.healthtracker.blood.suger.data.enums
  * 基于美国心脏协会(AHA)标准
  */
 enum class BloodPressureCategory(val code: String) {
-    NORMAL("normal"),                    // 正常: <120/80
+    LOW("low"),                         // 低血压: <90/60
+    NORMAL("normal"),                    // 正常: 90-119/60-79
     ELEVATED("elevated"),                // 血压偏高: 120-129/<80
     HIGH_STAGE_1("high_stage_1"),       // 高血压1期: 130-139/80-89
-    HIGH_STAGE_2("high_stage_2"),       // 高血压2期: ≥140/≥90
-    HYPERTENSIVE_CRISIS("hypertensive_crisis"), // 高血压危象: >180/>120
+    HIGH_STAGE_2("high_stage_2"),       // 高血压2期: 140-179/90-119
+    HYPERTENSIVE_CRISIS("hypertensive_crisis"), // 高血压危象: ≥180/≥120
     UNKNOWN("unknown");                  // 未知
 
     companion object {
@@ -22,11 +23,12 @@ enum class BloodPressureCategory(val code: String) {
          */
         fun fromBloodPressure(systolic: Int, diastolic: Int): BloodPressureCategory {
             return when {
-                systolic > 180 || diastolic > 120 -> HYPERTENSIVE_CRISIS
-                systolic >= 140 || diastolic >= 90 -> HIGH_STAGE_2
+                systolic >= 180 || diastolic >= 120 -> HYPERTENSIVE_CRISIS
+                (systolic in 140..189) || (diastolic in 90..120) -> HIGH_STAGE_2
                 (systolic in 130..139) || (diastolic in 80..89) -> HIGH_STAGE_1
-                systolic < 120 && diastolic < 80 -> NORMAL
-                systolic < 130 && diastolic < 80 -> ELEVATED
+                (systolic in 120..129) && diastolic in 60..79-> ELEVATED
+                (systolic in 90..119) && (diastolic in 60..79) -> NORMAL
+                systolic < 90 || diastolic < 60 -> LOW
                 else -> UNKNOWN
             }
         }

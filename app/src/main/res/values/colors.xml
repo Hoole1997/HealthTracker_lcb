@@ -13,6 +13,7 @@
     <color name="color_BFBFBF">#BFBFBF</color>
     <color name="color_999">#999999</color>
     <color name="color_666">#666666</color>
+    <color name="color_888">#888888</color>
     <color name="ic_launcher_background">@color/c5</color>
     <color name="color_tap_ripple">@color/transparent10</color>
 
@@ -28,6 +29,16 @@
     <color name="color_normal">@color/c5</color>
     <color name="color_prediabetes">#FFB901</color>
     <color name="color_diabetes">#FA0202</color>
+    <color name="color_13ABA1">#13ABA1</color>
 
     <color name="primary">@color/c5</color>
+
+    
+    <!-- 图片中定义的颜色资源 -->
+    <color name="color_3487FC">#3487FC</color>
+    <color name="color_05BA7B">#05BA7B</color>
+    <color name="color_FFE902">#FFE902</color>
+    <color name="color_FFB909">#FFB909</color>
+    <color name="color_FF8000">#FF8000</color>
+    <color name="color_FB0301">#FB0301</color>
 </resources>

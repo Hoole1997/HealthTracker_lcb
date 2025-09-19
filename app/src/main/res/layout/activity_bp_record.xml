@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/actionBarSize"
         android:background="@color/c1"
-        android:elevation="@dimen/dp_10"
+        android:elevation="@dimen/dp_8"
         android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +50,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_picker_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
@@ -57,7 +58,8 @@
         android:paddingHorizontal="@dimen/dp_15"
         android:paddingVertical="@dimen/dp_20"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/action_bar">
+        app:layout_constraintTop_toBottomOf="@id/action_bar"
+        android:layout_marginHorizontal="@dimen/dp_16">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_systolic"
@@ -83,7 +85,7 @@
             android:includeFontPadding="false"
             android:text="@string/diastolic"
             android:textColor="@color/t1"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintEnd_toStartOf="@id/tv_pulse"
             app:layout_constraintStart_toEndOf="@id/tv_systolic"
             app:layout_constraintTop_toTopOf="parent" />
@@ -97,7 +99,7 @@
             android:includeFontPadding="false"
             android:text="@string/pulse"
             android:textColor="@color/t1"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_diastolic"
             app:layout_constraintTop_toTopOf="parent" />
@@ -108,18 +110,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tv_systolic"
             app:layout_constraintStart_toStartOf="@id/tv_systolic"
             app:layout_constraintTop_toBottomOf="@id/tv_systolic"
             app:npv_ItemPaddingVertical="@dimen/dp_4"
-            app:npv_WrapSelectorWheel="false"
             app:npv_ShowDivider="false"
             app:npv_TextArray="@array/systolic"
             app:npv_TextColorNormal="@color/color_BFBFBF"
             app:npv_TextColorSelected="@color/c5"
             app:npv_TextSizeNormal="@dimen/sp_24"
             app:npv_TextSizeSelected="@dimen/sp_32"
+            app:npv_WrapSelectorWheel="false"
             tools:layout_editor_absoluteX="0dp" />
 
         <com.peppa.widget.picker.NumberPickerView
@@ -127,36 +128,36 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tv_diastolic"
             app:layout_constraintStart_toStartOf="@id/tv_diastolic"
             app:layout_constraintTop_toBottomOf="@id/tv_diastolic"
             app:npv_ItemPaddingVertical="@dimen/dp_4"
-            app:npv_WrapSelectorWheel="false"
             app:npv_ShowDivider="false"
             app:npv_TextArray="@array/systolic"
             app:npv_TextColorNormal="@color/color_BFBFBF"
             app:npv_TextColorSelected="@color/c5"
             app:npv_TextSizeNormal="@dimen/sp_24"
             app:npv_TextSizeSelected="@dimen/sp_32"
+            app:npv_WrapSelectorWheel="false"
             tools:layout_editor_absoluteX="0dp" />
+
         <com.peppa.widget.picker.NumberPickerView
             android:id="@+id/npv_pulse"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
-            app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintEnd_toEndOf="@id/tv_pulse"
             app:layout_constraintStart_toStartOf="@id/tv_pulse"
             app:layout_constraintTop_toBottomOf="@id/tv_pulse"
             app:npv_ItemPaddingVertical="@dimen/dp_4"
-            app:npv_WrapSelectorWheel="false"
             app:npv_ShowDivider="false"
             app:npv_TextArray="@array/pulse"
             app:npv_TextColorNormal="@color/color_BFBFBF"
             app:npv_TextColorSelected="@color/c5"
             app:npv_TextSizeNormal="@dimen/sp_24"
             app:npv_TextSizeSelected="@dimen/sp_32"
+            app:npv_WrapSelectorWheel="false"
             tools:layout_editor_absoluteX="0dp" />
 
         <!-- 顶部渐变遮罩 -->
@@ -170,14 +171,26 @@
 
         <!-- 底部渐变遮罩 -->
         <View
+            android:id="@+id/v_bottom_mask"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_40"
             android:background="@drawable/gradient_npv_bottom"
             app:layout_constraintBottom_toBottomOf="@id/npv_diastolic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+        <com.healthtracker.blood.suger.ui.weight.BloodPressureStatusView
+            android:id="@+id/bp_status_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/v_bottom_mask" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

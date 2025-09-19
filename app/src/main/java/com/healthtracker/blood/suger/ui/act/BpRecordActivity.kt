@@ -1,15 +1,12 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
-import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBinding>() {
@@ -43,10 +40,12 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
             npvPulse.minValue = 40
             npvPulse.maxValue = 220
             npvSystolic.setOnValueChangedListener { _, _, _ ->
-                mViewModel.updateSystolicPressure(npvSystolic.contentByCurrValue.toInt())
+                val systolic = npvSystolic.contentByCurrValue.toInt()
+                mViewModel.updateSystolicPressure(systolic)
             }
             npvDiastolic.setOnValueChangedListener { _, _, _ ->
-                mViewModel.updateDiastolicPressure(npvDiastolic.contentByCurrValue.toInt())
+                val diastolic = npvDiastolic.contentByCurrValue.toInt()
+                mViewModel.updateDiastolicPressure(diastolic)
             }
             npvPulse.setOnValueChangedListener { _, _, _ ->
                 mViewModel.updatePulseRate(npvPulse.contentByCurrValue.toInt())
@@ -59,21 +58,25 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
     private fun observeViewModel() {
         mViewModel.systolicPressure.collectLifecycle {
             with(mViewBind){
+                bpStatusView.updateSystolic(it)
                 if(it == npvSystolic.contentByCurrValue.toInt()){
                     return@collectLifecycle
                 }
                 //将当前值的位置设置给滚动控件
                 npvSystolic.value = it
+
             }
         }
 
         mViewModel.diastolicPressure.collectLifecycle {
             with(mViewBind){
+                bpStatusView.updateDiastolic(it)
                 if(it == npvDiastolic.contentByCurrValue.toInt()){
                     return@collectLifecycle
                 }
                 //将当前值的位置设置给滚动控件
                 npvDiastolic.value = it
+
             }
         }
 

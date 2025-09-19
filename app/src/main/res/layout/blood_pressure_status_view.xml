@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- 血压等级状态圆点 -->
+    <View
+        android:id="@+id/statusDot"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:background="@drawable/circle_shape"
+        app:layout_constraintEnd_toStartOf="@+id/statusText"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
+
+    <!-- 血压等级文本 -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+        android:textColor="@color/color_05BA7B"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/statusDot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/statusDot"
+        app:layout_constraintTop_toTopOf="@+id/statusDot"
+        tools:text="@string/blood_pressure_level_normal" />
+
+
+    <!-- 血压范围描述文本 -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/rangeText"
+        style="@style/TextViewFont_RobotoRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_17"
+        android:drawableEnd="@drawable/ic_blood_detail"
+        android:drawablePadding="@dimen/dp_8"
+        android:textColor="@color/color_888"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statusDot"
+        tools:text="@string/blood_pressure_range_normal_short" />
+
+    <!-- 血压等级进度条 -->
+    <com.healthtracker.blood.suger.ui.weight.BloodPressureLevelBar
+        android:id="@+id/levelBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:bpIndicatorCornerRadius="@dimen/dp_8"
+        app:bpIndicatorFillColor="@color/color_13ABA1"
+        app:bpIndicatorStrokeColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rangeText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

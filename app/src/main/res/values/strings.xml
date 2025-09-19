@@ -23,6 +23,44 @@
     <string name="blood_sugar_level_prediabetes">Pre-diabetes</string>
     <string name="blood_sugar_level_diabetes">Diabetes</string>
 
+    <!-- 血压等级 -->
+    <string name="blood_pressure_level_low">hypotension</string>
+    <string name="blood_pressure_level_normal">Normal</string>
+    <string name="blood_pressure_level_elevated">Elevated</string>
+    <string name="blood_pressure_level_high_stage_1">Hypertension Stage 1</string>
+    <string name="blood_pressure_level_high_stage_2">Hypertension Stage 2</string>
+    <string name="blood_pressure_level_hypertensive_crisis">Hypertensive Crisis</string>
+
+    <!-- 血压范围描述 - 状态显示用（缩写） -->
+    <string name="blood_pressure_range_low_short">SYS %1$s or DIA %2$s</string>
+    <string name="blood_pressure_range_normal_short">SYS %1$s and DIA %2$s</string>
+    <string name="blood_pressure_range_elevated_short">SYS %1$s and DIA %2$s</string>
+    <string name="blood_pressure_range_high_stage_1_short">SYS %1$s or DIA %2$s</string>
+    <string name="blood_pressure_range_high_stage_2_short">SYS %1$s or DIA %2$s</string>
+    <string name="blood_pressure_range_hypertensive_crisis_short">SYS %1$s or DIA %2$s</string>
+
+    <!-- 血压范围描述 - 列表视图用（全写） -->
+    <string name="blood_pressure_range_low_full">Systolic %1$s or Diastolic %2$s</string>
+    <string name="blood_pressure_range_normal_full">Systolic %1$s and Diastolic %2$s</string>
+    <string name="blood_pressure_range_elevated_full">Systolic %1$s and Diastolic %2$s</string>
+    <string name="blood_pressure_range_high_stage_1_full">Systolic %1$s or Diastolic %2$s</string>
+    <string name="blood_pressure_range_high_stage_2_full">Systolic %1$s or Diastolic %2$s</string>
+    <string name="blood_pressure_range_hypertensive_crisis_full">Systolic %1$s or Diastolic %2$s</string>
+
+    <!-- 血压范围具体数值 -->
+    <string name="bp_range_low_sys">&lt; 90</string>
+    <string name="bp_range_low_dia">&lt; 60</string>
+    <string name="bp_range_normal_sys">90–119</string>
+    <string name="bp_range_normal_dia">60–79</string>
+    <string name="bp_range_elevated_sys">120–129</string>
+    <string name="bp_range_elevated_dia">60–79</string>
+    <string name="bp_range_high_stage_1_sys">130–139</string>
+    <string name="bp_range_high_stage_1_dia">80–89</string>
+    <string name="bp_range_high_stage_2_sys">140–180</string>
+    <string name="bp_range_high_stage_2_dia">90–120</string>
+    <string name="bp_range_hypertensive_crisis_sys">&gt; 180</string>
+    <string name="bp_range_hypertensive_crisis_dia">&gt; 120</string>
+
     <!-- 血糖测量状态 -->
     <string name="blood_sugar_status_default">Default</string>
     <string name="blood_sugar_status_fasting">Fasting</string>
