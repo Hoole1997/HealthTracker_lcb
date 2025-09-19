@@ -82,7 +82,7 @@ data class HealthTag(
          * 获取所有预定义标签名称
          * @return 预定义标签名称列表
          */
-        fun getPredefinedTagNames() = App.INSTANCE.resources.getStringArray(R.array.labels)
+        fun getPredefinedTagNames() = App.INSTANCE.resources.getStringArray(R.array.blood_sugar_labels)
 
         /**
          * 创建所有预定义标签

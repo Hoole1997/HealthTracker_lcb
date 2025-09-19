@@ -89,7 +89,7 @@
     <string name="diastolic">Diastolic</string>
     <string name="pulse">Pulse</string>
 
-    <string-array name="labels" translatable="false">
+    <string-array name="blood_sugar_labels">
         <item>Excited</item>
         <item>After Cardio</item>
         <item>Upset</item>
@@ -99,6 +99,20 @@
         <item>Dieting</item>
         <item>After Alcohol</item>
     </string-array>
+
+    <string-array name="blood_pressure_labels">
+        <item>Left</item>
+        <item>Right</item>
+        <item>After medication</item>
+        <item>After walking</item>
+        <item>Before meal</item>
+        <item>After meal</item>
+        <item>Sitting</item>
+        <item>Lying</item>
+        <item>Period</item>
+    </string-array>
+
+    
 
     <string-array name="systolic" translatable="false">
         <item>20</item>

@@ -60,7 +60,7 @@ class LabelDialog(private val datas: List<HealthTag>?, private val addTags:List<
         try {
             mViewBind?.run {
                 datas?.let {
-                    val labels = resources.getStringArray(R.array.labels)
+                    val labels = resources.getStringArray(R.array.blood_sugar_labels)
                     labelBox.removeAllViews()
                     for(label in it){
                         ItemLabelBinding.inflate(LayoutInflater.from(context)).apply {
