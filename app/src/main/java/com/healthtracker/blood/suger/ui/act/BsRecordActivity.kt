@@ -2,6 +2,8 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
@@ -154,70 +156,58 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
     }
 
     private fun observeViewModel() {
-        lifecycleScope.launch {
-            mViewModel.currentValue.debounce(50L).distinctUntilChanged().collect { value ->
-                updateDisplayValues()
-                updateRangeView()
-                // 使用无动画方式更新刻度尺位置
-                mViewBind.rulerView.setScaleImmediately(value)
+        mViewModel.currentValue.debounce(50L).distinctUntilChanged().collectLifecycle { value ->
+            updateDisplayValues()
+            updateRangeView()
+            // 使用无动画方式更新刻度尺位置
+            mViewBind.rulerView.setScaleImmediately(value)
+        }
+
+        mViewModel.currentUnit.collectLatestLifecycle { unit ->
+            configureRulerForUnit(unit)
+            updateUnitRadioButtons(unit)
+            updateDisplayValues()
+            // 单位切换后，立即设置当前值位置（无动画）
+            mViewBind.rulerView.setScaleImmediately(mViewModel.currentValue.value)
+        }
+
+        mViewModel.currentStatus.collectLatestLifecycle { status ->
+            mViewBind.tvStatus.text = getStatusDisplayText(status.statusType)
+            updateRangeView()
+        }
+
+        mViewModel.isLoading.collectLifecycle { isLoading ->
+            mViewBind.btnSave.isEnabled = !isLoading
+            mViewBind.btnSave.text = if (isLoading) {
+                getString(R.string.saving)
+            } else {
+                getString(R.string.save)
             }
         }
 
-        lifecycleScope.launch {
-            mViewModel.currentUnit.collect { unit ->
-                configureRulerForUnit(unit)
-                updateUnitRadioButtons(unit)
-                updateDisplayValues()
-                // 单位切换后，立即设置当前值位置（无动画）
-                mViewBind.rulerView.setScaleImmediately(mViewModel.currentValue.value)
-            }
+        mViewModel.recordTime.collectLatestLifecycle { recordTime ->
+            // 将Date转换为DateTimePicker需要的参数
+            val calendar = Calendar.getInstance()
+            calendar.time = recordTime
+            mViewBind.dateTimePicker.initView(
+                year = calendar.get(Calendar.YEAR),
+                month = calendar.get(Calendar.MONTH) + 1,
+                day = calendar.get(Calendar.DAY_OF_MONTH),
+                hour = calendar.get(Calendar.HOUR_OF_DAY),
+                minute = calendar.get(Calendar.MINUTE)
+            )
         }
 
         lifecycleScope.launch {
-            mViewModel.currentStatus.collect { status ->
-                mViewBind.tvStatus.text = getStatusDisplayText(status.statusType)
-                updateRangeView()
-            }
-        }
-
-        lifecycleScope.launch {
-            mViewModel.isLoading.collect { isLoading ->
-                mViewBind.btnSave.isEnabled = !isLoading
-                mViewBind.btnSave.text = if (isLoading) {
-                    getString(R.string.saving)
-                } else {
-                    getString(R.string.save)
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            mViewModel.recordTime.collect { recordTime ->
-                // 将Date转换为DateTimePicker需要的参数
-                val calendar = Calendar.getInstance()
-                calendar.time = recordTime
-                mViewBind.dateTimePicker.initView(
-                    year = calendar.get(Calendar.YEAR),
-                    month = calendar.get(Calendar.MONTH) + 1,
-                    day = calendar.get(Calendar.DAY_OF_MONTH),
-                    hour = calendar.get(Calendar.HOUR_OF_DAY),
-                    minute = calendar.get(Calendar.MINUTE)
-                )
-            }
-        }
-
-        lifecycleScope.launch {
-            mViewModel.getHealthTags().collectLifecycle {
+            mViewModel.getHealthTags().collectLatestLifecycle {
                 healthTags.clear()
                 healthTags.addAll(it)
             }
         }
 
-        lifecycleScope.launch {
-            mViewModel.healthTags.collectLifecycle { tagIds ->
-                addTagIds.clear()
-                addTagIds.addAll(tagIds)
-            }
+        mViewModel.healthTags.collectLatestLifecycle { tagIds ->
+            addTagIds.clear()
+            addTagIds.addAll(tagIds)
         }
     }
 
