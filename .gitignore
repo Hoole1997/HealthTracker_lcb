@@ -50,4 +50,5 @@ google-services.json
 /app/release
 /.history
 /.vscode
+/.kotlin
 
