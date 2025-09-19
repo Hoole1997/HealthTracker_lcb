@@ -7,7 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.act.BsRecordActivity
+import com.healthtracker.blood.suger.ui.act.BsRecordActivity
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.enums.BsUnit

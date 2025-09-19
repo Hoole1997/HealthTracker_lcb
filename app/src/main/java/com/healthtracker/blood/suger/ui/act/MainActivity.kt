@@ -1,11 +1,11 @@
-package com.healthtracker.blood.suger
+package com.healthtracker.blood.suger.ui.act
 
 import android.os.Build
 import android.os.Bundle
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
@@ -87,7 +87,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
                 Pair(R.drawable.selector_nav_meds, R.string.meds),
                 Pair(R.drawable.selector_nav_record, R.string.record),
 
-            )
+                )
 
             for (tab in tabs) {
                 addBottomNavTab(this, tab.first, getString(tab.second))

@@ -1,4 +1,4 @@
-package com.healthtracker.blood.suger.act
+package com.healthtracker.blood.suger.ui.act
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.animation.addListener
 import androidx.lifecycle.lifecycleScope
-import com.healthtracker.blood.suger.MainActivity
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity

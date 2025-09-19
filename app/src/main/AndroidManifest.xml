@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".act.SplashActivity"
+            android:name=".ui.act.SplashActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme"
@@ -27,14 +27,14 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.act.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".act.BsRecordActivity"
+            android:name=".ui.act.BsRecordActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
