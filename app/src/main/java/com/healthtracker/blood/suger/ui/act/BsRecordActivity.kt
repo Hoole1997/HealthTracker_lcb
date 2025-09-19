@@ -157,10 +157,13 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
 
     private fun observeViewModel() {
         mViewModel.currentValue.debounce(50L).distinctUntilChanged().collectLifecycle { value ->
-            updateDisplayValues()
-            updateRangeView()
-            // 使用无动画方式更新刻度尺位置
-            mViewBind.rulerView.setScaleImmediately(value)
+            try {
+                updateDisplayValues()
+                updateRangeView()
+                mViewBind.rulerView.setScaleImmediately(value)
+            } catch (e: Exception) {
+                // 记录错误或显示用户友好的错误信息
+            }
         }
 
         mViewModel.currentUnit.collectLatestLifecycle { unit ->
@@ -189,13 +192,15 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             // 将Date转换为DateTimePicker需要的参数
             val calendar = Calendar.getInstance()
             calendar.time = recordTime
-            mViewBind.dateTimePicker.initView(
-                year = calendar.get(Calendar.YEAR),
-                month = calendar.get(Calendar.MONTH) + 1,
-                day = calendar.get(Calendar.DAY_OF_MONTH),
-                hour = calendar.get(Calendar.HOUR_OF_DAY),
-                minute = calendar.get(Calendar.MINUTE)
-            )
+            if(!isDestroyed && !isFinishing){
+                mViewBind.dateTimePicker.initView(
+                    year = calendar.get(Calendar.YEAR),
+                    month = calendar.get(Calendar.MONTH) + 1,
+                    day = calendar.get(Calendar.DAY_OF_MONTH),
+                    hour = calendar.get(Calendar.HOUR_OF_DAY),
+                    minute = calendar.get(Calendar.MINUTE)
+                )
+            }
         }
 
         lifecycleScope.launch {
