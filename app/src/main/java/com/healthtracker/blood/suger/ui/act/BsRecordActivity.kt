@@ -2,8 +2,6 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
@@ -14,10 +12,10 @@ import com.healthtracker.blood.suger.ui.dialog.LabelDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
+import com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
-import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,20 +59,23 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                 finish()
             }
 
-            tvLabel.clickWithDuration {
-                val addTags = if(addTagIds.isEmpty()) null else {
-                    val tempTags = mutableListOf<HealthTag>()
-                    for(id in addTagIds){
-                        healthTags.find { it.id == id }?.let {
-                            tempTags.add(it)
+            // 设置DateTimeSelectionView的标签点击监听
+            dateTimeSelectionView.setOnLabelClickListener(object : DateTimeSelectionView.OnLabelClickListener {
+                override fun onLabelClick() {
+                    val addTags = if(addTagIds.isEmpty()) null else {
+                        val tempTags = mutableListOf<HealthTag>()
+                        for(id in addTagIds){
+                            healthTags.find { it.id == id }?.let {
+                                tempTags.add(it)
+                            }
                         }
+                        tempTags
                     }
-                    tempTags
+                    LabelDialog.show(supportFragmentManager,healthTags,addTags){
+                        mViewModel.updateTags(it)
+                    }
                 }
-                LabelDialog.show(supportFragmentManager,healthTags,addTags){
-                    mViewModel.updateTags(it)
-                }
-            }
+            })
 
             setupRulerView()
             setupUnitSwitcher()
@@ -132,8 +133,8 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
     private fun setupSaveButton() {
         mViewBind.btnSave.click {
             lifecycleScope.launch {
-                // 保存前先获取DateTimePicker的时间并更新到ViewModel
-                val selectedDateTime = mViewBind.dateTimePicker.getDateTime()
+                // 保存前先获取DateTimeSelectionView的时间并更新到ViewModel
+                val selectedDateTime = mViewBind.dateTimeSelectionView.getDateTimePicker().getDateTime()
                 val currentTime = Calendar.getInstance()
                 val selectedCalendar = selectedDateTime.toCalendar()
                 // 保留当前时间的秒和毫秒
@@ -193,7 +194,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             val calendar = Calendar.getInstance()
             calendar.time = recordTime
             if(!isDestroyed && !isFinishing){
-                mViewBind.dateTimePicker.initView(
+                mViewBind.dateTimeSelectionView.getDateTimePicker().initView(
                     year = calendar.get(Calendar.YEAR),
                     month = calendar.get(Calendar.MONTH) + 1,
                     day = calendar.get(Calendar.DAY_OF_MONTH),

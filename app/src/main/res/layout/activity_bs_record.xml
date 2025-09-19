@@ -206,44 +206,15 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
+                android:id="@+id/dateTimeSelectionView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_rect_white_12"
-                android:layout_marginHorizontal="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_12"
                 app:layout_constraintTop_toBottomOf="@id/cl_value_select"
-                android:padding="@dimen/dp_16">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextViewFont_RobotoBold"
-                    android:text="@string/date_time"
-                    android:textColor="@color/t1"
-                    android:textSize="@dimen/sp_16"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:text="@string/label"
-                    android:textColor="@color/c5"
-                    android:textSize="@dimen/sp_14"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_date"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_date"/>
-                <com.healthtracker.blood.suger.ui.weight.DateTimePicker
-                    android:id="@+id/dateTimePicker"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
-                    app:layout_constraintTop_toBottomOf="@id/tv_date"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:titleText="@string/date_time"
+                app:labelText="@string/label"
+                app:showLabel="true" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

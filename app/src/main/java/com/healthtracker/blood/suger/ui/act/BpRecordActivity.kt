@@ -3,10 +3,12 @@ package com.healthtracker.blood.suger.ui.act
 import android.os.Bundle
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
+import com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBinding>() {
@@ -17,8 +19,6 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
 
     override fun getVMModelClass() = BpRecordViewModel::class.java
 
-//    private val sysArrays = resources.getStringArray(R.array.systolic).toList()
-//    private val pulseArrays = resources.getStringArray(R.array.pulse).toList()
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mViewBind){
@@ -50,9 +50,25 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
             npvPulse.setOnValueChangedListener { _, _, _ ->
                 mViewModel.updatePulseRate(npvPulse.contentByCurrValue.toInt())
             }
+            
+            // 设置保存按钮点击事件
+            setupSaveButton()
         }
 
         observeViewModel()
+    }
+    
+    /**
+     * 设置保存按钮
+     */
+    private fun setupSaveButton() {
+        // 这里需要添加保存按钮到布局中，或者使用现有的保存机制
+        // 暂时通过DateTimeSelectionView的时间变化来触发保存逻辑
+        mViewBind.dateTimeSelectionView.setOnDateTimeSelectedListener(object : DateTimeSelectionView.OnDateTimeSelectedListener {
+            override fun onDateTimeSelected(calendar: Calendar) {
+                mViewModel.updateRecordTime(calendar.time)
+            }
+        })
     }
 
     private fun observeViewModel() {
@@ -88,6 +104,26 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
                 //将当前值的位置设置给滚动控件
                 npvPulse.value = it
             }
+        }
+        
+        // 观察记录时间变化
+        mViewModel.recordTime.collectLatestLifecycle { recordTime ->
+            val calendar = Calendar.getInstance()
+            calendar.time = recordTime
+            if(!isDestroyed && !isFinishing){
+                mViewBind.dateTimeSelectionView.getDateTimePicker().initView(
+                    year = calendar.get(Calendar.YEAR),
+                    month = calendar.get(Calendar.MONTH) + 1,
+                    day = calendar.get(Calendar.DAY_OF_MONTH),
+                    hour = calendar.get(Calendar.HOUR_OF_DAY),
+                    minute = calendar.get(Calendar.MINUTE)
+                )
+            }
+        }
+        
+        // 观察加载状态
+        mViewModel.isLoading.collectLatestLifecycle { isLoading ->
+            // 可以在这里显示加载状态
         }
     }
 

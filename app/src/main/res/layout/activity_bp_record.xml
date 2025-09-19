@@ -49,148 +49,180 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_picker_container"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:background="@drawable/bg_rect_white_12"
-        android:paddingHorizontal="@dimen/dp_15"
-        android:paddingVertical="@dimen/dp_20"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/action_bar"
-        android:layout_marginHorizontal="@dimen/dp_16">
+        android:layout_height="@dimen/dp_0"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/sp_16"
+        android:paddingBottom="@dimen/dp_78"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_bar">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_systolic"
-            style="@style/TextViewFont_RobotoRegular"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:includeFontPadding="false"
-
-            android:text="@string/systolic"
-            android:textColor="@color/t1"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintEnd_toStartOf="@id/tv_diastolic"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_diastolic"
-            style="@style/TextViewFont_RobotoRegular"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:text="@string/diastolic"
-            android:textColor="@color/t1"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintEnd_toStartOf="@id/tv_pulse"
-            app:layout_constraintStart_toEndOf="@id/tv_systolic"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_pulse"
-            style="@style/TextViewFont_RobotoRegular"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:text="@string/pulse"
-            android:textColor="@color/t1"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_diastolic"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <com.peppa.widget.picker.NumberPickerView
-            android:id="@+id/npv_systolic"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            app:layout_constraintEnd_toEndOf="@id/tv_systolic"
-            app:layout_constraintStart_toStartOf="@id/tv_systolic"
-            app:layout_constraintTop_toBottomOf="@id/tv_systolic"
-            app:npv_ItemPaddingVertical="@dimen/dp_4"
-            app:npv_ShowDivider="false"
-            app:npv_TextArray="@array/systolic"
-            app:npv_TextColorNormal="@color/color_BFBFBF"
-            app:npv_TextColorSelected="@color/c5"
-            app:npv_TextSizeNormal="@dimen/sp_24"
-            app:npv_TextSizeSelected="@dimen/sp_32"
-            app:npv_WrapSelectorWheel="false"
-            tools:layout_editor_absoluteX="0dp" />
-
-        <com.peppa.widget.picker.NumberPickerView
-            android:id="@+id/npv_diastolic"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            app:layout_constraintEnd_toEndOf="@id/tv_diastolic"
-            app:layout_constraintStart_toStartOf="@id/tv_diastolic"
-            app:layout_constraintTop_toBottomOf="@id/tv_diastolic"
-            app:npv_ItemPaddingVertical="@dimen/dp_4"
-            app:npv_ShowDivider="false"
-            app:npv_TextArray="@array/systolic"
-            app:npv_TextColorNormal="@color/color_BFBFBF"
-            app:npv_TextColorSelected="@color/c5"
-            app:npv_TextSizeNormal="@dimen/sp_24"
-            app:npv_TextSizeSelected="@dimen/sp_32"
-            app:npv_WrapSelectorWheel="false"
-            tools:layout_editor_absoluteX="0dp" />
-
-        <com.peppa.widget.picker.NumberPickerView
-            android:id="@+id/npv_pulse"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-
-            app:layout_constraintEnd_toEndOf="@id/tv_pulse"
-            app:layout_constraintStart_toStartOf="@id/tv_pulse"
-            app:layout_constraintTop_toBottomOf="@id/tv_pulse"
-            app:npv_ItemPaddingVertical="@dimen/dp_4"
-            app:npv_ShowDivider="false"
-            app:npv_TextArray="@array/pulse"
-            app:npv_TextColorNormal="@color/color_BFBFBF"
-            app:npv_TextColorSelected="@color/c5"
-            app:npv_TextSizeNormal="@dimen/sp_24"
-            app:npv_TextSizeSelected="@dimen/sp_32"
-            app:npv_WrapSelectorWheel="false"
-            tools:layout_editor_absoluteX="0dp" />
-
-        <!-- 顶部渐变遮罩 -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_40"
-            android:background="@drawable/gradient_npv_top"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/npv_diastolic" />
-
-        <!-- 底部渐变遮罩 -->
-        <View
-            android:id="@+id/v_bottom_mask"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_40"
-            android:background="@drawable/gradient_npv_bottom"
-            app:layout_constraintBottom_toBottomOf="@id/npv_diastolic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-        <com.healthtracker.blood.suger.ui.weight.BloodPressureStatusView
-            android:id="@+id/bp_status_view"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_picker_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@drawable/bg_rect_white_12"
+                android:paddingHorizontal="@dimen/dp_15"
+                android:paddingVertical="@dimen/dp_20"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_systolic"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@string/systolic"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintEnd_toStartOf="@id/tv_diastolic"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_diastolic"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@string/diastolic"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintEnd_toStartOf="@id/tv_pulse"
+                    app:layout_constraintStart_toEndOf="@id/tv_systolic"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_pulse"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@string/pulse"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_diastolic"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/v_bottom_mask" />
+                <com.peppa.widget.picker.NumberPickerView
+                    android:id="@+id/npv_systolic"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    app:layout_constraintEnd_toEndOf="@id/tv_systolic"
+                    app:layout_constraintStart_toStartOf="@id/tv_systolic"
+                    app:layout_constraintTop_toBottomOf="@id/tv_systolic"
+                    app:npv_ItemPaddingVertical="@dimen/dp_4"
+                    app:npv_ShowDivider="false"
+                    app:npv_TextArray="@array/systolic"
+                    app:npv_TextColorNormal="@color/color_BFBFBF"
+                    app:npv_TextColorSelected="@color/c5"
+                    app:npv_TextSizeNormal="@dimen/sp_24"
+                    app:npv_TextSizeSelected="@dimen/sp_32"
+                    app:npv_WrapSelectorWheel="false"
+                    tools:layout_editor_absoluteX="0dp" />
 
+                <com.peppa.widget.picker.NumberPickerView
+                    android:id="@+id/npv_diastolic"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    app:layout_constraintEnd_toEndOf="@id/tv_diastolic"
+                    app:layout_constraintStart_toStartOf="@id/tv_diastolic"
+                    app:layout_constraintTop_toBottomOf="@id/tv_diastolic"
+                    app:npv_ItemPaddingVertical="@dimen/dp_4"
+                    app:npv_ShowDivider="false"
+                    app:npv_TextArray="@array/systolic"
+                    app:npv_TextColorNormal="@color/color_BFBFBF"
+                    app:npv_TextColorSelected="@color/c5"
+                    app:npv_TextSizeNormal="@dimen/sp_24"
+                    app:npv_TextSizeSelected="@dimen/sp_32"
+                    app:npv_WrapSelectorWheel="false"
+                    tools:layout_editor_absoluteX="0dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.peppa.widget.picker.NumberPickerView
+                    android:id="@+id/npv_pulse"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
 
+                    app:layout_constraintEnd_toEndOf="@id/tv_pulse"
+                    app:layout_constraintStart_toStartOf="@id/tv_pulse"
+                    app:layout_constraintTop_toBottomOf="@id/tv_pulse"
+                    app:npv_ItemPaddingVertical="@dimen/dp_4"
+                    app:npv_ShowDivider="false"
+                    app:npv_TextArray="@array/pulse"
+                    app:npv_TextColorNormal="@color/color_BFBFBF"
+                    app:npv_TextColorSelected="@color/c5"
+                    app:npv_TextSizeNormal="@dimen/sp_24"
+                    app:npv_TextSizeSelected="@dimen/sp_32"
+                    app:npv_WrapSelectorWheel="false"
+                    tools:layout_editor_absoluteX="0dp" />
 
+                <!-- 顶部渐变遮罩 -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:background="@drawable/gradient_npv_top"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/npv_diastolic" />
+
+                <!-- 底部渐变遮罩 -->
+                <View
+                    android:id="@+id/v_bottom_mask"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:background="@drawable/gradient_npv_bottom"
+                    app:layout_constraintBottom_toBottomOf="@id/npv_diastolic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <com.healthtracker.blood.suger.ui.weight.BloodPressureStatusView
+                    android:id="@+id/bp_status_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/v_bottom_mask" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
+                android:id="@+id/dateTimeSelectionView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                app:labelText="@string/label"
+                app:layout_constraintTop_toBottomOf="@id/cl_picker_container"
+                app:showLabel="true"
+                app:titleText="@string/date_time" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save"
+        style="@style/MaterialButton.b1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginHorizontal="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:text="@string/save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

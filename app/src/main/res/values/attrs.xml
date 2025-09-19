@@ -71,4 +71,11 @@
         <attr name="bpIndicatorCornerRadius" format="dimension" />    <!--指示器圆角半径-->
     </declare-styleable>
 
+    <!-- DateTimeSelectionView 自定义属性 -->
+    <declare-styleable name="DateTimeSelectionView">
+        <attr name="titleText" format="string" />          <!--标题文本-->
+        <attr name="labelText" format="string" />          <!--标签文本-->
+        <attr name="showLabel" format="boolean" />         <!--是否显示标签-->
+    </declare-styleable>
+
 </resources>
