@@ -3,7 +3,7 @@ package com.healthtracker.blood.suger.ui.act
 import android.os.Bundle
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
-import com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
+
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.FontUtils
@@ -64,11 +64,9 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
     private fun setupSaveButton() {
         // 这里需要添加保存按钮到布局中，或者使用现有的保存机制
         // 暂时通过DateTimeSelectionView的时间变化来触发保存逻辑
-        mViewBind.dateTimeSelectionView.setOnDateTimeSelectedListener(object : DateTimeSelectionView.OnDateTimeSelectedListener {
-            override fun onDateTimeSelected(calendar: Calendar) {
-                mViewModel.updateRecordTime(calendar.time)
-            }
-        })
+        mViewBind.dateTimeSelectionView.setOnDateTimeSelectedListener { calendar ->
+            mViewModel.updateRecordTime(calendar.time)
+        }
     }
 
     private fun observeViewModel() {

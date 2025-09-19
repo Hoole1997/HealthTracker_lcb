@@ -19,8 +19,7 @@ class DateTimeSelectionView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private val binding: LayoutDatetimeSelectionBinding
-    private var onDateTimeSelectedListener: OnDateTimeSelectedListener? = null
-    private var onLabelClickListener: OnLabelClickListener? = null
+
 
     // 自定义属性
     private var titleText: String = ""
@@ -79,13 +78,13 @@ class DateTimeSelectionView @JvmOverloads constructor(
     private fun setupListeners() {
         // 标签点击监听
         binding.tvLabel.setOnClickListener {
-            onLabelClickListener?.onLabelClick()
+            onLabelClickListener?.invoke()
         }
         
         // 设置时间变化监听器
         binding.dateTimePicker.setOnValueChangeListener { picker, oldVal, newVal ->
             val dateTime = binding.dateTimePicker.getDateTime()
-            onDateTimeSelectedListener?.onDateTimeSelected(dateTime.toCalendar())
+            onDateTimeSelectedListener?.invoke(dateTime.toCalendar())
         }
     }
 
@@ -143,28 +142,18 @@ class DateTimeSelectionView @JvmOverloads constructor(
     /**
      * 设置时间选择监听器
      */
-    fun setOnDateTimeSelectedListener(listener: OnDateTimeSelectedListener?) {
-        this.onDateTimeSelectedListener = listener
+    fun setOnDateTimeSelectedListener(listener: ((Calendar) -> Unit)?) {
+        onDateTimeSelectedListener = listener
     }
 
     /**
      * 设置标签点击监听器
      */
-    fun setOnLabelClickListener(listener: OnLabelClickListener?) {
-        this.onLabelClickListener = listener
+    fun setOnLabelClickListener(listener: (() -> Unit)?) {
+        onLabelClickListener = listener
     }
 
-    /**
-     * 时间选择监听接口
-     */
-    interface OnDateTimeSelectedListener {
-        fun onDateTimeSelected(calendar: Calendar)
-    }
-
-    /**
-     * 标签点击监听接口
-     */
-    interface OnLabelClickListener {
-        fun onLabelClick()
-    }
+    // 使用lambda表达式替代接口
+    private var onDateTimeSelectedListener: ((Calendar) -> Unit)? = null
+    private var onLabelClickListener: (() -> Unit)? = null
 }

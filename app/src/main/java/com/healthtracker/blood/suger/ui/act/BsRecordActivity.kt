@@ -12,7 +12,7 @@ import com.healthtracker.blood.suger.ui.dialog.LabelDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
-import com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
+
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
@@ -60,22 +60,20 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             }
 
             // 设置DateTimeSelectionView的标签点击监听
-            dateTimeSelectionView.setOnLabelClickListener(object : DateTimeSelectionView.OnLabelClickListener {
-                override fun onLabelClick() {
-                    val addTags = if(addTagIds.isEmpty()) null else {
-                        val tempTags = mutableListOf<HealthTag>()
-                        for(id in addTagIds){
-                            healthTags.find { it.id == id }?.let {
-                                tempTags.add(it)
-                            }
+            dateTimeSelectionView.setOnLabelClickListener {
+                val addTags = if(addTagIds.isEmpty()) null else {
+                    val tempTags = mutableListOf<HealthTag>()
+                    for(id in addTagIds){
+                        healthTags.find { it.id == id }?.let {
+                            tempTags.add(it)
                         }
-                        tempTags
                     }
-                    LabelDialog.show(supportFragmentManager,healthTags,addTags){
-                        mViewModel.updateTags(it)
-                    }
+                    tempTags
                 }
-            })
+                LabelDialog.show(supportFragmentManager,healthTags,addTags){
+                    mViewModel.updateTags(it)
+                }
+            }
 
             setupRulerView()
             setupUnitSwitcher()
