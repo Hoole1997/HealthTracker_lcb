@@ -1,10 +1,10 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.entity.BloodSugarTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
-import com.healthtracker.blood.suger.data.repository.HealthTagRepository
+import com.healthtracker.blood.suger.data.repository.BloodSugarTagRepository
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseViewModel
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BsRecordViewModel @Inject constructor(
     private val bloodSugarRepository: BloodSugarRepository,
-    private val healthTagRepository: HealthTagRepository
+    private val bloodSugarTagRepository: BloodSugarTagRepository
 ) : BaseViewModel() {
 
     // 编辑模式的记录ID
@@ -64,7 +64,7 @@ class BsRecordViewModel @Inject constructor(
             initializeWithDefaults()
         }
         viewModelScope.launch(IO){
-            healthTagRepository.initializePredefinedTags()
+            bloodSugarTagRepository.initializePredefinedTags()
         }
     }
 
@@ -113,7 +113,7 @@ class BsRecordViewModel @Inject constructor(
         _currentValue.value = value
     }
 
-    fun updateTags(tags:List<HealthTag>){
+    fun updateTags(tags:List<BloodSugarTag>){
         _healthTags.value = tags.map { it.id }
     }
 
@@ -195,7 +195,7 @@ class BsRecordViewModel @Inject constructor(
     private fun convertMeasurementTagToBloodSugarStatus(status: Int) = BloodSugarStatus.entries.first { it.statusType == status }
 
 
-   suspend fun getHealthTags() = healthTagRepository.getAllTags().stateIn(viewModelScope)
+   suspend fun getHealthTags() = bloodSugarTagRepository.getAllTags().stateIn(viewModelScope)
 
 
 

@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.entity.BloodSugarTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.enum.getStatusStringRes
@@ -30,7 +30,7 @@ import java.util.Calendar
 class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
 
 
-    private val healthTags = mutableListOf<HealthTag>()
+    private val healthTags = mutableListOf<BloodSugarTag>()
     private val addTagIds = mutableListOf<Long>()
 
     companion object {
@@ -62,7 +62,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             // 设置DateTimeSelectionView的标签点击监听
             dateTimeSelectionView.setOnLabelClickListener {
                 val addTags = if(addTagIds.isEmpty()) null else {
-                    val tempTags = mutableListOf<HealthTag>()
+                    val tempTags = mutableListOf<BloodSugarTag>()
                     for(id in addTagIds){
                         healthTags.find { it.id == id }?.let {
                             tempTags.add(it)

@@ -2,9 +2,9 @@ package com.healthtracker.blood.suger.data.repository
 
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodPressureStatistics
-import com.healthtracker.blood.suger.data.dao.HealthTagDao
+import com.healthtracker.blood.suger.data.dao.BloodPressureTagDao
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
-import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.entity.BloodPressureTag
 import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
 import com.healthtracker.blood.suger.data.enums.PulseCategory
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
@@ -21,7 +21,7 @@ import javax.inject.Singleton
 @Singleton
 class BloodPressureRepository @Inject constructor(
     private val bloodPressureDao: BloodPressureDao,
-    private val healthTagDao: HealthTagDao
+    private val bloodPressureTagDao: BloodPressureTagDao
 ) {
 
     /**
@@ -200,10 +200,10 @@ class BloodPressureRepository @Inject constructor(
      * @param record 血压记录
      * @return 标签列表
      */
-    suspend fun getRecordTags(record: BloodPressureRecord): List<HealthTag> {
-        val tagIds = record.getTagIdList()
+    suspend fun getRecordTags(record: BloodPressureRecord): List<BloodPressureTag> {
+        val tagIds = TagUtils.stringToTagIds(record.tagIds)
         return if (tagIds.isNotEmpty()) {
-            healthTagDao.getByIds(tagIds)
+            bloodPressureTagDao.getByIds(tagIds)
         } else {
             emptyList()
         }

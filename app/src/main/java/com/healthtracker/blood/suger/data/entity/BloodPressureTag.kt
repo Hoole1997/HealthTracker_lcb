@@ -8,11 +8,11 @@ import com.healthtracker.blood.suger.R
 import java.util.*
 
 /**
- * 健康标签数据实体
- * 对应数据表：health_tags
+ * 血压标签数据实体
+ * 对应数据表：blood_pressure_tags
  */
-@Entity(tableName = "health_tags")
-data class HealthTag(
+@Entity(tableName = "blood_pressure_tags")
+data class BloodPressureTag(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     val id: Long = 0,
@@ -52,12 +52,12 @@ data class HealthTag(
 
     companion object {
         /**
-         * 创建预定义标签的工厂方法
+         * 创建预定义血压标签的工厂方法
          * @param name 标签名称
-         * @return 预定义标签实例
+         * @return 预定义血压标签实例
          */
-        fun createPredefined(name: String): HealthTag {
-            return HealthTag(
+        fun createPredefined(name: String): BloodPressureTag {
+            return BloodPressureTag(
                 name = name,
                 isPreDefined = 1,
                 isDelete = 0
@@ -66,12 +66,12 @@ data class HealthTag(
         }
 
         /**
-         * 创建自定义标签的工厂方法
+         * 创建自定义血压标签的工厂方法
          * @param name 标签名称
-         * @return 自定义标签实例
+         * @return 自定义血压标签实例
          */
-        fun createCustom(name: String): HealthTag {
-            return HealthTag(
+        fun createCustom(name: String): BloodPressureTag {
+            return BloodPressureTag(
                 name = name,
                 isPreDefined = 0,
                 isDelete = 0
@@ -79,16 +79,16 @@ data class HealthTag(
         }
 
         /**
-         * 获取所有预定义标签名称
-         * @return 预定义标签名称列表
+         * 获取所有预定义血压标签名称
+         * @return 预定义血压标签名称列表
          */
-        fun getPredefinedTagNames() = App.INSTANCE.resources.getStringArray(R.array.blood_sugar_labels)
+        fun getPredefinedTagNames() = App.INSTANCE.resources.getStringArray(R.array.blood_pressure_labels)
 
         /**
-         * 创建所有预定义标签
-         * @return 预定义标签实例列表
+         * 创建所有预定义血压标签
+         * @return 预定义血压标签实例列表
          */
-        fun createAllPredefinedTags(): List<HealthTag> {
+        fun createAllPredefinedTags(): List<BloodPressureTag> {
             return getPredefinedTagNames().map { name ->
                 createPredefined(name)
             }

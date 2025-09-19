@@ -1,93 +1,93 @@
 package com.healthtracker.blood.suger.data.dao
 
 import androidx.room.*
-import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.entity.BloodSugarTag
 import kotlinx.coroutines.flow.Flow
 
 /**
- * 健康标签数据访问接口
+ * 血糖标签数据访问接口
  */
 @Dao
-interface HealthTagDao {
+interface BloodSugarTagDao {
 
     /**
-     * 插入标签
-     * @param tag 标签实体
+     * 插入血糖标签
+     * @param tag 血糖标签实体
      * @return 插入的标签ID
      */
     @Insert
-    suspend fun insert(tag: HealthTag): Long
+    suspend fun insert(tag: BloodSugarTag): Long
 
     /**
-     * 批量插入标签
-     * @param tags 标签列表
+     * 批量插入血糖标签
+     * @param tags 血糖标签列表
      * @return 插入的标签ID列表
      */
     @Insert
-    suspend fun insertAll(tags: List<HealthTag>): List<Long>
+    suspend fun insertAll(tags: List<BloodSugarTag>): List<Long>
 
     /**
-     * 更新标签
-     * @param tag 标签实体
+     * 更新血糖标签
+     * @param tag 血糖标签实体
      */
     @Update
-    suspend fun update(tag: HealthTag)
+    suspend fun update(tag: BloodSugarTag)
 
 
     /**
-     * 根据ID获取标签
+     * 根据ID获取血糖标签
      * @param tagId 标签ID
-     * @return 标签实体
+     * @return 血糖标签实体
      */
-    @Query("SELECT * FROM health_tags WHERE id = :tagId")
-    suspend fun getById(tagId: Long): HealthTag?
+    @Query("SELECT * FROM blood_sugar_tags WHERE id = :tagId")
+    suspend fun getById(tagId: Long): BloodSugarTag?
 
     /**
-     * 根据ID列表获取标签
+     * 根据ID列表获取血糖标签
      * @param tagIds 标签ID列表
-     * @return 标签列表
+     * @return 血糖标签列表
      */
-    @Query("SELECT * FROM health_tags WHERE id IN (:tagIds)")
-    suspend fun getByIds(tagIds: List<Long>): List<HealthTag>
+    @Query("SELECT * FROM blood_sugar_tags WHERE id IN (:tagIds)")
+    suspend fun getByIds(tagIds: List<Long>): List<BloodSugarTag>
 
     /**
-     * 获取所有标签
-     * @return 标签流
+     * 获取所有血糖标签
+     * @return 血糖标签流
      */
-    @Query("SELECT * FROM health_tags WHERE is_delete = 0 ORDER BY id ASC")
-    fun getAllTags(): Flow<List<HealthTag>>
+    @Query("SELECT * FROM blood_sugar_tags WHERE is_delete = 0 ORDER BY id ASC")
+    fun getAllTags(): Flow<List<BloodSugarTag>>
 
     /**
-     * 根据名称查找标签
+     * 根据名称查找血糖标签
      * @param name 标签名称
-     * @return 标签实体
+     * @return 血糖标签实体
      */
-    @Query("SELECT * FROM health_tags WHERE name = :name AND is_predefined = 0 LIMIT 1")
-    suspend fun getCustomByName(name: String): HealthTag?
+    @Query("SELECT * FROM blood_sugar_tags WHERE name = :name AND is_predefined = 0 LIMIT 1")
+    suspend fun getCustomByName(name: String): BloodSugarTag?
 
 
     /**
-     * 根据名称查找标签
+     * 根据名称查找血糖标签
      * @param name 标签名称
-     * @return 标签实体
+     * @return 血糖标签实体
      */
-    @Query("SELECT * FROM health_tags WHERE name = :name LIMIT 1")
-    suspend fun getByName(name: String): HealthTag?
+    @Query("SELECT * FROM blood_sugar_tags WHERE name = :name LIMIT 1")
+    suspend fun getByName(name: String): BloodSugarTag?
 
 
     /**
-     * 检查标签名称是否已存在
+     * 检查血糖标签名称是否已存在
      * @param name 标签名称
      * @return 是否存在
      */
-    @Query("SELECT COUNT(*) > 0 FROM health_tags WHERE name = :name AND is_predefined = 0")
+    @Query("SELECT COUNT(*) > 0 FROM blood_sugar_tags WHERE name = :name AND is_predefined = 0")
     suspend fun isNameExists(name: String): Boolean
 
     /**
-     * 获取自定义标签数量
-     * @return 自定义标签数量
+     * 获取自定义血糖标签数量
+     * @return 自定义血糖标签数量
      */
-    @Query("SELECT COUNT(*) FROM health_tags WHERE is_predefined = 0")
+    @Query("SELECT COUNT(*) FROM blood_sugar_tags WHERE is_predefined = 0")
     suspend fun getCustomTagCount(): Int
 
 //    /**

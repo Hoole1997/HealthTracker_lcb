@@ -10,10 +10,12 @@ import android.content.Context
 import com.healthtracker.blood.suger.data.converter.DateTimeConverter
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
-import com.healthtracker.blood.suger.data.dao.HealthTagDao
+import com.healthtracker.blood.suger.data.dao.BloodSugarTagDao
+import com.healthtracker.blood.suger.data.dao.BloodPressureTagDao
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
-import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.entity.BloodSugarTag
+import com.healthtracker.blood.suger.data.entity.BloodPressureTag
 
 /**
  * 健康数据Room数据库
@@ -28,9 +30,10 @@ import com.healthtracker.blood.suger.data.entity.HealthTag
     entities = [
         BloodSugarRecord::class,
         BloodPressureRecord::class,
-        HealthTag::class
+        BloodSugarTag::class,
+        BloodPressureTag::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -47,9 +50,14 @@ abstract class HealthDatabase : RoomDatabase() {
     abstract fun bloodPressureDao(): BloodPressureDao
 
     /**
-     * 获取健康标签DAO
+     * 获取血糖标签DAO
      */
-    abstract fun healthTagDao(): HealthTagDao
+    abstract fun bloodSugarTagDao(): BloodSugarTagDao
+
+    /**
+     * 获取血压标签DAO
+     */
+    abstract fun bloodPressureTagDao(): BloodPressureTagDao
 
     companion object {
         /**
@@ -77,7 +85,6 @@ abstract class HealthDatabase : RoomDatabase() {
                     HealthDatabase::class.java,
                     DATABASE_NAME
                 )
-                    .addCallback(DatabaseCallback)
                     // 如果需要支持数据库升级，可以添加migration
                     // .addMigrations(MIGRATION_1_2)
                     .build()
@@ -86,33 +93,6 @@ abstract class HealthDatabase : RoomDatabase() {
             }
         }
 
-        /**
-         * 数据库创建和打开回调
-         */
-        private object DatabaseCallback : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                // 数据库创建时的初始化操作
-                // 可以在这里插入初始数据或创建索引
-
-                // 创建查询优化索引
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_record_time ON blood_sugar_records(record_time)")
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_sugar_records_show_in_chart ON blood_sugar_records(show_in_chart)")
-
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_record_time ON blood_pressure_records(record_time)")
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_show_in_chart ON blood_pressure_records(show_in_chart)")
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_blood_pressure_records_bp_category ON blood_pressure_records(bp_category)")
-
-                // 标签表索引
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_health_tags_is_predefined ON health_tags(is_predefined)")
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_health_tags_name ON health_tags(name)")
-            }
-
-            override fun onOpen(db: SupportSQLiteDatabase) {
-                super.onOpen(db)
-                // 数据库每次打开时的操作
-            }
-        }
 
         /**
          * 示例数据库迁移

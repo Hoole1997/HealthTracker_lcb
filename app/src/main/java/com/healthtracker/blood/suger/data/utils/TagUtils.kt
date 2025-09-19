@@ -1,6 +1,6 @@
 package com.healthtracker.blood.suger.data.utils
 
-import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.entity.BloodSugarTag
 
 /**
  * 标签工具类
@@ -88,7 +88,7 @@ object TagUtils {
      * @return 显示文本
      */
     fun getTagDisplayText(
-        tags: List<HealthTag>,
+        tags: List<BloodSugarTag>,
         maxDisplay: Int = 3,
         separator: String = "、"
     ): String {
@@ -108,7 +108,7 @@ object TagUtils {
      * @param tags 标签列表
      * @return 预定义标签列表
      */
-    fun filterPredefinedTags(tags: List<HealthTag>): List<HealthTag> {
+    fun filterPredefinedTags(tags: List<BloodSugarTag>): List<BloodSugarTag> {
         return tags.filter { it.isPredefinedTag() }
     }
 
@@ -117,7 +117,7 @@ object TagUtils {
      * @param tags 标签列表
      * @return 自定义标签列表
      */
-    fun filterCustomTags(tags: List<HealthTag>): List<HealthTag> {
+    fun filterCustomTags(tags: List<BloodSugarTag>): List<BloodSugarTag> {
         return tags.filter { it.isCustomTag() }
     }
 
@@ -126,7 +126,7 @@ object TagUtils {
      * @param tags 标签列表
      * @return 分组后的标签Map，key为是否预定义(true/false)
      */
-    fun groupTagsByType(tags: List<HealthTag>): Map<Boolean, List<HealthTag>> {
+    fun groupTagsByType(tags: List<BloodSugarTag>): Map<Boolean, List<BloodSugarTag>> {
         return tags.groupBy { it.isPredefinedTag() }
     }
 

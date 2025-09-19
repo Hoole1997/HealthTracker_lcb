@@ -7,20 +7,20 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.entity.BloodSugarTag
 import com.healthtracker.blood.suger.databinding.DialogLabelSelectBinding
 import com.healthtracker.blood.suger.databinding.ItemLabelBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 
-class LabelDialog(private val datas: List<HealthTag>?, private val addTags:List<HealthTag>?, private val onSave : ((List<HealthTag>) -> Unit)? = null) : BaseBottomSheetDialogFragment<DialogLabelSelectBinding>(){
+class LabelDialog(private val datas: List<BloodSugarTag>?, private val addTags:List<BloodSugarTag>?, private val onSave : ((List<BloodSugarTag>) -> Unit)? = null) : BaseBottomSheetDialogFragment<DialogLabelSelectBinding>(){
 
 
     constructor() : this(datas = null,addTags = null, onSave = null)
     private val selectLabels = addTags?.toMutableList() ?: mutableListOf()
     companion object{
-        fun show(fragmentManager: FragmentManager, healthTags:List<HealthTag>, addTags:List<HealthTag>?, onSave : (List<HealthTag>) -> Unit){
+        fun show(fragmentManager: FragmentManager, healthTags:List<BloodSugarTag>, addTags:List<BloodSugarTag>?, onSave : (List<BloodSugarTag>) -> Unit){
             LabelDialog(healthTags,addTags,onSave).show(fragmentManager)
         }
     }

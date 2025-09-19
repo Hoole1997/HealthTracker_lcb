@@ -1,7 +1,7 @@
 package com.healthtracker.blood.suger.data.repository
 
-import com.healthtracker.blood.suger.data.dao.HealthTagDao
-import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.dao.BloodSugarTagDao
+import com.healthtracker.blood.suger.data.entity.BloodSugarTag
 import com.healthtracker.blood.suger.data.utils.TagUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -9,12 +9,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * 健康标签数据仓库
+ * 血糖标签数据仓库
  * 提供标签数据的业务逻辑封装和数据访问
  */
 @Singleton
-class HealthTagRepository @Inject constructor(
-    private val healthTagDao: HealthTagDao
+class BloodSugarTagRepository @Inject constructor(
+    private val bloodSugarTagDao: BloodSugarTagDao
 ) {
 
     /**
@@ -23,10 +23,10 @@ class HealthTagRepository @Inject constructor(
      */
     suspend fun initializePredefinedTags() {
         // 检查是否已经有预定义标签
-        val predefinedTags = healthTagDao.getAllTags().first()
+        val predefinedTags = bloodSugarTagDao.getAllTags().first()
         if (predefinedTags.isEmpty()) {
-            val predefinedTagList = HealthTag.createAllPredefinedTags()
-            healthTagDao.insertAll(predefinedTagList)
+            val predefinedTagList = BloodSugarTag.createAllPredefinedTags()
+            bloodSugarTagDao.insertAll(predefinedTagList)
         }
     }
 
@@ -34,8 +34,8 @@ class HealthTagRepository @Inject constructor(
      * 获取所有标签
      * @return Flow形式的标签列表（预定义标签在前）
      */
-    fun getAllTags(): Flow<List<HealthTag>> {
-        return healthTagDao.getAllTags()
+    fun getAllTags(): Flow<List<BloodSugarTag>> {
+        return bloodSugarTagDao.getAllTags()
     }
 
     /**
@@ -43,8 +43,8 @@ class HealthTagRepository @Inject constructor(
      * @param tagId 标签ID
      * @return 标签实体，可能为null
      */
-    suspend fun getTagById(tagId: Long): HealthTag? {
-        return healthTagDao.getById(tagId)
+    suspend fun getTagById(tagId: Long): BloodSugarTag? {
+        return bloodSugarTagDao.getById(tagId)
     }
 
     /**
@@ -52,9 +52,9 @@ class HealthTagRepository @Inject constructor(
      * @param tagIds 标签ID列表
      * @return 标签列表
      */
-    suspend fun getTagsByIds(tagIds: List<Long>): List<HealthTag> {
+    suspend fun getTagsByIds(tagIds: List<Long>): List<BloodSugarTag> {
         return if (tagIds.isNotEmpty()) {
-            healthTagDao.getByIds(tagIds)
+            bloodSugarTagDao.getByIds(tagIds)
         } else {
             emptyList()
         }
@@ -65,8 +65,8 @@ class HealthTagRepository @Inject constructor(
      * @param name 标签名称
      * @return 标签实体，可能为null
      */
-    suspend fun getTagByName(name: String): HealthTag? {
-        return healthTagDao.getByName(name)
+    suspend fun getTagByName(name: String): BloodSugarTag? {
+        return bloodSugarTagDao.getByName(name)
     }
 
     /**
@@ -83,15 +83,15 @@ class HealthTagRepository @Inject constructor(
         }
 
         // 检查是否已存在
-        healthTagDao.getCustomByName(name)?.run {
+        bloodSugarTagDao.getCustomByName(name)?.run {
             if(isDelete == 1){
-                healthTagDao.update(this.copy(isDelete = 0))
+                bloodSugarTagDao.update(this.copy(isDelete = 0))
                 return id
             }
         }
 
-        val tag = HealthTag.createCustom(cleanName)
-        return healthTagDao.insert(tag)
+        val tag = BloodSugarTag.createCustom(cleanName)
+        return bloodSugarTagDao.insert(tag)
     }
 
     /**
@@ -100,10 +100,10 @@ class HealthTagRepository @Inject constructor(
      * @return 是否成功删除
      */
     suspend fun deleteCustomTag(tagId: Long): Boolean {
-        val tag = healthTagDao.getById(tagId) ?: return false
+        val tag = bloodSugarTagDao.getById(tagId) ?: return false
 
         try {
-            healthTagDao.update(tag.copy(isDelete = 1))
+            bloodSugarTagDao.update(tag.copy(isDelete = 1))
             return true
         } catch (e: Exception) {
             return false
@@ -117,7 +117,7 @@ class HealthTagRepository @Inject constructor(
      */
     suspend fun isTagNameExists(name: String): Boolean {
         val cleanName = TagUtils.cleanTagName(name) ?: return false
-        return healthTagDao.isNameExists(cleanName)
+        return bloodSugarTagDao.isNameExists(cleanName)
     }
 
 
@@ -162,7 +162,7 @@ class HealthTagRepository @Inject constructor(
      * @param isPredefined 是否为预定义标签
      * @return 过滤后的标签列表
      */
-    fun filterTagsByType(tags: List<HealthTag>, isPredefined: Boolean): List<HealthTag> {
+    fun filterTagsByType(tags: List<BloodSugarTag>, isPredefined: Boolean): List<BloodSugarTag> {
         return if (isPredefined) {
             TagUtils.filterPredefinedTags(tags)
         } else {
@@ -175,7 +175,7 @@ class HealthTagRepository @Inject constructor(
      * @param tags 标签列表
      * @return 分组后的标签Map
      */
-    fun groupTagsByType(tags: List<HealthTag>): Map<Boolean, List<HealthTag>> {
+    fun groupTagsByType(tags: List<BloodSugarTag>): Map<Boolean, List<BloodSugarTag>> {
         return TagUtils.groupTagsByType(tags)
     }
 
@@ -185,7 +185,7 @@ class HealthTagRepository @Inject constructor(
      * @param maxDisplay 最大显示数量
      * @return 显示文本
      */
-    fun getTagDisplayText(tags: List<HealthTag>, maxDisplay: Int = 3): String {
+    fun getTagDisplayText(tags: List<BloodSugarTag>, maxDisplay: Int = 3): String {
         return TagUtils.getTagDisplayText(tags, maxDisplay)
     }
 
@@ -197,7 +197,7 @@ class HealthTagRepository @Inject constructor(
     suspend fun validateTagIds(tagIds: List<Long>): List<Long> {
         if (tagIds.isEmpty()) return emptyList()
 
-        val existingTags = healthTagDao.getByIds(tagIds)
+        val existingTags = bloodSugarTagDao.getByIds(tagIds)
         return existingTags.map { it.id }
     }
 }

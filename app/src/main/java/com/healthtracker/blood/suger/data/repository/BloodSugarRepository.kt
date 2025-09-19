@@ -1,9 +1,9 @@
 package com.healthtracker.blood.suger.data.repository
 
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
-import com.healthtracker.blood.suger.data.dao.HealthTagDao
+import com.healthtracker.blood.suger.data.dao.BloodSugarTagDao
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
-import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.entity.BloodSugarTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.TagUtils
@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @Singleton
 class BloodSugarRepository @Inject constructor(
     private val bloodSugarDao: BloodSugarDao,
-    private val healthTagDao: HealthTagDao
+    private val bloodSugarTagDao: BloodSugarTagDao
 ) {
 
     /**
@@ -157,10 +157,10 @@ class BloodSugarRepository @Inject constructor(
      * @param record 血糖记录
      * @return 标签列表
      */
-    suspend fun getRecordTags(record: BloodSugarRecord): List<HealthTag> {
-        val tagIds = record.getTagIdList()
+    suspend fun getRecordTags(record: BloodSugarRecord): List<BloodSugarTag> {
+        val tagIds = TagUtils.stringToTagIds(record.tagIds)
         return if (tagIds.isNotEmpty()) {
-            healthTagDao.getByIds(tagIds)
+            bloodSugarTagDao.getByIds(tagIds)
         } else {
             emptyList()
         }
