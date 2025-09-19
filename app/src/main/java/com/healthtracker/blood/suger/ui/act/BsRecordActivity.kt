@@ -1,4 +1,4 @@
-package com.healthtracker.blood.suger.act
+package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
@@ -23,6 +23,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @OptIn(FlowPreview::class)
 @AndroidEntryPoint
@@ -131,11 +132,13 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             lifecycleScope.launch {
                 // 保存前先获取DateTimePicker的时间并更新到ViewModel
                 val selectedDateTime = mViewBind.dateTimePicker.getDateTime()
-                val currentTime = java.util.Calendar.getInstance()
+                val currentTime = Calendar.getInstance()
                 val selectedCalendar = selectedDateTime.toCalendar()
                 // 保留当前时间的秒和毫秒
-                selectedCalendar.set(java.util.Calendar.SECOND, currentTime.get(java.util.Calendar.SECOND))
-                selectedCalendar.set(java.util.Calendar.MILLISECOND, currentTime.get(java.util.Calendar.MILLISECOND))
+                selectedCalendar.set(Calendar.SECOND, currentTime.get(Calendar.SECOND))
+                selectedCalendar.set(Calendar.MILLISECOND, currentTime.get(Calendar.MILLISECOND))
+                //需要减1s避免立即关闭时出现0s前的情况
+                selectedCalendar.add(Calendar.SECOND, -1)
                 val selectedDate = selectedCalendar.time
                 mViewModel.updateRecordTime(selectedDate)
 
@@ -191,14 +194,14 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         lifecycleScope.launch {
             mViewModel.recordTime.collect { recordTime ->
                 // 将Date转换为DateTimePicker需要的参数
-                val calendar = java.util.Calendar.getInstance()
+                val calendar = Calendar.getInstance()
                 calendar.time = recordTime
                 mViewBind.dateTimePicker.initView(
-                    year = calendar.get(java.util.Calendar.YEAR),
-                    month = calendar.get(java.util.Calendar.MONTH) + 1,
-                    day = calendar.get(java.util.Calendar.DAY_OF_MONTH),
-                    hour = calendar.get(java.util.Calendar.HOUR_OF_DAY),
-                    minute = calendar.get(java.util.Calendar.MINUTE)
+                    year = calendar.get(Calendar.YEAR),
+                    month = calendar.get(Calendar.MONTH) + 1,
+                    day = calendar.get(Calendar.DAY_OF_MONTH),
+                    hour = calendar.get(Calendar.HOUR_OF_DAY),
+                    minute = calendar.get(Calendar.MINUTE)
                 )
             }
         }
