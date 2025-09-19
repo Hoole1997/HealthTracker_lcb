@@ -7,13 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.healthtracker.blood.suger.data.converter.DateTimeConverter
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
-import com.healthtracker.blood.suger.data.dao.BloodPressureTagDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
-import com.healthtracker.blood.suger.data.dao.BloodSugarTagDao
+import com.healthtracker.blood.suger.data.dao.HealthTagDao
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
-import com.healthtracker.blood.suger.data.entity.BloodPressureTag
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
-import com.healthtracker.blood.suger.data.entity.BloodSugarTag
+import com.healthtracker.blood.suger.data.entity.HealthTag
 
 /**
  * 健康数据Room数据库
@@ -22,14 +20,13 @@ import com.healthtracker.blood.suger.data.entity.BloodSugarTag
  * 包含的表:
  * - blood_sugar_records: 血糖记录表
  * - blood_pressure_records: 血压记录表
- * - health_tags: 健康标签表
+ * - health_tags: 统一健康标签表
  */
 @Database(
     entities = [
         BloodSugarRecord::class,
         BloodPressureRecord::class,
-        BloodSugarTag::class,
-        BloodPressureTag::class
+        HealthTag::class
     ],
     version = 1,
     exportSchema = false
@@ -47,15 +44,12 @@ abstract class HealthDatabase : RoomDatabase() {
      */
     abstract fun bloodPressureDao(): BloodPressureDao
 
-    /**
-     * 获取血糖标签DAO
-     */
-    abstract fun bloodSugarTagDao(): BloodSugarTagDao
+
 
     /**
-     * 获取血压标签DAO
+     * 获取统一健康标签DAO
      */
-    abstract fun bloodPressureTagDao(): BloodPressureTagDao
+    abstract fun healthTagDao(): HealthTagDao
 
     companion object {
         /**

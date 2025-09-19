@@ -2,13 +2,15 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import com.healthtracker.blood.suger.data.entity.BloodPressureTag
+import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
-import com.healthtracker.blood.suger.ui.dialog.BpLabelDialog
+import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
 
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -17,7 +19,7 @@ import java.util.*
 @AndroidEntryPoint
 class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBinding>() {
     
-    private val healthTags = mutableListOf<BloodPressureTag>()
+    private val healthTags = mutableListOf<HealthTag>()
     private val addTagIds = mutableListOf<Long>()
     
     companion object{
@@ -83,7 +85,7 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
             // 设置DateTimeSelectionView的标签点击监听
             dateTimeSelectionView.setOnLabelClickListener {
                 val selectedTags = if(addTagIds.isEmpty()) null else {
-                    val tempTags = mutableListOf<BloodPressureTag>()
+                    val tempTags = mutableListOf<HealthTag>()
                     for(id in addTagIds){
                         healthTags.find { it.id == id }?.let {
                             tempTags.add(it)
@@ -91,7 +93,7 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
                     }
                     tempTags
                 }
-                BpLabelDialog.show(supportFragmentManager, healthTags, selectedTags) { selectedTagList ->
+                HealthTagDialog.showBloodPressureDialog(supportFragmentManager, healthTags, selectedTags) { selectedTagList ->
                     val tagIds = selectedTagList.map { it.id }
                     addTagIds.clear()
                     addTagIds.addAll(tagIds)
@@ -198,6 +200,10 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
         // 观察可用标签
         lifecycleScope.launch {
             mViewModel.availableTags.collectLatestLifecycle { tags ->
+                "Blood pressure tags loaded: ${tags.size} tags".logd(TAG)
+                tags.forEach { tag ->
+                    "Tag: ${tag.name}, isPredefined: ${tag.isPredefined}, type: ${tag.tagType}".logd(TAG)
+                }
                 healthTags.clear()
                 healthTags.addAll(tags)
             }

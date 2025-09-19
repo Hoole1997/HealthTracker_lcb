@@ -2,9 +2,7 @@ package com.healthtracker.blood.suger.data.repository
 
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodPressureStatistics
-import com.healthtracker.blood.suger.data.dao.BloodPressureTagDao
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
-import com.healthtracker.blood.suger.data.entity.BloodPressureTag
 import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
 import com.healthtracker.blood.suger.data.enums.PulseCategory
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
@@ -20,8 +18,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class BloodPressureRepository @Inject constructor(
-    private val bloodPressureDao: BloodPressureDao,
-    private val bloodPressureTagDao: BloodPressureTagDao
+    private val bloodPressureDao: BloodPressureDao
 ) : BaseRepository<BloodPressureRecord, BloodPressureDao>() {
     
     override val dao: BloodPressureDao = bloodPressureDao
@@ -187,19 +184,8 @@ class BloodPressureRepository @Inject constructor(
         return bloodPressureDao.getRecordsByPulseRange(minPulse, maxPulse)
     }
 
-    /**
-     * 获取记录关联的标签
-     * @param record 血压记录
-     * @return 标签列表
-     */
-    suspend fun getRecordTags(record: BloodPressureRecord): List<BloodPressureTag> {
-        val tagIds = TagUtils.stringToTagIds(record.tagIds)
-        return if (tagIds.isNotEmpty()) {
-            bloodPressureTagDao.getByIds(tagIds)
-        } else {
-            emptyList()
-        }
-    }
+    // 注意：标签功能现在由统一的HealthTag系统处理
+    // 如需获取记录关联的标签，请使用HealthTagRepository
 
     // 标签相关的公共API方法，委托给基类实现
     suspend fun getBloodPressureRecordsByTag(tagId: Long): List<BloodPressureRecord> = getRecordsByTag(tagId)

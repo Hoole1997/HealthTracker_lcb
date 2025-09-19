@@ -4,11 +4,12 @@ import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.data.entity.BloodSugarTag
+import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.enum.getStatusStringRes
-import com.healthtracker.blood.suger.ui.dialog.LabelDialog
+import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
@@ -30,7 +31,7 @@ import java.util.Calendar
 class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
 
 
-    private val healthTags = mutableListOf<BloodSugarTag>()
+    private val healthTags = mutableListOf<HealthTag>()
     private val addTagIds = mutableListOf<Long>()
 
     companion object {
@@ -62,7 +63,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             // 设置DateTimeSelectionView的标签点击监听
             dateTimeSelectionView.setOnLabelClickListener {
                 val addTags = if(addTagIds.isEmpty()) null else {
-                    val tempTags = mutableListOf<BloodSugarTag>()
+                    val tempTags = mutableListOf<HealthTag>()
                     for(id in addTagIds){
                         healthTags.find { it.id == id }?.let {
                             tempTags.add(it)
@@ -70,7 +71,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                     }
                     tempTags
                 }
-                LabelDialog.show(supportFragmentManager,healthTags,addTags){
+                HealthTagDialog.showBloodSugarDialog(supportFragmentManager, healthTags, addTags) {
                     mViewModel.updateTags(it)
                 }
             }
@@ -203,9 +204,13 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         }
 
         lifecycleScope.launch {
-            mViewModel.getHealthTags().collectLatestLifecycle {
+            mViewModel.getAvailableHealthTags().collectLatestLifecycle { tags ->
+                "Blood sugar tags loaded: ${tags.size} tags".logd(TAG)
+                tags.forEach { tag ->
+                    "Tag: ${tag.name}, isPredefined: ${tag.isPredefined}, type: ${tag.tagType}".logd(TAG)
+                }
                 healthTags.clear()
-                healthTags.addAll(it)
+                healthTags.addAll(tags)
             }
         }
 

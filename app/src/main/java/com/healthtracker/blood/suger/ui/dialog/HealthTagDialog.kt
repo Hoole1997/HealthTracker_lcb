@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.data.entity.BloodPressureTag
+import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.DialogLabelSelectBinding
 import com.healthtracker.blood.suger.databinding.ItemLabelBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
@@ -15,33 +16,66 @@ import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 
 /**
- * 血压标签选择对话框
+ * 统一的健康标签选择对话框
+ * 支持血糖和血压标签的选择
  */
-class BpLabelDialog(
-    private val datas: List<BloodPressureTag>?, 
-    private val addTags: List<BloodPressureTag>?, 
-    private val onSave: ((List<BloodPressureTag>) -> Unit)? = null
+class HealthTagDialog(
+    private val tagType: TagType,
+    private val availableTags: List<HealthTag>?,
+    private val selectedTags: List<HealthTag>?,
+    private val onSave: ((List<HealthTag>) -> Unit)? = null
 ) : BaseBottomSheetDialogFragment<DialogLabelSelectBinding>() {
 
-    constructor() : this(datas = null, addTags = null, onSave = null)
+    constructor() : this(
+        tagType = TagType.BLOOD_SUGAR,
+        availableTags = null,
+        selectedTags = null,
+        onSave = null
+    )
     
-    private val selectLabels = addTags?.toMutableList() ?: mutableListOf()
+    private val selectLabels = selectedTags?.toMutableList() ?: mutableListOf()
     
     companion object {
         /**
-         * 显示血压标签选择对话框
+         * 显示血糖标签选择对话框
          * @param fragmentManager FragmentManager
-         * @param healthTags 所有可用标签
-         * @param addTags 已选中的标签
+         * @param availableTags 所有可用标签
+         * @param selectedTags 已选中的标签
          * @param onSave 保存回调
          */
-        fun show(
-            fragmentManager: FragmentManager, 
-            healthTags: List<BloodPressureTag>, 
-            addTags: List<BloodPressureTag>?, 
-            onSave: (List<BloodPressureTag>) -> Unit
+        fun showBloodSugarDialog(
+            fragmentManager: FragmentManager,
+            availableTags: List<HealthTag>,
+            selectedTags: List<HealthTag>?,
+            onSave: (List<HealthTag>) -> Unit
         ) {
-            BpLabelDialog(healthTags, addTags, onSave).show(fragmentManager)
+            HealthTagDialog(
+                TagType.BLOOD_SUGAR,
+                availableTags,
+                selectedTags,
+                onSave
+            ).show(fragmentManager)
+        }
+        
+        /**
+         * 显示血压标签选择对话框
+         * @param fragmentManager FragmentManager
+         * @param availableTags 所有可用标签
+         * @param selectedTags 已选中的标签
+         * @param onSave 保存回调
+         */
+        fun showBloodPressureDialog(
+            fragmentManager: FragmentManager,
+            availableTags: List<HealthTag>,
+            selectedTags: List<HealthTag>?,
+            onSave: (List<HealthTag>) -> Unit
+        ) {
+            HealthTagDialog(
+                TagType.BLOOD_PRESSURE,
+                availableTags,
+                selectedTags,
+                onSave
+            ).show(fragmentManager)
         }
     }
     
@@ -84,21 +118,29 @@ class BpLabelDialog(
     private fun setupLabelFlex() {
         try {
             mViewBind?.run {
-                datas?.let { tags ->
-                    val labels = resources.getStringArray(R.array.blood_pressure_labels)
+                availableTags?.let { tags ->
+                    // 根据标签类型获取对应的字符串数组
+                    val labelsArray = when (tagType) {
+                        TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.blood_sugar_labels)
+                        TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.blood_pressure_labels)
+                    }
+                    
                     labelBox.removeAllViews()
                     
                     for (tag in tags) {
                         ItemLabelBinding.inflate(LayoutInflater.from(context)).apply {
-                            // 设置标签文本：预定义标签使用数组中的文本，自定义标签使用name字段
-                            tvLabel.text = if (tag.isPreDefined == 1) {
+                            // 设置标签文本
+                            tvLabel.text = if (tag.isPredefined) {
                                 // 预定义标签，从字符串数组获取
-                                if (tag.id.toInt() - 1 < labels.size) {
-                                    labels[tag.id.toInt() - 1]
-                                } else {
-                                    tag.name
-                                }
+                                tag.predefinedIndex?.let { index ->
+                                    if (index < labelsArray.size) {
+                                        labelsArray[index]
+                                    } else {
+                                        tag.name
+                                    }
+                                } ?: tag.name
                             } else {
+                                // 自定义标签，直接使用name字段
                                 tag.name
                             }
                             

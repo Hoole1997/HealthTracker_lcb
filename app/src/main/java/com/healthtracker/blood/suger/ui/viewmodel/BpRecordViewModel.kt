@@ -2,9 +2,10 @@ package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
-import com.healthtracker.blood.suger.data.entity.BloodPressureTag
+import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
-import com.healthtracker.blood.suger.data.repository.BloodPressureTagRepository
+import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BpRecordViewModel @Inject constructor(
     private val bloodPressureRepository: BloodPressureRepository,
-    private val bloodPressureTagRepository: BloodPressureTagRepository
+    private val healthTagRepository: HealthTagRepository
 ): BaseViewModel() {
 
     // 编辑模式的记录ID
@@ -51,8 +52,8 @@ class BpRecordViewModel @Inject constructor(
     private val _selectedTagIds = MutableStateFlow<List<Long>>(emptyList())
     val selectedTagIds: StateFlow<List<Long>> = _selectedTagIds.asStateFlow()
 
-    private val _availableTags = MutableStateFlow<List<BloodPressureTag>>(emptyList())
-    val availableTags: StateFlow<List<BloodPressureTag>> = _availableTags.asStateFlow()
+    private val _availableTags = MutableStateFlow<List<HealthTag>>(emptyList())
+    val availableTags: StateFlow<List<HealthTag>> = _availableTags.asStateFlow()
 
     private val _isTagsLoading = MutableStateFlow(false)
     val isTagsLoading: StateFlow<Boolean> = _isTagsLoading.asStateFlow()
@@ -149,9 +150,9 @@ class BpRecordViewModel @Inject constructor(
                     _pulseRate.value = it.pulseRate
                     _recordTime.value = it.recordTime
                     
-                    // 加载记录关联的标签
-                    val recordTags = bloodPressureRepository.getRecordTags(it)
-                    _selectedTagIds.value = recordTags.map { tag -> tag.id }
+                    // 注意：getRecordTags方法已删除，标签功能现在由HealthTagRepository统一处理
+                    // TODO: 需要根据新的HealthTag系统重新实现标签加载逻辑
+                    _selectedTagIds.value = emptyList()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -189,7 +190,7 @@ class BpRecordViewModel @Inject constructor(
             try {
                 _isTagsLoading.value = true
                 // 初始化预定义标签
-                bloodPressureTagRepository.initializePredefinedTags()
+                healthTagRepository.initializePredefinedTags()
                 // 加载所有可用标签
                 loadAvailableTags()
             } catch (e: Exception) {
@@ -205,7 +206,7 @@ class BpRecordViewModel @Inject constructor(
      */
     private fun loadAvailableTags() {
         viewModelScope.launch {
-            bloodPressureTagRepository.getAllBloodPressureTags().collect { tags ->
+            healthTagRepository.getTagsByType(TagType.BLOOD_PRESSURE).collect { tags ->
                 _availableTags.value = tags
             }
         }
@@ -232,7 +233,8 @@ class BpRecordViewModel @Inject constructor(
      */
     suspend fun createCustomTag(tagName: String): Long {
         return try {
-            val tagId = bloodPressureTagRepository.createCustomTagBusiness(tagName)
+            val tag = healthTagRepository.createCustomTag(tagName, TagType.BLOOD_PRESSURE)
+            val tagId = tag.id
             if (tagId > 0) {
                 // 重新加载标签列表
                 loadAvailableTags()
@@ -253,7 +255,7 @@ class BpRecordViewModel @Inject constructor(
      */
     suspend fun isTagNameExists(tagName: String): Boolean {
         return try {
-            bloodPressureTagRepository.isTagNameExists(tagName)
+            healthTagRepository.isTagNameExists(TagType.BLOOD_PRESSURE, tagName)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -268,7 +270,7 @@ class BpRecordViewModel @Inject constructor(
         val selectedTags = _availableTags.value.filter { tag ->
             _selectedTagIds.value.contains(tag.id)
         }
-        return bloodPressureTagRepository.getTagDisplayText(selectedTags)
+        return selectedTags.joinToString(", ") { healthTagRepository.getTagDisplayText(it) }
     }
 
     /**

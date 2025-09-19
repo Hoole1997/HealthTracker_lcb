@@ -1,9 +1,7 @@
 package com.healthtracker.blood.suger.data.repository
 
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
-import com.healthtracker.blood.suger.data.dao.BloodSugarTagDao
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
-import com.healthtracker.blood.suger.data.entity.BloodSugarTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.TagUtils
@@ -18,8 +16,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class BloodSugarRepository @Inject constructor(
-    private val bloodSugarDao: BloodSugarDao,
-    private val bloodSugarTagDao: BloodSugarTagDao
+    private val bloodSugarDao: BloodSugarDao
 ) : BaseRepository<BloodSugarRecord, BloodSugarDao>() {
     
     override val dao: BloodSugarDao = bloodSugarDao
@@ -151,19 +148,8 @@ class BloodSugarRepository @Inject constructor(
         return bloodSugarDao.getRecordsByGlucoseRange(minValue, maxValue)
     }
 
-    /**
-     * 获取记录关联的标签
-     * @param record 血糖记录
-     * @return 标签列表
-     */
-    suspend fun getRecordTags(record: BloodSugarRecord): List<BloodSugarTag> {
-        val tagIds = TagUtils.stringToTagIds(record.tagIds)
-        return if (tagIds.isNotEmpty()) {
-            bloodSugarTagDao.getByIds(tagIds)
-        } else {
-            emptyList()
-        }
-    }
+    // 注意：标签功能现在由统一的HealthTag系统处理
+    // 如需获取记录关联的标签，请使用HealthTagRepository
 
     // 标签相关的公共API方法，委托给基类实现
     suspend fun getBloodSugarRecordsByTag(tagId: Long): List<BloodSugarRecord> = getRecordsByTag(tagId)

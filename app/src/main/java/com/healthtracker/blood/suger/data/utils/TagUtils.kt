@@ -1,6 +1,6 @@
 package com.healthtracker.blood.suger.data.utils
 
-import com.healthtracker.blood.suger.data.entity.BloodSugarTag
+// 注意：BloodSugarTag已被删除，现在使用统一的HealthTag
 
 /**
  * 标签工具类
@@ -80,54 +80,8 @@ object TagUtils {
         return tagIds.contains(tagId)
     }
 
-    /**
-     * 获取标签显示文本（用于UI展示）
-     * @param tags 标签列表
-     * @param maxDisplay 最大显示数量
-     * @param separator 分隔符
-     * @return 显示文本
-     */
-    fun getTagDisplayText(
-        tags: List<BloodSugarTag>,
-        maxDisplay: Int = 3,
-        separator: String = "、"
-    ): String {
-        return when {
-            tags.isEmpty() -> ""
-            tags.size <= maxDisplay -> tags.joinToString(separator) { it.name }
-            else -> {
-                val displayTags = tags.take(maxDisplay).joinToString(separator) { it.name }
-                val remainingCount = tags.size - maxDisplay
-                "$displayTags 等${tags.size}个标签"
-            }
-        }
-    }
-
-    /**
-     * 过滤预定义标签
-     * @param tags 标签列表
-     * @return 预定义标签列表
-     */
-    fun filterPredefinedTags(tags: List<BloodSugarTag>): List<BloodSugarTag> {
-        return tags.filter { it.isPredefinedTag() }
-    }
-
-    /**
-     * 过滤自定义标签
-     * @param tags 标签列表
-     * @return 自定义标签列表
-     */
-    fun filterCustomTags(tags: List<BloodSugarTag>): List<BloodSugarTag> {
-        return tags.filter { it.isCustomTag() }
-    }
-
-    /**
-     * 按类型分组标签
-     * @param tags 标签列表
-     * @return 分组后的标签Map，key为是否预定义(true/false)
-     */
-    fun groupTagsByType(tags: List<BloodSugarTag>): Map<Boolean, List<BloodSugarTag>> {
-        return tags.groupBy { it.isPredefinedTag() }
-    }
+    // 注意：以下方法已被删除，因为BloodSugarTag类已不再使用
+    // 标签相关的显示和过滤功能现在由HealthTagRepository提供
+    // 如需类似功能，请使用HealthTag和HealthTagRepository
 
 }

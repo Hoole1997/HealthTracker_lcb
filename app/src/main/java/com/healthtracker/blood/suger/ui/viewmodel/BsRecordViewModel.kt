@@ -1,10 +1,11 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.healthtracker.blood.suger.data.entity.BloodSugarTag
+import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
+import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
-import com.healthtracker.blood.suger.data.repository.BloodSugarTagRepository
+import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseViewModel
@@ -22,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BsRecordViewModel @Inject constructor(
     private val bloodSugarRepository: BloodSugarRepository,
-    private val bloodSugarTagRepository: BloodSugarTagRepository
+    private val healthTagRepository: HealthTagRepository
 ) : BaseViewModel() {
 
     // 编辑模式的记录ID
@@ -64,8 +65,9 @@ class BsRecordViewModel @Inject constructor(
             // 新增模式：使用默认值
             initializeWithDefaults()
         }
-        viewModelScope.launch(IO){
-            bloodSugarTagRepository.initializePredefinedTags()
+        // 初始化预定义标签
+        viewModelScope.launch {
+            healthTagRepository.initializePredefinedTags()
         }
     }
 
@@ -114,7 +116,7 @@ class BsRecordViewModel @Inject constructor(
         _currentValue.value = value
     }
 
-    fun updateTags(tags:List<BloodSugarTag>){
+    fun updateTags(tags:List<HealthTag>){
         _healthTags.value = tags.map { it.id }
     }
 
@@ -196,7 +198,7 @@ class BsRecordViewModel @Inject constructor(
     private fun convertMeasurementTagToBloodSugarStatus(status: Int) = BloodSugarStatus.entries.first { it.statusType == status }
 
 
-   suspend fun getHealthTags() = bloodSugarTagRepository.getAllBloodSugarTags().stateIn(
+    fun getAvailableHealthTags() = healthTagRepository.getTagsByType(TagType.BLOOD_SUGAR).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()

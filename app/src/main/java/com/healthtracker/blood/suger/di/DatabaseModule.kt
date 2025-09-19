@@ -3,8 +3,7 @@ package com.healthtracker.blood.suger.di
 import android.content.Context
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
-import com.healthtracker.blood.suger.data.dao.BloodSugarTagDao
-import com.healthtracker.blood.suger.data.dao.BloodPressureTagDao
+import com.healthtracker.blood.suger.data.dao.HealthTagDao
 import com.healthtracker.blood.suger.data.database.HealthDatabase
 import dagger.Module
 import dagger.Provides
@@ -52,23 +51,15 @@ object DatabaseModule {
         return database.bloodPressureDao()
     }
 
-    /**
-     * 提供血糖标签DAO
-     * @param database HealthDatabase实例
-     * @return BloodSugarTagDao实例
-     */
-    @Provides
-    fun provideBloodSugarTagDao(database: HealthDatabase): BloodSugarTagDao {
-        return database.bloodSugarTagDao()
-    }
+
 
     /**
-     * 提供血压标签DAO
+     * 提供统一健康标签DAO
      * @param database HealthDatabase实例
-     * @return BloodPressureTagDao实例
+     * @return HealthTagDao实例
      */
     @Provides
-    fun provideBloodPressureTagDao(database: HealthDatabase): BloodPressureTagDao {
-        return database.bloodPressureTagDao()
+    fun provideHealthTagDao(database: HealthDatabase): HealthTagDao {
+        return database.healthTagDao()
     }
 }
