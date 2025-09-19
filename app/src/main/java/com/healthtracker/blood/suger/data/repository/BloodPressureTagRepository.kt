@@ -15,58 +15,107 @@ import javax.inject.Singleton
 @Singleton
 class BloodPressureTagRepository @Inject constructor(
     private val bloodPressureTagDao: BloodPressureTagDao
-) {
+) : BaseTagRepository<BloodPressureTag, BloodPressureTagDao>() {
+    
+    override val tagDao: BloodPressureTagDao = bloodPressureTagDao
+    
+    // 实现BaseTagRepository的抽象方法
+    override fun getPredefinedTagNames(): List<String> {
+        return BloodPressureTag.getPredefinedTagNames().toList()
+    }
+    
+    override fun createPredefinedTag(name: String): BloodPressureTag {
+        return BloodPressureTag.createPredefined(name)
+    }
+    
+    override fun createCustomTag(name: String): BloodPressureTag {
+        return BloodPressureTag.createCustom(name)
+    }
+    
+    override suspend fun insertTag(tag: BloodPressureTag): Long {
+        return bloodPressureTagDao.insert(tag)
+    }
+    
+    override suspend fun insertTags(tags: List<BloodPressureTag>): List<Long> {
+        return bloodPressureTagDao.insertAll(tags)
+    }
+    
+    override suspend fun updateTag(tag: BloodPressureTag): Int {
+        bloodPressureTagDao.update(tag)
+        return 1
+    }
+
+    override suspend fun deleteTagById(tagId: Long): Int {
+        return bloodPressureTagDao.deleteById(tagId)
+    }
+
+    override suspend fun softDeleteTag(tagId: Long): Int {
+        val tag = bloodPressureTagDao.getById(tagId) ?: return 0
+        bloodPressureTagDao.update(tag.copy(isDelete = 1))
+        return 1
+    }
+    
+    override suspend fun getTagById(tagId: Long): BloodPressureTag? {
+        return bloodPressureTagDao.getById(tagId)
+    }
+    
+    override suspend fun getTagsByIds(tagIds: List<Long>): List<BloodPressureTag> {
+        return bloodPressureTagDao.getByIds(tagIds)
+    }
+    
+    override suspend fun getTagByName(name: String): BloodPressureTag? {
+        return bloodPressureTagDao.getByName(name)
+    }
+    
+    override fun getAllTags(): Flow<List<BloodPressureTag>> {
+        return bloodPressureTagDao.getAllTags()
+    }
+    
+    override fun getAllPredefinedTags(): Flow<List<BloodPressureTag>> {
+        return bloodPressureTagDao.getPredefinedTags()
+    }
+    
+    override fun getAllCustomTags(): Flow<List<BloodPressureTag>> {
+        return bloodPressureTagDao.getCustomTags()
+    }
+    
+    override suspend fun getTagStatistics(): TagStatistics {
+        val allTags = getAllTags().first()
+        val predefinedCount = allTags.count { it.isPredefinedTag() }
+        val customCount = allTags.count { it.isCustomTag() }
+        val deletedCount = allTags.count { it.isDelete == 1 }
+        
+        return TagStatistics(
+            totalCount = allTags.size,
+            predefinedCount = predefinedCount,
+            customCount = customCount,
+            deletedCount = deletedCount
+        )
+    }
+    
+    override fun getTagName(tag: BloodPressureTag): String {
+        return tag.name
+    }
+    
+    override fun getTagId(tag: BloodPressureTag): Long {
+        return tag.id
+    }
 
     /**
      * 初始化预定义标签
      * 在应用首次启动时调用，确保预定义标签存在
      */
-    suspend fun initializePredefinedTags() {
-        // 检查是否已经有预定义标签
-        val predefinedTags = bloodPressureTagDao.getAllTags().first()
-        if (predefinedTags.isEmpty()) {
-            val predefinedTagList = BloodPressureTag.createAllPredefinedTags()
-            bloodPressureTagDao.insertAll(predefinedTagList)
-        }
+    suspend fun initializePredefinedTagsBusiness() {
+        // 使用基类的方法初始化预定义标签
+        super.initializePredefinedTags()
     }
 
     /**
-     * 获取所有血压标签
-     * @return Flow形式的标签列表（预定义标签在前）
+     * 获取所有血压标签（公共方法）
+     * @return Flow形式的标签列表
      */
-    fun getAllTags(): Flow<List<BloodPressureTag>> {
-        return bloodPressureTagDao.getAllTags()
-    }
-
-    /**
-     * 根据ID获取血压标签
-     * @param tagId 标签ID
-     * @return 标签实体，可能为null
-     */
-    suspend fun getTagById(tagId: Long): BloodPressureTag? {
-        return bloodPressureTagDao.getById(tagId)
-    }
-
-    /**
-     * 根据ID列表获取血压标签
-     * @param tagIds 标签ID列表
-     * @return 标签列表
-     */
-    suspend fun getTagsByIds(tagIds: List<Long>): List<BloodPressureTag> {
-        return if (tagIds.isNotEmpty()) {
-            bloodPressureTagDao.getByIds(tagIds)
-        } else {
-            emptyList()
-        }
-    }
-
-    /**
-     * 根据名称获取血压标签
-     * @param name 标签名称
-     * @return 标签实体，可能为null
-     */
-    suspend fun getTagByName(name: String): BloodPressureTag? {
-        return bloodPressureTagDao.getByName(name)
+    fun getAllBloodPressureTags(): Flow<List<BloodPressureTag>> {
+        return getAllTags()
     }
 
     /**
@@ -74,7 +123,7 @@ class BloodPressureTagRepository @Inject constructor(
      * @param name 标签名称
      * @return 创建的标签ID，如果名称无效或已存在则返回-1
      */
-    suspend fun createCustomTag(name: String): Long {
+    suspend fun createCustomTagBusiness(name: String): Long {
         val cleanName = TagUtils.cleanTagName(name) ?: return -1
 
         // 检查名称长度

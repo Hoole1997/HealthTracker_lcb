@@ -90,6 +90,28 @@ interface BloodSugarTagDao {
     @Query("SELECT COUNT(*) FROM blood_sugar_tags WHERE is_predefined = 0")
     suspend fun getCustomTagCount(): Int
 
+    /**
+     * 获取所有预定义标签
+     * @return 预定义标签流
+     */
+    @Query("SELECT * FROM blood_sugar_tags WHERE is_predefined = 1 AND is_delete = 0 ORDER BY id ASC")
+    fun getPredefinedTags(): Flow<List<BloodSugarTag>>
+
+    /**
+     * 获取所有自定义标签
+     * @return 自定义标签流
+     */
+    @Query("SELECT * FROM blood_sugar_tags WHERE is_predefined = 0 AND is_delete = 0 ORDER BY id ASC")
+    fun getCustomTags(): Flow<List<BloodSugarTag>>
+
+    /**
+     * 根据ID删除标签
+     * @param tagId 标签ID
+     * @return 删除的行数
+     */
+    @Query("DELETE FROM blood_sugar_tags WHERE id = :tagId")
+    suspend fun deleteById(tagId: Long): Int
+
 //    /**
 //     * 获取使用频率最高的标签（基于记录关联情况）
 //     * 注意：这个查询比较复杂，实际使用时可能需要在业务层实现

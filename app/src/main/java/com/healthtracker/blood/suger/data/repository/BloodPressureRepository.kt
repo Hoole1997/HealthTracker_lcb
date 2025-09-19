@@ -22,7 +22,70 @@ import javax.inject.Singleton
 class BloodPressureRepository @Inject constructor(
     private val bloodPressureDao: BloodPressureDao,
     private val bloodPressureTagDao: BloodPressureTagDao
-) {
+) : BaseRepository<BloodPressureRecord, BloodPressureDao>() {
+    
+    override val dao: BloodPressureDao = bloodPressureDao
+
+    // 实现BaseRepository的抽象方法
+    override suspend fun insertRecord(record: BloodPressureRecord): Long {
+        return bloodPressureDao.insert(record)
+    }
+    
+    override suspend fun updateRecord(record: BloodPressureRecord): Int {
+        return bloodPressureDao.update(record)
+    }
+    
+    override suspend fun deleteRecordById(recordId: Long): Int {
+        return bloodPressureDao.deleteById(recordId)
+    }
+    
+    override suspend fun getRecordById(recordId: Long): BloodPressureRecord? {
+        return bloodPressureDao.getById(recordId)
+    }
+    
+    override fun getAllRecords(): Flow<List<BloodPressureRecord>> {
+        return bloodPressureDao.getAllRecords()
+    }
+    
+    override fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodPressureRecord>> {
+        return bloodPressureDao.getRecordsByTimeRange(startTime, endTime)
+    }
+    
+    override fun getChartRecords(): Flow<List<BloodPressureRecord>> {
+        return bloodPressureDao.getChartRecords()
+    }
+    
+    override suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
+        return bloodPressureDao.updateChartVisibility(recordId, showInChart) > 0
+    }
+    
+    override suspend fun insertRecords(records: List<BloodPressureRecord>): List<Long> {
+        return bloodPressureDao.insertAll(records)
+    }
+    
+    override suspend fun deleteAllRecords(): Int {
+        return bloodPressureDao.deleteAllRecords()
+    }
+    
+    override suspend fun addTagsToRecord(recordId: Long, tagIds: List<Long>): Boolean {
+        val record = bloodPressureDao.getById(recordId) ?: return false
+        val existingTagIds = TagUtils.stringToTagIds(record.tagIds).toMutableList()
+        existingTagIds.addAll(tagIds)
+        val updatedRecord = record.copy(tagIds = TagUtils.tagIdsToString(existingTagIds.distinct()))
+        return bloodPressureDao.update(updatedRecord) > 0
+    }
+    
+    override suspend fun removeTagFromRecord(recordId: Long, tagId: Long): Boolean {
+        val record = bloodPressureDao.getById(recordId) ?: return false
+        val existingTagIds = TagUtils.stringToTagIds(record.tagIds).toMutableList()
+        existingTagIds.remove(tagId)
+        val updatedRecord = record.copy(tagIds = TagUtils.tagIdsToString(existingTagIds))
+        return bloodPressureDao.update(updatedRecord) > 0
+    }
+    
+    override suspend fun getRecordsByTag(tagId: Long): List<BloodPressureRecord> {
+        return bloodPressureDao.getRecordsByTagId(tagId.toString())
+    }
 
     /**
      * 添加血压记录（支持标签）
@@ -63,86 +126,18 @@ class BloodPressureRepository @Inject constructor(
         return bloodPressureDao.insert(record)
     }
 
-    /**
-     * 更新血压记录
-     * @param record 血压记录
-     * @return 影响的行数
-     */
-    suspend fun updateBloodPressureRecord(record: BloodPressureRecord): Int {
-        return bloodPressureDao.update(record)
-    }
+    // 基础CRUD操作的公共API方法，委托给基类实现
+    suspend fun updateBloodPressureRecord(record: BloodPressureRecord): Int = updateRecord(record)
+    suspend fun deleteBloodPressureRecord(recordId: Long): Int = deleteRecordById(recordId)
+    suspend fun getBloodPressureRecordById(recordId: Long): BloodPressureRecord? = getRecordById(recordId)
+    fun getAllBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getAllRecords()
 
-    /**
-     * 删除血压记录
-     * @param recordId 记录ID
-     * @return 影响的行数
-     */
-    suspend fun deleteBloodPressureRecord(recordId: Long): Int {
-        return bloodPressureDao.deleteById(recordId)
-    }
-
-    /**
-     * 根据ID获取血压记录
-     * @param recordId 记录ID
-     * @return 血压记录，可能为null
-     */
-    suspend fun getBloodPressureRecordById(recordId: Long): BloodPressureRecord? {
-        return bloodPressureDao.getById(recordId)
-    }
-
-    /**
-     * 获取所有血压记录
-     * @return Flow形式的血压记录列表
-     */
-    fun getAllBloodPressureRecords(): Flow<List<BloodPressureRecord>> {
-        return bloodPressureDao.getAllRecords()
-    }
-
-    /**
-     * 获取最近N天的血压记录
-     * @param days 天数（默认7天）
-     * @return Flow形式的血压记录列表
-     */
-    fun getRecentBloodPressureRecords(days: Int = 7): Flow<List<BloodPressureRecord>> {
-        val (startDate, endDate) = DateTimeUtils.getDateRange(DateTimeUtils.now(), days)
-        return bloodPressureDao.getRecordsByTimeRange(startDate, endDate)
-    }
-
-    /**
-     * 获取今天的血压记录
-     * @return Flow形式的血压记录列表
-     */
-    fun getTodayBloodPressureRecords(): Flow<List<BloodPressureRecord>> {
-        val (startDate, endDate) = DateTimeUtils.getTodayRange()
-        return bloodPressureDao.getRecordsByTimeRange(startDate, endDate)
-    }
-
-    /**
-     * 获取本周的血压记录
-     * @return Flow形式的血压记录列表
-     */
-    fun getThisWeekBloodPressureRecords(): Flow<List<BloodPressureRecord>> {
-        val (startDate, endDate) = DateTimeUtils.getThisWeekRange()
-        return bloodPressureDao.getRecordsByTimeRange(startDate, endDate)
-    }
-
-    /**
-     * 获取图表显示的血压记录
-     * @return Flow形式的血压记录列表
-     */
-    fun getChartBloodPressureRecords(): Flow<List<BloodPressureRecord>> {
-        return bloodPressureDao.getChartRecords()
-    }
-
-    /**
-     * 根据时间范围获取血压记录
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @return Flow形式的血压记录列表
-     */
-    fun getBloodPressureRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodPressureRecord>> {
-        return bloodPressureDao.getRecordsByTimeRange(startTime, endTime)
-    }
+    // 时间范围查询的公共API方法，委托给基类实现
+    fun getRecentBloodPressureRecords(days: Int = 7): Flow<List<BloodPressureRecord>> = getRecentRecords(days)
+    fun getTodayBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getTodayRecords()
+    fun getThisWeekBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getThisWeekRecords()
+    fun getChartBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getChartRecords()
+    fun getBloodPressureRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodPressureRecord>> = getRecordsByTimeRange(startTime, endTime)
 
     /**
      * 根据血压分类获取记录
@@ -206,56 +201,11 @@ class BloodPressureRepository @Inject constructor(
         }
     }
 
-    /**
-     * 根据标签获取血压记录
-     * @param tagId 标签ID
-     * @return 包含该标签的血压记录列表
-     */
-    suspend fun getBloodPressureRecordsByTag(tagId: Long): List<BloodPressureRecord> {
-        return bloodPressureDao.getRecordsByTagId(tagId.toString())
-    }
-
-    /**
-     * 为记录添加标签
-     * @param recordId 记录ID
-     * @param tagIds 要添加的标签ID列表
-     * @return 是否成功
-     */
-    suspend fun addTagsToRecord(recordId: Long, tagIds: List<Long>): Boolean {
-        val record = bloodPressureDao.getById(recordId) ?: return false
-        val existingTagIds = record.getTagIdList()
-        val mergedTagIds = TagUtils.mergeTagIds(existingTagIds, tagIds)
-        val tagIdsString = TagUtils.tagIdsToString(mergedTagIds)
-
-        val updatedRecord = record.copy(tagIds = tagIdsString)
-        return bloodPressureDao.update(updatedRecord) > 0
-    }
-
-    /**
-     * 从记录中移除标签
-     * @param recordId 记录ID
-     * @param tagId 要移除的标签ID
-     * @return 是否成功
-     */
-    suspend fun removeTagFromRecord(recordId: Long, tagId: Long): Boolean {
-        val record = bloodPressureDao.getById(recordId) ?: return false
-        val existingTagIds = record.getTagIdList()
-        val updatedTagIds = TagUtils.removeTagId(existingTagIds, tagId)
-        val tagIdsString = TagUtils.tagIdsToString(updatedTagIds)
-
-        val updatedRecord = record.copy(tagIds = tagIdsString)
-        return bloodPressureDao.update(updatedRecord) > 0
-    }
-
-    /**
-     * 更新记录的图表显示状态
-     * @param recordId 记录ID
-     * @param showInChart 是否显示在图表中
-     * @return 是否成功
-     */
-    suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
-        return bloodPressureDao.updateChartVisibility(recordId, showInChart) > 0
-    }
+    // 标签相关的公共API方法，委托给基类实现
+    suspend fun getBloodPressureRecordsByTag(tagId: Long): List<BloodPressureRecord> = getRecordsByTag(tagId)
+    suspend fun addTagsToBloodPressureRecord(recordId: Long, tagIds: List<Long>): Boolean = addTagsToRecord(recordId, tagIds)
+    suspend fun removeTagFromBloodPressureRecord(recordId: Long, tagId: Long): Boolean = removeTagFromRecord(recordId, tagId)
+    suspend fun updateBloodPressureChartVisibility(recordId: Long, showInChart: Boolean): Boolean = updateChartVisibility(recordId, showInChart)
 
     /**
      * 获取血压统计信息
@@ -291,21 +241,8 @@ class BloodPressureRepository @Inject constructor(
         return bloodPressureDao.getRecentRecords(limit)
     }
 
-    /**
-     * 批量插入血压记录
-     * @param records 血压记录列表
-     * @return 插入记录的ID列表
-     */
-    suspend fun insertBloodPressureRecords(records: List<BloodPressureRecord>): List<Long> {
-        return bloodPressureDao.insertAll(records)
-    }
-
-    /**
-     * 清空所有血压记录（谨慎使用）
-     * @return 影响的行数
-     */
-    suspend fun deleteAllBloodPressureRecords(): Int {
-        return bloodPressureDao.deleteAllRecords()
-    }
+    // 批量操作的公共API方法，委托给基类实现
+    suspend fun insertBloodPressureRecords(records: List<BloodPressureRecord>): List<Long> = insertRecords(records)
+    suspend fun deleteAllBloodPressureRecords(): Int = deleteAllRecords()
 
 }

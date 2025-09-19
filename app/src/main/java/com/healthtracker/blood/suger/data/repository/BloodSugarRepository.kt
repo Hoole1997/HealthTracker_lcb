@@ -20,7 +20,9 @@ import javax.inject.Singleton
 class BloodSugarRepository @Inject constructor(
     private val bloodSugarDao: BloodSugarDao,
     private val bloodSugarTagDao: BloodSugarTagDao
-) {
+) : BaseRepository<BloodSugarRecord, BloodSugarDao>() {
+    
+    override val dao: BloodSugarDao = bloodSugarDao
 
     /**
      * 添加血糖记录（支持标签）
@@ -61,86 +63,83 @@ class BloodSugarRepository @Inject constructor(
         return bloodSugarDao.insert(record)
     }
 
-    /**
-     * 更新血糖记录
-     * @param record 血糖记录
-     * @return 影响的行数
-     */
-    suspend fun updateBloodSugarRecord(record: BloodSugarRecord): Int {
+    // 实现BaseRepository的抽象方法
+    override suspend fun insertRecord(record: BloodSugarRecord): Long {
+        return bloodSugarDao.insert(record)
+    }
+    
+    override suspend fun updateRecord(record: BloodSugarRecord): Int {
         return bloodSugarDao.update(record)
     }
-
-    /**
-     * 删除血糖记录
-     * @param recordId 记录ID
-     * @return 影响的行数
-     */
-    suspend fun deleteBloodSugarRecord(recordId: Long): Int {
+    
+    override suspend fun deleteRecordById(recordId: Long): Int {
         return bloodSugarDao.deleteById(recordId)
     }
-
-    /**
-     * 根据ID获取血糖记录
-     * @param recordId 记录ID
-     * @return 血糖记录，可能为null
-     */
-    suspend fun getBloodSugarRecordById(recordId: Long): BloodSugarRecord? {
+    
+    override suspend fun getRecordById(recordId: Long): BloodSugarRecord? {
         return bloodSugarDao.getById(recordId)
     }
-
-    /**
-     * 获取所有血糖记录
-     * @return Flow形式的血糖记录列表
-     */
-    fun getAllBloodSugarRecords(): Flow<List<BloodSugarRecord>> {
+    
+    override fun getAllRecords(): Flow<List<BloodSugarRecord>> {
         return bloodSugarDao.getAllRecords()
     }
-
-    /**
-     * 获取最近N天的血糖记录
-     * @param days 天数（默认7天）
-     * @return Flow形式的血糖记录列表
-     */
-    fun getRecentBloodSugarRecords(days: Int = 7): Flow<List<BloodSugarRecord>> {
-        val (startDate, endDate) = DateTimeUtils.getDateRange(DateTimeUtils.now(), days)
-        return bloodSugarDao.getRecordsByTimeRange(startDate, endDate)
-    }
-
-    /**
-     * 获取今天的血糖记录
-     * @return Flow形式的血糖记录列表
-     */
-    fun getTodayBloodSugarRecords(): Flow<List<BloodSugarRecord>> {
-        val (startDate, endDate) = DateTimeUtils.getTodayRange()
-        return bloodSugarDao.getRecordsByTimeRange(startDate, endDate)
-    }
-
-    /**
-     * 获取本周的血糖记录
-     * @return Flow形式的血糖记录列表
-     */
-    fun getThisWeekBloodSugarRecords(): Flow<List<BloodSugarRecord>> {
-        val (startDate, endDate) = DateTimeUtils.getThisWeekRange()
-        return bloodSugarDao.getRecordsByTimeRange(startDate, endDate)
-    }
-
-    /**
-     * 获取图表显示的血糖记录
-     * @return Flow形式的血糖记录列表
-     */
-    fun getChartBloodSugarRecords(): Flow<List<BloodSugarRecord>> {
-        return bloodSugarDao.getChartRecords()
-    }
-
-    /**
-     * 根据时间范围获取血糖记录
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @return Flow形式的血糖记录列表
-     */
-    fun getBloodSugarRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>> {
+    
+    override fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>> {
         return bloodSugarDao.getRecordsByTimeRange(startTime, endTime)
     }
+    
+    override fun getChartRecords(): Flow<List<BloodSugarRecord>> {
+        return bloodSugarDao.getChartRecords()
+    }
+    
+    override suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
+        return bloodSugarDao.updateChartVisibility(recordId, showInChart) > 0
+    }
+    
+    override suspend fun insertRecords(records: List<BloodSugarRecord>): List<Long> {
+        return bloodSugarDao.insertAll(records)
+    }
+    
+    override suspend fun deleteAllRecords(): Int {
+        return bloodSugarDao.deleteAllRecords()
+    }
+    
+    override suspend fun addTagsToRecord(recordId: Long, tagIds: List<Long>): Boolean {
+        val record = bloodSugarDao.getById(recordId) ?: return false
+        val existingTagIds = record.getTagIdList()
+        val mergedTagIds = TagUtils.mergeTagIds(existingTagIds, tagIds)
+        val tagIdsString = TagUtils.tagIdsToString(mergedTagIds)
+
+        val updatedRecord = record.copy(tagIds = tagIdsString)
+        return bloodSugarDao.update(updatedRecord) > 0
+    }
+    
+    override suspend fun removeTagFromRecord(recordId: Long, tagId: Long): Boolean {
+        val record = bloodSugarDao.getById(recordId) ?: return false
+        val existingTagIds = record.getTagIdList()
+        val updatedTagIds = TagUtils.removeTagId(existingTagIds, tagId)
+        val tagIdsString = TagUtils.tagIdsToString(updatedTagIds)
+
+        val updatedRecord = record.copy(tagIds = tagIdsString)
+        return bloodSugarDao.update(updatedRecord) > 0
+    }
+    
+    override suspend fun getRecordsByTag(tagId: Long): List<BloodSugarRecord> {
+        return bloodSugarDao.getRecordsByTagId(tagId.toString())
+    }
+    
+    // 公共API方法，委托给基类或实现方法
+    suspend fun updateBloodSugarRecord(record: BloodSugarRecord): Int = updateRecord(record)
+    suspend fun deleteBloodSugarRecord(recordId: Long): Int = deleteRecordById(recordId)
+    suspend fun getBloodSugarRecordById(recordId: Long): BloodSugarRecord? = getRecordById(recordId)
+    fun getAllBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getAllRecords()
+
+    // 公共API方法，委托给基类实现
+    fun getRecentBloodSugarRecords(days: Int = 7): Flow<List<BloodSugarRecord>> = getRecentRecords(days)
+    fun getTodayBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getTodayRecords()
+    fun getThisWeekBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getThisWeekRecords()
+    fun getChartBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getChartRecords()
+    fun getBloodSugarRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>> = getRecordsByTimeRange(startTime, endTime)
 
     /**
      * 根据血糖值范围获取记录
@@ -166,56 +165,8 @@ class BloodSugarRepository @Inject constructor(
         }
     }
 
-    /**
-     * 根据标签获取血糖记录
-     * @param tagId 标签ID
-     * @return 包含该标签的血糖记录列表
-     */
-    suspend fun getBloodSugarRecordsByTag(tagId: Long): List<BloodSugarRecord> {
-        return bloodSugarDao.getRecordsByTagId(tagId.toString())
-    }
-
-    /**
-     * 为记录添加标签
-     * @param recordId 记录ID
-     * @param tagIds 要添加的标签ID列表
-     * @return 是否成功
-     */
-    suspend fun addTagsToRecord(recordId: Long, tagIds: List<Long>): Boolean {
-        val record = bloodSugarDao.getById(recordId) ?: return false
-        val existingTagIds = record.getTagIdList()
-        val mergedTagIds = TagUtils.mergeTagIds(existingTagIds, tagIds)
-        val tagIdsString = TagUtils.tagIdsToString(mergedTagIds)
-
-        val updatedRecord = record.copy(tagIds = tagIdsString)
-        return bloodSugarDao.update(updatedRecord) > 0
-    }
-
-    /**
-     * 从记录中移除标签
-     * @param recordId 记录ID
-     * @param tagId 要移除的标签ID
-     * @return 是否成功
-     */
-    suspend fun removeTagFromRecord(recordId: Long, tagId: Long): Boolean {
-        val record = bloodSugarDao.getById(recordId) ?: return false
-        val existingTagIds = record.getTagIdList()
-        val updatedTagIds = TagUtils.removeTagId(existingTagIds, tagId)
-        val tagIdsString = TagUtils.tagIdsToString(updatedTagIds)
-
-        val updatedRecord = record.copy(tagIds = tagIdsString)
-        return bloodSugarDao.update(updatedRecord) > 0
-    }
-
-    /**
-     * 更新记录的图表显示状态
-     * @param recordId 记录ID
-     * @param showInChart 是否显示在图表中
-     * @return 是否成功
-     */
-    suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
-        return bloodSugarDao.updateChartVisibility(recordId, showInChart) > 0
-    }
+    // 标签相关的公共API方法，委托给基类实现
+    suspend fun getBloodSugarRecordsByTag(tagId: Long): List<BloodSugarRecord> = getRecordsByTag(tagId)
 
     /**
      * 获取血糖记录统计信息
@@ -246,15 +197,10 @@ class BloodSugarRepository @Inject constructor(
         return bloodSugarDao.getRecordsByGlucoseRange(0.0, 70.0) // 可以结合多个查询
     }
 
-    /**
-     * 批量插入血糖记录
-     * @param records 血糖记录列表
-     * @return 插入记录的ID列表
-     */
-    suspend fun insertBloodSugarRecords(records: List<BloodSugarRecord>): List<Long> {
-        return bloodSugarDao.insertAll(records)
-    }
-
+    // 批量操作的公共API方法，委托给基类实现
+    suspend fun insertBloodSugarRecords(records: List<BloodSugarRecord>): List<Long> = insertRecords(records)
+    suspend fun deleteAllBloodSugarRecords(): Int = deleteAllRecords()
+    
     /**
      * 获取最近N条血糖记录
      * @param limit 记录数量限制
@@ -262,14 +208,6 @@ class BloodSugarRepository @Inject constructor(
      */
     fun getRecentBloodSugarRecordsWithLimit(limit: Int): Flow<List<BloodSugarRecord>> {
         return bloodSugarDao.getRecentRecords(limit)
-    }
-
-    /**
-     * 清空所有血糖记录（谨慎使用）
-     * @return 影响的行数
-     */
-    suspend fun deleteAllBloodSugarRecords(): Int {
-        return bloodSugarDao.deleteAllRecords()
     }
 
 }

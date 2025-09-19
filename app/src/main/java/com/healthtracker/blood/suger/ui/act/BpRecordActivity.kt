@@ -1,19 +1,35 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
+import com.healthtracker.blood.suger.data.entity.BloodPressureTag
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
+import com.healthtracker.blood.suger.ui.dialog.BpLabelDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
 
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
 class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBinding>() {
+    
+    private val healthTags = mutableListOf<BloodPressureTag>()
+    private val addTagIds = mutableListOf<Long>()
+    
     companion object{
         private const val TAG = "BpRecordActivity"
+        private const val EXTRA_RECORD_ID = "extra_record_id"
+        
+        // 启动编辑模式
+        fun start(context: android.content.Context, recordId: Long? = null) {
+            val intent = android.content.Intent(context, BpRecordActivity::class.java)
+            recordId?.let { intent.putExtra(EXTRA_RECORD_ID, it) }
+            context.startActivity(intent)
+        }
     }
     override fun createViewBinding() = ActivityBpRecordBinding.inflate(layoutInflater)
 
@@ -21,10 +37,23 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
 
 
     override fun initView(savedInstanceState: Bundle?) {
+        // 获取传入的记录ID（如果有）
+        val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L)
+        val editRecordId = if (recordId == -1L) null else recordId
+
+        // 初始化ViewModel
+        if (editRecordId != null) {
+            mViewModel.loadEditRecord(editRecordId)
+        }
+        
+        // 初始化标签数据
+        mViewModel.initializeTags()
+        
         with(mViewBind){
             btnBack.click {
                 finish()
             }
+            
             val tfRegular = FontUtils.getInstance().robotoRegular
             val tfBold = FontUtils.getInstance().robotoBold
             npvDiastolic.setContentSelectedTextTypeface(tfBold)
@@ -51,6 +80,29 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
                 mViewModel.updatePulseRate(npvPulse.contentByCurrValue.toInt())
             }
             
+            // 设置DateTimeSelectionView的标签点击监听
+            dateTimeSelectionView.setOnLabelClickListener {
+                val selectedTags = if(addTagIds.isEmpty()) null else {
+                    val tempTags = mutableListOf<BloodPressureTag>()
+                    for(id in addTagIds){
+                        healthTags.find { it.id == id }?.let {
+                            tempTags.add(it)
+                        }
+                    }
+                    tempTags
+                }
+                BpLabelDialog.show(supportFragmentManager, healthTags, selectedTags) { selectedTagList ->
+                    val tagIds = selectedTagList.map { it.id }
+                    addTagIds.clear()
+                    addTagIds.addAll(tagIds)
+                    // 更新ViewModel中的选中标签
+                    mViewModel.clearSelectedTags()
+                    tagIds.forEach { tagId ->
+                        mViewModel.toggleTagSelection(tagId)
+                    }
+                }
+            }
+            
             // 设置保存按钮点击事件
             setupSaveButton()
         }
@@ -62,10 +114,23 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
      * 设置保存按钮
      */
     private fun setupSaveButton() {
-        // 这里需要添加保存按钮到布局中，或者使用现有的保存机制
-        // 暂时通过DateTimeSelectionView的时间变化来触发保存逻辑
+        // 设置时间选择监听
         mViewBind.dateTimeSelectionView.setOnDateTimeSelectedListener { calendar ->
             mViewModel.updateRecordTime(calendar.time)
+        }
+        
+        // 设置保存按钮点击事件
+        mViewBind.btnSave.click {
+            lifecycleScope.launch {
+                val success = mViewModel.saveBloodPressureRecord()
+                // 保存成功后关闭页面
+                if (success) {
+                    finish()
+                } else {
+                    // 显示保存失败提示
+                    // TODO: 添加Toast显示
+                }
+            }
         }
     }
 
@@ -122,6 +187,26 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
         // 观察加载状态
         mViewModel.isLoading.collectLatestLifecycle { isLoading ->
             // 可以在这里显示加载状态
+            mViewBind.btnSave.isEnabled = !isLoading
+            mViewBind.btnSave.text = if (isLoading) {
+                getString(com.healthtracker.blood.suger.R.string.saving)
+            } else {
+                getString(com.healthtracker.blood.suger.R.string.save)
+            }
+        }
+        
+        // 观察可用标签
+        lifecycleScope.launch {
+            mViewModel.availableTags.collectLatestLifecycle { tags ->
+                healthTags.clear()
+                healthTags.addAll(tags)
+            }
+        }
+        
+        // 观察选中的标签ID
+        mViewModel.selectedTagIds.collectLatestLifecycle { tagIds ->
+            addTagIds.clear()
+            addTagIds.addAll(tagIds)
         }
     }
 

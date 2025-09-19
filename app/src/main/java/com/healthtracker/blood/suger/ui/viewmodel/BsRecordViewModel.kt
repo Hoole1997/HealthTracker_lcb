@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -195,7 +196,11 @@ class BsRecordViewModel @Inject constructor(
     private fun convertMeasurementTagToBloodSugarStatus(status: Int) = BloodSugarStatus.entries.first { it.statusType == status }
 
 
-   suspend fun getHealthTags() = bloodSugarTagRepository.getAllTags().stateIn(viewModelScope)
+   suspend fun getHealthTags() = bloodSugarTagRepository.getAllBloodSugarTags().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
 
 

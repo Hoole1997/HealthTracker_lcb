@@ -15,66 +15,106 @@ import javax.inject.Singleton
 @Singleton
 class BloodSugarTagRepository @Inject constructor(
     private val bloodSugarTagDao: BloodSugarTagDao
-) {
-
-    /**
-     * 初始化预定义标签
-     * 在应用首次启动时调用，确保预定义标签存在
-     */
-    suspend fun initializePredefinedTags() {
-        // 检查是否已经有预定义标签
-        val predefinedTags = bloodSugarTagDao.getAllTags().first()
-        if (predefinedTags.isEmpty()) {
-            val predefinedTagList = BloodSugarTag.createAllPredefinedTags()
-            bloodSugarTagDao.insertAll(predefinedTagList)
-        }
+) : BaseTagRepository<BloodSugarTag, BloodSugarTagDao>() {
+    
+    override val tagDao: BloodSugarTagDao = bloodSugarTagDao
+    
+    // 实现BaseTagRepository的抽象方法
+    override fun getPredefinedTagNames(): List<String> {
+        return BloodSugarTag.getPredefinedTagNames().toList()
     }
-
-    /**
-     * 获取所有标签
-     * @return Flow形式的标签列表（预定义标签在前）
-     */
-    fun getAllTags(): Flow<List<BloodSugarTag>> {
-        return bloodSugarTagDao.getAllTags()
+    
+    override fun createPredefinedTag(name: String): BloodSugarTag {
+        return BloodSugarTag.createPredefined(name)
     }
-
-    /**
-     * 根据ID获取标签
-     * @param tagId 标签ID
-     * @return 标签实体，可能为null
-     */
-    suspend fun getTagById(tagId: Long): BloodSugarTag? {
+    
+    override fun createCustomTag(name: String): BloodSugarTag {
+        return BloodSugarTag.createCustom(name)
+    }
+    
+    override suspend fun insertTag(tag: BloodSugarTag): Long {
+        return bloodSugarTagDao.insert(tag)
+    }
+    
+    override suspend fun insertTags(tags: List<BloodSugarTag>): List<Long> {
+        return bloodSugarTagDao.insertAll(tags)
+    }
+    
+    override suspend fun updateTag(tag: BloodSugarTag): Int {
+        bloodSugarTagDao.update(tag)
+        return 1
+    }
+    
+    override suspend fun deleteTagById(tagId: Long): Int {
+        return bloodSugarTagDao.deleteById(tagId)
+    }
+    
+    override suspend fun softDeleteTag(tagId: Long): Int {
+        val tag = bloodSugarTagDao.getById(tagId) ?: return 0
+        bloodSugarTagDao.update(tag.copy(isDelete = 1))
+        return 1
+    }
+    
+    override suspend fun getTagById(tagId: Long): BloodSugarTag? {
         return bloodSugarTagDao.getById(tagId)
     }
-
-    /**
-     * 根据ID列表获取标签
-     * @param tagIds 标签ID列表
-     * @return 标签列表
-     */
-    suspend fun getTagsByIds(tagIds: List<Long>): List<BloodSugarTag> {
-        return if (tagIds.isNotEmpty()) {
-            bloodSugarTagDao.getByIds(tagIds)
-        } else {
-            emptyList()
-        }
+    
+    override suspend fun getTagsByIds(tagIds: List<Long>): List<BloodSugarTag> {
+        return bloodSugarTagDao.getByIds(tagIds)
     }
-
-    /**
-     * 根据名称获取标签
-     * @param name 标签名称
-     * @return 标签实体，可能为null
-     */
-    suspend fun getTagByName(name: String): BloodSugarTag? {
+    
+    override suspend fun getTagByName(name: String): BloodSugarTag? {
         return bloodSugarTagDao.getByName(name)
     }
+    
+    override fun getAllTags(): Flow<List<BloodSugarTag>> {
+        return bloodSugarTagDao.getAllTags()
+    }
+    
+    override fun getAllPredefinedTags(): Flow<List<BloodSugarTag>> {
+        return bloodSugarTagDao.getPredefinedTags()
+    }
+    
+    override fun getAllCustomTags(): Flow<List<BloodSugarTag>> {
+        return bloodSugarTagDao.getCustomTags()
+    }
+    
+    override suspend fun getTagStatistics(): TagStatistics {
+        val allTags = getAllTags().first()
+        val predefinedCount = allTags.count { it.isPredefinedTag() }
+        val customCount = allTags.count { it.isCustomTag() }
+        val deletedCount = allTags.count { it.isDelete == 1 }
+        
+        return TagStatistics(
+            totalCount = allTags.size,
+            predefinedCount = predefinedCount,
+            customCount = customCount,
+            deletedCount = deletedCount
+        )
+    }
+    
+    override fun getTagName(tag: BloodSugarTag): String {
+        return tag.name
+    }
+    
+    override fun getTagId(tag: BloodSugarTag): Long {
+        return tag.id
+    }
 
     /**
-     * 创建自定义标签
+     * 获取所有血糖标签（公共方法）
+     * @return Flow形式的标签列表
+     */
+    fun getAllBloodSugarTags(): Flow<List<BloodSugarTag>> {
+        return getAllTags()
+    }
+
+    /**
+     * 创建自定义标签（业务方法）
      * @param name 标签名称
      * @return 创建的标签ID，如果失败返回null
      */
-    suspend fun createCustomTag(name: String): Long? {
+    suspend fun createCustomTagBusiness(name: String): Long? {
         val cleanName = TagUtils.cleanTagName(name)
 
         // 验证标签名称
@@ -131,29 +171,13 @@ class BloodSugarTagRepository @Inject constructor(
         val successIds = mutableListOf<Long>()
 
         for (name in names) {
-            val tagId = createCustomTag(name)
+            val tagId = createCustomTagBusiness(name)
             if (tagId != null) {
                 successIds.add(tagId)
             }
         }
 
         return successIds
-    }
-
-    /**
-     * 获取标签统计信息
-     * @return 标签统计信息
-     */
-    suspend fun getTagStatistics(): TagStatistics {
-        val allTags = getAllTags().first()
-        val predefinedCount = allTags.count { it.isPredefinedTag() }
-        val customCount = allTags.count { it.isCustomTag() }
-
-        return TagStatistics(
-            totalCount = allTags.size,
-            predefinedCount = predefinedCount,
-            customCount = customCount
-        )
     }
 
     /**
@@ -201,12 +225,3 @@ class BloodSugarTagRepository @Inject constructor(
         return existingTags.map { it.id }
     }
 }
-
-/**
- * 标签统计信息数据类
- */
-data class TagStatistics(
-    val totalCount: Int,
-    val predefinedCount: Int,
-    val customCount: Int
-)
