@@ -674,8 +674,9 @@ class BloodSugarRulerView @JvmOverloads constructor(
      * 立即设置刻度位置，无动画效果
      * 用于初始化和单位切换时的直接定位
      * @param scale 目标刻度值
+     * @param suppressCallback 是否抑制回调，用于单位切换时避免错误回调
      */
-    fun setScaleImmediately(scale: Float) {
+    fun setScaleImmediately(scale: Float, suppressCallback: Boolean = false) {
         val clampedScale = scale.coerceIn(scrollableMinScale, scrollableMaxScale)
         val targetPosition = getScalePosition(clampedScale)
         
@@ -696,8 +697,10 @@ class BloodSugarRulerView @JvmOverloads constructor(
         // 立即更新显示
         invalidate()
         
-        // 通知监听器最终结果
-        onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+        // 只在不抑制回调时通知监听器
+        if (!suppressCallback) {
+            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+        }
     }
 
     fun getCurrentScale(): Float = currentScale

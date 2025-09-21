@@ -157,8 +157,8 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             updateUnitRadioButtons(unit)
             updateDisplayValues()
             configureRulerForUnit(unit)
-            // 单位切换后，立即设置当前值位置（无动画）
-            mViewBind.rulerView.setScaleImmediately(mViewModel.currentValue.value)
+            // 单位切换后，立即设置当前值位置（无动画，抑制回调避免闪烁）
+            mViewBind.rulerView.setScaleImmediately(mViewModel.currentValue.value, suppressCallback = true)
         }
 
         mViewModel.currentStatus.collectLatestLifecycle { status ->
