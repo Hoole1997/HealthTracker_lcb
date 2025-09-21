@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
-import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.enum.getStatusStringRes
@@ -13,7 +12,6 @@ import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
-
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
@@ -132,18 +130,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
     private fun setupSaveButton() {
         mViewBind.btnSave.click {
             lifecycleScope.launch {
-                // 保存前先获取DateTimeSelectionView的时间并更新到ViewModel
-                val selectedDateTime = mViewBind.dateTimeSelectionView.getDateTimePicker().getDateTime()
-                val currentTime = Calendar.getInstance()
-                val selectedCalendar = selectedDateTime.toCalendar()
-                // 保留当前时间的秒和毫秒
-                selectedCalendar.set(Calendar.SECOND, currentTime.get(Calendar.SECOND))
-                selectedCalendar.set(Calendar.MILLISECOND, currentTime.get(Calendar.MILLISECOND))
-                //需要减1s避免立即关闭时出现0s前的情况
-                selectedCalendar.add(Calendar.SECOND, -1)
-                val selectedDate = selectedCalendar.time
-                mViewModel.updateRecordTime(selectedDate)
-
+                mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 val success = mViewModel.saveRecord()
                 if (success) {
                     finish()
@@ -167,9 +154,9 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         }
 
         mViewModel.currentUnit.collectLatestLifecycle { unit ->
-            configureRulerForUnit(unit)
             updateUnitRadioButtons(unit)
             updateDisplayValues()
+            configureRulerForUnit(unit)
             // 单位切换后，立即设置当前值位置（无动画）
             mViewBind.rulerView.setScaleImmediately(mViewModel.currentValue.value)
         }

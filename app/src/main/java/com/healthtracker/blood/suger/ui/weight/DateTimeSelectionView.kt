@@ -18,7 +18,10 @@ class DateTimeSelectionView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private val binding: LayoutDatetimeSelectionBinding
+    // 加载布局
+    private val binding: LayoutDatetimeSelectionBinding = LayoutDatetimeSelectionBinding.inflate(
+        LayoutInflater.from(context), this, true
+    )
 
 
     // 自定义属性
@@ -27,11 +30,7 @@ class DateTimeSelectionView @JvmOverloads constructor(
     private var showLabel: Boolean = true
 
     init {
-        // 加载布局
-        binding = LayoutDatetimeSelectionBinding.inflate(
-            LayoutInflater.from(context), this, true
-        )
-        
+
         // 解析自定义属性
         initAttributes(attrs)
         
@@ -156,4 +155,19 @@ class DateTimeSelectionView @JvmOverloads constructor(
     // 使用lambda表达式替代接口
     private var onDateTimeSelectedListener: ((Calendar) -> Unit)? = null
     private var onLabelClickListener: (() -> Unit)? = null
+
+
+    fun getSelectDate(): Date {
+        // 保存前先获取DateTimeSelectionView的时间并更新到ViewModel
+        val selectedDateTime = getDateTimePicker().getDateTime()
+        val currentTime = Calendar.getInstance()
+        val selectedCalendar = selectedDateTime.toCalendar()
+        // 保留当前时间的秒和毫秒
+        selectedCalendar.set(Calendar.SECOND, currentTime.get(Calendar.SECOND))
+        selectedCalendar.set(Calendar.MILLISECOND, currentTime.get(Calendar.MILLISECOND))
+        //需要减1s避免立即关闭时出现0s前的情况
+        selectedCalendar.add(Calendar.SECOND, -1)
+        val selectedDate = selectedCalendar.time
+        return selectedDate
+    }
 }

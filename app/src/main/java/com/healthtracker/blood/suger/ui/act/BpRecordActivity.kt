@@ -116,14 +116,11 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
      * 设置保存按钮
      */
     private fun setupSaveButton() {
-        // 设置时间选择监听
-        mViewBind.dateTimeSelectionView.setOnDateTimeSelectedListener { calendar ->
-            mViewModel.updateRecordTime(calendar.time)
-        }
-        
         // 设置保存按钮点击事件
         mViewBind.btnSave.click {
             lifecycleScope.launch {
+
+                mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 val success = mViewModel.saveBloodPressureRecord()
                 // 保存成功后关闭页面
                 if (success) {
