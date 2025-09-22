@@ -10,12 +10,11 @@ import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -141,22 +140,37 @@ class BsRecordViewModel @Inject constructor(
         _recordTime.value = time
     }
 
-    // 保存记录
-    suspend fun saveRecord(): Boolean {
+    // 保存记录，返回记录ID（新建时）或操作结果
+    suspend fun saveRecord(): SaveRecordResult {
         return try {
             _isLoading.value = true
             if (editingRecordId != null) {
                 // 更新现有记录
                 updateExistingRecord()
+                SaveRecordResult.Updated(editingRecordId!!)
             } else {
                 // 创建新记录
-                createNewRecord()
+                val newRecordId = createNewRecord()
+                SaveRecordResult.Created(newRecordId)
             }
-            true
         } catch (e: Exception) {
-            false
+            SaveRecordResult.Failed(e.message ?: "保存失败")
         } finally {
             _isLoading.value = false
+        }
+    }
+
+    // 保存结果密封类
+    sealed class SaveRecordResult {
+        data class Created(val recordId: Long) : SaveRecordResult()
+        data class Updated(val recordId: Long) : SaveRecordResult()
+        data class Failed(val error: String) : SaveRecordResult()
+
+        fun isSuccess(): Boolean = this is Created || this is Updated
+        fun getRecordId(): Long? = when (this) {
+            is Created -> recordId
+            is Updated -> recordId
+            is Failed -> null
         }
     }
 
@@ -177,11 +191,11 @@ class BsRecordViewModel @Inject constructor(
         bloodSugarRepository.updateBloodSugarRecord(updatedRecord)
     }
 
-    private suspend fun createNewRecord() {
+    private suspend fun createNewRecord(): Long {
         // 将当前单位的值转换为mg/dL存储
         val valueInMgdl = _currentUnit.value.convertToMgdl(_currentValue.value.toDouble())
 
-        bloodSugarRepository.addBloodSugarRecord(
+        return bloodSugarRepository.addBloodSugarRecord(
             glucoseValue = valueInMgdl,
             status = _currentStatus.value.statusType,
             selectedTime = _recordTime.value,

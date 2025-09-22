@@ -131,12 +131,23 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         mViewBind.btnSave.click {
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
-                val success = mViewModel.saveRecord()
-                if (success) {
-                    finish()
-                } else {
-                    // 显示保存失败提示
-                    // TODO: 添加Toast显示
+                val result = mViewModel.saveRecord()
+
+                when (result) {
+                    is BsRecordViewModel.SaveRecordResult.Created -> {
+                        // 新建记录成功，跳转到详情页
+                        BsDetailActivity.start(this@BsRecordActivity, result.recordId)
+                        finish()
+                    }
+                    is BsRecordViewModel.SaveRecordResult.Updated -> {
+                        // 更新记录成功，跳转到详情页
+                        BsDetailActivity.start(this@BsRecordActivity, result.recordId)
+                        finish()
+                    }
+                    is BsRecordViewModel.SaveRecordResult.Failed -> {
+                        // 显示保存失败提示
+                        // TODO: 添加Toast显示错误信息
+                    }
                 }
             }
         }
