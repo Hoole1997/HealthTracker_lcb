@@ -1,8 +1,8 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
-import android.icu.text.DateFormat
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.healthtracker.blood.suger.R
@@ -12,43 +12,35 @@ import com.healthtracker.blood.suger.enum.getStatusStringRes
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HistoryViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryRecordBinding>() {
 
 
     companion object{
-        private const val RECORD_ID = "RECORD_ID"
         private const val IS_BS = "IS_BS"
-        fun start(context: Context,recordId: Long, isBs: Boolean = true){
-            context.startActivity<HistoryRecordActivity>(RECORD_ID to recordId,IS_BS to isBs)
+        fun start(context: Context, isBs: Boolean = true){
+            context.startActivity<HistoryRecordActivity>(IS_BS to isBs)
         }
     }
 
-    // 保存当前选中的日期范围
-    private var currentStartDate: Long = 0
-    private var currentEndDate: Long = 0
-
-    private var bsStatus: BloodSugarStatus = BloodSugarStatus.DEFAULT
-
-    // 日期格式化器
-    private val dateFormat = DateFormat.getDateInstance()
 
     override fun createViewBinding() = ActivityHistoryRecordBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HistoryViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        // 初始化默认日期范围
-        initDefaultDateRange()
+        // 设置历史记录类型
+        val isBloodSugar = intent.getBooleanExtra(IS_BS, true)
+        mViewModel.setHistoryType(isBloodSugar)
+
+        // 初始化UI
         with(mViewBind){
             btnBack.click {
                 finish()
@@ -57,91 +49,84 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
                 showTimeRangePick()
             }
 
-            if (intent.getBooleanExtra(IS_BS, true)) {
+            if (isBloodSugar) {
                 tvFilterStatu.clickWithDuration {
-                    StatusSelectDialog.show(supportFragmentManager, bsStatus) {
-                        bsStatus = it
-                        updateStatusType()
+                    lifecycleScope.launch {
+                        val currentStatus = mViewModel.selectedBloodSugarStatus.value
+                        StatusSelectDialog.show(supportFragmentManager, currentStatus ?: BloodSugarStatus.DEFAULT) {
+                            mViewModel.setBloodSugarStatusFilter(if (it == BloodSugarStatus.DEFAULT) null else it)
+                        }
                     }
                 }
-                updateStatusType()
             } else {
                 tvFilterStatu.gone()
             }
         }
+
+        // 观察ViewModel状态变化
+        observeViewModel()
     }
 
 
-    private fun updateStatusType(){
+    /**
+     * 观察ViewModel状态变化
+     */
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            mViewModel.dateRangeText.collect { dateRangeText ->
+                mViewBind.tvFilterDateRange.text = dateRangeText
+            }
+        }
+
+        lifecycleScope.launch {
+            mViewModel.selectedBloodSugarStatus.collect { status ->
+                updateStatusDisplay(status)
+            }
+        }
+    }
+
+    /**
+     * 更新状态显示
+     */
+    private fun updateStatusDisplay(status: BloodSugarStatus?) {
         mViewBind.tvFilterStatu.text =
-            if (bsStatus == BloodSugarStatus.DEFAULT) getString(R.string.all_types) else {
-                getString(getStatusStringRes(bsStatus.statusType))
+            if (status == null) getString(R.string.all_types) else {
+                getString(getStatusStringRes(status.statusType))
             }
     }
 
-    /**
-     * 初始化默认日期范围（去年今天 ~ 今天）
-     */
-    private fun initDefaultDateRange() {
-        // 先获取本地今天的日期，然后转换为UTC的midnight
-        val localCalendar = Calendar.getInstance()
-        val year = localCalendar.get(Calendar.YEAR)
-        val month = localCalendar.get(Calendar.MONTH)
-        val dayOfMonth = localCalendar.get(Calendar.DAY_OF_MONTH)
 
-        // 创建UTC时区的Calendar，设置为今天的midnight (UTC)
-        val utcCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        utcCalendar.set(year, month, dayOfMonth, 0, 0, 0)
-        utcCalendar.set(Calendar.MILLISECOND, 0)
-        currentEndDate = utcCalendar.timeInMillis
-
-        // 计算去年今天的日期
-        val startUtcCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        startUtcCalendar.set(year - 1, month, dayOfMonth, 0, 0, 0)
-        startUtcCalendar.set(Calendar.MILLISECOND, 0)
-        currentStartDate = startUtcCalendar.timeInMillis
-
-        // 更新UI显示
-        updateDateRangeDisplay()
-    }
 
     /**
-     * 更新日期范围显示
+     * 显示日期范围选择器
      */
-    private fun updateDateRangeDisplay() {
-        val startDateStr = dateFormat.format(Date(currentStartDate))
-        val endDateStr = dateFormat.format(Date(currentEndDate))
-        "$startDateStr - $endDateStr".also { mViewBind.tvFilterDateRange.text = it }
-    }
-
-
     private fun showTimeRangePick(){
-        // 创建日历约束，设置打开时显示结束日期所在的月份
-        val calendarConstraints = CalendarConstraints.Builder()
-            .setOpenAt(currentEndDate) // 定位到结束日期所在月份
-            .build()
+        lifecycleScope.launch {
+            val startDate = mViewModel.startDate.value
+            val endDate = mViewModel.endDate.value
 
-        val datePicker = MaterialDatePicker.Builder.dateRangePicker().apply {
-            // 设置自定义主题
-            setTheme(R.style.CustomDatePickerTheme)
-            // 设置默认选中的日期范围
-            setSelection(androidx.core.util.Pair(currentStartDate, currentEndDate))
-            // 设置日历约束
-            setCalendarConstraints(calendarConstraints)
-        }.build()
+            // 创建日历约束，设置打开时显示结束日期所在的月份
+            val calendarConstraints = CalendarConstraints.Builder()
+                .setOpenAt(endDate) // 定位到结束日期所在月份
+                .build()
 
-        // 设置选择监听器
-        datePicker.addOnPositiveButtonClickListener { selection ->
-            // 用户确认选择，更新当前日期范围
-            currentStartDate = selection.first
-            currentEndDate = selection.second
+            val datePicker = MaterialDatePicker.Builder.dateRangePicker().apply {
+                setTitleText("SELECT DATE RANGE")
+                // 设置自定义主题
+                setTheme(R.style.CustomDatePickerTheme)
+                // 设置默认选中的日期范围
+                setSelection(androidx.core.util.Pair(startDate, endDate))
+                // 设置日历约束
+                setCalendarConstraints(calendarConstraints)
+            }.build()
 
-            // 更新UI显示
-            updateDateRangeDisplay()
+            // 设置选择监听器
+            datePicker.addOnPositiveButtonClickListener { selection ->
+                // 更新ViewModel中的日期范围
+                mViewModel.setDateRange(selection.first, selection.second)
+            }
+
+            datePicker.show(supportFragmentManager, "DATE_RANGE_PICKER")
         }
-
-        // 取消操作不做任何处理，保持原有显示
-
-        datePicker.show(supportFragmentManager, "DATE_RANGE_PICKER")
     }
 }
