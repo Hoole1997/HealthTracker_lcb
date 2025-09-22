@@ -23,19 +23,36 @@ class HistoryViewModel @Inject constructor(
     private var savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    companion object {
+        private const val KEY_IS_BLOOD_SUGAR = "is_blood_sugar"
+        private const val KEY_SELECTED_STATUS = "selected_status"
+        private const val KEY_START_DATE = "start_date"
+        private const val KEY_END_DATE = "end_date"
+    }
+
     // 日期范围状态
-    private val _startDate = MutableStateFlow(0L)
+    private val _startDate = MutableStateFlow(
+        savedStateHandle.get<Long>(KEY_START_DATE) ?: 0L
+    )
     val startDate: StateFlow<Long> = _startDate.asStateFlow()
 
-    private val _endDate = MutableStateFlow(0L)
+    private val _endDate = MutableStateFlow(
+        savedStateHandle.get<Long>(KEY_END_DATE) ?: 0L
+    )
     val endDate: StateFlow<Long> = _endDate.asStateFlow()
 
     // 是否为血糖历史记录（true: 血糖, false: 血压）
-    private val _isBloodSugarHistory = MutableStateFlow(true)
+    private val _isBloodSugarHistory = MutableStateFlow(
+        savedStateHandle.get<Boolean>(KEY_IS_BLOOD_SUGAR) ?: true
+    )
     val isBloodSugarHistory: StateFlow<Boolean> = _isBloodSugarHistory.asStateFlow()
 
     // 血糖状态类型筛选（null表示全部）
-    private val _selectedBloodSugarStatus = MutableStateFlow<BloodSugarStatus?>(null)
+    private val _selectedBloodSugarStatus = MutableStateFlow<BloodSugarStatus?>(
+        savedStateHandle.get<Int>(KEY_SELECTED_STATUS)?.let {
+            BloodSugarStatus.fromStatusType(it).takeIf { status -> status != BloodSugarStatus.DEFAULT }
+        }
+    )
     val selectedBloodSugarStatus: StateFlow<BloodSugarStatus?> = _selectedBloodSugarStatus.asStateFlow()
 
     // 格式化的日期范围显示字符串
@@ -43,7 +60,10 @@ class HistoryViewModel @Inject constructor(
     val dateRangeText: StateFlow<String> = _dateRangeText.asStateFlow()
 
     init {
-        initDefaultDateRange()
+        // 只有在没有保存状态时才初始化默认日期范围
+        if (_startDate.value == 0L || _endDate.value == 0L) {
+            initDefaultDateRange()
+        }
     }
 
     /**
@@ -78,6 +98,11 @@ class HistoryViewModel @Inject constructor(
         _startDate.value = startDate
         _endDate.value = endDate
         updateDateRangeText()
+        // 保存到savedStateHandle
+        savedStateHandle[KEY_START_DATE] = startDate
+        savedStateHandle[KEY_END_DATE] = endDate
+
+
     }
 
     /**
@@ -85,6 +110,8 @@ class HistoryViewModel @Inject constructor(
      */
     fun setHistoryType(isBloodSugar: Boolean) {
         _isBloodSugarHistory.value = isBloodSugar
+        // 保存到savedStateHandle
+        savedStateHandle[KEY_IS_BLOOD_SUGAR] = isBloodSugar
     }
 
     /**
@@ -92,6 +119,8 @@ class HistoryViewModel @Inject constructor(
      */
     fun setBloodSugarStatusFilter(status: BloodSugarStatus?) {
         _selectedBloodSugarStatus.value = status
+        // 保存到savedStateHandle (null表示全部，不保存statusType)
+        savedStateHandle[KEY_SELECTED_STATUS] = status?.statusType
     }
 
     /**
@@ -99,7 +128,6 @@ class HistoryViewModel @Inject constructor(
      * 使用系统本地化日期格式
      */
     fun updateDateRangeText() {
-
         val dateFormat = DateFormat.getDateInstance()
         val startDateStr = dateFormat.format(Date(_startDate.value))
         val endDateStr = dateFormat.format(Date(_endDate.value))
