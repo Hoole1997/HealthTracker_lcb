@@ -72,16 +72,12 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
      * 观察ViewModel状态变化
      */
     private fun observeViewModel() {
-        lifecycleScope.launch {
-            mViewModel.dateRangeText.collect { dateRangeText ->
-                mViewBind.tvFilterDateRange.text = dateRangeText
-            }
+        mViewModel.dateRangeText.collectLatestLifecycle { dateRangeText ->
+            mViewBind.tvFilterDateRange.text = dateRangeText
         }
 
-        lifecycleScope.launch {
-            mViewModel.selectedBloodSugarStatus.collect { status ->
-                updateStatusDisplay(status)
-            }
+        mViewModel.selectedBloodSugarStatus.collectLatestLifecycle { status ->
+            updateStatusDisplay(status)
         }
     }
 
@@ -111,7 +107,6 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
                 .build()
 
             val datePicker = MaterialDatePicker.Builder.dateRangePicker().apply {
-                setTitleText("SELECT DATE RANGE")
                 // 设置自定义主题
                 setTheme(R.style.CustomDatePickerTheme)
                 // 设置默认选中的日期范围
