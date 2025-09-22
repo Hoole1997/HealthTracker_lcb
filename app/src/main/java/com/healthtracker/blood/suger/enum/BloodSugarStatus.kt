@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.enum
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.BloodSugarRangeManager
 import com.healthtracker.blood.suger.data.enums.BsUnit
+import com.healthtracker.blood.suger.ui.weight.LevelCategory
 
 /**
  * 血糖测量状态枚举
@@ -249,12 +250,13 @@ data class BloodSugarRanges(
  */
 enum class BloodSugarLevel(
     val level: Int,
-    val colorRes: Int
-) {
-    LOW(0, R.color.color_low),
-    NORMAL(1, R.color.color_normal),
-    PREDIABETES(2, R.color.color_prediabetes),
-    DIABETES(3, R.color.color_diabetes)
+    override val colorRes: Int,
+    override val position: Float
+) : LevelCategory {
+    LOW(0, R.color.color_low, 0.15f),
+    NORMAL(1, R.color.color_normal, 0.35f),
+    PREDIABETES(2, R.color.color_prediabetes, 0.65f),
+    DIABETES(3, R.color.color_diabetes, 0.85f)
 }
 
 

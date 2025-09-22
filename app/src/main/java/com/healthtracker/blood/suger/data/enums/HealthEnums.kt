@@ -1,18 +1,25 @@
 package com.healthtracker.blood.suger.data.enums
 
+import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ui.weight.LevelCategory
+
 
 /**
  * 血压分类枚举
  * 基于美国心脏协会(AHA)标准
  */
-enum class BloodPressureCategory(val code: String) {
-    LOW("low"),                         // 低血压: <90/60
-    NORMAL("normal"),                    // 正常: 90-119/60-79
-    ELEVATED("elevated"),                // 血压偏高: 120-129/<80
-    HIGH_STAGE_1("high_stage_1"),       // 高血压1期: 130-139/80-89
-    HIGH_STAGE_2("high_stage_2"),       // 高血压2期: 140-179/90-119
-    HYPERTENSIVE_CRISIS("hypertensive_crisis"), // 高血压危象: ≥180/≥120
-    UNKNOWN("unknown");                  // 未知
+enum class BloodPressureCategory(
+    val code: String,
+    override val position: Float,
+    override val colorRes: Int
+) : LevelCategory {
+    LOW("low", 0.1f, R.color.color_3487FC),                         // 低血压: <90/60
+    NORMAL("normal", 0.25f, R.color.color_05BA7B),                    // 正常: 90-119/60-79
+    ELEVATED("elevated", 0.45f, R.color.color_FFE902),                // 血压偏高: 120-129/<80
+    HIGH_STAGE_1("high_stage_1", 0.65f, R.color.color_FFB909),       // 高血压1期: 130-139/80-89
+    HIGH_STAGE_2("high_stage_2", 0.8f, R.color.color_FF8000),       // 高血压2期: 140-179/90-119
+    HYPERTENSIVE_CRISIS("hypertensive_crisis", 0.95f, R.color.color_FB0301), // 高血压危象: ≥180/≥120
+    UNKNOWN("unknown", 0.25f, R.color.color_05BA7B);                  // 未知
 
     companion object {
         /**
