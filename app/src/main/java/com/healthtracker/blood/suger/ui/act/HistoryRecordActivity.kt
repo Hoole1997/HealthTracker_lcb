@@ -10,16 +10,19 @@ import com.healthtracker.blood.suger.databinding.ActivityHistoryRecordBinding
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.blood.suger.enum.getStatusStringRes
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
+import com.healthtracker.blood.suger.ui.viewmodel.HistoryViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HistoryRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityHistoryRecordBinding>() {
+@AndroidEntryPoint
+class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryRecordBinding>() {
 
 
     companion object{
@@ -41,7 +44,7 @@ class HistoryRecordActivity: BaseMVVMActivity<BaseViewModel, ActivityHistoryReco
 
     override fun createViewBinding() = ActivityHistoryRecordBinding.inflate(layoutInflater)
 
-    override fun getVMModelClass() = BaseViewModel::class.java
+    override fun getVMModelClass() = HistoryViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
         // 初始化默认日期范围
