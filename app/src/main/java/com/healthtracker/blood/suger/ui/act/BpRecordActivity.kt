@@ -119,15 +119,24 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
         // 设置保存按钮点击事件
         mViewBind.btnSave.click {
             lifecycleScope.launch {
-
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
-                val success = mViewModel.saveBloodPressureRecord()
-                // 保存成功后关闭页面
-                if (success) {
-                    finish()
-                } else {
-                    // 显示保存失败提示
-                    // TODO: 添加Toast显示
+                val result = mViewModel.saveBloodPressureRecord()
+
+                when (result) {
+                    is BpRecordViewModel.SaveRecordResult.Created -> {
+                        // 新建记录成功，跳转到详情页
+                        BpDetailActivity.start(this@BpRecordActivity, result.recordId)
+                        finish()
+                    }
+                    is BpRecordViewModel.SaveRecordResult.Updated -> {
+                        // 更新记录成功，跳转到详情页
+                        BpDetailActivity.start(this@BpRecordActivity, result.recordId)
+                        finish()
+                    }
+                    is BpRecordViewModel.SaveRecordResult.Failed -> {
+                        // 显示保存失败提示
+                        // TODO: 添加Toast显示错误信息
+                    }
                 }
             }
         }

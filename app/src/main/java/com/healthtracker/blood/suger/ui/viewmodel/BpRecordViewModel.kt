@@ -93,10 +93,10 @@ class BpRecordViewModel @Inject constructor(
     /**
      * 保存血压记录
      */
-    suspend fun saveBloodPressureRecord(): Boolean {
+    suspend fun saveBloodPressureRecord(): SaveRecordResult {
         return try {
             _isLoading.value = true
-            
+
             if (editingRecordId != null) {
                 // 更新现有记录
                 val existingRecord = bloodPressureRepository.getBloodPressureRecordById(editingRecordId!!)
@@ -108,27 +108,30 @@ class BpRecordViewModel @Inject constructor(
                         recordTime = _recordTime.value
                     )
                     bloodPressureRepository.updateBloodPressureRecord(updatedRecord)
-                    
+
                     // 更新标签关联
                     bloodPressureRepository.addTagsToBloodPressureRecord(editingRecordId!!, _selectedTagIds.value)
-                }
+
+                    _isSaved.value = true
+                    SaveRecordResult.Updated(editingRecordId!!)
+                } ?: SaveRecordResult.Failed("记录不存在")
             } else {
                 // 添加新记录
-                bloodPressureRepository.addBloodPressureRecord(
+                val newRecordId = bloodPressureRepository.addBloodPressureRecord(
                     systolic = _systolicPressure.value,
                     diastolic = _diastolicPressure.value,
                     pulse = _pulseRate.value,
                     selectedTime = _recordTime.value,
                     tagIds = _selectedTagIds.value
                 )
+
+                _isSaved.value = true
+                SaveRecordResult.Created(newRecordId)
             }
-            
-            _isSaved.value = true
-            true
         } catch (e: Exception) {
             // 处理错误
             e.printStackTrace()
-            false
+            SaveRecordResult.Failed(e.message ?: "保存失败")
         } finally {
             _isLoading.value = false
         }
@@ -278,5 +281,19 @@ class BpRecordViewModel @Inject constructor(
      */
     fun clearSelectedTags() {
         _selectedTagIds.value = emptyList()
+    }
+
+    // 保存结果密封类
+    sealed class SaveRecordResult {
+        data class Created(val recordId: Long) : SaveRecordResult()
+        data class Updated(val recordId: Long) : SaveRecordResult()
+        data class Failed(val error: String) : SaveRecordResult()
+
+        fun isSuccess(): Boolean = this is Created || this is Updated
+        fun getRecordId(): Long? = when (this) {
+            is Created -> recordId
+            is Updated -> recordId
+            is Failed -> null
+        }
     }
 }
