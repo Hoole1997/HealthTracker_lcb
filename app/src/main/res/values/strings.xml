@@ -88,6 +88,9 @@
     <string name="systolic">Systolic</string>
     <string name="diastolic">Diastolic</string>
     <string name="pulse">Pulse</string>
+    <string name="type">Type</string>
+    <string name="bp_range_des">According to the latest guidelines from the AHA (American Heart Association)</string>
+    <string name="got_it">Got it</string>
 
     <string-array name="blood_sugar_labels">
         <item>Excited</item>

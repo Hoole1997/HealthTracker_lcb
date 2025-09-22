@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_dialog"
+    android:paddingBottom="@dimen/dp_16">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_title"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:text="@string/type"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@id/tv_title">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/tv_title">
+
+            <include
+                android:id="@+id/item_low"
+                layout="@layout/item_blood_pressure_leve" />
+
+            <include
+                android:id="@+id/item_normal"
+                layout="@layout/item_blood_pressure_leve" />
+
+            <include
+                android:id="@+id/item_elevated"
+                layout="@layout/item_blood_pressure_leve" />
+
+            <include
+                android:id="@+id/item_stage_1"
+                layout="@layout/item_blood_pressure_leve" />
+
+            <include
+                android:id="@+id/item_stage_2"
+                layout="@layout/item_blood_pressure_leve" />
+
+            <include
+                android:id="@+id/item_stage_hypertensive_crisis"
+                layout="@layout/item_blood_pressure_leve" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_range_des"
+                style="@style/TextViewFont_RobotoRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_18"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:gravity="center"
+                android:text="@string/bp_range_des"
+                android:textColor="@color/color_999"
+                android:textSize="@dimen/sp_11"
+                app:layout_constraintBottom_toBottomOf="@id/v_flag"
+                app:layout_constraintStart_toEndOf="@id/v_flag"
+                app:layout_constraintTop_toBottomOf="@id/tv_leve" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save"
+        style="@style/MaterialButton.b1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginHorizontal="@dimen/dp_30"
+        android:text="@string/got_it"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

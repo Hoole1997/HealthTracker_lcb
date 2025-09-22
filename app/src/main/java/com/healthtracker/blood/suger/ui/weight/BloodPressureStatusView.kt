@@ -9,6 +9,9 @@ import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
 import com.healthtracker.blood.suger.databinding.BloodPressureStatusViewBinding
+import com.healthtracker.blood.suger.ui.act.BpRecordActivity
+import com.healthtracker.blood.suger.ui.dialog.BpLeveDialog
+import com.healthtracker.framework.ext.clickWithDuration
 
 /**
  * 血压状态显示自定义View
@@ -131,6 +134,9 @@ class BloodPressureStatusView @JvmOverloads constructor(
         val rangeText = context.getString(rangeTextRes, systolicRange, diastolicRange)
         
         binding.rangeText.text = rangeText
+        binding.rangeText.clickWithDuration {
+            BpLeveDialog.show((context as BpRecordActivity).supportFragmentManager)
+        }
     }
 
     /**
