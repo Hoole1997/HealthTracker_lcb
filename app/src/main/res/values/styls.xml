@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="TextStyle" parent="BaseTextAlignStart"/>
+
+    <style name="TextStyle" parent="BaseTextAlignStart" />
+
     <style name="BaseTextAlignStart">
         <item name="android:gravity">start</item>
     </style>
@@ -21,6 +23,7 @@
         <item name="backgroundTint">@color/c5</item>
         <item name="rippleColor">@color/c5_8</item>
     </style>
+
     <style name="MaterialButton.b2">
         <item name="android:fontFamily">@font/roboto_medium</item>
         <item name="fontFamily">@font/roboto_medium</item>
@@ -33,5 +36,66 @@
         <item name="rippleColor">@color/c5_8</item>
 
     </style>
+
+    <!-- Custom DatePicker Theme -->
+    <style name="CustomDatePickerTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <!-- 主要颜色：选中日期、确定按钮、头部背景等 -->
+        <item name="colorPrimary">@color/c5</item>
+        <!-- 主要颜色的变体：日期范围连接背景等 -->
+        <item name="colorPrimaryVariant">@color/c5_8</item>
+        <!-- 主要颜色上的文字颜色：选中日期上的文字、头部文字 -->
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- 表面颜色：弹窗主体背景 -->
+        <item name="colorSurface">@color/white</item>
+        <!-- 表面上的文字颜色：普通日期文字 -->
+        <item name="colorOnSurface">@color/t1</item>
+        <!-- 次要颜色：取消按钮等 -->
+        <item name="colorSecondary">@color/c5</item>
+        <!-- 次要颜色上的文字 -->
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- 按钮文字颜色 -->
+        <item name="materialButtonOutlinedStyle">@style/CustomDatePickerButton</item>
+        <item name="buttonBarPositiveButtonStyle">@style/CustomDatePickerPositiveButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/CustomDatePickerNegativeButton</item>
+        <!-- 隐藏编辑按钮 -->
+        <item name="materialCalendarHeaderToggleButton">@style/HiddenToggleButton</item>
+    </style>
+
+    <!-- 隐藏编辑按钮样式 -->
+    <style name="HiddenToggleButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+    </style>
+
+    <!-- Custom DatePicker Button Style -->
+    <style name="CustomDatePickerButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/c5</item>
+        <item name="rippleColor">@color/c5_8</item>
+    </style>
+
+    <!-- Custom DatePicker Positive Button (确认按钮) -->
+    <style name="CustomDatePickerPositiveButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/datepicker_positive_button_selector</item>
+        <item name="rippleColor">@color/c5_8</item>
+    </style>
+
+    <!-- Custom DatePicker Negative Button (取消按钮) -->
+    <style name="CustomDatePickerNegativeButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/c5</item>
+        <item name="rippleColor">@color/c5_8</item>
+    </style>
+
+    <!-- Custom DatePicker Header Theme -->
+    <style name="CustomDatePickerHeaderTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen">
+        <!-- 头部背景颜色 -->
+        <item name="colorPrimary">@color/c5</item>
+        <!-- 头部文字颜色 -->
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- 头部次要文字颜色 -->
+        <item name="colorOnSurface">@color/white</item>
+    </style>
+
+
 
 </resources>

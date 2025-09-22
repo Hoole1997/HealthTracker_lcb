@@ -13,6 +13,7 @@ import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
 import com.healthtracker.blood.suger.ui.act.BpRecordActivity
+import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
@@ -45,7 +46,8 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind?.run {
             clHistory.clickWithDuration {
-                BsRecordActivity.start(requireActivity(), latestSugerID)
+//                BsRecordActivity.start(requireActivity(), latestSugerID)
+                requireActivity().startActivity<HistoryRecordActivity>()
             }
 
             btnRecordNow.clickWithDuration {

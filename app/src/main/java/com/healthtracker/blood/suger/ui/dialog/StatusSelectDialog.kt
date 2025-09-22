@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.layout.RectRulers
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.DialogStatusSelectBinding
 import com.healthtracker.blood.suger.databinding.ItemStatusBinding
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.blood.suger.enum.getStatusStringRes
+import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.weight.WrapLayoutLinearLayoutManager
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 
@@ -56,7 +59,14 @@ class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private va
                     root.isSelected = selectIndex == position
                     tvSatusName.isSelected = selectIndex == position
 
-                    tvSatusName.text = tvSatusName.context.getString(getStatusStringRes(list[position].statusType))
+                    val statusType = list[position].statusType
+                    val displayStatusStr =
+                        if (statusType == BloodSugarStatus.DEFAULT.statusType && context is HistoryRecordActivity) {
+                            tvSatusName.context.getString(R.string.all_types)
+                        } else {
+                            tvSatusName.context.getString(getStatusStringRes(statusType))
+                        }
+                    tvSatusName.text = displayStatusStr
                 }
             }
 
