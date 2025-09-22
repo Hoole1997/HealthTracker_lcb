@@ -8,6 +8,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
+import androidx.core.content.withStyledAttributes
 
 /**
  * 血压等级进度条自定义控件
@@ -49,19 +50,28 @@ class BloodPressureLevelBar @JvmOverloads constructor(
      * 初始化自定义属性
      */
     private fun initAttributes(attrs: AttributeSet?) {
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.BloodPressureLevelBar)
-        
-        // 设置默认值
-        barHeight = typedArray.getDimension(R.styleable.BloodPressureLevelBar_barHeight, dpToPx(10f))
-        barCornerRadius = typedArray.getDimension(R.styleable.BloodPressureLevelBar_barCornerRadius, dpToPx(12f))
-        indicatorWidth = typedArray.getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorWidth, dpToPx(5f))
-        indicatorHeight = typedArray.getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorHeight, dpToPx(18f))
-        indicatorFillColor = typedArray.getColor(R.styleable.BloodPressureLevelBar_bpIndicatorFillColor, Color.WHITE)
-        indicatorStrokeColor = typedArray.getColor(R.styleable.BloodPressureLevelBar_bpIndicatorStrokeColor, ContextCompat.getColor(context, R.color.color_666))
-        indicatorStrokeWidth = typedArray.getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorStrokeWidth, dpToPx(1f))
-        indicatorCornerRadius = typedArray.getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorCornerRadius, dpToPx(2f))
-        
-        typedArray.recycle()
+        context.withStyledAttributes(attrs, R.styleable.BloodPressureLevelBar) {
+
+            // 设置默认值
+            barHeight = getDimension(R.styleable.BloodPressureLevelBar_barHeight, dpToPx(10f))
+            barCornerRadius =
+                getDimension(R.styleable.BloodPressureLevelBar_barCornerRadius, dpToPx(12f))
+            indicatorWidth =
+                getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorWidth, dpToPx(5f))
+            indicatorHeight =
+                getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorHeight, dpToPx(18f))
+            indicatorFillColor =
+                getColor(R.styleable.BloodPressureLevelBar_bpIndicatorFillColor, Color.WHITE)
+            indicatorStrokeColor = getColor(
+                R.styleable.BloodPressureLevelBar_bpIndicatorStrokeColor,
+                ContextCompat.getColor(context, R.color.color_666)
+            )
+            indicatorStrokeWidth =
+                getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorStrokeWidth, dpToPx(1f))
+            indicatorCornerRadius =
+                getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorCornerRadius, dpToPx(2f))
+
+        }
     }
     
     /**
