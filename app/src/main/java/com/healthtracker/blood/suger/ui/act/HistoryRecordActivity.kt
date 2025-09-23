@@ -125,7 +125,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
                 BsDetailActivity.start(this,item.getId())
             }
             HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                BpRecordActivity.start(this,item.getId())
+                BpDetailActivity.start(this,item.getId())
             }
         }
     }
