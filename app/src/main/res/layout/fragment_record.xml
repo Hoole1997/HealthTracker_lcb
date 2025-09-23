@@ -1,18 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:padding="@dimen/dp_16">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_bs_history"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_6"
+        android:background="@drawable/bg_rect_white_12"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/ll_bp_history"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/TextViewFont_RobotoMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_20"
+            android:text="@string/blood_suger"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_16" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/TextViewFont_RobotoMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:drawableEnd="@drawable/ic_blood_suger_status_arrow"
+            android:drawablePadding="@dimen/dp_6"
+            android:text="@string/record"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_16" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_80"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/dp_7"
+            app:srcCompat="@mipmap/ic_bs_record" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_bp_history"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_6"
+        android:background="@drawable/bg_rect_white_12"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="@color/c5"
-        android:textSize="@dimen/sp_32"
-        android:text="@string/record"/>
+        app:layout_constraintStart_toEndOf="@id/ll_bs_history"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/TextViewFont_RobotoMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_20"
+            android:text="@string/blood_pressure"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_16" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/TextViewFont_RobotoMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:drawableEnd="@drawable/ic_blood_suger_status_arrow"
+            android:drawablePadding="@dimen/dp_6"
+            android:text="@string/record"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_16" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_80"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/dp_7"
+            app:srcCompat="@mipmap/ic_bp_record" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
