@@ -106,14 +106,14 @@
     </style>
 
 
-    <style name="T1_18" parent="TextViewFont_RobotoMedium">
+    <style name="T1_18" parent="TextViewFont_RobotoBold">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textColor">@color/t1</item>
         <item name="android:textSize">@dimen/sp_18</item>
     </style>
 
-    <style name="T1_14" parent="TextViewFont_RobotoMedium">
+    <style name="T1_14" parent="TextViewFont_RobotoRegular">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textColor">@color/t1</item>

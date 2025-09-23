@@ -1,14 +1,18 @@
 package com.healthtracker.blood.suger.ui.dialog
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.DialogDeleteConfirmBinding
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
+import kotlin.text.toInt
+import kotlin.times
 
 
 class ConfirmDialog(
@@ -64,6 +68,16 @@ class ConfirmDialog(
                 onDialogListener?.onItemClick(this@ConfirmDialog, BUTTON_CANCEL)
                 dismissAllowingStateLoss()
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.run {
+            val width = (resources.displayMetrics.widthPixels * 0.85).toInt() // 设置宽度为屏幕的 85%
+            val height = WindowManager.LayoutParams.WRAP_CONTENT
+            setLayout(width, height)
+            setGravity(Gravity.CENTER)
         }
     }
 }
