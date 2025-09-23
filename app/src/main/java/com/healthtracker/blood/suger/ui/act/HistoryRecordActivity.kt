@@ -74,10 +74,12 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
     private fun observeViewModel() {
         mViewModel.dateRangeText.collectLatestLifecycle { dateRangeText ->
             mViewBind.tvFilterDateRange.text = dateRangeText
+            mViewModel.loadData()
         }
 
         mViewModel.selectedBloodSugarStatus.collectLatestLifecycle { status ->
             updateStatusDisplay(status)
+            mViewModel.loadData()
         }
     }
 

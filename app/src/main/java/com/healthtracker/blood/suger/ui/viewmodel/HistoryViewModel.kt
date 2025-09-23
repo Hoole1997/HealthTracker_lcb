@@ -1,11 +1,13 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import android.icu.text.DateFormat
+import android.nfc.Tag
 import androidx.lifecycle.SavedStateHandle
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.logd
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +26,7 @@ class HistoryViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     companion object {
+        private const val TAG = "HistoryViewModel"
         private const val KEY_IS_BLOOD_SUGAR = "is_blood_sugar"
         private const val KEY_SELECTED_STATUS = "selected_status"
         private const val KEY_START_DATE = "start_date"
@@ -132,5 +135,24 @@ class HistoryViewModel @Inject constructor(
         val startDateStr = dateFormat.format(Date(_startDate.value))
         val endDateStr = dateFormat.format(Date(_endDate.value))
         _dateRangeText.value = "$startDateStr - $endDateStr"
+    }
+
+
+    fun loadData() {
+        if (_isBloodSugarHistory.value) {
+            loadBsRecords()
+        } else {
+            loadBpRecords()
+        }
+    }
+
+    private fun loadBsRecords(){
+        "load bs records".logd(TAG)
+
+    }
+
+    private fun loadBpRecords(){
+        "load bp records".logd(TAG)
+
     }
 }
