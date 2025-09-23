@@ -2,6 +2,8 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Html
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
@@ -91,7 +93,7 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
                 val leve = status.getBloodSugarLevel(value,unit)
                 val leveDescription = resources.getStringArray(R.array.bs_level_expert_advice)[leve.level]
                 // 这里可以根据需要添加更详细的描述文案
-                tvLeveDes.text = leveDescription
+                tvLeveDes.text = Html.fromHtml(leveDescription)
             }
 
             // 更新等级描述文案
