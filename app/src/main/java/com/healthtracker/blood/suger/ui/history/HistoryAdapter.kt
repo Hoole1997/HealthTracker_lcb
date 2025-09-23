@@ -41,7 +41,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, HistoryAdapter.HistoryView
     }
     
     private var itemClickListener: OnItemClickListener? = null
-    private val dateFormat = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("YYYY-MM-dd HH:mm", Locale.getDefault())
     
     /**
      * 设置事件监听器
