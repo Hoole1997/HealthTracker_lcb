@@ -77,6 +77,14 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
             } else {
                 tvFilterStatu.gone()
             }
+            
+            btnAddRecord.clickWithDuration {
+                if(isBloodSugar){
+                    BsRecordActivity.start(this@HistoryRecordActivity)
+                }else{
+                    BpRecordActivity.start(this@HistoryRecordActivity)
+                }
+            }
         }
 
         // 观察ViewModel状态变化
@@ -134,7 +142,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
 
     private fun showDeleteConfirm(recordId: Long, isBs: Boolean = true) {
         ConfirmDialog(
-            title = getString(R.string.tips),
+            title = getString(R.string.delete_record_remind_title),
             message = getString(R.string.delete_record_remind),
             leftText = getString(R.string.cancel),
             rightText = getString(R.string.confirm),
