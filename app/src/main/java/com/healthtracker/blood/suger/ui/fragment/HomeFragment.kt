@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.ui.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -121,6 +122,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
      * @param recordTime 记录时间
      * @return 格式化后的时间字符串
      */
+    @SuppressLint("StringFormatInvalid")
     private fun formatRelativeTime(recordTime: Date): String {
         val currentTime = System.currentTimeMillis()
         val recordTimeMs = recordTime.time
@@ -135,8 +137,12 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         val seconds = timeDiff / 1000
         return when {
             seconds < 60 -> {
-                // 不满1分钟：x秒前
-                getString(R.string.seconds_ago, seconds.toInt())
+                // Less than 1 minute: show "just now" if 0 seconds, otherwise show "x seconds ago"
+                if (seconds <= 0) {
+                    getString(R.string.just_now)
+                } else {
+                    getString(R.string.seconds_ago, seconds.toInt())
+                }
             }
             seconds < 3600 -> {
                 // 不满1小时：x分钟前

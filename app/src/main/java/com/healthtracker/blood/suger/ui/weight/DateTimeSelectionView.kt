@@ -165,8 +165,7 @@ class DateTimeSelectionView @JvmOverloads constructor(
         // 保留当前时间的秒和毫秒
         selectedCalendar.set(Calendar.SECOND, currentTime.get(Calendar.SECOND))
         selectedCalendar.set(Calendar.MILLISECOND, currentTime.get(Calendar.MILLISECOND))
-        //需要减1s避免立即关闭时出现0s前的情况
-        selectedCalendar.add(Calendar.SECOND, -1)
+        // 移除减1秒的逻辑，保持时间准确性
         val selectedDate = selectedCalendar.time
         return selectedDate
     }
