@@ -240,7 +240,10 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             // 设置状态选择点击事件
             clStatu.click {
                 StatusSelectDialog.show(supportFragmentManager,mViewModel.currentStatus.value){
-                    mViewModel.updateStatus(it)
+                    it?.run {
+                        mViewModel.updateStatus(this)
+                    }
+
                 }
 
             }

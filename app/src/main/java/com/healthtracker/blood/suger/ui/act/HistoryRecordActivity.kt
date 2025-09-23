@@ -12,6 +12,11 @@ import com.healthtracker.blood.suger.enum.getStatusStringRes
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HistoryViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.blood.suger.ui.history.HistoryAdapter
+import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
+import com.healthtracker.blood.suger.ui.history.BloodSugarHistoryItem
+import com.healthtracker.blood.suger.ui.history.BloodPressureHistoryItem
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
@@ -24,6 +29,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryRecordBinding>() {
 
+    // 历史记录适配器
+    private lateinit var historyAdapter: HistoryAdapter
 
     companion object{
         private const val TAG = "HistoryRecordActivity"
@@ -43,6 +50,9 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
         val isBloodSugar = intent.getBooleanExtra(IS_BS, true)
         mViewModel.setHistoryType(isBloodSugar)
 
+        // 初始化RecyclerView和适配器
+        initRecyclerView()
+        
         // 初始化UI
         with(mViewBind){
             btnBack.click {
@@ -56,8 +66,8 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
                 tvFilterStatu.clickWithDuration {
                     lifecycleScope.launch {
                         val currentStatus = mViewModel.selectedBloodSugarStatus.value
-                        StatusSelectDialog.show(supportFragmentManager, currentStatus ?: BloodSugarStatus.DEFAULT) {
-                            mViewModel.setBloodSugarStatusFilter(if (it == BloodSugarStatus.DEFAULT) null else it)
+                        StatusSelectDialog.show(supportFragmentManager, currentStatus) {
+                            mViewModel.setBloodSugarStatusFilter(it)
                         }
                     }
                 }
@@ -68,6 +78,70 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
 
         // 观察ViewModel状态变化
         observeViewModel()
+    }
+    
+    /**
+     * 初始化RecyclerView和适配器
+     */
+    private fun initRecyclerView() {
+        historyAdapter = HistoryAdapter()
+        
+        // 设置适配器事件监听
+        historyAdapter.setOnItemClickListener(object : HistoryAdapter.OnItemClickListener {
+            override fun onItemClick(item: HistoryRecordItem, position: Int) {
+                // 处理记录项点击事件
+                handleItemClick(item)
+            }
+            
+            override fun onDeleteClick(item: HistoryRecordItem, position: Int) {
+                // 处理删除按钮点击事件
+                handleDeleteClick(item, position)
+            }
+        })
+        
+        // 设置RecyclerView
+        with(mViewBind.rvHistory) {
+            layoutManager = LinearLayoutManager(this@HistoryRecordActivity)
+            adapter = historyAdapter
+        }
+    }
+    
+    /**
+     * 处理记录项点击事件
+     */
+    private fun handleItemClick(item: HistoryRecordItem) {
+        when (item.getRecordType()) {
+            HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                // 跳转到血糖详情页面
+                val bloodSugarItem = item as BloodSugarHistoryItem
+                // TODO: 跳转到血糖详情页面
+                "点击血糖记录: ${bloodSugarItem.getId()}".logd(TAG)
+            }
+            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                // 跳转到血压详情页面
+                val bloodPressureItem = item as BloodPressureHistoryItem
+                // TODO: 跳转到血压详情页面
+                "点击血压记录: ${bloodPressureItem.getId()}".logd(TAG)
+            }
+        }
+    }
+    
+    /**
+     * 处理删除按钮点击事件
+     */
+    private fun handleDeleteClick(item: HistoryRecordItem, position: Int) {
+        when (item.getRecordType()) {
+            HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                val bloodSugarItem = item as BloodSugarHistoryItem
+                // TODO: 实现血糖记录删除逻辑
+                "删除血糖记录: ${bloodSugarItem.getId()}".logd(TAG)
+            }
+            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                val bloodPressureItem = item as BloodPressureHistoryItem
+                // TODO: 实现血压记录删除逻辑
+                "删除血压记录: ${bloodPressureItem.getId()}".logd(TAG)
+            }
+        }
     }
 
 
@@ -158,7 +232,11 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
         mViewModel.bloodSugarRecords.collectLatestLifecycle { records ->
             "load bs complete".logd(TAG)
             updateRecordsList(records.isNotEmpty())
-            // TODO: 更新RecyclerView适配器显示血糖记录
+            
+            // 转换为HistoryRecordItem并更新适配器
+            val historyItems = records.map { BloodSugarHistoryItem(it) }
+            historyAdapter.submitList(historyItems)
+            
             if (records.isEmpty() && !mViewModel.isLoading.value && mViewModel.errorMessage.value == null) {
                 mViewBind.tvEmpty.visible()
             } else {
@@ -173,7 +251,11 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
     private fun observeBloodPressureRecords() {
         mViewModel.bloodPressureRecords.collectLatestLifecycle { records ->
             updateRecordsList(records.isNotEmpty())
-            // TODO: 更新RecyclerView适配器显示血压记录
+            
+            // 转换为HistoryRecordItem并更新适配器
+            val historyItems = records.map { BloodPressureHistoryItem(it) }
+            historyAdapter.submitList(historyItems)
+            
             if (records.isEmpty() && !mViewModel.isLoading.value && mViewModel.errorMessage.value == null) {
                 mViewBind.tvEmpty.visible()
             } else {

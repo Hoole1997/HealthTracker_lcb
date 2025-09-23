@@ -16,10 +16,10 @@ import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.weight.WrapLayoutLinearLayoutManager
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 
-class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private val onSelect: ((BloodSugarStatus) -> Unit)? = null): BaseBottomSheetDialogFragment<DialogStatusSelectBinding>() {
+class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private val onSelect: ((BloodSugarStatus?) -> Unit)? = null): BaseBottomSheetDialogFragment<DialogStatusSelectBinding>() {
 
     companion object{
-        fun show(fragmentManager: FragmentManager,currentStatus: BloodSugarStatus,onSelect: ((BloodSugarStatus) -> Unit)? = null){
+        fun show(fragmentManager: FragmentManager,currentStatus: BloodSugarStatus?,onSelect: ((BloodSugarStatus?) -> Unit)? = null){
             StatusSelectDialog(currentStatus,onSelect).show(fragmentManager)
         }
     }
@@ -34,7 +34,11 @@ class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private va
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.let {
-            it.rvStatus.adapter = StatusAdapter(BloodSugarStatus.entries)
+            val dataSource = BloodSugarStatus.entries.map { status -> StatuItem(status.statusType,getStatusStringRes(status.statusType)) }.toMutableList()
+            if(context is HistoryRecordActivity){
+                dataSource.add(0, StatuItem(-1,-1))
+            }
+            it.rvStatus.adapter = StatusAdapter(dataSource)
             it.rvStatus.layoutManager = WrapLayoutLinearLayoutManager(view.context)
 
 
@@ -43,8 +47,10 @@ class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private va
     }
 
 
-   inner class StatusAdapter(private val list: List<BloodSugarStatus>) : RecyclerView.Adapter<StatusAdapter.SatusViewHolder>() {
-        var selectIndex: Int = list.indexOfFirst { currentStatus?.statusType == it.statusType }
+   inner class StatusAdapter(private val list: List<StatuItem>) : RecyclerView.Adapter<StatusAdapter.SatusViewHolder>() {
+        var selectIndex: Int = if(currentStatus == null) 0 else {
+            list.indexOfFirst { currentStatus.statusType == it.statuType }
+        }
 
 
         inner class SatusViewHolder(private val itemBinding: ItemStatusBinding) : RecyclerView.ViewHolder(itemBinding.root),
@@ -59,13 +65,12 @@ class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private va
                     root.isSelected = selectIndex == position
                     tvSatusName.isSelected = selectIndex == position
 
-                    val statusType = list[position].statusType
-                    val displayStatusStr =
-                        if (statusType == BloodSugarStatus.DEFAULT.statusType && context is HistoryRecordActivity) {
-                            tvSatusName.context.getString(R.string.all_types)
-                        } else {
-                            tvSatusName.context.getString(getStatusStringRes(statusType))
-                        }
+                    val statusType = list[position].statuType
+                    val displayStatusStr = if(statusType == -1){
+                        tvSatusName.context.getString(R.string.all_types)
+                    }else {
+                        tvSatusName.context.getString(getStatusStringRes(statusType))
+                    }
                     tvSatusName.text = displayStatusStr
                 }
             }
@@ -76,7 +81,12 @@ class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private va
                     if (position in 0 until itemCount) {
                         selectIndex = position
                         notifyDataSetChanged()
-                        onSelect?.invoke(list[position])
+                        val item = list[position]
+                        if(item.statuType == -1){
+                            onSelect?.invoke(null)
+                        }else{
+                            onSelect?.invoke(BloodSugarStatus.entries.first { status -> status.statusType == item.statuType })
+                        }
                         dismissAllowingStateLoss()
                     }
                 }
@@ -94,4 +104,7 @@ class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private va
 
         override fun getItemCount() = list.size
     }
+
+
+    data class StatuItem(val statuType: Int, val displayNameRes:Int)
 }
