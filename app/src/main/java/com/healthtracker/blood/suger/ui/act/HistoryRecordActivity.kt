@@ -15,7 +15,9 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -24,6 +26,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
 
 
     companion object{
+        private const val TAG = "HistoryRecordActivity"
         private const val IS_BS = "IS_BS"
         fun start(context: Context, isBs: Boolean = true){
             context.startActivity<HistoryRecordActivity>(IS_BS to isBs)
@@ -72,14 +75,41 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
      * 观察ViewModel状态变化
      */
     private fun observeViewModel() {
+        // 观察日期范围文本
         mViewModel.dateRangeText.collectLatestLifecycle { dateRangeText ->
             mViewBind.tvFilterDateRange.text = dateRangeText
-            mViewModel.loadData()
         }
 
+        // 观察血糖状态筛选
         mViewModel.selectedBloodSugarStatus.collectLatestLifecycle { status ->
             updateStatusDisplay(status)
-            mViewModel.loadData()
+        }
+
+        // 观察加载状态
+        mViewModel.isLoading.collectLatestLifecycle { isLoading ->
+            updateLoadingState(isLoading)
+        }
+
+        // 观察错误信息
+        mViewModel.errorMessage.collectLatestLifecycle { errorMessage ->
+            updateErrorState(errorMessage)
+        }
+
+        // 观察历史记录类型和数据
+        mViewModel.isBloodSugarHistory.collectLatestLifecycle { isBloodSugar ->
+            if (isBloodSugar) {
+                // 观察血糖记录
+                observeBloodSugarRecords()
+            } else {
+                // 观察血压记录
+                observeBloodPressureRecords()
+            }
+        }
+
+        // 设置重试按钮点击事件
+        mViewBind.btnRetry.click {
+            mViewModel.clearError()
+            mViewModel.loadHistoryRecords()
         }
     }
 
@@ -91,6 +121,77 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
             if (status == null) getString(R.string.all_types) else {
                 getString(getStatusStringRes(status.statusType))
             }
+    }
+
+    /**
+     * 更新加载状态
+     */
+    private fun updateLoadingState(isLoading: Boolean) {
+        if (isLoading) {
+            mViewBind.progressLoading.visible()
+            mViewBind.rvHistory.gone()
+            mViewBind.layoutError.gone()
+            mViewBind.tvEmpty.gone()
+        } else {
+            mViewBind.progressLoading.gone()
+        }
+    }
+
+    /**
+     * 更新错误状态
+     */
+    private fun updateErrorState(errorMessage: String?) {
+        if (errorMessage != null) {
+            mViewBind.layoutError.visible()
+            mViewBind.tvErrorMessage.text = errorMessage
+            mViewBind.rvHistory.gone()
+            mViewBind.tvEmpty.gone()
+        } else {
+            mViewBind.layoutError.gone()
+        }
+    }
+
+    /**
+     * 观察血糖记录数据
+     */
+    private fun observeBloodSugarRecords() {
+        mViewModel.bloodSugarRecords.collectLatestLifecycle { records ->
+            "load bs complete".logd(TAG)
+            updateRecordsList(records.isNotEmpty())
+            // TODO: 更新RecyclerView适配器显示血糖记录
+            if (records.isEmpty() && !mViewModel.isLoading.value && mViewModel.errorMessage.value == null) {
+                mViewBind.tvEmpty.visible()
+            } else {
+                mViewBind.tvEmpty.gone()
+            }
+        }
+    }
+
+    /**
+     * 观察血压记录数据
+     */
+    private fun observeBloodPressureRecords() {
+        mViewModel.bloodPressureRecords.collectLatestLifecycle { records ->
+            updateRecordsList(records.isNotEmpty())
+            // TODO: 更新RecyclerView适配器显示血压记录
+            if (records.isEmpty() && !mViewModel.isLoading.value && mViewModel.errorMessage.value == null) {
+                mViewBind.tvEmpty.visible()
+            } else {
+                mViewBind.tvEmpty.gone()
+            }
+        }
+    }
+
+    /**
+     * 更新记录列表显示状态
+     */
+    private fun updateRecordsList(hasData: Boolean) {
+        if (hasData) {
+            mViewBind.rvHistory.visible()
+            mViewBind.tvEmpty.gone()
+        } else {
+            mViewBind.rvHistory.gone()
+        }
     }
 
 

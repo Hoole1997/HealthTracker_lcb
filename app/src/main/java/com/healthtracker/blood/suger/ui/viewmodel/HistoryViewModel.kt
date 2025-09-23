@@ -1,17 +1,18 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import android.icu.text.DateFormat
-import android.nfc.Tag
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
+import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -62,11 +63,30 @@ class HistoryViewModel @Inject constructor(
     private val _dateRangeText = MutableStateFlow("")
     val dateRangeText: StateFlow<String> = _dateRangeText.asStateFlow()
 
+    // 血糖历史记录数据
+    private val _bloodSugarRecords = MutableStateFlow<List<BloodSugarRecord>>(emptyList())
+    val bloodSugarRecords: StateFlow<List<BloodSugarRecord>> = _bloodSugarRecords.asStateFlow()
+
+    // 血压历史记录数据
+    private val _bloodPressureRecords = MutableStateFlow<List<BloodPressureRecord>>(emptyList())
+    val bloodPressureRecords: StateFlow<List<BloodPressureRecord>> = _bloodPressureRecords.asStateFlow()
+
+    // 加载状态
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    // 错误状态
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
     init {
         // 只有在没有保存状态时才初始化默认日期范围
         if (_startDate.value == 0L || _endDate.value == 0L) {
             initDefaultDateRange()
         }
+
+        // 监听筛选条件变化，自动重新加载数据
+        setupDataLoading()
     }
 
     /**
@@ -100,12 +120,14 @@ class HistoryViewModel @Inject constructor(
     fun setDateRange(startDate: Long, endDate: Long) {
         _startDate.value = startDate
         _endDate.value = endDate
-        updateDateRangeText()
         // 保存到savedStateHandle
         savedStateHandle[KEY_START_DATE] = startDate
         savedStateHandle[KEY_END_DATE] = endDate
-
-
+        viewModelScope.launch {
+            combine(_startDate,_endDate){
+                updateDateRangeText()
+            }.collect()
+        }
     }
 
     /**
@@ -115,6 +137,7 @@ class HistoryViewModel @Inject constructor(
         _isBloodSugarHistory.value = isBloodSugar
         // 保存到savedStateHandle
         savedStateHandle[KEY_IS_BLOOD_SUGAR] = isBloodSugar
+        // 数据会通过setupDataLoading()中的combine自动重新加载
     }
 
     /**
@@ -124,6 +147,7 @@ class HistoryViewModel @Inject constructor(
         _selectedBloodSugarStatus.value = status
         // 保存到savedStateHandle (null表示全部，不保存statusType)
         savedStateHandle[KEY_SELECTED_STATUS] = status?.statusType
+        // 数据会通过setupDataLoading()中的combine自动重新加载
     }
 
     /**
@@ -137,22 +161,96 @@ class HistoryViewModel @Inject constructor(
         _dateRangeText.value = "$startDateStr - $endDateStr"
     }
 
-
-    fun loadData() {
-        if (_isBloodSugarHistory.value) {
-            loadBsRecords()
-        } else {
-            loadBpRecords()
+    /**
+     * 设置数据加载监听
+     */
+    private fun setupDataLoading() {
+        // 监听筛选条件变化，自动重新加载数据
+        viewModelScope.launch {
+            combine(
+                _startDate,
+                _endDate,
+                _isBloodSugarHistory,
+                _selectedBloodSugarStatus
+            ) { startDate, endDate, isBloodSugar, selectedStatus ->
+                // 只有当日期范围有效时才加载数据
+                if (startDate > 0L && endDate > 0L) {
+                    loadHistoryRecords()
+                }
+            }.collect()
         }
     }
 
-    private fun loadBsRecords(){
-        "load bs records".logd(TAG)
+    /**
+     * 加载历史记录数据
+     */
+    fun loadHistoryRecords() {
+        "loadHistoryRecords 1".logd(TAG)
+        if (_startDate.value <= 0L || _endDate.value <= 0L) {
+            "日期无效".logd(TAG)
+            return // 日期范围无效，不加载数据
+        }
 
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                _errorMessage.value = null
+
+                if (_isBloodSugarHistory.value) {
+                    loadBloodSugarRecords()
+                } else {
+                    loadBloodPressureRecords()
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: ""
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
-    private fun loadBpRecords(){
-        "load bp records".logd(TAG)
+    /**
+     * 加载血糖记录
+     */
+    private suspend fun loadBloodSugarRecords() {
+        "loadBloodSugarRecords 1".logd(TAG)
+        val startDate = Date(_startDate.value)
+        val endDate = Date(_endDate.value)
 
+        bsRepository.getBloodSugarRecordsByTimeRange(startDate, endDate)
+            .collect { allRecords ->
+                _isLoading.value = false
+                "loadBloodSugarRecords datas:$allRecords".logd(TAG)
+                // 如果有状态筛选，则进行筛选
+                val filteredRecords = _selectedBloodSugarStatus.value?.let { selectedStatus ->
+                    allRecords.filter { record ->
+                        record.satus == selectedStatus.statusType
+                    }
+                } ?: allRecords
+
+                _bloodSugarRecords.value = filteredRecords.sortedByDescending { it.recordTime }
+            }
+    }
+
+    /**
+     * 加载血压记录
+     */
+    private suspend fun loadBloodPressureRecords() {
+        "loadBloodPressureRecords 1".logd(TAG)
+        val startDate = Date(_startDate.value)
+        val endDate = Date(_endDate.value)
+
+        bpRepository.getBloodPressureRecordsByTimeRange(startDate, endDate)
+            .collect { allRecords ->
+                _isLoading.value = false
+                _bloodPressureRecords.value = allRecords.sortedByDescending { it.recordTime }
+            }
+    }
+
+    /**
+     * 清除错误信息
+     */
+    fun clearError() {
+        _errorMessage.value = null
     }
 }
