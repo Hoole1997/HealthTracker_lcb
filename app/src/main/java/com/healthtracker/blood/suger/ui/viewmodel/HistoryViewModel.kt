@@ -9,11 +9,15 @@ import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.framework.base.BaseViewModel
-import com.healthtracker.framework.ext.logd
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -90,27 +94,36 @@ class HistoryViewModel @Inject constructor(
     }
 
     /**
-     * 初始化默认日期范围（去年今天 ~ 今天）
+     * 初始化默认日期范围
+     * 设置为去年今天到今天的时间范围（本地时区）
+     * 
+     * 时间范围说明：
+     * - 开始时间：去年今天的 00:00:00.000 (本地时区)
+     * - 结束时间：今天的 23:59:59.999 (本地时区)
+     * 
+     * 这样设置可以确保：
+     * 1. 包含今天的所有血糖记录
+     * 2. UI显示的日期范围与用户本地时区一致
+     * 3. 避免时区转换导致的日期显示错误
      */
     private fun initDefaultDateRange() {
-        // 先获取本地今天的日期，然后转换为UTC的midnight
+        // 使用本地时区的Calendar实例，避免时区转换问题
         val localCalendar = Calendar.getInstance()
-        val year = localCalendar.get(Calendar.YEAR)
-        val month = localCalendar.get(Calendar.MONTH)
-        val dayOfMonth = localCalendar.get(Calendar.DAY_OF_MONTH)
+        val currentYear = localCalendar.get(Calendar.YEAR)
+        val currentMonth = localCalendar.get(Calendar.MONTH)
+        val currentDay = localCalendar.get(Calendar.DAY_OF_MONTH)
+        
+        // 设置结束时间：今天的最后一秒 (23:59:59.999 本地时区)
+        localCalendar.set(currentYear, currentMonth, currentDay, 23, 59, 59)
+        localCalendar.set(Calendar.MILLISECOND, 999)
+        val endDate = localCalendar.timeInMillis
 
-        // 创建UTC时区的Calendar，设置为今天的midnight (UTC)
-        val utcCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        utcCalendar.set(year, month, dayOfMonth, 0, 0, 0)
-        utcCalendar.set(Calendar.MILLISECOND, 0)
-        val endDate = utcCalendar.timeInMillis
+        // 设置开始时间：去年今天的第一秒 (00:00:00.000 本地时区)
+        localCalendar.set(currentYear - 1, currentMonth, currentDay, 0, 0, 0)
+        localCalendar.set(Calendar.MILLISECOND, 0)
+        val startDate = localCalendar.timeInMillis
 
-        // 计算去年今天的日期
-        val startUtcCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        startUtcCalendar.set(year - 1, month, dayOfMonth, 0, 0, 0)
-        startUtcCalendar.set(Calendar.MILLISECOND, 0)
-        val startDate = startUtcCalendar.timeInMillis
-
+        // 应用日期范围设置
         setDateRange(startDate, endDate)
     }
 
@@ -185,9 +198,7 @@ class HistoryViewModel @Inject constructor(
      * 加载历史记录数据
      */
     fun loadHistoryRecords() {
-        "loadHistoryRecords 1".logd(TAG)
         if (_startDate.value <= 0L || _endDate.value <= 0L) {
-            "日期无效".logd(TAG)
             return // 日期范围无效，不加载数据
         }
 
@@ -213,14 +224,12 @@ class HistoryViewModel @Inject constructor(
      * 加载血糖记录
      */
     private suspend fun loadBloodSugarRecords() {
-        "loadBloodSugarRecords 1".logd(TAG)
         val startDate = Date(_startDate.value)
         val endDate = Date(_endDate.value)
 
         bsRepository.getBloodSugarRecordsByTimeRange(startDate, endDate)
             .collect { allRecords ->
                 _isLoading.value = false
-                "loadBloodSugarRecords datas:$allRecords".logd(TAG)
                 // 如果有状态筛选，则进行筛选
                 val filteredRecords = _selectedBloodSugarStatus.value?.let { selectedStatus ->
                     allRecords.filter { record ->
@@ -236,7 +245,6 @@ class HistoryViewModel @Inject constructor(
      * 加载血压记录
      */
     private suspend fun loadBloodPressureRecords() {
-        "loadBloodPressureRecords 1".logd(TAG)
         val startDate = Date(_startDate.value)
         val endDate = Date(_endDate.value)
 

@@ -4,26 +4,25 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityHistoryRecordBinding
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.blood.suger.enum.getStatusStringRes
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
-import com.healthtracker.blood.suger.ui.viewmodel.HistoryViewModel
-import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.blood.suger.ui.history.BloodPressureHistoryItem
+import com.healthtracker.blood.suger.ui.history.BloodSugarHistoryItem
 import com.healthtracker.blood.suger.ui.history.HistoryAdapter
 import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
-import com.healthtracker.blood.suger.ui.history.BloodSugarHistoryItem
-import com.healthtracker.blood.suger.ui.history.BloodPressureHistoryItem
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
+import com.healthtracker.blood.suger.ui.viewmodel.HistoryViewModel
+import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
-import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -247,7 +246,6 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
      */
     private fun observeBloodSugarRecords() {
         mViewModel.bloodSugarRecords.collectLatestLifecycle { records ->
-            "load bs complete".logd(TAG)
             updateRecordsList(records.isNotEmpty())
             
             // 转换为HistoryRecordItem并更新适配器
