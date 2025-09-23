@@ -1,22 +1,23 @@
-package com.mercury.docreader.ui.dialog
+package com.healthtracker.blood.suger.ui.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.frame.arch.base.fragment.BaseVbDialogFragment
-import com.frame.arch.base.fragment.DialogListener
-import com.mercury.docreader.R
-import com.mercury.docreader.databinding.DlgConfirmBinding
-import com.mercury.docreader.ui.util.click
+import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.databinding.DialogDeleteConfirmBinding
+import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
+import com.healthtracker.framework.base.fragment.DialogListener
+import com.healthtracker.framework.ext.click
 
-class ConfirmDlg(
+
+class ConfirmDialog(
     private val title: String,
     private val message: String,
     private val onDialogListener: DialogListener?,
     private val leftText: String? = null, private val rightText: String? = null,
     private val titleColor: Int = 0
-) : BaseVbDialogFragment<DlgConfirmBinding>(){
+) : BaseVbDialogFragment<DialogDeleteConfirmBinding>(){
 
     companion object {
         val BUTTON_OK = R.id.btn_ok
@@ -30,7 +31,7 @@ class ConfirmDlg(
         super.onCreate(savedInstanceState)
         // 恢复时直接关闭
         if (savedInstanceState != null || onDialogListener == null) {
-            dismiss()
+            dismissAllowingStateLoss()
         }
     }
 
@@ -38,7 +39,7 @@ class ConfirmDlg(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DlgConfirmBinding.inflate(inflater, parent, attachToParent)
+    ) = DialogDeleteConfirmBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {
@@ -56,10 +57,12 @@ class ConfirmDlg(
             }
 
             btnOk.click {
-                onDialogListener?.onItemClick(this@ConfirmDlg, BUTTON_OK)
+                onDialogListener?.onItemClick(this@ConfirmDialog, BUTTON_OK)
+                dismissAllowingStateLoss()
             }
             btnCancel.click {
-                onDialogListener?.onItemClick(this@ConfirmDlg, BUTTON_CANCEL)
+                onDialogListener?.onItemClick(this@ConfirmDialog, BUTTON_CANCEL)
+                dismissAllowingStateLoss()
             }
         }
     }

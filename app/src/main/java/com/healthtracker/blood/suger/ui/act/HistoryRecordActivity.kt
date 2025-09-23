@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -17,6 +18,8 @@ import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.blood.suger.ui.history.BloodSugarHistoryItem
 import com.healthtracker.blood.suger.ui.history.BloodPressureHistoryItem
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
+import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
@@ -95,7 +98,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
             
             override fun onDeleteClick(item: HistoryRecordItem, position: Int) {
                 // 处理删除按钮点击事件
-                handleDeleteClick(item, position)
+                handleDeleteClick(item)
             }
         })
         
@@ -119,19 +122,35 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
             }
         }
     }
-    
+
     /**
      * 处理删除按钮点击事件
      */
-    private fun handleDeleteClick(item: HistoryRecordItem, position: Int) {
-        when (item.getRecordType()) {
-            HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                mViewModel.deleteBsRecord(item.getId())
+    private fun handleDeleteClick(item: HistoryRecordItem) =
+        showDeleteConfirm(
+            item.getId(),
+            item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_SUGAR
+        )
+
+    private fun showDeleteConfirm(recordId: Long, isBs: Boolean = true) {
+        ConfirmDialog(
+            title = getString(R.string.tips),
+            message = getString(R.string.delete_record_remind),
+            leftText = getString(R.string.cancel),
+            rightText = getString(R.string.confirm),
+            onDialogListener = object : DialogListener {
+                override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
+                    super.onItemClick(dialogFragment, which)
+                    if (which == R.id.btn_ok) {
+                        if (isBs) {
+                            mViewModel.deleteBsRecord(recordId)
+                        } else {
+                            mViewModel.deleteBpRecord(recordId)
+                        }
+                    }
+                }
             }
-            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                mViewModel.deleteBpRecord(item.getId())
-            }
-        }
+        ).show(supportFragmentManager)
     }
 
 

@@ -96,6 +96,9 @@
     <string name="no_records">No Records</string>
     <string name="load_fail_please_try_again">Load fail,please try again</string>
     <string name="try_again">Try again</string>
+    <string name="tips">Tips</string>
+    <string name="confirm">Confirm</string>
+    <string name="delete_record_remind">Are you sure delete the select item?</string>
 
     <string-array name="blood_sugar_labels">
         <item>Excited</item>
