@@ -7,7 +7,9 @@ import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
 import com.healthtracker.blood.suger.data.enums.PulseCategory
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.TagUtils
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -134,7 +136,10 @@ class BloodPressureRepository @Inject constructor(
     fun getTodayBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getTodayRecords()
     fun getThisWeekBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getThisWeekRecords()
     fun getChartBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getChartRecords()
-    fun getBloodPressureRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodPressureRecord>> = getRecordsByTimeRange(startTime, endTime)
+    suspend fun getBloodPressureRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodPressureRecord>> =
+        withContext(IO){
+            getRecordsByTimeRange(startTime, endTime)
+        }
 
     /**
      * 根据血压分类获取记录

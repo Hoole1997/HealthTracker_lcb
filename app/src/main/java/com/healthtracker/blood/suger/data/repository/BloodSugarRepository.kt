@@ -5,7 +5,9 @@ import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.TagUtils
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -136,7 +138,10 @@ class BloodSugarRepository @Inject constructor(
     fun getTodayBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getTodayRecords()
     fun getThisWeekBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getThisWeekRecords()
     fun getChartBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getChartRecords()
-    fun getBloodSugarRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>> = getRecordsByTimeRange(startTime, endTime)
+    suspend fun getBloodSugarRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>> =
+        withContext(IO){
+            getRecordsByTimeRange(startTime, endTime)
+        }
 
     /**
      * 根据血糖值范围获取记录
