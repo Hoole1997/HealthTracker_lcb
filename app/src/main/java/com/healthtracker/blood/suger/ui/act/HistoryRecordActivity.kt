@@ -112,16 +112,10 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
     private fun handleItemClick(item: HistoryRecordItem) {
         when (item.getRecordType()) {
             HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                // 跳转到血糖详情页面
-                val bloodSugarItem = item as BloodSugarHistoryItem
-                // TODO: 跳转到血糖详情页面
-                "点击血糖记录: ${bloodSugarItem.getId()}".logd(TAG)
+                BsDetailActivity.start(this,item.getId())
             }
             HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                // 跳转到血压详情页面
-                val bloodPressureItem = item as BloodPressureHistoryItem
-                // TODO: 跳转到血压详情页面
-                "点击血压记录: ${bloodPressureItem.getId()}".logd(TAG)
+                BpRecordActivity.start(this,item.getId())
             }
         }
     }
@@ -132,14 +126,10 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
     private fun handleDeleteClick(item: HistoryRecordItem, position: Int) {
         when (item.getRecordType()) {
             HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                val bloodSugarItem = item as BloodSugarHistoryItem
-                // TODO: 实现血糖记录删除逻辑
-                "删除血糖记录: ${bloodSugarItem.getId()}".logd(TAG)
+                mViewModel.deleteBsRecord(item.getId())
             }
             HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                val bloodPressureItem = item as BloodPressureHistoryItem
-                // TODO: 实现血压记录删除逻辑
-                "删除血压记录: ${bloodPressureItem.getId()}".logd(TAG)
+                mViewModel.deleteBpRecord(item.getId())
             }
         }
     }

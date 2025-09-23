@@ -253,4 +253,17 @@ class HistoryViewModel @Inject constructor(
     fun clearError() {
         _errorMessage.value = null
     }
+
+
+    fun deleteBsRecord(recordId:Long){
+        viewModelScope.launch {
+            bsRepository.deleteBloodSugarRecord(recordId)
+        }
+    }
+
+    fun deleteBpRecord(recordId:Long){
+        viewModelScope.launch {
+            bpRepository.deleteBloodPressureRecord(recordId)
+        }
+    }
 }
