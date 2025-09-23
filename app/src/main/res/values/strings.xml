@@ -611,26 +611,137 @@
 
 
     <string-array name="bp_level_expert_advice">
-        <!-- 低血压建议 -->
-        <item>Your blood pressure is lower than normal (hypotension). While this may not always be a concern, here are some suggestions:\n\nStay hydrated: Drink plenty of water throughout the day to maintain adequate blood volume and support circulation.\n\nEat regular, balanced meals: Include adequate salt in your diet (unless advised otherwise by your healthcare provider) and avoid skipping meals.\n\nMove slowly when changing positions: When getting up from sitting or lying down, do so gradually to prevent dizziness or fainting.\n\nWear compression stockings: These can help improve circulation and prevent blood from pooling in your legs.\n\nConsult your healthcare provider: If you experience symptoms like dizziness, fainting, or fatigue, discuss your blood pressure readings with your doctor to rule out any underlying conditions.</item>
+        <!-- Low Blood Pressure -->
+        <item>
+            <![CDATA[
+            Your blood pressure reading of <font color="#3487FC"><b>%1$d/%2$d</b></font> is <font color="#3487FC"><b>low</b></font>, here are some suggestions to consider:
 
-        <!-- 正常血压建议 -->
-        <item>Your blood pressure is within the normal range. To maintain healthy blood pressure levels, consider these suggestions:\n\nMaintain a healthy diet: Follow a balanced diet rich in fruits, vegetables, whole grains, and lean proteins. Limit sodium intake to less than 2,300mg per day (ideally 1,500mg).\n\nStay physically active: Engage in at least 150 minutes of moderate-intensity aerobic exercise per week, such as brisk walking, swimming, or cycling.\n\nMaintain a healthy weight: Keep your BMI within the normal range (18.5-24.9) through proper diet and exercise.\n\nLimit alcohol consumption: Men should have no more than 2 drinks per day, and women no more than 1 drink per day.\n\nManage stress: Practice stress-reduction techniques such as meditation, deep breathing, or yoga.\n\nAvoid tobacco: If you smoke, quit smoking and avoid secondhand smoke exposure.</item>
+            <br><b>Stay hydrated:</b><br>
+            Drink an adequate amount of water throughout the day to help maintain blood volume and prevent dehydration, which can contribute to low blood pressure.
 
-        <!-- 血压偏高建议 -->
-        <item>Your blood pressure is elevated, which puts you at risk for developing high blood pressure. Here are some lifestyle changes to help lower it:\n\nReduce sodium intake: Aim for less than 1,500mg of sodium per day. Read food labels and choose low-sodium alternatives.\n\nIncrease physical activity: Aim for at least 30 minutes of moderate exercise most days of the week. Even small increases in activity can help.\n\nAdopt the DASH diet: Focus on fruits, vegetables, whole grains, lean proteins, and low-fat dairy products while limiting saturated fats.\n\nLose excess weight: Even a modest weight loss of 5-10 pounds can help lower blood pressure.\n\nLimit alcohol and quit smoking: These lifestyle changes can significantly impact your cardiovascular health.\n\nMonitor your blood pressure regularly: Keep track of your readings and work with your healthcare provider to develop a management plan.</item>
+            <br><b>Increase salt intake:</b><br>
+            Consume a slightly higher amount of salt, but within recommended limits, as salt can help retain fluid and raise blood pressure. Consult with a healthcare professional to determine the appropriate salt intake for your situation.
 
-        <!-- 1级高血压建议 -->
-        <item>You have Stage 1 Hypertension. This requires active management to prevent complications:\n\nConsult your healthcare provider: You may need medication in addition to lifestyle changes. Follow your doctor\'s treatment plan carefully.\n\nImplement strict dietary changes: Follow a low-sodium DASH diet strictly. Limit sodium to less than 1,500mg daily.\n\nIncrease exercise intensity: Aim for 40 minutes of moderate to vigorous exercise 3-4 times per week, if approved by your doctor.\n\nMonitor blood pressure at home: Check your blood pressure regularly and keep a log to share with your healthcare provider.\n\nTake medications as prescribed: If your doctor prescribes blood pressure medication, take it exactly as directed, even if you feel fine.\n\nSchedule regular check-ups: Monitor your condition closely with your healthcare team to prevent progression and complications.</item>
+            <br><b>Wear compression stockings:</b><br>
+            Compression stockings can help improve circulation and prevent blood from pooling in your legs, thereby raising blood pressure.
 
-        <!-- 2级高血压建议 -->
-        <item>You have Stage 2 Hypertension, which requires immediate medical attention and comprehensive treatment:\n\nSeek immediate medical care: Contact your healthcare provider promptly to discuss treatment options and medication adjustments.\n\nStrictly follow medication regimen: Take all prescribed medications exactly as directed. Do not skip doses or stop without consulting your doctor.\n\nImplement aggressive lifestyle changes: Follow a strict low-sodium diet, exercise as approved by your doctor, and eliminate all tobacco and excessive alcohol use.\n\nMonitor blood pressure daily: Check your blood pressure at home daily and report any concerning readings to your healthcare provider.\n\nManage comorbid conditions: If you have diabetes, high cholesterol, or other conditions, ensure they are well-controlled.\n\nPrepare for regular monitoring: Expect frequent follow-up appointments to monitor your response to treatment and prevent complications.</item>
+            <br><b>Eat small, frequent meals:</b><br>
+            Instead of large meals, opt for smaller, more frequent meals throughout the day. This can help prevent a drop in blood pressure after eating.
 
-        <!-- 高血压危象建议 -->
-        <item>URGENT: Your blood pressure is critically high (Hypertensive Crisis). This is a medical emergency:\n\nSeek immediate emergency medical care: Go to the emergency room or call emergency services immediately. Do not delay.\n\nDo not attempt to lower blood pressure rapidly at home: This can be dangerous and cause stroke or heart attack.\n\nBring current medications: Take a list of all your current medications with you to the hospital.\n\nStay calm while seeking help: Try to remain calm and avoid strenuous activity while getting emergency care.\n\nFollow emergency treatment: Comply with all emergency medical treatment and follow-up care instructions.\n\nThis reading requires immediate professional medical intervention. Do not wait or attempt self-treatment.</item>
+            <br><b>Avoid sudden position changes:</b><br>
+            Avoid getting up too quickly from a seated or lying position, as this can cause a sudden drop in blood pressure. Take your time and allow your body to adjust gradually.
+            ]]>
+        </item>
+
+        <!-- Normal Blood Pressure -->
+        <item>
+            <![CDATA[
+            Your blood pressure reading of <font color="#05BA7B"><b>%1$d/%2$d</b></font> is within the <font color="#05BA7B"><b>normal range</b></font>, which is great for your heart and overall health. Here are some suggestions to maintain it:
+
+            <br><b>Eat healthy:</b><br>
+            Maintain a balanced diet rich in fruits, vegetables, lean proteins, and whole grains.
+
+            <br><b>Stay active:</b><br>
+            Exercise regularly (at least 150 minutes of moderate activity per week).
+
+            <br><b>Control sodium:</b><br>
+            Limit sodium and processed food intake to prevent future increases.
+
+            <br><b>Manage stress:</b><br>
+            Practice relaxation techniques such as meditation, yoga, or deep breathing.
+
+            <br><b>Routine check-ups:</b><br>
+            Schedule regular health check-ups to keep track of your blood pressure.
+            ]]>
+        </item>
+
+        <!-- Elevated Blood Pressure -->
+        <item>
+            <![CDATA[
+            Your blood pressure reading of <font color="#FFE902"><b>%1$d/%2$d</b></font> is <font color="#FFE902"><b>elevated</b></font>, which means you are at risk of developing hypertension if no lifestyle changes are made. Here are some suggestions to consider:
+
+            <br><b>Reduce salt:</b><br>
+            Cut back on salty and high-sodium foods.
+
+            <br><b>Increase activity:</b><br>
+            Add more physical exercise, such as walking, cycling, or swimming.
+
+            <br><b>Maintain weight:</b><br>
+            Keep a healthy body weight, as even small changes help.
+
+            <br><b>Limit stimulants:</b><br>
+            Reduce alcohol and caffeine intake to avoid spikes.
+
+            <br><b>Monitor regularly:</b><br>
+            Check your blood pressure often to catch changes early.
+            ]]>
+        </item>
+
+        <!-- Stage 1 Hypertension -->
+        <item>
+            <![CDATA[
+            Your blood pressure reading of <font color="#FFB909"><b>%1$d/%2$d</b></font> falls into <font color="#FFB909"><b>Stage 1 Hypertension</b></font>. Lifestyle changes are crucial to prevent progression. Here are some suggestions to consider:
+
+            <br><b>Adopt the DASH diet:</b><br>
+            Focus on fresh, low-sodium foods and avoid processed meals.
+
+            <br><b>Stay active daily:</b><br>
+            Engage in regular exercise and reduce sitting time.
+
+            <br><b>Quit smoking:</b><br>
+            Avoid tobacco as it raises blood pressure and damages vessels.
+
+            <br><b>Improve sleep:</b><br>
+            Aim for 7–9 hours of quality rest each night.
+
+            <br><b>Consult a doctor:</b><br>
+            Seek medical advice to determine if medication is needed.
+            ]]>
+        </item>
+
+        <!-- Stage 2 Hypertension -->
+        <item>
+            <![CDATA[
+            Your blood pressure reading of <font color="#FF8000"><b>%1$d/%2$d</b></font> is in <font color="#FF8000"><b>Stage 2 Hypertension</b></font>, which significantly increases your risk of heart attack and stroke. Here are some suggestions to consider:
+
+            <br><b>Follow treatment:</b><br>
+            Work with your doctor, including possible medication.
+
+            <br><b>Strict diet control:</b><br>
+            Limit salt, fried foods, and sugary drinks.
+
+            <br><b>Exercise safely:</b><br>
+            Stay active but avoid intense workouts without clearance.
+
+            <br><b>Stress management:</b><br>
+            Use relaxation techniques and ensure good sleep.
+
+            <br><b>Home monitoring:</b><br>
+            Measure blood pressure daily and report spikes to your doctor.
+            ]]>
+        </item>
+
+        <!-- Hypertensive Crisis -->
+        <item>
+            <![CDATA[
+            Your blood pressure reading of <font color="#FB0301"><b>%1$d/%2$d</b></font> indicates a <font color="#FB0301"><b>Hypertension Crisis</b></font>, which is a medical emergency. Here are some immediate actions to consider:
+
+            <br><b>Seek emergency help:</b><br>
+            Call emergency services or go to the ER immediately.
+
+            <br><b>Take medications:</b><br>
+            Use prescribed medication exactly as directed.
+
+            <br><b>Stay calm:</b><br>
+            Sit quietly and avoid physical activity while waiting for help.
+
+            <br><b>Avoid self-treatment:</b><br>
+            Do not use over-the-counter remedies.
+
+            <br><b>Keep records:</b><br>
+            Bring recent readings and medication info for your healthcare team.
+            ]]>
+        </item>
     </string-array>
-
-    
-
 
 </resources>

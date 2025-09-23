@@ -2,9 +2,11 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Html
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
+import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
 import com.healthtracker.blood.suger.databinding.ActivityBpDetailBinding
 import com.healthtracker.blood.suger.ui.viewmodel.BpDetailViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -73,17 +75,19 @@ class BpDetailActivity: BaseMVVMActivity<BpDetailViewModel, ActivityBpDetailBind
 
             // 获取血压等级描述
             val category = record.getBloodPressureCategoryEnum()
-            val levelDescription = when(category.position) {
-                in 0.0f..0.2f -> resources.getStringArray(R.array.bp_level_expert_advice)[0] // 低血压建议
-                in 0.21f..0.4f -> resources.getStringArray(R.array.bp_level_expert_advice)[1] // 正常建议
-                in 0.41f..0.6f -> resources.getStringArray(R.array.bp_level_expert_advice)[2] // 偏高建议
-                in 0.61f..0.8f -> resources.getStringArray(R.array.bp_level_expert_advice)[3] // 1级高血压建议
-                in 0.81f..0.95f -> resources.getStringArray(R.array.bp_level_expert_advice)[4] // 2级高血压建议
-                else -> resources.getStringArray(R.array.bp_level_expert_advice)[5] // 高血压危象建议
+            val rangeDes = resources.getStringArray(R.array.bp_level_expert_advice)
+            val levelDescription = when(category) {
+                BloodPressureCategory.LOW -> rangeDes[0] // 低血压建议
+                BloodPressureCategory.NORMAL -> rangeDes[1] // 正常建议
+                BloodPressureCategory.ELEVATED -> rangeDes[2] // 偏高建议
+                BloodPressureCategory.HIGH_STAGE_1 -> rangeDes[3] // 1级高血压建议
+                BloodPressureCategory.HIGH_STAGE_2 -> rangeDes[4] // 2级高血压建议
+                BloodPressureCategory.HYPERTENSIVE_CRISIS -> rangeDes[5] // 高血压危象建议
+                else -> "UnKnow"
             }
 
             // 设置等级描述文案
-            tvLeveDes.text = levelDescription
+            tvLeveDes.text = Html.fromHtml(String.format(levelDescription,record.systolicPressure,record.diastolicPressure))
         }
     }
 }

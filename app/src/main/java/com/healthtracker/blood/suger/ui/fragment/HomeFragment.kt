@@ -55,7 +55,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clBloodPressure.clickWithDuration {
-                requireActivity().startActivity<BpRecordActivity>()
+                requireActivity().startActivity<HistoryRecordActivity>()
             }
 
 
