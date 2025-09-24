@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.databinding.ActivityAlarmManagerBinding
 import com.healthtracker.blood.suger.ui.adapter.AlarmAdapter
+import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.AlarmViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
@@ -13,14 +14,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AlarmManageActivity: BaseMVVMActivity<AlarmViewModel, ActivityAlarmManagerBinding>() {
-    
+class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManagerBinding>() {
+
     // 血糖闹钟适配器
     private lateinit var bloodSugarAdapter: AlarmAdapter
-    
+
     // 血压闹钟适配器
     private lateinit var bloodPressureAdapter: AlarmAdapter
-    
+
     override fun createViewBinding() = ActivityAlarmManagerBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = AlarmViewModel::class.java
@@ -31,7 +32,7 @@ class AlarmManageActivity: BaseMVVMActivity<AlarmViewModel, ActivityAlarmManager
         setupClickListeners()
         observeData()
     }
-    
+
     /**
      * 设置ActionBar
      */
@@ -40,7 +41,7 @@ class AlarmManageActivity: BaseMVVMActivity<AlarmViewModel, ActivityAlarmManager
             finish()
         }
     }
-    
+
     /**
      * 设置RecyclerView
      */
@@ -49,40 +50,46 @@ class AlarmManageActivity: BaseMVVMActivity<AlarmViewModel, ActivityAlarmManager
         bloodSugarAdapter = AlarmAdapter { alarm, isEnabled ->
             mViewModel.updateAlarmEnabled(alarm.id, isEnabled, AlarmRecord.TYPE_BLOOD_SUGAR)
         }
-        
+
         // 初始化血压闹钟适配器
         bloodPressureAdapter = AlarmAdapter { alarm, isEnabled ->
             mViewModel.updateAlarmEnabled(alarm.id, isEnabled, AlarmRecord.TYPE_BLOOD_PRESSURE)
         }
-        
+
         // 设置血糖闹钟RecyclerView
         mViewBind.rvBsAlarm.apply {
             layoutManager = LinearLayoutManager(this@AlarmManageActivity)
             adapter = bloodSugarAdapter
         }
-        
+
         // 设置血压闹钟RecyclerView
         mViewBind.rvBpAlarm.apply {
             layoutManager = LinearLayoutManager(this@AlarmManageActivity)
             adapter = bloodPressureAdapter
         }
     }
-    
+
     /**
      * 设置点击监听器
      */
     private fun setupClickListeners() {
         // 血糖闹钟添加按钮
         mViewBind.ivAddBsAlarm.clickWithDuration {
-            // TODO: 实现添加血糖闹钟功能
+
+            AlarmTimeSelectDialog.show(supportFragmentManager) {
+                mViewModel.addBloodSugarAlarm(it.first, it.second)
+
+            }
         }
-        
+
         // 血压闹钟添加按钮
         mViewBind.ivAddBpAlarm.clickWithDuration {
-            // TODO: 实现添加血压闹钟功能
+            AlarmTimeSelectDialog.show(supportFragmentManager) {
+                mViewModel.addBloodPressureAlarm(it.first, it.second)
+            }
         }
     }
-    
+
     /**
      * 观察数据变化
      */
@@ -91,12 +98,12 @@ class AlarmManageActivity: BaseMVVMActivity<AlarmViewModel, ActivityAlarmManager
         mViewModel.bloodSugarAlarms.collectLatestLifecycle { alarms ->
             bloodSugarAdapter.submitList(alarms)
         }
-        
+
         // 观察血压闹钟数据
         mViewModel.bloodPressureAlarms.collectLatestLifecycle { alarms ->
             bloodPressureAdapter.submitList(alarms)
         }
     }
-    
+
 
 }
