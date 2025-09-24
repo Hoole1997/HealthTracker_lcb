@@ -42,6 +42,16 @@ object DateTimeUtils {
     }
 
     /**
+     * 格式化显示完整日期时间（包含秒）
+     * @param date Date对象
+     * @return 格式化字符串，如 "2024-01-15 14:30:25"
+     */
+    fun formatDateTimeWithSeconds(date: Date): String {
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return format.format(date)
+    }
+
+    /**
      * 格式化显示日期
      * @param date Date对象
      * @return 格式化字符串，如 "2024-01-15"

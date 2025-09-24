@@ -1,7 +1,7 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
-import android.icu.text.DateFormat
 import androidx.lifecycle.SavedStateHandle
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
@@ -169,12 +169,11 @@ class HistoryViewModel @Inject constructor(
 
     /**
      * 更新日期范围显示文本
-     * 使用系统本地化日期格式
+     * 使用统一的日期格式
      */
     fun updateDateRangeText() {
-        val dateFormat = DateFormat.getDateInstance()
-        val startDateStr = dateFormat.format(Date(_startDate.value))
-        val endDateStr = dateFormat.format(Date(_endDate.value))
+        val startDateStr = DateTimeUtils.formatDate(Date(_startDate.value))
+        val endDateStr = DateTimeUtils.formatDate(Date(_endDate.value))
         _dateRangeText.value = "$startDateStr - $endDateStr"
     }
 

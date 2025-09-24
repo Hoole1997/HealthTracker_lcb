@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.data.converter
 import androidx.room.TypeConverter
 import java.text.SimpleDateFormat
 import java.util.*
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 /**
  * Room数据库类型转换器
@@ -46,7 +47,7 @@ class DateTimeConverter {
      * @return 格式化的日期时间字符串
      */
     fun formatDate(date: Date?): String? {
-        return date?.let { dateFormat.format(it) }
+        return date?.let { DateTimeUtils.formatDateTimeWithSeconds(it) }
     }
 
     /**

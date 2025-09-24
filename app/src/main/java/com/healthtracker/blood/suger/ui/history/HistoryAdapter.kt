@@ -12,8 +12,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ItemHistoryRecordBinding
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
-import java.text.SimpleDateFormat
-import java.util.*
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 /**
  * 历史记录适配器
@@ -41,7 +40,6 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, HistoryAdapter.HistoryView
     }
     
     private var itemClickListener: OnItemClickListener? = null
-    private val dateFormat = SimpleDateFormat("YYYY-MM-dd HH:mm", Locale.getDefault())
     
     /**
      * 设置事件监听器
@@ -96,7 +94,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, HistoryAdapter.HistoryView
 
                 
                 // 设置记录时间
-                tvRecordTime.text = dateFormat.format(item.getRecordTime())
+                tvRecordTime.text = DateTimeUtils.formatDateTime(item.getRecordTime())
                 
                 // 设置点击事件
                 root.setOnClickListener {

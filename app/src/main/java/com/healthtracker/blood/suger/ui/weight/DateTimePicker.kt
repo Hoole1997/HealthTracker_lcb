@@ -12,6 +12,7 @@ import com.healthtracker.framework.util.FontUtils
 import com.peppa.widget.picker.NumberPickerView
 import java.util.Calendar
 import java.util.Locale
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 class DateTimePicker @JvmOverloads constructor(
     context: Context,
@@ -70,17 +71,24 @@ class DateTimePicker @JvmOverloads constructor(
     }
 
     fun initView(
-        year: Int = Calendar.getInstance().get(Calendar.YEAR),
-        month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1,
-        day: Int = Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
-        hour: Int = Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-        minute: Int = Calendar.getInstance().get(Calendar.MINUTE)
+        year: Int = -1,
+        month: Int = -1,
+        day: Int = -1,
+        hour: Int = -1,
+        minute: Int = -1
     ) {
-        setupYearPicker(year)
-        setupMonthPicker(month)
-        setupDayPicker(year, month, day)
-        setupHourPicker(hour)
-        setupMinutePicker(minute)
+        // 只调用一次获取当前时间的所有组件
+        val currentDateTime = DateTimeUtils.extractDateComponents(DateTimeUtils.now())
+        val actualYear = if (year == -1) currentDateTime.year else year
+        val actualMonth = if (month == -1) currentDateTime.month else month
+        val actualDay = if (day == -1) currentDateTime.day else day
+        val actualHour = if (hour == -1) currentDateTime.hour else hour
+        val actualMinute = if (minute == -1) currentDateTime.minute else minute
+        setupYearPicker(actualYear)
+        setupMonthPicker(actualMonth)
+        setupDayPicker(actualYear, actualMonth, actualDay)
+        setupHourPicker(actualHour)
+        setupMinutePicker(actualMinute)
     }
 
     private fun setupYearPicker(currentYear: Int) {

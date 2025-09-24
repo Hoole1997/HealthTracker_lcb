@@ -11,6 +11,7 @@ import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.FontUtils
 import java.util.Calendar
 import java.util.Locale
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 class AlarmTimeSelectDialog(private val callBack:((Pair<Int, Int>)-> Unit)? = null) : BaseBottomSheetDialogFragment<DialogAlarmTimeSelectBinding>() {
 
@@ -23,9 +24,8 @@ class AlarmTimeSelectDialog(private val callBack:((Pair<Int, Int>)-> Unit)? = nu
 
     private val current by lazy {
         //获取当前时间
-        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        val minute = Calendar.getInstance().get(Calendar.MINUTE)
-        hour to minute
+        val components = DateTimeUtils.extractDateComponents(DateTimeUtils.now())
+        components.hour to components.minute
     }
     override fun createViewBinding(
         inflater: LayoutInflater,

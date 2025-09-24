@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.LayoutDatetimeSelectionBinding
 import java.util.*
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 /**
  * 时间选择复合组件
@@ -160,11 +161,11 @@ class DateTimeSelectionView @JvmOverloads constructor(
     fun getSelectDate(): Date {
         // 保存前先获取DateTimeSelectionView的时间并更新到ViewModel
         val selectedDateTime = getDateTimePicker().getDateTime()
-        val currentTime = Calendar.getInstance()
+        val currentTimeComponents = DateTimeUtils.extractDateComponents(DateTimeUtils.now())
         val selectedCalendar = selectedDateTime.toCalendar()
         // 保留当前时间的秒和毫秒
-        selectedCalendar.set(Calendar.SECOND, currentTime.get(Calendar.SECOND))
-        selectedCalendar.set(Calendar.MILLISECOND, currentTime.get(Calendar.MILLISECOND))
+        selectedCalendar.set(Calendar.SECOND, currentTimeComponents.minute) // 使用当前秒数
+        selectedCalendar.set(Calendar.MILLISECOND, 0) // 毫秒设为0保持一致性
         // 移除减1秒的逻辑，保持时间准确性
         val selectedDate = selectedCalendar.time
         return selectedDate

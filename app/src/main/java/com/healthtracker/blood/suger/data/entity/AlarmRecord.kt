@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.healthtracker.blood.suger.util.AlarmRepeatHelper
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import java.util.Date
 
 /**
@@ -226,7 +227,7 @@ data class AlarmRecord(
      */
     fun getFormattedUpdatedTime(): String {
         val date = Date(updatedAt)
-        return java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(date)
+        return DateTimeUtils.formatDateTimeWithSeconds(date)
     }
 
 
