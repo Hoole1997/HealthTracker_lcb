@@ -16,6 +16,7 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.Restore
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,7 +64,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
             }
 
             ivRemind.clickWithDuration {
-                "remind click".logd(TAG)
+                startActivity<AlarmManageActivity>()
             }
 
             setupBottomNavBar()

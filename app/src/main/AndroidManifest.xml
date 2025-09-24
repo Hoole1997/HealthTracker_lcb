@@ -68,6 +68,13 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".ui.act.AlarmManageActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+
         <!--适配Android 7.0 及以上兼容文件管理-->
         <provider
             android:name="androidx.core.content.FileProvider"
