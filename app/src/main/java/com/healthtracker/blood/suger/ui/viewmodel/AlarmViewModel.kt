@@ -4,13 +4,16 @@ import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.repository.AlarmRepository
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,9 +22,7 @@ class AlarmViewModel @Inject constructor(
     private val alarmRepository: AlarmRepository
 ) : BaseViewModel() {
     
-    companion object {
-        private const val TAG = "AlarmViewModel"
-    }
+
     
     // 血糖闹钟数据流
     private val _bloodSugarAlarms = MutableStateFlow<List<AlarmRecord>>(emptyList())
@@ -50,9 +51,13 @@ class AlarmViewModel @Inject constructor(
                 // 加载数据到StateFlow（无论是否插入了新数据都需要加载）
                 loadAlarmsFromDatabase()
                 
+            } catch (e: CancellationException) {
+                // 协程正常取消，不记录为错误
+                "默认闹钟初始化已取消".logd(TAG)
+                throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
-                // 异常处理：数据库操作失败
-                "初始化默认闹钟失败: ${e.message}".loge(TAG)
+                // 真正的异常情况：数据库操作失败等
+                "初始化默认闹钟失败: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }
@@ -133,11 +138,19 @@ class AlarmViewModel @Inject constructor(
             try {
                 // 使用Repository的getAllRecordsFlow方法获取所有闹钟记录
                 alarmRepository.getAllRecordsFlow().collect { allAlarms ->
-                    // 在内存中进行数据过滤和排序处理
-                    processAndUpdateAlarmData(allAlarms)
+                    // 检查协程是否仍然活跃，避免在取消过程中执行不必要的操作
+                    if (isActive) {
+                        // 在内存中进行数据过滤和排序处理
+                        processAndUpdateAlarmData(allAlarms)
+                    }
                 }
+            } catch (e: CancellationException) {
+                // 协程正常取消（如页面关闭），不记录为错误
+                "闹钟数据观察已取消（页面关闭或ViewModel销毁）".logd(TAG)
+                throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
-                "观察闹钟数据失败: ${e.message}".loge(TAG)
+                // 真正的异常情况（如数据库错误、网络问题等）
+                "观察闹钟数据失败: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
         
@@ -196,8 +209,12 @@ class AlarmViewModel @Inject constructor(
                 } else {
                     "添加血糖闹钟失败: ${hour}:${minute}".loge(TAG)
                 }
+            } catch (e: CancellationException) {
+                // 协程正常取消，不记录为错误
+                "添加血糖闹钟操作已取消: ${hour}:${minute}".logd(TAG)
+                throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
-                "添加血糖闹钟异常: ${hour}:${minute}, 错误: ${e.message}".loge(TAG)
+                "添加血糖闹钟异常: ${hour}:${minute}, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }
@@ -226,8 +243,12 @@ class AlarmViewModel @Inject constructor(
                 } else {
                     "添加血压闹钟失败: ${hour}:${minute}".loge(TAG)
                 }
+            } catch (e: CancellationException) {
+                // 协程正常取消，不记录为错误
+                "添加血压闹钟操作已取消: ${hour}:${minute}".logd(TAG)
+                throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
-                "添加血压闹钟异常: ${hour}:${minute}, 错误: ${e.message}".loge(TAG)
+                "添加血压闹钟异常: ${hour}:${minute}, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }
@@ -256,8 +277,38 @@ class AlarmViewModel @Inject constructor(
                 } else {
                     "更新闹钟状态失败: ID=$alarmId, enabled=$isEnabled".loge(TAG)
                 }
+            } catch (e: CancellationException) {
+                // 协程正常取消，不记录为错误
+                "更新闹钟状态操作已取消: ID=$alarmId".logd(TAG)
+                throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
-                "更新闹钟状态异常: ID=$alarmId, enabled=$isEnabled, 错误: ${e.message}".loge(TAG)
+                // 真正的异常情况：数据库操作失败等
+                "更新闹钟状态异常: ID=$alarmId, enabled=$isEnabled, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+            }
+        }
+    }
+    
+    /**
+     * 删除闹钟
+     * @param alarmId 闹钟ID
+     */
+    fun deleteAlarm(alarmId: Long) {
+        viewModelScope.launch {
+            try {
+                val success = alarmRepository.softDeleteRecord(alarmId)
+                if (success) {
+                    "成功删除闹钟: ID=$alarmId".logd(TAG)
+                    // StateFlow会通过observe自动更新，无需手动刷新
+                } else {
+                    "删除闹钟失败: ID=$alarmId".loge(TAG)
+                }
+            } catch (e: CancellationException) {
+                // 协程正常取消，不记录为错误
+                "删除闹钟操作已取消: ID=$alarmId".logd(TAG)
+                throw e // 重新抛出以保持协程取消语义
+            } catch (e: Exception) {
+                // 真正的异常情况：数据库操作失败等
+                "删除闹钟异常: ID=$alarmId, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }

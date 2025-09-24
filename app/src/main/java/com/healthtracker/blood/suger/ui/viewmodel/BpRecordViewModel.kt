@@ -7,7 +7,11 @@ import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.TAG
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -128,9 +132,13 @@ class BpRecordViewModel @Inject constructor(
                 _isSaved.value = true
                 SaveRecordResult.Created(newRecordId)
             }
+        } catch (e: CancellationException) {
+            // 协程正常取消，不记录为错误
+            "保存血压记录操作已取消".logd(TAG)
+            throw e // 重新抛出以保持协程取消语义
         } catch (e: Exception) {
-            // 处理错误
-            e.printStackTrace()
+            // 真正的异常情况：数据库操作失败等
+            "保存血压记录异常: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             SaveRecordResult.Failed(e.message ?: "保存失败")
         } finally {
             _isLoading.value = false

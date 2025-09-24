@@ -6,7 +6,11 @@ import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.TAG
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,7 +50,13 @@ class BsDetailViewModel @Inject constructor(
                 if (record == null) {
                     _error.value = "血糖记录不存在"
                 }
+            } catch (e: CancellationException) {
+                // 协程正常取消，不记录为错误
+                "加载血糖记录操作已取消: ID=$recordId".logd(TAG)
+                throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
+                // 真正的异常情况：数据库操作失败等
+                "加载血糖记录异常: ID=$recordId, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
                 _error.value = "加载血糖记录失败: ${e.message}"
             } finally {
                 _isLoading.value = false

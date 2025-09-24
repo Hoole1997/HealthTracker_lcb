@@ -5,7 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.TAG
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,9 +67,14 @@ class BpDetailViewModel @Inject constructor(
                 if (record == null) {
                     _error.value = "未找到对应的血压记录"
                 }
+            } catch (e: CancellationException) {
+                // 协程正常取消，不记录为错误
+                "加载血压记录操作已取消: ID=$recordId".logd(TAG)
+                throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
+                // 真正的异常情况：数据库操作失败等
+                "加载血压记录异常: ID=$recordId, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
                 _error.value = "加载血压记录失败：${e.message}"
-                e.printStackTrace()
             } finally {
                 _isLoading.value = false
             }
