@@ -101,6 +101,7 @@
     <string name="confirm">Confirm</string>
     <string name="delete_record_remind">Cannot be recovered after deletion</string>
     <string name="add_record">Add Record</string>
+    <string name="alarm_management">Alarm Management</string>
 
     <string-array name="blood_sugar_labels">
         <item>Excited</item>
@@ -745,4 +746,28 @@
         </item>
     </string-array>
 
+    <array name="week_simple">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </array>
+    <array name="week_full">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </array>
+
+    <string name="every_weekday">Every weekday</string>
+    <string name="every_weekend">Every weekend</string>
+    <string name="everyday">Everyday</string>
+    <string name="once">Once</string>
+    
 </resources>

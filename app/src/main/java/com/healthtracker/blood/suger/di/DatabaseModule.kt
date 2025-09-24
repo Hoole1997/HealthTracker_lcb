@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.di
 
 import android.content.Context
+import com.healthtracker.blood.suger.data.dao.AlarmDao
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
@@ -51,7 +52,15 @@ object DatabaseModule {
         return database.bloodPressureDao()
     }
 
-
+    /**
+     * 提供闹钟记录DAO
+     * @param database HealthDatabase实例
+     * @return AlarmDao实例
+     */
+    @Provides
+    fun provideAlarmDao(database: HealthDatabase): AlarmDao {
+        return database.alarmDao()
+    }
 
     /**
      * 提供统一健康标签DAO

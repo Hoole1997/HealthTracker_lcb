@@ -5,10 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+// import androidx.room.migration.Migration
+// import androidx.sqlite.db.SupportSQLiteDatabase
 import com.healthtracker.blood.suger.data.converter.DateTimeConverter
+import com.healthtracker.blood.suger.data.dao.AlarmDao
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
+import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
@@ -21,12 +25,14 @@ import com.healthtracker.blood.suger.data.entity.HealthTag
  * - blood_sugar_records: 血糖记录表
  * - blood_pressure_records: 血压记录表
  * - health_tags: 统一健康标签表
+ * - alarm_records: 闹钟记录表
  */
 @Database(
     entities = [
         BloodSugarRecord::class,
         BloodPressureRecord::class,
-        HealthTag::class
+        HealthTag::class,
+        AlarmRecord::class
     ],
     version = 1,
     exportSchema = false
@@ -44,7 +50,10 @@ abstract class HealthDatabase : RoomDatabase() {
      */
     abstract fun bloodPressureDao(): BloodPressureDao
 
-
+    /**
+     * 获取闹钟记录DAO
+     */
+    abstract fun alarmDao(): AlarmDao
 
     /**
      * 获取统一健康标签DAO
@@ -77,13 +86,51 @@ abstract class HealthDatabase : RoomDatabase() {
                     HealthDatabase::class.java,
                     DATABASE_NAME
                 )
-//                    .addMigrations(MIGRATION_2_3)
+//                    .addMigrations(MIGRATION_1_2)
                     .build()
                 INSTANCE = instance
                 instance
             }
         }
 
+//        /**
+//         * 数据库迁移：从版本1升级到版本2
+//         * 添加alarm_records表
+//         */
+//        private val MIGRATION_1_2 = object : Migration(1, 2) {
+//            override fun migrate(database: SupportSQLiteDatabase) {
+//                // 创建alarm_records表
+//                database.execSQL("""
+//                    CREATE TABLE alarm_records (
+//                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+//                        type INTEGER NOT NULL,
+//                        hour INTEGER NOT NULL,
+//                        minute INTEGER NOT NULL,
+//                        repeat_flag INTEGER NOT NULL,
+//                        sound_id INTEGER NOT NULL,
+//                        enable INTEGER NOT NULL DEFAULT 1,
+//                        vibrate_time INTEGER NOT NULL DEFAULT 0,
+//                        is_delete INTEGER NOT NULL DEFAULT 0,
+//                        other TEXT,
+//                        int1 INTEGER,
+//                        int2 INTEGER,
+//                        int3 INTEGER,
+//                        float1 REAL,
+//                        float2 REAL,
+//                        long1 INTEGER,
+//                        long2 INTEGER,
+//                        text1 TEXT,
+//                        text2 TEXT,
+//                        text3 TEXT
+//                    )
+//                """)
+//                
+//                // 为alarm_records表创建索引
+//                database.execSQL("CREATE INDEX index_alarm_records_type ON alarm_records(type)")
+//                database.execSQL("CREATE INDEX index_alarm_records_time ON alarm_records(hour, minute)")
+//                database.execSQL("CREATE INDEX index_alarm_records_enable ON alarm_records(enable)")
+//            }
+//        }
 
 //        /**
 //         * 数据库迁移：从版本2升级到版本3

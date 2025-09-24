@@ -1,0 +1,324 @@
+package com.healthtracker.blood.suger.data.entity
+
+import android.content.Context
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.healthtracker.blood.suger.util.AlarmRepeatHelper
+import java.util.Date
+
+/**
+ * 闹钟记录数据实体
+ * 对应数据表：alarm_records
+ */
+@Entity(tableName = "alarm_records")
+data class AlarmRecord(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    val id: Long = 0,
+
+    /**
+     * 闹钟类型
+     * 0: 普通闹钟, 1: 健康提醒, 2: 用药提醒, 3: 运动提醒等
+     */
+    @ColumnInfo(name = "type")
+    val type: Int,
+
+    /**
+     * 小时 (0-23)
+     */
+    @ColumnInfo(name = "hour")
+    val hour: Int,
+
+    /**
+     * 分钟 (0-59)
+     */
+    @ColumnInfo(name = "minute")
+    val minute: Int,
+
+    /**
+     * 重复标志
+     * 使用位运算表示星期重复模式
+     * 例如: 127表示每天, 31表示工作日, 96表示周末
+     */
+    @ColumnInfo(name = "repeat_flag")
+    val repeatFlag: Int,
+
+    /**
+     * 铃声ID
+     * 关联系统铃声或自定义铃声的ID
+     */
+    @ColumnInfo(name = "sound_id")
+    val soundId: Long,
+
+    /**
+     * 启用状态
+     * true: 启用, false: 禁用
+     */
+    @ColumnInfo(name = "enable")
+    val isEnabled: Boolean = true,
+
+    /**
+     * 振动时长 (毫秒)
+     * 0表示不振动
+     */
+    @ColumnInfo(name = "vibrate_time")
+    val vibrateTime: Long = 0,
+
+    /**
+     * 删除标记
+     * true: 已删除, false: 正常
+     */
+    @ColumnInfo(name = "is_delete")
+    val isDeleted: Boolean = false,
+
+    /**
+     * 其他信息
+     * 可用于存储闹钟标签、备注等
+     */
+    @ColumnInfo(name = "other")
+    val other: String? = null,
+
+    /**
+     * 整型扩展字段1
+     * 可用于存储优先级、重要程度等
+     */
+    @ColumnInfo(name = "int1")
+    val intExt1: Int? = null,
+
+    /**
+     * 整型扩展字段2
+     * 可用于存储提前提醒时间等
+     */
+    @ColumnInfo(name = "int2")
+    val intExt2: Int? = null,
+
+    /**
+     * 整型扩展字段3
+     * 预留扩展字段
+     */
+    @ColumnInfo(name = "int3")
+    val intExt3: Int? = null,
+
+    /**
+     * 浮点型扩展字段1
+     * 可用于存储音量大小等
+     */
+    @ColumnInfo(name = "float1")
+    val floatExt1: Float? = null,
+
+    /**
+     * 浮点型扩展字段2
+     * 预留扩展字段
+     */
+    @ColumnInfo(name = "float2")
+    val floatExt2: Float? = null,
+
+    /**
+     * 长整型扩展字段1
+     * 可用于存储创建时间戳等
+     */
+    @ColumnInfo(name = "long1")
+    val longExt1: Long? = null,
+
+    /**
+     * 长整型扩展字段2
+     * 可用于存储最后触发时间等
+     */
+    @ColumnInfo(name = "long2")
+    val longExt2: Long? = null,
+
+    /**
+     * 文本扩展字段1
+     * 可用于存储闹钟标签、名称等
+     */
+    @ColumnInfo(name = "text1")
+    val textExt1: String? = null,
+
+    /**
+     * 文本扩展字段2
+     * 可用于存储备注信息等
+     */
+    @ColumnInfo(name = "text2")
+    val textExt2: String? = null,
+
+    /**
+     * 文本扩展字段3
+     * 预留扩展字段
+     */
+    @ColumnInfo(name = "text3")
+    val textExt3: String? = null
+) {
+
+    /**
+     * 获取闹钟显示时间
+     * @return 格式化的时间字符串 (HH:mm)
+     */
+    fun getFormattedTime(): String {
+        return String.format("%02d:%02d", hour, minute)
+    }
+
+    /**
+     * 检查是否为重复闹钟
+     * @return true: 重复闹钟, false: 单次闹钟
+     */
+    fun isRepeating(): Boolean {
+        return AlarmRepeatHelper.isRepeating(repeatFlag)
+    }
+
+    /**
+     * 检查指定星期几是否需要响铃
+     * @param dayOfWeek 星期几 (1=周一, 7=周日)
+     * @return true: 需要响铃, false: 不需要响铃
+     */
+    fun shouldRingOnDay(dayOfWeek: Int): Boolean {
+        return AlarmRepeatHelper.shouldRingOnDay(repeatFlag, dayOfWeek)
+    }
+
+    /**
+     * 获取重复模式描述
+     * @param context Android上下文，用于获取字符串资源
+     * @return 重复模式的文字描述
+     */
+    fun getRepeatDescription(context: Context): String {
+        return AlarmRepeatHelper.getRepeatDescription(context, repeatFlag)
+    }
+    
+    /**
+     * 获取简短的重复模式描述
+     * @param context Android上下文，用于获取字符串资源
+     * @return 简短的重复模式描述
+     */
+    fun getShortRepeatDescription(context: Context): String {
+        return AlarmRepeatHelper.getShortRepeatDescription(context, repeatFlag)
+    }
+
+
+
+    /**
+     * 检查是否有振动
+     * @return true: 有振动, false: 无振动
+     */
+    fun hasVibration(): Boolean {
+        return vibrateTime > 0
+    }
+
+
+
+    companion object {
+        /**
+         * 闹钟类型常量
+         */
+        const val TYPE_BLOOD_SUGAR = 0     // 血糖测量提醒
+        const val TYPE_BLOOD_PRESSURE = 1  // 血压测量提醒
+        const val TYPE_MEDICATION = 2      // 服药提醒
+        
+        /**
+         * 重复模式常量
+         */
+        const val REPEAT_ONCE = 0       // 单次
+        const val REPEAT_DAILY = 127    // 每天 (1111111)
+        const val REPEAT_WEEKDAYS = 31  // 工作日 (0011111)
+        const val REPEAT_WEEKEND = 96   // 周末 (1100000)
+
+        /**
+         * 创建测量提醒闹钟记录
+         * @param type 提醒类型（血糖或血压）
+         * @param hour 小时
+         * @param minute 分钟
+         * @param repeatFlag 重复标志
+         * @param soundId 铃声ID
+         * @param isEnabled 是否启用
+         * @param vibrateTime 振动时长
+         * @param other 其他信息
+         * @return AlarmRecord实例
+         */
+        fun create(
+            type: Int,
+            hour: Int,
+            minute: Int,
+            repeatFlag: Int = REPEAT_DAILY,
+            soundId: Long = 0,
+            isEnabled: Boolean = true,
+            vibrateTime: Long = 0,
+            other: String? = null
+        ): AlarmRecord {
+            val currentTime = System.currentTimeMillis()
+            return AlarmRecord(
+                type = type,
+                hour = hour,
+                minute = minute,
+                repeatFlag = repeatFlag,
+                soundId = soundId,
+                isEnabled = isEnabled,
+                vibrateTime = vibrateTime,
+                other = other,
+                longExt1 = currentTime, // 创建时间
+                longExt2 = null // 最后触发时间
+            )
+        }
+
+        /**
+         * 创建血糖测量提醒
+         * @param hour 小时
+         * @param minute 分钟
+         * @param repeatFlag 重复标志
+         * @return AlarmRecord实例
+         */
+        fun createBloodSugarReminder(
+            hour: Int,
+            minute: Int,
+            repeatFlag: Int = REPEAT_DAILY
+        ): AlarmRecord {
+            return create(
+                type = TYPE_BLOOD_SUGAR,
+                hour = hour,
+                minute = minute,
+                repeatFlag = repeatFlag,
+                vibrateTime = 1000 // 默认振动1秒
+            )
+        }
+
+        /**
+         * 创建血压测量提醒
+         * @param hour 小时
+         * @param minute 分钟
+         * @param repeatFlag 重复标志
+         * @return AlarmRecord实例
+         */
+        fun createBloodPressureReminder(
+            hour: Int,
+            minute: Int,
+            repeatFlag: Int = REPEAT_DAILY
+        ): AlarmRecord {
+            return create(
+                type = TYPE_BLOOD_PRESSURE,
+                hour = hour,
+                minute = minute,
+                repeatFlag = repeatFlag,
+                vibrateTime = 2000 // 默认振动2秒
+            )
+        }
+
+        /**
+         * 创建服药提醒
+         * @param hour 小时
+         * @param minute 分钟
+         * @param repeatFlag 重复标志
+         * @return 服药提醒闹钟记录
+         */
+        fun createMedicationReminder(
+            hour: Int,
+            minute: Int,
+            repeatFlag: Int = REPEAT_DAILY
+        ): AlarmRecord {
+            return create(
+                type = TYPE_MEDICATION,
+                hour = hour,
+                minute = minute,
+                repeatFlag = repeatFlag,
+                vibrateTime = 3000 // 默认振动3秒
+            )
+        }
+    }
+}
