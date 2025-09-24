@@ -72,6 +72,24 @@ object DateTimeUtils {
     }
 
     /**
+     * 格式化显示月份年份（英文简写）
+     * @param date Date对象
+     * @return 格式化字符串，如 "Sep.2025"
+     */
+    fun formatMonthYear(date: Date): String {
+        val format = SimpleDateFormat("MMM.yyyy", Locale.ENGLISH)
+        return format.format(date)
+    }
+
+    /**
+     * 获取当前月份年份（英文简写）
+     * @return 格式化字符串，如 "Sep.2025"
+     */
+    fun getCurrentMonthYear(): String {
+        return formatMonthYear(now())
+    }
+
+    /**
      * 获取日期范围
      * @param date 基准日期
      * @param days 天数（向前推算）

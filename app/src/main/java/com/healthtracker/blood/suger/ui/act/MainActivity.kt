@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.ui.act
 
+// 移除广播接收器相关导入，改用页面可见状态检查月份变化
 import android.os.Build
 import android.os.Bundle
 import androidx.compose.ui.geometry.Rect
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
@@ -36,7 +38,25 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
 
     @Restore
     private var currentTabIndex = 0
-
+    
+    // 标志位，记录是否已经初始化过月份显示
+    private var isMonthInitialized = false
+    
+    // 记录上次显示的月份，用于检测月份变化
+    private var lastDisplayedMonth: String? = null
+    
+    override fun onResume() {
+        super.onResume()
+        // 在Activity恢复时检查月份是否发生变化
+        // 这种方案比广播接收器更简洁高效，因为月份变更频率较低
+        if (isMonthInitialized) {
+            checkAndUpdateMonthIfChanged()
+        }
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 
     internal val homeFragmentAdapter =
         FragmentsAdapter(supportFragmentManager, 3, object : FragmentsAdapter.Callback {
@@ -55,6 +75,79 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
                 }
             }
         })
+    
+    /**
+     * 更新当前月份显示
+     */
+    private fun updateCurrentMonth() {
+        try {
+            val currentMonthYear = DateTimeUtils.getCurrentMonthYear()
+            mViewBind.tvMonth.text = currentMonthYear
+            lastDisplayedMonth = currentMonthYear
+            "Month updated to: $currentMonthYear".logd(TAG)
+        } catch (e: Exception) {
+            "Failed to update month: ${e.message}".logd(TAG)
+            // 如果获取失败，保持原有显示或使用默认值
+        }
+    }
+    
+    /**
+     * 根据Tab位置更新UI状态
+     * @param position Tab位置索引
+     */
+    private fun updateUIForTabPosition(position: Int) {
+        with(mViewBind) {
+            // 重置所有UI元素的默认状态
+            ivRemind.visible()
+            ivSetting.visible()
+            tvMonth.gone()
+            
+            // 根据不同位置设置特定的UI状态和标题
+            val titleRes = when (position) {
+                0 -> {
+                    // Home页面：显示默认状态
+                    R.string.app_name
+                }
+                1 -> {
+                    // Meds页面：显示月份，隐藏设置和提醒按钮
+                    tvMonth.visible()
+                    ivSetting.gone()
+                    ivRemind.gone()
+                    // 首次切换到MedsFragment时动态获取当前月份
+                    if (!isMonthInitialized) {
+                        updateCurrentMonth()
+                        isMonthInitialized = true
+                    }
+                    R.string.meds_manager
+                }
+                2 -> {
+                    // Record页面：隐藏提醒按钮
+                    ivRemind.gone()
+                    R.string.record
+                }
+                else -> R.string.app_name
+            }
+            tvTitle.text = getString(titleRes)
+        }
+    }
+    
+    /**
+     * 检查月份是否发生变化，如果变化则更新显示
+     */
+    private fun checkAndUpdateMonthIfChanged() {
+        try {
+            val currentMonthYear = DateTimeUtils.getCurrentMonthYear()
+            if (currentMonthYear != lastDisplayedMonth) {
+                "Month changed from $lastDisplayedMonth to $currentMonthYear".logd(TAG)
+                mViewBind.tvMonth.text = currentMonthYear
+                lastDisplayedMonth = currentMonthYear
+            }
+        } catch (e: Exception) {
+            "Failed to check month change: ${e.message}".logd(TAG)
+        }
+    }
+    
+
 
     override fun createViewBinding() = ActivityMainBinding.inflate(layoutInflater)
 
@@ -102,30 +195,8 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.let {
-                       with(mViewBind){
-                           viewPagerHome.currentItem = it.position
-                           ivRemind.visible()
-                           ivSetting.visible()
-                           tvMonth.gone()
-                           val titleRes = when (it.position) {
-                               0 -> {
-                                   R.string.app_name
-                               }
-                               1 -> {
-                                   tvMonth.visible()
-                                   ivSetting.gone()
-                                   ivRemind.gone()
-                                   tvMonth.text = "Sep.2025"
-                                   R.string.meds_manager
-                               }
-                               2 -> {
-                                   ivRemind.gone()
-                                   R.string.record
-                               }
-                               else -> R.string.app_name
-                           }
-                           tvTitle.text = getString(titleRes)
-                       }
+                        mViewBind.viewPagerHome.currentItem = it.position
+                        updateUIForTabPosition(it.position)
                     }
                 }
             })
@@ -175,7 +246,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
 
                 override fun onPageSelected(position: Int) {
                     mViewBind.tbNav.getTabAt(position)?.select()
-
+                    updateUIForTabPosition(position)
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {}
