@@ -22,7 +22,9 @@ class AlarmViewModel @Inject constructor(
     private val alarmRepository: AlarmRepository
 ) : BaseViewModel() {
     
-
+    companion object {
+        private const val TAG = "AlarmViewModel"
+    }
     
     // 血糖闹钟数据流
     private val _bloodSugarAlarms = MutableStateFlow<List<AlarmRecord>>(emptyList())
@@ -53,11 +55,11 @@ class AlarmViewModel @Inject constructor(
                 
             } catch (e: CancellationException) {
                 // 协程正常取消，不记录为错误
-                "默认闹钟初始化已取消".logd(TAG)
+                "Default alarm initialization cancelled".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
-                "初始化默认闹钟失败: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                "Failed to initialize default alarms: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }
@@ -83,20 +85,20 @@ class AlarmViewModel @Inject constructor(
         if (existingBloodSugarAlarms.isEmpty()) {
             val defaultBloodSugarAlarms = createDefaultBloodSugarAlarms()
             defaultAlarmsToInsert.addAll(defaultBloodSugarAlarms)
-            "准备插入${defaultBloodSugarAlarms.size}条默认血糖闹钟".logd(TAG)
+            "Preparing to insert ${defaultBloodSugarAlarms.size} default blood sugar alarms".logd(TAG)
         }
         
         // 检查并准备血压闹钟默认数据
         if (existingBloodPressureAlarms.isEmpty()) {
             val defaultBloodPressureAlarms = createDefaultBloodPressureAlarms()
             defaultAlarmsToInsert.addAll(defaultBloodPressureAlarms)
-            "准备插入${defaultBloodPressureAlarms.size}条默认血压闹钟".logd(TAG)
+            "Preparing to insert ${defaultBloodPressureAlarms.size} default blood pressure alarms".logd(TAG)
         }
         
         // 批量插入默认闹钟（如果有需要插入的）
         if (defaultAlarmsToInsert.isNotEmpty()) {
             val insertedIds = alarmRepository.batchInsertRecords(defaultAlarmsToInsert)
-            "批量插入完成，共插入${insertedIds.size}条默认闹钟记录".logd(TAG)
+            "Batch insert completed, inserted ${insertedIds.size} default alarm records".logd(TAG)
         }
     }
     
@@ -146,15 +148,15 @@ class AlarmViewModel @Inject constructor(
                 }
             } catch (e: CancellationException) {
                 // 协程正常取消（如页面关闭），不记录为错误
-                "闹钟数据观察已取消（页面关闭或ViewModel销毁）".logd(TAG)
+                "Alarm data observation cancelled (page closed or ViewModel destroyed)".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
                 // 真正的异常情况（如数据库错误、网络问题等）
-                "观察闹钟数据失败: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                "Failed to observe alarm data: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
         
-        "开始观察数据库闹钟数据（优化版本）".logd(TAG)
+        "Started observing database alarm data (optimized version)".logd(TAG)
     }
     
     /**
@@ -177,9 +179,9 @@ class AlarmViewModel @Inject constructor(
             _bloodSugarAlarms.value = sortedBloodSugarAlarms
             _bloodPressureAlarms.value = sortedBloodPressureAlarms
             
-            "数据处理完成 - 血糖闹钟: ${sortedBloodSugarAlarms.size}条, 血压闹钟: ${sortedBloodPressureAlarms.size}条".logd(TAG)
+            "Data processing completed - Blood sugar alarms: ${sortedBloodSugarAlarms.size}, Blood pressure alarms: ${sortedBloodPressureAlarms.size}".logd(TAG)
         } catch (e: Exception) {
-            "处理闹钟数据失败: ${e.message}".loge(TAG)
+            "Failed to process alarm data: ${e.message}".loge(TAG)
         }
     }
     
@@ -196,7 +198,7 @@ class AlarmViewModel @Inject constructor(
                 // 检查是否已存在相同时间的闹钟
                 val exists = alarmRepository.existsAtTime(hour, minute)
                 if (exists) {
-                    "血糖闹钟时间${hour}:${minute}已存在，跳过添加".logw(TAG)
+                    "Blood sugar alarm time ${hour}:${minute} already exists, skipping addition".logw(TAG)
                     return@launch
                 }
                 
@@ -204,17 +206,17 @@ class AlarmViewModel @Inject constructor(
                 val insertedId = alarmRepository.addBloodSugarReminder(hour, minute)
                 
                 if (insertedId > 0) {
-                    "成功添加血糖闹钟: ${hour}:${minute}, ID: $insertedId".logd(TAG)
+                    "Successfully added blood sugar alarm: ${hour}:${minute}, ID: $insertedId".logd(TAG)
                     // 数据库插入成功，StateFlow会通过observe自动更新
                 } else {
-                    "添加血糖闹钟失败: ${hour}:${minute}".loge(TAG)
+                    "Failed to add blood sugar alarm: ${hour}:${minute}".loge(TAG)
                 }
             } catch (e: CancellationException) {
                 // 协程正常取消，不记录为错误
-                "添加血糖闹钟操作已取消: ${hour}:${minute}".logd(TAG)
+                "Blood sugar alarm addition cancelled: ${hour}:${minute}".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
-                "添加血糖闹钟异常: ${hour}:${minute}, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                "Blood sugar alarm addition error: ${hour}:${minute}, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }
@@ -230,7 +232,7 @@ class AlarmViewModel @Inject constructor(
                 // 检查是否已存在相同时间的闹钟
                 val exists = alarmRepository.existsAtTime(hour, minute)
                 if (exists) {
-                    "血压闹钟时间${hour}:${minute}已存在，跳过添加".logw(TAG)
+                    "Blood pressure alarm time ${hour}:${minute} already exists, skipping addition".logw(TAG)
                     return@launch
                 }
                 
@@ -238,17 +240,17 @@ class AlarmViewModel @Inject constructor(
                 val insertedId = alarmRepository.addBloodPressureReminder(hour, minute)
                 
                 if (insertedId > 0) {
-                    "成功添加血压闹钟: ${hour}:${minute}, ID: $insertedId".logd(TAG)
+                    "Successfully added blood pressure alarm: ${hour}:${minute}, ID: $insertedId".logd(TAG)
                     // 数据库插入成功，StateFlow会通过observe自动更新
                 } else {
-                    "添加血压闹钟失败: ${hour}:${minute}".loge(TAG)
+                    "Failed to add blood pressure alarm: ${hour}:${minute}".loge(TAG)
                 }
             } catch (e: CancellationException) {
                 // 协程正常取消，不记录为错误
-                "添加血压闹钟操作已取消: ${hour}:${minute}".logd(TAG)
+                "Blood pressure alarm addition cancelled: ${hour}:${minute}".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
-                "添加血压闹钟异常: ${hour}:${minute}, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                "Blood pressure alarm addition error: ${hour}:${minute}, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }
@@ -272,18 +274,18 @@ class AlarmViewModel @Inject constructor(
                 }
                 
                 if (success) {
-                    "成功更新闹钟状态: ID=$alarmId, enabled=$isEnabled".logd(TAG)
+                    "Successfully updated alarm status: ID=$alarmId, enabled=$isEnabled".logd(TAG)
                     // 数据库更新成功，StateFlow会通过observe自动更新
                 } else {
-                    "更新闹钟状态失败: ID=$alarmId, enabled=$isEnabled".loge(TAG)
+                    "Failed to update alarm status: ID=$alarmId, enabled=$isEnabled".loge(TAG)
                 }
             } catch (e: CancellationException) {
                 // 协程正常取消，不记录为错误
-                "更新闹钟状态操作已取消: ID=$alarmId".logd(TAG)
+                "Alarm status update cancelled: ID=$alarmId".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
-                "更新闹钟状态异常: ID=$alarmId, enabled=$isEnabled, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                "Alarm status update error: ID=$alarmId, enabled=$isEnabled, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }
@@ -297,18 +299,18 @@ class AlarmViewModel @Inject constructor(
             try {
                 val success = alarmRepository.softDeleteRecord(alarmId)
                 if (success) {
-                    "成功删除闹钟: ID=$alarmId".logd(TAG)
+                    "Successfully deleted alarm: ID=$alarmId".logd(TAG)
                     // StateFlow会通过observe自动更新，无需手动刷新
                 } else {
-                    "删除闹钟失败: ID=$alarmId".loge(TAG)
+                    "Failed to delete alarm: ID=$alarmId".loge(TAG)
                 }
             } catch (e: CancellationException) {
                 // 协程正常取消，不记录为错误
-                "删除闹钟操作已取消: ID=$alarmId".logd(TAG)
+                "Alarm deletion cancelled: ID=$alarmId".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
-                "删除闹钟异常: ID=$alarmId, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                "Alarm deletion error: ID=$alarmId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }

@@ -218,12 +218,12 @@ class HistoryViewModel @Inject constructor(
                 }
             } catch (e: CancellationException) {
                 // 协程正常取消，不记录为错误
-                "加载历史记录操作已取消".logd(TAG)
+                "History record loading cancelled".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
-                "加载历史记录异常: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
-                _errorMessage.value = e.message ?: "加载历史记录失败"
+                "Failed to load history records: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                _errorMessage.value = e.message ?: "Failed to load history records"
             } finally {
                 _isLoading.value = false
             }
@@ -277,14 +277,14 @@ class HistoryViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 bsRepository.deleteBloodSugarRecord(recordId)
-                "成功删除血糖记录: ID=$recordId".logd(TAG)
+                "Successfully deleted blood sugar record: ID=$recordId".logd(TAG)
             } catch (e: CancellationException) {
                 // 协程正常取消，不记录为错误
-                "删除血糖记录操作已取消: ID=$recordId".logd(TAG)
+                "Blood sugar record deletion cancelled: ID=$recordId".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
-                "删除血糖记录异常: ID=$recordId, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                "Blood sugar record deletion error: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }
@@ -293,14 +293,14 @@ class HistoryViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 bpRepository.deleteBloodPressureRecord(recordId)
-                "成功删除血压记录: ID=$recordId".logd(TAG)
+                "Successfully deleted blood pressure record: ID=$recordId".logd(TAG)
             } catch (e: CancellationException) {
                 // 协程正常取消，不记录为错误
-                "删除血压记录操作已取消: ID=$recordId".logd(TAG)
+                "Blood pressure record deletion cancelled: ID=$recordId".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
-                "删除血压记录异常: ID=$recordId, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                "Blood pressure record deletion error: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
             }
         }
     }

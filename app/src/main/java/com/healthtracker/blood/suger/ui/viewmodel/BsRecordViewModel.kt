@@ -154,7 +154,7 @@ class BsRecordViewModel @Inject constructor(
                 SaveRecordResult.Created(newRecordId)
             }
         } catch (e: Exception) {
-            SaveRecordResult.Failed(e.message ?: "保存失败")
+            SaveRecordResult.Failed(e.message ?: "Save failed")
         } finally {
             _isLoading.value = false
         }
@@ -212,7 +212,7 @@ class BsRecordViewModel @Inject constructor(
     private fun convertMeasurementTagToBloodSugarStatus(status: Int) = BloodSugarStatus.entries.first { it.statusType == status }
 
 
-    fun getAvailableHealthTags() = healthTagRepository.getTagsByType(TagType.BLOOD_SUGAR).stateIn(
+    fun getAvailableHealthTags(): StateFlow<List<HealthTag>> = healthTagRepository.getTagsByType(TagType.BLOOD_SUGAR).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()

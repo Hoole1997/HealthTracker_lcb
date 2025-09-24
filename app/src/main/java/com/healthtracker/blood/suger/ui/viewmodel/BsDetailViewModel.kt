@@ -48,16 +48,16 @@ class BsDetailViewModel @Inject constructor(
                 _bloodSugarRecord.value = record
 
                 if (record == null) {
-                    _error.value = "血糖记录不存在"
+                    _error.value = "Blood sugar record not found"
                 }
             } catch (e: CancellationException) {
                 // 协程正常取消，不记录为错误
-                "加载血糖记录操作已取消: ID=$recordId".logd(TAG)
+                "Blood sugar record loading cancelled: ID=$recordId".logd(TAG)
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
-                "加载血糖记录异常: ID=$recordId, 错误: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
-                _error.value = "加载血糖记录失败: ${e.message}"
+                "Failed to load blood sugar record: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                _error.value = "Failed to load blood sugar record: ${e.message}"
             } finally {
                 _isLoading.value = false
             }

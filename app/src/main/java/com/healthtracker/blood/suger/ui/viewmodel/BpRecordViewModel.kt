@@ -118,7 +118,7 @@ class BpRecordViewModel @Inject constructor(
 
                     _isSaved.value = true
                     SaveRecordResult.Updated(editingRecordId!!)
-                } ?: SaveRecordResult.Failed("记录不存在")
+                } ?: SaveRecordResult.Failed("Record not found")
             } else {
                 // 添加新记录
                 val newRecordId = bloodPressureRepository.addBloodPressureRecord(
@@ -134,12 +134,12 @@ class BpRecordViewModel @Inject constructor(
             }
         } catch (e: CancellationException) {
             // 协程正常取消，不记录为错误
-            "保存血压记录操作已取消".logd(TAG)
+            "Blood pressure record save cancelled".logd(TAG)
             throw e // 重新抛出以保持协程取消语义
         } catch (e: Exception) {
             // 真正的异常情况：数据库操作失败等
-            "保存血压记录异常: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
-            SaveRecordResult.Failed(e.message ?: "保存失败")
+            "Failed to save blood pressure record: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+            SaveRecordResult.Failed(e.message ?: "Save failed")
         } finally {
             _isLoading.value = false
         }
