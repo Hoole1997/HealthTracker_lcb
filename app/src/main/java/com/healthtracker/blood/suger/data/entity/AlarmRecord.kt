@@ -147,7 +147,15 @@ data class AlarmRecord(
      * 预留扩展字段
      */
     @ColumnInfo(name = "text3")
-    val textExt3: String? = null
+    val textExt3: String? = null,
+
+    /**
+     * 更新时间戳
+     * 记录数据最后修改的时间，以毫秒为单位
+     * 在创建和更新时自动维护
+     */
+    @ColumnInfo(name = "updated_at")
+    val updatedAt: Long = System.currentTimeMillis()
 ) {
 
     /**
@@ -203,6 +211,24 @@ data class AlarmRecord(
         return vibrateTime > 0
     }
 
+    /**
+     * 创建更新后的记录副本
+     * 自动更新updatedAt字段为当前时间戳
+     * @return 更新了时间戳的新AlarmRecord实例
+     */
+    fun withUpdatedTimestamp(): AlarmRecord {
+        return this.copy(updatedAt = System.currentTimeMillis())
+    }
+
+    /**
+     * 获取格式化的更新时间
+     * @return 格式化的更新时间字符串
+     */
+    fun getFormattedUpdatedTime(): String {
+        val date = Date(updatedAt)
+        return java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(date)
+    }
+
 
 
     companion object {
@@ -253,8 +279,9 @@ data class AlarmRecord(
                 isEnabled = isEnabled,
                 vibrateTime = vibrateTime,
                 other = other,
-                longExt1 = currentTime, // 创建时间
-                longExt2 = null // 最后触发时间
+                longExt1 = null, // 创建时间
+                longExt2 = null, // 最后触发时间
+                updatedAt = currentTime // 更新时间
             )
         }
 
