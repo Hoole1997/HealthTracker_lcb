@@ -8,6 +8,7 @@ import com.healthtracker.blood.suger.databinding.ActivityAlarmManagerBinding
 import com.healthtracker.blood.suger.ui.adapter.AlarmAdapter
 import com.healthtracker.blood.suger.ui.viewmodel.AlarmViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.framework.ext.clickWithDuration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -72,12 +73,12 @@ class AlarmManageActivity: BaseMVVMActivity<AlarmViewModel, ActivityAlarmManager
      */
     private fun setupClickListeners() {
         // 血糖闹钟添加按钮
-        mViewBind.ivAddBsAlarm.setOnClickListener {
+        mViewBind.ivAddBsAlarm.clickWithDuration {
             // TODO: 实现添加血糖闹钟功能
         }
         
         // 血压闹钟添加按钮
-        mViewBind.ivAddBpAlarm.setOnClickListener {
+        mViewBind.ivAddBpAlarm.clickWithDuration {
             // TODO: 实现添加血压闹钟功能
         }
     }
@@ -87,17 +88,13 @@ class AlarmManageActivity: BaseMVVMActivity<AlarmViewModel, ActivityAlarmManager
      */
     private fun observeData() {
         // 观察血糖闹钟数据
-        lifecycleScope.launch {
-            mViewModel.bloodSugarAlarms.collect { alarms ->
-                bloodSugarAdapter.submitList(alarms)
-            }
+        mViewModel.bloodSugarAlarms.collectLatestLifecycle { alarms ->
+            bloodSugarAdapter.submitList(alarms)
         }
         
         // 观察血压闹钟数据
-        lifecycleScope.launch {
-            mViewModel.bloodPressureAlarms.collect { alarms ->
-                bloodPressureAdapter.submitList(alarms)
-            }
+        mViewModel.bloodPressureAlarms.collectLatestLifecycle { alarms ->
+            bloodPressureAdapter.submitList(alarms)
         }
     }
     
