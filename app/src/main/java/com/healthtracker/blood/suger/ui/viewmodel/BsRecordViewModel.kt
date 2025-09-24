@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 @HiltViewModel
 class BsRecordViewModel @Inject constructor(
@@ -40,7 +41,7 @@ class BsRecordViewModel @Inject constructor(
     private val _currentStatus = MutableStateFlow(BloodSugarStatus.DEFAULT)
     val currentStatus: StateFlow<BloodSugarStatus> = _currentStatus.asStateFlow()
 
-    private val _recordTime = MutableStateFlow(Date())
+    private val _recordTime = MutableStateFlow(DateTimeUtils.now())
     val recordTime: StateFlow<Date> = _recordTime.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
@@ -107,7 +108,7 @@ class BsRecordViewModel @Inject constructor(
         val defaultValue = BloodSugarScaleHelper.getDefaultValueForUnit(_currentUnit.value)
         _currentValue.value = defaultValue
         _currentStatus.value = BloodSugarStatus.DEFAULT
-        _recordTime.value = Date()
+        _recordTime.value = DateTimeUtils.now()
     }
 
     // 状态更新方法
@@ -212,11 +213,13 @@ class BsRecordViewModel @Inject constructor(
     private fun convertMeasurementTagToBloodSugarStatus(status: Int) = BloodSugarStatus.entries.first { it.statusType == status }
 
 
-    fun getAvailableHealthTags(): StateFlow<List<HealthTag>> = healthTagRepository.getTagsByType(TagType.BLOOD_SUGAR).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
+    fun getAvailableHealthTags(): StateFlow<List<HealthTag>> {
+        return healthTagRepository.getTagsByType(TagType.BLOOD_SUGAR).stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = emptyList()
+        )
+    }
 
 
 

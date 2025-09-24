@@ -244,6 +244,20 @@ object DateTimeUtils {
         calendar.add(Calendar.HOUR_OF_DAY, hours)
         return calendar.time
     }
+
+    /**
+     * 添加年份到指定日期
+     * 使用Calendar.YEAR确保正确处理闰年等边界情况
+     * @param date 基准日期
+     * @param years 要添加的年数（可以为负数）
+     * @return 新的Date对象
+     */
+    fun addYears(date: Date, years: Int): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.YEAR, years)
+        return calendar.time
+    }
 }
 
 /**
@@ -268,6 +282,6 @@ data class DateComponents(
      * 格式化显示
      */
     override fun toString(): String {
-        return String.format("%04d-%02d-%02d %02d:%02d", year, month, day, hour, minute)
+        return String.format(Locale.ROOT, "%04d-%02d-%02d %02d:%02d", year, month, day, hour, minute)
     }
 }

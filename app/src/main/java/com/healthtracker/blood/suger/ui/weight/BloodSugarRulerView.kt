@@ -458,7 +458,7 @@ class BloodSugarRulerView @JvmOverloads constructor(
         return when (currentUnit) {
             BsUnit.MMOL_L -> {
                 // mmol/L: 显示一位小数
-                String.format("%.1f", value)
+                String.format(java.util.Locale.ROOT, "%.1f", value)
             }
             BsUnit.MG_DL -> {
                 // mg/dL: 只显示整数

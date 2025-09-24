@@ -164,7 +164,7 @@ data class AlarmRecord(
      * @return 格式化的时间字符串 (HH:mm)
      */
     fun getFormattedTime(): String {
-        return String.format("%02d:%02d", hour, minute)
+        return String.format(java.util.Locale.ROOT, "%02d:%02d", hour, minute)
     }
 
     /**

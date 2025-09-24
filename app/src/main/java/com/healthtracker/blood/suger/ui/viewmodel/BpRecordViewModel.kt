@@ -1,11 +1,11 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
@@ -15,7 +15,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -41,7 +40,7 @@ class BpRecordViewModel @Inject constructor(
     val pulseRate: StateFlow<Int> = _pulseRate.asStateFlow()
 
     // 记录时间
-    private val _recordTime = MutableStateFlow(Date())
+    private val _recordTime = MutableStateFlow(DateTimeUtils.now())
     val recordTime: StateFlow<Date> = _recordTime.asStateFlow()
 
     // 加载状态

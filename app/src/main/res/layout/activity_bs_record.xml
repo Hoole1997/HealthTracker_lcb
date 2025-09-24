@@ -72,7 +72,7 @@
                 android:minHeight="@dimen/dp_56"
                 android:paddingHorizontal="@dimen/dp_16"
                 android:paddingVertical="@dimen/dp_20"
-                app:layout_constraintTop_toBottomOf="@id/action_bar">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/TextViewFont_RobotoBold"

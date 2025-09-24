@@ -7,13 +7,13 @@ import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 /**
  * Room数据库类型转换器
- * 兼容API 24+，使用Date和SimpleDateFormat进行时间处理
+ * 兼容API 24+，统一使用DateTimeUtils进行时间处理
  */
 class DateTimeConverter {
 
     companion object {
         /**
-         * 日期时间格式化器
+         * 日期时间格式化器（仅用于parseDate方法的向后兼容）
          * 使用ISO 8601格式: yyyy-MM-dd HH:mm:ss
          */
         private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).apply {
@@ -52,6 +52,8 @@ class DateTimeConverter {
 
     /**
      * 将格式化字符串解析为Date（用于测试和调试）
+     * 注意：此方法保留自定义SimpleDateFormat以确保向后兼容性
+     * 因为数据库中可能存在特定格式的字符串数据
      * @param dateTimeString 日期时间字符串
      * @return Date对象，解析失败则返回null
      */

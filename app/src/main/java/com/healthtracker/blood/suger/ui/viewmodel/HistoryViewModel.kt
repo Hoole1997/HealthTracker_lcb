@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
@@ -98,34 +97,20 @@ class HistoryViewModel @Inject constructor(
     }
 
     /**
-     * 初始化默认日期范围
-     * 设置为去年今天到今天的时间范围（本地时区）
-     * 
-     * 时间范围说明：
-     * - 开始时间：去年今天的 00:00:00.000 (本地时区)
-     * - 结束时间：今天的 23:59:59.999 (本地时区)
-     * 
-     * 这样设置可以确保：
-     * 1. 包含今天的所有血糖记录
+     * 初始化默认日期范围（去年今天到今天）
+     * 使用DateTimeUtils统一处理日期，确保：
+     * 1. 数据库查询的时间戳与本地时区一致
      * 2. UI显示的日期范围与用户本地时区一致
      * 3. 避免时区转换导致的日期显示错误
      */
     private fun initDefaultDateRange() {
-        // 使用本地时区的Calendar实例，避免时区转换问题
-        val localCalendar = Calendar.getInstance()
-        val currentYear = localCalendar.get(Calendar.YEAR)
-        val currentMonth = localCalendar.get(Calendar.MONTH)
-        val currentDay = localCalendar.get(Calendar.DAY_OF_MONTH)
+        // 获取今天的日期范围
+        val (todayStart, todayEnd) = DateTimeUtils.getTodayRange()
+        val endDate = todayEnd.time
         
-        // 设置结束时间：今天的最后一秒 (23:59:59.999 本地时区)
-        localCalendar.set(currentYear, currentMonth, currentDay, 23, 59, 59)
-        localCalendar.set(Calendar.MILLISECOND, 999)
-        val endDate = localCalendar.timeInMillis
-
-        // 设置开始时间：去年今天的第一秒 (00:00:00.000 本地时区)
-        localCalendar.set(currentYear - 1, currentMonth, currentDay, 0, 0, 0)
-        localCalendar.set(Calendar.MILLISECOND, 0)
-        val startDate = localCalendar.timeInMillis
+        // 获取去年今天的开始时间，使用addYears确保正确处理闰年
+        val oneYearAgo = DateTimeUtils.addYears(todayStart, -1)
+        val startDate = oneYearAgo.time
 
         // 应用日期范围设置
         setDateRange(startDate, endDate)

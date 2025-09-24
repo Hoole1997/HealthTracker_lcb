@@ -159,15 +159,19 @@ class DateTimeSelectionView @JvmOverloads constructor(
 
 
     fun getSelectDate(): Date {
-        // 保存前先获取DateTimeSelectionView的时间并更新到ViewModel
+        // 获取选择的日期时间
         val selectedDateTime = getDateTimePicker().getDateTime()
-        val currentTimeComponents = DateTimeUtils.extractDateComponents(DateTimeUtils.now())
         val selectedCalendar = selectedDateTime.toCalendar()
-        // 保留当前时间的秒和毫秒
-        selectedCalendar.set(Calendar.SECOND, currentTimeComponents.minute) // 使用当前秒数
-        selectedCalendar.set(Calendar.MILLISECOND, 0) // 毫秒设为0保持一致性
-        // 移除减1秒的逻辑，保持时间准确性
-        val selectedDate = selectedCalendar.time
-        return selectedDate
+        
+        // 使用DateTimeUtils统一处理日期，保持时间准确性
+        val finalDateTime = DateTimeUtils.createDate(
+            selectedCalendar.get(Calendar.YEAR),
+            selectedCalendar.get(Calendar.MONTH) + 1, // Calendar月份从0开始，需要+1
+            selectedCalendar.get(Calendar.DAY_OF_MONTH),
+            selectedCalendar.get(Calendar.HOUR_OF_DAY),
+            selectedCalendar.get(Calendar.MINUTE)
+        )
+        
+        return finalDateTime
     }
 }

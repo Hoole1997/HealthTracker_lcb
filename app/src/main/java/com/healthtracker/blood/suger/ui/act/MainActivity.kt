@@ -39,19 +39,10 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
     @Restore
     private var currentTabIndex = 0
     
-    // 标志位，记录是否已经初始化过月份显示
-    private var isMonthInitialized = false
-    
-    // 记录上次显示的月份，用于检测月份变化
-    private var lastDisplayedMonth: String? = null
+
     
     override fun onResume() {
         super.onResume()
-        // 在Activity恢复时检查月份是否发生变化
-        // 这种方案比广播接收器更简洁高效，因为月份变更频率较低
-        if (isMonthInitialized) {
-            checkAndUpdateMonthIfChanged()
-        }
     }
     
     override fun onDestroy() {
@@ -76,20 +67,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
             }
         })
     
-    /**
-     * 更新当前月份显示
-     */
-    private fun updateCurrentMonth() {
-        try {
-            val currentMonthYear = DateTimeUtils.getCurrentMonthYear()
-            mViewBind.tvMonth.text = currentMonthYear
-            lastDisplayedMonth = currentMonthYear
-            "Month updated to: $currentMonthYear".logd(TAG)
-        } catch (e: Exception) {
-            "Failed to update month: ${e.message}".logd(TAG)
-            // 如果获取失败，保持原有显示或使用默认值
-        }
-    }
+
     
     /**
      * 根据Tab位置更新UI状态
@@ -109,15 +87,11 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
                     R.string.app_name
                 }
                 1 -> {
-                    // Meds页面：显示月份，隐藏设置和提醒按钮
-                    tvMonth.visible()
+                    // Meds页面：隐藏设置和提醒按钮，显示月份
                     ivSetting.gone()
                     ivRemind.gone()
-                    // 首次切换到MedsFragment时动态获取当前月份
-                    if (!isMonthInitialized) {
-                        updateCurrentMonth()
-                        isMonthInitialized = true
-                    }
+                    tvMonth.visible()
+                    updateMonthDisplay()
                     R.string.meds_manager
                 }
                 2 -> {
@@ -132,22 +106,15 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
     }
     
     /**
-     * 检查月份是否发生变化，如果变化则更新显示
+     * 更新月份显示
+     * 从MedsFragment获取日期数据并更新UI
      */
-    private fun checkAndUpdateMonthIfChanged() {
-        try {
-            val currentMonthYear = DateTimeUtils.getCurrentMonthYear()
-            if (currentMonthYear != lastDisplayedMonth) {
-                "Month changed from $lastDisplayedMonth to $currentMonthYear".logd(TAG)
-                mViewBind.tvMonth.text = currentMonthYear
-                lastDisplayedMonth = currentMonthYear
-            }
-        } catch (e: Exception) {
-            "Failed to check month change: ${e.message}".logd(TAG)
+    private fun updateMonthDisplay() {
+        medFrg?.let { fragment ->
+            val monthText = fragment.getFormattedMonth()
+            mViewBind.tvMonth.text = monthText
         }
     }
-    
-
 
     override fun createViewBinding() = ActivityMainBinding.inflate(layoutInflater)
 

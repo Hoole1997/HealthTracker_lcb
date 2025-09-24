@@ -103,7 +103,7 @@ data class BloodSugarRecord(
      */
     fun getFormattedDisplayValue(): String {
         val displayValue = getDisplayGlucoseValue()
-        return String.format("%.1f", displayValue)
+        return String.format(java.util.Locale.ROOT, "%.1f", displayValue)
     }
 
     /**
