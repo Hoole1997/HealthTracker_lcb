@@ -1,7 +1,6 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.databinding.ActivityAlarmManagerBinding
@@ -11,7 +10,6 @@ import com.healthtracker.blood.suger.ui.viewmodel.AlarmViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManagerBinding>() {

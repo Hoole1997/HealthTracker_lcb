@@ -47,7 +47,9 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind?.run {
             clHistory.clickWithDuration {
-                requireActivity().startActivity<HistoryRecordActivity>()
+                latestSugerID?.let {
+                    requireActivity().startActivity<HistoryRecordActivity>()
+                } ?: requireActivity().startActivity<BsRecordActivity>()
             }
 
             btnRecordNow.clickWithDuration {

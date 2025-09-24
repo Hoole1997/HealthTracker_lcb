@@ -83,6 +83,7 @@
                     android:layout_width="@dimen/dp_48"
                     android:layout_height="@dimen/dp_48"
                     android:layout_marginEnd="@dimen/dp_2"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:scaleType="center"
                     app:layout_constraintBottom_toBottomOf="@id/tv_bs"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -133,7 +134,7 @@
                     android:layout_width="@dimen/dp_48"
                     android:layout_height="@dimen/dp_48"
                     android:layout_marginEnd="@dimen/dp_2"
-
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:scaleType="center"
                     app:layout_constraintBottom_toBottomOf="@id/tv_bp"
                     app:layout_constraintEnd_toEndOf="parent"

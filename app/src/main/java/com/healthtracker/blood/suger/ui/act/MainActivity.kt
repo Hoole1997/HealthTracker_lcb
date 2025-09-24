@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.os.Build
 import android.os.Bundle
+import androidx.compose.ui.geometry.Rect
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -15,8 +16,10 @@ import com.healthtracker.blood.suger.ui.fragment.RecordFragment
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.Restore
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -99,7 +102,30 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.let {
-                        mViewBind.viewPagerHome.currentItem = it.position
+                       with(mViewBind){
+                           viewPagerHome.currentItem = it.position
+                           ivRemind.visible()
+                           ivSetting.visible()
+                           tvMonth.gone()
+                           val titleRes = when (it.position) {
+                               0 -> {
+                                   R.string.app_name
+                               }
+                               1 -> {
+                                   tvMonth.visible()
+                                   ivSetting.gone()
+                                   ivRemind.gone()
+                                   tvMonth.text = "Sep.2025"
+                                   R.string.meds_manager
+                               }
+                               2 -> {
+                                   ivRemind.gone()
+                                   R.string.record
+                               }
+                               else -> R.string.app_name
+                           }
+                           tvTitle.text = getString(titleRes)
+                       }
                     }
                 }
             })
