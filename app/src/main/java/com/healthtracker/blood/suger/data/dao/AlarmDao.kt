@@ -131,11 +131,18 @@ interface AlarmDao {
     suspend fun updateLastTriggerTime(id: Long, lastTriggerTime: Long): Int
 
     /**
-     * 获取闹钟记录总数
-     * @return 有效记录总数
+     * 获取记录总数
+     * @return 记录总数
      */
     @Query("SELECT COUNT(*) FROM alarm_records WHERE is_delete = 0")
     suspend fun getRecordCount(): Int
+
+    /**
+     * 同步获取所有有效的闹钟记录，按时间排序
+     * @return 闹钟记录列表
+     */
+    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 ORDER BY hour ASC, minute ASC")
+    suspend fun getAllRecordsSync(): List<AlarmRecord>
 
     /**
      * 获取启用的闹钟记录总数

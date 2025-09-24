@@ -39,27 +39,16 @@ class AlarmViewModel @Inject constructor(
     /**
      * 初始化默认闹钟数据
      * 首次启动时将默认闹钟插入数据库，后续从数据库加载
+     * 优化版本：合并加载和插入操作到一个协程中，使用同步查询和批量插入
      */
     private fun initDefaultAlarms() {
         viewModelScope.launch {
             try {
-                // 先从数据库加载数据
-                loadAlarmsFromDatabase()
+                // 执行默认闹钟初始化逻辑
+                initializeDefaultAlarmsIfNeeded()
                 
-                // 检查是否需要插入默认数据
-                // 通过观察StateFlow来判断是否为空，如果为空则插入默认数据
-                viewModelScope.launch {
-                    // 等待数据加载完成后检查
-                    kotlinx.coroutines.delay(500) // 给数据库查询一些时间
-                    
-                    if (_bloodSugarAlarms.value.isEmpty()) {
-                        insertDefaultBloodSugarAlarms()
-                    }
-                    
-                    if (_bloodPressureAlarms.value.isEmpty()) {
-                        insertDefaultBloodPressureAlarms()
-                    }
-                }
+                // 加载数据到StateFlow（无论是否插入了新数据都需要加载）
+                loadAlarmsFromDatabase()
                 
             } catch (e: Exception) {
                 // 异常处理：数据库操作失败
@@ -69,88 +58,116 @@ class AlarmViewModel @Inject constructor(
     }
     
     /**
-     * 插入默认血糖闹钟数据到数据库
+     * 检查并初始化默认闹钟数据
+     * 如果数据库中不存在对应类型的闹钟，则插入默认闹钟
+     * 
+     * @throws Exception 数据库操作异常
      */
-    private suspend fun insertDefaultBloodSugarAlarms() {
-        val defaultBloodSugarAlarms = listOf(
+    private suspend fun initializeDefaultAlarmsIfNeeded() {
+        // 同步获取当前数据库中的所有闹钟记录
+        val existingRecords = alarmRepository.getAllRecordsSync()
+        
+        // 分离血糖和血压闹钟
+        val existingBloodSugarAlarms = existingRecords.filter { it.type == AlarmRecord.TYPE_BLOOD_SUGAR }
+        val existingBloodPressureAlarms = existingRecords.filter { it.type == AlarmRecord.TYPE_BLOOD_PRESSURE }
+        
+        // 准备需要插入的默认闹钟列表
+        val defaultAlarmsToInsert = mutableListOf<AlarmRecord>()
+        
+        // 检查并准备血糖闹钟默认数据
+        if (existingBloodSugarAlarms.isEmpty()) {
+            val defaultBloodSugarAlarms = createDefaultBloodSugarAlarms()
+            defaultAlarmsToInsert.addAll(defaultBloodSugarAlarms)
+            "准备插入${defaultBloodSugarAlarms.size}条默认血糖闹钟".logd(TAG)
+        }
+        
+        // 检查并准备血压闹钟默认数据
+        if (existingBloodPressureAlarms.isEmpty()) {
+            val defaultBloodPressureAlarms = createDefaultBloodPressureAlarms()
+            defaultAlarmsToInsert.addAll(defaultBloodPressureAlarms)
+            "准备插入${defaultBloodPressureAlarms.size}条默认血压闹钟".logd(TAG)
+        }
+        
+        // 批量插入默认闹钟（如果有需要插入的）
+        if (defaultAlarmsToInsert.isNotEmpty()) {
+            val insertedIds = alarmRepository.batchInsertRecords(defaultAlarmsToInsert)
+            "批量插入完成，共插入${insertedIds.size}条默认闹钟记录".logd(TAG)
+        }
+    }
+    
+    /**
+     * 创建默认血糖闹钟列表
+     * 
+     * @return 默认血糖闹钟记录列表
+     */
+    private fun createDefaultBloodSugarAlarms(): List<AlarmRecord> {
+        return listOf(
             AlarmRecord.createBloodSugarReminder(hour = 6, minute = 0),
             AlarmRecord.createBloodSugarReminder(hour = 9, minute = 0),
             AlarmRecord.createBloodSugarReminder(hour = 14, minute = 0),
             AlarmRecord.createBloodSugarReminder(hour = 20, minute = 0)
         )
-        
-        try {
-            // 逐个插入默认血糖闹钟，避免重复数据
-            val insertedIds = mutableListOf<Long>()
-            for (alarm in defaultBloodSugarAlarms) {
-                val id = alarmRepository.addBloodSugarReminder(alarm.hour, alarm.minute)
-                insertedIds.add(id)
-            }
-            if (insertedIds.isNotEmpty()) {
-                // 插入成功日志
-                "成功插入${insertedIds.size}条默认血糖闹钟".logd(TAG)
-            }
-        } catch (e: Exception) {
-            "插入默认血糖闹钟失败: ${e.message}".loge(TAG)
-            throw e
-        }
     }
     
     /**
-     * 插入默认血压闹钟数据到数据库
+     * 创建默认血压闹钟列表
+     * 
+     * @return 默认血压闹钟记录列表
      */
-    private suspend fun insertDefaultBloodPressureAlarms() {
-        val defaultBloodPressureAlarms = listOf(
+    private fun createDefaultBloodPressureAlarms(): List<AlarmRecord> {
+        return listOf(
             AlarmRecord.createBloodPressureReminder(hour = 6, minute = 0),
             AlarmRecord.createBloodPressureReminder(hour = 20, minute = 0)
         )
-        
-        try {
-            // 逐个插入默认血压闹钟，避免重复数据
-            val insertedIds = mutableListOf<Long>()
-            for (alarm in defaultBloodPressureAlarms) {
-                val id = alarmRepository.addBloodPressureReminder(alarm.hour, alarm.minute)
-                insertedIds.add(id)
-            }
-            if (insertedIds.isNotEmpty()) {
-                // 插入成功日志
-                "成功插入${insertedIds.size}条默认血压闹钟".logd(TAG)
-            }
-        } catch (e: Exception) {
-            "插入默认血压闹钟失败: ${e.message}".loge(TAG)
-            throw e
-        }
     }
+    
+
     
     /**
      * 从数据库加载闹钟数据
+     * 优化版本：使用单一查询获取所有闹钟记录，然后在内存中进行过滤和排序
      */
     private fun loadAlarmsFromDatabase() {
-        // 启动协程观察血糖闹钟数据变化
+        // 启动单一协程观察所有闹钟数据变化
         viewModelScope.launch {
             try {
-                // 使用Repository的公共方法获取血糖闹钟
-                alarmRepository.getBloodSugarReminders().collect { alarms ->
-                    _bloodSugarAlarms.value = alarms.sortedBy { it.hour * 60 + it.minute }
+                // 使用Repository的getAllRecordsFlow方法获取所有闹钟记录
+                alarmRepository.getAllRecordsFlow().collect { allAlarms ->
+                    // 在内存中进行数据过滤和排序处理
+                    processAndUpdateAlarmData(allAlarms)
                 }
             } catch (e: Exception) {
-                "观察血糖闹钟数据失败: ${e.message}".loge(TAG)
+                "观察闹钟数据失败: ${e.message}".loge(TAG)
             }
         }
         
-        // 启动协程观察血压闹钟数据变化
-        viewModelScope.launch {
-            try {
-                // 使用Repository的公共方法获取血压闹钟
-                alarmRepository.getBloodPressureReminders().collect { alarms ->
-                    _bloodPressureAlarms.value = alarms.sortedBy { it.hour * 60 + it.minute }
-                }
-            } catch (e: Exception) {
-                "观察血压闹钟数据失败: ${e.message}".loge(TAG)
-            }
+        "开始观察数据库闹钟数据（优化版本）".logd(TAG)
+    }
+    
+    /**
+     * 处理并更新闹钟数据
+     * 将完整的闹钟记录列表按类型过滤并排序后更新到对应的StateFlow
+     * 
+     * @param allAlarms 所有闹钟记录列表
+     */
+    private fun processAndUpdateAlarmData(allAlarms: List<AlarmRecord>) {
+        try {
+            // 按类型过滤闹钟记录
+            val bloodSugarAlarms = allAlarms.filter { it.type == AlarmRecord.TYPE_BLOOD_SUGAR }
+            val bloodPressureAlarms = allAlarms.filter { it.type == AlarmRecord.TYPE_BLOOD_PRESSURE }
+            
+            // 按时间排序（小时*60+分钟）
+            val sortedBloodSugarAlarms = bloodSugarAlarms.sortedBy { it.hour * 60 + it.minute }
+            val sortedBloodPressureAlarms = bloodPressureAlarms.sortedBy { it.hour * 60 + it.minute }
+            
+            // 更新StateFlow
+            _bloodSugarAlarms.value = sortedBloodSugarAlarms
+            _bloodPressureAlarms.value = sortedBloodPressureAlarms
+            
+            "数据处理完成 - 血糖闹钟: ${sortedBloodSugarAlarms.size}条, 血压闹钟: ${sortedBloodPressureAlarms.size}条".logd(TAG)
+        } catch (e: Exception) {
+            "处理闹钟数据失败: ${e.message}".loge(TAG)
         }
-        
-        "开始观察数据库闹钟数据".logd(TAG)
     }
     
 

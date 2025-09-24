@@ -39,6 +39,32 @@ class AlarmRepository @Inject constructor(
     override fun getAllRecords(): Flow<List<AlarmRecord>> {
         return alarmDao.getAllRecords()
     }
+
+    /**
+     * 同步获取所有闹钟记录
+     * @return 闹钟记录列表
+     */
+    suspend fun getAllRecordsSync(): List<AlarmRecord> {
+        return alarmDao.getAllRecordsSync()
+    }
+    
+    /**
+     * 获取所有闹钟记录的Flow
+     * 公共方法，供ViewModel使用
+     * @return Flow形式的闹钟记录列表
+     */
+    fun getAllRecordsFlow(): Flow<List<AlarmRecord>> {
+        return getAllRecords()
+    }
+
+    /**
+     * 批量插入闹钟记录
+     * @param records 闹钟记录列表
+     * @return 插入记录的ID列表
+     */
+    suspend fun batchInsertRecords(records: List<AlarmRecord>): List<Long> {
+        return alarmDao.insertAll(records)
+    }
     
     override fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<AlarmRecord>> {
         // 闹钟不需要按日期范围查询，返回所有记录
