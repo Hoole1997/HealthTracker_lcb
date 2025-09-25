@@ -5,6 +5,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -54,6 +55,12 @@ class WeeklyDateSelector @JvmOverloads constructor(
 
     // ViewPager2 适配器
     private val weekAdapter = WeekAdapter()
+    
+    // 触摸事件处理相关变量
+    private var initialX = 0f
+    private var initialY = 0f
+    private var isHorizontalScroll = false
+    private var hasIntercepted = false
 
     init {
         val typedArray: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.WeeklyDateSelector)
@@ -449,4 +456,98 @@ class WeeklyDateSelector @JvmOverloads constructor(
     // 获取当前设置的数据集大小控制属性
     fun getPreviousWeeksCount(): Int = previousWeeksCount
     fun getNextWeeksCount(): Int = nextWeeksCount
+    
+    /**
+     * 重写触摸事件拦截，处理边界滑动时阻止事件传递给父ViewPager
+     */
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        when (ev.action) {
+            MotionEvent.ACTION_DOWN -> {
+                initialX = ev.x
+                initialY = ev.y
+                isHorizontalScroll = false
+                hasIntercepted = false
+                // 让子View先处理事件
+                return false
+            }
+            MotionEvent.ACTION_MOVE -> {
+                val deltaX = Math.abs(ev.x - initialX)
+                val deltaY = Math.abs(ev.y - initialY)
+                
+                // 判断是否为水平滑动
+                if (!isHorizontalScroll && deltaX > deltaY && deltaX > 20) {
+                    isHorizontalScroll = true
+                }
+                
+                // 如果是水平滑动且到达边界，拦截事件
+                if (isHorizontalScroll && isAtBoundary(ev.x - initialX)) {
+                    hasIntercepted = true
+                    parent?.requestDisallowInterceptTouchEvent(true)
+                    return true
+                }
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                if (hasIntercepted) {
+                    parent?.requestDisallowInterceptTouchEvent(false)
+                }
+                isHorizontalScroll = false
+                hasIntercepted = false
+            }
+        }
+        return super.onInterceptTouchEvent(ev)
+    }
+    
+    /**
+     * 处理触摸事件
+     */
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                initialX = event.x
+                initialY = event.y
+                return true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (hasIntercepted) {
+                    // 如果已经拦截了事件，阻止进一步的滑动
+                    return true
+                }
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                if (hasIntercepted) {
+                    parent?.requestDisallowInterceptTouchEvent(false)
+                    hasIntercepted = false
+                }
+                return true
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+    
+    /**
+     * 判断是否到达滑动边界
+     * @param deltaX 水平滑动距离，正值表示向右滑动，负值表示向左滑动
+     * @return true 如果到达边界且不能继续滑动
+     */
+    private fun isAtBoundary(deltaX: Float): Boolean {
+        val currentPosition = viewPager.currentItem
+        
+        // 计算边界位置
+        val isAtFirstPage = when {
+            previousWeeksCount >= 0 && nextWeeksCount >= 0 -> currentPosition <= 0
+            previousWeeksCount >= 0 -> currentPosition <= 0
+            nextWeeksCount >= 0 -> currentPosition <= 1000 - nextWeeksCount
+            else -> currentPosition <= 0
+        }
+        
+        val isAtLastPage = when {
+            previousWeeksCount >= 0 && nextWeeksCount >= 0 -> currentPosition >= previousWeeksCount + nextWeeksCount
+            previousWeeksCount >= 0 -> currentPosition >= previousWeeksCount + 1000
+            nextWeeksCount >= 0 -> currentPosition >= 1000 + nextWeeksCount
+            else -> currentPosition >= weekAdapter.itemCount - 1
+        }
+        
+        // 向右滑动（deltaX > 0）且在第一页，或向左滑动（deltaX < 0）且在最后一页
+        return (deltaX > 0 && isAtFirstPage) || (deltaX < 0 && isAtLastPage)
+    }
 }
