@@ -97,7 +97,9 @@ class WeeklyDateSelector @JvmOverloads constructor(
     private var nextWeeksCount: Int = -1      // -1 表示无限制，0 表示仅当前周
     private var disablePastDates: Boolean = false  // 是否禁用过去的日期选择
 
-    private var onDateChangeListener: ((date: Date, isToday: Boolean) -> Unit)? = null
+    // 分离的回调函数
+    private var onDateSelectedListener: ((date: Date) -> Unit)? = null
+    private var onWeekChangedListener: ((isCurrentWeek: Boolean) -> Unit)? = null
 
     // 状态
     private var today: Date = DateTimeUtils.now()
@@ -139,7 +141,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
 
         setupViews()
         setupPager()
-        notifySelection(selectedDate)
+        notifyDateSelected(selectedDate)
     }
 
     fun setDefaultSelectedDate(defaultDate: Date?) {
@@ -149,7 +151,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
             
             // 重新设置ViewPager位置
             setupPager()
-            notifySelection(selectedDate)
+            notifyDateSelected(selectedDate)
         }
     }
 
@@ -229,6 +231,9 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 
                 currentWeekMonday = addDays(baseWeekStart, weekOffset * 7)
                 weekAdapter.notifyDataSetChanged()
+                
+                // 触发周视图翻页回调，通知当前显示的周是否为系统当前周
+                notifyWeekChanged()
             }
         })
     }
@@ -352,7 +357,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
                     }
                     
                     selectedDate = dayDate
-                    notifySelection(selectedDate)
+                    notifyDateSelected(selectedDate)
                     weekAdapter.notifyDataSetChanged()
                 }
                 
@@ -366,9 +371,30 @@ class WeeklyDateSelector @JvmOverloads constructor(
         }
     }
 
-    private fun notifySelection(date: Date) {
-        val isToday = DateTimeUtils.isSameDay(date, today)
-        onDateChangeListener?.invoke(date, isToday)
+    /**
+     * 通知日期选择事件
+     * 仅在用户选择日期时触发，不包含周切换信息
+     */
+    private fun notifyDateSelected(date: Date) {
+        onDateSelectedListener?.invoke(date)
+    }
+
+    /**
+     * 通知周切换事件
+     * 在周视图页面切换时触发，提供是否为当前周的信息
+     */
+    private fun notifyWeekChanged() {
+        val isCurrentWeek = isCurrentWeekDisplayed()
+        onWeekChangedListener?.invoke(isCurrentWeek)
+    }
+
+    /**
+     * 判断当前显示的周是否为系统当前周
+     * @return true 如果当前显示的周包含今天，false 否则
+     */
+    private fun isCurrentWeekDisplayed(): Boolean {
+        val todayWeekStart = getWeekStart(today)
+        return DateTimeUtils.isSameDay(currentWeekMonday, todayWeekStart)
     }
 
     private fun getWeekStart(date: Date): Date {
@@ -432,7 +458,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
         selectedDate = date
         currentWeekMonday = getWeekStart(date)
         weekAdapter.notifyDataSetChanged()
-        notifySelection(selectedDate)
+        notifyDateSelected(selectedDate)
     }
 
     fun resetToToday() {
@@ -441,7 +467,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
         currentWeekMonday = getWeekStart(today)
         viewPager.setCurrentItem(5000, false)
         weekAdapter.notifyDataSetChanged()
-        notifySelection(selectedDate)
+        notifyDateSelected(selectedDate)
     }
 
     fun nextWeek() {
@@ -478,8 +504,22 @@ class WeeklyDateSelector @JvmOverloads constructor(
         }
     }
 
-    fun setOnDateChangeListener(listener: (date: Date, isToday: Boolean) -> Unit) {
-        this.onDateChangeListener = listener
+    /**
+     * 设置日期选择回调
+     * 当用户选择日期时触发
+     * @param listener 日期选择回调函数，参数为选中的日期
+     */
+    fun setOnDateSelectedListener(listener: (date: Date) -> Unit) {
+        onDateSelectedListener = listener
+    }
+
+    /**
+     * 设置周切换回调
+     * 当周视图页面切换时触发
+     * @param listener 周切换回调函数，参数为是否为当前周
+     */
+    fun setOnWeekChangedListener(listener: (isCurrentWeek: Boolean) -> Unit) {
+        onWeekChangedListener = listener
     }
 
     // 新的API方法，用于设置数据集大小控制属性
