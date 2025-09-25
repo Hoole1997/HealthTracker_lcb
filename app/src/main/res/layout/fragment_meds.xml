@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
+    <com.healthtracker.blood.suger.ui.widget.WeeklyDateSelector
+        android:id="@+id/weeklyDateSelector"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingVertical="@dimen/dp_16"
+        app:disablePastDates="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="@color/c5"
-        android:textSize="@dimen/sp_32"
-        android:text="@string/record"/>
+        app:restrictPastWeekNavigation="true"
+        app:weekStartOnMonday="false"
+        app:horizontalPadding="@dimen/dp_10"
+        app:customWeekdayNames="@array/week_simple"
+        app:backgroundCornerRadius="@dimen/dp_21"
+        app:maxNextWeeks="3"
+        app:maxPreviousWeeks="1"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

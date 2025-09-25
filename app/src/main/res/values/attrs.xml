@@ -78,4 +78,38 @@
         <attr name="showLabel" format="boolean" />         <!--是否显示标签-->
     </declare-styleable>
 
+    <!-- WeeklyDateSelector 自定义属性 -->
+    <declare-styleable name="WeeklyDateSelector">
+        <!-- 颜色与文字相关属性 -->
+        <attr name="selectedBackgroundColor" format="color" />        <!-- 选中日期的背景颜色 -->
+        <attr name="unselectedBackgroundColor" format="color" />      <!-- 未选中日期的背景颜色 -->
+        <attr name="selectedTextColor" format="color" />              <!-- 选中日期的文字颜色 -->
+        <attr name="unselectedTextColor" format="color" />            <!-- 未选中日期的文字颜色 -->
+        <attr name="selectedWeekTextColor" format="color" />          <!-- 选中日期的周名称文字颜色，默认等于选中日期背景色 -->
+        <attr name="dateTextSize" format="dimension" />               <!-- 日期数字的文字大小 -->
+        <attr name="weekdayTextSize" format="dimension" />            <!-- 周名称的文字大小 -->
+        <attr name="backgroundCornerRadius" format="dimension" />     <!-- 选中日期背景的圆角半径 -->
+
+        <!-- 布局与间距相关属性 -->
+        <attr name="weeklyItemSpacing" format="dimension" />          <!-- 每周内日期项之间的间距 -->
+        <attr name="horizontalPadding" format="dimension" />          <!-- 每页的水平方向内边距值 -->
+
+        <!-- 翻页配置相关属性 -->
+        <attr name="maxPreviousWeeks" format="integer" />             <!-- 允许向前翻页的最大周数 -->
+        <attr name="maxNextWeeks" format="integer" />                 <!-- 允许向后翻页的最大周数 -->
+        <attr name="enablePagination" format="boolean" />             <!-- 是否启用翻页功能 -->
+        <attr name="enableSwipeGesture" format="boolean" />           <!-- 是否启用滑动手势翻页 -->
+        <attr name="swipeThreshold" format="dimension" />             <!-- 触发滑动翻页的最小距离阈值 -->
+
+        <!-- 禁用规则相关属性 -->
+        <attr name="disablePastDates" format="boolean" />             <!-- 是否禁用过去的日期选择 -->
+        <attr name="restrictPastWeekNavigation" format="boolean" />   <!-- 是否限制向过去周数的导航 -->
+
+        <!-- 周起始日配置属性 -->
+        <attr name="weekStartOnMonday" format="boolean" />            <!-- 一周是否从周一开始：true=周一开始，false=周日开始 -->
+        
+        <!-- 自定义显示内容属性 -->
+        <attr name="customWeekdayNames" format="reference" />         <!-- 自定义周名称字符串数组资源引用 -->
+    </declare-styleable>
+
 </resources>

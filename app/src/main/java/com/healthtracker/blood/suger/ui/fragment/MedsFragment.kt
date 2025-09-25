@@ -22,7 +22,9 @@ class MedsFragment: BaseMVVMFragment<BaseViewModel, FragmentMedsBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         // Fragment初始化逻辑
         // TODO: 这里将来会初始化周视图组件
-        // initWeekView(DateTimeUtils.now())
+         mViewBind?.run {
+             weeklyDateSelector.setDefaultSelectedDate(DateTimeUtils.now())
+         }
     }
 
     

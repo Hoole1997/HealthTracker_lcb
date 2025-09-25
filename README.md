@@ -40,6 +40,41 @@ HealthTracker/
 - `android.firebase` - Firebase 服务配置
 - `android.stringfog` - StringFog 字符串混淆配置
 
+## 组件修复记录
+
+### WeeklyDateSelector 导航限制修复 (2024-09-25)
+
+#### 问题描述
+WeeklyDateSelector组件的周导航限制功能存在以下问题：
+1. `maxPreviousWeeks`和`maxNextWeeks`属性在XML中定义但未在代码中实现
+2. 滑动手势可以绕过所有导航限制
+3. 只有按钮导航（nextWeek/prevWeek）有部分限制检查
+
+#### 修复内容
+
+**1. 添加缺失的属性支持**
+- 在WeeklyDateSelector类中添加`maxPreviousWeeks`和`maxNextWeeks`属性声明
+- 在init块中从XML属性正确初始化这些属性值
+
+**2. 实现统一的导航限制逻辑**
+- 新增`isNavigationAllowed(position: Int)`方法，统一检查所有导航限制
+- 新增`getValidPosition(targetPosition: Int)`方法，获取最接近的有效位置
+- 支持`restrictPastWeekNavigation`、`maxPreviousWeeks`和`maxNextWeeks`的组合使用
+
+**3. 修复滑动手势限制**
+- 在`setupPager()`中添加`ViewPager2.OnPageChangeCallback`
+- 在页面选中时检查导航是否被允许
+- 不允许的导航会自动回弹到有效位置
+
+**4. 统一按钮和滑动导航行为**
+- 更新`nextWeek()`和`prevWeek()`方法使用新的`isNavigationAllowed()`检查
+- 确保按钮导航和滑动导航使用相同的限制逻辑
+
+#### 测试验证
+- 创建了包含5种不同限制配置的演示活动
+- 验证了所有导航限制场景的正确性
+- 确认滑动和按钮导航都受到相同限制
+
 ### StringFog 字符串混淆优化
 
 #### 优化内容

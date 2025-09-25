@@ -11,6 +11,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
+import com.healthtracker.blood.suger.ui.act.AlarmManageActivity
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
@@ -124,6 +125,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
         with(mViewBind){
             ivSetting.clickWithDuration {
                 "setting click".logd(TAG)
+                // TODO: 添加设置页面功能
             }
 
             ivRemind.clickWithDuration {
