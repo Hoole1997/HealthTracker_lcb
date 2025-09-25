@@ -11,12 +11,13 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import java.util.*
+import com.healthtracker.framework.ext.click
+import java.util.Calendar
+import java.util.Date
 
 /**
  * 周枚举类，用于管理周字符串数组的索引值和名称
@@ -144,13 +145,18 @@ class WeeklyDateSelector @JvmOverloads constructor(
         notifyDateSelected(selectedDate)
     }
 
-    fun setDefaultSelectedDate(defaultDate: Date?) {
-        if (defaultDate != null) {
-            selectedDate = defaultDate
-            currentWeekMonday = getWeekStart(selectedDate)
-            
-            // 重新设置ViewPager位置
-            setupPager()
+    fun setDefaultSelectedDate(defaultDate: Date = DateTimeUtils.now()) {
+        // 检查是否为重复设置同一日期
+        val isDateChanged = !DateTimeUtils.isSameDay(selectedDate, defaultDate)
+        
+        selectedDate = defaultDate
+        currentWeekMonday = getWeekStart(selectedDate)
+        
+        // 重新设置ViewPager位置
+        setupPager()
+        
+        // 仅在日期发生变更时通知外部监听器
+        if (isDateChanged) {
             notifyDateSelected(selectedDate)
         }
     }
@@ -266,8 +272,8 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 orientation = LinearLayout.HORIZONTAL
                 // ViewPager2要求子视图必须填满整个ViewPager2的宽度和高度
                 layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
+                    LayoutParams.MATCH_PARENT,
+                    LayoutParams.MATCH_PARENT
                 )
                 // 将horizontalPadding应用到父容器上
                 setPadding(horizontalPadding, 0, horizontalPadding, 0)
@@ -349,15 +355,25 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 }
                 
                 // 设置点击事件
-                dayView.setOnClickListener {
+                dayView.click {
                     // 检查是否禁用过去日期
                     if (disablePastDates && dayDate.before(today) && !DateTimeUtils.isSameDay(dayDate, today)) {
                         // 如果禁用过去日期且当前日期是过去的日期，则不响应点击
-                        return@setOnClickListener
+                        return@click
                     }
                     
+                    // 检查是否为重复点击同一日期
+                    val isDateChanged = !DateTimeUtils.isSameDay(selectedDate, dayDate)
+                    
+                    // 更新选中日期
                     selectedDate = dayDate
-                    notifyDateSelected(selectedDate)
+                    
+                    // 仅在日期发生变更时通知外部监听器
+                    if (isDateChanged) {
+                        notifyDateSelected(selectedDate)
+                    }
+                    
+                    // 无论是否变更都需要刷新UI以更新选中状态
                     weekAdapter.notifyDataSetChanged()
                 }
                 
@@ -455,19 +471,36 @@ class WeeklyDateSelector @JvmOverloads constructor(
 
     // 公共API方法
     fun setSelectedDate(date: Date) {
+        // 检查是否为重复设置同一日期
+        val isDateChanged = !DateTimeUtils.isSameDay(selectedDate, date)
+        
         selectedDate = date
         currentWeekMonday = getWeekStart(date)
         weekAdapter.notifyDataSetChanged()
-        notifyDateSelected(selectedDate)
+        
+        // 仅在日期发生变更时通知外部监听器
+        if (isDateChanged) {
+            notifyDateSelected(selectedDate)
+        }
     }
 
     fun resetToToday() {
-        today = DateTimeUtils.now()
-        selectedDate = today
+        val newToday = DateTimeUtils.now()
+        val newSelectedDate = newToday
+        
+        // 检查是否为重复设置同一日期
+        val isDateChanged = !DateTimeUtils.isSameDay(selectedDate, newSelectedDate)
+        
+        today = newToday
+        selectedDate = newSelectedDate
         currentWeekMonday = getWeekStart(today)
         viewPager.setCurrentItem(5000, false)
         weekAdapter.notifyDataSetChanged()
-        notifyDateSelected(selectedDate)
+        
+        // 仅在日期发生变更时通知外部监听器
+        if (isDateChanged) {
+            notifyDateSelected(selectedDate)
+        }
     }
 
     fun nextWeek() {

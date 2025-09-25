@@ -42,8 +42,8 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
      */
     private fun setupWeeklyDateSelector() {
         mViewBind?.run {
-            // 设置默认选中日期
-            weeklyDateSelector.setDefaultSelectedDate(DateTimeUtils.now())
+            // WeeklyDateSelector 在初始化时已经默认选中当前日期，无需重复设置
+            // weeklyDateSelector.setDefaultSelectedDate() // 已优化：跳过重复的默认日期设置
             
             // 设置日期选择监听器
              weeklyDateSelector.setOnDateSelectedListener { selectedDate ->

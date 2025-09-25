@@ -99,11 +99,5 @@ class MedsViewModel @Inject constructor(
     fun getFormattedMonth(): String {
         return DateTimeUtils.formatMonthYear(_selectedDate.value)
     }
-
-    /**
-     * 重置到今天
-     */
-    fun resetToToday() {
-        onDateSelected(DateTimeUtils.now())
-    }
+    
 }
