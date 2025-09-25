@@ -269,7 +269,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 // 检查是否为选中日期
                 val isSelected = DateTimeUtils.isSameDay(dayDate, selectedDate)
                 val isToday = DateTimeUtils.isSameDay(dayDate, today)
-                val isPastDate = disablePastDates && dayDate.before(today)
+                val isPastDate = disablePastDates && dayDate.before(today) && !DateTimeUtils.isSameDay(dayDate, today)
                 
                 if (isSelected) {
                     // 背景只设置在日期数字上
@@ -295,7 +295,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 // 设置点击事件
                 dayView.setOnClickListener {
                     // 检查是否禁用过去日期
-                    if (disablePastDates && dayDate.before(today)) {
+                    if (disablePastDates && dayDate.before(today) && !DateTimeUtils.isSameDay(dayDate, today)) {
                         // 如果禁用过去日期且当前日期是过去的日期，则不响应点击
                         return@setOnClickListener
                     }
