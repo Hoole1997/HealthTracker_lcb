@@ -279,10 +279,10 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 } else if (isPastDate) {
                     // 过去日期的禁用样式
                     tvDayNumber.setBackgroundResource(R.drawable.bg_week_day_normal)
-                    tvDayNumber.setTextColor(Color.parseColor("#CCCCCC"))  // 浅灰色表示禁用
-                    tvWeekName.setTextColor(Color.parseColor("#CCCCCC"))
-                    tvDayNumber.alpha = 0.5f  // 设置透明度
-                    tvWeekName.alpha = 0.5f
+                    tvDayNumber.setTextColor(unselectedTextColor)
+                    tvWeekName.setTextColor(unselectedTextColor)
+                    tvDayNumber.alpha = 0.3f  // 设置透明度
+                    tvWeekName.alpha = 0.3f
                 } else {
                     // 背景只设置在日期数字上
                     tvDayNumber.setBackgroundResource(R.drawable.bg_week_day_normal)
