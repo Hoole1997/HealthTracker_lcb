@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.compose.ui.geometry.Rect
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.healthtracker.blood.suger.R
@@ -25,6 +26,7 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.Restore
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
@@ -112,8 +114,12 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
      */
     private fun updateMonthDisplay() {
         medFrg?.let { fragment ->
-            val monthText = fragment.getFormattedMonth()
-            mViewBind.tvMonth.text = monthText
+            lifecycleScope.launch {
+                fragment.getFormattedMonthFlow().collect { monthText ->
+                    mViewBind.tvMonth.text = monthText
+                    "月份显示已更新: $monthText".logd(TAG)
+                }
+            }
         }
     }
 
