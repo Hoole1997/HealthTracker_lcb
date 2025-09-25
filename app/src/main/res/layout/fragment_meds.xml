@@ -10,16 +10,56 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:paddingVertical="@dimen/dp_16"
+        app:backgroundCornerRadius="@dimen/dp_21"
+        app:customWeekdayNames="@array/week_simple"
         app:disablePastDates="true"
+        app:horizontalPadding="@dimen/dp_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:weekStartOnMonday="false"
-        app:horizontalPadding="@dimen/dp_10"
-        app:customWeekdayNames="@array/week_simple"
-        app:backgroundCornerRadius="@dimen/dp_21"
         app:nextWeeksCount="3"
         app:previousWeeksCount="0"
-        />
+        app:weekStartOnMonday="false" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_v_30"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_empty"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/ic_meds_empty"
+        android:text="@string/meds_remind_empty"
+        android:textColor="@color/color_999"
+        android:lineSpacingExtra="@dimen/dp_8"
+        android:textSize="@dimen/sp_14"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guide_v_30"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_v_90"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save"
+        style="@style/MaterialButton.b1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginHorizontal="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:text="@string/add"
+        app:layout_constraintBottom_toBottomOf="@id/guide_v_90"
+        app:layout_constraintTop_toTopOf="@id/guide_v_90"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
