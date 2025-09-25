@@ -94,6 +94,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
      */
     private fun updateBloodSugarUI(record: BloodSugarRecord?) {
         if (record == null) {
+            latestSugerID = null
             mViewBind?.tvLatestBsValue?.text = "--"
             mViewBind?.tvLatestRecordDate?.text = getString(R.string.click_to_record)
             return

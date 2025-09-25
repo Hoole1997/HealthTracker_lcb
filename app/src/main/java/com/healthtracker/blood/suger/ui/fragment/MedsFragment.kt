@@ -6,10 +6,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.FragmentMedsBinding
+import com.healthtracker.blood.suger.ui.act.AddReminderActivity
 import com.healthtracker.blood.suger.ui.viewmodel.MedsViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.TAG
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,7 +35,12 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
     override fun getVMModelClass() = MedsViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        // Fragment初始化逻辑
+        mViewBind?.run {
+            btnAdd.clickWithDuration {
+                requireActivity().startActivity<AddReminderActivity>()
+            }
+
+        }
         setupWeeklyDateSelector()
         observeViewModel()
     }

@@ -862,5 +862,6 @@
     <string name="once">Once</string>
     <string name="meds_remind_empty">No data yet. \nTap the button below to add some!</string>
     <string name="add">Add</string>
+    <string name="add_reminder">Add Reminder</string>
 
 </resources>
