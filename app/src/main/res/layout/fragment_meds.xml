@@ -14,13 +14,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:restrictPastWeekNavigation="true"
         app:weekStartOnMonday="false"
         app:horizontalPadding="@dimen/dp_10"
         app:customWeekdayNames="@array/week_simple"
         app:backgroundCornerRadius="@dimen/dp_21"
-        app:maxNextWeeks="3"
-        app:maxPreviousWeeks="1"
+        app:nextWeeksCount="3"
+        app:previousWeeksCount="0"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

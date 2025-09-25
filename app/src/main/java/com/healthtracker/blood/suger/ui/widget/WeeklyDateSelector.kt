@@ -40,10 +40,9 @@ class WeeklyDateSelector @JvmOverloads constructor(
     private var horizontalPadding: Int = 0
     private var customWeekdayNames: Array<String>? = null
     
-    // 基本的滑动限制属性
-    private var maxPreviousWeeks: Int = -1  // -1 表示无限制
-    private var maxNextWeeks: Int = -1      // -1 表示无限制
-    private var restrictPastWeekNavigation: Boolean = false
+    // 数据集大小控制属性
+    private var previousWeeksCount: Int = -1  // -1 表示无限制，0 表示仅当前周
+    private var nextWeeksCount: Int = -1      // -1 表示无限制，0 表示仅当前周
     private var disablePastDates: Boolean = false  // 是否禁用过去的日期选择
 
     private var onDateChangeListener: ((date: Date, isToday: Boolean) -> Unit)? = null
@@ -65,7 +64,6 @@ class WeeklyDateSelector @JvmOverloads constructor(
             selectedWeekTextColor = typedArray.getColor(R.styleable.WeeklyDateSelector_selectedWeekTextColor, selectedBackgroundColor)
             
             weekStartOnMonday = typedArray.getBoolean(R.styleable.WeeklyDateSelector_weekStartOnMonday, true)
-            restrictPastWeekNavigation = typedArray.getBoolean(R.styleable.WeeklyDateSelector_restrictPastWeekNavigation, false)
             disablePastDates = typedArray.getBoolean(R.styleable.WeeklyDateSelector_disablePastDates, false)
             
             horizontalPadding = typedArray.getDimensionPixelSize(R.styleable.WeeklyDateSelector_horizontalPadding, 0)
@@ -75,8 +73,8 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 customWeekdayNames = resources.getStringArray(customWeekdayNamesResId)
             }
             
-            maxPreviousWeeks = typedArray.getInt(R.styleable.WeeklyDateSelector_maxPreviousWeeks, -1)
-            maxNextWeeks = typedArray.getInt(R.styleable.WeeklyDateSelector_maxNextWeeks, -1)
+            previousWeeksCount = typedArray.getInt(R.styleable.WeeklyDateSelector_previousWeeksCount, -1)
+            nextWeeksCount = typedArray.getInt(R.styleable.WeeklyDateSelector_nextWeeksCount, -1)
         } finally {
             typedArray.recycle()
         }
@@ -103,31 +101,71 @@ class WeeklyDateSelector @JvmOverloads constructor(
 
     private fun setupPager() {
         viewPager.adapter = weekAdapter
-        viewPager.setCurrentItem(5000, false) // 设置到中间位置
+        
+        // 根据数据集控制属性设置初始位置
+        val initialPosition = when {
+            previousWeeksCount >= 0 && nextWeeksCount >= 0 -> {
+                // 两个属性都有限制：当前周位置为 previousWeeksCount
+                previousWeeksCount
+            }
+            previousWeeksCount >= 0 -> {
+                // 只限制前面周数：当前周位置为 previousWeeksCount
+                previousWeeksCount
+            }
+            nextWeeksCount >= 0 -> {
+                // 只限制后面周数：当前周位置为 1000
+                1000
+            }
+            else -> {
+                // 无限制：使用原来的逻辑
+                5000
+            }
+        }
+        
+        viewPager.setCurrentItem(initialPosition, false)
         
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 
-                val weekOffset = position - 5000
+                // 根据数据集控制属性计算周偏移量
+                val weekOffset = when {
+                    previousWeeksCount >= 0 && nextWeeksCount >= 0 -> {
+                        position - previousWeeksCount
+                    }
+                    previousWeeksCount >= 0 -> {
+                        position - previousWeeksCount
+                    }
+                    nextWeeksCount >= 0 -> {
+                        position - 1000
+                    }
+                    else -> {
+                        position - 5000
+                    }
+                }
+                
                 val baseWeekStart = getWeekStart(today)
                 
-                // 简单的导航限制检查
-                if (restrictPastWeekNavigation && weekOffset < 0) {
-                    // 不允许进入过去的周
-                    viewPager.setCurrentItem(5000, false)
+                // 根据数据集大小控制属性进行导航限制检查
+                if (previousWeeksCount >= 0 && weekOffset < -previousWeeksCount) {
+                    // 超出向前周数限制
+                    val limitPosition = when {
+                        previousWeeksCount >= 0 && nextWeeksCount >= 0 -> 0
+                        previousWeeksCount >= 0 -> 0
+                        else -> 5000 - previousWeeksCount
+                    }
+                    viewPager.setCurrentItem(limitPosition, false)
                     return
                 }
                 
-                if (maxPreviousWeeks > 0 && weekOffset < -maxPreviousWeeks) {
-                    // 超出最大过去周数限制
-                    viewPager.setCurrentItem(5000 - maxPreviousWeeks, false)
-                    return
-                }
-                
-                if (maxNextWeeks > 0 && weekOffset > maxNextWeeks) {
-                    // 超出最大未来周数限制
-                    viewPager.setCurrentItem(5000 + maxNextWeeks, false)
+                if (nextWeeksCount >= 0 && weekOffset > nextWeeksCount) {
+                    // 超出向后周数限制
+                    val limitPosition = when {
+                        previousWeeksCount >= 0 && nextWeeksCount >= 0 -> previousWeeksCount + nextWeeksCount
+                        nextWeeksCount >= 0 -> 1000 + nextWeeksCount
+                        else -> 5000 + nextWeeksCount
+                    }
+                    viewPager.setCurrentItem(limitPosition, false)
                     return
                 }
                 
@@ -138,7 +176,27 @@ class WeeklyDateSelector @JvmOverloads constructor(
     }
 
     private inner class WeekAdapter : RecyclerView.Adapter<WeekViewHolder>() {
-        override fun getItemCount(): Int = 10000 // 足够大的数量
+        override fun getItemCount(): Int {
+            // 根据数据集大小控制属性计算总的周数
+            return when {
+                previousWeeksCount >= 0 && nextWeeksCount >= 0 -> {
+                    // 两个属性都有限制：前面周数 + 当前周 + 后面周数
+                    previousWeeksCount + 1 + nextWeeksCount
+                }
+                previousWeeksCount >= 0 -> {
+                    // 只限制前面周数：使用较大的数量但有限制
+                    previousWeeksCount + 1 + 1000
+                }
+                nextWeeksCount >= 0 -> {
+                    // 只限制后面周数：使用较大的数量但有限制
+                    1000 + 1 + nextWeeksCount
+                }
+                else -> {
+                    // 无限制：使用足够大的数量
+                    10000
+                }
+            }
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekViewHolder {
             val container = LinearLayout(context).apply {
@@ -155,7 +213,26 @@ class WeeklyDateSelector @JvmOverloads constructor(
         }
 
         override fun onBindViewHolder(holder: WeekViewHolder, position: Int) {
-            val weekOffset = position - 5000
+            // 根据数据集控制属性计算周偏移量
+            val weekOffset = when {
+                previousWeeksCount >= 0 && nextWeeksCount >= 0 -> {
+                    // 两个属性都有限制：position - previousWeeksCount 得到相对于当前周的偏移
+                    position - previousWeeksCount
+                }
+                previousWeeksCount >= 0 -> {
+                    // 只限制前面周数：position - previousWeeksCount 得到相对于当前周的偏移
+                    position - previousWeeksCount
+                }
+                nextWeeksCount >= 0 -> {
+                    // 只限制后面周数：position - 1000 得到相对于当前周的偏移
+                    position - 1000
+                }
+                else -> {
+                    // 无限制：使用原来的逻辑
+                    position - 5000
+                }
+            }
+            
             val baseWeekStart = getWeekStart(today)
             val weekStartDate = addDays(baseWeekStart, weekOffset * 7)
             holder.bind(weekStartDate)
@@ -317,16 +394,36 @@ class WeeklyDateSelector @JvmOverloads constructor(
     }
 
     fun nextWeek() {
-        val nextWeekOffset = 1
-        if (maxNextWeeks <= 0 || nextWeekOffset <= maxNextWeeks) {
+        // 根据新的数据集控制属性检查是否可以向前翻页
+        if (nextWeeksCount < 0) {
+            // 无限制，可以翻页
             viewPager.setCurrentItem(viewPager.currentItem + 1, true)
+        } else {
+            // 有限制，需要检查当前位置
+            val currentPosition = viewPager.currentItem
+            val maxPosition = when {
+                previousWeeksCount >= 0 && nextWeeksCount >= 0 -> previousWeeksCount + nextWeeksCount
+                nextWeeksCount >= 0 -> 1000 + nextWeeksCount
+                else -> currentPosition + 1 // 不应该到达这里
+            }
+            if (currentPosition < maxPosition) {
+                viewPager.setCurrentItem(currentPosition + 1, true)
+            }
         }
     }
 
     fun prevWeek() {
-        val prevWeekOffset = -1
-        if (!restrictPastWeekNavigation && (maxPreviousWeeks <= 0 || -prevWeekOffset <= maxPreviousWeeks)) {
+        // 根据新的数据集控制属性检查是否可以向后翻页
+        if (previousWeeksCount < 0) {
+            // 无限制，可以翻页
             viewPager.setCurrentItem(viewPager.currentItem - 1, true)
+        } else {
+            // 有限制，需要检查当前位置
+            val currentPosition = viewPager.currentItem
+            val minPosition = 0
+            if (currentPosition > minPosition) {
+                viewPager.setCurrentItem(currentPosition - 1, true)
+            }
         }
     }
 
@@ -334,15 +431,22 @@ class WeeklyDateSelector @JvmOverloads constructor(
         this.onDateChangeListener = listener
     }
 
-    fun setMaxPreviousWeeks(maxWeeks: Int) {
-        this.maxPreviousWeeks = maxWeeks
+    // 新的API方法，用于设置数据集大小控制属性
+    fun setPreviousWeeksCount(count: Int) {
+        this.previousWeeksCount = count
+        weekAdapter.notifyDataSetChanged()
+        // 重新设置当前位置以适应新的数据集大小
+        setupPager()
     }
 
-    fun setMaxNextWeeks(maxWeeks: Int) {
-        this.maxNextWeeks = maxWeeks
+    fun setNextWeeksCount(count: Int) {
+        this.nextWeeksCount = count
+        weekAdapter.notifyDataSetChanged()
+        // 重新设置当前位置以适应新的数据集大小
+        setupPager()
     }
 
-    fun setRestrictPastWeekNavigation(restrict: Boolean) {
-        this.restrictPastWeekNavigation = restrict
-    }
+    // 获取当前设置的数据集大小控制属性
+    fun getPreviousWeeksCount(): Int = previousWeeksCount
+    fun getNextWeeksCount(): Int = nextWeeksCount
 }

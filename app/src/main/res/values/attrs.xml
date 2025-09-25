@@ -94,16 +94,17 @@
         <attr name="weeklyItemSpacing" format="dimension" />          <!-- 每周内日期项之间的间距 -->
         <attr name="horizontalPadding" format="dimension" />          <!-- 每页的水平方向内边距值 -->
 
+        <!-- 数据集大小控制属性 -->
+        <attr name="previousWeeksCount" format="integer" />           <!-- 当前周之前添加的周数，0=仅当前周，-1=无限制 -->
+        <attr name="nextWeeksCount" format="integer" />               <!-- 当前周之后添加的周数，0=仅当前周，-1=无限制 -->
+        
         <!-- 翻页配置相关属性 -->
-        <attr name="maxPreviousWeeks" format="integer" />             <!-- 允许向前翻页的最大周数 -->
-        <attr name="maxNextWeeks" format="integer" />                 <!-- 允许向后翻页的最大周数 -->
         <attr name="enablePagination" format="boolean" />             <!-- 是否启用翻页功能 -->
         <attr name="enableSwipeGesture" format="boolean" />           <!-- 是否启用滑动手势翻页 -->
         <attr name="swipeThreshold" format="dimension" />             <!-- 触发滑动翻页的最小距离阈值 -->
 
         <!-- 禁用规则相关属性 -->
         <attr name="disablePastDates" format="boolean" />             <!-- 是否禁用过去的日期选择 -->
-        <attr name="restrictPastWeekNavigation" format="boolean" />   <!-- 是否限制向过去周数的导航 -->
 
         <!-- 周起始日配置属性 -->
         <attr name="weekStartOnMonday" format="boolean" />            <!-- 一周是否从周一开始：true=周一开始，false=周日开始 -->
