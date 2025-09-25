@@ -25,6 +25,10 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
         attachToParent: Boolean
     ) = FragmentMedsBinding.inflate(layoutInflater,parent,attachToParent)
 
+    companion object{
+        private const val TAG = "MedsFragment"
+    }
+
     override fun getVMModelClass() = MedsViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -45,49 +49,44 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
              weeklyDateSelector.setOnDateSelectedListener { selectedDate ->
                  "日期选择监听器触发: ${DateTimeUtils.formatDate(selectedDate)}".logd(TAG)
                  // 将选中的日期传递给ViewModel处理
-                 mViewModel?.onDateSelected(selectedDate)
+                 mViewModel.onDateSelected(selectedDate)
              }
              
              // 设置周切换监听器
              weeklyDateSelector.setOnWeekChangedListener { isCurrentWeek ->
                  "周切换监听器触发: 是否当前周=$isCurrentWeek".logd(TAG)
                  // 将周切换状态传递给ViewModel处理
-                 mViewModel?.onWeekChanged(isCurrentWeek)
+                 mViewModel.onWeekChanged(isCurrentWeek)
              }
         }
     }
 
     /**
-     * 观察ViewModel数据变化
+     * 观察ViewModel的数据变化
      */
     private fun observeViewModel() {
-        mViewModel?.let { viewModel ->
-            // 观察选中日期的变化
-             lifecycleScope.launch {
-                 viewModel.selectedDate.collect { selectedDate ->
-                     "ViewModel中选中日期更新: ${DateTimeUtils.formatDate(selectedDate)}".logd(TAG)
-                     // 这里可以根据选中日期更新UI或执行其他操作
-                     onDateChanged(selectedDate)
-                 }
-             }
-             
-             // 观察当前周状态的变化
-             lifecycleScope.launch {
-                 viewModel.isCurrentWeek.collect { isCurrentWeek ->
-                     "ViewModel中当前周状态更新: $isCurrentWeek".logd(TAG)
-                     // 这里可以根据周状态更新UI或执行其他操作
-                     onWeekStatusChanged(isCurrentWeek)
-                 }
-             }
-             
-             // 观察格式化月份的变化
-             lifecycleScope.launch {
-                 viewModel.formattedMonth.collect { formattedMonth ->
-                     "ViewModel中格式化月份更新: $formattedMonth".logd(TAG)
-                     // 这里可以将格式化月份显示在UI上
-                     onFormattedMonthChanged(formattedMonth)
-                 }
-             }
+        // 观察选中日期的变化
+        lifecycleScope.launch {
+            mViewModel.selectedDate.collect { date ->
+                "选中日期变化: ${DateTimeUtils.formatDate(date)}".logd(TAG)
+                onDateChanged(date)
+            }
+        }
+        
+        // 观察周状态的变化
+        lifecycleScope.launch {
+            mViewModel.isCurrentWeek.collect { isCurrentWeek ->
+                "周状态变化: 是否当前周=$isCurrentWeek".logd(TAG)
+                onWeekStatusChanged(isCurrentWeek)
+            }
+        }
+        
+        // 观察格式化月份的变化
+        lifecycleScope.launch {
+            mViewModel.formattedMonth.collect { formattedMonth ->
+                "格式化月份变化: $formattedMonth".logd(TAG)
+                onFormattedMonthChanged(formattedMonth)
+            }
         }
     }
 
@@ -128,13 +127,9 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
      */
     /**
      * 获取格式化的月份Flow
-     * @return 格式化月份的StateFlow，如"Sep.2025"
+     * @return StateFlow<String> 格式化的月份字符串Flow
      */
     fun getFormattedMonthFlow(): StateFlow<String> {
-        return mViewModel?.formattedMonth ?: flowOf(DateTimeUtils.getCurrentMonthYear()).stateIn(
-            scope = lifecycleScope,
-            started = SharingStarted.Lazily,
-            initialValue = DateTimeUtils.getCurrentMonthYear()
-        )
+        return mViewModel.formattedMonth
     }
 }
