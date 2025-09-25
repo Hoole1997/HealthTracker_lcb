@@ -19,6 +19,57 @@ import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import java.util.*
 
 /**
+ * 周枚举类，用于管理周字符串数组的索引值和名称
+ */
+enum class WeekDay(
+    val calendarValue: Int,
+    val englishName: String,
+    val englishAbbr: String
+) {
+    SUNDAY(Calendar.SUNDAY, "Sunday", "Sun"),
+    MONDAY(Calendar.MONDAY, "Monday", "Mon"),
+    TUESDAY(Calendar.TUESDAY, "Tuesday", "Tue"),
+    WEDNESDAY(Calendar.WEDNESDAY, "Wednesday", "Wed"),
+    THURSDAY(Calendar.THURSDAY, "Thursday", "Thu"),
+    FRIDAY(Calendar.FRIDAY, "Friday", "Fri"),
+    SATURDAY(Calendar.SATURDAY, "Saturday", "Sat");
+
+    companion object {
+        /**
+         * 根据Calendar的DAY_OF_WEEK值获取对应的WeekDay枚举
+         */
+        fun fromCalendarValue(calendarValue: Int): WeekDay {
+            return values().find { it.calendarValue == calendarValue } ?: SUNDAY
+        }
+
+        /**
+         * 获取按照指定起始日排序的周枚举数组
+         * @param startOnMonday 是否从周一开始
+         * @return 排序后的周枚举数组
+         */
+        fun getOrderedWeekDays(startOnMonday: Boolean): Array<WeekDay> {
+            return if (startOnMonday) {
+                arrayOf(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY)
+            } else {
+                arrayOf(SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY)
+            }
+        }
+
+        /**
+         * 根据Calendar的DAY_OF_WEEK值和起始日设置获取在自定义数组中的索引
+         * @param calendarValue Calendar的DAY_OF_WEEK值
+         * @param startOnMonday 是否从周一开始
+         * @return 在自定义数组中的索引
+         */
+        fun getCustomArrayIndex(calendarValue: Int, startOnMonday: Boolean): Int {
+            val weekDay = fromCalendarValue(calendarValue)
+            val orderedWeekDays = getOrderedWeekDays(startOnMonday)
+            return orderedWeekDays.indexOf(weekDay).takeIf { it >= 0 } ?: 0
+        }
+    }
+}
+
+/**
  * WeeklyDateSelector - 简化版本
  * 基本的周日期选择器，支持左右翻页、选中日期、基本的滑动限制
  */
@@ -340,39 +391,32 @@ class WeeklyDateSelector @JvmOverloads constructor(
         return calendar.time
     }
 
+    /**
+     * 获取日期对应的周名称缩写
+     * 优先使用自定义周名称数组，否则返回英文缩写
+     * @param date 日期
+     * @return 周名称缩写
+     */
     private fun getWeekAbbr(date: Date): String {
         val calendar = Calendar.getInstance()
         calendar.time = date
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         
-        return if (customWeekdayNames != null && customWeekdayNames!!.size >= 7) {
-            val index = if (weekStartOnMonday) {
-                when (dayOfWeek) {
-                    Calendar.MONDAY -> 0
-                    Calendar.TUESDAY -> 1
-                    Calendar.WEDNESDAY -> 2
-                    Calendar.THURSDAY -> 3
-                    Calendar.FRIDAY -> 4
-                    Calendar.SATURDAY -> 5
-                    Calendar.SUNDAY -> 6
-                    else -> 0
-                }
+        // 使用安全的null检查和let操作符，避免非空断言
+        return customWeekdayNames?.let { weekNames ->
+            if (weekNames.size >= 7) {
+                // 使用自定义周名称数组
+                val index = WeekDay.getCustomArrayIndex(dayOfWeek, weekStartOnMonday)
+                weekNames[index]
             } else {
-                dayOfWeek - 1
+                // 自定义数组长度不足，回退到默认英文缩写
+                val weekDay = WeekDay.fromCalendarValue(dayOfWeek)
+                weekDay.englishAbbr
             }
-            customWeekdayNames!![index]
-        } else {
-            // 默认星期缩写
-            when (dayOfWeek) {
-                Calendar.SUNDAY -> "日"
-                Calendar.MONDAY -> "一"
-                Calendar.TUESDAY -> "二"
-                Calendar.WEDNESDAY -> "三"
-                Calendar.THURSDAY -> "四"
-                Calendar.FRIDAY -> "五"
-                Calendar.SATURDAY -> "六"
-                else -> ""
-            }
+        } ?: run {
+            // customWeekdayNames为null时，默认返回英文缩写
+            val weekDay = WeekDay.fromCalendarValue(dayOfWeek)
+            weekDay.englishAbbr
         }
     }
 
