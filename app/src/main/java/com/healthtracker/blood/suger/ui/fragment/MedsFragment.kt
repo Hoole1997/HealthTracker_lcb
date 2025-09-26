@@ -1,9 +1,11 @@
 package com.healthtracker.blood.suger.ui.fragment
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
@@ -12,6 +14,8 @@ import com.healthtracker.blood.suger.ui.act.AddReminderActivity
 import com.healthtracker.blood.suger.ui.adapter.MedsReminderAdapter
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.viewmodel.MedsViewModel
+import com.healthtracker.blood.suger.ui.widget.MedsRemindDropdownMenu
+import com.healthtracker.blood.suger.ui.widget.MenuAction
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.clickWithDuration
@@ -47,12 +51,9 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
 
     private fun setupRecyclerView() {
         reminderAdapter = MedsReminderAdapter(
-            onItemClick = { item ->
-                handleReminderItemClick(item)
+            onItemClick = { view,item ->
+                handleReminderItemClick(view,item)
             },
-            onMoreClick = { item ->
-                handleReminderMoreClick(item)
-            }
         )
 
         mViewBind?.rvRemind?.apply {
@@ -187,13 +188,36 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
       * 处理提醒项点击事件
       * @param item 被点击的提醒项
       */
-     private fun handleReminderItemClick(item: MedsReminderItem) {
-         "点击提醒项: ${item.medicineName} ${item.time}".logd(TAG)
+     private fun handleReminderItemClick(view:View,item: MedsReminderItem) {
+//         "点击提醒项: ${item.medicineName} ${item.time}".logd(TAG)
+//
+//         // 如果尚未服药，可以标记为已服药
+//         if (item.status == com.healthtracker.blood.suger.ui.model.ReminderStatus.PENDING) {
+//             mViewModel.markMedicationTaken(item.reminderId, item.reminderDateTime)
+//             "标记服药: ${item.medicineName} ${item.time}".logd(TAG)
+//         }
+         MedsRemindDropdownMenu(view.context){
+             when(it){
+                 MenuAction.TAKE_NOW -> {
+                     if(item.isTaken()){
+                         return@MedsRemindDropdownMenu
+                     }
+                     mViewModel.markMedicationTaken(item.reminderId,item.reminderDateTime)
+                 }
+                 MenuAction.EDIT -> {
+                     //跳转编辑
+                 }
+                 MenuAction.DELETE -> {
+                     //删除服药提醒，任意选都是删除当前整个服药提醒，而不是针对某次
+                 }
+             }
+         }.apply {
+             isFocusable = true
+             isOutsideTouchable = true
 
-         // 如果尚未服药，可以标记为已服药
-         if (item.status == com.healthtracker.blood.suger.ui.model.ReminderStatus.PENDING) {
-             mViewModel.markMedicationTaken(item.reminderId, item.reminderDateTime)
-             "标记服药: ${item.medicineName} ${item.time}".logd(TAG)
+             setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+//             showAsDropDown(view)
+             showAsDropDown(view,-180,0)
          }
      }
 

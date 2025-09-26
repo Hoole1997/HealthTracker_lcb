@@ -870,5 +870,7 @@
     <string name="notes">Notes</string>
     <string name="hint_meds_notes">Instructions: Aftef meals, 3x daily.</string>
     <string name="sync_with_calendar">Sync with Calendar</string>
+    <string name="take_now">Take now</string>
+    <string name="edit">Edit</string>
 
 </resources>

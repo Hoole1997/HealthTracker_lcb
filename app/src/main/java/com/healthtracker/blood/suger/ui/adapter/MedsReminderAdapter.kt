@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.databinding.ItemMedsRemindBinding
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.model.ReminderStatus
+import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
 
@@ -16,8 +19,7 @@ import com.healthtracker.framework.ext.visible
  * 药物提醒列表适配器
  */
 class MedsReminderAdapter(
-    private val onItemClick: (MedsReminderItem) -> Unit = {},
-    private val onMoreClick: (MedsReminderItem) -> Unit = {}
+    private val onItemClick: (View,MedsReminderItem) -> Unit,
 ) : ListAdapter<MedsReminderItem, MedsReminderAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,17 +39,10 @@ class MedsReminderAdapter(
 
         init {
             // 设置点击监听
-            binding.root.setOnClickListener {
+            binding.root.clickWithDuration {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    onItemClick(getItem(position))
-                }
-            }
-
-            binding.ivMore.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onMoreClick(getItem(position))
+                    onItemClick(binding.ivMore,getItem(position))
                 }
             }
         }
