@@ -863,5 +863,11 @@
     <string name="meds_remind_empty">No data yet. \nTap the button below to add some!</string>
     <string name="add">Add</string>
     <string name="add_reminder">Add Reminder</string>
+    <string name="medication_name">Medication Name</string>
+    <string name="enter_medication_name">Enter Medication Name</string>
+    <string name="number_of_daily_doses">Number of Daily Doses:</string>
+    <string name="notes">Notes</string>
+    <string name="hint_meds_notes">Instructions: Aftef meals, 3x daily.</string>
+    <string name="sync_with_calendar">Sync with Calendar</string>
 
 </resources>

@@ -54,7 +54,7 @@
         android:layout_height="@dimen/dp_0"
         android:clipToPadding="false"
         android:paddingTop="@dimen/sp_16"
-        android:paddingBottom="@dimen/dp_78"
+        android:paddingBottom="@dimen/dp_80"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/action_bar">
 
@@ -126,8 +126,8 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/selector_unit_tab"
                         android:button="@null"
-                        android:paddingHorizontal="@dimen/dp_12"
                         android:checked="true"
+                        android:paddingHorizontal="@dimen/dp_12"
                         android:text="@string/mg_dl"
                         android:textColor="@color/selector_unit_text_color"
                         android:textSize="@dimen/sp_12" />
@@ -164,8 +164,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_12"
-                    tools:decimalPlaces="1"
-                    tools:firstScale="4.2"
                     app:indicatorHeight="@dimen/dp_30"
                     app:indicatorStroke="@dimen/dp_3"
                     app:isBgRoundRect="true"
@@ -173,22 +171,24 @@
                     app:largeScaleHeight="@dimen/dp_30"
                     app:largeScaleStroke="@dimen/dp_2"
                     app:layout_constraintTop_toBottomOf="@id/tv_select_value"
-                    tools:maxScale="37"
                     app:midScaleColor="#D9D9D9"
                     app:midScaleHeight="@dimen/dp_22"
                     app:midScaleStroke="@dimen/dp_2"
-                    tools:minScale="0"
                     app:rulerHeight="@dimen/dp_52"
-                    tools:scaleCount="5"
                     app:scaleNumColor="@color/color_999"
                     app:scaleNumTextSize="@dimen/sp_14"
-                    tools:scaleStep="0.1"
                     app:scaleTextMargin="@dimen/dp_6"
-                    tools:scrollableMaxScale="35"
-                    tools:scrollableMinScale="1"
                     app:smallScaleColor="#D9D9D9"
                     app:smallScaleHeight="@dimen/dp_22"
-                    app:smallScaleStroke="@dimen/dp_2" />
+                    app:smallScaleStroke="@dimen/dp_2"
+                    tools:decimalPlaces="1"
+                    tools:firstScale="4.2"
+                    tools:maxScale="37"
+                    tools:minScale="0"
+                    tools:scaleCount="5"
+                    tools:scaleStep="0.1"
+                    tools:scrollableMaxScale="35"
+                    tools:scrollableMinScale="1" />
 
                 <com.healthtracker.blood.suger.ui.weight.BloodSugarRangeView
                     android:id="@+id/rangeView"
@@ -203,7 +203,6 @@
                     app:rangeTextSize="@dimen/sp_16" />
 
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
@@ -211,13 +210,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
-                app:layout_constraintTop_toBottomOf="@id/cl_value_select"
-                app:titleText="@string/date_time"
                 app:labelText="@string/label"
-                app:showLabel="true" />
+                app:layout_constraintTop_toBottomOf="@id/cl_value_select"
+                app:showLabel="true"
+                app:titleText="@string/date_time" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_80"
+        android:background="@drawable/bg_mask_bottom_btn"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_save"
