@@ -5,6 +5,7 @@ import com.healthtracker.blood.suger.data.dao.AlarmDao
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
+import com.healthtracker.blood.suger.data.dao.MedicineReminderDao
 import com.healthtracker.blood.suger.data.database.HealthDatabase
 import dagger.Module
 import dagger.Provides
@@ -70,5 +71,15 @@ object DatabaseModule {
     @Provides
     fun provideHealthTagDao(database: HealthDatabase): HealthTagDao {
         return database.healthTagDao()
+    }
+
+    /**
+     * 提供药物提醒DAO
+     * @param database HealthDatabase实例
+     * @return MedicineReminderDao实例
+     */
+    @Provides
+    fun provideMedicineReminderDao(database: HealthDatabase): MedicineReminderDao {
+        return database.medicineReminderDao()
     }
 }

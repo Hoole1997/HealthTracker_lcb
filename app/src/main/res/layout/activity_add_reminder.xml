@@ -164,12 +164,12 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_daily_remind"
-                    android:layout_width="@dimen/dp_0"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_6"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintEnd_toStartOf="@id/tv_dose_count"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_daily_doses"
                     app:spanCount="3"
@@ -243,6 +243,6 @@
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

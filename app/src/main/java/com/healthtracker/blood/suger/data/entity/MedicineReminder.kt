@@ -251,6 +251,6 @@ object PresetTimes {
     val TWICE_DAILY = listOf("08:00", "20:00")
     val THREE_TIMES_DAILY = listOf("08:00", "12:00", "18:00")
     val FOUR_TIMES_DAILY = listOf("08:00", "12:00", "18:00", "22:00")
-    val FIVE_TIMES_DAILY = listOf("08:00", "12:00", "15:00","18:00", "22:00","23:00")
-    val SIX_TIMES_DAILY = listOf("08:00", "12:00", "15:00","18:00", "22:00","23:00","23:30")
+    val FIVE_TIMES_DAILY = listOf("08:00", "12:00", "15:00","18:00", "23:00")
+    val SIX_TIMES_DAILY = listOf("07:30", "10:00", "13:30","17:00", "20:30","23:30")
 }

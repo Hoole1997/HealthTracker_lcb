@@ -2,9 +2,11 @@ package com.healthtracker.framework.base.fragment
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
@@ -66,6 +68,16 @@ abstract class BaseVbDialogFragment<VB : ViewBinding> : DialogFragment() {
     ): VB
 
     abstract fun initView(view: View, savedInstanceState: Bundle?)
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.run {
+            val width = (resources.displayMetrics.widthPixels * 0.85).toInt() // 设置宽度为屏幕的 85%
+            val height = WindowManager.LayoutParams.WRAP_CONTENT
+            setLayout(width, height)
+            setGravity(Gravity.CENTER)
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

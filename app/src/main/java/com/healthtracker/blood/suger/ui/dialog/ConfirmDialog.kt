@@ -71,13 +71,5 @@ class ConfirmDialog(
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        dialog?.window?.run {
-            val width = (resources.displayMetrics.widthPixels * 0.85).toInt() // 设置宽度为屏幕的 85%
-            val height = WindowManager.LayoutParams.WRAP_CONTENT
-            setLayout(width, height)
-            setGravity(Gravity.CENTER)
-        }
-    }
+
 }
