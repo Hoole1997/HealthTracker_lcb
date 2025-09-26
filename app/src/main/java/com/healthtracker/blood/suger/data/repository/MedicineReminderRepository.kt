@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.data.repository
 
 import com.healthtracker.blood.suger.data.dao.MedicineReminderDao
 import com.healthtracker.blood.suger.data.entity.MedicineReminder
+import com.healthtracker.blood.suger.data.entity.PresetTimes
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
@@ -89,8 +90,10 @@ class MedicineReminderRepository @Inject constructor(
                     val time = timeFormat.parse(timeStr)
                     val calendar = java.util.Calendar.getInstance()
                     calendar.time = today.time
-                    calendar.set(java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.getInstance().apply { time = time }.get(java.util.Calendar.HOUR_OF_DAY))
-                    calendar.set(java.util.Calendar.MINUTE, java.util.Calendar.getInstance().apply { time = time }.get(java.util.Calendar.MINUTE))
+                    val timeCalendar = java.util.Calendar.getInstance()
+                    timeCalendar.time = time
+                    calendar.set(java.util.Calendar.HOUR_OF_DAY, timeCalendar.get(java.util.Calendar.HOUR_OF_DAY))
+                    calendar.set(java.util.Calendar.MINUTE, timeCalendar.get(java.util.Calendar.MINUTE))
                     calendar.set(java.util.Calendar.SECOND, 0)
                     calendar.set(java.util.Calendar.MILLISECOND, 0)
                     calendar.time.time.toString()
@@ -187,20 +190,20 @@ class MedicineReminderRepository @Inject constructor(
             cover: String = "",
             note: String = "",
             sync: Boolean = false
-        ) = addMedicineWithPreset(name, MedicineReminder.PresetTimes.ONCE_DAILY, cover, note, sync)
+        ) = addMedicineWithPreset(name, PresetTimes.ONCE_DAILY, cover, note, sync)
 
         suspend fun MedicineReminderRepository.addTwiceDailyMedicine(
             name: String,
             cover: String = "",
             note: String = "",
             sync: Boolean = false
-        ) = addMedicineWithPreset(name, MedicineReminder.PresetTimes.TWICE_DAILY, cover, note, sync)
+        ) = addMedicineWithPreset(name, PresetTimes.TWICE_DAILY, cover, note, sync)
 
         suspend fun MedicineReminderRepository.addThreeTimesDailyMedicine(
             name: String,
             cover: String = "",
             note: String = "",
             sync: Boolean = false
-        ) = addMedicineWithPreset(name, MedicineReminder.PresetTimes.THREE_TIMES_DAILY, cover, note, sync)
+        ) = addMedicineWithPreset(name, PresetTimes.THREE_TIMES_DAILY, cover, note, sync)
     }
 }

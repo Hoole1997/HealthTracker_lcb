@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.data.examples
 
 import com.healthtracker.blood.suger.data.entity.MedicineReminder
+import com.healthtracker.blood.suger.data.entity.PresetTimes
 import com.healthtracker.blood.suger.data.repository.MedicineReminderRepository
 import kotlinx.coroutines.flow.first
 import java.util.*
@@ -22,7 +23,7 @@ class MedicineReminderExample(
         // 一日一次的维生素，带封面和备注
         repository.addMedicine(
             medicineName = "维生素C",
-            reminderTimes = MedicineReminder.PresetTimes.ONCE_DAILY,
+            reminderTimes = PresetTimes.ONCE_DAILY,
             medicineCover = "/storage/medicine_covers/vitamin_c.jpg",
             note = "增强免疫力，饭后服用",
             syncCalendar = true
@@ -31,14 +32,14 @@ class MedicineReminderExample(
         // 一日两次的降压药
         repository.addMedicine(
             medicineName = "降压药",
-            reminderTimes = MedicineReminder.PresetTimes.TWICE_DAILY,
+            reminderTimes = PresetTimes.TWICE_DAILY,
             note = "按时服用，注意血压变化"
         )
 
         // 一日三次的抗生素
         repository.addMedicine(
             medicineName = "阿莫西林",
-            reminderTimes = MedicineReminder.PresetTimes.THREE_TIMES_DAILY,
+            reminderTimes = PresetTimes.THREE_TIMES_DAILY,
             note = "疗程7天，饭后30分钟服用",
             syncCalendar = false
         )

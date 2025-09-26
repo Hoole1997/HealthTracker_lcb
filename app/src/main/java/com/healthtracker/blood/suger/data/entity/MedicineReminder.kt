@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -77,13 +78,10 @@ data class MedicineReminder(
      * 创建时间
      */
     @ColumnInfo(name = "created_at")
-    val createdAt: Date = Date()
+    val createdAt: Date = DateTimeUtils.now()
 ) {
 
-    companion object {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-        private const val TIME_SEPARATOR = ","
-    }
+
 
     /**
      * 获取开始提醒时间列表（时间戳转Date）
@@ -102,9 +100,7 @@ data class MedicineReminder(
      * 获取开始提醒时间字符串列表（HH:mm格式）
      */
     fun getStartRemindTimeStrings(): List<String> {
-        return getStartRemindTimeList().map {
-            SimpleDateFormat("HH:mm", Locale.getDefault()).format(it)
-        }
+        return getStartRemindTimeList().map { DateTimeUtils.formatTime(it) }
     }
 
     /**
@@ -137,7 +133,7 @@ data class MedicineReminder(
     /**
      * 添加服药记录
      */
-    fun addTakedRecord(takenTime: Date = Date()): MedicineReminder {
+    fun addTakedRecord(takenTime: Date = DateTimeUtils.now()): MedicineReminder {
         val newTimestamp = takenTime.time.toString()
         val updatedTimes = if (takedTimes.isBlank()) {
             newTimestamp
@@ -151,7 +147,7 @@ data class MedicineReminder(
     /**
      * 添加真实提醒时间记录
      */
-    fun addRealRemindTime(remindTime: Date = Date()): MedicineReminder {
+    fun addRealRemindTime(remindTime: Date = DateTimeUtils.now()): MedicineReminder {
         val newTimestamp = remindTime.time.toString()
         val updatedTimes = if (realRemindTimes.isBlank()) {
             newTimestamp
@@ -171,6 +167,11 @@ data class MedicineReminder(
      * 创建药物提醒的工厂方法
      */
     companion object {
+
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        private const val TIME_SEPARATOR = ","
+
         /**
          * 创建药物提醒
          * @param medicineName 药物名称
@@ -207,33 +208,49 @@ data class MedicineReminder(
             note: String = "",
             syncCalendar: Boolean = false
         ): MedicineReminder {
-            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-            val today = Calendar.getInstance()
+            val today = DateTimeUtils.now()
+            val todayComponents = DateTimeUtils.extractDateComponents(today)
 
             val dates = timeStrings.mapNotNull { timeStr ->
                 try {
-                    val time = timeFormat.parse(timeStr)
-                    val calendar = Calendar.getInstance()
-                    calendar.time = today.time
-                    calendar.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().apply { time = time }.get(Calendar.HOUR_OF_DAY))
-                    calendar.set(Calendar.MINUTE, Calendar.getInstance().apply { time = time }.get(Calendar.MINUTE))
-                    calendar.set(Calendar.SECOND, 0)
-                    calendar.set(Calendar.MILLISECOND, 0)
-                    calendar.time
-                } catch (e: Exception) { null }
+                    // 解析时间字符串 "HH:mm"
+                    val timeParts = timeStr.split(":")
+                    if (timeParts.size != 2) return@mapNotNull null
+                    
+                    val hour = timeParts[0].toIntOrNull() ?: return@mapNotNull null
+                    val minute = timeParts[1].toIntOrNull() ?: return@mapNotNull null
+                    
+                    // 验证时间范围
+                    if (hour !in 0..23 || minute !in 0..59) return@mapNotNull null
+                    
+                    // 使用DateTimeUtils创建今天的指定时间
+                    DateTimeUtils.createDate(
+                        year = todayComponents.year,
+                        month = todayComponents.month,
+                        day = todayComponents.day,
+                        hour = hour,
+                        minute = minute
+                    )
+                } catch (e: Exception) { 
+                    null 
+                }
             }
 
             return create(medicineName, dates, medicineCover, note, syncCalendar)
         }
 
-        /**
-         * 常用提醒时间组合
-         */
-        object PresetTimes {
-            val ONCE_DAILY = listOf("08:00")
-            val TWICE_DAILY = listOf("08:00", "20:00")
-            val THREE_TIMES_DAILY = listOf("08:00", "12:00", "18:00")
-            val FOUR_TIMES_DAILY = listOf("08:00", "12:00", "18:00", "22:00")
-        }
+       
     }
+}
+
+/**
+ * 常用提醒时间组合
+ */
+object PresetTimes {
+    val ONCE_DAILY = listOf("08:00")
+    val TWICE_DAILY = listOf("08:00", "20:00")
+    val THREE_TIMES_DAILY = listOf("08:00", "12:00", "18:00")
+    val FOUR_TIMES_DAILY = listOf("08:00", "12:00", "18:00", "22:00")
+    val FIVE_TIMES_DAILY = listOf("08:00", "12:00", "15:00","18:00", "22:00","23:00")
+    val SIX_TIMES_DAILY = listOf("08:00", "12:00", "15:00","18:00", "22:00","23:00","23:30")
 }
