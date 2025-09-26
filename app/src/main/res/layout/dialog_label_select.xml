@@ -8,6 +8,17 @@
     android:paddingHorizontal="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
 
+
+    <View
+        android:id="@+id/v_bar"
+        android:layout_width="@dimen/dp_66"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/bg_dialog_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_title"
         style="@style/TextViewFont_RobotoBold"
@@ -19,7 +30,7 @@
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/v_bar" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_add"

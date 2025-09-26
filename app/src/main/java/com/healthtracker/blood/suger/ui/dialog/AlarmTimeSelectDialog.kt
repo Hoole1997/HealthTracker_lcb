@@ -41,10 +41,6 @@ class AlarmTimeSelectDialog(private val callBack:((Pair<Int, Int>)-> Unit)? = nu
             setupHourPicker(current.first)
             setupMinutePicker(current.second)
 
-            ivClose.click {
-                dismissAllowingStateLoss()
-            }
-
             btnSave.click {
                 val hour = hourPicker.contentByCurrValue.toInt()
                 val minute = minutePicker.contentByCurrValue.toInt()
