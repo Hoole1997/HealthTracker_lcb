@@ -6,17 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.graphics.Color
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.FragmentMedsBinding
 import com.healthtracker.blood.suger.ui.act.AddReminderActivity
 import com.healthtracker.blood.suger.ui.adapter.MedsReminderAdapter
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.viewmodel.MedsViewModel
 import com.healthtracker.blood.suger.ui.widget.MedsRemindDropdownMenu
 import com.healthtracker.blood.suger.ui.widget.MenuAction
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
+import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
@@ -205,10 +209,14 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
                      mViewModel.markMedicationTaken(item.reminderId,item.reminderDateTime)
                  }
                  MenuAction.EDIT -> {
-                     //跳转编辑
+                     // 跳转到编辑页面，传递提醒ID
+                     "跳转编辑药物提醒: ID=${item.reminderId}".logd(TAG)
+                     AddReminderActivity.start(requireContext(), item.reminderId)
                  }
                  MenuAction.DELETE -> {
-                     //删除服药提醒，任意选都是删除当前整个服药提醒，而不是针对某次
+                     // 删除服药提醒，任意选都是删除当前整个服药提醒，而不是针对某次
+                     "准备删除药物提醒: ID=${item.reminderId}, 药物=${item.medicineName}".logd(TAG)
+                     showDeleteConfirmDialog(item)
                  }
              }
          }.apply {
@@ -250,6 +258,27 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
              
              "更新添加按钮状态: enabled=$canAdd, alpha=${if (canAdd) 1.0f else 0.3f}".logd(TAG)
          }
+     }
+
+     /**
+      * 显示删除确认对话框
+      * @param item 要删除的提醒项
+      */
+     private fun showDeleteConfirmDialog(item: MedsReminderItem) {
+         ConfirmDialog(
+             title = getString(R.string.tips),
+             message = getString(R.string.delete_tips_content),
+             leftText = getString(R.string.cancel),
+             rightText = getString(R.string.confirm),
+             onDialogListener = object : DialogListener {
+                 override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
+                     super.onItemClick(dialogFragment, which)
+                     if (which == R.id.btn_ok) {
+                        mViewModel.deleteMedicineReminder(item.reminderId)
+                     }
+                 }
+             }
+         ).show(childFragmentManager)
      }
 
     

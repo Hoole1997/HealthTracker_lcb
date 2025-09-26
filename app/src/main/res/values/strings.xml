@@ -100,6 +100,8 @@
     <string name="load_fail_please_try_again">Load fail,please try again</string>
     <string name="try_again">Try again</string>
     <string name="delete_record_remind_title">Delete this record?</string>
+    <string name="tips">Tips</string>
+    <string name="delete_tips_content">Are you sure delete the item?</string>
     <string name="confirm">Confirm</string>
     <string name="delete_record_remind">Cannot be recovered after deletion</string>
     <string name="add_record">Add Record</string>
@@ -872,5 +874,6 @@
     <string name="sync_with_calendar">Sync with Calendar</string>
     <string name="take_now">Take now</string>
     <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 
 </resources>

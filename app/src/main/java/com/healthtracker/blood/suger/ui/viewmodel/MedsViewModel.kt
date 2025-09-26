@@ -274,6 +274,22 @@ class MedsViewModel @Inject constructor(
     }
 
     /**
+     * 删除药物提醒
+     * @param reminderId 提醒ID
+     */
+    fun deleteMedicineReminder(reminderId: Long) {
+        viewModelScope.launch {
+            try {
+                "删除药物提醒: ID=$reminderId".logd(TAG)
+                medsRepository.deleteMedicine(reminderId)
+                "药物提醒删除成功".logd(TAG)
+            } catch (e: Exception) {
+                "删除药物提醒失败: ${e.message}".logd(TAG)
+            }
+        }
+    }
+
+    /**
      * 获取格式化的月份字符串
      * @return 格式化的月份字符串，如"Sep.2025"
      */
