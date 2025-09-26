@@ -1,10 +1,7 @@
 package com.healthtracker.blood.suger.ui.act
 
-import android.app.TimePickerDialog
 import android.os.Bundle
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.blankj.utilcode.util.ToastUtils
 import com.healthtracker.blood.suger.R
@@ -18,7 +15,6 @@ import com.healthtracker.blood.suger.ui.viewmodel.SaveState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -31,9 +27,33 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
     override fun getVMModelClass() = AddReminderViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        // 获取传入的参数
+        val remindId = intent.getLongExtra("remindId", -1L).takeIf { it != -1L }
+        val startDate = intent.getStringExtra("startDate")
+
+        // 初始化ViewModel
+        mViewModel.initPage(remindId, startDate)
+
         setupViews()
         setupRecyclerView()
         observeViewModel()
+    }
+
+    companion object {
+        /**
+         * 启动Activity的便利方法
+         * @param context 上下文
+         * @param remindId 提醒ID，null表示新建模式
+         * @param startDate 新建模式的起始日期
+         */
+        @JvmStatic
+        fun start(context: android.content.Context, remindId: Long? = null, startDate: String? = null) {
+            val intent = android.content.Intent(context, AddReminderActivity::class.java).apply {
+                remindId?.let { putExtra("remindId", it) }
+                startDate?.let { putExtra("startDate", it) }
+            }
+            context.startActivity(intent)
+        }
     }
 
     private fun setupViews() {
@@ -93,14 +113,38 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
 
     private fun updateUI(state: AddReminderUiState) {
         with(mViewBind) {
+            // 根据模式更新标题
+            if (state.isEditMode) {
+                // 编辑模式：显示"编辑提醒"
+                // TODO: 如果布局中有标题TextView，在这里更新
+            } else {
+                // 新建模式：显示"新建提醒"和起始日期
+                if (state.startDate.isNotEmpty()) {
+                    // TODO: 如果需要显示起始日期，可以在这里添加
+                }
+            }
+
+            // 更新表单内容
+            if (etMedicationName.text.toString() != state.medicineName) {
+                etMedicationName.setText(state.medicineName)
+                etMedicationName.setSelection(state.medicineName.length)
+            }
+
+            if (etNotes.text.toString() != state.notes) {
+                etNotes.setText(state.notes)
+            }
+
+            cbSyncCalendar.isChecked = state.syncCalendar
+
             // 更新每日服药次数显示
             tvDoseCount.text = state.dailyDoses.toString()
 
             // 更新时间列表
             timeAdapter.updateTimes(state.reminderTimes)
 
-            // 更新保存按钮状态
+            // 更新保存按钮状态和文字
             btnSave.isEnabled = state.isFormValid
+            btnSave.text = if (state.isEditMode) getString(R.string.save_changes) else getString(R.string.save)
         }
     }
 

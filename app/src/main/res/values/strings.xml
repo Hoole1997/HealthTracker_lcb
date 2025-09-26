@@ -74,6 +74,7 @@
 
     <!-- 按钮和操作 -->
     <string name="save">Save</string>
+    <string name="save_changes">Save Changes</string>
     <string name="cancel">Cancel</string>
     <string name="saving">Saving...</string>
     <string name="save_failed">Save failed, please try again</string>

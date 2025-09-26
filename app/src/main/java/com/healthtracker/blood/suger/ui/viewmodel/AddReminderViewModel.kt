@@ -24,6 +24,9 @@ class AddReminderViewModel @Inject constructor(
     private val _saveState = MutableStateFlow<SaveState>(SaveState.Idle(false))
     val saveState: StateFlow<SaveState> = _saveState.asStateFlow()
 
+    // 当前编辑的提醒ID，null表示新建模式
+    private var currentReminderId: Long? = null
+
     /**
      * 设置药物名称
      */
@@ -82,31 +85,101 @@ class AddReminderViewModel @Inject constructor(
     }
 
     /**
+     * 初始化页面 - 支持编辑模式和新建模式
+     * @param remindId 提醒ID，null表示新建模式
+     * @param startDate 新建模式时的起始日期（可选）
+     */
+    fun initPage(remindId: Long? = null, startDate: String? = null) {
+        currentReminderId = remindId
+
+        if (remindId != null) {
+            // 编辑模式：加载现有提醒数据
+            loadExistingReminder(remindId)
+        } else {
+            // 新建模式：设置默认值，准备创建180天提醒
+            _uiState.value = _uiState.value.copy(
+                isEditMode = false,
+                startDate = startDate ?: getCurrentDateString()
+            )
+        }
+    }
+
+    /**
+     * 加载现有的提醒数据
+     */
+    private fun loadExistingReminder(remindId: Long) {
+        viewModelScope.launch {
+            try {
+                val reminder = medicineReminderRepository.getMedicineById(remindId)
+                if (reminder != null) {
+                    _uiState.value = _uiState.value.copy(
+                        isEditMode = true,
+                        medicineName = reminder.medicineName,
+                        reminderTimes = reminder.getStartRemindTimeStrings().toMutableList(),
+                        dailyDoses = reminder.getStartRemindTimeStrings().size,
+                        notes = reminder.note,
+                        syncCalendar = reminder.isSyncToCalendar()
+                    )
+                    validateForm()
+                }
+            } catch (e: Exception) {
+                _saveState.value = SaveState.Error("Load failed：${e.message}")
+            }
+        }
+    }
+
+    /**
      * 保存药物提醒
      */
     fun saveReminder() {
         val currentState = _uiState.value
 
-        if (!currentState.isFormValid) {
-            _saveState.value = SaveState.Error("请填写完整信息")
-            return
-        }
-
         _saveState.value = SaveState.Loading
 
         viewModelScope.launch {
             try {
-                medicineReminderRepository.addMedicine(
-                    medicineName = currentState.medicineName.trim(),
-                    reminderTimes = currentState.reminderTimes,
-                    note = currentState.notes.trim(),
-                    syncCalendar = currentState.syncCalendar
-                )
+                if (currentState.isEditMode && currentReminderId != null) {
+                    // 更新现有提醒
+                    medicineReminderRepository.updateMedicine(
+                        id = currentReminderId!!,
+                        medicineName = currentState.medicineName.trim(),
+                        reminderTimes = currentState.reminderTimes,
+                        note = currentState.notes.trim(),
+                        syncCalendar = currentState.syncCalendar
+                    )
+                } else {
+                    // 创建新的180天提醒
+                    createMultiDayReminder(currentState)
+                }
                 _saveState.value = SaveState.Success
             } catch (e: Exception) {
-                _saveState.value = SaveState.Error("Save File：${e.message}")
+                _saveState.value = SaveState.Error("Save failed：${e.message}")
             }
         }
+    }
+
+    /**
+     * 创建180天的药物提醒
+     */
+    private suspend fun createMultiDayReminder(state: AddReminderUiState) {
+        // 这里可以根据需求创建多天的提醒
+        // 当前先创建一个基础提醒，后续可以扩展为多天逻辑
+        medicineReminderRepository.addMedicine(
+            medicineName = state.medicineName.trim(),
+            reminderTimes = state.reminderTimes,
+            note = state.notes.trim(),
+            syncCalendar = state.syncCalendar
+        )
+    }
+
+    /**
+     * 获取当前日期字符串
+     */
+    private fun getCurrentDateString(): String {
+        val calendar = java.util.Calendar.getInstance()
+        return "${calendar.get(java.util.Calendar.YEAR)}-" +
+               "${(calendar.get(java.util.Calendar.MONTH) + 1).toString().padStart(2, '0')}-" +
+               "${calendar.get(java.util.Calendar.DAY_OF_MONTH).toString().padStart(2, '0')}"
     }
 
 
@@ -135,6 +208,8 @@ class AddReminderViewModel @Inject constructor(
  * UI状态数据类
  */
 data class AddReminderUiState(
+    val isEditMode: Boolean = false, // 是否为编辑模式
+    val startDate: String = "", // 新建模式的起始日期
     val medicineName: String = "",
     val dailyDoses: Int = 3,
     val reminderTimes: List<String> = PresetTimes.THREE_TIMES_DAILY,

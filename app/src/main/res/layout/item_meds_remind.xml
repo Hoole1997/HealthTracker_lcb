@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     android:paddingHorizontal="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_20">
 
@@ -25,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         android:background="@drawable/bg_rect_white_12"
+        android:foreground="?android:attr/selectableItemBackground"
         android:padding="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@id/tv_time">
 
@@ -39,6 +41,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_meds" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_take"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:background="@drawable/bg_rect_white_12"
+            android:backgroundTint="@color/color_111111_40"
+            android:scaleType="center"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/iv_statu"
+            app:layout_constraintEnd_toEndOf="@id/iv_statu"
+            app:layout_constraintStart_toStartOf="@id/iv_statu"
+            app:layout_constraintTop_toTopOf="@id/iv_statu"
+            app:srcCompat="@drawable/ic_meds_take" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_name"

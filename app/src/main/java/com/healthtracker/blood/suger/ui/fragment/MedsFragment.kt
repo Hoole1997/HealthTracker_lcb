@@ -2,11 +2,15 @@ package com.healthtracker.blood.suger.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.FragmentMedsBinding
 import com.healthtracker.blood.suger.ui.act.AddReminderActivity
+import com.healthtracker.blood.suger.ui.adapter.MedsReminderAdapter
+import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.viewmodel.MedsViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.TAG
@@ -15,13 +19,13 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
+
+    private lateinit var reminderAdapter: MedsReminderAdapter
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -35,14 +39,32 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
     override fun getVMModelClass() = MedsViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewBind?.run {
-            btnAdd.clickWithDuration {
-                requireActivity().startActivity<AddReminderActivity>()
-            }
-
-        }
+        setupRecyclerView()
+        setupClickListeners()
         setupWeeklyDateSelector()
         observeViewModel()
+    }
+
+    private fun setupRecyclerView() {
+        reminderAdapter = MedsReminderAdapter(
+            onItemClick = { item ->
+                handleReminderItemClick(item)
+            },
+            onMoreClick = { item ->
+                handleReminderMoreClick(item)
+            }
+        )
+
+        mViewBind?.rvRemind?.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = reminderAdapter
+        }
+    }
+
+    private fun setupClickListeners() {
+        mViewBind?.btnAdd?.clickWithDuration {
+            requireActivity().startActivity<AddReminderActivity>()
+        }
     }
 
     /**
@@ -80,7 +102,7 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
                 onDateChanged(date)
             }
         }
-        
+
         // 观察周状态的变化
         lifecycleScope.launch {
             mViewModel.isCurrentWeek.collect { isCurrentWeek ->
@@ -88,12 +110,28 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
                 onWeekStatusChanged(isCurrentWeek)
             }
         }
-        
+
         // 观察格式化月份的变化
         lifecycleScope.launch {
             mViewModel.formattedMonth.collect { formattedMonth ->
                 "格式化月份变化: $formattedMonth".logd(TAG)
                 onFormattedMonthChanged(formattedMonth)
+            }
+        }
+
+        // 观察药物提醒列表数据变化
+        lifecycleScope.launch {
+            mViewModel.reminderItems.collect { reminderItems ->
+                "提醒列表数据变化: 共${reminderItems.size}项".logd(TAG)
+                updateReminderList(reminderItems)
+            }
+        }
+
+        // 观察是否可以添加提醒的状态变化
+        lifecycleScope.launch {
+            mViewModel.canAddReminder.collect { canAdd ->
+                "添加按钮状态变化: 可添加=$canAdd".logd(TAG)
+                updateAddButtonState(canAdd)
             }
         }
     }
@@ -124,6 +162,70 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
          // 处理格式化月份变化的逻辑
          "格式化月份已更新: $formattedMonth".logd(TAG)
          // 可以在这里更新UI显示月份信息
+     }
+
+     /**
+      * 更新提醒列表显示
+      * @param reminderItems 提醒项列表
+      */
+     private fun updateReminderList(reminderItems: List<MedsReminderItem>) {
+         reminderAdapter.submitList(reminderItems)
+
+         // 根据数据是否为空显示/隐藏空状态视图
+         mViewBind?.run {
+             if (reminderItems.isEmpty()) {
+                 tvEmpty.visibility = View.VISIBLE
+                 rvRemind.visibility = View.GONE
+             } else {
+                 tvEmpty.visibility = View.GONE
+                 rvRemind.visibility = View.VISIBLE
+             }
+         }
+     }
+
+     /**
+      * 处理提醒项点击事件
+      * @param item 被点击的提醒项
+      */
+     private fun handleReminderItemClick(item: MedsReminderItem) {
+         "点击提醒项: ${item.medicineName} ${item.time}".logd(TAG)
+
+         // 如果尚未服药，可以标记为已服药
+         if (item.status == com.healthtracker.blood.suger.ui.model.ReminderStatus.PENDING) {
+             mViewModel.markMedicationTaken(item.reminderId, item.reminderDateTime)
+             "标记服药: ${item.medicineName} ${item.time}".logd(TAG)
+         }
+     }
+
+     /**
+      * 处理提醒项更多操作点击事件
+      * @param item 被点击的提醒项
+      */
+     private fun handleReminderMoreClick(item: MedsReminderItem) {
+         "点击更多操作: ${item.medicineName} ${item.time}".logd(TAG)
+
+         // 可以显示菜单：编辑提醒、删除提醒、查看历史等
+         // TODO: 实现更多操作菜单
+     }
+
+     /**
+      * 更新添加按钮的状态
+      * @param canAdd 是否可以添加提醒
+      */
+     private fun updateAddButtonState(canAdd: Boolean) {
+         mViewBind?.btnAdd?.apply {
+             // 使用动画平滑过渡按钮状态
+             animate()
+                 .alpha(if (canAdd) 1.0f else 0.3f)
+                 .setDuration(200)
+                 .withStartAction {
+                     // 动画开始时设置按钮状态
+                     isEnabled = canAdd
+                 }
+                 .start()
+             
+             "更新添加按钮状态: enabled=$canAdd, alpha=${if (canAdd) 1.0f else 0.3f}".logd(TAG)
+         }
      }
 
     
