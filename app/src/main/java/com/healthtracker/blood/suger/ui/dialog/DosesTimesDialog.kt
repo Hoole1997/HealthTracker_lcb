@@ -9,10 +9,10 @@ import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.FontUtils
 
-class DosesTimesDialog(private val callBack: ((Int) -> Unit)? = null) :
+class DosesTimesDialog(private val def: Int = 3,private val callBack: ((Int) -> Unit)? = null) :
     BaseVbDialogFragment<DialogDosesTimesBinding>() {
 
-    constructor() : this(null)
+    constructor() : this(3,null)
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -35,6 +35,7 @@ class DosesTimesDialog(private val callBack: ((Int) -> Unit)? = null) :
             numberPicker.displayedValues = Array(6) { i -> (i + 1).toString() }
             numberPicker.minValue = 0
             numberPicker.maxValue = 5
+            numberPicker.value = numberPicker.displayedValues.indexOf(def.toString())
 
         }
     }

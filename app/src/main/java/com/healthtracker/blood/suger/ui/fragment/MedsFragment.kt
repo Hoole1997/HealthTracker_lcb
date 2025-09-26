@@ -23,8 +23,10 @@ import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -229,16 +231,6 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
          }
      }
 
-     /**
-      * 处理提醒项更多操作点击事件
-      * @param item 被点击的提醒项
-      */
-     private fun handleReminderMoreClick(item: MedsReminderItem) {
-         "点击更多操作: ${item.medicineName} ${item.time}".logd(TAG)
-
-         // 可以显示菜单：编辑提醒、删除提醒、查看历史等
-         // TODO: 实现更多操作菜单
-     }
 
      /**
       * 更新添加按钮的状态
@@ -247,16 +239,8 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
      private fun updateAddButtonState(canAdd: Boolean) {
          mViewBind?.btnAdd?.apply {
              // 使用动画平滑过渡按钮状态
-             animate()
-                 .alpha(if (canAdd) 1.0f else 0.3f)
-                 .setDuration(200)
-                 .withStartAction {
-                     // 动画开始时设置按钮状态
-                     isEnabled = canAdd
-                 }
-                 .start()
-             
-             "更新添加按钮状态: enabled=$canAdd, alpha=${if (canAdd) 1.0f else 0.3f}".logd(TAG)
+             if(canAdd) visible() else gone()
+
          }
      }
 

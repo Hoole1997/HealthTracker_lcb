@@ -113,17 +113,6 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
 
     private fun updateUI(state: AddReminderUiState) {
         with(mViewBind) {
-            // 根据模式更新标题
-            if (state.isEditMode) {
-                // 编辑模式：显示"编辑提醒"
-                // TODO: 如果布局中有标题TextView，在这里更新
-            } else {
-                // 新建模式：显示"新建提醒"和起始日期
-                if (state.startDate.isNotEmpty()) {
-                    // TODO: 如果需要显示起始日期，可以在这里添加
-                }
-            }
-
             // 更新表单内容
             if (etMedicationName.text.toString() != state.medicineName) {
                 etMedicationName.setText(state.medicineName)
@@ -168,7 +157,7 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
     }
 
     private fun showDoseCountDialog() {
-        DosesTimesDialog{
+        DosesTimesDialog(mViewModel.uiState.value.dailyDoses){
             mViewModel.setDailyDoses(it)
         }.show(supportFragmentManager)
     }
