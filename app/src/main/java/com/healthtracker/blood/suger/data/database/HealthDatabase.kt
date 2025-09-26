@@ -12,29 +12,33 @@ import com.healthtracker.blood.suger.data.dao.AlarmDao
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
+import com.healthtracker.blood.suger.data.dao.MedicineReminderDao
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.entity.MedicineReminder
 
 /**
- * 健康数据Room数据库
+ * 健康数据Room数据库 - 极简设计
  *
- * 数据库版本: 1
+ * 数据库版本: 3
  * 包含的表:
  * - blood_sugar_records: 血糖记录表
  * - blood_pressure_records: 血压记录表
  * - health_tags: 统一健康标签表
  * - alarm_records: 闹钟记录表
+ * - medicine_reminders: 药物提醒表（一表解决所有需求）
  */
 @Database(
     entities = [
         BloodSugarRecord::class,
         BloodPressureRecord::class,
         HealthTag::class,
-        AlarmRecord::class
+        AlarmRecord::class,
+        MedicineReminder::class
     ],
-    version = 1,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -59,6 +63,11 @@ abstract class HealthDatabase : RoomDatabase() {
      * 获取统一健康标签DAO
      */
     abstract fun healthTagDao(): HealthTagDao
+
+    /**
+     * 获取药物提醒DAO - 一个DAO解决所有药物提醒需求
+     */
+    abstract fun medicineReminderDao(): MedicineReminderDao
 
     companion object {
         /**
