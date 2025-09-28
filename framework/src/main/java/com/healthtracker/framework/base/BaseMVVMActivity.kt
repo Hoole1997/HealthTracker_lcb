@@ -26,7 +26,6 @@ import com.healthtracker.framework.SysBarUtils.hideStateBar
 import com.healthtracker.framework.util.RestoreUtils
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.collect
-import com.healthtracker.framework.ext.collectCombined
 import kotlin.math.max
 
 

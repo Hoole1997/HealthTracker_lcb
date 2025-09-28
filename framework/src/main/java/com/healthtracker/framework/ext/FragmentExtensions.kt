@@ -52,34 +52,3 @@ inline fun <T> Fragment.collect(
     flow.collectLifecycle(viewLifecycleOwner, minActiveState, action)
 }
 
-/**
- * Fragment中组合收集两个StateFlow
- *
- * 示例：
- * ```kotlin
- * collectCombined(viewModel.isLoading, viewModel.userData) { isLoading, userData ->
- *     updateUI(isLoading, userData)
- * }
- * ```
- */
-inline fun <T1, T2> Fragment.collectCombined(
-    stateFlow1: StateFlow<T1>,
-    stateFlow2: StateFlow<T2>,
-    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
-    crossinline action: suspend (T1, T2) -> Unit
-) {
-    collectCombined(viewLifecycleOwner, stateFlow1, stateFlow2, minActiveState, action)
-}
-
-/**
- * Fragment中组合收集三个StateFlow
- */
-inline fun <T1, T2, T3> Fragment.collectCombined(
-    stateFlow1: StateFlow<T1>,
-    stateFlow2: StateFlow<T2>,
-    stateFlow3: StateFlow<T3>,
-    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
-    crossinline action: suspend (T1, T2, T3) -> Unit
-) {
-    collectCombined(viewLifecycleOwner, stateFlow1, stateFlow2, stateFlow3, minActiveState, action)
-}

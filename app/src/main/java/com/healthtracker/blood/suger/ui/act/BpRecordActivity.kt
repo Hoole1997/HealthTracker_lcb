@@ -10,6 +10,8 @@ import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
 
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.collect
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -143,11 +145,11 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
     }
 
     private fun observeViewModel() {
-        mViewModel.systolicPressure.collectLifecycle {
+        this.collect(mViewModel.systolicPressure) {
             with(mViewBind){
                 bpStatusView.updateSystolic(it)
                 if(it == npvSystolic.contentByCurrValue.toInt()){
-                    return@collectLifecycle
+                    return@collect
                 }
                 //将当前值的位置设置给滚动控件
                 npvSystolic.value = it
@@ -155,11 +157,11 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
             }
         }
 
-        mViewModel.diastolicPressure.collectLifecycle {
+        this.collect(mViewModel.diastolicPressure) {
             with(mViewBind){
                 bpStatusView.updateDiastolic(it)
                 if(it == npvDiastolic.contentByCurrValue.toInt()){
-                    return@collectLifecycle
+                    return@collect
                 }
                 //将当前值的位置设置给滚动控件
                 npvDiastolic.value = it
@@ -167,18 +169,18 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
             }
         }
 
-        mViewModel.pulseRate.collectLifecycle {
+        this.collect(mViewModel.pulseRate) {
             with(mViewBind){
                 if(it == npvPulse.contentByCurrValue.toInt()){
-                    return@collectLifecycle
+                    return@collect
                 }
                 //将当前值的位置设置给滚动控件
                 npvPulse.value = it
             }
         }
-        
+
         // 观察记录时间变化
-        mViewModel.recordTime.collectLatestLifecycle { recordTime ->
+        this.collectLatest(mViewModel.recordTime) { recordTime ->
             val calendar = Calendar.getInstance()
             calendar.time = recordTime
             if(!isDestroyed && !isFinishing){
@@ -193,7 +195,7 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
         }
         
         // 观察加载状态
-        mViewModel.isLoading.collectLatestLifecycle { isLoading ->
+        this.collectLatest(mViewModel.isLoading) { isLoading ->
             // 可以在这里显示加载状态
             mViewBind.btnSave.isEnabled = !isLoading
             mViewBind.btnSave.text = if (isLoading) {
@@ -204,19 +206,17 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
         }
         
         // 观察可用标签
-        lifecycleScope.launch {
-            mViewModel.availableTags.collectLatestLifecycle { tags ->
+        this.collectLatest(mViewModel.availableTags) { tags ->
                 "Blood pressure tags loaded: ${tags.size} tags".logd(TAG)
                 tags.forEach { tag ->
                     "Tag: ${tag.name}, isPredefined: ${tag.isPredefined}, type: ${tag.tagType}".logd(TAG)
                 }
                 healthTags.clear()
                 healthTags.addAll(tags)
-            }
         }
         
         // 观察选中的标签ID
-        mViewModel.selectedTagIds.collectLatestLifecycle { tagIds ->
+        this.collectLatest(mViewModel.selectedTagIds) { tagIds ->
             addTagIds.clear()
             addTagIds.addAll(tagIds)
         }

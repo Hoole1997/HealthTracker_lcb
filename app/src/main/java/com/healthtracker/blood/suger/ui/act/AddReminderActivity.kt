@@ -14,6 +14,7 @@ import com.healthtracker.blood.suger.ui.viewmodel.AddReminderViewModel
 import com.healthtracker.blood.suger.ui.viewmodel.SaveState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.collectLatest
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
@@ -102,11 +103,11 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
     }
 
     private fun observeViewModel() {
-        mViewModel.uiState.collectLatestLifecycle { state ->
+        this.collectLatest(mViewModel.uiState) { state ->
             updateUI(state)
         }
 
-        mViewModel.saveState.collectLatestLifecycle { saveState ->
+        this.collectLatest(mViewModel.saveState) { saveState ->
             handleSaveState(saveState)
         }
     }

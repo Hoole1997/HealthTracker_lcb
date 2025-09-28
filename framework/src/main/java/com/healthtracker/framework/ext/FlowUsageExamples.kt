@@ -26,12 +26,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
             }
         }
 
-        collectCombined(mViewModel.isLoading, mViewModel.userData) { isLoading, userData ->
-            mViewBind.progressBar.isVisible = isLoading
-            if (!isLoading && userData != null) {
-                updateUI(userData)
-            }
-        }
 
         // 方式2：使用Flow扩展（显式指定LifecycleOwner）
         mViewModel.isLoading.collectLatestLifecycle(this) { isLoading ->
@@ -56,19 +50,6 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             findNavController().navigate(event.destination)
         }
 
-        // 组合多个状态
-        collectCombined(
-            mViewModel.isLoading,
-            mViewModel.hasPermission,
-            mViewModel.userData
-        ) { isLoading, hasPermission, userData ->
-            when {
-                isLoading -> showLoading()
-                !hasPermission -> showPermissionRequest()
-                userData != null -> showUserData(userData)
-                else -> showEmptyState()
-            }
-        }
     }
 }
 
@@ -84,13 +65,6 @@ class HealthStatusView(context: Context, attrs: AttributeSet) : View(context, at
             updateHealthIndicator(status)
         }
 
-        collectCombined(
-            lifecycleOwner,
-            viewModel.bloodSugar,
-            viewModel.bloodPressure
-        ) { sugar, pressure ->
-            updateComprehensiveDisplay(sugar, pressure)
-        }
     }
 }
 
@@ -177,15 +151,6 @@ class DataIntensiveActivity : BaseMVVMActivity<DataViewModel, ActivityDataBindin
             processImportantEvent(event)  // 确保处理每个事件
         }
 
-        // 组合多个流时的性能考虑
-        collectCombined(
-            mViewModel.configuration,     // 很少变化
-            mViewModel.userPreferences,   // 偶尔变化
-            mViewModel.realtimeStatus     // 频繁变化
-        ) { config, prefs, status ->
-            // 任何一个变化都会触发，但只会处理最新的组合值
-            updateComplexUI(config, prefs, status)
-        }
     }
 }
 

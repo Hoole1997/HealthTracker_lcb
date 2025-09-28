@@ -15,6 +15,8 @@ import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.collect
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -154,7 +156,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
     }
 
     private fun observeViewModel() {
-        mViewModel.currentValue.debounce(50L).distinctUntilChanged().collectLifecycle { value ->
+        this.collect(mViewModel.currentValue.debounce(50L).distinctUntilChanged()) { value ->
             try {
                 updateDisplayValues()
                 updateRangeView()
@@ -164,7 +166,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             }
         }
 
-        mViewModel.currentUnit.collectLatestLifecycle { unit ->
+        this.collectLatest(mViewModel.currentUnit) { unit ->
             updateUnitRadioButtons(unit)
             updateDisplayValues()
             configureRulerForUnit(unit)
@@ -172,12 +174,12 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             mViewBind.rulerView.setScaleImmediately(mViewModel.currentValue.value, suppressCallback = true)
         }
 
-        mViewModel.currentStatus.collectLatestLifecycle { status ->
+        this.collectLatest(mViewModel.currentStatus) { status ->
             mViewBind.tvStatus.text = getStatusDisplayText(status.statusType)
             updateRangeView()
         }
 
-        mViewModel.isLoading.collectLifecycle { isLoading ->
+        this.collect(mViewModel.isLoading) { isLoading ->
             mViewBind.btnSave.isEnabled = !isLoading
             mViewBind.btnSave.text = if (isLoading) {
                 getString(R.string.saving)
@@ -186,7 +188,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             }
         }
 
-        mViewModel.recordTime.collectLatestLifecycle { recordTime ->
+        this.collectLatest(mViewModel.recordTime) { recordTime ->
             // 将Date转换为DateTimePicker需要的参数
             val calendar = Calendar.getInstance()
             calendar.time = recordTime
@@ -201,18 +203,16 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             }
         }
 
-        lifecycleScope.launch {
-            mViewModel.getAvailableHealthTags().collectLatestLifecycle { tags ->
-                "Blood sugar tags loaded: ${tags.size} tags".logd(TAG)
-                tags.forEach { tag ->
-                    "Tag: ${tag.name}, isPredefined: ${tag.isPredefined}, type: ${tag.tagType}".logd(TAG)
-                }
-                healthTags.clear()
-                healthTags.addAll(tags)
+        this.collectLatest(mViewModel.getAvailableHealthTags()) { tags ->
+            "Blood sugar tags loaded: ${tags.size} tags".logd(TAG)
+            tags.forEach { tag ->
+                "Tag: ${tag.name}, isPredefined: ${tag.isPredefined}, type: ${tag.tagType}".logd(TAG)
             }
+            healthTags.clear()
+            healthTags.addAll(tags)
         }
 
-        mViewModel.healthTags.collectLatestLifecycle { tagIds ->
+        this.collectLatest(mViewModel.healthTags) { tagIds ->
             addTagIds.clear()
             addTagIds.addAll(tagIds)
         }

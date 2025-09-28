@@ -22,6 +22,7 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
@@ -166,27 +167,27 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
      */
     private fun observeViewModel() {
         // 观察日期范围文本
-        mViewModel.dateRangeText.collectLatestLifecycle { dateRangeText ->
+        this.collectLatest(mViewModel.dateRangeText) { dateRangeText ->
             mViewBind.tvFilterDateRange.text = dateRangeText
         }
 
         // 观察血糖状态筛选
-        mViewModel.selectedBloodSugarStatus.collectLatestLifecycle { status ->
+        this.collectLatest(mViewModel.selectedBloodSugarStatus) { status ->
             updateStatusDisplay(status)
         }
 
         // 观察加载状态
-        mViewModel.isLoading.collectLatestLifecycle { isLoading ->
+        this.collectLatest(mViewModel.isLoading) { isLoading ->
             updateLoadingState(isLoading)
         }
 
         // 观察错误信息
-        mViewModel.errorMessage.collectLatestLifecycle { errorMessage ->
+        this.collectLatest(mViewModel.errorMessage) { errorMessage ->
             updateErrorState(errorMessage)
         }
 
         // 观察历史记录类型和数据
-        mViewModel.isBloodSugarHistory.collectLatestLifecycle { isBloodSugar ->
+        this.collectLatest(mViewModel.isBloodSugarHistory) { isBloodSugar ->
             if (isBloodSugar) {
                 // 观察血糖记录
                 observeBloodSugarRecords()
@@ -245,7 +246,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
      * 观察血糖记录数据
      */
     private fun observeBloodSugarRecords() {
-        mViewModel.bloodSugarRecords.collectLatestLifecycle { records ->
+        this.collectLatest(mViewModel.bloodSugarRecords) { records ->
             updateRecordsList(records.isNotEmpty())
             
             // 转换为HistoryRecordItem并更新适配器
@@ -264,7 +265,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
      * 观察血压记录数据
      */
     private fun observeBloodPressureRecords() {
-        mViewModel.bloodPressureRecords.collectLatestLifecycle { records ->
+        this.collectLatest(mViewModel.bloodPressureRecords) { records ->
             updateRecordsList(records.isNotEmpty())
             
             // 转换为HistoryRecordItem并更新适配器

@@ -13,6 +13,7 @@ import com.healthtracker.blood.suger.ui.viewmodel.AlarmViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
 import dagger.hilt.android.AndroidEntryPoint
@@ -106,12 +107,12 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
      */
     private fun observeData() {
         // 观察血糖闹钟数据
-        mViewModel.bloodSugarAlarms.collectLatestLifecycle { alarms ->
+        this.collectLatest(mViewModel.bloodSugarAlarms) { alarms ->
             bloodSugarAdapter.submitList(alarms)
         }
 
         // 观察血压闹钟数据
-        mViewModel.bloodPressureAlarms.collectLatestLifecycle { alarms ->
+        this.collectLatest(mViewModel.bloodPressureAlarms) { alarms ->
             bloodPressureAdapter.submitList(alarms)
         }
     }
