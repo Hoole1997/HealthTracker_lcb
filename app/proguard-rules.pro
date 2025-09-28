@@ -21,4 +21,3 @@
 #-renamesourcefileattribute SourceFile
 
 # Suppress warnings for missing classes
--dontwarn com.drojian.workout.commonutils.language.MultiLanguageConfig

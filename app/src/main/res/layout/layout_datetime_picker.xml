@@ -10,7 +10,7 @@
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <!-- 年份选择器 -->
-    <com.peppa.widget.picker.NumberPickerView
+    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
         android:id="@+id/yearPicker"
         android:layout_width="@dimen/dp_60"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:npv_DividerColor="@color/picker_divider_color"
+        
         app:npv_ItemPaddingHorizontal="@dimen/dp_5"
         app:npv_ItemPaddingVertical="@dimen/dp_12"
         app:npv_ShowDivider="false"
@@ -31,7 +31,7 @@
         app:npv_WrapSelectorWheel="false" />
 
     <!-- 月份选择器 -->
-    <com.peppa.widget.picker.NumberPickerView
+    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
         android:id="@+id/monthPicker"
         android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
 
         app:layout_constraintStart_toEndOf="@+id/yearPicker"
         app:layout_constraintTop_toTopOf="parent"
-        app:npv_DividerColor="@color/picker_divider_color"
+        
         app:npv_ItemPaddingHorizontal="@dimen/dp_5"
         app:npv_ItemPaddingVertical="@dimen/dp_12"
         app:npv_ShowDivider="false"
@@ -51,7 +51,7 @@
         app:npv_WrapSelectorWheel="true" />
 
     <!-- 日期选择器 -->
-    <com.peppa.widget.picker.NumberPickerView
+    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
         android:id="@+id/dayPicker"
         android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
 
         app:layout_constraintStart_toEndOf="@+id/monthPicker"
         app:layout_constraintTop_toTopOf="parent"
-        app:npv_DividerColor="@color/picker_divider_color"
+        
         app:npv_ItemPaddingHorizontal="@dimen/dp_5"
         app:npv_ItemPaddingVertical="@dimen/dp_12"
         app:npv_ShowDivider="false"
@@ -71,14 +71,14 @@
         app:npv_WrapSelectorWheel="true" />
 
     <!-- 小时选择器 -->
-    <com.peppa.widget.picker.NumberPickerView
+    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
         android:id="@+id/hourPicker"
         android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_10"
         app:layout_constraintEnd_toStartOf="@+id/minutePicker"
         app:layout_constraintTop_toTopOf="parent"
-        app:npv_DividerColor="@color/picker_divider_color"
+        
         app:npv_ItemPaddingHorizontal="@dimen/dp_5"
         app:npv_ItemPaddingVertical="@dimen/dp_12"
         app:npv_ShowDivider="false"
@@ -103,7 +103,7 @@
         app:layout_constraintBottom_toBottomOf="@id/hourPicker"/>
 
     <!-- 分钟选择器 -->
-    <com.peppa.widget.picker.NumberPickerView
+    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
         android:id="@+id/minutePicker"
         android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
         android:layout_marginEnd="@dimen/dp_20"
 
         app:layout_constraintTop_toTopOf="parent"
-        app:npv_DividerColor="@color/picker_divider_color"
+        
         app:npv_ItemPaddingHorizontal="@dimen/dp_5"
         app:npv_ItemPaddingVertical="@dimen/dp_12"
         app:npv_ShowDivider="false"

@@ -162,7 +162,7 @@ class HealthTagDialog(
                                 tvLabel.setTextColor(
                                     ContextCompat.getColor(
                                         tvLabel.context,
-                                        com.peppa.widget.picker.R.color.white
+                                        com.healthtracker.framework.R.color.white
                                     )
                                 )
                                 labelItem.background = ContextCompat.getDrawable(

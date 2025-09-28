@@ -116,7 +116,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
 
-                <com.peppa.widget.picker.NumberPickerView
+                <com.healthtracker.blood.suger.ui.widget.NumberPickerView
                     android:id="@+id/npv_systolic"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
                     app:npv_WrapSelectorWheel="false"
                     tools:layout_editor_absoluteX="0dp" />
 
-                <com.peppa.widget.picker.NumberPickerView
+                <com.healthtracker.blood.suger.ui.widget.NumberPickerView
                     android:id="@+id/npv_diastolic"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
                     app:npv_WrapSelectorWheel="false"
                     tools:layout_editor_absoluteX="0dp" />
 
-                <com.peppa.widget.picker.NumberPickerView
+                <com.healthtracker.blood.suger.ui.widget.NumberPickerView
                     android:id="@+id/npv_pulse"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

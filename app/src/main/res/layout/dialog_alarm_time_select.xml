@@ -16,14 +16,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <com.peppa.widget.picker.NumberPickerView
+    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
         android:id="@+id/hourPicker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
         app:layout_constraintEnd_toStartOf="@+id/tv_dot_div"
         app:layout_constraintTop_toBottomOf="@+id/v_bar"
-        app:npv_DividerColor="@color/picker_divider_color"
+        
         app:npv_ItemPaddingHorizontal="@dimen/dp_20"
         app:npv_ItemPaddingVertical="@dimen/dp_10"
         app:npv_ShowDivider="false"
@@ -51,14 +51,14 @@
         app:layout_constraintTop_toTopOf="@id/hourPicker" />
 
     <!-- 分钟选择器 -->
-    <com.peppa.widget.picker.NumberPickerView
+    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
         android:id="@+id/minutePicker"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_20"
         app:layout_constraintStart_toEndOf="@+id/tv_dot_div"
         app:layout_constraintTop_toTopOf="@+id/hourPicker"
-        app:npv_DividerColor="@color/picker_divider_color"
+        
         app:npv_ItemPaddingHorizontal="@dimen/dp_20"
         app:npv_ItemPaddingVertical="@dimen/dp_10"
         app:npv_ShowDivider="false"
