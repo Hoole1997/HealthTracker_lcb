@@ -3,6 +3,8 @@ import com.github.megatronking.stringfog.plugin.StringFogExtension
 import com.github.megatronking.stringfog.plugin.StringFogMode
 import com.github.megatronking.stringfog.plugin.kg.RandomKeyGenerator
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
+//import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
+//import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import kotlin.collections.get
 
 plugins {
@@ -11,7 +13,7 @@ plugins {
     alias(libs.plugins.android.compose.convention)
     alias(libs.plugins.android.hilt.convention)
     alias(libs.plugins.android.room.convention)
-    alias(libs.plugins.android.firebase.convention)
+//    alias(libs.plugins.android.firebase.convention)
     // 特殊插件保留
     id("stringfog")
     alias(libs.plugins.kotlin.parcelize)
@@ -74,7 +76,7 @@ android {
         // Play 市场版本
         create("playstore") {
             dimension = "distribution"
-            applicationId = "com.healthtracker.blood.suger"
+            applicationId = "com.health.tracker.blood.pressure.sugar.log.medication.manager"
             versionNameSuffix = ""
         }
     }
@@ -87,9 +89,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            configure<CrashlyticsExtension> {
-                mappingFileUploadEnabled = false
-            }
+//            configure<CrashlyticsExtension> {
+//                mappingFileUploadEnabled = false
+//            }
         }
     }
 
