@@ -32,6 +32,7 @@ class AlarmRepository @Inject constructor(
         return alarmDao.deleteById(recordId)
     }
     
+    // 重写并公开getRecordById方法供外部使用
     override suspend fun getRecordById(recordId: Long): AlarmRecord? {
         return alarmDao.getById(recordId)
     }

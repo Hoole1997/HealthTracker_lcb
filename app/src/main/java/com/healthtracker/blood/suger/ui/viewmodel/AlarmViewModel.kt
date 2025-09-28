@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.healthtracker.blood.suger.alarm.AlarmScheduler
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.repository.AlarmRepository
 import com.healthtracker.framework.base.BaseViewModel
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AlarmViewModel @Inject constructor(
-    private val alarmRepository: AlarmRepository
+    private val alarmRepository: AlarmRepository,
+    private val alarmScheduler: AlarmScheduler
 ) : BaseViewModel() {
     
     companion object {
@@ -207,6 +209,19 @@ class AlarmViewModel @Inject constructor(
                 
                 if (insertedId > 0) {
                     "Successfully added blood sugar alarm: ${hour}:${minute}, ID: $insertedId".logd(TAG)
+                    
+                    // 获取新创建的闹钟记录
+                    val newAlarm = alarmRepository.getRecordById(insertedId)
+                    if (newAlarm != null) {
+                        // 调度系统级闹钟
+                        val scheduled = alarmScheduler.scheduleAlarm(newAlarm)
+                        if (scheduled) {
+                            "System alarm scheduled successfully for blood sugar reminder: ID=$insertedId".logd(TAG)
+                        } else {
+                            "Failed to schedule system alarm for blood sugar reminder: ID=$insertedId".logw(TAG)
+                        }
+                    }
+                    
                     // 数据库插入成功，StateFlow会通过observe自动更新
                 } else {
                     "Failed to add blood sugar alarm: ${hour}:${minute}".loge(TAG)
@@ -241,6 +256,19 @@ class AlarmViewModel @Inject constructor(
                 
                 if (insertedId > 0) {
                     "Successfully added blood pressure alarm: ${hour}:${minute}, ID: $insertedId".logd(TAG)
+                    
+                    // 获取新创建的闹钟记录
+                    val newAlarm = alarmRepository.getRecordById(insertedId)
+                    if (newAlarm != null) {
+                        // 调度系统级闹钟
+                        val scheduled = alarmScheduler.scheduleAlarm(newAlarm)
+                        if (scheduled) {
+                            "System alarm scheduled successfully for blood pressure reminder: ID=$insertedId".logd(TAG)
+                        } else {
+                            "Failed to schedule system alarm for blood pressure reminder: ID=$insertedId".logw(TAG)
+                        }
+                    }
+                    
                     // 数据库插入成功，StateFlow会通过observe自动更新
                 } else {
                     "Failed to add blood pressure alarm: ${hour}:${minute}".loge(TAG)
@@ -266,7 +294,14 @@ class AlarmViewModel @Inject constructor(
     fun updateAlarmEnabled(alarmId: Long, isEnabled: Boolean, alarmType: Int) {
         viewModelScope.launch {
             try {
-                // 先更新数据库
+                // 先获取闹钟记录
+                val alarmRecord = alarmRepository.getRecordById(alarmId)
+                if (alarmRecord == null) {
+                    "Alarm record not found: ID=$alarmId".logw(TAG)
+                    return@launch
+                }
+                
+                // 更新数据库
                 val success = if (isEnabled) {
                     alarmRepository.enableAlarm(alarmId)
                 } else {
@@ -275,6 +310,16 @@ class AlarmViewModel @Inject constructor(
                 
                 if (success) {
                     "Successfully updated alarm status: ID=$alarmId, enabled=$isEnabled".logd(TAG)
+                    
+                    // 同步更新系统级闹钟
+                    val updatedAlarm = alarmRecord.copy(isEnabled = isEnabled)
+                    val systemSuccess = alarmScheduler.updateAlarm(updatedAlarm)
+                    if (systemSuccess) {
+                        "System alarm updated successfully: ID=$alarmId, enabled=$isEnabled".logd(TAG)
+                    } else {
+                        "Failed to update system alarm: ID=$alarmId, enabled=$isEnabled".logw(TAG)
+                    }
+                    
                     // 数据库更新成功，StateFlow会通过observe自动更新
                 } else {
                     "Failed to update alarm status: ID=$alarmId, enabled=$isEnabled".loge(TAG)
@@ -297,9 +342,24 @@ class AlarmViewModel @Inject constructor(
     fun deleteAlarm(alarmId: Long) {
         viewModelScope.launch {
             try {
+                // 先获取闹钟记录用于取消系统级闹钟
+                val alarmRecord = alarmRepository.getRecordById(alarmId)
+                
+                // 软删除数据库记录
                 val success = alarmRepository.softDeleteRecord(alarmId)
                 if (success) {
                     "Successfully deleted alarm: ID=$alarmId".logd(TAG)
+                    
+                    // 取消系统级闹钟
+                    if (alarmRecord != null) {
+                        val systemSuccess = alarmScheduler.cancelAlarm(alarmRecord)
+                        if (systemSuccess) {
+                            "System alarm cancelled successfully: ID=$alarmId".logd(TAG)
+                        } else {
+                            "Failed to cancel system alarm: ID=$alarmId".logw(TAG)
+                        }
+                    }
+                    
                     // StateFlow会通过observe自动更新，无需手动刷新
                 } else {
                     "Failed to delete alarm: ID=$alarmId".loge(TAG)

@@ -48,6 +48,22 @@
     <string name="blood_pressure_range_high_stage_2_full">Systolic %1$s or Diastolic %2$s</string>
     <string name="blood_pressure_range_hypertensive_crisis_full">Systolic %1$s or Diastolic %2$s</string>
 
+    <!-- 闹钟通知相关字符串 -->
+    <string name="notification_channel_alarm_name">Health Reminder</string>
+    <string name="notification_channel_alarm_description">Health monitoring reminder notifications</string>
+    
+    <!-- 血糖提醒通知 -->
+    <string name="alarm_blood_sugar_title">Blood Sugar Reminder</string>
+    <string name="alarm_blood_sugar_content">Time to record your blood sugar!</string>
+    
+    <!-- 血压提醒通知 -->
+    <string name="alarm_blood_pressure_title">Blood Pressure Reminder</string>
+    <string name="alarm_blood_pressure_content">Record your blood pressure daily for better health!</string>
+    
+    <!-- 默认健康提醒 -->
+    <string name="alarm_default_title">Health Reminder</string>
+    <string name="alarm_default_content">Please monitor your health on time</string>
+
     <!-- 血压范围具体数值 -->
     <string name="bp_range_low_sys">&lt; 90</string>
     <string name="bp_range_low_dia">&lt; 60</string>

@@ -43,7 +43,7 @@ abstract class BaseRepository<T, D> {
      * @param recordId 记录ID
      * @return 记录实体，可能为null
      */
-    protected abstract suspend fun getRecordById(recordId: Long): T?
+    abstract suspend fun getRecordById(recordId: Long): T?
     
     /**
      * 获取所有记录的抽象方法
