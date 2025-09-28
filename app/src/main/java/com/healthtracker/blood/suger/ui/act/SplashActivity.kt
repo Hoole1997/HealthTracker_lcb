@@ -6,12 +6,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.animation.addListener
 import androidx.lifecycle.lifecycleScope
+import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -38,6 +41,9 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
     override fun getVMModelClass() = BaseViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        mViewBind.tvPrivacy.clickWithDuration {
+            openBrowser(this, BuildConfig.PRIVACY_POLICY)
+        }
         playAnimations()
         checkNotificationPermission()
     }

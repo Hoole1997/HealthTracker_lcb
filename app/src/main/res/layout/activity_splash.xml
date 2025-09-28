@@ -86,12 +86,26 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#666"
+        android:textColor="@color/color_666"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="@id/ad_loading_view"
         app:layout_constraintEnd_toEndOf="@id/ad_loading_view"
         app:layout_constraintTop_toBottomOf="@id/ad_loading_view"
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/loading"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_privacy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_666"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="@id/ad_loading_view"
+        app:layout_constraintEnd_toEndOf="@id/ad_loading_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/dp_74"
+        android:drawablePadding="@dimen/dp_6"
+        android:drawableStart="@drawable/ic_checked"
+        android:text="@string/have_reader_privacy"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

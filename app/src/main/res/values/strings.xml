@@ -919,5 +919,6 @@
     <string name="take_medication_now">Take now</string>
     <string name="every_day_temp">⏰ Every day at %1$s</string>
     <string name="now_time_temp">📱 Current time: %1$s</string>
+    <string name="have_reader_privacy">I have read the <font color="#02BC77">Privacy Policy</font></string>
 
 </resources>
