@@ -130,8 +130,8 @@ class AlarmRepository @Inject constructor(
         other: String? = null
     ): Long {
         // 验证时间格式
-        require(hour in 0..23) { "小时必须在0-23之间" }
-        require(minute in 0..59) { "分钟必须在0-59之间" }
+        require(hour in 0..23) { "Hour must be between 0-23" }
+        require(minute in 0..59) { "Minute must be between 0-59" }
         
         val record = AlarmRecord.create(
             type = type,
@@ -191,6 +191,15 @@ class AlarmRepository @Inject constructor(
         repeatFlag: Int = AlarmRecord.REPEAT_DAILY
     ): Long {
         val record = AlarmRecord.createMedicationReminder(hour, minute, repeatFlag)
+        return alarmDao.insert(record)
+    }
+
+    /**
+     * 插入闹钟记录
+     * @param record 闹钟记录
+     * @return 插入记录的ID
+     */
+    suspend fun insertAlarmRecord(record: AlarmRecord): Long {
         return alarmDao.insert(record)
     }
 

@@ -1,25 +1,35 @@
 package com.healthtracker.blood.suger.ui.act
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.blankj.utilcode.util.ToastUtils
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.databinding.ActivityAddReminderBinding
 import com.healthtracker.blood.suger.ui.adapter.ReminderTimeAdapter
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.dialog.DosesTimesDialog
+import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
 import com.healthtracker.blood.suger.ui.viewmodel.AddReminderUiState
 import com.healthtracker.blood.suger.ui.viewmodel.AddReminderViewModel
 import com.healthtracker.blood.suger.ui.viewmodel.SaveState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.collectLatest
+import com.healthtracker.framework.ext.hideSoftKeyBoard
+import com.healthtracker.framework.ext.logd
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddReminderBinding>() {
+
+    @Inject
+    lateinit var permissionManager: PermissionManager
 
     private lateinit var timeAdapter: ReminderTimeAdapter
 
@@ -38,6 +48,9 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
         setupViews()
         setupRecyclerView()
         observeViewModel()
+
+        // 检查FSI权限
+        checkFullScreenIntentPermission()
     }
 
     companion object {
@@ -164,6 +177,7 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
     }
 
     private fun showTimePickerDialog(position: Int) {
+        hideSoftKeyBoard()
         val currentTime = mViewModel.uiState.value.reminderTimes[position]
         val timeParts = currentTime.split(":")
         val hour = timeParts[0].toInt()
@@ -173,5 +187,61 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
             mViewModel.updateReminderTime(position,timeString)
 
         }
+    }
+
+    // ==================== FSI权限管理 ====================
+
+    /**
+     * 检查全屏通知权限
+     */
+    private fun checkFullScreenIntentPermission() {
+        if (permissionManager.shouldRequestFSIPermission()) {
+            "Should request FSI permission for medication reminders".logd("AddReminderActivity")
+            showFSIPermissionExplanationDialog()
+        } else {
+            "FSI permission check: no need to request".logd("AddReminderActivity")
+        }
+    }
+
+    /**
+     * 显示FSI权限说明对话框
+     */
+    private fun showFSIPermissionExplanationDialog() {
+        FSIPermissionDialog.show(
+            supportFragmentManager,
+            onAllowPermission = {
+                "User agreed to FSI permission".logd("AddReminderActivity")
+                permissionManager.requestFSIPermission(this)
+            },
+            onDenyPermission = {
+                "User declined FSI permission".logd("AddReminderActivity")
+                permissionManager.recordFSIPermissionRequest(false)
+            }
+        )
+    }
+
+    /**
+     * 处理Activity返回结果
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (permissionManager.handleActivityResult(requestCode, resultCode)) {
+            // FSI权限请求处理完成
+            "FSI permission activity result handled".logd("AddReminderActivity")
+        }
+    }
+
+    /**
+     * 处理权限申请结果
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        permissionManager.handlePermissionResult(requestCode, permissions, grantResults)
     }
 }

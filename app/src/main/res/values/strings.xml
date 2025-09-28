@@ -886,15 +886,38 @@
     <string name="enter_medication_name">Enter Medication Name</string>
     <string name="number_of_daily_doses">Number of Daily Doses:</string>
     <string name="notes">Notes</string>
-    <string name="hint_meds_notes">Instructions: Aftef meals, 3x daily.</string>
+    <string name="hint_meds_notes">Instructions: After meals, 3x daily.</string>
     <string name="sync_with_calendar">Sync with Calendar</string>
     <string name="take_now">Take now</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
 
+    <!-- 药物提醒通知相关字符串 -->
+    <string name="medication_reminder_title">🔔 Medication Reminder</string>
+    <string name="medication_reminder_content">It\'s time to take your medication</string>
+    <string name="medication_notification_title_with_time">%1$s at %2$s</string>
+
+    <!-- FSI权限对话框字符串 -->
+    <string name="fsi_permission_title">🔔 Important Reminder Permission</string>
+    <string name="fsi_permission_message">To ensure you don\'t miss important medication times, we recommend enabling full-screen reminders.</string>
+    <string name="fsi_permission_advantages">📱 Full-screen reminder advantages:\n• Visible even when screen is locked\n• Cannot be covered by other apps\n• Ensures timely medication for health</string>
+    <string name="fsi_permission_warning">⚠️ If you deny this permission, standard notifications will be used (may be ignored)</string>
+    <string name="allow">Allow</string>
+    <string name="fsi_permission_deny">Not Now</string>
+
     <!-- 通知权限相关字符串 -->
     <string name="notification_permission_title">Notification permission required</string>
     <string name="notification_permission_message">Notification permission is required to send you reminds</string>
     <string name="go_to_settings">Turn on</string>
+    <string name="close">Close</string>
+    <string name="medication_name_temp">💊 %1$s</string>
+    <string name="meds_notes_temp">📝 %1$s</string>
+    <string name="snooze_5_minutes">5 minutes later</string>
+    <string name="snooze_10_minutes">10 minutes later</string>
+    <string name="snooze_15_minutes">15 minutes later</string>
+    <string name="snooze_30_minutes">30 minutes later</string>
+    <string name="take_medication_now">Take now</string>
+    <string name="every_day_temp">⏰ Every day at %1$s</string>
+    <string name="now_time_temp">📱 Current time: %1$s</string>
 
 </resources>

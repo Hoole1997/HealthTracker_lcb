@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
+import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.utils.WebViewZygote
 import com.healthtracker.blood.suger.utils.getCurProcessName
 import dagger.hilt.android.HiltAndroidApp
@@ -20,6 +21,9 @@ class App : MultiDexApplication() {
 
     @Inject
     lateinit var appInitializer: AppInitializer
+
+    @Inject
+    lateinit var permissionManager: PermissionManager
 
 
     companion object {
@@ -57,6 +61,9 @@ class App : MultiDexApplication() {
             // 应用初始化将通过AppInitializer统一管理
             appInitializer.initialize()
             initProcessLifeCycle()
+
+            // 初始化权限管理器session
+            permissionManager.initializeSession()
         }
     }
 

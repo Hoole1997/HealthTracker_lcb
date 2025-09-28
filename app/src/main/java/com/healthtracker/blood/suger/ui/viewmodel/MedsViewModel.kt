@@ -79,7 +79,7 @@ class MedsViewModel @Inject constructor(
      */
     fun onDateSelected(date: Date) {
         viewModelScope.launch {
-            "日期选择: ${DateTimeUtils.formatDate(date)}".logd(TAG)
+            "Date selected: ${DateTimeUtils.formatDate(date)}".logd(TAG)
             _selectedDate.value = date
             
             // 加载选中日期的数据
@@ -93,7 +93,7 @@ class MedsViewModel @Inject constructor(
      */
     fun onWeekChanged(isCurrentWeek: Boolean) {
         viewModelScope.launch {
-            "周视图切换，是否当前周: $isCurrentWeek".logd(TAG)
+            "Week view switched, isCurrentWeek: $isCurrentWeek".logd(TAG)
             
             _isCurrentWeek.value = isCurrentWeek
             
@@ -108,7 +108,7 @@ class MedsViewModel @Inject constructor(
      */
     private fun loadDataForSelectedDate(date: Date) {
         // 数据已通过combine自动更新，此方法用于日志记录
-        "加载日期 ${DateTimeUtils.formatDate(date)} 的药物数据".logd(TAG)
+        "Load medication data for date ${DateTimeUtils.formatDate(date)}".logd(TAG)
     }
 
     /**
@@ -117,7 +117,7 @@ class MedsViewModel @Inject constructor(
      */
     private fun loadDataForCurrentWeek(isCurrentWeek: Boolean) {
         // 数据已通过combine自动更新，此方法用于日志记录
-        "加载${if (isCurrentWeek) "当前周" else "其他周"}的药物数据".logd(TAG)
+        "Load medication data for ${if (isCurrentWeek) "current week" else "other week"}".logd(TAG)
     }
 
     /**
@@ -141,7 +141,7 @@ class MedsViewModel @Inject constructor(
             }
             .sortedBy { it.reminderDateTime } // 按时间排序
             .also { items ->
-                "转换完成，共${items.size}个提醒项".logd(TAG)
+                "Conversion completed, ${items.size} reminder items".logd(TAG)
             }
     }
 
@@ -264,11 +264,11 @@ class MedsViewModel @Inject constructor(
     fun markMedicationTaken(reminderId: Long, reminderDateTime: Date) {
         viewModelScope.launch {
             try {
-                "标记服药: ID=$reminderId, 时间=${DateTimeUtils.formatDateTime(reminderDateTime)}".logd(TAG)
+                "Mark medication taken: ID=$reminderId, Time=${DateTimeUtils.formatDateTime(reminderDateTime)}".logd(TAG)
                 medsRepository.recordMedication(reminderId, reminderDateTime)
-                "服药标记成功".logd(TAG)
+                "Medication marked successfully".logd(TAG)
             } catch (e: Exception) {
-                "标记服药失败: ${e.message}".logd(TAG)
+                "Failed to mark medication: ${e.message}".logd(TAG)
             }
         }
     }
@@ -280,11 +280,11 @@ class MedsViewModel @Inject constructor(
     fun deleteMedicineReminder(reminderId: Long) {
         viewModelScope.launch {
             try {
-                "删除药物提醒: ID=$reminderId".logd(TAG)
+                "Delete medication reminder: ID=$reminderId".logd(TAG)
                 medsRepository.deleteMedicine(reminderId)
-                "药物提醒删除成功".logd(TAG)
+                "Medication reminder deleted successfully".logd(TAG)
             } catch (e: Exception) {
-                "删除药物提醒失败: ${e.message}".logd(TAG)
+                "Failed to delete medication reminder: ${e.message}".logd(TAG)
             }
         }
     }

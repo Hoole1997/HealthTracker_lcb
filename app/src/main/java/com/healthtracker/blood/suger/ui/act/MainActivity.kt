@@ -117,7 +117,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
             lifecycleScope.launch {
                 fragment.getFormattedMonthFlow().collect { monthText ->
                     mViewBind.tvMonth.text = monthText
-                    "月份显示已更新: $monthText".logd(TAG)
+                    "Month display updated: $monthText".logd(TAG)
                 }
             }
         }

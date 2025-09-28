@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.PowerManager
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.repository.AlarmRepository
+import com.healthtracker.blood.suger.data.repository.MedicineReminderRepository
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
@@ -43,12 +44,15 @@ class AlarmReceiver : BroadcastReceiver() {
     
     @Inject
     lateinit var alarmRepository: AlarmRepository
-    
+
     @Inject
     lateinit var alarmScheduler: AlarmScheduler
-    
+
     @Inject
     lateinit var notificationManager: AlarmNotificationManager
+
+    @Inject
+    lateinit var medicineReminderRepository: MedicineReminderRepository
     
     // 协程作用域，用于异步处理
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -145,15 +149,86 @@ class AlarmReceiver : BroadcastReceiver() {
     
     /**
      * 显示闹钟通知
-     * 
+     * 根据闹钟类型选择不同的通知显示方式
+     *
      * @param alarmRecord 闹钟记录
      */
     private fun showAlarmNotification(alarmRecord: AlarmRecord) {
         try {
-            notificationManager.showAlarmNotification(alarmRecord)
-            "Alarm notification shown: ID=${alarmRecord.id}".logd(TAG)
+            when (alarmRecord.type) {
+                AlarmRecord.TYPE_MEDICATION -> {
+                    // 服药提醒：显示全屏通知
+                    showMedicationNotification(alarmRecord)
+                    "Medication FSI notification shown: ID=${alarmRecord.id}".logd(TAG)
+                }
+                AlarmRecord.TYPE_BLOOD_SUGAR,
+                AlarmRecord.TYPE_BLOOD_PRESSURE -> {
+                    // 血糖血压测量提醒：显示普通通知
+                    notificationManager.showAlarmNotification(alarmRecord)
+                    "Health reminder notification shown: ID=${alarmRecord.id}".logd(TAG)
+                }
+                else -> {
+                    // 其他类型：使用默认通知
+                    notificationManager.showAlarmNotification(alarmRecord)
+                    "Default alarm notification shown: ID=${alarmRecord.id}".logd(TAG)
+                }
+            }
         } catch (e: Exception) {
-            "Failed to show alarm notification: ID=${alarmRecord.id}, Error=${e.message}".loge(TAG)
+            "Failed to show alarm notification: ID=${alarmRecord.id}, Type=${alarmRecord.type}, Error=${e.message}".loge(TAG)
+        }
+    }
+
+    /**
+     * 显示服药提醒全屏通知
+     * 通过药物ID查询数据库获取最新的药物信息
+     *
+     * @param alarmRecord 闹钟记录
+     */
+    private fun showMedicationNotification(alarmRecord: AlarmRecord) {
+        try {
+            if (!alarmRecord.isMedicationReminder()) {
+                "Invalid medication alarm record: ID=${alarmRecord.id}".logw(TAG)
+                return
+            }
+
+            val medicineId = alarmRecord.getMedicineId()
+            if (medicineId == null) {
+                "Invalid medicine ID in alarm record: ID=${alarmRecord.id}".logw(TAG)
+                return
+            }
+
+            // 异步查询药物信息并创建通知
+            coroutineScope.launch {
+                try {
+                    // 从数据库查询最新的药物信息
+                    val medicineReminder = medicineReminderRepository.getMedicineById(medicineId)
+
+                    if (medicineReminder == null) {
+                        "Medicine not found: ID=$medicineId".logw(TAG)
+                        return@launch
+                    }
+
+                    // 创建服药提醒全屏通知
+                    notificationManager.createMedicationNotification(
+                        medicationName = medicineReminder.medicineName,
+                        dosage = "", // 简化版不显示剂量
+                        notes = "", // 简化版不显示备注
+                        reminderTime = alarmRecord.getFormattedTime(),
+                        reminderId = medicineId
+                    )
+
+                    // 记录真实提醒时间到药物提醒记录
+                    medicineReminderRepository.recordRealRemind(medicineId)
+
+                    "Medication FSI notification created: MedicineID=$medicineId, Name=${medicineReminder.medicineName}".logd(TAG)
+
+                } catch (e: Exception) {
+                    "Failed to query medicine and show notification: MedicineID=$medicineId, Error=${e.message}".loge(TAG)
+                }
+            }
+
+        } catch (e: Exception) {
+            "Failed to show medication notification: ID=${alarmRecord.id}, Error=${e.message}".loge(TAG)
         }
     }
     

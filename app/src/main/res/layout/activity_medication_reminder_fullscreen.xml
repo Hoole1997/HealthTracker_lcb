@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:orientation="vertical"
+    tools:context=".ui.act.MedicationReminderFullScreenActivity">
+
+    <!-- 顶部区域：标题和时间 -->
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_60"
+        android:paddingHorizontal="@dimen/dp_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 提醒图标和标题 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/medication_reminder_title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <!-- 当前时间 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_current_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/now_time_temp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_18"
+            android:gravity="center" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <!-- 中心区域：药物信息 -->
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_medication_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:minHeight="@dimen/dp_400"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/dp_32"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 药物名称和剂量 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_medication_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/medication_name_temp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_20"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/dp_16" />
+
+        <!-- 提醒时间 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_reminder_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/every_day_temp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/dp_16" />
+
+        <!-- 服药备注 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/meds_notes_temp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <!-- 底部区域：操作按钮 -->
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_49">
+
+
+
+        <!-- 稍后提醒按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_snooze"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_weight="1"
+
+            android:textStyle="bold"
+            android:text="@string/close"
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/white"
+            style="@style/MaterialButton.b3"
+            android:backgroundTint="@color/white5"
+
+            app:cornerRadius="@dimen/dp_28" />
+
+        <Space
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="wrap_content"/>
+
+        <!-- 已服用按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_taken"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_weight="1"
+            style="@style/MaterialButton.b1"
+            android:textColor="@color/white"
+            android:text="@string/take_medication_now"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            app:backgroundTint="@color/c5"
+            app:cornerRadius="@dimen/dp_28" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</LinearLayout>

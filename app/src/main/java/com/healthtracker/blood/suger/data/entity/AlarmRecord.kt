@@ -230,6 +230,23 @@ data class AlarmRecord(
         return DateTimeUtils.formatDateTimeWithSeconds(date)
     }
 
+    /**
+     * 检查是否为服药提醒类型
+     * @return true: 服药提醒, false: 其他类型
+     */
+    fun isMedicationReminder(): Boolean {
+        return type == TYPE_MEDICATION
+    }
+
+    /**
+     * 获取药物ID（仅服药提醒有效）
+     * @return 药物ID，如果不是服药提醒则返回null
+     */
+    fun getMedicineId(): Long? {
+        return if (isMedicationReminder()) longExt1 else null
+    }
+
+
 
 
     companion object {
@@ -346,6 +363,39 @@ data class AlarmRecord(
                 minute = minute,
                 repeatFlag = repeatFlag,
                 vibrateTime = 3000 // 默认振动3秒
+            )
+        }
+
+        /**
+         * 创建服药提醒闹钟（简化版）
+         * @param medicineId 药物提醒ID，用于关联查询药物信息
+         * @param hour 小时
+         * @param minute 分钟
+         * @param repeatFlag 重复标志
+         * @return 仅包含基本调度信息的服药提醒闹钟记录
+         */
+        fun createMedicationAlarm(
+            medicineId: Long,
+            hour: Int,
+            minute: Int,
+            repeatFlag: Int = REPEAT_DAILY
+        ): AlarmRecord {
+            val currentTime = System.currentTimeMillis()
+            return AlarmRecord(
+                type = TYPE_MEDICATION,
+                hour = hour,
+                minute = minute,
+                repeatFlag = repeatFlag,
+                soundId = 0,
+                isEnabled = true,
+                vibrateTime = 3000,
+                other = "Medication Reminder",
+                longExt1 = medicineId,     // 存储药物提醒ID
+                longExt2 = null,           // 最后触发时间
+                textExt1 = null,           // 不再存储药物名称
+                textExt2 = null,           // 不再存储剂量
+                textExt3 = null,           // 不再存储备注
+                updatedAt = currentTime
             )
         }
     }

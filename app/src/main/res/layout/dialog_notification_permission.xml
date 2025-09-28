@@ -11,11 +11,21 @@
     android:paddingHorizontal="@dimen/dp_16"
     android:paddingVertical="@dimen/dp_20">
 
+    <View
+        android:id="@+id/v_bar"
+        android:layout_width="@dimen/dp_66"
+        android:layout_height="@dimen/dp_8"
+        android:background="@drawable/bg_dialog_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_title"
         style="@style/T1_18"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
         android:layout_marginHorizontal="@dimen/dp_6"
         android:gravity="center_horizontal"
         android:text="@string/notification_permission_title" />

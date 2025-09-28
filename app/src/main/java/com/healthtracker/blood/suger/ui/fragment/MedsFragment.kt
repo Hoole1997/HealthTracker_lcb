@@ -9,11 +9,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.FragmentMedsBinding
 import com.healthtracker.blood.suger.ui.act.AddReminderActivity
 import com.healthtracker.blood.suger.ui.adapter.MedsReminderAdapter
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
+import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.viewmodel.MedsViewModel
 import com.healthtracker.blood.suger.ui.widget.MedsRemindDropdownMenu
@@ -29,9 +31,13 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
+
+    @Inject
+    lateinit var permissionManager: PermissionManager
 
     private lateinit var reminderAdapter: MedsReminderAdapter
 
@@ -52,6 +58,12 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
         setupClickListeners()
         setupWeeklyDateSelector()
         observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 检查是否有服药提醒触发
+        checkMedicationReminders()
     }
 
     private fun setupRecyclerView() {
@@ -83,14 +95,14 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
             
             // 设置日期选择监听器
              weeklyDateSelector.setOnDateSelectedListener { selectedDate ->
-                 "日期选择监听器触发: ${DateTimeUtils.formatDate(selectedDate)}".logd(TAG)
+                 "Date selection listener triggered: ${DateTimeUtils.formatDate(selectedDate)}".logd(TAG)
                  // 将选中的日期传递给ViewModel处理
                  mViewModel.onDateSelected(selectedDate)
              }
              
              // 设置周切换监听器
              weeklyDateSelector.setOnWeekChangedListener { isCurrentWeek ->
-                 "周切换监听器触发: 是否当前周=$isCurrentWeek".logd(TAG)
+                 "Week change listener triggered: isCurrentWeek=$isCurrentWeek".logd(TAG)
                  // 将周切换状态传递给ViewModel处理
                  mViewModel.onWeekChanged(isCurrentWeek)
              }
@@ -104,31 +116,31 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
     private fun observeViewModel() {
         // 观察选中日期的变化
         collectLatest(mViewModel.selectedDate) { date ->
-            "选中日期变化: ${DateTimeUtils.formatDate(date)}".logd(TAG)
+            "Selected date changed: ${DateTimeUtils.formatDate(date)}".logd(TAG)
             onDateChanged(date)
         }
 
         // 观察周状态的变化
         collectLatest(mViewModel.isCurrentWeek) { isCurrentWeek ->
-            "周状态变化: 是否当前周=$isCurrentWeek".logd(TAG)
+            "Week status changed: isCurrentWeek=$isCurrentWeek".logd(TAG)
             onWeekStatusChanged(isCurrentWeek)
         }
 
         // 观察格式化月份的变化
         collectLatest(mViewModel.formattedMonth) { formattedMonth ->
-            "格式化月份变化: $formattedMonth".logd(TAG)
+            "Formatted month changed: $formattedMonth".logd(TAG)
             onFormattedMonthChanged(formattedMonth)
         }
 
         // 观察药物提醒列表数据变化 - 使用collectLatest确保只处理最新的列表状态
         collectLatest(mViewModel.reminderItems) { reminderItems ->
-            "提醒列表数据变化: 共${reminderItems.size}项".logd(TAG)
+            "Reminder list data changed: ${reminderItems.size} items".logd(TAG)
             updateReminderList(reminderItems)
         }
 
         // 观察是否可以添加提醒的状态变化
         collectLatest(mViewModel.canAddReminder) { canAdd ->
-            "添加按钮状态变化: 可添加=$canAdd".logd(TAG)
+            "Add button state changed: canAdd=$canAdd".logd(TAG)
             updateAddButtonState(canAdd)
         }
 
@@ -140,7 +152,7 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
      */
     private fun onDateChanged(selectedDate: java.util.Date) {
          // TODO: 根据选中日期更新UI，比如加载该日期的药物数据
-         "处理日期变化: ${DateTimeUtils.formatDate(selectedDate)}".logd(TAG)
+         "Handle date change: ${DateTimeUtils.formatDate(selectedDate)}".logd(TAG)
      }
 
      /**
@@ -149,7 +161,7 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
       */
      private fun onWeekStatusChanged(isCurrentWeek: Boolean) {
          // TODO: 根据周状态更新UI，比如显示不同的提示信息
-         "处理周状态变化: ${if (isCurrentWeek) "当前周" else "其他周"}".logd(TAG)
+         "Handle week status change: ${if (isCurrentWeek) "current week" else "other week"}".logd(TAG)
      }
 
      /**
@@ -158,7 +170,7 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
       */
      private fun onFormattedMonthChanged(formattedMonth: String) {
          // 处理格式化月份变化的逻辑
-         "格式化月份已更新: $formattedMonth".logd(TAG)
+         "Formatted month updated: $formattedMonth".logd(TAG)
          // 可以在这里更新UI显示月份信息
      }
 
@@ -203,12 +215,12 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
                  }
                  MenuAction.EDIT -> {
                      // 跳转到编辑页面，传递提醒ID
-                     "跳转编辑药物提醒: ID=${item.reminderId}".logd(TAG)
+                     "Navigate to edit medication reminder: ID=${item.reminderId}".logd(TAG)
                      AddReminderActivity.start(requireContext(), item.reminderId)
                  }
                  MenuAction.DELETE -> {
                      // 删除服药提醒，任意选都是删除当前整个服药提醒，而不是针对某次
-                     "准备删除药物提醒: ID=${item.reminderId}, 药物=${item.medicineName}".logd(TAG)
+                     "Prepare to delete medication reminder: ID=${item.reminderId}, Medicine=${item.medicineName}".logd(TAG)
                      showDeleteConfirmDialog(item)
                  }
              }
@@ -269,5 +281,59 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
      */
     fun getFormattedMonthFlow(): StateFlow<String> {
         return mViewModel.formattedMonth
+    }
+
+    // ==================== FSI权限管理 ====================
+
+    /**
+     * 检查服药提醒触发
+     */
+    private fun checkMedicationReminders() {
+        // 模拟服药提醒触发逻辑
+        // 在实际实现中，这应该由AlarmReceiver或其他系统组件触发
+        val hasPendingMedications = checkIfMedicationReminderTriggered()
+        if (hasPendingMedications) {
+            onMedicationReminderTriggered()
+        }
+    }
+
+    /**
+     * 检查是否有服药提醒触发
+     * @return true if there are pending medication reminders
+     */
+    private fun checkIfMedicationReminderTriggered(): Boolean {
+        // 这里应该检查是否有当前时间需要服药的提醒
+        // 目前简化为检查是否有FSI权限需要请求的情况
+        return !permissionManager.isFSIPermissionAvailable() &&
+                permissionManager.shouldRequestFSIPermission()
+    }
+
+    /**
+     * 服药提醒触发时的处理
+     */
+    private fun onMedicationReminderTriggered() {
+        "Medication reminder triggered, checking FSI permission".logd(TAG)
+
+        if (!permissionManager.isFSIPermissionAvailable() &&
+            permissionManager.shouldRequestFSIPermission()) {
+            showFSIPermissionForMedication()
+        }
+    }
+
+    /**
+     * 显示针对服药提醒的FSI权限对话框
+     */
+    private fun showFSIPermissionForMedication() {
+        FSIPermissionDialog.show(
+            childFragmentManager,
+            onAllowPermission = {
+                "User agreed to FSI permission from medication reminder".logd(TAG)
+                permissionManager.requestFSIPermission(requireActivity())
+            },
+            onDenyPermission = {
+                "User declined FSI permission from medication reminder".logd(TAG)
+                permissionManager.recordFSIPermissionRequest(false)
+            }
+        )
     }
 }

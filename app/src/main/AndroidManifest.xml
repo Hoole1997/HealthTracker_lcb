@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    
+
+    <!-- 全屏通知权限 -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
     <!-- 系统级闹钟权限 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -90,6 +93,20 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
+
+        <!-- 全屏服药提醒Activity -->
+        <activity
+            android:name=".ui.act.MedicationReminderFullScreenActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:taskAffinity="${applicationId}.fullscreen.activity"
+            android:theme="@style/FullScreenTheme"
+            android:turnScreenOn="true"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity,UnusedAttribute"/>
+
+
 
 
         <!--适配Android 7.0 及以上兼容文件管理-->

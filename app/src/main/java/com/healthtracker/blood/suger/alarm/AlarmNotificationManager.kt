@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.alarm
 
 import android.Manifest
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -15,6 +16,7 @@ import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.ui.act.MainActivity
+import com.healthtracker.blood.suger.ui.act.MedicationReminderFullScreenActivity
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
@@ -40,7 +42,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class AlarmNotificationManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val permissionManager: PermissionManager
 ) {
     
     companion object {
@@ -103,13 +106,13 @@ class AlarmNotificationManager @Inject constructor(
         try {
             val (channelId, title, content) = getNotificationContent(alarmRecord)
             val notificationId = generateNotificationId(alarmRecord)
-            
+            val icon = if(alarmRecord.type == AlarmRecord.TYPE_BLOOD_PRESSURE) R.drawable.ic_notifcation_pb else R.drawable.ic_notification_bs
             // 创建点击意图
             val clickIntent = createClickIntent(alarmRecord)
             
             // 构建通知
             val notification = NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_notification) // 需要添加通知图标
+                .setSmallIcon(icon) // 需要添加通知图标
                 .setContentTitle(title)
                 .setContentText(content)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(content))
@@ -272,6 +275,216 @@ class AlarmNotificationManager @Inject constructor(
                 alarmChannelEnabled = true,
                 notificationsEnabled = areNotificationsEnabled()
             )
+        }
+    }
+
+    // ==================== FSI通知管理 ====================
+
+    /**
+     * 创建服药提醒通知
+     * 优先使用FSI，权限不可用时降级到增强标准通知
+     */
+    fun createMedicationNotification(
+        medicationName: String,
+        dosage: String = "",
+        notes: String = "",
+        reminderTime: String = "",
+        reminderId: Long = -1L
+    ) {
+        if (permissionManager.isFSIPermissionAvailable()) {
+            createFSINotification(medicationName, dosage, notes, reminderTime, reminderId)
+        } else {
+            createEnhancedStandardNotification(medicationName, dosage, notes, reminderTime, reminderId)
+        }
+    }
+
+    /**
+     * 创建FSI通知
+     */
+    private fun createFSINotification(
+        medicationName: String,
+        dosage: String,
+        notes: String,
+        reminderTime: String,
+        reminderId: Long
+    ) {
+        try {
+            // 创建FSI Activity的Intent
+            val fullScreenIntent = Intent(context, MedicationReminderFullScreenActivity::class.java).apply {
+                putExtra(MedicationReminderFullScreenActivity.EXTRA_MEDICATION_NAME, medicationName)
+                putExtra(MedicationReminderFullScreenActivity.EXTRA_DOSAGE, dosage)
+                putExtra(MedicationReminderFullScreenActivity.EXTRA_NOTES, notes)
+                putExtra(MedicationReminderFullScreenActivity.EXTRA_REMINDER_TIME, reminderTime)
+                putExtra(MedicationReminderFullScreenActivity.EXTRA_REMINDER_ID, reminderId)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+
+            val fullScreenPendingIntent = PendingIntent.getActivity(
+                context,
+                (NOTIFICATION_ID_BASE + reminderId).toInt(),
+                fullScreenIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            // 使用公共方法创建普通点击Intent（作为fallback）
+            val clickPendingIntent = createMedicationClickIntent(reminderId)
+
+            // 使用公共方法生成统一的标题和内容
+            val (notificationTitle, contentText) = generateMedicationNotificationContent(medicationName, reminderTime)
+
+            // 使用公共方法创建基础通知构建器，然后添加FSI特定配置
+            val notification = createBaseMedicationNotificationBuilder(notificationTitle, contentText, clickPendingIntent)
+                .setFullScreenIntent(fullScreenPendingIntent, true)  // FSI关键配置
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setOngoing(false)
+                .build()
+
+            // 使用公共方法显示通知
+            showNotificationWithPermissionCheck(
+                notification,
+                reminderId,
+                "FSI medication notification shown: $medicationName"
+            )
+
+        } catch (e: Exception) {
+            "Failed to create FSI notification: ${e.message}".loge(TAG)
+            // 降级到标准通知
+            createEnhancedStandardNotification(medicationName, dosage, notes, reminderTime, reminderId)
+        }
+    }
+
+    /**
+     * 创建增强标准通知（FSI权限不可用时的降级方案）
+     */
+    private fun createEnhancedStandardNotification(
+        medicationName: String,
+        dosage: String,
+        notes: String,
+        reminderTime: String,
+        reminderId: Long
+    ) {
+        try {
+            // 使用公共方法创建点击Intent
+            val clickPendingIntent = createMedicationClickIntent(reminderId)
+
+            // 使用公共方法生成统一的标题和内容
+            val (notificationTitle, contentText) = generateMedicationNotificationContent(medicationName, reminderTime)
+
+            // 使用公共方法创建基础通知构建器，然后添加增强标准通知特定配置
+            val notification = createBaseMedicationNotificationBuilder(notificationTitle, contentText, clickPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setAutoCancel(false)  // 不可滑动删除
+                .setOngoing(true)      // 持续显示
+                .setShowWhen(true)
+                .setWhen(System.currentTimeMillis())
+                // 增强音效和震动
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .build()
+
+            // 使用公共方法显示通知
+            showNotificationWithPermissionCheck(
+                notification,
+                reminderId,
+                "Enhanced standard medication notification shown: $medicationName"
+            )
+
+        } catch (e: Exception) {
+            "Failed to create enhanced standard notification: ${e.message}".loge(TAG)
+        }
+    }
+
+    /**
+     * 生成药物提醒通知的标题和内容
+     * @param medicationName 药物名称
+     * @param reminderTime 提醒时间
+     * @return Pair<标题, 内容>
+     */
+    private fun generateMedicationNotificationContent(
+        medicationName: String,
+        reminderTime: String
+    ): Pair<String, String> {
+        val title = if (reminderTime.isNotEmpty()) {
+            context.getString(R.string.medication_notification_title_with_time, medicationName, reminderTime)
+        } else {
+            medicationName
+        }
+        val content = context.getString(R.string.medication_reminder_content)
+        return Pair(title, content)
+    }
+
+    /**
+     * 创建通用的点击Intent
+     * @param reminderId 提醒ID
+     * @return PendingIntent
+     */
+    private fun createMedicationClickIntent(reminderId: Long): PendingIntent {
+        val clickIntent = Intent(context, SplashActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("medication_reminder", true)
+            putExtra("reminder_id", reminderId)
+        }
+        return PendingIntent.getActivity(
+            context,
+            (NOTIFICATION_ID_BASE + reminderId).toInt(),
+            clickIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+    /**
+     * 构建药物提醒通知的基础Builder
+     * @param title 通知标题
+     * @param content 通知内容
+     * @param clickIntent 点击Intent
+     * @return NotificationCompat.Builder
+     */
+    private fun createBaseMedicationNotificationBuilder(
+        title: String,
+        content: String,
+        clickIntent: PendingIntent
+    ): NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, CHANNEL_ID_ALARM)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setContentIntent(clickIntent)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+    }
+
+    /**
+     * 显示通知（统一的权限检查和显示逻辑）
+     * @param notification 通知对象
+     * @param reminderId 提醒ID
+     * @param logMessage 日志消息
+     */
+    private fun showNotificationWithPermissionCheck(
+        notification: Notification,
+        reminderId: Long,
+        logMessage: String
+    ) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationManager.notify((NOTIFICATION_ID_BASE + reminderId).toInt(), notification)
+            logMessage.logd(TAG)
+        }
+    }
+
+    /**
+     * 取消服药提醒通知
+     */
+    fun cancelMedicationNotification(reminderId: Long) {
+        try {
+            notificationManager.cancel((NOTIFICATION_ID_BASE + reminderId).toInt())
+            "Medication notification cancelled: ID=$reminderId".logd(TAG)
+        } catch (e: Exception) {
+            "Failed to cancel medication notification: ${e.message}".loge(TAG)
         }
     }
 }

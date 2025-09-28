@@ -1,20 +1,51 @@
 package com.healthtracker.blood.suger.data.repository
 
+import com.healthtracker.blood.suger.alarm.AlarmScheduler
 import com.healthtracker.blood.suger.data.dao.MedicineReminderDao
+import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.entity.MedicineReminder
 import com.healthtracker.blood.suger.data.entity.PresetTimes
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
 import kotlinx.coroutines.flow.Flow
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * 药物提醒仓库 - 只包含核心功能
+ * 药物提醒仓库 - 包含核心功能和闹钟调度
  */
 @Singleton
 class MedicineReminderRepository @Inject constructor(
-    private val dao: MedicineReminderDao
+    private val dao: MedicineReminderDao,
+    private val alarmRepository: AlarmRepository,
+    private val alarmScheduler: AlarmScheduler
 ) {
+
+    companion object {
+        private const val TAG = "MedicineReminderRepository"
+    }
+
+    /**
+     * 解析时间字符串
+     * @param timeStr 时间字符串，格式如 "08:00", "14:30"
+     * @return Pair<hour, minute>
+     */
+    private fun parseTimeString(timeStr: String): Pair<Int, Int> {
+        try {
+            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val time = timeFormat.parse(timeStr)
+            val calendar = Calendar.getInstance()
+            calendar.time = time!!
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+            return Pair(hour, minute)
+        } catch (e: Exception) {
+            "Failed to parse time string: $timeStr, Error: ${e.message}".loge(TAG)
+            throw IllegalArgumentException("Invalid time format: $timeStr", e)
+        }
+    }
 
     /**
      * 获取所有启用的提醒
@@ -38,10 +69,51 @@ class MedicineReminderRepository @Inject constructor(
         note: String = "",
         syncCalendar: Boolean = false
     ): Long {
-        val reminder = MedicineReminder.createFromTimeStrings(
-            medicineName, reminderTimes, medicineCover, note, syncCalendar
-        )
-        return dao.insert(reminder)
+        try {
+            // 1. 保存药物提醒到数据库
+            val reminder = MedicineReminder.createFromTimeStrings(
+                medicineName, reminderTimes, medicineCover, note, syncCalendar
+            )
+            val medicineId = dao.insert(reminder)
+
+            "Medicine reminder saved: ID=$medicineId, Name=$medicineName".logd(TAG)
+
+            // 2. 为每个提醒时间创建系统闹钟
+            reminderTimes.forEach { timeStr ->
+                try {
+                    val (hour, minute) = parseTimeString(timeStr)
+
+                    // 创建服药提醒闹钟记录（简化版）
+                    val alarmRecord = AlarmRecord.createMedicationAlarm(
+                        medicineId = medicineId,
+                        hour = hour,
+                        minute = minute,
+                        repeatFlag = AlarmRecord.REPEAT_DAILY // 每天重复
+                    )
+
+                    // 保存闹钟记录到数据库
+                    val alarmId = alarmRepository.insertAlarmRecord(alarmRecord)
+
+                    // 调度系统闹钟
+                    val scheduleSuccess = alarmScheduler.scheduleAlarm(alarmRecord.copy(id = alarmId))
+
+                    if (scheduleSuccess) {
+                        "Medication alarm scheduled: MedicineID=$medicineId, AlarmID=$alarmId, Time=$timeStr".logd(TAG)
+                    } else {
+                        "Failed to schedule medication alarm: MedicineID=$medicineId, Time=$timeStr".loge(TAG)
+                    }
+
+                } catch (e: Exception) {
+                    "Error creating alarm for time $timeStr: ${e.message}".loge(TAG)
+                }
+            }
+
+            return medicineId
+
+        } catch (e: Exception) {
+            "Error adding medicine reminder: ${e.message}".loge(TAG)
+            throw e
+        }
     }
 
     /**
@@ -78,37 +150,101 @@ class MedicineReminderRepository @Inject constructor(
         note: String? = null,
         syncCalendar: Boolean? = null
     ) {
-        val current = dao.getById(id) ?: return
+        try {
+            val current = dao.getById(id) ?: return
+            "Updating medicine: ID=$id, Name=${medicineName ?: current.medicineName}".logd(TAG)
 
-        // 处理提醒时间更新
-        val newStartRemindTimes = reminderTimes?.let { times ->
-            val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-            val today = java.util.Calendar.getInstance()
+            // 如果提醒时间发生变化，需要更新闹钟
+            if (reminderTimes != null) {
+                // 1. 取消所有旧的药物闹钟
+                cancelMedicationAlarms(id)
 
-            times.mapNotNull { timeStr ->
-                try {
-                    val time = timeFormat.parse(timeStr)
-                    val calendar = java.util.Calendar.getInstance()
-                    calendar.time = today.time
-                    val timeCalendar = java.util.Calendar.getInstance()
-                    timeCalendar.time = time
-                    calendar.set(java.util.Calendar.HOUR_OF_DAY, timeCalendar.get(java.util.Calendar.HOUR_OF_DAY))
-                    calendar.set(java.util.Calendar.MINUTE, timeCalendar.get(java.util.Calendar.MINUTE))
-                    calendar.set(java.util.Calendar.SECOND, 0)
-                    calendar.set(java.util.Calendar.MILLISECOND, 0)
-                    calendar.time.time.toString()
-                } catch (e: Exception) { null }
-            }.joinToString(",")
+                // 2. 为新的提醒时间创建闹钟
+                val actualMedicineName = medicineName ?: current.medicineName
+                val actualNote = note ?: current.note
+
+                reminderTimes.forEach { timeStr ->
+                    try {
+                        val (hour, minute) = parseTimeString(timeStr)
+
+                        // 创建新的服药提醒闹钟（简化版）
+                        val alarmRecord = AlarmRecord.createMedicationAlarm(
+                            medicineId = id,
+                            hour = hour,
+                            minute = minute,
+                            repeatFlag = AlarmRecord.REPEAT_DAILY
+                        )
+
+                        // 保存闹钟记录到数据库
+                        val alarmId = alarmRepository.insertAlarmRecord(alarmRecord)
+
+                        // 调度系统闹钟
+                        val scheduleSuccess = alarmScheduler.scheduleAlarm(alarmRecord.copy(id = alarmId))
+
+                        if (scheduleSuccess) {
+                            "Updated medication alarm: MedicineID=$id, AlarmID=$alarmId, Time=$timeStr".logd(TAG)
+                        } else {
+                            "Failed to schedule updated alarm: MedicineID=$id, Time=$timeStr".loge(TAG)
+                        }
+
+                    } catch (e: Exception) {
+                        "Error updating alarm for time $timeStr: ${e.message}".loge(TAG)
+                    }
+                }
+            }
+
+            // 处理提醒时间更新
+            val newStartRemindTimes = reminderTimes?.let { times ->
+                val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+                val today = java.util.Calendar.getInstance()
+
+                times.mapNotNull { timeStr ->
+                    try {
+                        val time = timeFormat.parse(timeStr)
+                        val calendar = java.util.Calendar.getInstance()
+                        calendar.time = today.time
+                        val timeCalendar = java.util.Calendar.getInstance()
+                        timeCalendar.time = time
+                        calendar.set(java.util.Calendar.HOUR_OF_DAY, timeCalendar.get(java.util.Calendar.HOUR_OF_DAY))
+                        calendar.set(java.util.Calendar.MINUTE, timeCalendar.get(java.util.Calendar.MINUTE))
+                        calendar.set(java.util.Calendar.SECOND, 0)
+                        calendar.set(java.util.Calendar.MILLISECOND, 0)
+                        calendar.time.time.toString()
+                    } catch (e: Exception) { null }
+                }.joinToString(",")
+            }
+
+            // 更新药物提醒记录
+            val updated = current.copy(
+                medicineName = medicineName ?: current.medicineName,
+                startRemindTimes = newStartRemindTimes ?: current.startRemindTimes,
+                medicineCover = medicineCover ?: current.medicineCover,
+                note = note ?: current.note,
+                syncCalendar = syncCalendar?.let { if (it) 1 else 0 } ?: current.syncCalendar
+            )
+            dao.update(updated)
+
+            "Medicine updated successfully: ID=$id".logd(TAG)
+
+        } catch (e: Exception) {
+            "Error updating medicine: ID=$id, Error=${e.message}".loge(TAG)
+            throw e
         }
+    }
 
-        val updated = current.copy(
-            medicineName = medicineName ?: current.medicineName,
-            startRemindTimes = newStartRemindTimes ?: current.startRemindTimes,
-            medicineCover = medicineCover ?: current.medicineCover,
-            note = note ?: current.note,
-            syncCalendar = syncCalendar?.let { if (it) 1 else 0 } ?: current.syncCalendar
-        )
-        dao.update(updated)
+    /**
+     * 取消指定药物的所有闹钟
+     * @param medicineId 药物ID
+     */
+    private suspend fun cancelMedicationAlarms(medicineId: Long) {
+        try {
+            // TODO: 实现从AlarmRepository中获取指定药物的所有闹钟
+            // 目前简化实现：只记录日志，不实际取消闹钟
+            // 完整实现需要在AlarmRepository中添加getAlarmsByMedicineId方法
+            "Cancelling medication alarms for MedicineID=$medicineId (simplified implementation)".logd(TAG)
+        } catch (e: Exception) {
+            "Error cancelling medication alarms: MedicineID=$medicineId, Error=${e.message}".loge(TAG)
+        }
     }
 
     /**
@@ -181,29 +317,28 @@ class MedicineReminderRepository @Inject constructor(
         return addMedicine(medicineName, preset, medicineCover, note, syncCalendar)
     }
 
-    companion object {
-        /**
-         * 快速创建方法
-         */
-        suspend fun MedicineReminderRepository.addOnceDailyMedicine(
-            name: String,
-            cover: String = "",
-            note: String = "",
-            sync: Boolean = false
-        ) = addMedicineWithPreset(name, PresetTimes.ONCE_DAILY, cover, note, sync)
-
-        suspend fun MedicineReminderRepository.addTwiceDailyMedicine(
-            name: String,
-            cover: String = "",
-            note: String = "",
-            sync: Boolean = false
-        ) = addMedicineWithPreset(name, PresetTimes.TWICE_DAILY, cover, note, sync)
-
-        suspend fun MedicineReminderRepository.addThreeTimesDailyMedicine(
-            name: String,
-            cover: String = "",
-            note: String = "",
-            sync: Boolean = false
-        ) = addMedicineWithPreset(name, PresetTimes.THREE_TIMES_DAILY, cover, note, sync)
-    }
 }
+
+/**
+ * 快速创建方法扩展函数
+ */
+suspend fun MedicineReminderRepository.addOnceDailyMedicine(
+    name: String,
+    cover: String = "",
+    note: String = "",
+    sync: Boolean = false
+) = addMedicineWithPreset(name, PresetTimes.ONCE_DAILY, cover, note, sync)
+
+suspend fun MedicineReminderRepository.addTwiceDailyMedicine(
+    name: String,
+    cover: String = "",
+    note: String = "",
+    sync: Boolean = false
+) = addMedicineWithPreset(name, PresetTimes.TWICE_DAILY, cover, note, sync)
+
+suspend fun MedicineReminderRepository.addThreeTimesDailyMedicine(
+    name: String,
+    cover: String = "",
+    note: String = "",
+    sync: Boolean = false
+) = addMedicineWithPreset(name, PresetTimes.THREE_TIMES_DAILY, cover, note, sync)

@@ -18,65 +18,65 @@ class MedicineReminderExample(
      * 示例1: 添加常见药物提醒
      */
     suspend fun example1_AddCommonMedicines() {
-        println("=== 示例1: 添加常见药物提醒 ===")
+        println("=== Example 1: Add Common Medication Reminders ===")
 
         // 一日一次的维生素，带封面和备注
         repository.addMedicine(
-            medicineName = "维生素C",
+            medicineName = "Vitamin C",
             reminderTimes = PresetTimes.ONCE_DAILY,
             medicineCover = "/storage/medicine_covers/vitamin_c.jpg",
-            note = "增强免疫力，饭后服用",
+            note = "Enhance immunity, take after meals",
             syncCalendar = true
         )
 
         // 一日两次的降压药
         repository.addMedicine(
-            medicineName = "降压药",
+            medicineName = "Blood Pressure Medicine",
             reminderTimes = PresetTimes.TWICE_DAILY,
-            note = "按时服用，注意血压变化"
+            note = "Take on time, monitor blood pressure changes"
         )
 
         // 一日三次的抗生素
         repository.addMedicine(
-            medicineName = "阿莫西林",
+            medicineName = "Amoxicillin",
             reminderTimes = PresetTimes.THREE_TIMES_DAILY,
-            note = "疗程7天，饭后30分钟服用",
+            note = "7-day course, take 30 minutes after meals",
             syncCalendar = false
         )
 
-        println("✅ 添加了3种药物提醒")
+        println("✅ Added 3 medication reminders")
     }
 
     /**
      * 示例2: 自定义提醒时间
      */
     suspend fun example2_CustomReminderTimes() {
-        println("\n=== 示例2: 自定义提醒时间 ===")
+        println("\n=== Example 2: Custom Reminder Times ===")
 
         // 特殊时间的胰岛素注射，带封面和详细备注
         repository.addMedicine(
-            medicineName = "胰岛素",
+            medicineName = "Insulin",
             reminderTimes = listOf("07:30", "11:30", "17:30", "21:30"),
             medicineCover = "/storage/medicine_covers/insulin.jpg",
-            note = "饭前注射，注意血糖监测，如有低血糖症状立即进食",
+            note = "Inject before meals, monitor blood sugar, eat immediately if hypoglycemic symptoms occur",
             syncCalendar = true
         )
 
         // 睡前服用的药物
         repository.addMedicine(
-            medicineName = "褪黑素",
+            medicineName = "Melatonin",
             reminderTimes = listOf("22:30"),
-            note = "睡前30分钟服用，有助睡眠"
+            note = "Take 30 minutes before bedtime, helps with sleep"
         )
 
-        println("✅ 添加了自定义时间的药物提醒")
+        println("✅ Added medication reminders with custom times")
     }
 
     /**
      * 示例3: 记录服药操作
      */
     suspend fun example3_RecordMedication() {
-        println("\n=== 示例3: 记录服药操作 ===")
+        println("\n=== Example 3: Record Medication ===")
 
         val reminders = repository.getActiveReminders().first()
         if (reminders.isNotEmpty()) {
@@ -84,11 +84,11 @@ class MedicineReminderExample(
 
             // 记录服药
             repository.recordMedication(firstReminder.id)
-            println("✅ 记录了 ${firstReminder.medicineName} 的服药")
+            println("✅ Recorded medication for ${firstReminder.medicineName}")
 
             // 记录系统提醒
             repository.recordRealRemind(firstReminder.id)
-            println("🔔 记录了 ${firstReminder.medicineName} 的系统提醒")
+            println("🔔 Recorded system reminder for ${firstReminder.medicineName}")
 
             println("✨ 服药记录已成功保存")
         }
@@ -160,7 +160,7 @@ class MedicineReminderExample(
 
             // 记录系统提醒
             repository.recordRealRemind(firstReminder.id)
-            println("🔔 记录了 ${firstReminder.medicineName} 的系统提醒")
+            println("🔔 Recorded system reminder for ${firstReminder.medicineName}")
 
             // 更新备注
             repository.updateNote(firstReminder.id, "已更新备注信息")
