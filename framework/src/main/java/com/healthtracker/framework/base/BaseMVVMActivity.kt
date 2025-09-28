@@ -24,10 +24,9 @@ import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.SysBarUtils.hideNavigationBar
 import com.healthtracker.framework.SysBarUtils.hideStateBar
 import com.healthtracker.framework.util.RestoreUtils
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import com.healthtracker.framework.ext.collectLatest
+import com.healthtracker.framework.ext.collect
+import com.healthtracker.framework.ext.collectCombined
 import kotlin.math.max
 
 
@@ -202,99 +201,15 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
     protected open fun getStatusBarColor() = R.color.white
 
     /**
-     * 收集StateFlow的便捷方法
+     * 注意：Flow扩展函数已迁移到 FlowExtensions.kt
      *
-     * 特点：使用 collectLatest，只处理最新的值，会取消之前正在执行的收集块
+     * 现在可以使用更简洁的语法：
+     * - collectLatest(viewModel.isLoading) { ... }
+     * - collect(viewModel.events) { ... }
+     * - collectCombined(flow1, flow2) { ... }
      *
-     * 使用场景：
-     * - UI状态更新（如加载状态、错误状态、数据状态）
-     * - 只需要最新状态的场景
-     * - 避免过时的UI更新
-     *
-     * 示例：
-     * viewModel.isLoading.collectLatestLifecycle { isLoading ->
-     *     binding.progressBar.isVisible = isLoading  // 只显示最新状态
-     * }
+     * 这些扩展函数现在可以在任何LifecycleOwner中使用，不仅限于Activity
      */
-    protected inline fun <T> StateFlow<T>.collectLatestLifecycle(
-        crossinline action: suspend (value: T) -> Unit
-    ) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                collectLatest { action(it) }
-            }
-        }
-    }
-
-    /**
-     * 收集Flow的便捷方法
-     *
-     * 特点：使用普通 collect，会处理所有值，包括中间值，按顺序执行每个收集块
-     *
-     * 与 collectLatestLifecycle 的区别：
-     * - collectLatestLifecycle：只处理最新值，会取消之前的操作
-     * - collectLifecycle：处理所有值，不丢失任何事件
-     *
-     * 使用场景：
-     * - 收集一次性事件流（如导航事件、错误事件）
-     * - 处理用户操作响应流
-     * - 监听网络状态变化
-     * - 处理来自Repository的数据流
-     * - 需要确保不丢失任何事件的场景
-     *
-     * 示例：
-     * viewModel.events.collectLifecycle { event ->
-     *     when (event) {
-     *         is NavigateEvent -> navigateTo(event.target)  // 每个事件都要处理
-     *         is ShowErrorEvent -> showError(event.message)
-     *     }
-     * }
-     */
-    protected inline fun <T> Flow<T>.collectLifecycle(
-        crossinline action: suspend (value: T) -> Unit
-    ) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                collect { action(it) }
-            }
-        }
-    }
-
-    /**
-     * 收集多个StateFlow的便捷方法
-     *
-     * 使用场景：
-     * - 同时监听多个UI状态变化（如加载状态 + 数据状态）
-     * - 组合多个数据源进行UI更新
-     * - 处理复杂的表单状态（如输入验证 + 提交状态）
-     * - 监听用户权限状态 + 数据加载状态
-     *
-     * 示例：
-     * collectCombined(
-     *     viewModel.isLoading,
-     *     viewModel.userData
-     * ) { isLoading, userData ->
-     *     binding.progressBar.isVisible = isLoading
-     *     if (!isLoading && userData != null) {
-     *         updateUI(userData)
-     *     }
-     * }
-     */
-    protected inline fun <T1, T2> collectCombined(
-        stateFlow1: StateFlow<T1>,
-        stateFlow2: StateFlow<T2>,
-        crossinline action: suspend (T1, T2) -> Unit
-    ) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                kotlinx.coroutines.flow.combine(stateFlow1, stateFlow2) { value1, value2 ->
-                    value1 to value2
-                }.collect { (value1, value2) ->
-                    action(value1, value2)
-                }
-            }
-        }
-    }
 
     /**
      * 子类可重写，返回true则禁用返回键，默认false

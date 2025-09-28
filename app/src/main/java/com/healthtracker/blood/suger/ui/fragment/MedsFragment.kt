@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
@@ -23,13 +22,13 @@ import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
@@ -100,47 +99,39 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
 
     /**
      * 观察ViewModel的数据变化
+     * 使用新的Flow扩展函数，代码更简洁且自动处理生命周期
      */
     private fun observeViewModel() {
         // 观察选中日期的变化
-        lifecycleScope.launch {
-            mViewModel.selectedDate.collect { date ->
-                "选中日期变化: ${DateTimeUtils.formatDate(date)}".logd(TAG)
-                onDateChanged(date)
-            }
+        collectLatest(mViewModel.selectedDate) { date ->
+            "选中日期变化: ${DateTimeUtils.formatDate(date)}".logd(TAG)
+            onDateChanged(date)
         }
 
         // 观察周状态的变化
-        lifecycleScope.launch {
-            mViewModel.isCurrentWeek.collect { isCurrentWeek ->
-                "周状态变化: 是否当前周=$isCurrentWeek".logd(TAG)
-                onWeekStatusChanged(isCurrentWeek)
-            }
+        collectLatest(mViewModel.isCurrentWeek) { isCurrentWeek ->
+            "周状态变化: 是否当前周=$isCurrentWeek".logd(TAG)
+            onWeekStatusChanged(isCurrentWeek)
         }
 
         // 观察格式化月份的变化
-        lifecycleScope.launch {
-            mViewModel.formattedMonth.collect { formattedMonth ->
-                "格式化月份变化: $formattedMonth".logd(TAG)
-                onFormattedMonthChanged(formattedMonth)
-            }
+        collectLatest(mViewModel.formattedMonth) { formattedMonth ->
+            "格式化月份变化: $formattedMonth".logd(TAG)
+            onFormattedMonthChanged(formattedMonth)
         }
 
-        // 观察药物提醒列表数据变化
-        lifecycleScope.launch {
-            mViewModel.reminderItems.collect { reminderItems ->
-                "提醒列表数据变化: 共${reminderItems.size}项".logd(TAG)
-                updateReminderList(reminderItems)
-            }
+        // 观察药物提醒列表数据变化 - 使用collectLatest确保只处理最新的列表状态
+        collectLatest(mViewModel.reminderItems) { reminderItems ->
+            "提醒列表数据变化: 共${reminderItems.size}项".logd(TAG)
+            updateReminderList(reminderItems)
         }
 
         // 观察是否可以添加提醒的状态变化
-        lifecycleScope.launch {
-            mViewModel.canAddReminder.collect { canAdd ->
-                "添加按钮状态变化: 可添加=$canAdd".logd(TAG)
-                updateAddButtonState(canAdd)
-            }
+        collectLatest(mViewModel.canAddReminder) { canAdd ->
+            "添加按钮状态变化: 可添加=$canAdd".logd(TAG)
+            updateAddButtonState(canAdd)
         }
+
     }
 
     /**

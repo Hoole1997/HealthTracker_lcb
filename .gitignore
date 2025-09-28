@@ -51,4 +51,7 @@ google-services.json
 /.history
 /.vscode
 /.kotlin
+/.claude
+.windsurfrules
+*.md
 
