@@ -3,6 +3,7 @@ import com.github.megatronking.stringfog.plugin.StringFogExtension
 import com.github.megatronking.stringfog.plugin.StringFogMode
 import com.github.megatronking.stringfog.plugin.kg.RandomKeyGenerator
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
+import kotlin.collections.get
 
 plugins {
     // 使用自定义插件
@@ -22,7 +23,7 @@ apply(from = "../scripts/sign.gradle")
 
 // 使用默认配置，避免不同变种间的冲突
 val isRelease = findProperty("app")?.let { (it as Map<*, *>)["stable_release"] as Boolean } ?: false
-
+val url = findProperty("url") as Map<*, *>
 
 println("isRelease = $isRelease")
 configure<StringFogExtension> {
@@ -49,6 +50,8 @@ android {
         buildConfig {
             boolean("StableRelease", isRelease)
         }
+
+        buildConfigField("String", "PRIVACY_POLICY", "\"${url["privacyUrl"]}\"")
 
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))

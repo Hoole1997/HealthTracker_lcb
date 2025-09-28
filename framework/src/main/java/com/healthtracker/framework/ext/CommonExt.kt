@@ -384,3 +384,13 @@ fun Activity.toNotificationSetting() {
         toSetting()
     }
 }
+
+fun openBrowser(context: Context, url: String) {
+    try {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setData(url.toUri())
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        e.toString().logd()
+    }
+}
