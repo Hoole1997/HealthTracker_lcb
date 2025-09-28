@@ -87,7 +87,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
             val titleRes = when (position) {
                 0 -> {
                     // Home页面：显示默认状态
-                    R.string.app_name
+                    R.string.home
                 }
                 1 -> {
                     // Meds页面：隐藏设置和提醒按钮，显示月份
@@ -102,7 +102,7 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
                     ivRemind.gone()
                     R.string.record
                 }
-                else -> R.string.app_name
+                else -> R.string.home
             }
             tvTitle.text = getString(titleRes)
         }

@@ -8,10 +8,10 @@ ext {
              ]
     ]
     // 应用版本配置
-    app = [applicationId    : "com.healthtracker.blood.suger",
+    app = [applicationId    : "com.health.tracker.blood.pressure.sugar.log.medication.manager",
            stable_release   : true
     ]
 
-    url = [privacyUrl: "https://www.google.com",
-           teamUrl   : "https://www.google.com",]
+    url = [privacyUrl: "https://blazelabstudio.com/privacy.html",
+           teamUrl   : "https://blazelabstudio.com/privacy.html",]
 }
