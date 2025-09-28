@@ -74,6 +74,10 @@ class MedicationReminderFullScreenActivity : BaseMVVMActivity<MedicationReminder
 
     override fun getVMModelClass() = MedicationReminderFullScreenViewModel::class.java
 
+
+    override fun isFullscreenWithNavigationBar() = true
+    override fun isFullscreen() = true
+
     override fun initView(savedInstanceState: Bundle?) {
         setupFullScreenMode()
         initializeFromIntent()
@@ -178,16 +182,7 @@ class MedicationReminderFullScreenActivity : BaseMVVMActivity<MedicationReminder
         finishAndRemoveTask()
     }
 
-    /**
-     * 处理返回键
-     */
-    override fun onBackPressed() {
-        // 防止用户通过返回键意外关闭
-        "User attempted to close FSI reminder via back button".logd(TAG)
-        // 可以选择忽略或者等同于dismiss
-        mViewModel.dismissReminder()
-        super.onBackPressed()
-    }
+    override fun shouldDisableBackPressed() = true
 
     /**
      * Activity生命周期管理
