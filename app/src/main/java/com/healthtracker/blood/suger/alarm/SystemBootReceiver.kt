@@ -87,7 +87,7 @@ class SystemBootReceiver : BroadcastReceiver() {
                 val schedulerStatus = alarmScheduler.getSchedulerStatus()
                 if (!schedulerStatus.fullyAvailable) {
                     "Alarm scheduler not fully available, skipping restoration".logw(TAG)
-                    "Scheduler status: canScheduleExactAlarms=${schedulerStatus.canScheduleExactAlarms}, systemAvailable=${schedulerStatus.systemAlarmManagerAvailable}".logw(TAG)
+                    "Scheduler status: canScheduleAlarms=${schedulerStatus.canScheduleAlarms}, systemAvailable=${schedulerStatus.systemAlarmManagerAvailable}".logw(TAG)
                     return@launch
                 }
                 
@@ -246,7 +246,7 @@ class SystemBootReceiver : BroadcastReceiver() {
                 totalAlarms = allAlarms.size,
                 enabledAlarms = enabledAlarms.size,
                 schedulerAvailable = schedulerStatus.fullyAvailable,
-                canScheduleExactAlarms = schedulerStatus.canScheduleExactAlarms
+                canScheduleAlarms = schedulerStatus.canScheduleAlarms
             )
         } catch (e: Exception) {
             "Error getting restoration status: ${e.message}".loge(TAG)
@@ -261,17 +261,17 @@ class SystemBootReceiver : BroadcastReceiver() {
  * @property totalAlarms 总闹钟数量
  * @property enabledAlarms 启用的闹钟数量
  * @property schedulerAvailable 调度器是否可用
- * @property canScheduleExactAlarms 是否可以调度精确闹钟
+ * @property canScheduleAlarms 是否可以调度闹钟
  */
 data class AlarmRestorationStatus(
     val totalAlarms: Int,
     val enabledAlarms: Int,
     val schedulerAvailable: Boolean,
-    val canScheduleExactAlarms: Boolean
+    val canScheduleAlarms: Boolean
 ) {
     /**
      * 是否准备好进行恢复
      */
     val readyForRestoration: Boolean
-        get() = schedulerAvailable && canScheduleExactAlarms && enabledAlarms > 0
+        get() = schedulerAvailable && canScheduleAlarms && enabledAlarms > 0
 }

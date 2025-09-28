@@ -892,4 +892,9 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
 
+    <!-- 通知权限相关字符串 -->
+    <string name="notification_permission_title">Notification permission required</string>
+    <string name="notification_permission_message">Notification permission is required to send you reminds</string>
+    <string name="go_to_settings">Turn on</string>
+
 </resources>

@@ -3,7 +3,6 @@ package com.healthtracker.blood.suger.ui.act
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.healthtracker.blood.suger.alarm.AlarmPermissionResult
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.databinding.ActivityAlarmManagerBinding
@@ -36,9 +35,8 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
     override fun getVMModelClass() = AlarmViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        // 首先检查权限
-        checkAndRequestPermissions()
-        
+        // 检查通知权限
+        checkNotificationPermission()
         setupActionBar()
         setupRecyclerViews()
         setupClickListeners()
@@ -118,46 +116,15 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
     }
     
     /**
-     * 检查并申请必要权限
+     * 检查通知权限
      */
-    private fun checkAndRequestPermissions() {
-        val permissionResult = permissionManager.checkAllPermissions()
-        
-        if (permissionResult.allGranted) {
-            "All alarm permissions granted".logd(TAG)
+    private fun checkNotificationPermission() {
+        if (!permissionManager.isNotificationPermissionGranted()) {
+            "Notification permission not granted, requesting...".logw(TAG)
+            permissionManager.requestNotificationPermission(this)
         } else {
-            "Some alarm permissions missing, requesting...".logw(TAG)
-            handleMissingPermissions(permissionResult)
+            "Notification permission already granted".logd(TAG)
         }
-    }
-    
-    /**
-     * 处理缺失的权限
-     */
-    private fun handleMissingPermissions(permissionResult: AlarmPermissionResult) {
-        val missingPermissions = permissionResult.getMissingPermissions()
-        "Missing permissions: ${missingPermissions.joinToString(", ")}".logw(TAG)
-        
-        // 申请所有缺失的权限
-        permissionManager.requestAllPermissions(this) { result ->
-            if (result.allGranted) {
-                "All permissions granted after request".logd(TAG)
-            } else {
-                "Some permissions still missing after request".logw(TAG)
-                showPermissionDeniedMessage(result)
-            }
-        }
-    }
-    
-    /**
-     * 显示权限被拒绝的提示
-     */
-    private fun showPermissionDeniedMessage(permissionResult: AlarmPermissionResult) {
-        val missingPermissions = permissionResult.getMissingPermissions()
-        val message = "为了确保闹钟功能正常工作，请授予以下权限：\n${missingPermissions.joinToString("\n")}"
-        
-        // 这里可以显示一个对话框或Toast提示用户
-        "Permission denied message: $message".logw(TAG)
     }
     
     override fun onRequestPermissionsResult(
@@ -166,26 +133,13 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        
+
         val handled = permissionManager.handlePermissionResult(requestCode, permissions, grantResults)
         if (handled) {
-            // 重新检查权限状态
-            val permissionResult = permissionManager.checkAllPermissions()
-            if (!permissionResult.allGranted) {
-                showPermissionDeniedMessage(permissionResult)
-            }
-        }
-    }
-    
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        
-        val handled = permissionManager.handleActivityResult(requestCode, resultCode)
-        if (handled) {
-            // 重新检查权限状态
-            val permissionResult = permissionManager.checkAllPermissions()
-            if (!permissionResult.allGranted) {
-                showPermissionDeniedMessage(permissionResult)
+            if (permissionManager.isNotificationPermissionGranted()) {
+                "Notification permission granted".logd(TAG)
+            } else {
+                "Notification permission denied".logw(TAG)
             }
         }
     }

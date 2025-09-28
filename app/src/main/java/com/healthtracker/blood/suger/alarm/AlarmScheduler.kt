@@ -69,32 +69,22 @@ class AlarmScheduler @Inject constructor(
             
             val pendingIntent = createPendingIntent(alarmRecord)
             
-            // 根据Android版本选择合适的调度方法
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                    // Android 6.0+ 使用setExactAndAllowWhileIdle确保休眠唤醒
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
-                }
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                    // Android 4.4+ 使用setExact
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
-                }
-                else -> {
-                    // 低版本使用普通set方法
-                    alarmManager.set(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
-                }
+            // 使用非精确闹钟API，适用于所有版本且不需要特殊权限
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // Android 6.0+ 使用setAndAllowWhileIdle确保休眠唤醒
+                // 这个方法不需要精确闹钟权限，但仍能在Doze模式下工作
+                alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerTime,
+                    pendingIntent
+                )
+            } else {
+                // 低版本使用普通set方法
+                alarmManager.set(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerTime,
+                    pendingIntent
+                )
             }
             
             val calendar = Calendar.getInstance().apply { timeInMillis = triggerTime }
@@ -258,15 +248,12 @@ class AlarmScheduler @Inject constructor(
     
     /**
      * 检查闹钟是否可以调度
-     * 
-     * @return 是否可以调度精确闹钟
+     *
+     * @return 是否可以调度闹钟（使用非精确API，始终可用）
      */
-    fun canScheduleExactAlarms(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            alarmManager.canScheduleExactAlarms()
-        } else {
-            true
-        }
+    fun canScheduleAlarms(): Boolean {
+        // 使用非精确闹钟API，不需要特殊权限，始终可用
+        return true
     }
     
     /**
@@ -315,12 +302,12 @@ class AlarmScheduler @Inject constructor(
     
     /**
      * 获取调度器状态信息
-     * 
+     *
      * @return 调度器状态
      */
     fun getSchedulerStatus(): AlarmSchedulerStatus {
         return AlarmSchedulerStatus(
-            canScheduleExactAlarms = canScheduleExactAlarms(),
+            canScheduleAlarms = canScheduleAlarms(),
             systemAlarmManagerAvailable = true // 直接返回true，因为alarmManager已初始化
         )
     }
@@ -328,17 +315,17 @@ class AlarmScheduler @Inject constructor(
 
 /**
  * 闹钟调度器状态
- * 
- * @property canScheduleExactAlarms 是否可以调度精确闹钟
+ *
+ * @property canScheduleAlarms 是否可以调度闹钟
  * @property systemAlarmManagerAvailable 系统AlarmManager是否可用
  */
 data class AlarmSchedulerStatus(
-    val canScheduleExactAlarms: Boolean,
+    val canScheduleAlarms: Boolean,
     val systemAlarmManagerAvailable: Boolean
 ) {
     /**
      * 调度器是否完全可用
      */
     val fullyAvailable: Boolean
-        get() = canScheduleExactAlarms && systemAlarmManagerAvailable
+        get() = canScheduleAlarms && systemAlarmManagerAvailable
 }
