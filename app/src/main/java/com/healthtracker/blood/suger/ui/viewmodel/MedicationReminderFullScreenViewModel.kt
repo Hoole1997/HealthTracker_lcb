@@ -1,11 +1,18 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
+import androidx.lifecycle.viewModelScope
+import com.healthtracker.blood.suger.alarm.AlarmNotificationManager
+import com.healthtracker.blood.suger.data.repository.MedicineReminderRepository
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.ext.logw
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -15,7 +22,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MedicationReminderFullScreenViewModel @Inject constructor(
-    // TODO: 注入必要的Repository和Service
+    private val medicineReminderRepository: MedicineReminderRepository,
+    private val alarmNotificationManager: AlarmNotificationManager
 ) : BaseViewModel() {
 
     companion object {
@@ -77,11 +85,20 @@ class MedicationReminderFullScreenViewModel @Inject constructor(
         val currentInfo = _medicationInfo.value
         "Marking medication as taken: ${currentInfo.medicationName} (ID: ${currentInfo.reminderId})".logd(TAG)
 
-        // TODO: 调用Repository更新服药记录
-        // medicationRepository.markAsTaken(currentInfo.reminderId, System.currentTimeMillis())
+        if (currentInfo.reminderId < 0) {
+            "Invalid reminder id, skip record update".logw(TAG)
+            return
+        }
 
-        // TODO: 取消相关的通知和闹钟
-        // notificationHelper.cancelMedicationNotification(currentInfo.reminderId)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                medicineReminderRepository.recordMedication(currentInfo.reminderId)
+            } catch (e: Exception) {
+                "Failed to record medication taken: ${e.message}".loge(TAG)
+            }
+        }
+
+        alarmNotificationManager.cancelMedicationNotification(currentInfo.reminderId)
     }
 
     /**
@@ -91,11 +108,25 @@ class MedicationReminderFullScreenViewModel @Inject constructor(
         val currentInfo = _medicationInfo.value
         "Scheduling snooze for ${currentInfo.medicationName}: $minutes minutes".logd(TAG)
 
-        // TODO: 重新安排闹钟
-        // alarmScheduler.scheduleSnooze(currentInfo.reminderId, minutes)
+        if (minutes <= 0) {
+            "Snooze duration must be positive".logw(TAG)
+            return
+        }
 
-        // TODO: 取消当前通知
-        // notificationHelper.cancelMedicationNotification(currentInfo.reminderId)
+        if (currentInfo.reminderId < 0) {
+            "Invalid reminder id, cannot schedule snooze".logw(TAG)
+            return
+        }
+
+        alarmNotificationManager.cancelMedicationNotification(currentInfo.reminderId)
+        alarmNotificationManager.scheduleMedicationSnooze(
+            medicationName = currentInfo.medicationName,
+            dosage = currentInfo.dosage,
+            notes = currentInfo.notes,
+            reminderTime = currentInfo.reminderTime,
+            reminderId = currentInfo.reminderId,
+            delayMinutes = minutes
+        )
     }
 
     /**
@@ -105,8 +136,11 @@ class MedicationReminderFullScreenViewModel @Inject constructor(
         val currentInfo = _medicationInfo.value
         "Dismissing medication reminder: ${currentInfo.medicationName}".logd(TAG)
 
-        // TODO: 取消当前通知，但不影响后续提醒
-        // notificationHelper.cancelMedicationNotification(currentInfo.reminderId)
+        if (currentInfo.reminderId < 0) {
+            return
+        }
+
+        alarmNotificationManager.cancelMedicationNotification(currentInfo.reminderId)
 
         // TODO: 记录用户行为（可选）
         // userActionRepository.recordDismissal(currentInfo.reminderId, System.currentTimeMillis())

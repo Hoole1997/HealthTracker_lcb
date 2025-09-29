@@ -15,10 +15,8 @@ import androidx.core.app.NotificationManagerCompat
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
-import com.healthtracker.blood.suger.ui.act.MainActivity
 import com.healthtracker.blood.suger.ui.act.MedicationReminderFullScreenActivity
 import com.healthtracker.blood.suger.ui.act.SplashActivity
-import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -54,6 +52,7 @@ class AlarmNotificationManager @Inject constructor(
         
         // 通知ID基础值
         private const val NOTIFICATION_ID_BASE = 10000
+        private const val SNOOZE_REQUEST_OFFSET = 50000
     }
     
     private val notificationManager: NotificationManagerCompat by lazy {

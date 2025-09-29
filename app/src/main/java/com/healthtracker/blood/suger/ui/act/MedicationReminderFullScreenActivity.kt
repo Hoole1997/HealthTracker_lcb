@@ -12,16 +12,13 @@ import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityMedicationReminderFullscreenBinding
 import com.healthtracker.blood.suger.ui.viewmodel.MedicationReminderFullScreenViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
-import com.healthtracker.framework.ext.invisible
+import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.hasOreo
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 /**
  * 服药提醒全屏通知Activity
@@ -35,6 +32,7 @@ class MedicationReminderFullScreenActivity : BaseMVVMActivity<MedicationReminder
 
     companion object {
         private const val TAG = "MedicationReminderFullScreenActivity"
+        private const val DEFAULT_SNOOZE_MINUTES = 5
 
         // Intent extras
         const val EXTRA_MEDICATION_NAME = "medication_name"
@@ -146,9 +144,9 @@ class MedicationReminderFullScreenActivity : BaseMVVMActivity<MedicationReminder
                 finishAndRemoveTask()
             }
 
-            btnSnooze.clickWithDuration {
+            btnClose.clickWithDuration {
                 "User chose to snooze medication reminder".logd(TAG)
-                showSnoozeOptions()
+                finishAndRemoveTask()
             }
         }
     }
@@ -158,13 +156,27 @@ class MedicationReminderFullScreenActivity : BaseMVVMActivity<MedicationReminder
      */
     private fun observeViewModel() {
         collectLatest(mViewModel.medicationInfo) { info ->
-            with(mViewBind){
+            with(mViewBind) {
+                if (info.notes.isBlank()) {
+                    tvNotes.gone()
+                } else {
+                    tvNotes.visible()
+                    tvNotes.text = getString(R.string.meds_notes_temp, info.notes)
+                }
 
-                tvNotes.text = getString(R.string.medication_name_temp,info.notes.ifEmpty {
-                    tvNotes.invisible()
-                })
-                tvReminderTime.text = getString(R.string.every_day_temp,info.reminderTime)
-                tvMedicationName.text = getString(R.string.medication_name_temp,info.medicationName)
+                if (info.reminderTime.isBlank()) {
+                    tvReminderTime.gone()
+                } else {
+                    tvReminderTime.visible()
+                    tvReminderTime.text = getString(R.string.every_day_temp, info.reminderTime)
+                }
+
+                if (info.medicationName.isBlank()) {
+                    tvMedicationName.gone()
+                } else {
+                    tvMedicationName.visible()
+                    tvMedicationName.text = getString(R.string.medication_name_temp, info.medicationName)
+                }
             }
 
         }
@@ -174,12 +186,11 @@ class MedicationReminderFullScreenActivity : BaseMVVMActivity<MedicationReminder
         }
     }
 
-    /**
-     * 显示延迟选项
-     */
-    private fun showSnoozeOptions() {
-        // 简化实现：固定5分钟延迟
-        finishAndRemoveTask()
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        initializeFromIntent()
     }
 
     override fun shouldDisableBackPressed() = true

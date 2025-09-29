@@ -376,7 +376,16 @@ class PermissionManager @Inject constructor(
      * 检查FSI权限是否可用（权限已授权且不在限制中）
      */
     fun isFSIPermissionAvailable(): Boolean {
-        return isFSIPermissionGranted() && !getFSIPermissionState().userPermanentlyDenied
+        val granted = isFSIPermissionGranted()
+        if (granted) {
+            val state = getFSIPermissionState()
+            if (state.userPermanentlyDenied) {
+                SpUtils.putBoolean(PREF_FSI_USER_DENIED, false)
+                "FSI permission restored via system settings".logd(TAG)
+            }
+            return true
+        }
+        return false
     }
 
     /**
@@ -390,4 +399,3 @@ class PermissionManager @Inject constructor(
         "FSI permission state reset".logd(TAG)
     }
 }
-

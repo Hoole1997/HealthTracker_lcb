@@ -111,7 +111,7 @@
 
         <!-- 稍后提醒按钮 -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_snooze"
+            android:id="@+id/btn_close"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
             android:layout_weight="1"
