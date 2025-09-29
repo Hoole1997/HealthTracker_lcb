@@ -119,14 +119,14 @@ class MedicationReminderFullScreenViewModel @Inject constructor(
         }
 
         alarmNotificationManager.cancelMedicationNotification(currentInfo.reminderId)
-        alarmNotificationManager.scheduleMedicationSnooze(
-            medicationName = currentInfo.medicationName,
-            dosage = currentInfo.dosage,
-            notes = currentInfo.notes,
-            reminderTime = currentInfo.reminderTime,
-            reminderId = currentInfo.reminderId,
-            delayMinutes = minutes
-        )
+//        alarmNotificationManager.scheduleMedicationSnooze(
+//            medicationName = currentInfo.medicationName,
+//            dosage = currentInfo.dosage,
+//            notes = currentInfo.notes,
+//            reminderTime = currentInfo.reminderTime,
+//            reminderId = currentInfo.reminderId,
+//            delayMinutes = minutes
+//        )
     }
 
     /**
