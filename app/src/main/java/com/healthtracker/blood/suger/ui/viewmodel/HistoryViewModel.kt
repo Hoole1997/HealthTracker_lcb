@@ -1,25 +1,27 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
-import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.enum.BloodSugarStatus
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
@@ -86,6 +88,8 @@ class HistoryViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
+    private var recordsJob: Job? = null
+
     init {
         // 只有在没有保存状态时才初始化默认日期范围
         if (_startDate.value == 0L || _endDate.value == 0L) {
@@ -120,16 +124,45 @@ class HistoryViewModel @Inject constructor(
      * 设置日期范围
      */
     fun setDateRange(startDate: Long, endDate: Long) {
-        _startDate.value = startDate
-        _endDate.value = endDate
-        // 保存到savedStateHandle
-        savedStateHandle[KEY_START_DATE] = startDate
-        savedStateHandle[KEY_END_DATE] = endDate
-        viewModelScope.launch {
-            combine(_startDate,_endDate){
-                updateDateRangeText()
-            }.collect()
+        if (startDate <= 0L || endDate <= 0L) return
+
+        val (normalizedStart, normalizedEnd) = normalizeDateRange(startDate, endDate)
+
+        _startDate.value = normalizedStart
+        _endDate.value = normalizedEnd
+
+        savedStateHandle[KEY_START_DATE] = normalizedStart
+        savedStateHandle[KEY_END_DATE] = normalizedEnd
+
+        updateDateRangeText()
+    }
+
+    /**
+     * 将用户选择的毫秒时间戳规范化到本地时区的起止时刻
+     */
+    private fun normalizeDateRange(
+        rawStart: Long,
+        rawEnd: Long
+    ): Pair<Long, Long> {
+        val startCalendar = Calendar.getInstance().apply {
+            timeInMillis = rawStart
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
         }
+
+        val endCalendar = Calendar.getInstance().apply {
+            timeInMillis = rawEnd
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }
+
+        val startMillis = startCalendar.timeInMillis
+        val endMillis = maxOf(endCalendar.timeInMillis, startMillis)
+        return startMillis to endMillis
     }
 
     /**
@@ -190,7 +223,8 @@ class HistoryViewModel @Inject constructor(
             return // 日期范围无效，不加载数据
         }
 
-        viewModelScope.launch {
+        recordsJob?.cancel()
+        recordsJob = viewModelScope.launch {
             try {
                 _isLoading.value = true
                 _errorMessage.value = null
@@ -201,14 +235,11 @@ class HistoryViewModel @Inject constructor(
                     loadBloodPressureRecords()
                 }
             } catch (e: CancellationException) {
-                // 协程正常取消，不记录为错误
                 "History record loading cancelled".logd(TAG)
-                throw e // 重新抛出以保持协程取消语义
+                throw e
             } catch (e: Exception) {
-                // 真正的异常情况：数据库操作失败等
                 "Failed to load history records: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
                 _errorMessage.value = e.message ?: "Failed to load history records"
-            } finally {
                 _isLoading.value = false
             }
         }
@@ -221,10 +252,14 @@ class HistoryViewModel @Inject constructor(
         val startDate = Date(_startDate.value)
         val endDate = Date(_endDate.value)
 
+        var isFirstEmission = true
         bsRepository.getBloodSugarRecordsByTimeRange(startDate, endDate)
             .collect { allRecords ->
-                _isLoading.value = false
-                // 如果有状态筛选，则进行筛选
+                if (isFirstEmission) {
+                    _isLoading.value = false
+                    isFirstEmission = false
+                }
+
                 val filteredRecords = _selectedBloodSugarStatus.value?.let { selectedStatus ->
                     allRecords.filter { record ->
                         record.satus == selectedStatus.statusType
@@ -242,9 +277,14 @@ class HistoryViewModel @Inject constructor(
         val startDate = Date(_startDate.value)
         val endDate = Date(_endDate.value)
 
+        var isFirstEmission = true
         bpRepository.getBloodPressureRecordsByTimeRange(startDate, endDate)
             .collect { allRecords ->
-                _isLoading.value = false
+                if (isFirstEmission) {
+                    _isLoading.value = false
+                    isFirstEmission = false
+                }
+
                 _bloodPressureRecords.value = allRecords.sortedByDescending { it.recordTime }
             }
     }
