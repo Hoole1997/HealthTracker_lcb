@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
@@ -15,14 +14,12 @@ import com.healthtracker.blood.suger.databinding.FragmentMedsBinding
 import com.healthtracker.blood.suger.ui.act.AddReminderActivity
 import com.healthtracker.blood.suger.ui.adapter.MedsReminderAdapter
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
-import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.viewmodel.MedsViewModel
 import com.healthtracker.blood.suger.ui.widget.MedsRemindDropdownMenu
 import com.healthtracker.blood.suger.ui.widget.MenuAction
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.base.fragment.DialogListener
-import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.gone
@@ -60,11 +57,6 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
         observeViewModel()
     }
 
-    override fun onResume() {
-        super.onResume()
-        // 检查是否有服药提醒触发
-        checkMedicationReminders()
-    }
 
     private fun setupRecyclerView() {
         reminderAdapter = MedsReminderAdapter(
@@ -283,20 +275,6 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
         return mViewModel.formattedMonth
     }
 
-    // ==================== FSI权限管理 ====================
-
-    /**
-     * 检查服药提醒触发
-     */
-    private fun checkMedicationReminders() {
-        // 模拟服药提醒触发逻辑
-        // 在实际实现中，这应该由AlarmReceiver或其他系统组件触发
-        val hasPendingMedications = checkIfMedicationReminderTriggered()
-        if (hasPendingMedications) {
-            onMedicationReminderTriggered()
-        }
-    }
-
     /**
      * 检查是否有服药提醒触发
      * @return true if there are pending medication reminders
@@ -308,32 +286,6 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
                 permissionManager.shouldRequestFSIPermission()
     }
 
-    /**
-     * 服药提醒触发时的处理
-     */
-    private fun onMedicationReminderTriggered() {
-        "Medication reminder triggered, checking FSI permission".logd(TAG)
 
-        if (!permissionManager.isFSIPermissionAvailable() &&
-            permissionManager.shouldRequestFSIPermission()) {
-            showFSIPermissionForMedication()
-        }
-    }
 
-    /**
-     * 显示针对服药提醒的FSI权限对话框
-     */
-    private fun showFSIPermissionForMedication() {
-        FSIPermissionDialog.show(
-            childFragmentManager,
-            onAllowPermission = {
-                "User agreed to FSI permission from medication reminder".logd(TAG)
-                permissionManager.requestFSIPermission(requireActivity())
-            },
-            onDenyPermission = {
-                "User declined FSI permission from medication reminder".logd(TAG)
-                permissionManager.recordFSIPermissionRequest(false)
-            }
-        )
-    }
 }
