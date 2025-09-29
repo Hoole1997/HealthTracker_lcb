@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.data.examples
 import com.healthtracker.blood.suger.data.entity.MedicineReminder
 import com.healthtracker.blood.suger.data.entity.PresetTimes
 import com.healthtracker.blood.suger.data.repository.MedicineReminderRepository
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import kotlinx.coroutines.flow.first
 import java.util.*
 
@@ -224,7 +225,7 @@ class MedicineReminderExample(
                         val recentRecords = records.takeLast(5)
                         println("  最近服药:")
                         recentRecords.forEach { record ->
-                            println("    - ${MedicineReminder.dateFormat.format(record)}")
+                            println("    - ${DateTimeUtils.formatDateTimeWithSeconds(record)}")
                         }
                     }
 
@@ -233,7 +234,7 @@ class MedicineReminderExample(
                         val recentReminds = realReminds.takeLast(5)
                         println("  最近提醒:")
                         recentReminds.forEach { remind ->
-                            println("    - ${MedicineReminder.dateFormat.format(remind)}")
+                            println("    - ${DateTimeUtils.formatDateTimeWithSeconds(remind)}")
                         }
                     }
                     println()

@@ -77,17 +77,17 @@ object DateTimeUtils {
      * @return 格式化字符串，如 "2024年1月15日 14:30"
      */
     fun formatChineseDateTime(date: Date): String {
-        val format = SimpleDateFormat("yyyy年M月d日 HH:mm", Locale.CHINA)
+        val format = SimpleDateFormat("yyyy年M月d日 HH:mm", Locale.getDefault())
         return format.format(date)
     }
 
     /**
-     * 格式化显示月份年份（英文简写）
+     * 格式化显示月份年份（简写）
      * @param date Date对象
      * @return 格式化字符串，如 "Sep.2025"
      */
     fun formatMonthYear(date: Date): String {
-        val format = SimpleDateFormat("MMM.yyyy", Locale.ENGLISH)
+        val format = SimpleDateFormat("MMM.yyyy", Locale.getDefault())
         return format.format(date)
     }
 
@@ -258,6 +258,45 @@ object DateTimeUtils {
         calendar.add(Calendar.YEAR, years)
         return calendar.time
     }
+
+    /**
+     * 格式化两位数字（用于替换String.format）
+     * @param number 要格式化的数字
+     * @return 两位数字符串，如 "09", "15"
+     */
+    fun formatTwoDigit(number: Int): String {
+        return String.format(Locale.getDefault(), "%02d", number)
+    }
+
+    /**
+     * 格式化时间组件（时:分）
+     * @param hour 小时 (0-23)
+     * @param minute 分钟 (0-59)
+     * @return 时间字符串，如 "09:30", "15:45"
+     */
+    fun formatTimeComponents(hour: Int, minute: Int): String {
+        return String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
+    }
+
+    /**
+     * 解析时间字符串 "HH:mm"
+     * @param timeStr 时间字符串，如 "09:30"
+     * @return 小时和分钟的Pair，解析失败返回null
+     */
+    fun parseTimeString(timeStr: String): Pair<Int, Int>? {
+        return try {
+            val parts = timeStr.split(":")
+            if (parts.size == 2) {
+                val hour = parts[0].toInt()
+                val minute = parts[1].toInt()
+                if (hour in 0..23 && minute in 0..59) {
+                    Pair(hour, minute)
+                } else null
+            } else null
+        } catch (e: Exception) {
+            null
+        }
+    }
 }
 
 /**
@@ -282,6 +321,6 @@ data class DateComponents(
      * 格式化显示
      */
     override fun toString(): String {
-        return String.format(Locale.ROOT, "%04d-%02d-%02d %02d:%02d", year, month, day, hour, minute)
+        return "$year-${DateTimeUtils.formatTwoDigit(month)}-${DateTimeUtils.formatTwoDigit(day)} ${DateTimeUtils.formatTimeComponents(hour, minute)}"
     }
 }

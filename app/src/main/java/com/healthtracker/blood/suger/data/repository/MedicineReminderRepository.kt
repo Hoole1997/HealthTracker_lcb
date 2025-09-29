@@ -8,10 +8,10 @@ import com.healthtracker.blood.suger.data.entity.PresetTimes
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import kotlinx.coroutines.flow.Flow
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 /**
  * 药物提醒仓库 - 包含核心功能和闹钟调度
@@ -33,17 +33,9 @@ class MedicineReminderRepository @Inject constructor(
      * @return Pair<hour, minute>
      */
     private fun parseTimeString(timeStr: String): Pair<Int, Int> {
-        try {
-            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-            val time = timeFormat.parse(timeStr)
-            val calendar = Calendar.getInstance()
-            calendar.time = time!!
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
-            return Pair(hour, minute)
-        } catch (e: Exception) {
-            "Failed to parse time string: $timeStr, Error: ${e.message}".loge(TAG)
-            throw IllegalArgumentException("Invalid time format: $timeStr", e)
+        return DateTimeUtils.parseTimeString(timeStr) ?: run {
+            "Failed to parse time string: $timeStr".loge(TAG)
+            throw IllegalArgumentException("Invalid time format: $timeStr")
         }
     }
 
@@ -195,20 +187,17 @@ class MedicineReminderRepository @Inject constructor(
 
             // 处理提醒时间更新
             val newStartRemindTimes = reminderTimes?.let { times ->
-                val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-                val today = java.util.Calendar.getInstance()
+                val today = Calendar.getInstance()
 
                 times.mapNotNull { timeStr ->
                     try {
-                        val time = timeFormat.parse(timeStr)
-                        val calendar = java.util.Calendar.getInstance()
+                        val (hour, minute) = parseTimeString(timeStr)
+                        val calendar = Calendar.getInstance()
                         calendar.time = today.time
-                        val timeCalendar = java.util.Calendar.getInstance()
-                        timeCalendar.time = time
-                        calendar.set(java.util.Calendar.HOUR_OF_DAY, timeCalendar.get(java.util.Calendar.HOUR_OF_DAY))
-                        calendar.set(java.util.Calendar.MINUTE, timeCalendar.get(java.util.Calendar.MINUTE))
-                        calendar.set(java.util.Calendar.SECOND, 0)
-                        calendar.set(java.util.Calendar.MILLISECOND, 0)
+                        calendar.set(Calendar.HOUR_OF_DAY, hour)
+                        calendar.set(Calendar.MINUTE, minute)
+                        calendar.set(Calendar.SECOND, 0)
+                        calendar.set(Calendar.MILLISECOND, 0)
                         calendar.time.time.toString()
                     } catch (e: Exception) { null }
                 }.joinToString(",")

@@ -4,8 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 /**
  * 药物提醒实体 - 一个表解决所有需求
@@ -169,7 +168,6 @@ data class MedicineReminder(
     companion object {
 
 
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         private const val TIME_SEPARATOR = ","
 
         /**

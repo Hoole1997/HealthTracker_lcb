@@ -138,10 +138,7 @@ class BloodSugarRepository @Inject constructor(
     fun getTodayBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getTodayRecords()
     fun getThisWeekBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getThisWeekRecords()
     fun getChartBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getChartRecords()
-    suspend fun getBloodSugarRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>> =
-        withContext(IO){
-            getRecordsByTimeRange(startTime, endTime)
-        }
+    suspend fun getBloodSugarRecordsByTimeRange(startTime: Date, endTime: Date) = getRecordsByTimeRange(startTime, endTime)
 
     /**
      * 根据血糖值范围获取记录

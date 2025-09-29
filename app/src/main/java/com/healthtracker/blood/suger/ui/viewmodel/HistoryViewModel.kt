@@ -183,6 +183,7 @@ class HistoryViewModel @Inject constructor(
         // 保存到savedStateHandle (null表示全部，不保存statusType)
         savedStateHandle[KEY_SELECTED_STATUS] = status?.statusType
         // 数据会通过setupDataLoading()中的combine自动重新加载
+        setupDataLoading()
     }
 
     /**

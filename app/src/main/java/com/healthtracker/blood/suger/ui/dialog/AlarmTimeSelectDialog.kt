@@ -59,7 +59,7 @@ class AlarmTimeSelectDialog(private val def: Pair<Int,Int>? = null,private val c
 
     private fun setupHourPicker(currentHour: Int) {
         mViewBind?.run {
-            val hours = Array(24) { i -> String.format(Locale.ENGLISH,"%02d", i) }
+            val hours = Array(24) { i -> DateTimeUtils.formatTwoDigit(i) }
             hourPicker.displayedValues = hours
             // 先设置min/max值，再设置displayedValues
             hourPicker.minValue = 0
@@ -72,7 +72,7 @@ class AlarmTimeSelectDialog(private val def: Pair<Int,Int>? = null,private val c
 
     private fun setupMinutePicker(currentMinute: Int) {
        mViewBind?.run {
-           val minutes = Array(60) { i -> String.format(Locale.ENGLISH,"%02d", i) }
+           val minutes = Array(60) { i -> DateTimeUtils.formatTwoDigit(i) }
            minutePicker.displayedValues = minutes
            // 先设置min/max值，再设置displayedValues
            minutePicker.minValue = 0

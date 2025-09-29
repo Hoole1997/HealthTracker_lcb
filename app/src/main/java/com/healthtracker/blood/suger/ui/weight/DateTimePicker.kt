@@ -104,7 +104,7 @@ class DateTimePicker @JvmOverloads constructor(
     }
 
     private fun setupMonthPicker(currentMonth: Int) {
-        val months = Array(12) { i -> String.format(Locale.ENGLISH,"%02d", i + 1) }
+        val months = Array(12) { i -> DateTimeUtils.formatTwoDigit(i + 1) }
         monthPicker.displayedValues = months
         // 先设置min/max值，再设置displayedValues
         monthPicker.minValue = 0
@@ -116,7 +116,7 @@ class DateTimePicker @JvmOverloads constructor(
 
     private fun setupDayPicker(year: Int, month: Int, currentDay: Int) {
         val daysInMonth = getDaysInMonth(year, month)
-        val days = Array(daysInMonth) { i -> String.format(Locale.ENGLISH,"%02d", i + 1) }
+        val days = Array(daysInMonth) { i -> DateTimeUtils.formatTwoDigit(i + 1) }
         val dayIndex = if (currentDay <= daysInMonth) currentDay - 1 else daysInMonth - 1
         if(dayPicker.displayedValues == null){
             dayPicker.displayedValues = days
@@ -133,7 +133,7 @@ class DateTimePicker @JvmOverloads constructor(
     }
 
     private fun setupHourPicker(currentHour: Int) {
-        val hours = Array(24) { i -> String.format(Locale.ENGLISH,"%02d", i) }
+        val hours = Array(24) { i -> DateTimeUtils.formatTwoDigit(i) }
         hourPicker.displayedValues = hours
         // 先设置min/max值，再设置displayedValues
         hourPicker.minValue = 0
@@ -144,7 +144,7 @@ class DateTimePicker @JvmOverloads constructor(
     }
 
     private fun setupMinutePicker(currentMinute: Int) {
-        val minutes = Array(60) { i -> String.format(Locale.ENGLISH,"%02d", i) }
+        val minutes = Array(60) { i -> DateTimeUtils.formatTwoDigit(i) }
         minutePicker.displayedValues = minutes
         // 先设置min/max值，再设置displayedValues
         minutePicker.minValue = 0

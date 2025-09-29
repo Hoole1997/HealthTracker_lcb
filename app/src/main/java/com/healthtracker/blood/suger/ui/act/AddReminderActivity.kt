@@ -1,6 +1,5 @@
 package com.healthtracker.blood.suger.ui.act
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.widget.addTextChangedListener
@@ -8,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.blankj.utilcode.util.ToastUtils
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityAddReminderBinding
 import com.healthtracker.blood.suger.ui.adapter.ReminderTimeAdapter
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
@@ -22,7 +22,6 @@ import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.hideSoftKeyBoard
 import com.healthtracker.framework.ext.logd
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -183,7 +182,7 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
         val hour = timeParts[0].toInt()
         val minute = timeParts[1].toInt()
         AlarmTimeSelectDialog.show(supportFragmentManager,hour to minute){
-            val timeString = String.format(Locale.ENGLISH,"%02d:%02d", it.first, it.second)
+            val timeString = DateTimeUtils.formatTimeComponents(it.first, it.second)
             mViewModel.updateReminderTime(position,timeString)
 
         }
