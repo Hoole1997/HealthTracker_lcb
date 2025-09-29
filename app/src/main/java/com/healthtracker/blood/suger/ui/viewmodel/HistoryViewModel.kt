@@ -60,10 +60,10 @@ class HistoryViewModel @Inject constructor(
     )
     val isBloodSugarHistory: StateFlow<Boolean> = _isBloodSugarHistory.asStateFlow()
 
-    // 血糖状态类型筛选（null表示全部）
+    // 血糖状态类型筛选（null表示全部，非null表示具体状态）
     private val _selectedBloodSugarStatus = MutableStateFlow<BloodSugarStatus?>(
         savedStateHandle.get<Int>(KEY_SELECTED_STATUS)?.let {
-            BloodSugarStatus.fromStatusType(it).takeIf { status -> status != BloodSugarStatus.DEFAULT }
+            BloodSugarStatus.fromStatusType(it)
         }
     )
     val selectedBloodSugarStatus: StateFlow<BloodSugarStatus?> = _selectedBloodSugarStatus.asStateFlow()
@@ -177,13 +177,22 @@ class HistoryViewModel @Inject constructor(
 
     /**
      * 设置血糖状态筛选
+     * @param status null表示全部状态，非null表示具体状态筛选
      */
     fun setBloodSugarStatusFilter(status: BloodSugarStatus?) {
+        val previousStatus = _selectedBloodSugarStatus.value
+        "Setting blood sugar status filter: $previousStatus -> $status".logd(TAG)
+
         _selectedBloodSugarStatus.value = status
-        // 保存到savedStateHandle (null表示全部，不保存statusType)
-        savedStateHandle[KEY_SELECTED_STATUS] = status?.statusType
+        // 保存到savedStateHandle
+        if (status == null) {
+            savedStateHandle.remove<Int>(KEY_SELECTED_STATUS) // null时移除key
+            "Removed status filter from savedStateHandle".logd(TAG)
+        } else {
+            savedStateHandle[KEY_SELECTED_STATUS] = status.statusType
+            "Saved status filter to savedStateHandle: ${status.name} (statusType=${status.statusType})".logd(TAG)
+        }
         // 数据会通过setupDataLoading()中的combine自动重新加载
-        setupDataLoading()
     }
 
     /**
@@ -198,6 +207,7 @@ class HistoryViewModel @Inject constructor(
 
     /**
      * 设置数据加载监听
+     * 使用combine监听所有筛选条件，避免重复数据库查询
      */
     private fun setupDataLoading() {
         // 监听筛选条件变化，自动重新加载数据
@@ -208,19 +218,44 @@ class HistoryViewModel @Inject constructor(
                 _isBloodSugarHistory,
                 _selectedBloodSugarStatus
             ) { startDate, endDate, isBloodSugar, selectedStatus ->
+                FilterParams(startDate, endDate, isBloodSugar, selectedStatus)
+            }.collect { params ->
                 // 只有当日期范围有效时才加载数据
-                if (startDate > 0L && endDate > 0L) {
-                    loadHistoryRecords()
+                if (params.startDate > 0L && params.endDate > 0L) {
+                    loadHistoryRecordsWithParams(params)
                 }
-            }.collect()
+            }
         }
     }
+
+    /**
+     * 筛选参数数据类
+     */
+    private data class FilterParams(
+        val startDate: Long,
+        val endDate: Long,
+        val isBloodSugar: Boolean,
+        val selectedStatus: BloodSugarStatus?
+    )
 
     /**
      * 加载历史记录数据
      */
     fun loadHistoryRecords() {
-        if (_startDate.value <= 0L || _endDate.value <= 0L) {
+        val params = FilterParams(
+            _startDate.value,
+            _endDate.value,
+            _isBloodSugarHistory.value,
+            _selectedBloodSugarStatus.value
+        )
+        loadHistoryRecordsWithParams(params)
+    }
+
+    /**
+     * 根据筛选参数加载历史记录数据
+     */
+    private fun loadHistoryRecordsWithParams(params: FilterParams) {
+        if (params.startDate <= 0L || params.endDate <= 0L) {
             return // 日期范围无效，不加载数据
         }
 
@@ -230,28 +265,28 @@ class HistoryViewModel @Inject constructor(
                 _isLoading.value = true
                 _errorMessage.value = null
 
-                if (_isBloodSugarHistory.value) {
-                    loadBloodSugarRecords()
+                if (params.isBloodSugar) {
+                    loadBloodSugarRecordsWithFilter(params)
                 } else {
-                    loadBloodPressureRecords()
+                    loadBloodPressureRecordsWithFilter(params)
                 }
             } catch (e: CancellationException) {
                 "History record loading cancelled".logd(TAG)
                 throw e
             } catch (e: Exception) {
                 "Failed to load history records: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
-                _errorMessage.value = e.message ?: "Failed to load history records"
+                _errorMessage.value = "加载历史记录失败: ${e.message ?: "未知错误"}"
                 _isLoading.value = false
             }
         }
     }
 
     /**
-     * 加载血糖记录
+     * 加载血糖记录（优化版，避免重复筛选）
      */
-    private suspend fun loadBloodSugarRecords() {
-        val startDate = Date(_startDate.value)
-        val endDate = Date(_endDate.value)
+    private suspend fun loadBloodSugarRecordsWithFilter(params: FilterParams) {
+        val startDate = Date(params.startDate)
+        val endDate = Date(params.endDate)
 
         var isFirstEmission = true
         bsRepository.getBloodSugarRecordsByTimeRange(startDate, endDate)
@@ -261,22 +296,56 @@ class HistoryViewModel @Inject constructor(
                     isFirstEmission = false
                 }
 
-                val filteredRecords = _selectedBloodSugarStatus.value?.let { selectedStatus ->
-                    allRecords.filter { record ->
-                        record.satus == selectedStatus.statusType
+                // 统一在内存中筛选，避免重复数据库查询
+                val filteredRecords = if (params.selectedStatus == null) {
+                    // null 表示显示所有状态的记录
+                    "Filtering: selectedStatus=null, showing all ${allRecords.size} records".logd(TAG)
+                    allRecords
+                } else {
+                    // 非null 表示只显示指定状态的记录（包括 DEFAULT 状态）
+                    val targetStatusType = params.selectedStatus.statusType
+                    "Filtering: selectedStatus=${params.selectedStatus.name} (statusType=$targetStatusType)".logd(TAG)
+
+                    // 记录所有记录的状态类型用于调试
+                    val statusCounts = allRecords.groupBy { it.satus }.mapValues { it.value.size }
+                    "Available record status types: $statusCounts".logd(TAG)
+                    "Looking for records with statusType=$targetStatusType (${params.selectedStatus.name})".logd(TAG)
+
+                    // 记录前5个记录的详细信息用于调试
+                    allRecords.take(5).forEachIndexed { index, record ->
+                        "Record $index: id=${record.id}, satus=${record.satus}, glucoseValue=${record.glucoseValue}, recordTime=${record.recordTime}".logd(TAG)
                     }
-                } ?: allRecords
+
+                    val filtered = allRecords.filter { record ->
+                        record.satus == targetStatusType
+                    }
+                    "Filtered result: ${filtered.size} records match statusType=$targetStatusType".logd(TAG)
+                    filtered
+                }
 
                 _bloodSugarRecords.value = filteredRecords.sortedByDescending { it.recordTime }
             }
     }
 
     /**
-     * 加载血压记录
+     * 向后兼容的血糖记录加载方法
      */
-    private suspend fun loadBloodPressureRecords() {
-        val startDate = Date(_startDate.value)
-        val endDate = Date(_endDate.value)
+    private suspend fun loadBloodSugarRecords() {
+        val params = FilterParams(
+            _startDate.value,
+            _endDate.value,
+            _isBloodSugarHistory.value,
+            _selectedBloodSugarStatus.value
+        )
+        loadBloodSugarRecordsWithFilter(params)
+    }
+
+    /**
+     * 加载血压记录（优化版）
+     */
+    private suspend fun loadBloodPressureRecordsWithFilter(params: FilterParams) {
+        val startDate = Date(params.startDate)
+        val endDate = Date(params.endDate)
 
         var isFirstEmission = true
         bpRepository.getBloodPressureRecordsByTimeRange(startDate, endDate)
@@ -288,6 +357,19 @@ class HistoryViewModel @Inject constructor(
 
                 _bloodPressureRecords.value = allRecords.sortedByDescending { it.recordTime }
             }
+    }
+
+    /**
+     * 向后兼容的血压记录加载方法
+     */
+    private suspend fun loadBloodPressureRecords() {
+        val params = FilterParams(
+            _startDate.value,
+            _endDate.value,
+            _isBloodSugarHistory.value,
+            _selectedBloodSugarStatus.value
+        )
+        loadBloodPressureRecordsWithFilter(params)
     }
 
     /**
@@ -310,6 +392,7 @@ class HistoryViewModel @Inject constructor(
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
                 "Blood sugar record deletion error: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                _errorMessage.value = "删除记录失败: ${e.message}"
             }
         }
     }
@@ -326,6 +409,7 @@ class HistoryViewModel @Inject constructor(
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
                 "Blood pressure record deletion error: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                _errorMessage.value = "删除记录失败: ${e.message}"
             }
         }
     }

@@ -67,11 +67,10 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
 
             if (isBloodSugar) {
                 tvFilterStatu.clickWithDuration {
-                    lifecycleScope.launch {
-                        val currentStatus = mViewModel.selectedBloodSugarStatus.value
-                        StatusSelectDialog.show(supportFragmentManager, currentStatus) {
-                            mViewModel.setBloodSugarStatusFilter(it)
-                        }
+                    // 移除不必要的lifecycleScope.launch，StatusSelectDialog已经处理了协程
+                    val currentStatus = mViewModel.selectedBloodSugarStatus.value
+                    StatusSelectDialog.show(supportFragmentManager, currentStatus) {
+                        mViewModel.setBloodSugarStatusFilter(it)
                     }
                 }
             } else {
@@ -186,15 +185,10 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
             updateErrorState(errorMessage)
         }
 
-        // 观察历史记录类型和数据
+        // 观察历史记录类型，只设置一次初始类型，避免重复观察
         this.collectLatest(mViewModel.isBloodSugarHistory) { isBloodSugar ->
-            if (isBloodSugar) {
-                // 观察血糖记录
-                observeBloodSugarRecords()
-            } else {
-                // 观察血压记录
-                observeBloodPressureRecords()
-            }
+            // 根据记录类型观察对应的数据流
+            observeRecordsBasedOnType(isBloodSugar)
         }
 
         // 设置重试按钮点击事件
@@ -216,15 +210,15 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
 
     /**
      * 更新加载状态
+     * 只负责加载指示器的显示/隐藏，不干扰其他UI状态
      */
     private fun updateLoadingState(isLoading: Boolean) {
         if (isLoading) {
             mViewBind.progressLoading.visible()
-            mViewBind.rvHistory.gone()
-            mViewBind.layoutError.gone()
-            mViewBind.tvEmpty.gone()
+            // 不隐藏其他View，由updateUIWithRecords和updateErrorState统一管理
         } else {
             mViewBind.progressLoading.gone()
+            // 不在这里显示其他View，由数据更新方法负责
         }
     }
 
@@ -243,21 +237,24 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
     }
 
     /**
+     * 根据记录类型观察相应数据
+     */
+    private fun observeRecordsBasedOnType(isBloodSugar: Boolean) {
+        if (isBloodSugar) {
+            observeBloodSugarRecords()
+        } else {
+            observeBloodPressureRecords()
+        }
+    }
+
+    /**
      * 观察血糖记录数据
      */
     private fun observeBloodSugarRecords() {
         this.collectLatest(mViewModel.bloodSugarRecords) { records ->
-            updateRecordsList(records.isNotEmpty())
-            
             // 转换为HistoryRecordItem并更新适配器
             val historyItems = records.map { BloodSugarHistoryItem(it) }
-            historyAdapter.submitList(historyItems)
-            
-            if (records.isEmpty() && !mViewModel.isLoading.value && mViewModel.errorMessage.value == null) {
-                mViewBind.tvEmpty.visible()
-            } else {
-                mViewBind.tvEmpty.gone()
-            }
+            updateUIWithRecords(historyItems, records.isEmpty())
         }
     }
 
@@ -266,63 +263,67 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
      */
     private fun observeBloodPressureRecords() {
         this.collectLatest(mViewModel.bloodPressureRecords) { records ->
-            updateRecordsList(records.isNotEmpty())
-            
             // 转换为HistoryRecordItem并更新适配器
             val historyItems = records.map { BloodPressureHistoryItem(it) }
-            historyAdapter.submitList(historyItems)
-            
-            if (records.isEmpty() && !mViewModel.isLoading.value && mViewModel.errorMessage.value == null) {
-                mViewBind.tvEmpty.visible()
-            } else {
-                mViewBind.tvEmpty.gone()
-            }
+            updateUIWithRecords(historyItems, records.isEmpty())
         }
     }
 
     /**
-     * 更新记录列表显示状态
+     * 统一更新UI状态
+     * 此方法负责正常数据状态的UI显示，不处理错误状态
      */
-    private fun updateRecordsList(hasData: Boolean) {
-        if (hasData) {
-            mViewBind.rvHistory.visible()
-            mViewBind.tvEmpty.gone()
-        } else {
-            mViewBind.rvHistory.gone()
+    private fun updateUIWithRecords(historyItems: List<HistoryRecordItem>, isEmpty: Boolean) {
+        historyAdapter.submitList(historyItems)
+
+        // 只在非加载且非错误状态下才处理数据显示
+        if (!mViewModel.isLoading.value && mViewModel.errorMessage.value == null) {
+            if (isEmpty) {
+                mViewBind.rvHistory.gone()
+                mViewBind.tvEmpty.visible()
+            } else {
+                mViewBind.rvHistory.visible()
+                mViewBind.tvEmpty.gone()
+            }
         }
+        // 如果正在加载或有错误，不改变数据显示状态，由对应的状态处理方法管理
     }
+
+    // 移除了updateRecordsList方法，统一在updateUIWithRecords中处理
 
 
 
     /**
      * 显示日期范围选择器
      */
+    /**
+     * 显示日期范围选择器
+     */
     private fun showTimeRangePick(){
-        lifecycleScope.launch {
-            val startDate = mViewModel.startDate.value
-            val endDate = mViewModel.endDate.value
+        // 移除不必要的lifecycleScope.launch，UI操作不需要协程
+        val startDate = mViewModel.startDate.value
+        val endDate = mViewModel.endDate.value
 
-            // 创建日历约束，设置打开时显示结束日期所在的月份
-            val calendarConstraints = CalendarConstraints.Builder()
-                .setOpenAt(endDate) // 定位到结束日期所在月份
-                .build()
+        // 创建日历约束，设置打开时显示结束日期所在的月份
+        val calendarConstraints = CalendarConstraints.Builder()
+            .setOpenAt(endDate) // 定位到结束日期所在月份
+            .build()
 
-            val datePicker = MaterialDatePicker.Builder.dateRangePicker().apply {
-                // 设置自定义主题
-                setTheme(R.style.CustomDatePickerTheme)
-                // 设置默认选中的日期范围
-                setSelection(androidx.core.util.Pair(startDate, endDate))
-                // 设置日历约束
-                setCalendarConstraints(calendarConstraints)
-            }.build()
+        val datePicker = MaterialDatePicker.Builder.dateRangePicker().apply {
+            // 设置自定义主题
+            setTheme(R.style.CustomDatePickerTheme)
+            // 设置默认选中的日期范围
+            setSelection(androidx.core.util.Pair(startDate, endDate))
+            // 设置日历约束
+            setCalendarConstraints(calendarConstraints)
+        }.build()
 
-            // 设置选择监听器
-            datePicker.addOnPositiveButtonClickListener { selection ->
-                // 更新ViewModel中的日期范围
-                mViewModel.setDateRange(selection.first, selection.second)
-            }
-
-            datePicker.show(supportFragmentManager, "DATE_RANGE_PICKER")
+        // 设置选择监听器
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            // 更新ViewModel中的日期范围
+            mViewModel.setDateRange(selection.first, selection.second)
         }
+
+        datePicker.show(supportFragmentManager, "DATE_RANGE_PICKER")
     }
 }
