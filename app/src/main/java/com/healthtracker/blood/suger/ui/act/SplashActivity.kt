@@ -28,6 +28,10 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
         private const val TAG = "SplashActivity"
     }
 
+
+    private var isResume = true
+    private var isJumpIntercept = false
+
     @Inject
     lateinit var permissionManager: PermissionManager
 
@@ -50,9 +54,17 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
 
     override fun onResume() {
         super.onResume()
+        isResume = true
+        if(isJumpIntercept){
+            checkAndNavigateToMainActivity()
+        }
         SysBarUtils.hideNavigationBar(this)
     }
 
+    override fun onPause() {
+        super.onPause()
+        isResume = false
+    }
     override fun isFullscreen() = true
 
     /**
@@ -141,7 +153,15 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
             "Both animation and permission check completed, navigating to MainActivity".logd(TAG)
             // 使用lifecycleScope确保只在Activity活跃时执行
             lifecycleScope.launch {
-                delay(500) // 稍微延迟一下，提供更好的用户体验
+                if(!isJumpIntercept){
+                    delay(500) // 稍微延迟一下，提供更好的用户体验
+                }
+
+                if(!isResume){
+                    isJumpIntercept = true
+                    return@launch
+                }
+                isJumpIntercept = false
                 startActivity<MainActivity>(isFinishSelf = true)
             }
         } else {
