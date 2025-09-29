@@ -8,8 +8,8 @@ minSdk = "24"
 # @keep
 targetSdk = "35"
 
-agp = "8.13.0"
-kotlin = "2.1.0"
+agp = "8.10.1"
+kotlin = "2.2.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"

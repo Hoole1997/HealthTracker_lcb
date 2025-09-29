@@ -52,7 +52,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 } ?: requireActivity().startActivity<BsRecordActivity>()
             }
 
-            btnRecordNow.clickWithDuration {
+            clPsRecord.clickWithDuration {
                 BsRecordActivity.start(requireActivity())
 
             }
