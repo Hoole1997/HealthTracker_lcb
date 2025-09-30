@@ -17,6 +17,8 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,17 +30,18 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
         private const val TAG = "SplashActivity"
     }
 
-
-    private var isResume = true
-    private var isJumpIntercept = false
+    // 状态机负责协调动画、权限、前后台状态与跳转
+    private val stateMachine by lazy {
+        SplashStateMachine(
+            scope = lifecycleScope,
+            onNavigate = {
+                startActivity<MainActivity>(isFinishSelf = true)
+            }
+        )
+    }
 
     @Inject
     lateinit var permissionManager: PermissionManager
-
-    // 标志位：动画是否完成
-    private var isAnimationCompleted = false
-    // 标志位：权限检查是否完成
-    private var isPermissionCheckCompleted = false
 
     override fun createViewBinding() = ActivitySplashBinding.inflate(layoutInflater)
 
@@ -54,16 +57,18 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
 
     override fun onResume() {
         super.onResume()
-        isResume = true
-        if(isJumpIntercept){
-            checkAndNavigateToMainActivity()
-        }
+        stateMachine.onResume()
         SysBarUtils.hideNavigationBar(this)
     }
 
     override fun onPause() {
         super.onPause()
-        isResume = false
+        stateMachine.onPause()
+    }
+
+    override fun onDestroy() {
+        stateMachine.onDestroy()
+        super.onDestroy()
     }
     override fun isFullscreen() = true
 
@@ -87,10 +92,16 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
             animatorSet.playTogether(logoAnimator, nameAnimator)
 
             // 添加动画监听器
-            animatorSet.addListener(onEnd = {
-                // 动画结束后标记可以进行导航
-                onAnimationCompleted()
-            })
+            animatorSet.addListener(
+                onEnd = {
+                    // 动画结束后标记可以进行导航
+                    onAnimationCompleted()
+                },
+                onCancel = {
+                    // 部分设备上动画可能被系统取消，这里兜底仍然推进流程
+                    onAnimationCompleted()
+                }
+            )
 
             // 开始动画
             animatorSet.start()
@@ -130,43 +141,14 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
      * 权限检查完成回调
      */
     private fun onPermissionCheckCompleted() {
-        isPermissionCheckCompleted = true
-        "Permission check completed".logd(TAG)
-        checkAndNavigateToMainActivity()
+        stateMachine.onPermissionCheckCompleted()
     }
 
     /**
      * 动画完成回调
      */
     private fun onAnimationCompleted() {
-        isAnimationCompleted = true
-        "Animation completed".logd(TAG)
-        checkAndNavigateToMainActivity()
-    }
-
-    /**
-     * 检查是否可以跳转到主页面
-     * 只有当动画完成且权限检查完成时才跳转
-     */
-    private fun checkAndNavigateToMainActivity() {
-        if (isAnimationCompleted && isPermissionCheckCompleted) {
-            "Both animation and permission check completed, navigating to MainActivity".logd(TAG)
-            // 使用lifecycleScope确保只在Activity活跃时执行
-            lifecycleScope.launch {
-                if(!isJumpIntercept){
-                    delay(500) // 稍微延迟一下，提供更好的用户体验
-                }
-
-                if(!isResume){
-                    isJumpIntercept = true
-                    return@launch
-                }
-                isJumpIntercept = false
-                startActivity<MainActivity>(isFinishSelf = true)
-            }
-        } else {
-            "Waiting for completion - Animation: $isAnimationCompleted, Permission: $isPermissionCheckCompleted".logd(TAG)
-        }
+        stateMachine.onAnimationCompleted()
     }
 
     /**
@@ -192,4 +174,94 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
         }
     }
 
+    /**
+     * 启动页状态机，统一管理动画、权限与导航状态
+     */
+    private inner class SplashStateMachine(
+        private val scope: CoroutineScope,
+        private val onNavigate: suspend () -> Unit
+    ) {
+
+        private var animationDone = false
+        private var permissionDone = false
+        private var isForeground = true
+        private var pendingForegroundNavigation = false
+        private var hasNavigated = false
+        private var navigationJob: Job? = null
+
+        fun onAnimationCompleted() {
+            if (animationDone) {
+                return
+            }
+            animationDone = true
+            "Animation completed".logd(TAG)
+            tryNavigate()
+        }
+
+        fun onPermissionCheckCompleted() {
+            if (permissionDone) {
+                return
+            }
+            permissionDone = true
+            "Permission check completed".logd(TAG)
+            tryNavigate()
+        }
+
+        fun onResume() {
+            isForeground = true
+            if (pendingForegroundNavigation) {
+                tryNavigate()
+            }
+        }
+
+        fun onPause() {
+            isForeground = false
+        }
+
+        fun onDestroy() {
+            navigationJob?.cancel()
+            navigationJob = null
+        }
+
+        private fun tryNavigate() {
+            if (hasNavigated) {
+                "Already navigated, ignore further requests".logd(TAG)
+                return
+            }
+
+            if (!(animationDone && permissionDone)) {
+                "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(TAG)
+                return
+            }
+
+            if (navigationJob?.isActive == true) {
+                "Navigation coroutine is already running".logd(TAG)
+                return
+            }
+
+            navigationJob = scope.launch {
+                val skipDelay = pendingForegroundNavigation
+                if (!skipDelay) {
+                    delay(500)
+                }
+
+                if (!isForeground) {
+                    pendingForegroundNavigation = true
+                    return@launch
+                }
+
+                pendingForegroundNavigation = false
+                if (hasNavigated) {
+                    return@launch
+                }
+
+                hasNavigated = true
+                onNavigate()
+            }.also { job ->
+                job.invokeOnCompletion {
+                    navigationJob = null
+                }
+            }
+        }
+    }
 }

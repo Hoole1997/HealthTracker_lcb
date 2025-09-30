@@ -56,6 +56,9 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 BsRecordActivity.start(requireActivity())
 
             }
+            btnRecordNow.clickWithDuration {
+                BsRecordActivity.start(requireActivity())
+            }
 
             clBloodPressure.clickWithDuration {
                 requireActivity().startActivity<BpRecordActivity>()
