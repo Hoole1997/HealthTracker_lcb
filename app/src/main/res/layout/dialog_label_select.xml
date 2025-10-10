@@ -41,7 +41,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintEnd_toStartOf="@id/iv_delete"
         app:layout_constraintTop_toTopOf="@id/tv_title"
-        app:srcCompat="@drawable/ic_add"
+        app:srcCompat="@drawable/ic_label_add"
         android:visibility="gone"/>
 
     <androidx.appcompat.widget.AppCompatImageView
