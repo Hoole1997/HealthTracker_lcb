@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.DialogLabelSelectBinding
-import com.healthtracker.blood.suger.databinding.ItemLabelBinding
+import com.healthtracker.blood.suger.ui.adapter.HealthTagAdapter
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
@@ -18,6 +21,7 @@ import com.healthtracker.framework.ext.clickWithDuration
 /**
  * 统一的健康标签选择对话框
  * 支持血糖和血压标签的选择
+ * 使用RecyclerView + FlexboxLayoutManager实现高性能的标签布局
  */
 class HealthTagDialog(
     private val tagType: TagType,
@@ -34,6 +38,7 @@ class HealthTagDialog(
     )
     
     private val selectLabels = selectedTags?.toMutableList() ?: mutableListOf()
+    private lateinit var tagAdapter: HealthTagAdapter
     
     companion object {
         /**
@@ -86,6 +91,81 @@ class HealthTagDialog(
     ) = DialogLabelSelectBinding.inflate(layoutInflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
+        initRecyclerView()
+        initClickListeners()
+    }
+
+
+
+    /**
+     * 初始化RecyclerView和Adapter
+     */
+    private fun initRecyclerView() {
+        mViewBind?.run {
+            // 设置FlexboxLayoutManager
+            val layoutManager = FlexboxLayoutManager(requireContext()).apply {
+                flexDirection = FlexDirection.ROW
+                flexWrap = FlexWrap.WRAP
+                justifyContent = JustifyContent.FLEX_START
+            }
+            
+            // 初始化Adapter
+            tagAdapter = HealthTagAdapter(
+                tagType = tagType,
+                onTagClick = { tag ->
+                    handleTagSelection(tag)
+                }
+            )
+            
+            // 设置RecyclerView
+            labelBox.apply {
+                this.layoutManager = layoutManager
+                adapter = tagAdapter
+                // 禁用嵌套滚动以避免与BottomSheet冲突
+                isNestedScrollingEnabled = false
+            }
+            
+            // 初始化标签数据
+            updateTagsData()
+        }
+    }
+
+    /**
+     * 更新标签数据
+     */
+    private fun updateTagsData() {
+        availableTags?.let { tags ->
+            // 根据标签类型获取对应的字符串数组
+            val labelsArray = when (tagType) {
+                TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.blood_sugar_labels)
+                TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.blood_pressure_labels)
+            }
+            
+            tagAdapter.updateTags(tags, selectLabels, labelsArray)
+        }
+    }
+
+    /**
+     * 处理标签选择逻辑
+     */
+    private fun handleTagSelection(tag: HealthTag) {
+        val index = selectLabels.indexOfFirst { it.id == tag.id }
+        if (index >= 0) {
+            // 取消选择
+            selectLabels.removeAt(index)
+        } else {
+            // 添加选择
+            selectLabels.add(tag)
+        }
+        
+        // 更新Adapter数据
+        updateTagsData()
+    }
+
+    /**
+     * 初始化点击事件监听器
+     */
+    private fun initClickListeners() {
         mViewBind?.run {
             // 添加标签按钮（暂时不实现）
             ivAdd.clickWithDuration {
@@ -103,91 +183,10 @@ class HealthTagDialog(
             }
 
             // 保存按钮
-            btnSave.click {
+            btnSave.clickWithDuration {
                 onSave?.invoke(selectLabels)
                 dismissAllowingStateLoss()
             }
-        }
-
-        setupLabelFlex()
-    }
-
-    /**
-     * 设置标签选择界面
-     */
-    private fun setupLabelFlex() {
-        try {
-            mViewBind?.run {
-                availableTags?.let { tags ->
-                    // 根据标签类型获取对应的字符串数组
-                    val labelsArray = when (tagType) {
-                        TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.blood_sugar_labels)
-                        TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.blood_pressure_labels)
-                    }
-                    
-                    labelBox.removeAllViews()
-                    
-                    for (tag in tags) {
-                        ItemLabelBinding.inflate(LayoutInflater.from(context)).apply {
-                            // 设置标签文本
-                            tvLabel.text = if (tag.isPredefined) {
-                                // 预定义标签，从字符串数组获取
-                                tag.predefinedIndex?.let { index ->
-                                    if (index < labelsArray.size) {
-                                        labelsArray[index]
-                                    } else {
-                                        tag.name
-                                    }
-                                } ?: tag.name
-                            } else {
-                                // 自定义标签，直接使用name字段
-                                tag.name
-                            }
-                            
-                            labelBox.addView(root)
-                            labelBox.flexWrap
-                            
-                            // 设置点击事件
-                            root.click {
-                                if (selectLabels.contains(tag)) {
-                                    selectLabels.remove(tag)
-                                } else {
-                                    selectLabels.add(tag)
-                                }
-                                setupLabelFlex()
-                            }
-
-                            // 设置选中状态样式
-                            if (selectLabels.contains(tag)) {
-                                tvLabel.setTextColor(
-                                    ContextCompat.getColor(
-                                        tvLabel.context,
-                                        com.healthtracker.framework.R.color.white
-                                    )
-                                )
-                                labelItem.background = ContextCompat.getDrawable(
-                                    labelItem.context,
-                                    R.drawable.bg_label_select_selected
-                                )
-                            } else {
-                                tvLabel.setTextColor(
-                                    ContextCompat.getColor(
-                                        tvLabel.context,
-                                        R.color.c5
-                                    )
-                                )
-                                labelItem.background = ContextCompat.getDrawable(
-                                    labelItem.context,
-                                    R.drawable.bg_label_select_normal
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            dismissAllowingStateLoss()
         }
     }
 }

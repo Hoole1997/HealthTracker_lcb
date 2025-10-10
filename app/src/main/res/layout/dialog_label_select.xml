@@ -56,17 +56,17 @@
         app:srcCompat="@drawable/ic_label_top_delete"
         android:visibility="gone"/>
 
-    <com.google.android.flexbox.FlexboxLayout
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/label_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_22"
         android:paddingHorizontal="@dimen/dp_6"
         android:paddingBottom="@dimen/dp_16"
-        app:alignItems="flex_start"
-        app:flexWrap="wrap"
+        android:nestedScrollingEnabled="false"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
-        tools:layout_height="@dimen/dp_100" />
+        tools:layout_height="@dimen/dp_100"
+        tools:listitem="@layout/item_label" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_cancel"
