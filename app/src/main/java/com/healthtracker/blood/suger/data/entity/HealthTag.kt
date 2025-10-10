@@ -55,7 +55,15 @@ data class HealthTag(
      * 标签创建时间
      */
     @ColumnInfo(name = "create_time")
-    val createTime: Date = Date()
+    val createTime: Date = Date(),
+    
+    /**
+     * 软删除标记
+     * true: 已删除（软删除）
+     * false: 未删除（正常状态）
+     */
+    @ColumnInfo(name = "is_deleted")
+    val isDeleted: Boolean = false
 ) {
     
     /**

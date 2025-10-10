@@ -150,18 +150,13 @@ class HealthTagRepository @Inject constructor(
     }
     
     /**
-     * 删除标签
+     * 删除标签（软删除）
      * @param tag 要删除的标签
      * @return 删除成功返回true，失败返回false
      */
     suspend fun deleteTag(tag: HealthTag): Boolean {
         return try {
-            // 只允许删除自定义标签
-            if (tag.isPredefinedTag()) {
-                return false
-            }
-            
-            val result = healthTagDao.delete(tag)
+            val result = healthTagDao.softDeleteById(tag.id)
             result > 0
         } catch (e: Exception) {
             e.printStackTrace()
@@ -170,19 +165,28 @@ class HealthTagRepository @Inject constructor(
     }
     
     /**
-     * 根据ID删除标签
+     * 根据ID删除标签（软删除）
      * @param id 标签ID
      * @return 删除成功返回true，失败返回false
      */
     suspend fun deleteTagById(id: Long): Boolean {
         return try {
-            // 先获取标签信息，检查是否为预定义标签
-            val tag = healthTagDao.getById(id)
-            if (tag?.isPredefinedTag() == true) {
-                return false // 不允许删除预定义标签
-            }
-            
-            val result = healthTagDao.deleteById(id)
+            val result = healthTagDao.softDeleteById(id)
+            result > 0
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+    
+    /**
+     * 恢复软删除的标签
+     * @param id 标签ID
+     * @return 恢复成功返回true，失败返回false
+     */
+    suspend fun restoreTagById(id: Long): Boolean {
+        return try {
+            val result = healthTagDao.restoreById(id)
             result > 0
         } catch (e: Exception) {
             e.printStackTrace()
@@ -228,13 +232,13 @@ class HealthTagRepository @Inject constructor(
     }
     
     /**
-     * 删除指定类型的所有自定义标签
+     * 删除指定类型的所有自定义标签（软删除）
      * @param tagType 标签类型
      * @return 删除成功返回true，失败返回false
      */
     suspend fun deleteAllCustomTagsByType(tagType: TagType): Boolean {
         return try {
-            val result = healthTagDao.deleteCustomTagsByType(tagType.value)
+            val result = healthTagDao.softDeleteCustomTagsByType(tagType.value)
             result >= 0
         } catch (e: Exception) {
             e.printStackTrace()
