@@ -38,11 +38,7 @@ ext.setupSigningConfigs = { android ->
                 keyAlias = props.getProperty('keyAlias')
                 keyPassword = props.getProperty('keyPassword')
             } else {
-                // 兜底配置，避免构建失败
-                storeFile = file("${project.projectDir}/src/playstore/center.jks")
-                storePassword = "center123"
-                keyAlias = "center123"
-                keyPassword = "center123"
+
             }
         }
     }
