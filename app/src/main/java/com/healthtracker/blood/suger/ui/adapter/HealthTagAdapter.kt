@@ -11,6 +11,8 @@ import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.ItemLabelBinding
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.gone
+import com.healthtracker.framework.ext.visible
 
 /**
  * 健康标签RecyclerView适配器
@@ -23,6 +25,13 @@ class HealthTagAdapter(
     private val tagType: TagType,
     private val onTagClick: (HealthTag) -> Unit
 ) : ListAdapter<HealthTagAdapter.TagItem, HealthTagAdapter.TagViewHolder>(TagDiffCallback()) {
+
+    private var isDelectMode = false
+
+    fun switchDelectMode(isDelete: Boolean){
+        isDelectMode = isDelete
+        notifyItemRangeChanged(0,itemCount)
+    }
 
     /**
      * 标签项数据类
@@ -47,6 +56,12 @@ class HealthTagAdapter(
             binding.apply {
                 // 设置标签文本
                 tvLabel.text = item.displayText
+
+                if (isDelectMode) {
+                    ivLabelDelete.visible()
+                } else {
+                    ivLabelDelete.gone()
+                }
                 
                 // 设置选中状态样式
                 if (item.isSelected) {

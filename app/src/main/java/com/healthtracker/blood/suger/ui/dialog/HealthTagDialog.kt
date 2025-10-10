@@ -39,6 +39,8 @@ class HealthTagDialog(
     
     private val selectLabels = selectedTags?.toMutableList() ?: mutableListOf()
     private lateinit var tagAdapter: HealthTagAdapter
+
+    private var isDeleteMode = false
     
     companion object {
         /**
@@ -175,6 +177,8 @@ class HealthTagDialog(
             // 删除标签按钮（暂时不实现）
             ivDelete.clickWithDuration {
                 // TODO: 实现删除自定义标签功能
+                isDeleteMode = !isDeleteMode
+                tagAdapter.switchDelectMode(isDeleteMode)
             }
 
             // 取消按钮
