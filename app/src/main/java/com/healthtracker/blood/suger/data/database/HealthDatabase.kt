@@ -5,8 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-// import androidx.room.migration.Migration
-// import androidx.sqlite.db.SupportSQLiteDatabase
 import com.healthtracker.blood.suger.data.converter.DateTimeConverter
 import com.healthtracker.blood.suger.data.dao.AlarmDao
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
@@ -38,7 +36,7 @@ import com.healthtracker.blood.suger.data.entity.MedicineReminder
         AlarmRecord::class,
         MedicineReminder::class
     ],
-    version = 4,
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)

@@ -920,5 +920,11 @@
     <string name="every_day_temp">⏰ Every day at %1$s</string>
     <string name="now_time_temp">📱 Right now it\'s %1$s"</string>
     <string name="have_reader_privacy">I have read the <font color="#02BC77">Privacy Policy</font></string>
+    <string name="choose_your_gender">Choose your gender</string>
+    <string name="txt_profile_des">This will be used to generate your personalized data</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="choose_your_age">Choose your age</string>
+    <string name="text_continue">Continue</string>
 
 </resources>

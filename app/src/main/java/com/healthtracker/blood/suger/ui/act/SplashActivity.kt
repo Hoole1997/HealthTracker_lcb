@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
+import com.healthtracker.blood.suger.isNewUser
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
+class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
 
     companion object {
         private const val TAG = "SplashActivity"
@@ -35,7 +36,12 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
         SplashStateMachine(
             scope = lifecycleScope,
             onNavigate = {
-                startActivity<MainActivity>(isFinishSelf = true)
+                if (isNewUser()) {
+                    startActivity<ProfileActivity>(isFinishSelf = true)
+                } else {
+                    startActivity<MainActivity>(isFinishSelf = true)
+                }
+
             }
         )
     }
@@ -70,13 +76,14 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
         stateMachine.onDestroy()
         super.onDestroy()
     }
+
     override fun isFullscreen() = true
 
     /**
      * 播放所有启动动画
      */
     private fun playAnimations() {
-        with(mViewBind){
+        with(mViewBind) {
             // 创建组合动画
             val animatorSet = AnimatorSet().apply {
                 startDelay = 200 // 延迟200毫秒开始动画
@@ -130,6 +137,7 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
                 "Notification permission already granted or not required".logd(TAG)
                 onPermissionCheckCompleted()
             }
+
             PermissionManager.Companion.PermissionStatus.DENIED -> {
                 "Notification permission denied, requesting...".logd(TAG)
                 permissionManager.requestNotificationPermission(this)
@@ -161,7 +169,8 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        val handled = permissionManager.handlePermissionResult(requestCode, permissions, grantResults)
+        val handled =
+            permissionManager.handlePermissionResult(requestCode, permissions, grantResults)
         if (handled && requestCode == PermissionManager.REQUEST_CODE_NOTIFICATION) {
             // 无论用户是否授权，都完成权限检查流程
             val currentStatus = permissionManager.checkNotificationPermission()
@@ -230,7 +239,9 @@ class SplashActivity: BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
             }
 
             if (!(animationDone && permissionDone)) {
-                "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(TAG)
+                "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(
+                    TAG
+                )
                 return
             }
 

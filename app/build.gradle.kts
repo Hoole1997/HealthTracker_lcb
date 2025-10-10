@@ -6,6 +6,7 @@ import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 //import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 //import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import kotlin.collections.get
+import kotlin.collections.plusAssign
 
 plugins {
     // 使用自定义插件
@@ -41,8 +42,6 @@ configure<StringFogExtension> {
 }
 
 
-
-
 android {
     namespace = "com.healthtracker.blood.suger"
 
@@ -60,7 +59,15 @@ android {
         }
         resConfigs("en")
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
+            }
+        }
+
     }
+
+
 
     // Flavor 配置
     flavorDimensions += "distribution"
