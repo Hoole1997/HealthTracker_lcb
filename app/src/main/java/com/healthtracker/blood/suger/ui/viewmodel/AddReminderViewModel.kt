@@ -179,7 +179,7 @@ class AddReminderViewModel @Inject constructor(
         val calendar = java.util.Calendar.getInstance()
         return "${calendar.get(java.util.Calendar.YEAR)}-" +
                "${(calendar.get(java.util.Calendar.MONTH) + 1).toString().padStart(2, '0')}-" +
-               "${calendar.get(java.util.Calendar.DAY_OF_MONTH).toString().padStart(2, '0')}"
+                calendar.get(java.util.Calendar.DAY_OF_MONTH).toString().padStart(2, '0')
     }
 
 
