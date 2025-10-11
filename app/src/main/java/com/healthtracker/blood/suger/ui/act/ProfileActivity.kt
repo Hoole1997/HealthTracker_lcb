@@ -2,7 +2,7 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.os.Bundle
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.constants.KEY_IS_NEW_USER
+import com.healthtracker.blood.suger.constants.KEY_HAS_ADD_PROFILE
 import com.healthtracker.blood.suger.databinding.ActivityProfileBinding
 import com.healthtracker.blood.suger.getUserAge
 import com.healthtracker.blood.suger.isMale
@@ -11,7 +11,6 @@ import com.healthtracker.blood.suger.saveUserGender
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
-import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.FontUtils
 import com.healthtracker.framework.util.SpUtils
@@ -36,7 +35,7 @@ class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>()
             btnContinue.clickWithDuration {
                 saveUserAge(age)
                 saveUserGender(gender)
-                SpUtils.putBoolean(KEY_IS_NEW_USER,false)
+                SpUtils.putBoolean(KEY_HAS_ADD_PROFILE,true)
                 startActivity<MainActivity>(isFinishSelf = true)
             }
 

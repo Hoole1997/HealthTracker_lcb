@@ -36,12 +36,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         SplashStateMachine(
             scope = lifecycleScope,
             onNavigate = {
-                if (isNewUser()) {
-                    startActivity<ProfileActivity>(isFinishSelf = true)
-                } else {
-                    startActivity<MainActivity>(isFinishSelf = true)
-                }
-
+                startActivity<MainActivity>(isFinishSelf = true)
             }
         )
     }
