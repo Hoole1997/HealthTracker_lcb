@@ -13,11 +13,13 @@ import com.healthtracker.blood.suger.ui.adapter.ReminderTimeAdapter
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.dialog.DosesTimesDialog
 import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
+import com.healthtracker.blood.suger.ui.dialog.ImgGetTypeDialog
 import com.healthtracker.blood.suger.ui.viewmodel.AddReminderUiState
 import com.healthtracker.blood.suger.ui.viewmodel.AddReminderViewModel
 import com.healthtracker.blood.suger.ui.viewmodel.SaveState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.hideSoftKeyBoard
 import com.healthtracker.framework.ext.logd
@@ -99,6 +101,10 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
             // 保存按钮
             btnSave.click {
                 mViewModel.saveReminder()
+            }
+
+            ivImg.clickWithDuration {
+                ImgGetTypeDialog.show(supportFragmentManager)
             }
         }
     }

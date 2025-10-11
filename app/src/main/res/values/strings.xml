@@ -926,5 +926,8 @@
     <string name="female">Female</string>
     <string name="choose_your_age">Choose your age</string>
     <string name="text_continue">Continue</string>
+    <string name="take_a_photo">Take a Photo</string>
+    <string name="choose_from_photos">Choose from photos</string>
+    <string name="please_select">Please select</string>
 
 </resources>
