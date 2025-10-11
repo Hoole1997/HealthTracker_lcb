@@ -18,8 +18,10 @@ class ImgGetTypeDialog(
     companion object {
         fun show(
             fragmentManager: FragmentManager,
+            onTakePhoto: (() -> Unit)? = null,
+            onChoosePhoto: (() -> Unit)? = null
         ) {
-            ImgGetTypeDialog().show(fragmentManager)
+            ImgGetTypeDialog(onTakePhoto,onChoosePhoto).show(fragmentManager)
         }
     }
 

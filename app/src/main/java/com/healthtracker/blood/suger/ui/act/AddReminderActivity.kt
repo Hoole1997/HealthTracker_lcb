@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.content.Intent
+import android.nfc.Tag
 import android.os.Bundle
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
@@ -9,6 +10,10 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityAddReminderBinding
+import com.healthtracker.blood.suger.permission.CameraPermission
+import com.healthtracker.blood.suger.permission.CameraPermissionProvider
+import com.healthtracker.blood.suger.permission.PhotoPermission
+import com.healthtracker.blood.suger.permission.PhotoPermissionProvider
 import com.healthtracker.blood.suger.ui.adapter.ReminderTimeAdapter
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.dialog.DosesTimesDialog
@@ -27,10 +32,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddReminderBinding>() {
+class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddReminderBinding>(),
+    PhotoPermissionProvider, CameraPermissionProvider {
 
     @Inject
     lateinit var permissionManager: PermissionManager
+
+    private val photoPermission = PhotoPermission()
+    private val cameraPermission = CameraPermission()
+
+
 
     private lateinit var timeAdapter: ReminderTimeAdapter
 
@@ -42,6 +53,9 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
         // 获取传入的参数
         val remindId = intent.getLongExtra("remindId", -1L).takeIf { it != -1L }
         val startDate = intent.getStringExtra("startDate")
+
+        cameraPermission.with(this)
+        photoPermission.with(this)
 
         // 初始化ViewModel
         mViewModel.initPage(remindId, startDate)
@@ -55,6 +69,8 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
     }
 
     companion object {
+
+        private const val TAG = "AddReminderActivity"
         /**
          * 启动Activity的便利方法
          * @param context 上下文
@@ -104,7 +120,52 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
             }
 
             ivImg.clickWithDuration {
-                ImgGetTypeDialog.show(supportFragmentManager)
+                ImgGetTypeDialog.show(supportFragmentManager, {
+                    interceptCameraStart {
+
+                    }
+                }) {
+                    interceptGalleryStart {
+
+                    }
+
+                }
+            }
+        }
+    }
+
+
+    private fun interceptCameraStart( method: () -> Unit){
+        cameraPermission.launch { isSuccess, showSettingsRedirect, hasPermission ->
+            if(isSuccess){
+                if(!hasPermission){
+                    "system camera permission dialog show and auth ".logd(TAG)
+                }
+                method.invoke()
+            }else{
+                if(showSettingsRedirect){
+                    "custom camera permission dialog show".logd(TAG)
+                }else{
+                    "system camera permission dialog show but reject".logd(TAG)
+                }
+            }
+
+        }
+    }
+
+    private fun interceptGalleryStart(method: () -> Unit) {
+        photoPermission.launch { status, showSettingsRedirect, hasPermission ->
+            if (status != PhotoPermission.NOT_ALLOW) {
+                if (!hasPermission) {
+                    "system media permission dialog show and auth ".logd(TAG)
+                }
+                method.invoke()
+            } else {
+                if (showSettingsRedirect) {
+                    "custom media permission dialog show".logd(TAG)
+                } else {
+                    "system media permission dialog show but reject".logd(TAG)
+                }
             }
         }
     }
@@ -170,7 +231,7 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
                 finish()
             }
             is SaveState.Error -> {
-                ToastUtils.showLong("Save failed")
+                ToastUtils.showShort("Save failed")
             }
         }
     }
@@ -201,10 +262,10 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
      */
     private fun checkFullScreenIntentPermission() {
         if (permissionManager.shouldRequestFSIPermission()) {
-            "Should request FSI permission for medication reminders".logd("AddReminderActivity")
+            "Should request FSI permission for medication reminders".logd(TAG)
             showFSIPermissionExplanationDialog()
         } else {
-            "FSI permission check: no need to request".logd("AddReminderActivity")
+            "FSI permission check: no need to request".logd(TAG)
         }
     }
 
@@ -215,11 +276,11 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
         FSIPermissionDialog.show(
             supportFragmentManager,
             onAllowPermission = {
-                "User agreed to FSI permission".logd("AddReminderActivity")
+                "User agreed to FSI permission".logd(TAG)
                 permissionManager.requestFSIPermission(this)
             },
             onDenyPermission = {
-                "User declined FSI permission".logd("AddReminderActivity")
+                "User declined FSI permission".logd(TAG)
                 permissionManager.recordFSIPermissionRequest(false)
             }
         )
@@ -233,7 +294,7 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
 
         if (permissionManager.handleActivityResult(requestCode, resultCode)) {
             // FSI权限请求处理完成
-            "FSI permission activity result handled".logd("AddReminderActivity")
+            "FSI permission activity result handled".logd(TAG)
         }
     }
 
@@ -249,4 +310,8 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
 
         permissionManager.handlePermissionResult(requestCode, permissions, grantResults)
     }
+
+    override fun photoPermission() = photoPermission
+
+    override fun permission() = cameraPermission
 }
