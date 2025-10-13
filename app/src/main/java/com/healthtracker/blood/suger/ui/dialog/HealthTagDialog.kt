@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -14,9 +16,13 @@ import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.DialogLabelSelectBinding
 import com.healthtracker.blood.suger.ui.adapter.HealthTagAdapter
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog.Companion.BUTTON_OK
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
+import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 /**
  * 统一的健康标签选择对话框
@@ -25,67 +31,75 @@ import com.healthtracker.framework.ext.clickWithDuration
  */
 class HealthTagDialog(
     private val tagType: TagType,
-    private val availableTags: List<HealthTag>?,
+    private val tagsFlow: Flow<List<HealthTag>>?,
     private val selectedTags: List<HealthTag>?,
-    private val onSave: ((List<HealthTag>) -> Unit)? = null
+    private val onSave: ((List<HealthTag>) -> Unit)? = null,
+    private val onDelete: ((HealthTag) -> Unit)? = null
 ) : BaseBottomSheetDialogFragment<DialogLabelSelectBinding>() {
 
     constructor() : this(
         tagType = TagType.BLOOD_SUGAR,
-        availableTags = null,
+        tagsFlow = null,
         selectedTags = null,
-        onSave = null
+        onSave = null,
+        onDelete = null
     )
-    
+
     private val selectLabels = selectedTags?.toMutableList() ?: mutableListOf()
     private lateinit var tagAdapter: HealthTagAdapter
 
     private var isDeleteMode = false
-    
+
     companion object {
         /**
-         * 显示血糖标签选择对话框
+         * 显示血糖标签选择对话框（响应式）
          * @param fragmentManager FragmentManager
-         * @param availableTags 所有可用标签
+         * @param tagsFlow 标签Flow（单一数据源）
          * @param selectedTags 已选中的标签
          * @param onSave 保存回调
+         * @param onDelete 删除回调（软删除）
          */
         fun showBloodSugarDialog(
             fragmentManager: FragmentManager,
-            availableTags: List<HealthTag>,
+            tagsFlow: Flow<List<HealthTag>>,
             selectedTags: List<HealthTag>?,
-            onSave: (List<HealthTag>) -> Unit
+            onSave: (List<HealthTag>) -> Unit,
+            onDelete: (HealthTag) -> Unit
         ) {
             HealthTagDialog(
                 TagType.BLOOD_SUGAR,
-                availableTags,
+                tagsFlow,
                 selectedTags,
-                onSave
+                onSave,
+                onDelete
             ).show(fragmentManager)
         }
-        
+
         /**
-         * 显示血压标签选择对话框
+         * 显示血压标签选择对话框（响应式）
          * @param fragmentManager FragmentManager
-         * @param availableTags 所有可用标签
+         * @param tagsFlow 标签Flow（单一数据源）
          * @param selectedTags 已选中的标签
          * @param onSave 保存回调
+         * @param onDelete 删除回调（软删除）
          */
         fun showBloodPressureDialog(
             fragmentManager: FragmentManager,
-            availableTags: List<HealthTag>,
+            tagsFlow: Flow<List<HealthTag>>,
             selectedTags: List<HealthTag>?,
-            onSave: (List<HealthTag>) -> Unit
+            onSave: (List<HealthTag>) -> Unit,
+            onDelete: (HealthTag) -> Unit
         ) {
             HealthTagDialog(
                 TagType.BLOOD_PRESSURE,
-                availableTags,
+                tagsFlow,
                 selectedTags,
-                onSave
+                onSave,
+                onDelete
             ).show(fragmentManager)
         }
     }
-    
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -96,7 +110,6 @@ class HealthTagDialog(
         initRecyclerView()
         initClickListeners()
     }
-
 
 
     /**
@@ -110,7 +123,7 @@ class HealthTagDialog(
                 flexWrap = FlexWrap.WRAP
                 justifyContent = JustifyContent.FLEX_START
             }
-            
+
             // 初始化Adapter
             tagAdapter = HealthTagAdapter(
                 tagType = tagType,
@@ -118,7 +131,7 @@ class HealthTagDialog(
                     handleTagSelection(tag)
                 }
             )
-            
+
             // 设置RecyclerView
             labelBox.apply {
                 this.layoutManager = layoutManager
@@ -126,31 +139,66 @@ class HealthTagDialog(
                 // 禁用嵌套滚动以避免与BottomSheet冲突
                 isNestedScrollingEnabled = false
             }
-            
-            // 初始化标签数据
+
+            // 初始化标签数据（订阅Flow）
             updateTagsData()
         }
     }
 
     /**
-     * 更新标签数据
+     * 响应式更新标签数据
      */
     private fun updateTagsData() {
-        availableTags?.let { tags ->
-            // 根据标签类型获取对应的字符串数组
-            val labelsArray = when (tagType) {
-                TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.blood_sugar_labels)
-                TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.blood_pressure_labels)
+        // 根据标签类型获取对应的字符串数组
+        val labelsArray = when (tagType) {
+            TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.blood_sugar_labels)
+            TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.blood_pressure_labels)
+        }
+
+        tagsFlow?.let { flow ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                flow.collect { tags ->
+                    tagAdapter.updateTags(tags, selectLabels, labelsArray)
+                }
             }
-            
-            tagAdapter.updateTags(tags, selectLabels, labelsArray)
         }
     }
 
     /**
-     * 处理标签选择逻辑
+     * 处理标签选择或删除逻辑
      */
     private fun handleTagSelection(tag: HealthTag) {
+        if (isDeleteMode) {
+            ConfirmDialog(
+                getString(R.string.confirm_delete_title),
+                getString(R.string.confirm_delete_message),
+                object : DialogListener {
+                    override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
+                        super.onItemClick(dialogFragment, which)
+                        when (which) {
+                            BUTTON_OK -> {
+                                // 删除模式：触发删除并移除本地选中列表中的该标签
+                                val index = selectLabels.indexOfFirst { it.id == tag.id }
+                                if (index >= 0) {
+                                    selectLabels.removeAt(index)
+                                }
+                                onDelete?.invoke(tag)
+                            }
+
+                            else -> {
+
+                            }
+                        }
+                    }
+
+                },
+                getString(R.string.cancel),
+                getString(R.string.delete)
+            ).show(childFragmentManager)
+            return
+        }
+
+        // 普通模式：切换选择
         val index = selectLabels.indexOfFirst { it.id == tag.id }
         if (index >= 0) {
             // 取消选择
@@ -159,8 +207,8 @@ class HealthTagDialog(
             // 添加选择
             selectLabels.add(tag)
         }
-        
-        // 更新Adapter数据
+
+        // 更新Adapter数据（展示新选中状态）
         updateTagsData()
     }
 
@@ -174,9 +222,8 @@ class HealthTagDialog(
                 // TODO: 实现添加自定义标签功能
             }
 
-            // 删除标签按钮（暂时不实现）
+            // 删除标签按钮：切换删除模式
             ivDelete.clickWithDuration {
-                // TODO: 实现删除自定义标签功能
                 isDeleteMode = !isDeleteMode
                 tagAdapter.switchDelectMode(isDeleteMode)
             }

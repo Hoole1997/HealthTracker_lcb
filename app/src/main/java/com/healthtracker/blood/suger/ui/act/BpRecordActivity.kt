@@ -95,16 +95,24 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
                     }
                     tempTags
                 }
-                HealthTagDialog.showBloodPressureDialog(supportFragmentManager, healthTags, selectedTags) { selectedTagList ->
-                    val tagIds = selectedTagList.map { it.id }
-                    addTagIds.clear()
-                    addTagIds.addAll(tagIds)
-                    // 更新ViewModel中的选中标签
-                    mViewModel.clearSelectedTags()
-                    tagIds.forEach { tagId ->
-                        mViewModel.toggleTagSelection(tagId)
+                HealthTagDialog.showBloodPressureDialog(
+                    supportFragmentManager,
+                    mViewModel.getBloodPressureTagsFlow(),
+                    selectedTags,
+                    onSave = { selectedTagList ->
+                        val tagIds = selectedTagList.map { it.id }
+                        addTagIds.clear()
+                        addTagIds.addAll(tagIds)
+                        // 更新ViewModel中的选中标签
+                        mViewModel.clearSelectedTags()
+                        tagIds.forEach { tagId ->
+                            mViewModel.toggleTagSelection(tagId)
+                        }
+                    },
+                    onDelete = { tag ->
+                        mViewModel.deleteTag(tag)
                     }
-                }
+                )
             }
             
             // 设置保存按钮点击事件

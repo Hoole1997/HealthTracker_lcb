@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
+import kotlinx.coroutines.flow.Flow
 
 @HiltViewModel
 class BsRecordViewModel @Inject constructor(
@@ -213,12 +214,19 @@ class BsRecordViewModel @Inject constructor(
     private fun convertMeasurementTagToBloodSugarStatus(status: Int) = BloodSugarStatus.entries.first { it.statusType == status }
 
 
-    fun getAvailableHealthTags(): StateFlow<List<HealthTag>> {
-        return healthTagRepository.getTagsByType(TagType.BLOOD_SUGAR).stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = emptyList()
-        )
+    fun getAvailableHealthTags(): Flow<List<HealthTag>> {
+        return healthTagRepository.getTagsByType(TagType.BLOOD_SUGAR)
+    }
+
+    fun deleteTag(tag: HealthTag) {
+        viewModelScope.launch {
+            healthTagRepository.deleteTag(tag)
+            // 删除后，如果当前选中包含该标签，移除以保持一致性
+            val current = _healthTags.value.toMutableList()
+            if (current.remove(tag.id)) {
+                _healthTags.value = current
+            }
+        }
     }
 
 

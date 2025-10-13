@@ -12,6 +12,7 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -301,6 +302,23 @@ class BpRecordViewModel @Inject constructor(
             is Created -> recordId
             is Updated -> recordId
             is Failed -> null
+        }
+    }
+
+    fun getBloodPressureTagsFlow(): Flow<List<HealthTag>> {
+        return healthTagRepository.getTagsByType(TagType.BLOOD_PRESSURE)
+    }
+
+    fun deleteTag(tag: HealthTag) {
+        viewModelScope.launch {
+            healthTagRepository.deleteTag(tag)
+            // 同步移除选中的标签ID
+            val current = _selectedTagIds.value.toMutableList()
+            if (current.remove(tag.id)) {
+                _selectedTagIds.value = current
+            }
+            // 重新加载可用标签列表（可选，Flow会自动刷新）
+            // loadAvailableTags()
         }
     }
 }

@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -71,9 +72,17 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                     }
                     tempTags
                 }
-                HealthTagDialog.showBloodSugarDialog(supportFragmentManager, healthTags, addTags) {
-                    mViewModel.updateTags(it)
-                }
+                HealthTagDialog.showBloodSugarDialog(
+                    supportFragmentManager,
+                    mViewModel.getAvailableHealthTags(),
+                    addTags,
+                    onSave = { selectedTags ->
+                        mViewModel.updateTags(selectedTags)
+                    },
+                    onDelete = { tag ->
+                        mViewModel.deleteTag(tag)
+                    }
+                )
             }
 
             setupRulerView()
@@ -203,13 +212,15 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             }
         }
 
-        this.collectLatest(mViewModel.getAvailableHealthTags()) { tags ->
-            "Blood sugar tags loaded: ${tags.size} tags".logd(TAG)
-            tags.forEach { tag ->
-                "Tag: ${tag.name}, isPredefined: ${tag.isPredefined}, type: ${tag.tagType}".logd(TAG)
+        lifecycleScope.launch {
+            mViewModel.getAvailableHealthTags().collectLatest { tags ->
+                "Blood sugar tags loaded: ${tags.size} tags".logd(TAG)
+                tags.forEach { tag ->
+                    "Tag: ${tag.name}, isPredefined: ${tag.isPredefined}, type: ${tag.tagType}".logd(TAG)
+                }
+                healthTags.clear()
+                healthTags.addAll(tags)
             }
-            healthTags.clear()
-            healthTags.addAll(tags)
         }
 
         this.collectLatest(mViewModel.healthTags) { tagIds ->
