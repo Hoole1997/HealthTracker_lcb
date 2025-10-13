@@ -163,6 +163,8 @@ dependencies {
     implementation(libs.hiddenapibypass)
     implementation(libs.work.runtime)
     implementation(libs.lifecycle.process)
+    implementation(libs.imagepicker)
+    implementation(libs.ucrop)
 
     api(libs.flexbox)
 }

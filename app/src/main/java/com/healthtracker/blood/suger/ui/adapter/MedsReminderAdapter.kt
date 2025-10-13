@@ -4,9 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ItemMedsRemindBinding
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.model.ReminderStatus
@@ -19,7 +25,7 @@ import com.healthtracker.framework.ext.visible
  * 药物提醒列表适配器
  */
 class MedsReminderAdapter(
-    private val onItemClick: (View,MedsReminderItem) -> Unit,
+    private val onItemClick: (View, MedsReminderItem) -> Unit,
 ) : ListAdapter<MedsReminderItem, MedsReminderAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,7 +48,7 @@ class MedsReminderAdapter(
             binding.root.clickWithDuration {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    onItemClick(binding.ivMore,getItem(position))
+                    onItemClick(binding.ivMore, getItem(position))
                 }
             }
         }
@@ -52,6 +58,13 @@ class MedsReminderAdapter(
                 // 设置时间
                 tvTime.text = item.time
 
+                if (!item.medicineCover.isEmpty()) {
+                    Glide.with(ivStatu)
+                        .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.ic_camera))
+                        .load(item.medicineCover.toUri())
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .into(ivStatu)
+                }
                 // 设置药物名称
                 tvName.text = item.medicineName
 
@@ -63,9 +76,9 @@ class MedsReminderAdapter(
                     tvNotes.visibility = android.view.View.GONE
                 }
                 // 根据状态设置图标和背景
-                if(item.isTaken()){
+                if (item.isTaken()) {
                     ivTake.visible()
-                }else{
+                } else {
                     ivTake.gone()
                 }
             }
@@ -81,7 +94,7 @@ class MedsReminderAdapter(
             newItem: MedsReminderItem
         ): Boolean {
             return oldItem.reminderId == newItem.reminderId &&
-                   oldItem.reminderDateTime == newItem.reminderDateTime
+                    oldItem.reminderDateTime == newItem.reminderDateTime
         }
 
         override fun areContentsTheSame(

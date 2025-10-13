@@ -110,7 +110,7 @@
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintTop_toBottomOf="@id/tv_medication_name" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <androidx.constraintlayout.utils.widget.ImageFilterView
                     android:id="@+id/iv_img"
                     android:layout_width="@dimen/dp_66"
                     android:layout_height="@dimen/dp_66"
@@ -118,6 +118,7 @@
                     android:background="@drawable/bg_rect_white_12"
                     android:backgroundTint="@color/color_EFFBF7"
                     android:scaleType="center"
+                    app:round="@dimen/dp_12"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/et_medication_name"
                     app:srcCompat="@drawable/ic_camera" />

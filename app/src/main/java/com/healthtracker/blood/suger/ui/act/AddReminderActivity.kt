@@ -1,11 +1,23 @@
 package com.healthtracker.blood.suger.ui.act
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.nfc.Tag
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.input.key.Key.Companion.G
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.blankj.utilcode.util.ToastUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
@@ -28,11 +40,13 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.hideSoftKeyBoard
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddReminderBinding>(),
+class AddReminderActivity : BaseMVVMActivity<AddReminderViewModel, ActivityAddReminderBinding>(),
     PhotoPermissionProvider, CameraPermissionProvider {
 
     @Inject
@@ -41,6 +55,31 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
     private val photoPermission = PhotoPermission()
     private val cameraPermission = CameraPermission()
 
+
+    private val startForProfileImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            when (resultCode) {
+                RESULT_OK -> {
+                    //Image Uri will not be null for RESULT_OK
+                    val fileUri = data?.data
+                    fileUri?.let {
+                        mViewModel.setCoverUri(it)
+                    }
+
+                }
+
+                ImagePicker.RESULT_ERROR -> {
+                    Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {
+                    Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
 
     private lateinit var timeAdapter: ReminderTimeAdapter
@@ -71,6 +110,7 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
     companion object {
 
         private const val TAG = "AddReminderActivity"
+
         /**
          * 启动Activity的便利方法
          * @param context 上下文
@@ -78,7 +118,11 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
          * @param startDate 新建模式的起始日期
          */
         @JvmStatic
-        fun start(context: android.content.Context, remindId: Long? = null, startDate: String? = null) {
+        fun start(
+            context: android.content.Context,
+            remindId: Long? = null,
+            startDate: String? = null
+        ) {
             val intent = android.content.Intent(context, AddReminderActivity::class.java).apply {
                 remindId?.let { putExtra("remindId", it) }
                 startDate?.let { putExtra("startDate", it) }
@@ -121,51 +165,26 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
 
             ivImg.clickWithDuration {
                 ImgGetTypeDialog.show(supportFragmentManager, {
-                    interceptCameraStart {
-
-                    }
+                    ImagePicker.with(this@AddReminderActivity)
+                        .crop(1f,1f)         // 打开裁剪功能，可传入比例 crop(1f, 1f) 做正方形
+                        .compress(1024) // 压缩图片至1MB以内
+                        .maxResultSize(1080, 1080) // 限制分辨率
+                        .galleryOnly()
+                        .createIntent {
+                            startForProfileImageResult.launch(it)
+                        }
                 }) {
-                    interceptGalleryStart {
-
-                    }
+                    ImagePicker.with(this@AddReminderActivity)
+                        .crop(1f,1f)         // 打开裁剪功能，可传入比例 crop(1f, 1f) 做正方形
+                        .compress(1024) // 压缩图片至1MB以内
+                        .maxResultSize(1080, 1080) // 限制分辨率
+                        .cameraOnly()
+                        .createIntent {
+                            startForProfileImageResult.launch(it)
+                        }
 
                 }
-            }
-        }
-    }
 
-
-    private fun interceptCameraStart( method: () -> Unit){
-        cameraPermission.launch { isSuccess, showSettingsRedirect, hasPermission ->
-            if(isSuccess){
-                if(!hasPermission){
-                    "system camera permission dialog show and auth ".logd(TAG)
-                }
-                method.invoke()
-            }else{
-                if(showSettingsRedirect){
-                    "custom camera permission dialog show".logd(TAG)
-                }else{
-                    "system camera permission dialog show but reject".logd(TAG)
-                }
-            }
-
-        }
-    }
-
-    private fun interceptGalleryStart(method: () -> Unit) {
-        photoPermission.launch { status, showSettingsRedirect, hasPermission ->
-            if (status != PhotoPermission.NOT_ALLOW) {
-                if (!hasPermission) {
-                    "system media permission dialog show and auth ".logd(TAG)
-                }
-                method.invoke()
-            } else {
-                if (showSettingsRedirect) {
-                    "custom media permission dialog show".logd(TAG)
-                } else {
-                    "system media permission dialog show but reject".logd(TAG)
-                }
             }
         }
     }
@@ -213,7 +232,14 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
 
             // 更新保存按钮状态和文字
             btnSave.isEnabled = state.isFormValid
-            btnSave.text = if (state.isEditMode) getString(R.string.save_changes) else getString(R.string.save)
+            btnSave.text =
+                if (state.isEditMode) getString(R.string.save_changes) else getString(R.string.save)
+
+            Glide.with(this@AddReminderActivity)
+                .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.ic_camera))
+                .load(state.coverUri)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(ivImg)
         }
     }
 
@@ -221,15 +247,18 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
         when (saveState) {
             is SaveState.Idle -> {
                 mViewBind.btnSave.isEnabled = saveState.isAlbe
-                mViewBind.btnSave.alpha = if(saveState.isAlbe) 1.0f else 0.3f
+                mViewBind.btnSave.alpha = if (saveState.isAlbe) 1.0f else 0.3f
             }
+
             is SaveState.Loading -> {
                 mViewBind.btnSave.isEnabled = false
                 mViewBind.btnSave.text = getString(R.string.saving)
             }
+
             is SaveState.Success -> {
                 finish()
             }
+
             is SaveState.Error -> {
                 ToastUtils.showShort("Save failed")
             }
@@ -237,7 +266,7 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
     }
 
     private fun showDoseCountDialog() {
-        DosesTimesDialog(mViewModel.uiState.value.dailyDoses){
+        DosesTimesDialog(mViewModel.uiState.value.dailyDoses) {
             mViewModel.setDailyDoses(it)
         }.show(supportFragmentManager)
     }
@@ -248,9 +277,9 @@ class AddReminderActivity: BaseMVVMActivity<AddReminderViewModel, ActivityAddRem
         val timeParts = currentTime.split(":")
         val hour = timeParts[0].toInt()
         val minute = timeParts[1].toInt()
-        AlarmTimeSelectDialog.show(supportFragmentManager,hour to minute){
+        AlarmTimeSelectDialog.show(supportFragmentManager, hour to minute) {
             val timeString = DateTimeUtils.formatTimeComponents(it.first, it.second)
-            mViewModel.updateReminderTime(position,timeString)
+            mViewModel.updateReminderTime(position, timeString)
 
         }
     }

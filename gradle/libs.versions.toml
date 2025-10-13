@@ -4,6 +4,7 @@
 compileSdk = "35"
 # @keep
 flexbox = "3.0.0"
+imagepicker = "2.1"
 minSdk = "24"
 # @keep
 targetSdk = "35"
@@ -28,6 +29,7 @@ google_service_version = "4.4.3"
 
 glide = "5.0.4"
 fragmentKtx = "1.8.9"
+ucrop = "2.2.11"
 webkit = "1.11.0"
 
 navigation_version = "2.9.4"
@@ -49,6 +51,7 @@ hilt_version = "2.57.1"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
+imagepicker = { module = "com.github.dhaval2404:imagepicker", version.ref = "imagepicker" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -74,6 +77,7 @@ androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-view
 
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 stringfogPlugin = { module = "com.github.megatronking.stringfog:gradle-plugin", version.ref = "stringfog" }
+ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 xorLibrary = { module = "com.github.megatronking.stringfog:xor", version.ref = "xor" }
 aabresguardPlugin = { group = "com.bytedance.android", name = "aabresguard-plugin", version.ref = "aabresguard" }

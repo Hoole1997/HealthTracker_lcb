@@ -140,7 +140,7 @@ class MedicineReminderRepository @Inject constructor(
         reminderTimes: List<String>? = null,
         medicineCover: String? = null,
         note: String? = null,
-        syncCalendar: Boolean? = null
+        syncCalendar: Boolean? = null,
     ) {
         try {
             val current = dao.getById(id) ?: return

@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.PresetTimes
 import com.healthtracker.blood.suger.data.repository.MedicineReminderRepository
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @HiltViewModel
 class AddReminderViewModel @Inject constructor(
@@ -77,6 +79,10 @@ class AddReminderViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(notes = notes)
     }
 
+    fun setCoverUri(uri: Uri) {
+        _uiState.value = _uiState.value.copy(coverUri = uri)
+    }
+
     /**
      * 设置是否同步到日历
      */
@@ -118,7 +124,8 @@ class AddReminderViewModel @Inject constructor(
                         reminderTimes = reminder.getStartRemindTimeStrings().toMutableList(),
                         dailyDoses = reminder.getStartRemindTimeStrings().size,
                         notes = reminder.note,
-                        syncCalendar = reminder.isSyncToCalendar()
+                        syncCalendar = reminder.isSyncToCalendar(),
+                        coverUri = if(reminder.medicineCover.isEmpty()) null else reminder.medicineCover.toUri()
                     )
                     validateForm()
                 }
@@ -144,6 +151,7 @@ class AddReminderViewModel @Inject constructor(
                         id = currentReminderId!!,
                         medicineName = currentState.medicineName.trim(),
                         reminderTimes = currentState.reminderTimes,
+                        medicineCover = currentState.coverUri?.toString() ?: "",
                         note = currentState.notes.trim(),
                         syncCalendar = currentState.syncCalendar
                     )
@@ -167,6 +175,7 @@ class AddReminderViewModel @Inject constructor(
         medicineReminderRepository.addMedicine(
             medicineName = state.medicineName.trim(),
             reminderTimes = state.reminderTimes,
+            medicineCover = state.coverUri?.toString() ?: "",
             note = state.notes.trim(),
             syncCalendar = state.syncCalendar
         )
@@ -215,7 +224,8 @@ data class AddReminderUiState(
     val reminderTimes: List<String> = PresetTimes.THREE_TIMES_DAILY,
     val notes: String = "",
     val syncCalendar: Boolean = false,
-    val isFormValid: Boolean = false
+    val isFormValid: Boolean = false,
+    val coverUri: Uri? = null
 )
 
 /**

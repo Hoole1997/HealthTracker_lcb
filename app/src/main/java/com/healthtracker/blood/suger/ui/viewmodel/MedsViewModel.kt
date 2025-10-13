@@ -193,7 +193,8 @@ class MedsViewModel @Inject constructor(
                 medicineName = reminder.medicineName,
                 notes = reminder.note,
                 status = status,
-                reminderDateTime = reminderDateTime
+                reminderDateTime = reminderDateTime,
+                medicineCover = reminder.medicineCover
             )
         }
     }

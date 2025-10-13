@@ -35,7 +35,9 @@ data class MedsReminderItem(
     /**
      * 完整的提醒时间（选中日期+提醒时间），用于排序和状态判断
      */
-    val reminderDateTime: Date
+    val reminderDateTime: Date,
+
+    val medicineCover:String
 ) {
     /**
      * 是否已服药
