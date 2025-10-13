@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
+import com.healthtracker.blood.suger.data.utils.TagUtils
 import kotlinx.coroutines.flow.Flow
 
 @HiltViewModel
@@ -216,6 +217,27 @@ class BsRecordViewModel @Inject constructor(
 
     fun getAvailableHealthTags(): Flow<List<HealthTag>> {
         return healthTagRepository.getTagsByType(TagType.BLOOD_SUGAR)
+    }
+
+    suspend fun createCustomTag(tagName: String): Long {
+        val name = tagName
+        // 重名检查（保留）
+        if (healthTagRepository.isTagNameExists(com.healthtracker.blood.suger.data.enums.TagType.BLOOD_SUGAR, name)) {
+            return -1L
+        }
+        return try {
+            val id = healthTagRepository.createBloodSugarCustomTag(name)
+            if (id > 0L) {
+                val current = _healthTags.value.toMutableList()
+                if (!current.contains(id)) {
+                    current.add(id)
+                    _healthTags.value = current
+                }
+            }
+            id
+        } catch (e: Exception) {
+            -1L
+        }
     }
 
     fun deleteTag(tag: HealthTag) {

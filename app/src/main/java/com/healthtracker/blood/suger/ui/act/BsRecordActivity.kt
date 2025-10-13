@@ -18,6 +18,7 @@ import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
@@ -81,6 +82,14 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                     },
                     onDelete = { tag ->
                         mViewModel.deleteTag(tag)
+                    },
+                    onAdd = { tagName ->
+                        lifecycleScope.launch {
+                            val id = mViewModel.createCustomTag(tagName)
+                            if (id <= 0L) {
+                                showToast("创建失败或标签已存在")
+                            }
+                        }
                     }
                 )
             }

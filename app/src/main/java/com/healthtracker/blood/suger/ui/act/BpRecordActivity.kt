@@ -13,6 +13,7 @@ import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -103,7 +104,6 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
                         val tagIds = selectedTagList.map { it.id }
                         addTagIds.clear()
                         addTagIds.addAll(tagIds)
-                        // 更新ViewModel中的选中标签
                         mViewModel.clearSelectedTags()
                         tagIds.forEach { tagId ->
                             mViewModel.toggleTagSelection(tagId)
@@ -111,6 +111,14 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
                     },
                     onDelete = { tag ->
                         mViewModel.deleteTag(tag)
+                    },
+                    onAdd = { tagName ->
+                        lifecycleScope.launch {
+                            val id = mViewModel.createCustomTag(tagName)
+                            if (id <= 0L) {
+                                showToast("创建失败或标签已存在")
+                            }
+                        }
                     }
                 )
             }

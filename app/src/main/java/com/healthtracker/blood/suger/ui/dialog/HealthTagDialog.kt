@@ -14,6 +14,7 @@ import com.google.android.flexbox.JustifyContent
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
+import com.healthtracker.blood.suger.data.utils.TagUtils
 import com.healthtracker.blood.suger.databinding.DialogLabelSelectBinding
 import com.healthtracker.blood.suger.ui.adapter.HealthTagAdapter
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog.Companion.BUTTON_OK
@@ -21,6 +22,7 @@ import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.showToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -34,7 +36,8 @@ class HealthTagDialog(
     private val tagsFlow: Flow<List<HealthTag>>?,
     private val selectedTags: List<HealthTag>?,
     private val onSave: ((List<HealthTag>) -> Unit)? = null,
-    private val onDelete: ((HealthTag) -> Unit)? = null
+    private val onDelete: ((HealthTag) -> Unit)? = null,
+    private val onAdd: ((String) -> Unit)? = null
 ) : BaseBottomSheetDialogFragment<DialogLabelSelectBinding>() {
 
     constructor() : this(
@@ -48,6 +51,7 @@ class HealthTagDialog(
     private val selectLabels = selectedTags?.toMutableList() ?: mutableListOf()
     private lateinit var tagAdapter: HealthTagAdapter
 
+    private var pendingNewTagName: String? = null
     private var isDeleteMode = false
 
     companion object {
@@ -64,14 +68,16 @@ class HealthTagDialog(
             tagsFlow: Flow<List<HealthTag>>,
             selectedTags: List<HealthTag>?,
             onSave: (List<HealthTag>) -> Unit,
-            onDelete: (HealthTag) -> Unit
+            onDelete: (HealthTag) -> Unit,
+            onAdd: (String) -> Unit
         ) {
             HealthTagDialog(
                 TagType.BLOOD_SUGAR,
                 tagsFlow,
                 selectedTags,
                 onSave,
-                onDelete
+                onDelete,
+                onAdd
             ).show(fragmentManager)
         }
 
@@ -88,14 +94,16 @@ class HealthTagDialog(
             tagsFlow: Flow<List<HealthTag>>,
             selectedTags: List<HealthTag>?,
             onSave: (List<HealthTag>) -> Unit,
-            onDelete: (HealthTag) -> Unit
+            onDelete: (HealthTag) -> Unit,
+            onAdd: (String) -> Unit
         ) {
             HealthTagDialog(
                 TagType.BLOOD_PRESSURE,
                 tagsFlow,
                 selectedTags,
                 onSave,
-                onDelete
+                onDelete,
+                onAdd
             ).show(fragmentManager)
         }
     }
@@ -149,7 +157,6 @@ class HealthTagDialog(
      * 响应式更新标签数据
      */
     private fun updateTagsData() {
-        // 根据标签类型获取对应的字符串数组
         val labelsArray = when (tagType) {
             TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.blood_sugar_labels)
             TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.blood_pressure_labels)
@@ -158,6 +165,13 @@ class HealthTagDialog(
         tagsFlow?.let { flow ->
             viewLifecycleOwner.lifecycleScope.launch {
                 flow.collect { tags ->
+                    pendingNewTagName?.let { name ->
+                        val newlyCreated = tags.find { it.name == name }
+                        if (newlyCreated != null && selectLabels.none { it.id == newlyCreated.id }) {
+                            selectLabels.add(newlyCreated)
+                        }
+                        pendingNewTagName = null
+                    }
                     tagAdapter.updateTags(tags, selectLabels, labelsArray)
                 }
             }
@@ -217,10 +231,10 @@ class HealthTagDialog(
      */
     private fun initClickListeners() {
         mViewBind?.run {
-            // 添加标签按钮（暂时不实现）
             ivAdd.clickWithDuration {
-                AddTagDialog.show(childFragmentManager){
-
+                AddTagDialog.show(childFragmentManager) { input ->
+                    pendingNewTagName = input
+                    onAdd?.invoke(input)
                 }
             }
 

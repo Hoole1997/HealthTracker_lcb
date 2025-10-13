@@ -6,6 +6,7 @@ import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
+import com.healthtracker.blood.suger.data.utils.TagUtils
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
@@ -243,8 +244,13 @@ class BpRecordViewModel @Inject constructor(
      * @return 创建的标签ID，失败返回-1
      */
     suspend fun createCustomTag(tagName: String): Long {
+        val name = tagName
+        // 重名检查（保留）
+        if (healthTagRepository.isTagNameExists(TagType.BLOOD_PRESSURE, name)) {
+            return -1L
+        }
         return try {
-            val tag = healthTagRepository.createCustomTag(tagName, TagType.BLOOD_PRESSURE)
+            val tag = healthTagRepository.createCustomTag(name, TagType.BLOOD_PRESSURE)
             val tagId = tag.id
             if (tagId > 0) {
                 // 重新加载标签列表
@@ -255,7 +261,7 @@ class BpRecordViewModel @Inject constructor(
             tagId
         } catch (e: Exception) {
             e.printStackTrace()
-            -1
+            -1L
         }
     }
 

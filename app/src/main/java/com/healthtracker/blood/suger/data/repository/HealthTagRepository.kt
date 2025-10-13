@@ -130,8 +130,8 @@ class HealthTagRepository @Inject constructor(
      */
     suspend fun createCustomTag(name: String, tagType: TagType): HealthTag {
         val tag = HealthTag.createCustom(name, tagType)
-        healthTagDao.insert(tag)
-        return tag
+        val newId = healthTagDao.insert(tag)
+        return tag.copy(id = newId)
     }
     
     /**
