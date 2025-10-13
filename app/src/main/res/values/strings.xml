@@ -147,6 +147,41 @@
     </string-array>
 
     
+    <!-- BMI classification names (8 levels) -->
+    <string-array name="bmi_level_names">
+        <item>Very Severely Underweight</item>
+        <item>Severely Underweight</item>
+        <item>Underweight</item>
+        <item>Normal</item>
+        <item>Overweight</item>
+        <item>Obesity Class I</item>
+        <item>Obesity Class II</item>
+        <item>Obesity Class III</item>
+    </string-array>
+
+    <!-- BMI classification ranges (for display) -->
+    <string-array name="bmi_level_ranges" translatable="false">
+        <item>BMI &lt;16.0</item>
+        <item>BMI 16.0-16.9</item>
+        <item>BMI 17.0-18.4</item>
+        <item>BMI 18.5-24.9</item>
+        <item>BMI 25.0-29.9</item>
+        <item>BMI 30.0-34.9</item>
+        <item>BMI 35.0-39.9</item>
+        <item>BMI ≥40.0</item>
+    </string-array>
+
+    <!-- BMI record tag labels -->
+    <string-array name="bmi_labels">
+        <item>Excited state</item>
+        <item>Depression</item>
+        <item>Calm</item>
+        <item>After intense exercise</item>
+        <item>After aerobic exercise</item>
+        <item>After anaerobic exercise</item>
+        <item>Dieting</item>
+        <item>After drinking</item>
+    </string-array>
 
     <string-array name="systolic" translatable="false">
         <item>20</item>
@@ -933,5 +968,7 @@
     <string name="confirm_delete_message">Are you sure you want to delete this tag?</string>
     <string name="enter_new_label">Enter new label</string>
     <string name="add_label">Add label</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height</string>
 
 </resources>
