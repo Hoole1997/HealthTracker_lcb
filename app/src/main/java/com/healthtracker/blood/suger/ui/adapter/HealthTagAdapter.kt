@@ -64,7 +64,7 @@ class HealthTagAdapter(
                 }
                 
                 // 设置选中状态样式
-                if (item.isSelected) {
+                if (item.isSelected && !isDelectMode) {
                     tvLabel.setTextColor(
                         ContextCompat.getColor(
                             tvLabel.context,
