@@ -166,7 +166,7 @@ class AddReminderActivity : BaseMVVMActivity<AddReminderViewModel, ActivityAddRe
             ivImg.clickWithDuration {
                 ImgGetTypeDialog.show(supportFragmentManager, {
                     ImagePicker.with(this@AddReminderActivity)
-                        .crop(1f,1f)         // 打开裁剪功能，可传入比例 crop(1f, 1f) 做正方形
+                        .cropSquare()        // 打开裁剪功能，可传入比例 crop(1f, 1f) 做正方形
                         .compress(1024) // 压缩图片至1MB以内
                         .maxResultSize(1080, 1080) // 限制分辨率
                         .galleryOnly()
@@ -175,7 +175,7 @@ class AddReminderActivity : BaseMVVMActivity<AddReminderViewModel, ActivityAddRe
                         }
                 }) {
                     ImagePicker.with(this@AddReminderActivity)
-                        .crop(1f,1f)         // 打开裁剪功能，可传入比例 crop(1f, 1f) 做正方形
+                        .cropSquare()
                         .compress(1024) // 压缩图片至1MB以内
                         .maxResultSize(1080, 1080) // 限制分辨率
                         .cameraOnly()
