@@ -445,7 +445,7 @@ class AlarmNotificationManager @Inject constructor(
         clickIntent: PendingIntent
     ): NotificationCompat.Builder {
         return NotificationCompat.Builder(context, CHANNEL_ID_ALARM)
-            .setSmallIcon(R.drawable.ic_notifcation_pb)
+            .setSmallIcon(R.drawable.ic_meds)
             .setContentTitle(title)
             .setContentText(content)
             .setContentIntent(clickIntent)
