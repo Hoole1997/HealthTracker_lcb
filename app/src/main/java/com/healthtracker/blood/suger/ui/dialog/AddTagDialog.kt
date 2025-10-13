@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.databinding.DialogAddTagBinding
-import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
+import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 
 class AddTagDialog(private val onSave: ((String) -> Unit)? = null) :
-    BaseVbDialogFragment<DialogAddTagBinding>() {
+    BaseBottomSheetDialogFragment<DialogAddTagBinding>() {
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -38,11 +38,8 @@ class AddTagDialog(private val onSave: ((String) -> Unit)? = null) :
                 }
                 dismissAllowingStateLoss()
             }
-
+            etLabel.requestFocus()
             switchSaveStatue(false)
-
-
-
             etLabel.addTextChangedListener {
                 it?.let { editable ->
                     switchSaveStatue(!editable.toString().trim().isEmpty())
