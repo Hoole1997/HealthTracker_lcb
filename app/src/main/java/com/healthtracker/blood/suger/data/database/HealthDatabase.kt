@@ -11,11 +11,13 @@ import com.healthtracker.blood.suger.data.dao.BloodPressureDao
 import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
 import com.healthtracker.blood.suger.data.dao.MedicineReminderDao
+import com.healthtracker.blood.suger.data.dao.BmiDao
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.entity.MedicineReminder
+import com.healthtracker.blood.suger.data.entity.BmiRecord
 
 /**
  * 健康数据Room数据库 - 极简设计
@@ -34,9 +36,10 @@ import com.healthtracker.blood.suger.data.entity.MedicineReminder
         BloodPressureRecord::class,
         HealthTag::class,
         AlarmRecord::class,
-        MedicineReminder::class
+        MedicineReminder::class,
+        BmiRecord::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -67,6 +70,11 @@ abstract class HealthDatabase : RoomDatabase() {
      */
     abstract fun medicineReminderDao(): MedicineReminderDao
 
+    /**
+     * 获取BMI记录DAO
+     */
+    abstract fun bmiDao(): BmiDao
+
     companion object {
         /**
          * 数据库名称
@@ -93,7 +101,7 @@ abstract class HealthDatabase : RoomDatabase() {
                     HealthDatabase::class.java,
                     DATABASE_NAME
                 )
-//                    .addMigrations(MIGRATION_1_2)
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance
