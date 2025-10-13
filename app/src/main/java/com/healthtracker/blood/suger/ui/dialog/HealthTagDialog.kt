@@ -219,7 +219,9 @@ class HealthTagDialog(
         mViewBind?.run {
             // 添加标签按钮（暂时不实现）
             ivAdd.clickWithDuration {
-                // TODO: 实现添加自定义标签功能
+                AddTagDialog.show(childFragmentManager){
+
+                }
             }
 
             // 删除标签按钮：切换删除模式
