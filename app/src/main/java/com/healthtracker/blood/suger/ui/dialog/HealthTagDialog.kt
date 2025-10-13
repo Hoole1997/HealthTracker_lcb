@@ -160,6 +160,10 @@ class HealthTagDialog(
         val labelsArray = when (tagType) {
             TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.blood_sugar_labels)
             TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.blood_pressure_labels)
+            TagType.BMI -> {
+                val resId = resources.getIdentifier("bmi_labels", "array", requireContext().packageName)
+                if (resId != 0) resources.getStringArray(resId) else emptyArray()
+            }
         }
 
         tagsFlow?.let { flow ->

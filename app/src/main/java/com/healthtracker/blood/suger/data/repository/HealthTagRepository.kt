@@ -47,10 +47,32 @@ class HealthTagRepository @Inject constructor(
                     healthTagDao.insert(tag)
                 }
             }
+
+            // 检查 BMI 预定义标签是否已存在（如果有资源）
+            val existingBmiTags = getPredefinedTagsByType(TagType.BMI)
+            if (existingBmiTags.isEmpty()) {
+                // 若没有资源数组，则不强制插入，使用名称查找避免编译期资源缺失
+                try {
+                    val bmiLabelsResId = context.resources.getIdentifier("bmi_labels", "array", context.packageName)
+                    if (bmiLabelsResId != 0) {
+                        val bmiLabels = context.resources.getStringArray(bmiLabelsResId)
+                        bmiLabels.forEachIndexed { index, label ->
+                            val tag = HealthTag.createPredefined(label, TagType.BMI, index)
+                            healthTagDao.insert(tag)
+                        }
+                    } else {
+                        android.util.Log.w("HealthTagRepository", "BMI labels resource not found via getIdentifier, skipping predefined BMI tags")
+                    }
+                } catch (e: Exception) {
+                    // 资源查找可能失败，忽略即可
+                    android.util.Log.w("HealthTagRepository", "BMI labels resource lookup failed, skipping predefined BMI tags")
+                }
+            }
             // 输出初始化结果日志
             val bloodSugarCount = getPredefinedTagsByTypeHelper(TagType.BLOOD_SUGAR).size
             val bloodPressureCount = getPredefinedTagsByTypeHelper(TagType.BLOOD_PRESSURE).size
-            android.util.Log.d("HealthTagRepository", "Predefined tags initialized - Blood Sugar: $bloodSugarCount, Blood Pressure: $bloodPressureCount")
+            val bmiCount = getPredefinedTagsByTypeHelper(TagType.BMI).size
+            android.util.Log.d("HealthTagRepository", "Predefined tags initialized - Blood Sugar: $bloodSugarCount, Blood Pressure: $bloodPressureCount, BMI: $bmiCount")
             
         } catch (e: Exception) {
             android.util.Log.e("HealthTagRepository", "Failed to initialize predefined tags", e)
@@ -261,6 +283,14 @@ class HealthTagRepository @Inject constructor(
     fun getBloodPressureTags(): Flow<List<HealthTag>> {
         return getTagsByType(TagType.BLOOD_PRESSURE)
     }
+
+    /**
+     * 获取 BMI 标签（便捷方法）
+     * @return BMI 标签列表的Flow
+     */
+    fun getBmiTags(): Flow<List<HealthTag>> {
+        return getTagsByType(TagType.BMI)
+    }
     
     /**
      * 创建血糖自定义标签（便捷方法）
@@ -284,6 +314,20 @@ class HealthTagRepository @Inject constructor(
     suspend fun createBloodPressureCustomTag(name: String): Long {
         return try {
             val tag = createCustomTag(name, TagType.BLOOD_PRESSURE)
+            tag.id
+        } catch (e: Exception) {
+            -1L
+        }
+    }
+
+    /**
+     * 创建 BMI 自定义标签（便捷方法）
+     * @param name 标签名称
+     * @return 创建成功返回标签ID，失败返回-1
+     */
+    suspend fun createBmiCustomTag(name: String): Long {
+        return try {
+            val tag = createCustomTag(name, TagType.BMI)
             tag.id
         } catch (e: Exception) {
             -1L

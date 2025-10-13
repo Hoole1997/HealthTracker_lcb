@@ -42,4 +42,12 @@ interface BmiDao {
     /** 软删除：仅更新标记 */
     @Query("UPDATE bmi_records SET is_delete = 1, updated_at = :updatedAt WHERE id = :id")
     suspend fun softDeleteById(id: Long, updatedAt: Long = System.currentTimeMillis()): Int
+
+    /** 批量插入 */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(records: List<BmiRecord>): List<Long>
+
+    /** 清空所有记录（硬删除） */
+    @Query("DELETE FROM bmi_records")
+    suspend fun deleteAllRecords(): Int
 }
