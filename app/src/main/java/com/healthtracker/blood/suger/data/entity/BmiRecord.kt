@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.healthtracker.blood.suger.data.enums.BmiUnit
 import java.util.Date
 
 /**
@@ -87,5 +88,13 @@ data class BmiRecord(
      */
     fun withUpdatedTimestamp(): BmiRecord {
         return this.copy(updatedAt = System.currentTimeMillis())
+    }
+
+    /**
+     * 获取用于显示的体重值（根据用户偏好单位转换，不含单位）
+     */
+    fun getDisplayWeightValue(preferredUnit: BmiUnit = BmiUnit.getPreferredWeightUnit()): String {
+        val display = BmiUnit.toDisplayWeight(weightKg.toFloat(), preferredUnit)
+        return String.format(java.util.Locale.ROOT, "%.1f", display)
     }
 }

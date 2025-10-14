@@ -11,8 +11,6 @@ enum class BmiUnit(val value: Int, val heightLabel: String, val weightLabel: Str
     IMPERIAL(1, "in", "lbs");
 
     companion object {
-        // 兼容旧键：整体单位
-        private const val KEY_PREFERRED_UNIT = "bmi_preferred_unit"
         // 新增：分别偏好键
         private const val KEY_PREFERRED_HEIGHT_UNIT = "bmi_preferred_height_unit"
         private const val KEY_PREFERRED_WEIGHT_UNIT = "bmi_preferred_weight_unit"
@@ -21,15 +19,6 @@ enum class BmiUnit(val value: Int, val heightLabel: String, val weightLabel: Str
             return entries.firstOrNull { it.value == value } ?: METRIC
         }
 
-        // 整体单位（向后兼容）
-        fun getPreferredUnit(): BmiUnit {
-            val saved = SpUtils.getInt(KEY_PREFERRED_UNIT, METRIC.value)
-            return fromValue(saved)
-        }
-
-        fun savePreferredUnit(unit: BmiUnit) {
-            SpUtils.putInt(KEY_PREFERRED_UNIT, unit.value)
-        }
 
         // 独立偏好：身高
         fun getPreferredHeightUnit(): BmiUnit {

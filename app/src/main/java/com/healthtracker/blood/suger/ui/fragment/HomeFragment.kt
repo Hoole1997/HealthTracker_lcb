@@ -9,8 +9,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ui.act.BsRecordActivity
+import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
+import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
 import com.healthtracker.blood.suger.ui.act.BpRecordActivity
@@ -94,6 +96,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         collectLatest(mViewModel.latestBloodPressureRecord){
             updateBloodPressureUI(it)
         }
+
+        collectLatest(mViewModel.latestBmiRecord){
+            updateBmiUI(it)
+        }
     }
 
     /**
@@ -125,6 +131,19 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         "${record.systolicPressure}/${record.diastolicPressure}".also {
             mViewBind?.tvLatestBpValue?.text = it
         }
+    }
+
+    /**
+     * 更新 BMI（体重）记录UI
+     */
+    private fun updateBmiUI(record: BmiRecord?) {
+        val unit = BmiUnit.getPreferredWeightUnit()
+        mViewBind?.tvLatestWeightUnit?.text = unit.weightLabel
+        if (record == null) {
+            mViewBind?.tvLatestWeightValue?.text = "--"
+            return
+        }
+        mViewBind?.tvLatestWeightValue?.text = record.getDisplayWeightValue()
     }
 
     /**
