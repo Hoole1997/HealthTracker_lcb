@@ -3,12 +3,12 @@ package com.healthtracker.blood.suger.ui.act
 import android.content.Context
 import android.os.Bundle
 import android.text.Html
-import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.databinding.ActivityBsDetailBinding
 import com.healthtracker.blood.suger.enum.getStatusStringRes
+import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BsDetailViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
@@ -89,10 +89,15 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
             val value = mViewModel.getDisplayValue()
 
             if (status != null && unit != null && value != null) {
-                bsStatusView.updateBloodSugarStatus(value, unit, status)
-                val leve = status.getBloodSugarLevel(value,unit)
+                // 使用通用 LeveStatusView：设置等级列表与当前索引
+                val levels = LeveDataFactory.BloodSugar.buildItems(this@BsDetailActivity, unit, status)
+                bsStatusView.setLevels(levels)
+                val index = LeveDataFactory.BloodSugar.indexFor(value, unit, status)
+                bsStatusView.setCurrentLevel(index)
+
+                // 维持专家建议文案展示
+                val leve = status.getBloodSugarLevel(value, unit)
                 val leveDescription = resources.getStringArray(R.array.bs_level_expert_advice)[leve.level]
-                // 这里可以根据需要添加更详细的描述文案
                 tvLeveDes.text = Html.fromHtml(leveDescription)
             }
 

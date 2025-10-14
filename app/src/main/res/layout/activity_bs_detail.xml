@@ -63,13 +63,17 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_16">
 
-            <com.healthtracker.blood.suger.ui.weight.BloodSugarStatusView
+            <com.healthtracker.blood.suger.ui.weight.LeveStatusView
                 android:id="@+id/bs_status_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:lsvRangeTextColor="@color/t1"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@drawable/bg_rect_white_12"
+                android:paddingVertical="@dimen/dp_24"
+                android:paddingHorizontal="@dimen/dp_16"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_leve_des"
