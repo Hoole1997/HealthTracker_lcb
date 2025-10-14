@@ -67,18 +67,4 @@ object BloodSugarScaleHelper {
             BsUnit.MG_DL -> 80f      // 对应的 mg/dL 值（按需求修正）
         }
     }
-
-    /**
-     * 检查值是否在有效范围内
-     */
-    fun isValueInValidRange(value: Float, unit: BsUnit): Boolean {
-        return value >= unit.scrollableMinValue && value <= unit.scrollableMaxValue
-    }
-
-    /**
-     * 将值限制在有效范围内
-     */
-    fun clampValueToValidRange(value: Float, unit: BsUnit): Float {
-        return value.coerceIn(unit.scrollableMinValue, unit.scrollableMaxValue)
-    }
 }

@@ -33,6 +33,23 @@ class RulerView @JvmOverloads constructor(
         private const val MIN_VELOCITY_THRESHOLD = 50
     }
 
+    /**
+     * 内部单位枚举，独立于血糖单位，用于标尺的显示逻辑
+     */
+    enum class RulerUnit {
+        /**
+         * 小数精度单位 - 适用于需要小数显示的场景
+         * 特点：每5个小刻度显示大刻度，所有大刻度显示数值
+         */
+        DECIMAL_PRECISION,
+        
+        /**
+         * 整数精度单位 - 适用于整数显示的场景  
+         * 特点：每50个小刻度显示大刻度，只在特定间隔显示数值
+         */
+        INTEGER_PRECISION
+    }
+
     // 基础配置
     private var scaleStep = DEFAULT_SCALE_STEP
     private var rulerHeight = 50f
@@ -71,7 +88,7 @@ class RulerView @JvmOverloads constructor(
     // 其他配置
     private var isBgRoundRect = true
     private var decimalPlaces = 1
-    private var currentUnit = BsUnit.MMOL_L
+    private var currentUnit = RulerUnit.DECIMAL_PRECISION
 
     // 回调接口
     private var onChooseResultListener: OnChooseResultListener? = null
@@ -405,12 +422,12 @@ class RulerView @JvmOverloads constructor(
      */
     private fun shouldDrawLargeScale(index: Int, value: Float): Boolean {
         return when (currentUnit) {
-            BsUnit.MMOL_L -> {
-                // mmol/L: 每5个小刻度绘制大刻度 (0.5间隔)
+            RulerUnit.DECIMAL_PRECISION -> {
+                // 小数精度：每5个小刻度绘制大刻度 (0.5间隔)
                 index % scaleCount == 0
             }
-            BsUnit.MG_DL -> {
-                // mg/dL: 每50个小刻度绘制大刻度 (5单位间隔)
+            RulerUnit.INTEGER_PRECISION -> {
+                // 整数精度：每50个小刻度绘制大刻度 (5单位间隔)
                 val intValue = value.roundToInt()
                 intValue % 5 == 0 && abs(value - intValue) < 0.01f
             }
@@ -422,12 +439,12 @@ class RulerView @JvmOverloads constructor(
      */
     private fun shouldDrawSmallScale(index: Int, value: Float): Boolean {
         return when (currentUnit) {
-            BsUnit.MMOL_L -> {
-                // mmol/L: 每个0.1都绘制小刻度线
+            RulerUnit.DECIMAL_PRECISION -> {
+                // 小数精度：每个0.1都绘制小刻度线
                 !shouldDrawLargeScale(index, value)
             }
-            BsUnit.MG_DL -> {
-                // mg/dL: 只在0.5的倍数位置绘制小刻度线（不包括大刻度）
+            RulerUnit.INTEGER_PRECISION -> {
+                // 整数精度：只在0.5的倍数位置绘制小刻度线（不包括大刻度）
                 val remainder = ((value * 10).roundToInt() % 5)
                 remainder == 0 && !shouldDrawLargeScale(index, value)
             }
@@ -439,12 +456,12 @@ class RulerView @JvmOverloads constructor(
      */
     private fun shouldShowScaleText(value: Float): Boolean {
         return when (currentUnit) {
-            BsUnit.MMOL_L -> {
-                // mmol/L: 所有大刻度都显示文字
+            RulerUnit.DECIMAL_PRECISION -> {
+                // 小数精度：所有大刻度都显示文字
                 true
             }
-            BsUnit.MG_DL -> {
-                // mg/dL: 只在5的倍数整数位置显示文字
+            RulerUnit.INTEGER_PRECISION -> {
+                // 整数精度：只在5的倍数整数位置显示文字
                 val intValue = value.roundToInt()
                 intValue % 5 == 0 && abs(value - intValue) < 0.01f
             }
@@ -456,12 +473,12 @@ class RulerView @JvmOverloads constructor(
      */
     private fun formatScaleValueForDisplay(value: Float): String {
         return when (currentUnit) {
-            BsUnit.MMOL_L -> {
-                // mmol/L: 显示一位小数
+            RulerUnit.DECIMAL_PRECISION -> {
+                // 小数精度：显示一位小数
                 String.format(java.util.Locale.ROOT, "%.1f", value)
             }
-            BsUnit.MG_DL -> {
-                // mg/dL: 只显示整数
+            RulerUnit.INTEGER_PRECISION -> {
+                // 整数精度：只显示整数
                 value.roundToInt().toString()
             }
         }
@@ -473,13 +490,13 @@ class RulerView @JvmOverloads constructor(
         val clampedValue = exactValue.coerceIn(scrollableMinScale, scrollableMaxScale)
 
         currentScale = when (currentUnit) {
-            BsUnit.MMOL_L -> {
-                // mmol/L: 直接按0.1精度四舍五入
+            RulerUnit.DECIMAL_PRECISION -> {
+                // 小数精度：直接按0.1精度四舍五入
                 (clampedValue * 10).roundToInt() / 10f
             }
-            BsUnit.MG_DL -> {
-                // mg/dL: 支持0.1精度，但需要智能处理
-                calculateMgDlValue(clampedValue)
+            RulerUnit.INTEGER_PRECISION -> {
+                // 整数精度：支持0.1精度，但需要智能处理
+                calculateIntegerPrecisionValue(clampedValue)
             }
         }
 
@@ -487,10 +504,10 @@ class RulerView @JvmOverloads constructor(
     }
 
     /**
-     * 计算mg/dL模式下的值
+     * 计算整数精度模式下的值
      * 支持0.1精度，但会根据距离刻度线的位置进行智能估算
      */
-    private fun calculateMgDlValue(exactValue: Float): Float {
+    private fun calculateIntegerPrecisionValue(exactValue: Float): Float {
         // 四舍五入到0.1精度
         val roundedValue = (exactValue * 10).roundToInt() / 10f
 
@@ -508,30 +525,18 @@ class RulerView @JvmOverloads constructor(
 
     private fun snapToNearestScale() {
         when (currentUnit) {
-            BsUnit.MMOL_L -> {
-                // mmol/L: 对齐到最近的0.1刻度
+            RulerUnit.DECIMAL_PRECISION -> {
+                // 小数精度：对齐到最近的0.1刻度
                 snapToNearestStep()
             }
-            BsUnit.MG_DL -> {
-                // mg/dL: 智能对齐逻辑
-                snapToNearestMgDlPosition()
+            RulerUnit.INTEGER_PRECISION -> {
+                // 整数精度：智能对齐逻辑
+                snapToNearestIntegerPrecisionPosition()
             }
         }
     }
 
-    private fun snapToNearestStep() {
-        val targetIndex = -((moveX - centerX) / scaleGap).roundToInt()
-        val targetScale = (minScale + targetIndex * scaleStep).coerceIn(scrollableMinScale, scrollableMaxScale)
-        val targetPosition = getScalePosition(targetScale)
-
-        if (abs(moveX - targetPosition) > 0.1f) {
-            animateToPosition(targetPosition)
-        } else {
-            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
-        }
-    }
-
-    private fun snapToNearestMgDlPosition() {
+    private fun snapToNearestIntegerPrecisionPosition() {
         // 计算当前精确位置对应的值
         val exactValue = minScale - ((moveX - centerX) / scaleGap) * scaleStep
         val clampedValue = exactValue.coerceIn(scrollableMinScale, scrollableMaxScale)
@@ -546,6 +551,18 @@ class RulerView @JvmOverloads constructor(
             animateToPosition(targetPosition)
         } else {
             updateCurrentScale()
+            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+        }
+    }
+
+    private fun snapToNearestStep() {
+        val targetIndex = -((moveX - centerX) / scaleGap).roundToInt()
+        val targetScale = (minScale + targetIndex * scaleStep).coerceIn(scrollableMinScale, scrollableMaxScale)
+        val targetPosition = getScalePosition(targetScale)
+
+        if (abs(moveX - targetPosition) > 0.1f) {
+            animateToPosition(targetPosition)
+        } else {
             onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
         }
     }
@@ -739,9 +756,44 @@ class RulerView @JvmOverloads constructor(
         invalidate()
     }
 
+    /**
+     * 设置标尺单位类型
+     * @param unit 内部标尺单位枚举
+     */
+    fun setRulerUnit(unit: RulerUnit) {
+        if (currentUnit != unit) {
+            currentUnit = unit
+            invalidate()
+        }
+    }
+
+    /**
+     * 获取当前标尺单位类型
+     * @return 当前的内部标尺单位枚举
+     */
+    fun getRulerUnit(): RulerUnit = currentUnit
+
+    /**
+     * 从血糖单位设置标尺单位（保持向后兼容）
+     * @param unit 血糖单位枚举
+     */
     fun setCurrentUnit(unit: BsUnit) {
-        this.currentUnit = unit
-        invalidate()
+        val rulerUnit = when (unit) {
+            BsUnit.MMOL_L -> RulerUnit.DECIMAL_PRECISION
+            BsUnit.MG_DL -> RulerUnit.INTEGER_PRECISION
+        }
+        setRulerUnit(rulerUnit)
+    }
+
+    /**
+     * 获取对应的血糖单位（保持向后兼容）
+     * @return 对应的血糖单位枚举
+     */
+    fun getCurrentUnit(): BsUnit {
+        return when (currentUnit) {
+            RulerUnit.DECIMAL_PRECISION -> BsUnit.MMOL_L
+            RulerUnit.INTEGER_PRECISION -> BsUnit.MG_DL
+        }
     }
 
     interface OnChooseResultListener {
