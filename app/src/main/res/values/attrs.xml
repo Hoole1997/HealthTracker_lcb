@@ -56,19 +56,20 @@
         <attr name="dotMarginEnd" format="dimension" />             <!--圆点右边距-->
     </declare-styleable>
 
-    <!-- BloodPressureLevelBar 自定义属性 -->
-    <declare-styleable name="BloodPressureLevelBar">
+    <!-- LevelBar 通用自定义属性（统一命名，无兼容保留） -->
+    <declare-styleable name="LevelBar">
         <!-- 进度条属性 -->
         <attr name="barHeight" format="dimension" />                  <!--进度条高度-->
         <attr name="barCornerRadius" format="dimension" />            <!--进度条圆角半径-->
-        
-        <!-- 指示器属性 -->
-        <attr name="bpIndicatorWidth" format="dimension" />           <!--指示器宽度-->
-        <attr name="bpIndicatorHeight" format="dimension" />          <!--指示器高度-->
-        <attr name="bpIndicatorFillColor" format="color" />          <!--指示器填充颜色-->
-        <attr name="bpIndicatorStrokeColor" format="color" />        <!--指示器描边颜色-->
-        <attr name="bpIndicatorStrokeWidth" format="dimension" />     <!--指示器描边宽度-->
-        <attr name="bpIndicatorCornerRadius" format="dimension" />    <!--指示器圆角半径-->
+
+        <!-- 指示器属性（统一前缀 indicator） -->
+        <attr name="indicatorWidth" format="dimension" />             <!--指示器宽度-->
+        <!-- 引用已在 RulerView 中声明的同名属性，避免重复声明格式 -->
+        <attr name="indicatorHeight" />                                 <!--指示器高度-->
+        <attr name="indicatorFillColor" format="color" />             <!--指示器填充颜色-->
+        <attr name="indicatorStrokeColor" format="color" />           <!--指示器描边颜色-->
+        <attr name="indicatorStrokeWidth" format="dimension" />       <!--指示器描边宽度-->
+        <attr name="indicatorCornerRadius" format="dimension" />      <!--指示器圆角半径-->
     </declare-styleable>
 
     <!-- DateTimeSelectionView 自定义属性 -->
@@ -151,6 +152,12 @@
         <attr name="npv_AlternativeTextArrayWithoutMeasureHint" format="reference" />
         <!--the max length of hint content-->
         <attr name="npv_AlternativeHint" format="reference|string" />
+    </declare-styleable>
+
+    <!-- LeveStatusView 自定义属性 -->
+    <declare-styleable name="LeveStatusView">
+        <!-- 是否用于“添加记录”场景：true 显示圆点并启用说明弹窗；false 关闭两者 -->
+        <attr name="lsvAddRecord" format="boolean" />
     </declare-styleable>
 
 

@@ -61,7 +61,7 @@ class BMIStatusView @JvmOverloads constructor(
 
     override fun updateLevelBar() {
         currentLevelValue?.let { level ->
-            bmiLevelBar?.setCategory(level)
+            bmiLevelBar?.setIndicatorIndex(level.ordinal)
         }
     }
 

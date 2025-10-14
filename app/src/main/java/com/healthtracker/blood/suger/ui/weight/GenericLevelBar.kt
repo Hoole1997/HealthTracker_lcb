@@ -14,11 +14,11 @@ import androidx.core.content.withStyledAttributes
  * 支持任意实现了LevelCategory接口的等级类型
  * @param T 等级类型，必须实现LevelCategory接口
  */
-open class GenericLevelBar<T> @JvmOverloads constructor(
+open class GenericLevelBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) where T : Enum<T>, T : LevelCategory {
+) : View(context, attrs, defStyleAttr) {
 
     // 自定义属性
     private var barHeight: Float = 0f
@@ -38,9 +38,9 @@ open class GenericLevelBar<T> @JvmOverloads constructor(
     private val indicatorFillPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val indicatorStrokePaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    // 当前等级和可用等级列表
-    private var currentCategory: T? = null
-    private var availableCategories: Array<T>? = null
+    // 通用模式：仅使用颜色数组与索引来展示
+    private var gradientColors: IntArray? = null
+    private var indicatorIndex: Int? = null
 
     init {
         initAttributes(attrs)
@@ -51,26 +51,26 @@ open class GenericLevelBar<T> @JvmOverloads constructor(
      * 初始化自定义属性
      */
     private fun initAttributes(attrs: AttributeSet?) {
-        context.withStyledAttributes(attrs, R.styleable.BloodPressureLevelBar) {
+        context.withStyledAttributes(attrs, R.styleable.LevelBar) {
 
-            // 设置默认值
-            barHeight = getDimension(R.styleable.BloodPressureLevelBar_barHeight, dpToPx(10f))
+            // 设置默认值（统一 LevelBar 命名）
+            barHeight = getDimension(R.styleable.LevelBar_barHeight, dpToPx(10f))
             barCornerRadius =
-                getDimension(R.styleable.BloodPressureLevelBar_barCornerRadius, dpToPx(12f))
+                getDimension(R.styleable.LevelBar_barCornerRadius, dpToPx(12f))
             indicatorWidth =
-                getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorWidth, dpToPx(5f))
+                getDimension(R.styleable.LevelBar_indicatorWidth, dpToPx(5f))
             indicatorHeight =
-                getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorHeight, dpToPx(18f))
+                getDimension(R.styleable.LevelBar_indicatorHeight, dpToPx(18f))
             indicatorFillColor =
-                getColor(R.styleable.BloodPressureLevelBar_bpIndicatorFillColor, Color.WHITE)
+                getColor(R.styleable.LevelBar_indicatorFillColor, Color.WHITE)
             indicatorStrokeColor = getColor(
-                R.styleable.BloodPressureLevelBar_bpIndicatorStrokeColor,
+                R.styleable.LevelBar_indicatorStrokeColor,
                 ContextCompat.getColor(context, R.color.color_666)
             )
             indicatorStrokeWidth =
-                getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorStrokeWidth, dpToPx(1f))
+                getDimension(R.styleable.LevelBar_indicatorStrokeWidth, dpToPx(1f))
             indicatorCornerRadius =
-                getDimension(R.styleable.BloodPressureLevelBar_bpIndicatorCornerRadius, dpToPx(2f))
+                getDimension(R.styleable.LevelBar_indicatorCornerRadius, dpToPx(2f))
 
         }
     }
@@ -114,10 +114,9 @@ open class GenericLevelBar<T> @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val categories = availableCategories
-        if (categories == null || categories.isEmpty()) {
-            return
-        }
+        // 若颜色数组为空，则不绘制
+        val hasColors = gradientColors?.isNotEmpty() == true
+        if (!hasColors) return
 
         val width = width.toFloat()
         val height = height.toFloat()
@@ -130,7 +129,8 @@ open class GenericLevelBar<T> @JvmOverloads constructor(
     }
 
     private fun drawGradientBar(canvas: Canvas, width: Float, height: Float) {
-        val categories = availableCategories ?: return
+        val colorsArray = gradientColors
+        if (colorsArray == null || colorsArray.isEmpty()) return
 
         // 进度条垂直居中
         val barTop = (height - barHeight) / 2
@@ -139,9 +139,7 @@ open class GenericLevelBar<T> @JvmOverloads constructor(
         val barRight = width - paddingHorizontal
 
         // 创建渐变色数组
-        val colors = categories.map { category ->
-            ContextCompat.getColor(context, category.colorRes)
-        }.toIntArray()
+        val colors: IntArray = colorsArray
 
         val gradient = LinearGradient(
             barLeft, 0f, barRight, 0f,
@@ -154,14 +152,20 @@ open class GenericLevelBar<T> @JvmOverloads constructor(
     }
 
     private fun drawIndicator(canvas: Canvas, width: Float, height: Float) {
-        val currentCat = currentCategory ?: return
+        val colorsArray = gradientColors
+        // 计算位置：基于索引在颜色数组上的线性位置
+        if (colorsArray == null || colorsArray.isEmpty() || indicatorIndex == null) return
+        val count = colorsArray.size
+        // 将指示器绘制在当前等级区段的中心位置： (index + 0.5) / count
+        val clampedIndex = indicatorIndex!!.coerceIn(0, count - 1)
+        val fraction: Float = if (count <= 0) 0f else (clampedIndex + 0.5f) / count
 
         val barLeft = paddingHorizontal
         val barRight = width - paddingHorizontal
         val barWidth = barRight - barLeft
 
         // 指示器中心X坐标
-        val indicatorCenterX = barLeft + barWidth * currentCat.position
+        val indicatorCenterX = barLeft + barWidth * fraction
 
         // 指示器垂直居中
         val indicatorTop = (height - indicatorHeight) / 2
@@ -179,29 +183,6 @@ open class GenericLevelBar<T> @JvmOverloads constructor(
     }
 
     /**
-     * 设置等级分类
-     * @param category 等级分类
-     */
-    fun setCategory(category: T) {
-        this.currentCategory = category
-        invalidate()
-    }
-
-    /**
-     * 设置可用的等级列表
-     * @param categories 等级数组
-     */
-    fun setAvailableCategories(categories: Array<T>) {
-        this.availableCategories = categories
-        invalidate()
-    }
-
-    /**
-     * 获取当前等级分类
-     */
-    open fun getCurrentCategory(): T? = currentCategory
-
-    /**
      * 动态设置指示器填充颜色
      */
     fun setIndicatorFillColor(color: Int) {
@@ -216,6 +197,30 @@ open class GenericLevelBar<T> @JvmOverloads constructor(
     fun setIndicatorStrokeColor(color: Int) {
         this.indicatorStrokeColor = color
         indicatorStrokePaint.color = color
+        invalidate()
+    }
+
+    /**
+     * 设置通用颜色数组（直接使用颜色值）
+     */
+    fun setColors(colors: IntArray) {
+        this.gradientColors = colors
+        invalidate()
+    }
+
+    /**
+     * 设置颜色资源ID数组（会转换为颜色值）
+     */
+    fun setColorResArray(colorResIds: IntArray) {
+        val colors = colorResIds.map { id -> ContextCompat.getColor(context, id) }.toIntArray()
+        setColors(colors)
+    }
+
+    /**
+     * 设置指示器索引（基于颜色数组的索引位置）
+     */
+    fun setIndicatorIndex(index: Int) {
+        this.indicatorIndex = index
         invalidate()
     }
 }

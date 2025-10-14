@@ -44,6 +44,17 @@ class BloodPressureStatusView @JvmOverloads constructor(
         BloodPressureCategory.HYPERTENSIVE_CRISIS to R.color.color_FB0301
     )
 
+    // 等级条顺序与颜色资源数组（不含 UNKNOWN）
+    private val bpCategoryOrder = arrayOf(
+        BloodPressureCategory.LOW,
+        BloodPressureCategory.NORMAL,
+        BloodPressureCategory.ELEVATED,
+        BloodPressureCategory.HIGH_STAGE_1,
+        BloodPressureCategory.HIGH_STAGE_2,
+        BloodPressureCategory.HYPERTENSIVE_CRISIS
+    )
+    private val bpColorResArray = bpCategoryOrder.map { categoryColors[it] ?: R.color.color_05BA7B }.toIntArray()
+
     // 分类文本映射
     private val categoryTexts = mapOf(
         BloodPressureCategory.LOW to R.string.blood_pressure_level_low,
@@ -143,7 +154,9 @@ class BloodPressureStatusView @JvmOverloads constructor(
      * 更新等级进度条
      */
     private fun updateLevelBar() {
-        binding.levelBar.setCategory(currentCategory)
+        binding.levelBar.setColorResArray(bpColorResArray)
+        val index = bpCategoryOrder.indexOf(currentCategory).coerceAtLeast(0)
+        binding.levelBar.setIndicatorIndex(index)
     }
 
     /**

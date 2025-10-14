@@ -87,7 +87,7 @@ class BloodSugarStatusView @JvmOverloads constructor(
      * 更新等级进度条
      */
     private fun updateLevelBar() {
-        bloodSugarLevelBar.setCategory(currentLevel)
+        bloodSugarLevelBar.setIndicatorIndex(currentLevel.ordinal)
     }
 
     /**

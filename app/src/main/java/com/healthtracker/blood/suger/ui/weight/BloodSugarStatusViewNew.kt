@@ -56,7 +56,7 @@ class BloodSugarStatusViewNew @JvmOverloads constructor(
 
     override fun updateLevelBar() {
         currentLevelValue?.let { level ->
-            bloodSugarLevelBar?.setCategory(level)
+            bloodSugarLevelBar?.setIndicatorIndex(level.ordinal)
         }
     }
 

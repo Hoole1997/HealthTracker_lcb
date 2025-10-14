@@ -12,17 +12,13 @@ class BloodPressureLevelBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : GenericLevelBar<BloodPressureCategory>(context, attrs, defStyleAttr) {
+) : GenericLevelBar(context, attrs, defStyleAttr) {
 
     init {
-        // 设置所有血压等级（排除UNKNOWN）
-        setAvailableCategories(BloodPressureCategory.entries.filter { it != BloodPressureCategory.UNKNOWN }.toTypedArray())
-        // 默认设置为正常
-        setCategory(BloodPressureCategory.NORMAL)
+        // 使用颜色资源数组（排除 UNKNOWN）并设置默认索引为 NORMAL
+        val filtered = BloodPressureCategory.entries.filter { it != BloodPressureCategory.UNKNOWN }
+        setColorResArray(filtered.map { it.colorRes }.toIntArray())
+        val normalIndex = filtered.indexOf(BloodPressureCategory.NORMAL).coerceAtLeast(0)
+        setIndicatorIndex(normalIndex)
     }
-
-    /**
-     * 获取当前血压分类（保持原有API兼容性）
-     */
-    override fun getCurrentCategory(): BloodPressureCategory = super.getCurrentCategory() ?: BloodPressureCategory.NORMAL
 }

@@ -11,12 +11,11 @@ class BMILevelBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : GenericLevelBar<BMICategory>(context, attrs, defStyleAttr) {
+) : GenericLevelBar(context, attrs, defStyleAttr) {
 
     init {
-        // 设置可用的 BMI 分类（全部枚举值）
-        setAvailableCategories(BMICategory.values())
-        // 默认分类为 NORMAL
-        setCategory(BMICategory.NORMAL)
+        // 使用颜色资源数组与索引初始化
+        setColorResArray(BMICategory.values().map { it.colorRes }.toIntArray())
+        setIndicatorIndex(BMICategory.NORMAL.ordinal)
     }
 }

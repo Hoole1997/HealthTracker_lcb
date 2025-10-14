@@ -7,7 +7,7 @@ import com.healthtracker.blood.suger.enum.BloodSugarLevel
 /**
  * 血糖等级进度条类型别名
  */
-typealias BloodSugarLevelBar = GenericLevelBar<BloodSugarLevel>
+typealias BloodSugarLevelBar = GenericLevelBar
 
 /**
  * 等级进度条工厂类
@@ -34,11 +34,10 @@ object LevelBarFactory {
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
     ): BloodSugarLevelBar {
-        return GenericLevelBar<BloodSugarLevel>(context, attrs, defStyleAttr).apply {
-            // 设置所有血糖等级
-            setAvailableCategories(BloodSugarLevel.values())
-            // 默认设置为正常
-            setCategory(BloodSugarLevel.NORMAL)
+        return GenericLevelBar(context, attrs, defStyleAttr).apply {
+            // 使用颜色资源数组与默认索引
+            setColorResArray(BloodSugarLevel.values().map { it.colorRes }.toIntArray())
+            setIndicatorIndex(BloodSugarLevel.NORMAL.ordinal)
         }
     }
 

@@ -62,10 +62,18 @@ class BloodPressureStatusViewNew @JvmOverloads constructor(
         BloodPressureCategory.HYPERTENSIVE_CRISIS to R.string.bp_range_hypertensive_crisis_dia
     )
 
-    private var bloodPressureLevelBar: BloodPressureLevelBar? = null
+    private var bloodPressureLevelBar: GenericLevelBar? = null
+
+    // 等级条顺序（排除 UNKNOWN）与颜色资源数组
+    private val bpOrder = BloodPressureCategory.entries.filter { it != BloodPressureCategory.UNKNOWN }
+    private val bpColorResArray = bpOrder.map { it.colorRes }.toIntArray()
 
     override fun createLevelBar(): View {
-        bloodPressureLevelBar = BloodPressureLevelBar(context)
+        bloodPressureLevelBar = GenericLevelBar(context).apply {
+            setColorResArray(bpColorResArray)
+            val normalIndex = bpOrder.indexOf(BloodPressureCategory.NORMAL).coerceAtLeast(0)
+            setIndicatorIndex(normalIndex)
+        }
         return bloodPressureLevelBar!!
     }
 
@@ -89,7 +97,8 @@ class BloodPressureStatusViewNew @JvmOverloads constructor(
 
     override fun updateLevelBar() {
         currentLevelValue?.let { category ->
-            bloodPressureLevelBar?.setCategory(category)
+            val idx = bpOrder.indexOf(category).coerceAtLeast(0)
+            bloodPressureLevelBar?.setIndicatorIndex(idx)
         }
     }
 
