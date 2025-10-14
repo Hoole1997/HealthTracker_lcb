@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/dp_16"
                 android:background="@drawable/bg_rect_white_12"
-                android:paddingHorizontal="@dimen/dp_15"
+
                 android:paddingVertical="@dimen/dp_20"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -78,6 +78,7 @@
                     android:id="@+id/cl_weight"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="@dimen/dp_107"
+                    android:layout_marginStart="@dimen/dp_16"
                     android:background="@drawable/bg_weight"
 
                     android:paddingHorizontal="@dimen/dp_12"
@@ -145,6 +146,7 @@
                     android:id="@+id/cl_height"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="@dimen/dp_107"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:background="@drawable/bg_height"
                     android:paddingHorizontal="@dimen/dp_12"
                     android:paddingTop="@dimen/dp_18"
@@ -196,6 +198,15 @@
                         app:layout_constraintStart_toStartOf="parent"
                         tools:text="165.0" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.healthtracker.blood.suger.ui.weight.BMIStatusView
+                    android:id="@+id/bp_status_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cl_weight" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

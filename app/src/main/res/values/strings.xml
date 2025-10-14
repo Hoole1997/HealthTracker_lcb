@@ -159,6 +159,16 @@
         <item>Obesity Class III</item>
     </string-array>
 
+    <!-- BMI classification names (single items for mapping) -->
+    <string name="bmi_level_very_severely_underweight">Very Severely Underweight</string>
+    <string name="bmi_level_severely_underweight">Severely Underweight</string>
+    <string name="bmi_level_underweight">Underweight</string>
+    <string name="bmi_level_normal">Normal</string>
+    <string name="bmi_level_overweight">Overweight</string>
+    <string name="bmi_level_obesity_class_1">Obesity Class I</string>
+    <string name="bmi_level_obesity_class_2">Obesity Class II</string>
+    <string name="bmi_level_obesity_class_3">Obesity Class III</string>
+
     <!-- BMI classification ranges (for display) -->
     <string-array name="bmi_level_ranges" translatable="false">
         <item>BMI &lt;16.0</item>

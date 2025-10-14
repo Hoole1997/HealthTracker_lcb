@@ -41,6 +41,17 @@ object LevelBarFactory {
             setCategory(BloodSugarLevel.NORMAL)
         }
     }
+
+    /**
+     * 创建 BMI 等级进度条
+     */
+    fun createBmiLevelBar(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+    ): BMILevelBar {
+        return BMILevelBar(context, attrs, defStyleAttr)
+    }
 }
 
 /**
@@ -58,4 +69,11 @@ fun Context.createBloodSugarLevelBar(
     defStyleAttr: Int = 0
 ): BloodSugarLevelBar {
     return LevelBarFactory.createBloodSugarLevelBar(this, attrs, defStyleAttr)
+}
+
+fun Context.createBmiLevelBar(
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+): BMILevelBar {
+    return LevelBarFactory.createBmiLevelBar(this, attrs, defStyleAttr)
 }
