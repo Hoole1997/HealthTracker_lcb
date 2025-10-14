@@ -29,10 +29,13 @@ class BloodSugarStatusViewNew @JvmOverloads constructor(
         BloodSugarLevel.DIABETES to R.string.blood_sugar_level_diabetes
     )
 
-    private var bloodSugarLevelBar: BloodSugarLevelBar? = null
+    private var bloodSugarLevelBar: GenericLevelBar? = null
 
     override fun createLevelBar(): View {
-        bloodSugarLevelBar = context.createBloodSugarLevelBar()
+        bloodSugarLevelBar = GenericLevelBar(context).apply {
+            setColorResArray(BloodSugarLevel.values().map { it.colorRes }.toIntArray())
+            setIndicatorIndex(BloodSugarLevel.NORMAL.ordinal)
+        }
         return bloodSugarLevelBar!!
     }
 
