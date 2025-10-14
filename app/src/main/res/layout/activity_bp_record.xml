@@ -190,16 +190,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-<!--                <com.healthtracker.blood.suger.ui.weight.BloodPressureStatusView-->
-<!--                    android:id="@+id/bp_status_view"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="@dimen/dp_16"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@id/v_bottom_mask" />-->
-
-                <!-- 通用等级状态逻辑容器（添加记录场景） -->
                 <com.healthtracker.blood.suger.ui.weight.LeveStatusView
                     android:id="@+id/lsv_status_bp"
                     android:layout_width="match_parent"
