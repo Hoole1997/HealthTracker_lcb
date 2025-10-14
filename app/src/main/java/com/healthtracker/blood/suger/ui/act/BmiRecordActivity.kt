@@ -232,12 +232,12 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
 
     private fun updateDisplayValues() {
         // 根据当前单位格式化显示文案
-        val displayWeight = BmiUnit.toDisplayWeight(latestWeightKg, currentWeightUnit)
-        val displayHeight = BmiUnit.toDisplayHeight(latestHeightCm, currentHeightUnit)
-        mViewBind.tvWeightValue.text = displayWeight.toString()
-        mViewBind.tvHeightValue.text = displayHeight.toString()
-        mViewBind.tvWeightUnit.text = currentWeightUnit.weightLabel
-        mViewBind.tvHeightUnit.text = currentHeightUnit.heightLabel
+        val displayWeight = BmiUnit.formatDisplayWeight(latestWeightKg, currentWeightUnit)
+        val displayHeight = BmiUnit.formatDisplayHeight(latestHeightCm, currentHeightUnit)
+        mViewBind.tvWeightValue.text = displayWeight
+        mViewBind.tvHeightValue.text = displayHeight
+        mViewBind.tvWeightUnit.text = getUnitLabelText(isWeight = true, unit = currentWeightUnit)
+        mViewBind.tvHeightUnit.text = getUnitLabelText(isWeight = false, unit = currentHeightUnit)
     }
 
     private fun toggleWeightUnit() {
@@ -248,5 +248,15 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
     private fun toggleHeightUnit() {
         val newUnit = if (currentHeightUnit == BmiUnit.METRIC) BmiUnit.IMPERIAL else BmiUnit.METRIC
         mViewModel.switchHeightUnit(newUnit)
+    }
+
+    private fun getUnitLabelText(isWeight: Boolean, unit: BmiUnit): String {
+        val unitName = when {
+            isWeight && unit == BmiUnit.METRIC -> getString(R.string.unit_kg)
+            isWeight && unit == BmiUnit.IMPERIAL -> getString(R.string.unit_lb)
+            !isWeight && unit == BmiUnit.METRIC -> getString(R.string.unit_cm)
+            else -> getString(R.string.unit_in)
+        }
+        return getString(R.string.unit_in_brackets, unitName)
     }
 }

@@ -94,7 +94,6 @@ data class BmiRecord(
      * 获取用于显示的体重值（根据用户偏好单位转换，不含单位）
      */
     fun getDisplayWeightValue(preferredUnit: BmiUnit = BmiUnit.getPreferredWeightUnit()): String {
-        val display = BmiUnit.toDisplayWeight(weightKg.toFloat(), preferredUnit)
-        return String.format(java.util.Locale.ROOT, "%.1f", display)
+        return BmiUnit.formatDisplayWeight(weightKg.toFloat(), preferredUnit)
     }
 }

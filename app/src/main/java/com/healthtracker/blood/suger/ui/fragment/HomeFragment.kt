@@ -15,6 +15,7 @@ import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
+import com.healthtracker.blood.suger.ui.act.BmiRecordActivity
 import com.healthtracker.blood.suger.ui.act.BpRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
@@ -77,7 +78,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clBmi.clickWithDuration {
-
+                requireActivity().startActivity<BmiRecordActivity>()
             }
 
 
@@ -138,7 +139,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
      */
     private fun updateBmiUI(record: BmiRecord?) {
         val unit = BmiUnit.getPreferredWeightUnit()
-        mViewBind?.tvLatestWeightUnit?.text = unit.weightLabel
+        mViewBind?.tvLatestWeightUnit?.text = getWeightUnitLabel(unit)
         if (record == null) {
             mViewBind?.tvLatestWeightValue?.text = "--"
             return
@@ -189,5 +190,14 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 getString(R.string.days_ago, days.toInt())
             }
         }
+    }
+
+    private fun getWeightUnitLabel(unit: BmiUnit): String {
+        val unitName = if (unit == BmiUnit.METRIC) {
+            getString(R.string.unit_kg)
+        } else {
+            getString(R.string.unit_lb)
+        }
+        return getString(R.string.unit_in_brackets, unitName)
     }
 }

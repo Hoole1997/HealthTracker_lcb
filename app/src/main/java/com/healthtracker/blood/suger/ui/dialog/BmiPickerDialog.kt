@@ -40,12 +40,12 @@ class BmiPickerDialog(private val style: Int = STYLE_WEIGHT,private val onSave: 
         mViewBind?.apply {
             when(style){
                 STYLE_WEIGHT -> {
-                    rb1.text = BmiUnit.IMPERIAL.weightLabel
-                    rb2.text = BmiUnit.METRIC.weightLabel
+                    rb1.text = getUnitLabel(true, BmiUnit.IMPERIAL)
+                    rb2.text = getUnitLabel(true, BmiUnit.METRIC)
                 }
                 else -> {
-                    rb1.text = BmiUnit.IMPERIAL.heightLabel
-                    rb2.text = BmiUnit.METRIC.heightLabel
+                    rb1.text = getUnitLabel(false, BmiUnit.IMPERIAL)
+                    rb2.text = getUnitLabel(false, BmiUnit.METRIC)
                 }
             }
             rgUnit.setOnCheckedChangeListener { _,checkedId ->
@@ -58,5 +58,15 @@ class BmiPickerDialog(private val style: Int = STYLE_WEIGHT,private val onSave: 
 
 
 
+    }
+
+    private fun getUnitLabel(isWeight: Boolean, unit: BmiUnit): String {
+        val resId = when {
+            isWeight && unit == BmiUnit.METRIC -> R.string.unit_kg
+            isWeight && unit == BmiUnit.IMPERIAL -> R.string.unit_lb
+            !isWeight && unit == BmiUnit.METRIC -> R.string.unit_cm
+            else -> R.string.unit_in
+        }
+        return getString(resId)
     }
 }

@@ -986,14 +986,10 @@
     <string name="cholesterol">Cholesterol</string>
     <string name="weight_and_bmi"><![CDATA[Weight & BMI]]></string>
 
-    <array name="weight_unit" translatable="false">
-        <item>Lbs</item>
-        <item>Kg</item>
-    </array>
-
-    <array name="height_unit" translatable="false">
-        <item>Ft</item>
-        <item>Cm</item>
-    </array>
+    <string name="unit_kg" translatable="false">Kg</string>
+    <string name="unit_lb" translatable="false">Lbs</string>
+    <string name="unit_cm" translatable="false">Cm</string>
+    <string name="unit_in" translatable="false">Ft</string>
+    <string name="unit_in_brackets" translatable="false">(%1$s)</string>
 
 </resources>
