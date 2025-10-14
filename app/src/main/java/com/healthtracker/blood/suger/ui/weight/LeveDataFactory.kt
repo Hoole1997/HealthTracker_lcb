@@ -77,6 +77,46 @@ object LeveDataFactory {
             return if (idx < 0) 0 else idx
         }
 
+        /** 构建说明弹窗所需的完整范围文案列表 */
+        fun buildExplainItems(context: Context): List<com.healthtracker.blood.suger.ui.dialog.LevelExplainItem> {
+            val order = BloodPressureCategory.entries.filter { it != BloodPressureCategory.UNKNOWN }
+            return order.map { cat ->
+                val fullRangeRes = when (cat) {
+                    BloodPressureCategory.LOW -> R.string.blood_pressure_range_low_full
+                    BloodPressureCategory.NORMAL -> R.string.blood_pressure_range_normal_full
+                    BloodPressureCategory.ELEVATED -> R.string.blood_pressure_range_elevated_full
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.blood_pressure_range_high_stage_1_full
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.blood_pressure_range_high_stage_2_full
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.blood_pressure_range_hypertensive_crisis_full
+                    BloodPressureCategory.UNKNOWN -> R.string.blood_pressure_range_normal_full
+                }
+                val sysRes = when (cat) {
+                    BloodPressureCategory.LOW -> R.string.bp_range_low_sys
+                    BloodPressureCategory.NORMAL -> R.string.bp_range_normal_sys
+                    BloodPressureCategory.ELEVATED -> R.string.bp_range_elevated_sys
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.bp_range_high_stage_1_sys
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.bp_range_high_stage_2_sys
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.bp_range_hypertensive_crisis_sys
+                    BloodPressureCategory.UNKNOWN -> R.string.bp_range_normal_sys
+                }
+                val diaRes = when (cat) {
+                    BloodPressureCategory.LOW -> R.string.bp_range_low_dia
+                    BloodPressureCategory.NORMAL -> R.string.bp_range_normal_dia
+                    BloodPressureCategory.ELEVATED -> R.string.bp_range_elevated_dia
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.bp_range_high_stage_1_dia
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.bp_range_high_stage_2_dia
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.bp_range_hypertensive_crisis_dia
+                    BloodPressureCategory.UNKNOWN -> R.string.bp_range_normal_dia
+                }
+
+                com.healthtracker.blood.suger.ui.dialog.LevelExplainItem(
+                    name = context.getString(cat.statusTextRes!!),
+                    desc = context.getString(fullRangeRes, context.getString(sysRes), context.getString(diaRes)),
+                    colorInt = ContextCompat.getColor(context, cat.colorRes)
+                )
+            }
+        }
+
         /** 默认索引（Normal） */
         fun defaultIndex(): Int = buildDefaultIndex(orderSize = 6, normalIndex = 1)
     }
@@ -121,6 +161,19 @@ object LeveDataFactory {
                 LevelItem(
                     name = context.getString(cat.statusTextRes),
                     rangeDesc = ranges[cat.ordinal],
+                    colorInt = ContextCompat.getColor(context, cat.colorRes)
+                )
+            }
+        }
+
+        /** 构建说明弹窗所需的完整范围文案列表（同 ranges） */
+        fun buildExplainItems(context: Context): List<com.healthtracker.blood.suger.ui.dialog.LevelExplainItem> {
+            val ranges = context.resources.getStringArray(R.array.bmi_level_ranges)
+            val categories = BMIEnum.values()
+            return categories.map { cat ->
+                com.healthtracker.blood.suger.ui.dialog.LevelExplainItem(
+                    name = context.getString(cat.statusTextRes),
+                    desc = ranges[cat.ordinal],
                     colorInt = ContextCompat.getColor(context, cat.colorRes)
                 )
             }

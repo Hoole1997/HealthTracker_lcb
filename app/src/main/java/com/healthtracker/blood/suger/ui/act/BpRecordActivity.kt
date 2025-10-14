@@ -3,12 +3,14 @@ package com.healthtracker.blood.suger.ui.act
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.core.content.ContextCompat
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
 import com.healthtracker.blood.suger.ui.weight.LevelItem
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
+import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 
@@ -258,6 +260,17 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
         latestSystolic = mViewBind.npvSystolic.contentByCurrValue.toInt()
         latestDiastolic = mViewBind.npvDiastolic.contentByCurrValue.toInt()
         updateLsvCurrentIndex()
+
+        // 在记录页开启范围说明点击，弹出通用等级说明对话框
+        mViewBind.lsvStatusBp.setExplainClickable(true)
+        mViewBind.lsvStatusBp.setOnExplainClick {
+            val items = ArrayList(LeveDataFactory.BloodPressure.buildExplainItems(this))
+            LevelExplainDialog.show(
+                supportFragmentManager,
+                des = getString(R.string.bp_range_des),
+                items = items
+            )
+        }
     }
 
     /**

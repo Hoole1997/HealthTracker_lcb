@@ -6,13 +6,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
+import androidx.core.content.withStyledAttributes
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.LeveStatusViewBinding
-import com.healthtracker.blood.suger.ui.act.BpRecordActivity
-import com.healthtracker.blood.suger.ui.dialog.BpLeveDialog
 import com.healthtracker.framework.ext.clickWithDuration
-import androidx.core.content.withStyledAttributes
 
 /**
  * 通用等级状态视图（对齐 BloodPressureStatusView 的展示与交互）
@@ -33,6 +30,9 @@ class LeveStatusView @JvmOverloads constructor(
 
     /** 是否为“添加记录”场景（默认 false） */
     private var isAddRecordScene: Boolean = false
+    /** 外部控制的说明点击开关与回调（默认跟随 isAddRecordScene）*/
+    private var explainClickable: Boolean = false
+    private var onExplainClick: (() -> Unit)? = null
 
     /** 等级列表与当前索引（0-based） */
     private var levels: List<LevelItem> = emptyList()
@@ -44,6 +44,7 @@ class LeveStatusView @JvmOverloads constructor(
         if (attrs != null) {
             context.withStyledAttributes(attrs, R.styleable.LeveStatusView) {
                 isAddRecordScene = getBoolean(R.styleable.LeveStatusView_lsvAddRecord, false)
+                explainClickable = isAddRecordScene
                 // 支持通过自定义属性设置范围文字颜色
                 val defaultRangeColor = binding.rangeText.currentTextColor
                 val customRangeColor = getColor(
@@ -109,15 +110,13 @@ class LeveStatusView @JvmOverloads constructor(
         binding.levelBar.setIndicatorIndex(currentIndex)
     }
 
-    /** 设置范围文本点击（添加记录场景下弹出说明） */
+    /** 设置范围文本点击（由外部控制是否可点击与回调） */
     private fun setupRangeClickIfNeeded() {
-        binding.rangeText.isClickable = isAddRecordScene
-        binding.rangeText.isEnabled = isAddRecordScene
-        if (isAddRecordScene) {
-            binding.rangeText.clickWithDuration {
-                // 仅在血压记录页触发说明弹窗，避免泛用场景耦合异常
-                (context as? BpRecordActivity)?.let { BpLeveDialog.show(it.supportFragmentManager) }
-            }
+        val canClick = explainClickable && onExplainClick != null
+        binding.rangeText.isClickable = canClick
+        binding.rangeText.isEnabled = canClick
+        if (canClick) {
+            binding.rangeText.clickWithDuration { onExplainClick?.invoke() }
         } else {
             binding.rangeText.setOnClickListener(null)
         }
@@ -125,7 +124,8 @@ class LeveStatusView @JvmOverloads constructor(
 
     /** 根据场景切换范围文本的尾部图标显示 */
     private fun updateRangeIconVisibility() {
-        if (isAddRecordScene) {
+        val showIcon = explainClickable && onExplainClick != null
+        if (showIcon) {
             binding.rangeText.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 0, 0, R.drawable.ic_blood_detail, 0
             )
@@ -142,6 +142,20 @@ class LeveStatusView @JvmOverloads constructor(
         }
         binding.statusDot.background = dot
     }
+
+    /** 外部控制 API：设置说明点击回调 */
+    fun setOnExplainClick(listener: (() -> Unit)?) {
+        this.onExplainClick = listener
+        setupRangeClickIfNeeded()
+        updateRangeIconVisibility()
+    }
+
+    /** 外部控制 API：设置范围说明是否可点击 */
+    fun setExplainClickable(clickable: Boolean) {
+        this.explainClickable = clickable
+        setupRangeClickIfNeeded()
+        updateRangeIconVisibility()
+    }
 }
 
 /**
@@ -152,3 +166,5 @@ data class LevelItem(
     val rangeDesc: String,
     val colorInt: Int
 )
+
+// 顶层扩展函数已移除，避免访问私有成员导致的编译错误
