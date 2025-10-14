@@ -7,9 +7,8 @@ import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.framework.base.BaseViewModel
-import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +16,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job

@@ -1,8 +1,8 @@
 package com.healthtracker.blood.suger.config
 
 import com.google.gson.Gson
-import com.healthtracker.blood.suger.enum.BloodSugarRanges
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
+import com.healthtracker.blood.suger.data.enums.BloodSugarRanges
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.framework.util.SpUtils
 

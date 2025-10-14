@@ -2,7 +2,7 @@ package com.healthtracker.blood.suger.ui.weight
 
 import android.content.Context
 import android.util.AttributeSet
-import com.healthtracker.blood.suger.enum.BloodSugarLevel
+import com.healthtracker.blood.suger.data.enums.BloodSugarLevel
 
 /**
  * 血糖等级进度条类型别名

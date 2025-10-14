@@ -7,7 +7,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
-import com.healthtracker.blood.suger.enum.getStatusStringRes
+import com.healthtracker.blood.suger.data.enums.getStatusStringRes
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel

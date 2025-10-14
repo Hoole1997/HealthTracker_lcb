@@ -35,8 +35,7 @@ enum class BloodPressureCategory(
                 (systolic in 130..139) || (diastolic in 80..89) -> HIGH_STAGE_1
                 (systolic in 120..129) && diastolic in 60..79-> ELEVATED
                 (systolic in 90..119) && (diastolic in 60..79) -> NORMAL
-                systolic < 90 || diastolic < 60 -> LOW
-                else -> UNKNOWN
+                else -> LOW
             }
         }
     }
@@ -61,8 +60,7 @@ enum class PulseCategory(val code: String) {
             return when {
                 pulseRate < 60 -> BRADYCARDIA
                 pulseRate in 60..100 -> NORMAL
-                pulseRate > 100 -> TACHYCARDIA
-                else -> UNKNOWN
+                else -> TACHYCARDIA
             }
         }
     }

@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.BsUnit
-import com.healthtracker.blood.suger.enum.BloodSugarLevel
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
+import com.healthtracker.blood.suger.data.enums.BloodSugarLevel
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 
 /**
  * 血糖状态视图

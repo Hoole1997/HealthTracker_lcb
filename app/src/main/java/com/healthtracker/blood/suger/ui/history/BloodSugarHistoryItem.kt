@@ -1,13 +1,11 @@
 package com.healthtracker.blood.suger.ui.history
 
-import android.R.attr.level
 import android.content.Context
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
-import com.healthtracker.blood.suger.data.enums.BsUnit
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
-import com.healthtracker.blood.suger.enum.BloodSugarLevel
-import com.healthtracker.blood.suger.enum.getStatusStringRes
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
+import com.healthtracker.blood.suger.data.enums.BloodSugarLevel
+import com.healthtracker.blood.suger.data.enums.getStatusStringRes
 import java.text.DecimalFormat
 import java.util.Date
 

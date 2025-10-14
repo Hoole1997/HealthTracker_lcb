@@ -7,8 +7,8 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ViewBloodSugarStatusBinding
-import com.healthtracker.blood.suger.enum.BloodSugarLevel
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
+import com.healthtracker.blood.suger.data.enums.BloodSugarLevel
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
 
 /**

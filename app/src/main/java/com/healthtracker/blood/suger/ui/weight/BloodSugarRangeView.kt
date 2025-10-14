@@ -10,8 +10,9 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.enum.BloodSugarLevel
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
+import com.healthtracker.blood.suger.data.enums.BloodSugarLevel
+import com.healthtracker.blood.suger.data.enums.BloodSugarRanges
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
 
 class BloodSugarRangeView @JvmOverloads constructor(
@@ -155,7 +156,7 @@ class BloodSugarRangeView @JvmOverloads constructor(
         }
     }
 
-    private fun getRangeDisplayText(level: BloodSugarLevel, ranges: com.healthtracker.blood.suger.enum.BloodSugarRanges): String {
+    private fun getRangeDisplayText(level: BloodSugarLevel, ranges: BloodSugarRanges): String {
         // 只显示数值范围，不显示单位
         return when (level) {
             BloodSugarLevel.LOW -> "< ${formatValue(ranges.lowHigh)}"

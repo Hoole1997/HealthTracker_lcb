@@ -7,7 +7,7 @@ import com.healthtracker.blood.suger.ui.weight.LevelCategory
  * BMI 分类枚举（8 档）
  * 实现 LevelCategory 以复用通用状态视图与进度条
  */
-enum class BMICategory(
+enum class BMIEnum(
     val code: String,
     override val colorRes: Int,
     val statusTextRes: Int
@@ -25,7 +25,7 @@ enum class BMICategory(
         /**
          * 根据 BMI 值返回分类
          */
-        fun fromBmi(bmi: Float): BMICategory {
+        fun fromBmi(bmi: Float): BMIEnum {
             return when {
                 bmi < 16.0f -> VERY_SEVERELY_UNDERWEIGHT
                 bmi < 17.0f -> SEVERELY_UNDERWEIGHT // 16.0 - 16.9

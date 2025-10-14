@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.text.Html
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.databinding.ActivityBsDetailBinding
-import com.healthtracker.blood.suger.enum.getStatusStringRes
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BsDetailViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity

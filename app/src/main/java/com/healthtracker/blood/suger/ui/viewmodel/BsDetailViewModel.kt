@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd

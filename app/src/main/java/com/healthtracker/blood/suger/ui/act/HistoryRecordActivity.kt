@@ -3,14 +3,13 @@ package com.healthtracker.blood.suger.ui.act
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityHistoryRecordBinding
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
-import com.healthtracker.blood.suger.enum.getStatusStringRes
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
+import com.healthtracker.blood.suger.data.enums.getStatusStringRes
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.history.BloodPressureHistoryItem
@@ -27,7 +26,6 @@ import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryRecordBinding>() {

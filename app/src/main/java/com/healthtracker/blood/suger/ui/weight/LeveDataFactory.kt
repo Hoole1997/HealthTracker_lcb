@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
-import com.healthtracker.blood.suger.data.enums.BMICategory
-import com.healthtracker.blood.suger.enum.BloodSugarLevel
-import com.healthtracker.blood.suger.enum.BloodSugarStatus
+import com.healthtracker.blood.suger.data.enums.BMIEnum
+import com.healthtracker.blood.suger.data.enums.BloodSugarLevel
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
 
 /**
@@ -116,7 +116,7 @@ object LeveDataFactory {
         /** 构建等级项列表（名称与范围来自资源数组） */
         fun buildItems(context: Context): List<LevelItem> {
             val ranges = context.resources.getStringArray(R.array.bmi_level_ranges)
-            val categories = BMICategory.values()
+            val categories = BMIEnum.values()
             return categories.map { cat ->
                 LevelItem(
                     name = context.getString(cat.statusTextRes),
@@ -127,10 +127,10 @@ object LeveDataFactory {
         }
 
         /** 根据 BMI 数值计算索引 */
-        fun indexFor(bmi: Float): Int = BMICategory.fromBmi(bmi).ordinal
+        fun indexFor(bmi: Float): Int = BMIEnum.fromBmi(bmi).ordinal
 
         /** 默认索引（Normal） */
-        fun defaultIndex(): Int = BMICategory.NORMAL.ordinal
+        fun defaultIndex(): Int = BMIEnum.NORMAL.ordinal
     }
 
     /** 内部工具：根据总档数与 normalIndex 返回默认索引 */
