@@ -3,7 +3,7 @@ package com.healthtracker.blood.suger.util
 import android.content.Context
 import android.util.TypedValue
 import com.healthtracker.blood.suger.data.enums.BsUnit
-import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
+import com.healthtracker.blood.suger.ui.weight.RulerView
 
 /**
  * 血糖刻度尺配置帮助类
@@ -13,7 +13,7 @@ object BloodSugarScaleHelper {
     /**
      * 为不同单位配置刻度尺
      */
-    fun configureRulerForUnit(rulerView: BloodSugarRulerView, unit: BsUnit) {
+    fun configureRulerForUnit(rulerView: RulerView, unit: BsUnit) {
         val config = BsUnit.getScaleConfig(unit)
 
         with(rulerView) {

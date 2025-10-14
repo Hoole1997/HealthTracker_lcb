@@ -11,7 +11,7 @@ import com.healthtracker.blood.suger.data.enums.getStatusStringRes
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
-import com.healthtracker.blood.suger.ui.weight.BloodSugarRulerView
+import com.healthtracker.blood.suger.ui.weight.RulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
@@ -105,7 +105,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
 
     private fun setupRulerView() {
         with(mViewBind) {
-            rulerView.setOnChooseResultListener(object : BloodSugarRulerView.OnChooseResultListener {
+            rulerView.setOnChooseResultListener(object : RulerView.OnChooseResultListener {
                 override fun onEndResult(result: String) {
                     try {
                         "onEndResult result = $result".logd(TAG)

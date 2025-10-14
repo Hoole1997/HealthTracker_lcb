@@ -18,7 +18,7 @@ import com.healthtracker.framework.ext.logd
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-class BloodSugarRulerView @JvmOverloads constructor(
+class RulerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
