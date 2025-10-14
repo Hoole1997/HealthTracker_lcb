@@ -8,6 +8,7 @@ import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.ActivityBmiRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.AddTagDialog
+import com.healthtracker.blood.suger.ui.dialog.BmiPickerDialog
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BmiRecordViewModel
@@ -62,11 +63,31 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
             // 体重/身高编辑：复用通用输入 BottomSheet
             clWeight.clickWithDuration {
                 val curDisplay = BmiUnit.toDisplayWeight(latestWeightKg, currentWeightUnit)
-
+                BmiPickerDialog.showWeightPicker(
+                    supportFragmentManager,
+                    initialDisplayValue = curDisplay,
+                    unit = currentWeightUnit
+                ) { value, unit ->
+                    if (currentWeightUnit != unit) {
+                        currentWeightUnit = unit
+                        mViewModel.switchWeightUnit(unit)
+                    }
+                    mViewModel.updateWeightFromDisplay(value)
+                }
             }
             clHeight.clickWithDuration {
                 val curDisplay = BmiUnit.toDisplayHeight(latestHeightCm, currentHeightUnit)
-
+                BmiPickerDialog.showHeightPicker(
+                    supportFragmentManager,
+                    initialDisplayValue = curDisplay,
+                    unit = currentHeightUnit
+                ) { value, unit ->
+                    if (currentHeightUnit != unit) {
+                        currentHeightUnit = unit
+                        mViewModel.switchHeightUnit(unit)
+                    }
+                    mViewModel.updateHeightFromDisplay(value)
+                }
             }
 
             // 单位切换（点击单位文案分别在公制/英制之间切换）
