@@ -251,12 +251,12 @@ data class BloodSugarRanges(
 enum class BloodSugarLevel(
     val level: Int,
     override val colorRes: Int,
-    override val position: Float
+    val statusTextRes: Int
 ) : LevelCategory {
-    LOW(0, R.color.color_low, 0.15f),
-    NORMAL(1, R.color.color_normal, 0.35f),
-    PREDIABETES(2, R.color.color_prediabetes, 0.65f),
-    DIABETES(3, R.color.color_diabetes, 0.85f)
+    LOW(0, R.color.color_low, R.string.blood_sugar_level_low),
+    NORMAL(1, R.color.color_normal, R.string.blood_sugar_level_normal),
+    PREDIABETES(2, R.color.color_prediabetes, R.string.blood_sugar_level_prediabetes),
+    DIABETES(3, R.color.color_diabetes, R.string.blood_sugar_level_diabetes)
 }
 
 

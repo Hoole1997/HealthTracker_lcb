@@ -19,62 +19,47 @@ object LeveDataFactory {
     object BloodPressure {
         /** 构建 LeveStatusView 需要的等级项列表（顺序与 UI 一致） */
         fun buildItems(context: Context): List<LevelItem> {
-            return listOf(
+            val order = BloodPressureCategory.entries.filter { it != BloodPressureCategory.UNKNOWN }
+            return order.map { cat ->
+                val shortRangeRes = when (cat) {
+                    BloodPressureCategory.LOW -> R.string.blood_pressure_range_low_short
+                    BloodPressureCategory.NORMAL -> R.string.blood_pressure_range_normal_short
+                    BloodPressureCategory.ELEVATED -> R.string.blood_pressure_range_elevated_short
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.blood_pressure_range_high_stage_1_short
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.blood_pressure_range_high_stage_2_short
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.blood_pressure_range_hypertensive_crisis_short
+                    BloodPressureCategory.UNKNOWN -> R.string.blood_pressure_range_normal_short // 不会使用到
+                }
+
+                val sysRes = when (cat) {
+                    BloodPressureCategory.LOW -> R.string.bp_range_low_sys
+                    BloodPressureCategory.NORMAL -> R.string.bp_range_normal_sys
+                    BloodPressureCategory.ELEVATED -> R.string.bp_range_elevated_sys
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.bp_range_high_stage_1_sys
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.bp_range_high_stage_2_sys
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.bp_range_hypertensive_crisis_sys
+                    BloodPressureCategory.UNKNOWN -> R.string.bp_range_normal_sys
+                }
+                val diaRes = when (cat) {
+                    BloodPressureCategory.LOW -> R.string.bp_range_low_dia
+                    BloodPressureCategory.NORMAL -> R.string.bp_range_normal_dia
+                    BloodPressureCategory.ELEVATED -> R.string.bp_range_elevated_dia
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.bp_range_high_stage_1_dia
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.bp_range_high_stage_2_dia
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.bp_range_hypertensive_crisis_dia
+                    BloodPressureCategory.UNKNOWN -> R.string.bp_range_normal_dia
+                }
+
                 LevelItem(
-                    name = context.getString(R.string.blood_pressure_level_low),
+                    name = context.getString(cat.statusTextRes!!),
                     rangeDesc = context.getString(
-                        R.string.blood_pressure_range_low_short,
-                        context.getString(R.string.bp_range_low_sys),
-                        context.getString(R.string.bp_range_low_dia)
+                        shortRangeRes,
+                        context.getString(sysRes),
+                        context.getString(diaRes)
                     ),
-                    colorInt = ContextCompat.getColor(context, R.color.color_3487FC)
-                ),
-                LevelItem(
-                    name = context.getString(R.string.blood_pressure_level_normal),
-                    rangeDesc = context.getString(
-                        R.string.blood_pressure_range_normal_short,
-                        context.getString(R.string.bp_range_normal_sys),
-                        context.getString(R.string.bp_range_normal_dia)
-                    ),
-                    colorInt = ContextCompat.getColor(context, R.color.color_05BA7B)
-                ),
-                LevelItem(
-                    name = context.getString(R.string.blood_pressure_level_elevated),
-                    rangeDesc = context.getString(
-                        R.string.blood_pressure_range_elevated_short,
-                        context.getString(R.string.bp_range_elevated_sys),
-                        context.getString(R.string.bp_range_elevated_dia)
-                    ),
-                    colorInt = ContextCompat.getColor(context, R.color.color_FFE902)
-                ),
-                LevelItem(
-                    name = context.getString(R.string.blood_pressure_level_high_stage_1),
-                    rangeDesc = context.getString(
-                        R.string.blood_pressure_range_high_stage_1_short,
-                        context.getString(R.string.bp_range_high_stage_1_sys),
-                        context.getString(R.string.bp_range_high_stage_1_dia)
-                    ),
-                    colorInt = ContextCompat.getColor(context, R.color.color_FFB909)
-                ),
-                LevelItem(
-                    name = context.getString(R.string.blood_pressure_level_high_stage_2),
-                    rangeDesc = context.getString(
-                        R.string.blood_pressure_range_high_stage_2_short,
-                        context.getString(R.string.bp_range_high_stage_2_sys),
-                        context.getString(R.string.bp_range_high_stage_2_dia)
-                    ),
-                    colorInt = ContextCompat.getColor(context, R.color.color_FF8000)
-                ),
-                LevelItem(
-                    name = context.getString(R.string.blood_pressure_level_hypertensive_crisis),
-                    rangeDesc = context.getString(
-                        R.string.blood_pressure_range_hypertensive_crisis_short,
-                        context.getString(R.string.bp_range_hypertensive_crisis_sys),
-                        context.getString(R.string.bp_range_hypertensive_crisis_dia)
-                    ),
-                    colorInt = ContextCompat.getColor(context, R.color.color_FB0301)
+                    colorInt = ContextCompat.getColor(context, cat.colorRes)
                 )
-            )
+            }
         }
 
         /** 根据收缩压/舒张压计算索引（排除 UNKNOWN） */
@@ -101,28 +86,19 @@ object LeveDataFactory {
         /** 构建等级项列表（根据状态与单位生成范围文案） */
         fun buildItems(context: Context, unit: BsUnit, status: BloodSugarStatus): List<LevelItem> {
             val ranges = status.getRangesForUnit(unit)
-            return listOf(
+            return BloodSugarLevel.entries.map { level ->
+                val rangeDesc = when (level) {
+                    BloodSugarLevel.LOW -> "< ${BsUnit.formatValue(ranges.lowHigh, unit)}"
+                    BloodSugarLevel.NORMAL -> "${BsUnit.formatValue(ranges.normalLow, unit)}~${BsUnit.formatValue(ranges.normalHigh, unit)}"
+                    BloodSugarLevel.PREDIABETES -> "${BsUnit.formatValue(ranges.prediabetesLow, unit)}~${BsUnit.formatValue(ranges.prediabetesHigh, unit)}"
+                    BloodSugarLevel.DIABETES -> "≥ ${BsUnit.formatValue(ranges.diabetesLow, unit)}"
+                }
                 LevelItem(
-                    name = context.getString(R.string.blood_sugar_level_low),
-                    rangeDesc = "< ${BsUnit.formatValue(ranges.lowHigh, unit)}",
-                    colorInt = ContextCompat.getColor(context, BloodSugarLevel.LOW.colorRes)
-                ),
-                LevelItem(
-                    name = context.getString(R.string.blood_sugar_level_normal),
-                    rangeDesc = "${BsUnit.formatValue(ranges.normalLow, unit)}~${BsUnit.formatValue(ranges.normalHigh, unit)}",
-                    colorInt = ContextCompat.getColor(context, BloodSugarLevel.NORMAL.colorRes)
-                ),
-                LevelItem(
-                    name = context.getString(R.string.blood_sugar_level_prediabetes),
-                    rangeDesc = "${BsUnit.formatValue(ranges.prediabetesLow, unit)}~${BsUnit.formatValue(ranges.prediabetesHigh, unit)}",
-                    colorInt = ContextCompat.getColor(context, BloodSugarLevel.PREDIABETES.colorRes)
-                ),
-                LevelItem(
-                    name = context.getString(R.string.blood_sugar_level_diabetes),
-                    rangeDesc = "≥ ${BsUnit.formatValue(ranges.diabetesLow, unit)}",
-                    colorInt = ContextCompat.getColor(context, BloodSugarLevel.DIABETES.colorRes)
+                    name = context.getString(level.statusTextRes),
+                    rangeDesc = rangeDesc,
+                    colorInt = ContextCompat.getColor(context, level.colorRes)
                 )
-            )
+            }
         }
 
         /** 根据血糖值/单位/状态计算索引 */
@@ -139,12 +115,11 @@ object LeveDataFactory {
     object BMI {
         /** 构建等级项列表（名称与范围来自资源数组） */
         fun buildItems(context: Context): List<LevelItem> {
-            val names = context.resources.getStringArray(R.array.bmi_level_names)
             val ranges = context.resources.getStringArray(R.array.bmi_level_ranges)
             val categories = BMICategory.values()
             return categories.map { cat ->
                 LevelItem(
-                    name = names[cat.ordinal],
+                    name = context.getString(cat.statusTextRes),
                     rangeDesc = ranges[cat.ordinal],
                     colorInt = ContextCompat.getColor(context, cat.colorRes)
                 )

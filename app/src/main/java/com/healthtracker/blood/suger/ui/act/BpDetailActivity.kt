@@ -8,6 +8,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
 import com.healthtracker.blood.suger.databinding.ActivityBpDetailBinding
+import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BpDetailViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
@@ -70,8 +71,11 @@ class BpDetailActivity: BaseMVVMActivity<BpDetailViewModel, ActivityBpDetailBind
 
     private fun updateUI(record: BloodPressureRecord) {
         with(mViewBind) {
-            // 更新血压状态视图
-            bpStatusView.updateBloodPressure(record.systolicPressure, record.diastolicPressure)
+            // 使用通用等级视图：设置等级列表与当前索引
+            val levels = LeveDataFactory.BloodPressure.buildItems(this@BpDetailActivity)
+            bpStatusView.setLevels(levels)
+            val idx = LeveDataFactory.BloodPressure.indexFor(record.systolicPressure, record.diastolicPressure)
+            bpStatusView.setCurrentLevel(idx)
 
             // 获取血压等级描述
             val category = record.getBloodPressureCategoryEnum()

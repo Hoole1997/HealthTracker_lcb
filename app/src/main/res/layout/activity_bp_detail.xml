@@ -63,13 +63,16 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_16">
 
-            <com.healthtracker.blood.suger.ui.weight.BloodPressureStatusViewNew
+            <com.healthtracker.blood.suger.ui.weight.LeveStatusView
                 android:id="@+id/bp_status_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_rect_white_12"
+                android:paddingHorizontal="@dimen/dp_16"
+                android:paddingVertical="@dimen/dp_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_leve_des"

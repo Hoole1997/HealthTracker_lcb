@@ -14,7 +14,8 @@
         app:layout_constraintEnd_toStartOf="@+id/statusText"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/statusText"
+        app:layout_constraintBottom_toBottomOf="@id/statusText"
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <!-- 血压等级文本 -->
@@ -26,10 +27,11 @@
         android:textColor="@color/color_05BA7B"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/statusDot"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/statusDot"
-        app:layout_constraintTop_toTopOf="@+id/statusDot"
+        app:layout_constraintTop_toTopOf="parent"
+
         tools:text="@string/blood_pressure_level_normal" />
 
 

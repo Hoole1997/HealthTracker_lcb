@@ -9,17 +9,17 @@ import com.healthtracker.blood.suger.ui.weight.LevelCategory
  */
 enum class BMICategory(
     val code: String,
-    override val position: Float,
-    override val colorRes: Int
+    override val colorRes: Int,
+    val statusTextRes: Int
 ) : LevelCategory {
-    VERY_SEVERELY_UNDERWEIGHT("very_severely_underweight", 0.06f, R.color.color_E030DD),
-    SEVERELY_UNDERWEIGHT("severely_underweight", 0.15f, R.color.color_942DE2),
-    UNDERWEIGHT("underweight", 0.26f, R.color.color_3487FC),
-    NORMAL("normal", 0.38f, R.color.color_05BA7B),
-    OVERWEIGHT("overweight", 0.50f, R.color.color_FFE902),
-    OBESITY_CLASS_I("obesity_class_1", 0.66f, R.color.color_FFB909),
-    OBESITY_CLASS_II("obesity_class_2", 0.82f, R.color.color_FF8000),
-    OBESITY_CLASS_III("obesity_class_3", 0.94f, R.color.color_FB0301);
+    VERY_SEVERELY_UNDERWEIGHT("very_severely_underweight", R.color.color_E030DD, R.string.bmi_level_very_severely_underweight),
+    SEVERELY_UNDERWEIGHT("severely_underweight", R.color.color_942DE2, R.string.bmi_level_severely_underweight),
+    UNDERWEIGHT("underweight", R.color.color_3487FC, R.string.bmi_level_underweight),
+    NORMAL("normal", R.color.color_05BA7B, R.string.bmi_level_normal),
+    OVERWEIGHT("overweight", R.color.color_FFE902, R.string.bmi_level_overweight),
+    OBESITY_CLASS_I("obesity_class_1", R.color.color_FFB909, R.string.bmi_level_obesity_class_1),
+    OBESITY_CLASS_II("obesity_class_2", R.color.color_FF8000, R.string.bmi_level_obesity_class_2),
+    OBESITY_CLASS_III("obesity_class_3", R.color.color_FB0301, R.string.bmi_level_obesity_class_3);
 
     companion object {
         /**
