@@ -18,6 +18,8 @@ import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.collect
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -64,6 +66,18 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 requireActivity().startActivity<BpRecordActivity>()
             }
 
+            clHeartRate.clickWithDuration {
+
+            }
+
+            clCholesterol.clickWithDuration {
+
+            }
+
+            clBmi.clickWithDuration {
+
+            }
+
 
         }
         observeData()
@@ -73,22 +87,12 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
      * 观察数据变化
      */
     private fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // 观察最新血糖记录
-                launch {
-                    mViewModel.latestBloodSugarRecord.collect { record ->
-                        updateBloodSugarUI(record)
-                    }
-                }
+        collectLatest(mViewModel.latestBloodSugarRecord){
+            updateBloodSugarUI(it)
+        }
 
-                // 观察最新血压记录
-                launch {
-                    mViewModel.latestBloodPressureRecord.collect { record ->
-                        updateBloodPressureUI(record)
-                    }
-                }
-            }
+        collectLatest(mViewModel.latestBloodPressureRecord){
+            updateBloodPressureUI(it)
         }
     }
 

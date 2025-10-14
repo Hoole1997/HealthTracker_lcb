@@ -1,10 +1,13 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
+import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 /**
@@ -18,8 +21,16 @@ class HomeViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     // 获取最近一次血糖记录
-    val latestBloodSugarRecord = bloodSugarRepository.getRecentBloodSugarRecordsWithLimit(1).map { it.firstOrNull() }
+    val latestBloodSugarRecord = bloodSugarRepository.getRecentBloodSugarRecordsWithLimit(1).map { it.firstOrNull() }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 
     // 获取最近一次血压记录
-    val latestBloodPressureRecord = bloodPressureRepository.getRecentBloodPressureRecordsWithLimit(1).map { it.firstOrNull() }
+    val latestBloodPressureRecord = bloodPressureRepository.getRecentBloodPressureRecordsWithLimit(1).map { it.firstOrNull() }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 }
