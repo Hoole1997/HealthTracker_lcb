@@ -158,6 +158,8 @@
     <declare-styleable name="LeveStatusView">
         <!-- 是否用于“添加记录”场景：true 显示圆点并启用说明弹窗；false 关闭两者 -->
         <attr name="lsvAddRecord" format="boolean" />
+        <!-- 范围文本颜色（可自定义） -->
+        <attr name="lsvRangeTextColor" format="color" />
     </declare-styleable>
 
 

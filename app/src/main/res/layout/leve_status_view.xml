@@ -42,7 +42,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_17"
-        android:drawableEnd="@drawable/ic_blood_detail"
         android:drawablePadding="@dimen/dp_8"
         android:textColor="@color/color_888"
         android:textSize="@dimen/sp_12"

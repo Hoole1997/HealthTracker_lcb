@@ -44,10 +44,18 @@ class LeveStatusView @JvmOverloads constructor(
         if (attrs != null) {
             context.withStyledAttributes(attrs, R.styleable.LeveStatusView) {
                 isAddRecordScene = getBoolean(R.styleable.LeveStatusView_lsvAddRecord, false)
+                // 支持通过自定义属性设置范围文字颜色
+                val defaultRangeColor = binding.rangeText.currentTextColor
+                val customRangeColor = getColor(
+                    R.styleable.LeveStatusView_lsvRangeTextColor,
+                    defaultRangeColor
+                )
+                binding.rangeText.setTextColor(customRangeColor)
             }
         }
         // 初始化点击行为（仅在添加记录场景有效）
         setupRangeClickIfNeeded()
+        updateRangeIconVisibility()
         refreshUI()
     }
 
@@ -93,6 +101,7 @@ class LeveStatusView @JvmOverloads constructor(
         // 根据场景控制：圆点可见、说明弹窗点击
         binding.statusDot.visibility = if (isAddRecordScene) View.VISIBLE else View.GONE
         setupRangeClickIfNeeded()
+        updateRangeIconVisibility()
 
         // 配置并更新通用等级进度条（颜色数组 + 索引）
         val colors = levels.map { it.colorInt }.toIntArray()
@@ -111,6 +120,17 @@ class LeveStatusView @JvmOverloads constructor(
             }
         } else {
             binding.rangeText.setOnClickListener(null)
+        }
+    }
+
+    /** 根据场景切换范围文本的尾部图标显示 */
+    private fun updateRangeIconVisibility() {
+        if (isAddRecordScene) {
+            binding.rangeText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                0, 0, R.drawable.ic_blood_detail, 0
+            )
+        } else {
+            binding.rangeText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
         }
     }
 

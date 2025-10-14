@@ -70,6 +70,7 @@
                 android:background="@drawable/bg_rect_white_12"
                 android:paddingHorizontal="@dimen/dp_16"
                 android:paddingVertical="@dimen/dp_24"
+                app:lsvRangeTextColor = "@color/t1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
