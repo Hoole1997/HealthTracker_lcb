@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.ui.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
@@ -31,12 +32,12 @@ class BmiRecordViewModel @Inject constructor(
     // 编辑模式的记录ID
     private var editingRecordId: Long? = null
 
-    // 身高(cm)与体重(kg)
-    private val _heightCm = MutableStateFlow(170.0)
-    val heightCm: StateFlow<Double> = _heightCm.asStateFlow()
+    // 身高(cm)与体重(kg) - 基础存储统一使用公制，类型改为Float
+    private val _heightCm = MutableStateFlow(170f)
+    val heightCm: StateFlow<Float> = _heightCm.asStateFlow()
 
-    private val _weightKg = MutableStateFlow(65.0)
-    val weightKg: StateFlow<Double> = _weightKg.asStateFlow()
+    private val _weightKg = MutableStateFlow(65f)
+    val weightKg: StateFlow<Float> = _weightKg.asStateFlow()
 
     // 记录时间
     private val _recordTime = MutableStateFlow(DateTimeUtils.now())
@@ -49,6 +50,13 @@ class BmiRecordViewModel @Inject constructor(
     // 保存状态
     private val _isSaved = MutableStateFlow(false)
     val isSaved: StateFlow<Boolean> = _isSaved.asStateFlow()
+
+    // 当前显示单位（分别控制身高与体重）
+    private val _heightUnit = MutableStateFlow(BmiUnit.getPreferredHeightUnit())
+    val heightUnit: StateFlow<BmiUnit> = _heightUnit.asStateFlow()
+
+    private val _weightUnit = MutableStateFlow(BmiUnit.getPreferredWeightUnit())
+    val weightUnit: StateFlow<BmiUnit> = _weightUnit.asStateFlow()
 
     // 标签相关状态
     private val _selectedTagIds = MutableStateFlow<List<Long>>(emptyList())
@@ -72,15 +80,34 @@ class BmiRecordViewModel @Inject constructor(
     }
 
     private fun initializeDefaults() {
-        _heightCm.value = 170.0
-        _weightKg.value = 65.0
+        _heightCm.value = 170f
+        _weightKg.value = 65f
         _recordTime.value = DateTimeUtils.now()
         _selectedTagIds.value = emptyList()
     }
 
-    fun updateHeight(height: Double) { _heightCm.value = height }
-    fun updateWeight(weight: Double) { _weightKg.value = weight }
+    fun updateHeight(height: Float) { _heightCm.value = height }
+    fun updateWeight(weight: Float) { _weightKg.value = weight }
     fun updateRecordTime(time: Date) { _recordTime.value = time }
+
+    // 根据当前显示单位解析输入并更新到基础存储(cm/kg)
+    fun updateHeightFromDisplay(displayHeight: Float) {
+        _heightCm.value = BmiUnit.toBaseHeightCm(displayHeight, _heightUnit.value)
+    }
+
+    fun updateWeightFromDisplay(displayWeight: Float) {
+        _weightKg.value = BmiUnit.toBaseWeightKg(displayWeight, _weightUnit.value)
+    }
+
+    fun switchHeightUnit(newUnit: BmiUnit) {
+        _heightUnit.value = newUnit
+        BmiUnit.savePreferredHeightUnit(newUnit)
+    }
+
+    fun switchWeightUnit(newUnit: BmiUnit) {
+        _weightUnit.value = newUnit
+        BmiUnit.savePreferredWeightUnit(newUnit)
+    }
 
     // 加载编辑记录
     fun loadEditRecord(recordId: Long) {
@@ -89,8 +116,8 @@ class BmiRecordViewModel @Inject constructor(
                 _isLoading.value = true
                 val record = bmiRepository.getBmiRecordById(recordId)
                 if (record != null) {
-                    _heightCm.value = record.heightCm
-                    _weightKg.value = record.weightKg
+                    _heightCm.value = record.heightCm.toFloat()
+                    _weightKg.value = record.weightKg.toFloat()
                     _recordTime.value = record.recordTime
                     _selectedTagIds.value = record.getTagIdList()
                     "Loaded BMI record for edit: $recordId".logd(TAG)
@@ -177,8 +204,8 @@ class BmiRecordViewModel @Inject constructor(
                     val updatedTags = TagUtils.mergeTagIds(existing.getTagIdList(), tags)
                     val tagStr = TagUtils.tagIdsToString(updatedTags)
                     val updated = existing.copy(
-                        heightCm = height,
-                        weightKg = weight,
+                        heightCm = height.toDouble(),
+                        weightKg = weight.toDouble(),
                         recordTime = time,
                         tagIds = tagStr
                     ).withUpdatedTimestamp()
@@ -194,8 +221,8 @@ class BmiRecordViewModel @Inject constructor(
                     val tagStr = TagUtils.tagIdsToString(tags)
                     val newRecord = BmiRecord(
                         recordTime = time,
-                        heightCm = height,
-                        weightKg = weight,
+                        heightCm = height.toDouble(),
+                        weightKg = weight.toDouble(),
                         tagIds = tagStr
                     )
                     val newId = bmiRepository.insertBmiRecord(newRecord)

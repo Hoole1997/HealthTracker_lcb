@@ -8,6 +8,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.LayoutDatetimeSelectionBinding
 import java.util.*
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
+import com.healthtracker.framework.ext.clickWithDuration
 
 /**
  * 时间选择复合组件
@@ -77,7 +78,7 @@ class DateTimeSelectionView @JvmOverloads constructor(
      */
     private fun setupListeners() {
         // 标签点击监听
-        binding.tvLabel.setOnClickListener {
+        binding.tvLabel.clickWithDuration {
             onLabelClickListener?.invoke()
         }
         

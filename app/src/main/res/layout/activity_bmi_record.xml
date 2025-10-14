@@ -203,10 +203,11 @@
                     android:id="@+id/bp_status_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_24"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cl_weight"
+                    android:paddingHorizontal="@dimen/dp_16"
                     app:lsvAddRecord="true" />
 
 

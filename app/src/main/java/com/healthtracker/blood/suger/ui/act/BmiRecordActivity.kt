@@ -1,0 +1,252 @@
+package com.healthtracker.blood.suger.ui.act
+
+import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
+import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.enums.BmiUnit
+import com.healthtracker.blood.suger.data.enums.TagType
+import com.healthtracker.blood.suger.databinding.ActivityBmiRecordBinding
+import com.healthtracker.blood.suger.ui.dialog.AddTagDialog
+import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
+import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
+import com.healthtracker.blood.suger.ui.viewmodel.BmiRecordViewModel
+import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
+import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.collect
+import com.healthtracker.framework.ext.collectLatest
+import com.healthtracker.framework.ext.showToast
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.util.Calendar
+
+@AndroidEntryPoint
+class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecordBinding>() {
+
+    private val healthTags = mutableListOf<HealthTag>()
+    private val addTagIds = mutableListOf<Long>()
+
+    // 基础存储：公制(cm/kg)
+    private var latestHeightCm: Float = 170f
+    private var latestWeightKg: Float = 65f
+    private var currentWeightUnit: BmiUnit = BmiUnit.getPreferredWeightUnit()
+    private var currentHeightUnit: BmiUnit = BmiUnit.getPreferredHeightUnit()
+
+    companion object {
+        private const val EXTRA_RECORD_ID = "extra_record_id"
+
+        fun start(context: android.content.Context, recordId: Long? = null) {
+            val intent = android.content.Intent(context, BmiRecordActivity::class.java)
+            recordId?.let { intent.putExtra(EXTRA_RECORD_ID, it) }
+            context.startActivity(intent)
+        }
+    }
+
+    override fun createViewBinding() = ActivityBmiRecordBinding.inflate(layoutInflater)
+
+    override fun getVMModelClass() = BmiRecordViewModel::class.java
+
+    override fun initView(savedInstanceState: Bundle?) {
+        // 读取编辑记录ID（如有）
+        val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L)
+        val editRecordId = if (recordId == -1L) null else recordId
+
+        // 初始化 ViewModel（支持编辑模式）
+        mViewModel.initializeWithRecord(editRecordId)
+
+        with(mViewBind) {
+            btnBack.click { finish() }
+
+            // 体重/身高编辑：复用通用输入 BottomSheet
+            clWeight.clickWithDuration {
+                val curDisplay = BmiUnit.toDisplayWeight(latestWeightKg, currentWeightUnit)
+
+            }
+            clHeight.clickWithDuration {
+                val curDisplay = BmiUnit.toDisplayHeight(latestHeightCm, currentHeightUnit)
+
+            }
+
+            // 单位切换（点击单位文案分别在公制/英制之间切换）
+            tvWeightUnit.setOnClickListener { toggleWeightUnit() }
+            tvHeightUnit.setOnClickListener { toggleHeightUnit() }
+
+            // 标签按钮：打开 BMI 标签选择
+            dateTimeSelectionView.setOnLabelClickListener {
+                val selectedTags = if (addTagIds.isEmpty()) null else {
+                    val temp = mutableListOf<HealthTag>()
+                    for (id in addTagIds) {
+                        healthTags.find { it.id == id }?.let { temp.add(it) }
+                    }
+                    temp
+                }
+                HealthTagDialog(
+                    tagType = TagType.BMI,
+                    tagsFlow = mViewModel.loadAvailableHealthTagsFlow(),
+                    selectedTags = selectedTags,
+                    onSave = { selectedTagList ->
+                        val tagIds = selectedTagList.map { it.id }
+                        addTagIds.clear()
+                        addTagIds.addAll(tagIds)
+                        mViewModel.clearSelectedTags()
+                        tagIds.forEach { tagId -> mViewModel.addTag(tagId) }
+                    },
+                    onDelete = { tag ->
+                        mViewModel.deleteTag(tag)
+                    },
+                    onAdd = { tagName ->
+                        lifecycleScope.launch {
+                            val id = mViewModel.createCustomTag(tagName)
+                            if (id <= 0L) {
+                                showToast(getString(R.string.create_label_failed))
+                            }
+                        }
+                    }
+                ).show(supportFragmentManager)
+            }
+
+            // 保存按钮
+            setupSaveButton()
+
+            // 初始化 BMI 等级视图
+            setupLeveStatusView()
+        }
+
+        observeViewModel()
+    }
+
+    private fun setupSaveButton() {
+        mViewBind.btnSave.click {
+            lifecycleScope.launch {
+                mViewBind.dateTimeSelectionView.getSelectDate().let { date ->
+                    mViewModel.updateRecordTime(date)
+                }
+                mViewModel.saveBmiRecord { result ->
+                    when (result) {
+                        is BmiRecordViewModel.SaveRecordResult.Created -> {
+                            finish()
+                        }
+                        is BmiRecordViewModel.SaveRecordResult.Updated -> {
+                            finish()
+                        }
+                        is BmiRecordViewModel.SaveRecordResult.Failed -> {
+                            showToast(result.error)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeViewModel() {
+        // 身高/体重变化时更新 UI 与等级索引
+        this.collect(mViewModel.heightCm) { height ->
+            latestHeightCm = height
+            updateDisplayValues()
+            updateLsvCurrentIndex()
+        }
+
+        this.collect(mViewModel.weightKg) { weight ->
+            latestWeightKg = weight
+            updateDisplayValues()
+            updateLsvCurrentIndex()
+        }
+
+        // 体重显示单位变化
+        this.collect(mViewModel.weightUnit) { unit ->
+            currentWeightUnit = unit
+            updateDisplayValues()
+        }
+
+        // 身高显示单位变化
+        this.collect(mViewModel.heightUnit) { unit ->
+            currentHeightUnit = unit
+            updateDisplayValues()
+        }
+
+        // 记录时间变化
+        this.collectLatest(mViewModel.recordTime) { recordTime ->
+            val calendar = Calendar.getInstance()
+            calendar.time = recordTime
+            if (!isDestroyed && !isFinishing) {
+                mViewBind.dateTimeSelectionView.getDateTimePicker().initView(
+                    year = calendar.get(Calendar.YEAR),
+                    month = calendar.get(Calendar.MONTH) + 1,
+                    day = calendar.get(Calendar.DAY_OF_MONTH),
+                    hour = calendar.get(Calendar.HOUR_OF_DAY),
+                    minute = calendar.get(Calendar.MINUTE)
+                )
+            }
+        }
+
+        // 加载状态
+        this.collectLatest(mViewModel.isLoading) { isLoading ->
+            mViewBind.btnSave.isEnabled = !isLoading
+            mViewBind.btnSave.text = if (isLoading) {
+                getString(R.string.saving)
+            } else {
+                getString(R.string.save)
+            }
+        }
+
+        // 可用标签
+        this.collectLatest(mViewModel.availableTags) { tags ->
+            healthTags.clear()
+            healthTags.addAll(tags)
+        }
+
+        // 选中标签ID，同步标签文案
+        this.collectLatest(mViewModel.selectedTagIds) { tagIds ->
+            addTagIds.clear()
+            addTagIds.addAll(tagIds)
+        }
+    }
+
+    private fun setupLeveStatusView() {
+        val levels = LeveDataFactory.BMI.buildItems(this)
+        mViewBind.bpStatusView.setLevels(levels)
+        updateLsvCurrentIndex()
+
+        // 在记录页开启范围说明点击，弹出通用等级说明对话框
+        mViewBind.bpStatusView.setExplainClickable(true)
+        mViewBind.bpStatusView.setOnExplainClick {
+            val items = ArrayList(LeveDataFactory.BMI.buildExplainItems(this))
+            LevelExplainDialog.show(
+                supportFragmentManager,
+                items = items,
+                des = null // BMI 无额外范围说明文案
+            )
+        }
+    }
+
+    private fun updateLsvCurrentIndex() {
+        val heightM = latestHeightCm / 100f
+        if (heightM > 0f) {
+            val bmi = (latestWeightKg / (heightM * heightM))
+            val idx = LeveDataFactory.BMI.indexFor(bmi)
+            mViewBind.bpStatusView.setCurrentLevel(idx)
+        }
+    }
+
+    private fun updateDisplayValues() {
+        // 根据当前单位格式化显示文案
+        val displayWeight = BmiUnit.toDisplayWeight(latestWeightKg, currentWeightUnit)
+        val displayHeight = BmiUnit.toDisplayHeight(latestHeightCm, currentHeightUnit)
+        mViewBind.tvWeightValue.text = displayWeight.toString()
+        mViewBind.tvHeightValue.text = displayHeight.toString()
+        mViewBind.tvWeightUnit.text = currentWeightUnit.weightLabel
+        mViewBind.tvHeightUnit.text = currentHeightUnit.heightLabel
+    }
+
+    private fun toggleWeightUnit() {
+        val newUnit = if (currentWeightUnit == BmiUnit.METRIC) BmiUnit.IMPERIAL else BmiUnit.METRIC
+        mViewModel.switchWeightUnit(newUnit)
+    }
+
+    private fun toggleHeightUnit() {
+        val newUnit = if (currentHeightUnit == BmiUnit.METRIC) BmiUnit.IMPERIAL else BmiUnit.METRIC
+        mViewModel.switchHeightUnit(newUnit)
+    }
+}

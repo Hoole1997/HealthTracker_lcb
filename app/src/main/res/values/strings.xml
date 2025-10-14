@@ -980,5 +980,6 @@
     <string name="add_label">Add label</string>
     <string name="weight">Weight</string>
     <string name="height">Height</string>
+    <string name="create_label_failed">创建失败或标签已存在</string>
 
 </resources>

@@ -124,7 +124,7 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
                         lifecycleScope.launch {
                             val id = mViewModel.createCustomTag(tagName)
                             if (id <= 0L) {
-                                showToast("创建失败或标签已存在")
+                                showToast(getString(R.string.create_label_failed))
                             }
                         }
                     }

@@ -14,7 +14,6 @@ import com.google.android.flexbox.JustifyContent
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
-import com.healthtracker.blood.suger.data.utils.TagUtils
 import com.healthtracker.blood.suger.databinding.DialogLabelSelectBinding
 import com.healthtracker.blood.suger.ui.adapter.HealthTagAdapter
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog.Companion.BUTTON_OK
@@ -22,7 +21,6 @@ import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
-import com.healthtracker.framework.ext.showToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
