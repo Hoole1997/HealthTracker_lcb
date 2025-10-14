@@ -990,6 +990,7 @@
     <string name="unit_lb" translatable="false">Lbs</string>
     <string name="unit_cm" translatable="false">Cm</string>
     <string name="unit_in" translatable="false">Ft</string>
+    <string name="unit_ft_in" translatable="false">Ft-in</string>
     <string name="unit_in_brackets" translatable="false">(%1$s)</string>
 
 </resources>

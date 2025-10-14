@@ -14,17 +14,17 @@
         android:id="@+id/v_bar"
         android:layout_width="@dimen/dp_66"
         android:layout_height="@dimen/dp_8"
-        android:background="@drawable/bg_dialog_bar"/>
+        android:background="@drawable/bg_dialog_bar" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_title"
         style="@style/T1_18"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
         android:layout_marginHorizontal="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_20"
         android:gravity="center_horizontal"
-        android:text="@string/add_label"/>
+        android:text="@string/add_label" />
 
     <RadioGroup
         android:id="@+id/rg_unit"
@@ -39,26 +39,30 @@
 
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/rb_1"
+            style="@style/TextViewFont_RobotoMedium"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/selector_unit_tab"
             android:button="@null"
+            android:gravity="center"
             android:checked="true"
             android:paddingHorizontal="@dimen/dp_12"
-            tools:text="Lbs"
             android:textColor="@color/selector_unit_text_color"
-            android:textSize="@dimen/sp_12" />
+            android:textSize="@dimen/sp_12"
+            tools:text="Lbs" />
 
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/rb_2"
+            style="@style/TextViewFont_RobotoMedium"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/selector_unit_tab"
             android:button="@null"
+            android:gravity="center"
             android:paddingHorizontal="@dimen/dp_12"
-            tools:text="Kg"
             android:textColor="@color/selector_unit_text_color"
-            android:textSize="@dimen/sp_12" />
+            android:textSize="@dimen/sp_12"
+            tools:text="Kg" />
 
     </RadioGroup>
 
@@ -92,13 +96,13 @@
         app:midScaleHeight="@dimen/dp_22"
         app:midScaleStroke="@dimen/dp_2"
         app:rulerHeight="@dimen/dp_52"
+        app:scaleGap="@dimen/dp_12"
         app:scaleNumColor="@color/color_999"
         app:scaleNumTextSize="@dimen/sp_14"
         app:scaleTextMargin="@dimen/dp_6"
         app:smallScaleColor="#D9D9D9"
         app:smallScaleHeight="@dimen/dp_22"
         app:smallScaleStroke="@dimen/dp_2"
-        app:scaleGap="@dimen/dp_12"
         tools:decimalPlaces="1"
         tools:firstScale="60.7"
         tools:maxScale="255"

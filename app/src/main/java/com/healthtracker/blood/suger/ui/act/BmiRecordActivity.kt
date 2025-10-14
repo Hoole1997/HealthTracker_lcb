@@ -30,7 +30,7 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
     private val addTagIds = mutableListOf<Long>()
 
     // 基础存储：公制(cm/kg)
-    private var latestHeightCm: Float = 170f
+    private var latestHeightCm: Float = 165f
     private var latestWeightKg: Float = 65f
     private var currentWeightUnit: BmiUnit = BmiUnit.getPreferredWeightUnit()
     private var currentHeightUnit: BmiUnit = BmiUnit.getPreferredHeightUnit()
@@ -276,8 +276,8 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
             isWeight && unit == BmiUnit.METRIC -> getString(R.string.unit_kg)
             isWeight && unit == BmiUnit.IMPERIAL -> getString(R.string.unit_lb)
             !isWeight && unit == BmiUnit.METRIC -> getString(R.string.unit_cm)
-            else -> getString(R.string.unit_in)
+            else -> getString(R.string.unit_ft_in)
         }
-        return getString(R.string.unit_in_brackets, unitName)
+        return getString(R.string.unit_in_brackets, unitName.lowercase())
     }
 }

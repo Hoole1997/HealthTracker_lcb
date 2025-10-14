@@ -114,8 +114,11 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<DialogBmiPickerBinding>() 
 
     private fun setupUnitTabs() {
         mViewBind?.apply {
-            rb1.text = getUnitLabel(isWeightMode(), BmiUnit.IMPERIAL)
-            rb2.text = getUnitLabel(isWeightMode(), BmiUnit.METRIC)
+            //在健康/健身类 app 的单位切换控件里，行业主流都是用大写缩写（KG、LBS、CM、FT），
+            // 一方面与医学和度量衡的常见写法一致，另一方面在按钮或 Pill 形式的切换控件里，
+            // 大写字母识别度更高、视觉上也更均衡。因此保留大写通常更符合用户预期
+            rb1.text = getUnitLabel(isWeightMode(), BmiUnit.IMPERIAL).uppercase()
+            rb2.text = getUnitLabel(isWeightMode(), BmiUnit.METRIC).uppercase()
             setUnitSelection(currentUnit)
 
             rgUnit.setOnCheckedChangeListener { _, checkedId ->
@@ -132,9 +135,7 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<DialogBmiPickerBinding>() 
         currentScaleConfig = config
         val clampedValue = BmiScaleHelper.clampValue(currentValue, config)
         currentValue = clampedValue
-        ruler.setScaleImmediately(clampedValue, suppressCallback = true)
-        updateSelectedValueDisplay(clampedValue)
-
+        applyScaleToRuler(ruler, clampedValue)
         ruler.setOnChooseResultListener(object : RulerView.OnChooseResultListener {
             override fun onEndResult(result: String) {
                 updateCurrentValue(result)
@@ -176,8 +177,7 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<DialogBmiPickerBinding>() 
             currentScaleConfig = config
             val clampedValue = BmiScaleHelper.clampValue(convertedValue, config)
             currentValue = clampedValue
-            ruler.setScaleImmediately(clampedValue, suppressCallback = true)
-            updateSelectedValueDisplay(clampedValue)
+            applyScaleToRuler(ruler, clampedValue)
         }
     }
 
@@ -231,6 +231,18 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<DialogBmiPickerBinding>() 
             ScaleType.WEIGHT
         } else {
             ScaleType.HEIGHT
+        }
+    }
+
+    private fun applyScaleToRuler(rulerView: RulerView, value: Float) {
+        val action = {
+            rulerView.setScaleImmediately(value, suppressCallback = true)
+            updateSelectedValueDisplay(value)
+        }
+        if (rulerView.width == 0 || rulerView.height == 0) {
+            rulerView.post(action)
+        } else {
+            action()
         }
     }
 

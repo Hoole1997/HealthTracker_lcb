@@ -33,7 +33,7 @@ class BmiRecordViewModel @Inject constructor(
     private var editingRecordId: Long? = null
 
     // 身高(cm)与体重(kg) - 基础存储统一使用公制，类型改为Float
-    private val _heightCm = MutableStateFlow(170f)
+    private val _heightCm = MutableStateFlow(165f)
     val heightCm: StateFlow<Float> = _heightCm.asStateFlow()
 
     private val _weightKg = MutableStateFlow(65f)
@@ -73,17 +73,8 @@ class BmiRecordViewModel @Inject constructor(
         editingRecordId = recordId
         if (recordId != null) {
             loadEditRecord(recordId)
-        } else {
-            initializeDefaults()
         }
         initializeTags()
-    }
-
-    private fun initializeDefaults() {
-        _heightCm.value = 170f
-        _weightKg.value = 65f
-        _recordTime.value = DateTimeUtils.now()
-        _selectedTagIds.value = emptyList()
     }
 
     fun updateHeight(height: Float) { _heightCm.value = height }

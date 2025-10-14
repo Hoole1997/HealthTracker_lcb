@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.data.enums
 
 import com.healthtracker.framework.util.SpUtils
 import java.util.Locale
+import kotlin.math.pow
 import kotlin.math.roundToInt
 
 /**
@@ -95,7 +96,7 @@ enum class BmiUnit(
         fun toBaseHeightCm(displayHeight: Float, unit: BmiUnit): Float {
             return when (unit) {
                 METRIC -> displayHeight
-                IMPERIAL -> displayHeight * 2.54f // inch -> cm
+                IMPERIAL -> displayHeight * 30.48f // ft -> cm
             }
         }
 
@@ -110,7 +111,7 @@ enum class BmiUnit(
         fun toDisplayHeight(baseHeightCm: Float, unit: BmiUnit): Float {
             val display = when (unit) {
                 METRIC -> baseHeightCm
-                IMPERIAL -> baseHeightCm / 2.54f // cm -> inch
+                IMPERIAL -> baseHeightCm / 30.48f // cm -> ft
             }
             return roundByConfig(display, unit.heightConfig.decimalPlaces)
         }
@@ -124,8 +125,13 @@ enum class BmiUnit(
         }
 
         fun formatDisplayHeight(baseHeightCm: Float, unit: BmiUnit): String {
-            val displayValue = toDisplayHeight(baseHeightCm, unit)
-            return formatValue(displayValue, unit.heightConfig.decimalPlaces)
+            return when (unit) {
+                METRIC -> {
+                    val displayValue = toDisplayHeight(baseHeightCm, unit)
+                    formatValue(displayValue, unit.heightConfig.decimalPlaces)
+                }
+                IMPERIAL -> formatFeetInches(baseHeightCm)
+            }
         }
 
         fun formatDisplayWeight(baseWeightKg: Float, unit: BmiUnit): String {
@@ -137,8 +143,7 @@ enum class BmiUnit(
             if (decimalPlaces <= 0) {
                 return value.roundToInt().toFloat()
             }
-            var factor = 1f
-            repeat(decimalPlaces) { factor *= 10f }
+            val factor = 10.0.pow(decimalPlaces.toDouble()).toFloat()
             return (value * factor).roundToInt() / factor
         }
 
@@ -148,6 +153,25 @@ enum class BmiUnit(
             } else {
                 String.format(Locale.ROOT, "%.${decimalPlaces}f", value)
             }
+        }
+
+        private fun formatFeetInches(baseHeightCm: Float): String {
+            if (baseHeightCm <= 0f) {
+                return "0\'0\""
+            }
+            val totalInches = baseHeightCm / 2.54f
+            var feet = (totalInches / 12f).toInt()
+            var inches = (totalInches - feet * 12).roundToInt()
+
+            if (inches == 12) {
+                feet += 1
+                inches = 0
+            }
+
+            if (feet < 0) feet = 0
+            if (inches < 0) inches = 0
+
+            return "${feet}'${inches}\""
         }
     }
 
