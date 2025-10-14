@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
+import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
@@ -251,63 +252,7 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
      * 构建并设置 LeveStatusView 的等级列表与初始索引
      */
     private fun setupLeveStatusView() {
-        val levels = listOf(
-            LevelItem(
-                name = getString(com.healthtracker.blood.suger.R.string.blood_pressure_level_low),
-                rangeDesc = getString(
-                    com.healthtracker.blood.suger.R.string.blood_pressure_range_low_short,
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_low_sys),
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_low_dia)
-                ),
-                colorInt = ContextCompat.getColor(this, com.healthtracker.blood.suger.R.color.color_3487FC)
-            ),
-            LevelItem(
-                name = getString(com.healthtracker.blood.suger.R.string.blood_pressure_level_normal),
-                rangeDesc = getString(
-                    com.healthtracker.blood.suger.R.string.blood_pressure_range_normal_short,
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_normal_sys),
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_normal_dia)
-                ),
-                colorInt = ContextCompat.getColor(this, com.healthtracker.blood.suger.R.color.color_05BA7B)
-            ),
-            LevelItem(
-                name = getString(com.healthtracker.blood.suger.R.string.blood_pressure_level_elevated),
-                rangeDesc = getString(
-                    com.healthtracker.blood.suger.R.string.blood_pressure_range_elevated_short,
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_elevated_sys),
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_elevated_dia)
-                ),
-                colorInt = ContextCompat.getColor(this, com.healthtracker.blood.suger.R.color.color_FFE902)
-            ),
-            LevelItem(
-                name = getString(com.healthtracker.blood.suger.R.string.blood_pressure_level_high_stage_1),
-                rangeDesc = getString(
-                    com.healthtracker.blood.suger.R.string.blood_pressure_range_high_stage_1_short,
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_high_stage_1_sys),
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_high_stage_1_dia)
-                ),
-                colorInt = ContextCompat.getColor(this, com.healthtracker.blood.suger.R.color.color_FFB909)
-            ),
-            LevelItem(
-                name = getString(com.healthtracker.blood.suger.R.string.blood_pressure_level_high_stage_2),
-                rangeDesc = getString(
-                    com.healthtracker.blood.suger.R.string.blood_pressure_range_high_stage_2_short,
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_high_stage_2_sys),
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_high_stage_2_dia)
-                ),
-                colorInt = ContextCompat.getColor(this, com.healthtracker.blood.suger.R.color.color_FF8000)
-            ),
-            LevelItem(
-                name = getString(com.healthtracker.blood.suger.R.string.blood_pressure_level_hypertensive_crisis),
-                rangeDesc = getString(
-                    com.healthtracker.blood.suger.R.string.blood_pressure_range_hypertensive_crisis_short,
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_hypertensive_crisis_sys),
-                    getString(com.healthtracker.blood.suger.R.string.bp_range_hypertensive_crisis_dia)
-                ),
-                colorInt = ContextCompat.getColor(this, com.healthtracker.blood.suger.R.color.color_FB0301)
-            )
-        )
-
+        val levels = LeveDataFactory.BloodPressure.buildItems(this)
         mViewBind.lsvStatusBp.setLevels(levels)
         // 初始索引根据当前选择器的值计算
         latestSystolic = mViewBind.npvSystolic.contentByCurrValue.toInt()
@@ -319,16 +264,7 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
      * 根据当前收缩压/舒张压计算分类并更新 LeveStatusView 的 currentIndex
      */
     private fun updateLsvCurrentIndex() {
-        val category = BloodPressureCategory.fromBloodPressure(latestSystolic, latestDiastolic)
-        val order = listOf(
-            BloodPressureCategory.LOW,
-            BloodPressureCategory.NORMAL,
-            BloodPressureCategory.ELEVATED,
-            BloodPressureCategory.HIGH_STAGE_1,
-            BloodPressureCategory.HIGH_STAGE_2,
-            BloodPressureCategory.HYPERTENSIVE_CRISIS
-        )
-        val idx = order.indexOf(category).let { if (it < 0) 0 else it }
+        val idx = LeveDataFactory.BloodPressure.indexFor(latestSystolic, latestDiastolic)
         mViewBind.lsvStatusBp.setCurrentLevel(idx)
     }
 
