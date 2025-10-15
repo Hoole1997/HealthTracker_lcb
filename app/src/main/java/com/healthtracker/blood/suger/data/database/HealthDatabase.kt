@@ -12,12 +12,14 @@ import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
 import com.healthtracker.blood.suger.data.dao.MedicineReminderDao
 import com.healthtracker.blood.suger.data.dao.BmiDao
+import com.healthtracker.blood.suger.data.dao.HeartRateDao
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.entity.MedicineReminder
 import com.healthtracker.blood.suger.data.entity.BmiRecord
+import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 
 /**
  * 健康数据Room数据库 - 极简设计
@@ -37,9 +39,10 @@ import com.healthtracker.blood.suger.data.entity.BmiRecord
         HealthTag::class,
         AlarmRecord::class,
         MedicineReminder::class,
-        BmiRecord::class
+        BmiRecord::class,
+        HeartRateRecord::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -74,6 +77,11 @@ abstract class HealthDatabase : RoomDatabase() {
      * 获取BMI记录DAO
      */
     abstract fun bmiDao(): BmiDao
+
+    /**
+     * 获取心率记录DAO
+     */
+    abstract fun heartRateDao(): HeartRateDao
 
     companion object {
         /**

@@ -17,6 +17,7 @@ import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
 import com.healthtracker.blood.suger.ui.act.BmiRecordActivity
 import com.healthtracker.blood.suger.ui.act.BpRecordActivity
+import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
@@ -70,6 +71,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clHeartRate.clickWithDuration {
+                requireActivity().startActivity<HeartRateRecordActivity>()
 
             }
 

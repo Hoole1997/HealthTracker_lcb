@@ -68,11 +68,30 @@ class HealthTagRepository @Inject constructor(
                     android.util.Log.w("HealthTagRepository", "BMI labels resource lookup failed, skipping predefined BMI tags")
                 }
             }
+            // 检查心率预定义标签
+            val existingHeartRateTags = getPredefinedTagsByType(TagType.HEART_RATE)
+            if (existingHeartRateTags.isEmpty()) {
+                val heartRateLabelsResId = context.resources.getIdentifier("heart_rate_labels", "array", context.packageName)
+                if (heartRateLabelsResId != 0) {
+                    val heartRateLabels = context.resources.getStringArray(heartRateLabelsResId)
+                    heartRateLabels.forEachIndexed { index, label ->
+                        val tag = HealthTag.createPredefined(label, TagType.HEART_RATE, index)
+                        healthTagDao.insert(tag)
+                    }
+                } else {
+                    android.util.Log.w("HealthTagRepository", "Heart rate labels resource not found, skipping predefined heart rate tags")
+                }
+            }
+
             // 输出初始化结果日志
             val bloodSugarCount = getPredefinedTagsByTypeHelper(TagType.BLOOD_SUGAR).size
             val bloodPressureCount = getPredefinedTagsByTypeHelper(TagType.BLOOD_PRESSURE).size
             val bmiCount = getPredefinedTagsByTypeHelper(TagType.BMI).size
-            android.util.Log.d("HealthTagRepository", "Predefined tags initialized - Blood Sugar: $bloodSugarCount, Blood Pressure: $bloodPressureCount, BMI: $bmiCount")
+            val heartRateCount = getPredefinedTagsByTypeHelper(TagType.HEART_RATE).size
+            android.util.Log.d(
+                "HealthTagRepository",
+                "Predefined tags initialized - Blood Sugar: $bloodSugarCount, Blood Pressure: $bloodPressureCount, BMI: $bmiCount, Heart Rate: $heartRateCount"
+            )
             
         } catch (e: Exception) {
             android.util.Log.e("HealthTagRepository", "Failed to initialize predefined tags", e)

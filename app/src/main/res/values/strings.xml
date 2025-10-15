@@ -982,15 +982,38 @@
     <string name="height">Height</string>
     <string name="create_label_failed">Create label failed</string>
     <string name="heart_rate">Heart Rate</string>
-    <string name="bpm">bpm</string>
+    <string name="bpm">BPM</string>
     <string name="cholesterol">Cholesterol</string>
     <string name="weight_and_bmi"><![CDATA[Weight & BMI]]></string>
 
     <string name="unit_kg" translatable="false">kg</string>
     <string name="unit_lb" translatable="false">lbs</string>
     <string name="unit_cm" translatable="false">cm</string>
-    <string name="unit_in" translatable="false">ft</string>
+    <string name="unit_in" translatable="false">in</string>
     <string name="unit_ft_in" translatable="false">ft-in</string>
     <string name="unit_in_brackets" translatable="false">(%1$s)</string>
+    <string name="value_with_unit">%1$s %2$s</string>
+
+    <!-- Heart rate -->
+    <string name="heart_rate_status_slow">Slow</string>
+    <string name="heart_rate_status_normal">Normal</string>
+    <string name="heart_rate_status_fast">Fast</string>
+    <string name="heart_rate_desc_slow">Resting heart rate &lt; 60 BPM</string>
+    <string name="heart_rate_desc_normal">Resting heart rate 60–100 BPM</string>
+    <string name="heart_rate_desc_fast">Resting heart rate &gt;100 BPM</string>
+    <string name="heart_rate_range_slow">&lt; %1$d BPM</string>
+    <string name="heart_rate_range_normal">%1$d–%2$d BPM</string>
+    <string name="heart_rate_range_fast">&gt; %1$d BPM</string>
+
+    <string-array name="heart_rate_labels">
+        <item>Excited state</item>
+        <item>Depression</item>
+        <item>Calm</item>
+        <item>After intense exercise</item>
+        <item>After aerobic exercise</item>
+        <item>After anaerobic exercise</item>
+        <item>Dieting</item>
+        <item>After drinking</item>
+    </string-array>
 
 </resources>

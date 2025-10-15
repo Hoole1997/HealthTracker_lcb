@@ -8,6 +8,7 @@ import com.healthtracker.blood.suger.data.enums.BMIEnum
 import com.healthtracker.blood.suger.data.enums.BloodSugarLevel
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
+import com.healthtracker.blood.suger.data.enums.HeartRateStatus
 
 /**
  * 通用等级数据工厂
@@ -184,6 +185,47 @@ object LeveDataFactory {
 
         /** 默认索引（Normal） */
         fun defaultIndex(): Int = BMIEnum.NORMAL.ordinal
+    }
+
+    /** 心率等级数据工厂 */
+    object HeartRate {
+        private val order = listOf(
+            HeartRateStatus.SLOW,
+            HeartRateStatus.NORMAL,
+            HeartRateStatus.FAST
+        )
+
+        fun buildItems(context: Context): List<LevelItem> {
+            return order.map { status ->
+                val rangeDesc = when (status) {
+                    HeartRateStatus.SLOW -> context.getString(R.string.heart_rate_range_slow, 60)
+                    HeartRateStatus.NORMAL -> context.getString(R.string.heart_rate_range_normal, 60, 100)
+                    HeartRateStatus.FAST -> context.getString(R.string.heart_rate_range_fast, 100)
+                }
+                LevelItem(
+                    name = context.getString(status.statusTextRes),
+                    rangeDesc = rangeDesc,
+                    colorInt = ContextCompat.getColor(context, status.colorRes)
+                )
+            }
+        }
+
+        fun buildExplainItems(context: Context): List<com.healthtracker.blood.suger.ui.dialog.LevelExplainItem> {
+            return order.map { status ->
+                com.healthtracker.blood.suger.ui.dialog.LevelExplainItem(
+                    name = context.getString(status.statusTextRes),
+                    desc = context.getString(status.descriptionRes),
+                    colorInt = ContextCompat.getColor(context, status.colorRes)
+                )
+            }
+        }
+
+        fun indexFor(bpm: Int): Int {
+            val status = HeartRateStatus.fromHeartRate(bpm)
+            return order.indexOf(status).coerceAtLeast(0)
+        }
+
+        fun defaultIndex(): Int = order.indexOf(HeartRateStatus.NORMAL).coerceAtLeast(0)
     }
 
     /** 内部工具：根据总档数与 normalIndex 返回默认索引 */

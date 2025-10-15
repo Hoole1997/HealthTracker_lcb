@@ -18,7 +18,12 @@ enum class TagType(val value: Int) {
     /**
      * BMI 标签
      */
-    BMI(2);
+    BMI(2),
+
+    /**
+     * 心率标签
+     */
+    HEART_RATE(3);
     
     companion object {
         /**

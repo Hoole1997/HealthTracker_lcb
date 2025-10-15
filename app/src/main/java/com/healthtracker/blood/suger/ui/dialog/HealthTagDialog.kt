@@ -104,6 +104,27 @@ class HealthTagDialog(
                 onAdd
             ).show(fragmentManager)
         }
+
+        /**
+         * 显示心率标签选择对话框
+         */
+        fun showHeartRateDialog(
+            fragmentManager: FragmentManager,
+            tagsFlow: Flow<List<HealthTag>>,
+            selectedTags: List<HealthTag>?,
+            onSave: (List<HealthTag>) -> Unit,
+            onDelete: (HealthTag) -> Unit,
+            onAdd: (String) -> Unit
+        ) {
+            HealthTagDialog(
+                TagType.HEART_RATE,
+                tagsFlow,
+                selectedTags,
+                onSave,
+                onDelete,
+                onAdd
+            ).show(fragmentManager)
+        }
     }
 
     override fun createViewBinding(
@@ -160,6 +181,10 @@ class HealthTagDialog(
             TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.blood_pressure_labels)
             TagType.BMI -> {
                 val resId = resources.getIdentifier("bmi_labels", "array", requireContext().packageName)
+                if (resId != 0) resources.getStringArray(resId) else emptyArray()
+            }
+            TagType.HEART_RATE -> {
+                val resId = resources.getIdentifier("heart_rate_labels", "array", requireContext().packageName)
                 if (resId != 0) resources.getStringArray(resId) else emptyArray()
             }
         }

@@ -7,6 +7,7 @@ import com.healthtracker.blood.suger.data.dao.BloodSugarDao
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
 import com.healthtracker.blood.suger.data.dao.MedicineReminderDao
 import com.healthtracker.blood.suger.data.dao.BmiDao
+import com.healthtracker.blood.suger.data.dao.HeartRateDao
 import com.healthtracker.blood.suger.data.database.HealthDatabase
 import dagger.Module
 import dagger.Provides
@@ -92,5 +93,13 @@ object DatabaseModule {
     @Provides
     fun provideBmiDao(database: HealthDatabase): BmiDao {
         return database.bmiDao()
+    }
+
+    /**
+     * 提供心率记录DAO
+     */
+    @Provides
+    fun provideHeartRateDao(database: HealthDatabase): HeartRateDao {
+        return database.heartRateDao()
     }
 }
