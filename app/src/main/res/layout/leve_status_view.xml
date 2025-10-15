@@ -63,6 +63,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rangeText" />
 
+    <FrameLayout
+        android:id="@+id/fl_extra_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/levelBar"/>
 
     <View
         android:id="@+id/div_line"
@@ -72,7 +77,7 @@
         android:background="@color/color_D2D2D2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/levelBar" />
+        app:layout_constraintTop_toBottomOf="@id/fl_extra_container" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_gender"
