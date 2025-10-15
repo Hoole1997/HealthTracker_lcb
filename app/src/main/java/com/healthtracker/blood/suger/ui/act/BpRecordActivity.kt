@@ -2,18 +2,13 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
-import com.healthtracker.blood.suger.ui.weight.LevelItem
 import com.healthtracker.blood.suger.data.entity.HealthTag
-import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
-
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.collect
@@ -23,7 +18,7 @@ import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
 
 @AndroidEntryPoint
 class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBinding>() {

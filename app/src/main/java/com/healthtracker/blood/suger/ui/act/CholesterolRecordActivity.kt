@@ -35,14 +35,9 @@ class CholesterolRecordActivity :
     companion object {
         private const val EXTRA_RECORD_ID = "extra_record_id"
 
-        private const val HDL_MIN = 1
-        private const val HDL_MAX = 200
 
-        private const val LDL_MIN = 1
-        private const val LDL_MAX = 200
-
-        private const val TG_MIN = 1
-        private const val TG_MAX = 200
+        private const val MIN = 1
+        private const val MAX = 220
 
         fun start(context: android.content.Context, recordId: Long? = null) {
             val intent = Intent(context, CholesterolRecordActivity::class.java)
@@ -50,6 +45,7 @@ class CholesterolRecordActivity :
             context.startActivity(intent)
         }
     }
+
 
     override fun createViewBinding(): ActivityCholesterolRecordBinding =
         ActivityCholesterolRecordBinding.inflate(layoutInflater)
@@ -93,7 +89,7 @@ class CholesterolRecordActivity :
 
         mViewBind.npvHdl.apply {
             applyTypography()
-            setupRange(HDL_MIN, HDL_MAX)
+            setupRange()
             setOnValueChangedListener { _, _, _ ->
                 val value = contentByCurrValue.toIntOrNull()
                 value?.let { mViewModel.updateHdl(it) }
@@ -102,7 +98,7 @@ class CholesterolRecordActivity :
 
         mViewBind.npvLdl.apply {
             applyTypography()
-            setupRange(LDL_MIN, LDL_MAX)
+            setupRange()
             setOnValueChangedListener { _, _, _ ->
                 val value = contentByCurrValue.toIntOrNull()
                 value?.let { mViewModel.updateLdl(it) }
@@ -111,7 +107,7 @@ class CholesterolRecordActivity :
 
         mViewBind.npvTg.apply {
             applyTypography()
-            setupRange(TG_MIN, TG_MAX)
+            setupRange()
             setOnValueChangedListener { _, _, _ ->
                 val value = contentByCurrValue.toIntOrNull()
                 value?.let { mViewModel.updateTriglyceride(it) }
@@ -155,6 +151,18 @@ class CholesterolRecordActivity :
         collectLatest(mViewModel.isLoading) { loading ->
             mViewBind.btnSave.isEnabled = !loading && !mViewModel.isSaving.value
         }
+
+        collect(mViewModel.hdl){
+            mViewBind.npvHdl.value = it
+        }
+
+        collect(mViewModel.ldl){
+            mViewBind.npvLdl.value = it
+        }
+
+        collect(mViewModel.triglyceride){
+            mViewBind.npvTg.value = it
+        }
     }
 
     private fun updateMetrics(metrics: CholesterolMetrics) {
@@ -167,12 +175,11 @@ class CholesterolRecordActivity :
     }
 
 
-    private fun NumberPickerView.setupRange(min: Int, max: Int) {
-        val values = Array(max - min + 1) { index -> (min + index).toString() }
+    private fun NumberPickerView.setupRange() {
+        val values = Array(MAX - MIN + 1) { index -> (MIN + index).toString() }
         displayedValues = values
-        minValue = min
-        maxValue = max
-        value = min
+        minValue = MIN
+        maxValue = MAX
     }
 
     /**
