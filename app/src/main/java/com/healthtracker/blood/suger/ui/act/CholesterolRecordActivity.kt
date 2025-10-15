@@ -205,7 +205,7 @@ class CholesterolRecordActivity :
             val items = ArrayList(LeveDataFactory.Cholesterol.buildExplainItems(this))
             LevelExplainDialog.show(
                 supportFragmentManager,
-                des = getString(R.string.bp_range_des),
+                des = getString(R.string.cholesterol_range_des),
                 items = items
             )
         }

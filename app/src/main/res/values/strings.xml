@@ -129,6 +129,7 @@
     <string name="pulse">Pulse</string>
     <string name="type">Type</string>
     <string name="bp_range_des">According to the latest guidelines from the AHA (American Heart Association)</string>
+    <string name="cholesterol_range_des">TC: Total Cholesterol\nHDL: High-Density Lipoprotein\nLDL: Low-Density Lipoprotein\nTG: Triglycerides\nNon-HDL: Non-High-Density Lipoprotein\n\nAccording to the Cleveland Clinic\'s guidelines.</string>
     <string name="got_it">Got it</string>
     <string name="details">Details</string>
     <string name="all_types">All Types</string>
@@ -1225,7 +1226,7 @@
     <string name="heart_rate_status_fast">Fast</string>
     <string name="heart_rate_desc_slow">Resting heart rate &lt; 60 BPM</string>
     <string name="heart_rate_desc_normal">Resting heart rate 60–100 BPM</string>
-<string name="heart_rate_desc_fast">Resting heart rate &gt;100 BPM</string>
+    <string name="heart_rate_desc_fast">Resting heart rate &gt;100 BPM</string>
     <string name="total_cholesterol">Total Cholesterol %1$s</string>
     <string name="non_hdl">Non-HDL</string>
     <string name="tc_hdl">TC/HDL</string>
