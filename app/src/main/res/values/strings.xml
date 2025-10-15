@@ -37,6 +37,12 @@
     <string name="cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
     <string name="cholesterol_level_unknown">Unknown</string>
     <string name="cholesterol_level_unknown_desc">Insufficient data to determine cholesterol level</string>
+    <string name="cholesterol_total_label">Total Cholesterol</string>
+    <string name="cholesterol_hdl_label">HDL</string>
+    <string name="cholesterol_ldl_label">LDL</string>
+    <string name="cholesterol_tg_label">TG</string>
+    <string name="cholesterol_unit_mg_dl" translatable="false">mg/dL</string>
+    <string name="cholesterol_total_placeholder">--</string>
 
     <!-- 血压等级 -->
     <string name="blood_pressure_level_low">hypotension</string>
@@ -1017,6 +1023,7 @@
     <string name="heart_rate_desc_slow">Resting heart rate &lt; 60 BPM</string>
     <string name="heart_rate_desc_normal">Resting heart rate 60–100 BPM</string>
 <string name="heart_rate_desc_fast">Resting heart rate &gt;100 BPM</string>
+    <string name="total_cholesterol">Total Cholesterol %1$s</string>
 
     <string-array name="heart_rate_labels">
         <item>Excited state</item>

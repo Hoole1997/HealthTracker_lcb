@@ -74,12 +74,16 @@ enum class CholesterolLevel(
 
     companion object {
         private const val LDL_NEAR_OPTIMAL_MIN = 100f
+        private const val LDL_NEAR_OPTIMAL_MAX = 129f
         private const val LDL_BORDERLINE_MIN = 130f
         private const val LDL_HIGH_MIN = 160f
+        private const val LDL_HIGH_MAX = 189f
         private const val LDL_VERY_HIGH_MIN = 190f
 
         private const val TC_NORMAL_MAX = 200f
+        private const val TC_BORDERLINE_MIN = 159f
         private const val TC_BORDERLINE_MAX = 239f
+        private const val TC_VERY_HIGH_MIN = 240f
 
         private const val NON_HDL_THRESHOLD = 130f
         private const val HDL_NORMAL_THRESHOLD = 40f
@@ -106,7 +110,7 @@ enum class CholesterolLevel(
                 return NORMAL
             }
 
-            if (totalCholesterol >= TC_NORMAL_MAX &&
+            if (totalCholesterol >= TC_VERY_HIGH_MIN &&
                 nonHdl >= NON_HDL_THRESHOLD &&
                 ldl >= LDL_VERY_HIGH_MIN &&
                 hdl <= HDL_UPPER_LIMIT
@@ -114,9 +118,9 @@ enum class CholesterolLevel(
                 return VERY_HIGH
             }
 
-            if (totalCholesterol >= TC_NORMAL_MAX &&
+            if (totalCholesterol >= TC_VERY_HIGH_MIN &&
                 nonHdl >= NON_HDL_THRESHOLD &&
-                ldl in LDL_HIGH_MIN until LDL_VERY_HIGH_MIN &&
+                (ldl in LDL_HIGH_MIN .. LDL_HIGH_MAX) &&
                 hdl <= HDL_UPPER_LIMIT
             ) {
                 return HIGH
@@ -124,7 +128,7 @@ enum class CholesterolLevel(
 
             if (totalCholesterol in TC_NORMAL_MAX..TC_BORDERLINE_MAX &&
                 nonHdl < NON_HDL_THRESHOLD &&
-                ldl in LDL_BORDERLINE_MIN until LDL_HIGH_MIN &&
+                ldl in LDL_BORDERLINE_MIN ..TC_BORDERLINE_MIN &&
                 hdl <= HDL_UPPER_LIMIT
             ) {
                 return BORDERLINE
@@ -132,7 +136,7 @@ enum class CholesterolLevel(
 
             if (totalCholesterol < TC_NORMAL_MAX &&
                 nonHdl < NON_HDL_THRESHOLD &&
-                ldl in LDL_NEAR_OPTIMAL_MIN until LDL_BORDERLINE_MIN &&
+                ldl in LDL_NEAR_OPTIMAL_MIN .. LDL_NEAR_OPTIMAL_MAX &&
                 hdl <= HDL_UPPER_LIMIT
             ) {
                 return NEAR_OPTIMAL

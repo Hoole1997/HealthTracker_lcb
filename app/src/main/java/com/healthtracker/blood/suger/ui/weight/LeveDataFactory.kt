@@ -8,6 +8,7 @@ import com.healthtracker.blood.suger.data.enums.BMIEnum
 import com.healthtracker.blood.suger.data.enums.BloodSugarLevel
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
+import com.healthtracker.blood.suger.data.enums.CholesterolLevel
 import com.healthtracker.blood.suger.data.enums.HeartRateStatus
 
 /**
@@ -222,6 +223,42 @@ object LeveDataFactory {
         }
 
         fun defaultIndex(): Int = order.indexOf(HeartRateStatus.NORMAL).coerceAtLeast(0)
+    }
+
+    /** 胆固醇等级数据工厂 */
+    object Cholesterol {
+        private val order = listOf(
+            CholesterolLevel.NORMAL,
+            CholesterolLevel.NEAR_OPTIMAL,
+            CholesterolLevel.BORDERLINE,
+            CholesterolLevel.HIGH,
+            CholesterolLevel.VERY_HIGH
+        )
+
+        fun buildItems(context: Context): List<LevelItem> {
+            return order.mapIndexed { index, level ->
+                LevelItem(
+                    name = context.getString(level.labelRes),
+                    rangeDesc = context.getString(level.descriptionRes),
+                    colorInt = ContextCompat.getColor(context, level.colorRes),
+                )
+            }
+        }
+
+        fun buildExplainItems(context: Context): List<com.healthtracker.blood.suger.ui.dialog.LevelExplainItem> {
+            return order.map { status ->
+                com.healthtracker.blood.suger.ui.dialog.LevelExplainItem(
+                    name = context.getString(status.labelRes),
+                    desc = context.getString(status.descriptionRes),
+                    colorInt = ContextCompat.getColor(context, status.colorRes)
+                )
+            }
+        }
+
+        fun indexFor(level: CholesterolLevel): Int {
+            val idx = order.indexOf(level)
+            return if (idx >= 0) idx else 0
+        }
     }
 
     /** 内部工具：根据总档数与 normalIndex 返回默认索引 */

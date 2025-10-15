@@ -16,52 +16,39 @@ object CholesterolCalculator {
      * 计算总胆固醇
      * 采用 Friedewald 公式：TC = HDL + LDL + TG / 5
      */
-    fun calculateTotalCholesterol(hdl: Float?, ldl: Float?, triglyceride: Float?): Float? {
-        if (hdl == null || ldl == null || triglyceride == null) {
-            return null
-        }
-        if (hdl <= 0f && ldl <= 0f && triglyceride <= 0f) {
-            return null
-        }
+    fun calculateTotalCholesterol(hdl: Float, ldl: Float, triglyceride: Float): Float {
+
         return hdl + ldl + (triglyceride / TG_DIVISOR)
     }
 
     /**
      * 计算非 HDL 胆固醇
      */
-    fun calculateNonHdl(totalCholesterol: Float?, hdl: Float?): Float? {
-        if (totalCholesterol == null || hdl == null) {
-            return null
-        }
+    fun calculateNonHdl(totalCholesterol: Float, hdl: Float): Float {
         return (totalCholesterol - hdl).coerceAtLeast(0f)
     }
 
     /**
      * 计算比值（通用方法）
      */
-    fun calculateRatio(numerator: Float?, denominator: Float?): Float? {
-        if (numerator == null || denominator == null) {
-            return null
-        }
-        if (denominator == 0f) {
-            return null
-        }
+    fun calculateRatio(numerator: Float, denominator: Float): Float {
+
         return numerator / denominator
     }
 
     /**
      * 构建完整的胆固醇指标结果
      */
-    fun buildMetrics(hdl: Float?, ldl: Float?, triglyceride: Float?): CholesterolMetrics {
+    fun buildMetrics(hdl: Float, ldl: Float, triglyceride: Float): CholesterolMetrics {
         val total = calculateTotalCholesterol(hdl, ldl, triglyceride)
         val nonHdl = calculateNonHdl(total, hdl)
         val tcHdl = calculateRatio(total, hdl)
         val ldlHdl = calculateRatio(ldl, hdl)
         return CholesterolMetrics(
-            totalCholesterol = total?.let { roundTo(it, 2) },
-            nonHdl = nonHdl?.let { roundTo(it, 2) },
-            tcHdlRatio = tcHdl?.let { roundTo(it, 2) },
-            ldlHdlRatio = ldlHdl?.let { roundTo(it, 2) },
+            totalCholesterol = roundTo(total, 0),
+            nonHdl = roundTo(nonHdl, 0),
+            tcHdlRatio = roundTo(tcHdl, 2),
+            ldlHdlRatio = roundTo(ldlHdl, 2),
             riskLevel = CholesterolLevel.fromMetrics(total, nonHdl, ldl, hdl)
         )
     }

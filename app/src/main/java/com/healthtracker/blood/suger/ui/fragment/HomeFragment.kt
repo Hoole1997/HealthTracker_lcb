@@ -20,6 +20,7 @@ import com.healthtracker.blood.suger.ui.act.BmiRecordActivity
 import com.healthtracker.blood.suger.ui.act.BpRecordActivity
 import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
+import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
@@ -77,7 +78,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clCholesterol.clickWithDuration {
-
+                CholesterolRecordActivity.start(requireActivity())
             }
 
             clBmi.clickWithDuration {

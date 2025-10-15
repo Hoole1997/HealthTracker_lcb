@@ -74,9 +74,9 @@ class CholesterolRepository @Inject constructor(
     }
 
     suspend fun addCholesterolRecord(
-        hdl: Float? = null,
-        ldl: Float? = null,
-        triglyceride: Float? = null,
+        hdl: Int? = null,
+        ldl: Int? = null,
+        triglyceride: Int? = null,
         tc: Float? = null,
         nonHdl: Float? = null,
         tcHdlRatio: Float? = null,
