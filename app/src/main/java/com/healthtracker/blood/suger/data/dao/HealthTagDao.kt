@@ -86,7 +86,7 @@ interface HealthTagDao {
     
     /**
      * 根据标签类型获取所有标签（过滤软删除）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 标签列表的Flow，按预定义标签优先、创建时间升序排列
      */
     @Query("SELECT * FROM health_tags WHERE tag_type = :tagType AND is_deleted = 0 ORDER BY is_predefined DESC, create_time ASC")
@@ -94,7 +94,7 @@ interface HealthTagDao {
     
     /**
      * 根据标签类型获取所有标签（同步版本，过滤软删除）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 标签列表，按预定义标签优先、创建时间升序排列
      */
     @Query("SELECT * FROM health_tags WHERE tag_type = :tagType AND is_deleted = 0 ORDER BY is_predefined DESC, create_time ASC")
@@ -102,7 +102,7 @@ interface HealthTagDao {
     
     /**
      * 根据标签类型获取预定义标签（过滤软删除）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 预定义标签列表，按预定义索引升序排列
      */
     @Query("SELECT * FROM health_tags WHERE tag_type = :tagType AND is_predefined = 1 AND is_deleted = 0 ORDER BY predefined_index ASC")
@@ -110,7 +110,7 @@ interface HealthTagDao {
     
     /**
      * 根据标签类型获取自定义标签（过滤软删除）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 自定义标签列表的Flow，按创建时间升序排列
      */
     @Query("SELECT * FROM health_tags WHERE tag_type = :tagType AND is_predefined = 0 AND is_deleted = 0 ORDER BY create_time ASC")
@@ -125,7 +125,7 @@ interface HealthTagDao {
     
     /**
      * 检查指定类型和名称的标签是否存在（过滤软删除）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @param name 标签名称
      * @return 是否存在
      */
@@ -134,7 +134,7 @@ interface HealthTagDao {
     
     /**
      * 获取指定类型的预定义标签数量（过滤软删除）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 预定义标签数量
      */
     @Query("SELECT COUNT(*) FROM health_tags WHERE tag_type = :tagType AND is_predefined = 1 AND is_deleted = 0")
@@ -142,7 +142,7 @@ interface HealthTagDao {
     
     /**
      * 获取指定类型的标签总数（过滤软删除）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 标签总数
      */
     @Query("SELECT COUNT(*) FROM health_tags WHERE tag_type = :tagType AND is_deleted = 0")
@@ -150,7 +150,7 @@ interface HealthTagDao {
     
     /**
      * 删除指定类型的所有标签（软删除）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 删除的标签数量
      */
     @Query("UPDATE health_tags SET is_deleted = 1 WHERE tag_type = :tagType AND is_deleted = 0")
@@ -158,7 +158,7 @@ interface HealthTagDao {
     
     /**
      * 删除指定类型的自定义标签（软删除）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 删除的标签数量
      */
     @Query("UPDATE health_tags SET is_deleted = 1 WHERE tag_type = :tagType AND is_predefined = 0 AND is_deleted = 0")
@@ -174,7 +174,7 @@ interface HealthTagDao {
     
     /**
      * 删除指定类型的所有标签（物理删除，保留原方法）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 删除的标签数量
      */
     @Query("DELETE FROM health_tags WHERE tag_type = :tagType")
@@ -182,7 +182,7 @@ interface HealthTagDao {
     
     /**
      * 删除指定类型的自定义标签（物理删除，保留原方法）
-     * @param tagType 标签类型的int值 (0=血糖, 1=血压)
+     * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 删除的标签数量
      */
     @Query("DELETE FROM health_tags WHERE tag_type = :tagType AND is_predefined = 0")

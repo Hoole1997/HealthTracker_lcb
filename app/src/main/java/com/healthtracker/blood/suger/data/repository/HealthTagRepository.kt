@@ -310,7 +310,7 @@ class HealthTagRepository @Inject constructor(
     fun getBmiTags(): Flow<List<HealthTag>> {
         return getTagsByType(TagType.BMI)
     }
-    
+
     /**
      * 创建血糖自定义标签（便捷方法）
      * @param name 标签名称
@@ -352,7 +352,7 @@ class HealthTagRepository @Inject constructor(
             -1L
         }
     }
-    
+
     /**
      * 检查标签名称是否已存在
      * @param tagType 标签类型
