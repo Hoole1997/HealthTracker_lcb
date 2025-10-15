@@ -35,7 +35,7 @@ class HeartRateRepository @Inject constructor(
         return heartRateDao.getById(recordId)
     }
 
-    override fun getAllRecords(): Flow<List<HeartRateRecord>> {
+    public override fun getAllRecords(): Flow<List<HeartRateRecord>> {
         return heartRateDao.getAllRecords()
     }
 

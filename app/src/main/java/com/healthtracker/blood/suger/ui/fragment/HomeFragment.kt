@@ -13,6 +13,7 @@ import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.HeartRateRecord
+import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
@@ -22,6 +23,7 @@ import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
+import com.healthtracker.blood.suger.util.CholesterolCalculator
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
@@ -109,6 +111,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         collectLatest(mViewModel.latestHeartRateRecord) { record ->
             updateHeartRateUI(record)
         }
+
+        collectLatest(mViewModel.latestCholesterolRecord) { record ->
+            updateCholesterolUI(record)
+        }
     }
 
     /**
@@ -170,6 +176,28 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     }
 
     /**
+     * 更新胆固醇记录UI
+     */
+    private fun updateCholesterolUI(record: CholesterolRecord?) {
+        if (record == null) {
+            mViewBind?.tvLatestCholesterolValue?.text = "--"
+            return
+        }
+        val totalValue = record.tc ?: run {
+            val hdl = record.hdl?.toFloat()
+            val ldl = record.ldl?.toFloat()
+            val triglyceride = record.triglyceride?.toFloat()
+            if (hdl != null && ldl != null && triglyceride != null) {
+                CholesterolCalculator.calculateTotalCholesterol(hdl, ldl, triglyceride)
+            } else {
+                null
+            }
+        }
+        val displayText = totalValue?.let { String.format(Locale.getDefault(), "%.0f", it) } ?: "--"
+        mViewBind?.tvLatestCholesterolValue?.text = displayText
+    }
+
+    /**
      * 格式化相对时间显示
      * @param recordTime 记录时间
      * @return 格式化后的时间字符串
@@ -214,12 +242,9 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         }
     }
 
-    private fun getWeightUnitLabel(unit: BmiUnit): String {
-        val unitName = if (unit == BmiUnit.METRIC) {
-            getString(R.string.unit_kg)
-        } else {
-            getString(R.string.unit_lb)
-        }
-        return getString(R.string.unit_in_brackets, unitName)
+    private fun getWeightUnitLabel(unit: BmiUnit) = if (unit == BmiUnit.METRIC) {
+        getString(R.string.unit_kg)
+    } else {
+        getString(R.string.unit_lb)
     }
 }

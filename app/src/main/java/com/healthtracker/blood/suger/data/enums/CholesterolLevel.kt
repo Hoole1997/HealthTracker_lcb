@@ -74,20 +74,19 @@ enum class CholesterolLevel(
 
     companion object {
         private const val LDL_NEAR_OPTIMAL_MIN = 100f
-        private const val LDL_NEAR_OPTIMAL_MAX = 129f
         private const val LDL_BORDERLINE_MIN = 130f
         private const val LDL_HIGH_MIN = 160f
-        private const val LDL_HIGH_MAX = 189f
         private const val LDL_VERY_HIGH_MIN = 190f
 
-        private const val TC_NORMAL_MAX = 200f
-        private const val TC_BORDERLINE_MIN = 159f
-        private const val TC_BORDERLINE_MAX = 239f
-        private const val TC_VERY_HIGH_MIN = 240f
+        private const val NON_HDL_BORDERLINE_MIN = 130f
+        private const val NON_HDL_HIGH_MIN = 160f
+        private const val NON_HDL_VERY_HIGH_MIN = 190f
 
-        private const val NON_HDL_THRESHOLD = 130f
-        private const val HDL_NORMAL_THRESHOLD = 40f
-        private const val HDL_UPPER_LIMIT = 45f
+        private const val TC_BORDERLINE_MIN = 200f
+        private const val TC_HIGH_MIN = 240f
+
+        private const val HDL_LOW_THRESHOLD = 45f
+        private const val HDL_VERY_LOW_THRESHOLD = 35f
 
         /**
          * 根据多项指标综合得出胆固醇等级
@@ -102,47 +101,56 @@ enum class CholesterolLevel(
                 return UNKNOWN
             }
 
-            if (totalCholesterol < TC_NORMAL_MAX &&
-                nonHdl < NON_HDL_THRESHOLD &&
-                ldl < LDL_NEAR_OPTIMAL_MIN &&
-                hdl > HDL_NORMAL_THRESHOLD
-            ) {
-                return NORMAL
-            }
+            // 评估各指标对应的风险等级分值，取最高项作为最终风险
+            val worstScore = listOf(
+                scoreFromTotalCholesterol(totalCholesterol),
+                scoreFromNonHdl(nonHdl),
+                scoreFromLdl(ldl),
+                scoreFromHdl(hdl)
+            ).maxOrNull() ?: 0
 
-            if (totalCholesterol >= TC_VERY_HIGH_MIN &&
-                nonHdl >= NON_HDL_THRESHOLD &&
-                ldl >= LDL_VERY_HIGH_MIN &&
-                hdl <= HDL_UPPER_LIMIT
-            ) {
-                return VERY_HIGH
+            return when (worstScore) {
+                4 -> VERY_HIGH
+                3 -> HIGH
+                2 -> BORDERLINE
+                1 -> NEAR_OPTIMAL
+                else -> NORMAL
             }
+        }
 
-            if (totalCholesterol >= TC_VERY_HIGH_MIN &&
-                nonHdl >= NON_HDL_THRESHOLD &&
-                (ldl in LDL_HIGH_MIN .. LDL_HIGH_MAX) &&
-                hdl <= HDL_UPPER_LIMIT
-            ) {
-                return HIGH
+        private fun scoreFromTotalCholesterol(value: Float): Int {
+            return when {
+                value >= TC_HIGH_MIN -> 3
+                value >= TC_BORDERLINE_MIN -> 2
+                else -> 0
             }
+        }
 
-            if (totalCholesterol in TC_NORMAL_MAX..TC_BORDERLINE_MAX &&
-                nonHdl < NON_HDL_THRESHOLD &&
-                ldl in LDL_BORDERLINE_MIN ..TC_BORDERLINE_MIN &&
-                hdl <= HDL_UPPER_LIMIT
-            ) {
-                return BORDERLINE
+        private fun scoreFromNonHdl(value: Float): Int {
+            return when {
+                value >= NON_HDL_VERY_HIGH_MIN -> 4
+                value >= NON_HDL_HIGH_MIN -> 3
+                value >= NON_HDL_BORDERLINE_MIN -> 2
+                else -> 0
             }
+        }
 
-            if (totalCholesterol < TC_NORMAL_MAX &&
-                nonHdl < NON_HDL_THRESHOLD &&
-                ldl in LDL_NEAR_OPTIMAL_MIN .. LDL_NEAR_OPTIMAL_MAX &&
-                hdl <= HDL_UPPER_LIMIT
-            ) {
-                return NEAR_OPTIMAL
+        private fun scoreFromLdl(value: Float): Int {
+            return when {
+                value >= LDL_VERY_HIGH_MIN -> 4
+                value >= LDL_HIGH_MIN -> 3
+                value >= LDL_BORDERLINE_MIN -> 2
+                value >= LDL_NEAR_OPTIMAL_MIN -> 1
+                else -> 0
             }
+        }
 
-            return UNKNOWN
+        private fun scoreFromHdl(value: Float): Int {
+            return when {
+                value <= HDL_VERY_LOW_THRESHOLD -> 2
+                value <= HDL_LOW_THRESHOLD -> 1
+                else -> 0
+            }
         }
     }
 }

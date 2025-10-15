@@ -45,8 +45,8 @@ object CholesterolCalculator {
         val tcHdl = calculateRatio(total, hdl)
         val ldlHdl = calculateRatio(ldl, hdl)
         return CholesterolMetrics(
-            totalCholesterol = roundTo(total, 0),
-            nonHdl = roundTo(nonHdl, 0),
+            totalCholesterol = roundTo(total, 1),
+            nonHdl = roundTo(nonHdl, 1),
             tcHdlRatio = roundTo(tcHdl, 2),
             ldlHdlRatio = roundTo(ldlHdl, 2),
             riskLevel = CholesterolLevel.fromMetrics(total, nonHdl, ldl, hdl)

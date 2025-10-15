@@ -31,7 +31,7 @@ class CholesterolRepository @Inject constructor(
         return cholesterolDao.getById(recordId)
     }
 
-    override fun getAllRecords(): Flow<List<CholesterolRecord>> {
+    public override fun getAllRecords(): Flow<List<CholesterolRecord>> {
         return cholesterolDao.getAllRecords()
     }
 

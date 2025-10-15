@@ -38,7 +38,7 @@ class BmiRepository @Inject constructor(
         return bmiDao.getById(recordId)
     }
 
-    override fun getAllRecords(): Flow<List<BmiRecord>> {
+    public override fun getAllRecords(): Flow<List<BmiRecord>> {
         return bmiDao.getAllRecords()
     }
 

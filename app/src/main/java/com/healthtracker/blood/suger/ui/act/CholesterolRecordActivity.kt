@@ -1,9 +1,7 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.CholesterolLevel
@@ -11,19 +9,18 @@ import com.healthtracker.blood.suger.databinding.ActivityCholesterolRecordBindin
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.viewmodel.CholesterolRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
+import com.healthtracker.blood.suger.ui.widget.NumberPickerView
 import com.healthtracker.blood.suger.util.CholesterolMetrics
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
-import com.healthtracker.framework.util.FontUtils
 import com.healthtracker.framework.ext.showToast
-import com.healthtracker.blood.suger.ui.widget.NumberPickerView
+import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.ArrayList
 import java.util.Calendar
-import kotlin.math.roundToInt
+import java.util.Locale
 
 /**
  * 胆固醇记录页面
@@ -167,7 +164,7 @@ class CholesterolRecordActivity :
 
     private fun updateMetrics(metrics: CholesterolMetrics) {
         with(mViewBind){
-            val totalValue = metrics.totalCholesterol?.toInt()?.toString() ?: "0"
+            val totalValue = metrics.totalCholesterol?.let { formatCholesterolValue(it) } ?: "--"
             tvTc.text = getString(R.string.total_cholesterol,totalValue)
         }
         updateLsvCurrentIndex(metrics.riskLevel)
@@ -208,5 +205,10 @@ class CholesterolRecordActivity :
     private fun updateLsvCurrentIndex(riskLevel: CholesterolLevel) {
         val idx = LeveDataFactory.Cholesterol.indexFor(riskLevel)
         mViewBind.lsvStatus.setCurrentLevel(idx)
+    }
+
+    private fun formatCholesterolValue(value: Float): String {
+        // 使用单个小数位保留计算结果，提升动态计算的可读性
+        return String.format(Locale.getDefault(), "%.0f", value)
     }
 }
