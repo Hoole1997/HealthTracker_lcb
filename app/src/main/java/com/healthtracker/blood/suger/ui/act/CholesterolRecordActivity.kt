@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.CholesterolLevel
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityCholesterolRecordBinding
 import com.healthtracker.blood.suger.databinding.LayoutCholesterolDetailValueBinding
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
@@ -152,15 +153,15 @@ class CholesterolRecordActivity :
         }
 
         collect(mViewModel.hdl){
-            mViewBind.npvHdl.value = it
+            mViewBind.npvHdl.value = it - 1
         }
 
         collect(mViewModel.ldl){
-            mViewBind.npvLdl.value = it
+            mViewBind.npvLdl.value = it - 1
         }
 
         collect(mViewModel.triglyceride){
-            mViewBind.npvTg.value = it
+            mViewBind.npvTg.value = it - 1
         }
     }
 
@@ -183,10 +184,10 @@ class CholesterolRecordActivity :
 
 
     private fun NumberPickerView.setupRange() {
-        val values = Array(MAX - MIN + 1) { index -> (MIN + index).toString() }
+        val values = Array(220) { i -> DateTimeUtils.formatTwoDigit(i + 1) }
         displayedValues = values
-        minValue = MIN
-        maxValue = MAX
+        minValue = 0
+        maxValue = 219
     }
 
     /**
