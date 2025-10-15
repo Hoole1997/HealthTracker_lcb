@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.data.repository.BmiRepository
+import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val bloodSugarRepository: BloodSugarRepository,
     private val bloodPressureRepository: BloodPressureRepository,
-    private val bmiRepository: BmiRepository
+    private val bmiRepository: BmiRepository,
+    private val heartRateRepository: HeartRateRepository
 ) : BaseViewModel() {
 
     // 获取最近一次血糖记录
@@ -38,6 +40,15 @@ class HomeViewModel @Inject constructor(
 
     // 获取最近一次 BMI 记录
     val latestBmiRecord = bmiRepository.getAllBmiRecords()
+        .map { records -> records.firstOrNull() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
+
+    // 获取最近一次心率记录
+    val latestHeartRateRecord = heartRateRepository.getAllHeartRateRecords()
         .map { records -> records.firstOrNull() }
         .stateIn(
             scope = viewModelScope,

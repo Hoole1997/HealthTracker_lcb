@@ -12,6 +12,7 @@ import com.healthtracker.blood.suger.ui.act.BsRecordActivity
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
+import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
@@ -103,6 +104,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         collectLatest(mViewModel.latestBmiRecord){
             updateBmiUI(it)
         }
+
+        collectLatest(mViewModel.latestHeartRateRecord) { record ->
+            updateHeartRateUI(record)
+        }
     }
 
     /**
@@ -147,6 +152,20 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             return
         }
         mViewBind?.tvLatestWeightValue?.text = record.getDisplayWeightValue()
+    }
+
+    /**
+     * 更新心率记录UI
+     */
+    private fun updateHeartRateUI(record: HeartRateRecord?) {
+        val unitText = getString(R.string.bpm)
+        if (record == null) {
+            mViewBind?.tvLatestHeartRateValue?.text = "--"
+            mViewBind?.tvLatestHeartRateUnit?.text = unitText
+        } else {
+            mViewBind?.tvLatestHeartRateValue?.text = record.heartRateBpm.toString()
+            mViewBind?.tvLatestHeartRateUnit?.text = unitText
+        }
     }
 
     /**
