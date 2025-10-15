@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.isGone
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.R
@@ -46,6 +47,7 @@ class LeveStatusView @JvmOverloads constructor(
     /** 等级列表与当前索引（0-based） */
     private var levels: List<LevelItem> = emptyList()
     private var currentIndex: Int = 0
+    private var extraView: View? = null
 
     // 不再耦合具体分类，进度条仅使用颜色数组与索引
 
@@ -119,6 +121,9 @@ class LeveStatusView @JvmOverloads constructor(
         val colors = levels.map { it.colorInt }.toIntArray()
         binding.levelBar.setColors(colors)
         binding.levelBar.setIndicatorIndex(currentIndex)
+
+        // 同步额外视图可见性
+        binding.flExtraContainer.isGone = binding.flExtraContainer.childCount == 0
     }
 
     /** 设置范围文本点击（由外部控制是否可点击与回调） */
@@ -186,6 +191,34 @@ class LeveStatusView @JvmOverloads constructor(
     fun setShowProfileInfo(visible: Boolean) {
         showProfileInfo = visible
         updateProfileVisibility()
+    }
+
+    /**
+     * 向额外容器添加外部提供的视图
+     */
+    fun setExtraView(view: View?) {
+        if (view === extraView && binding.flExtraContainer.childCount > 0) {
+            // 已经添加，不再重复操作
+            return
+        }
+        binding.flExtraContainer.removeAllViews()
+        extraView = view
+        if (view != null) {
+            binding.flExtraContainer.addView(view)
+        }
+        binding.flExtraContainer.isGone = view == null
+    }
+
+    /**
+     * 通过布局资源直接填充额外视图
+     */
+    fun setExtraView(layoutResId: Int) {
+        val view = if (layoutResId != 0) {
+            LayoutInflater.from(context).inflate(layoutResId, binding.flExtraContainer, false)
+        } else {
+            null
+        }
+        setExtraView(view)
     }
 
     fun updateProfile(){

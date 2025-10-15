@@ -73,7 +73,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_hdl"
-                    style="@style/TextViewFont_RobotoRegular"
+                    style="@style/TextViewFont_RobotoMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -87,7 +87,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_ldl"
-                    style="@style/TextViewFont_RobotoRegular"
+                    style="@style/TextViewFont_RobotoMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -101,7 +101,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_tg"
-                    style="@style/TextViewFont_RobotoRegular"
+                    style="@style/TextViewFont_RobotoMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -169,7 +169,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_48"
                     android:background="@drawable/gradient_npv_top"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -177,7 +177,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_48"
                     android:background="@drawable/gradient_npv_bottom"
                     app:layout_constraintBottom_toBottomOf="@id/npv_hdl"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -191,9 +191,10 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/npv_hdl"
+                    android:includeFontPadding="false"
                     style="@style/TextViewFont_RobotoBold"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_16"
                     android:textSize="@dimen/sp_16"
                     android:textColor="@color/color_666"
                     tools:text="@string/total_cholesterol"/>
@@ -202,7 +203,7 @@
                     android:id="@+id/lsv_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_16"
                     app:lsvAddRecord="true"
                     app:lsvShowProfile="true"
                     app:layout_constraintStart_toStartOf="parent"

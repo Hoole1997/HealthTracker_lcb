@@ -6,6 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.CholesterolLevel
 import com.healthtracker.blood.suger.databinding.ActivityCholesterolRecordBinding
+import com.healthtracker.blood.suger.databinding.LayoutCholesterolDetailValueBinding
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.viewmodel.CholesterolRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
@@ -43,6 +44,7 @@ class CholesterolRecordActivity :
         }
     }
 
+    private lateinit var cholesterolDetailBinding: LayoutCholesterolDetailValueBinding
 
     override fun createViewBinding(): ActivityCholesterolRecordBinding =
         ActivityCholesterolRecordBinding.inflate(layoutInflater)
@@ -167,6 +169,14 @@ class CholesterolRecordActivity :
             val totalValue = metrics.totalCholesterol?.let { formatCholesterolValue(it) } ?: "--"
             tvTc.text = getString(R.string.total_cholesterol,totalValue)
         }
+        if (::cholesterolDetailBinding.isInitialized) {
+            cholesterolDetailBinding.tvNonHdlValue.text =
+                metrics.nonHdl?.let { formatCholesterolValue(it) } ?: "--"
+            cholesterolDetailBinding.tvTcHdlValue.text =
+                metrics.tcHdlRatio?.let { formatRatioValue(it) } ?: "--"
+            cholesterolDetailBinding.tvLdlHdlValue.text =
+                metrics.ldlHdlRatio?.let { formatRatioValue(it) } ?: "--"
+        }
         updateLsvCurrentIndex(metrics.riskLevel)
 
     }
@@ -186,6 +196,8 @@ class CholesterolRecordActivity :
         val levels = LeveDataFactory.Cholesterol.buildItems(this)
         mViewBind.lsvStatus.setLevels(levels)
 
+        cholesterolDetailBinding = LayoutCholesterolDetailValueBinding.inflate(layoutInflater)
+        mViewBind.lsvStatus.setExtraView(cholesterolDetailBinding.root)
 
         // 在记录页开启范围说明点击，弹出通用等级说明对话框
         mViewBind.lsvStatus.setExplainClickable(true)
@@ -210,5 +222,9 @@ class CholesterolRecordActivity :
     private fun formatCholesterolValue(value: Float): String {
         // 使用单个小数位保留计算结果，提升动态计算的可读性
         return String.format(Locale.getDefault(), "%.0f", value)
+    }
+
+    private fun formatRatioValue(value: Float): String {
+        return String.format(Locale.getDefault(), "%.2f", value)
     }
 }

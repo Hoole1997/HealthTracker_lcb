@@ -75,7 +75,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_systolic"
-                    style="@style/TextViewFont_RobotoRegular"
+                    style="@style/TextViewFont_RobotoMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -89,7 +89,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_diastolic"
-                    style="@style/TextViewFont_RobotoRegular"
+                    style="@style/TextViewFont_RobotoMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -103,7 +103,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_pulse"
-                    style="@style/TextViewFont_RobotoRegular"
+                    style="@style/TextViewFont_RobotoMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -157,7 +157,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-
                     app:layout_constraintEnd_toEndOf="@id/tv_pulse"
                     app:layout_constraintStart_toStartOf="@id/tv_pulse"
                     app:layout_constraintTop_toBottomOf="@id/tv_pulse"
@@ -174,7 +173,7 @@
                 <!-- 顶部渐变遮罩 -->
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_48"
                     android:background="@drawable/gradient_npv_top"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -184,7 +183,7 @@
                 <View
                     android:id="@+id/v_bottom_mask"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_48"
                     android:background="@drawable/gradient_npv_bottom"
                     app:layout_constraintBottom_toBottomOf="@id/npv_diastolic"
                     app:layout_constraintEnd_toEndOf="parent"

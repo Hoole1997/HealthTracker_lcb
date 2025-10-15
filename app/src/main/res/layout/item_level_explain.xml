@@ -17,7 +17,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvLeve"
-        style="@style/TextViewFont_RobotoRegular"
+        style="@style/TextViewFont_RobotoBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
