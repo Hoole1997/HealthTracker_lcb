@@ -1001,9 +1001,6 @@
     <string name="heart_rate_desc_slow">Resting heart rate &lt; 60 BPM</string>
     <string name="heart_rate_desc_normal">Resting heart rate 60–100 BPM</string>
     <string name="heart_rate_desc_fast">Resting heart rate &gt;100 BPM</string>
-    <string name="heart_rate_range_slow">&lt; %1$d BPM</string>
-    <string name="heart_rate_range_normal">%1$d–%2$d BPM</string>
-    <string name="heart_rate_range_fast">&gt; %1$d BPM</string>
 
     <string-array name="heart_rate_labels">
         <item>Excited state</item>

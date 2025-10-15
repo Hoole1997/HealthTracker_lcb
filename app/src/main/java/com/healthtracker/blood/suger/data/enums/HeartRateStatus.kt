@@ -18,7 +18,7 @@ enum class HeartRateStatus(
         maxInclusive = 59,
         statusTextRes = R.string.heart_rate_status_slow,
         descriptionRes = R.string.heart_rate_desc_slow,
-        colorRes = R.color.color_3487FC
+        colorRes = R.color.color_low
     ),
     NORMAL(
         minInclusive = 60,

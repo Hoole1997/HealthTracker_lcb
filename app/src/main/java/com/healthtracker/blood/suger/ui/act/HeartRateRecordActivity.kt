@@ -178,12 +178,6 @@ class HeartRateRecordActivity :
         collectLatest(mViewModel.selectedTagIds) { tagIds ->
             addTagIds.clear()
             addTagIds.addAll(tagIds)
-            val label = if (tagIds.isEmpty()) {
-                getString(R.string.label)
-            } else {
-                mViewModel.getSelectedTagsDisplayText()
-            }
-            mViewBind.dateTimeSelectionView.setLabelText(label)
         }
     }
 

@@ -197,14 +197,10 @@ object LeveDataFactory {
 
         fun buildItems(context: Context): List<LevelItem> {
             return order.map { status ->
-                val rangeDesc = when (status) {
-                    HeartRateStatus.SLOW -> context.getString(R.string.heart_rate_range_slow, 60)
-                    HeartRateStatus.NORMAL -> context.getString(R.string.heart_rate_range_normal, 60, 100)
-                    HeartRateStatus.FAST -> context.getString(R.string.heart_rate_range_fast, 100)
-                }
+
                 LevelItem(
                     name = context.getString(status.statusTextRes),
-                    rangeDesc = rangeDesc,
+                    rangeDesc = context.getString(status.descriptionRes),
                     colorInt = ContextCompat.getColor(context, status.colorRes)
                 )
             }
