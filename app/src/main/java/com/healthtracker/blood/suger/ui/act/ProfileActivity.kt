@@ -61,10 +61,14 @@ class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>()
             val normalFont = FontUtils.getInstance().robotoLight
             numberPicker.setContentSelectedTextTypeface(selectFont)
             numberPicker.setContentNormalTextTypeface(normalFont)
-            numberPicker.displayedValues = Array(95) { i -> (i + 6).toString() }
-            numberPicker.minValue = 6
-            numberPicker.maxValue = 100
-            numberPicker.value = numberPicker.displayedValues.indexOf((age + 6).toString())
+            val ages = (2..110).map { it.toString() }.toTypedArray()
+            numberPicker.displayedValues = ages
+            numberPicker.minValue = 0
+            numberPicker.maxValue = ages.lastIndex
+            val normalizedAge = age.coerceIn(2, 110)
+            val currentIndex = ages.indexOf(normalizedAge.toString())
+            numberPicker.value = if (currentIndex >= 0) currentIndex else 0
+            age = if (currentIndex >= 0) normalizedAge else ages.first().toInt()
             numberPicker.setOnValueChangedListener { _,_, newVal ->
                 age = newVal
             }

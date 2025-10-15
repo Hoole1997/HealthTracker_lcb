@@ -84,7 +84,8 @@
         android:layout_marginEnd="@dimen/dp_61"
         android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@id/v_center"
-        app:layout_constraintTop_toBottomOf="@id/rg_gender" />
+        app:layout_constraintTop_toTopOf="@id/rg_gender"
+        app:layout_constraintBottom_toBottomOf="@id/rg_gender"/>
 
     <View
         android:id="@+id/v_female_center"
@@ -93,7 +94,8 @@
         android:layout_marginStart="@dimen/dp_61"
         android:orientation="vertical"
         app:layout_constraintStart_toEndOf="@id/v_center"
-        app:layout_constraintTop_toBottomOf="@id/rg_gender" />
+        app:layout_constraintTop_toTopOf="@id/rg_gender"
+        app:layout_constraintBottom_toBottomOf="@id/rg_gender"/>
 
     <androidx.appcompat.widget.AppCompatCheckedTextView
         android:id="@+id/tv_male"

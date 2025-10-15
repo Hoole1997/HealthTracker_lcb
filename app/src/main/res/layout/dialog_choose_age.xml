@@ -83,7 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/confirm" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 

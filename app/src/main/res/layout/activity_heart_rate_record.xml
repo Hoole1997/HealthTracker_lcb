@@ -96,6 +96,7 @@
                     android:text="@string/bpm"
                     android:textColor="@color/t1"
                     android:textSize="@dimen/sp_18"
+                    android:layout_marginStart="@dimen/dp_8"
                     app:layout_constraintBottom_toBottomOf="@id/npv_heart_rate"
                     app:layout_constraintStart_toEndOf="@id/npv_heart_rate"
                     app:layout_constraintTop_toTopOf="@id/npv_heart_rate" />
@@ -131,12 +132,9 @@
                 android:id="@+id/date_time_selection_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cl_heart_rate" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

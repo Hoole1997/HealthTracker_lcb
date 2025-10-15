@@ -1,18 +1,22 @@
 package com.healthtracker.blood.suger.ui.weight
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.withStyledAttributes
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ui.dialog.AgeChooseDialog
+import com.healthtracker.blood.suger.ui.dialog.GenderChooseDialog
 import com.healthtracker.blood.suger.databinding.LeveStatusViewBinding
 import com.healthtracker.blood.suger.getUserAge
 import com.healthtracker.blood.suger.isMale
 import com.healthtracker.framework.ext.clickWithDuration
-import com.healthtracker.framework.ext.showToast
 
 /**
  * 通用等级状态视图（对齐 BloodPressureStatusView 的展示与交互）
@@ -147,8 +151,8 @@ class LeveStatusView @JvmOverloads constructor(
         binding.groupProfile.visibility = visibility
         if (showProfileInfo) {
             updateProfile()
-            binding.tvGender.clickWithDuration { showProfileToast() }
-            binding.tvAge.clickWithDuration { showProfileToast() }
+            binding.tvGender.clickWithDuration { showGenderDialog() }
+            binding.tvAge.clickWithDuration { showAgeDialog() }
         } else {
             binding.tvGender.setOnClickListener(null)
             binding.tvAge.setOnClickListener(null)
@@ -184,16 +188,36 @@ class LeveStatusView @JvmOverloads constructor(
         updateProfileVisibility()
     }
 
-    private fun showProfileToast() {
-
-    }
-
     fun updateProfile(){
+        if (!showProfileInfo) return
         binding.tvGender.text = context.getString(if (isMale()) R.string.male else R.string.female)
         binding.tvAge.text = context.getString(R.string.temp_age, getUserAge().toString())
     }
 
+    private fun showAgeDialog() {
+        val fm = findFragmentManager() ?: return
+        AgeChooseDialog.show(fm) {
+            updateProfile()
+        }
+    }
 
+    private fun showGenderDialog() {
+        val fm = findFragmentManager() ?: return
+        GenderChooseDialog.show(fm) {
+            updateProfile()
+        }
+    }
+
+    private fun findFragmentManager(): FragmentManager? {
+        var ctx = context
+        while (ctx is ContextWrapper) {
+            if (ctx is FragmentActivity) {
+                return ctx.supportFragmentManager
+            }
+            ctx = ctx.baseContext
+        }
+        return null
+    }
 }
 
 /**
