@@ -160,6 +160,8 @@
         <attr name="lsvAddRecord" format="boolean" />
         <!-- 范围文本颜色（可自定义） -->
         <attr name="lsvRangeTextColor" format="color" />
+        <!-- 是否展示性别/年龄信息 -->
+        <attr name="lsvShowProfile" format="boolean" />
     </declare-styleable>
 
 

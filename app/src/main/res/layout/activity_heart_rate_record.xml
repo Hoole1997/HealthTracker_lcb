@@ -123,7 +123,8 @@
                     android:layout_marginTop="@dimen/dp_12"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/npv_heart_rate"
-                    app:lsvAddRecord="true" />
+                    app:lsvAddRecord="true"
+                    app:lsvShowProfile="true" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView

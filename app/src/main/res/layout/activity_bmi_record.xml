@@ -208,7 +208,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cl_weight"
                     android:paddingHorizontal="@dimen/dp_16"
-                    app:lsvAddRecord="true" />
+                    app:lsvAddRecord="true"
+                    app:lsvShowProfile="true" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

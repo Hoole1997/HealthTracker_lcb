@@ -12,6 +12,7 @@ import com.healthtracker.blood.suger.databinding.LeveStatusViewBinding
 import com.healthtracker.blood.suger.getUserAge
 import com.healthtracker.blood.suger.isMale
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.showToast
 
 /**
  * 通用等级状态视图（对齐 BloodPressureStatusView 的展示与交互）
@@ -36,6 +37,8 @@ class LeveStatusView @JvmOverloads constructor(
     private var explainClickable: Boolean = false
     private var onExplainClick: (() -> Unit)? = null
 
+    /** 是否显示性别/年龄信息 */
+    private var showProfileInfo: Boolean = false
     /** 等级列表与当前索引（0-based） */
     private var levels: List<LevelItem> = emptyList()
     private var currentIndex: Int = 0
@@ -47,6 +50,7 @@ class LeveStatusView @JvmOverloads constructor(
             context.withStyledAttributes(attrs, R.styleable.LeveStatusView) {
                 isAddRecordScene = getBoolean(R.styleable.LeveStatusView_lsvAddRecord, false)
                 explainClickable = isAddRecordScene
+                showProfileInfo = getBoolean(R.styleable.LeveStatusView_lsvShowProfile, false)
                 // 支持通过自定义属性设置范围文字颜色
                 val defaultRangeColor = binding.rangeText.currentTextColor
                 val customRangeColor = getColor(
@@ -59,8 +63,8 @@ class LeveStatusView @JvmOverloads constructor(
         // 初始化点击行为（仅在添加记录场景有效）
         setupRangeClickIfNeeded()
         updateRangeIconVisibility()
+        updateProfileVisibility()
         refreshUI()
-        setupUserProfile()
     }
 
     /** 设置等级列表（空列表将重置索引并隐藏组件） */
@@ -137,6 +141,20 @@ class LeveStatusView @JvmOverloads constructor(
         }
     }
 
+    /** 更新性别年龄区域显示状态 */
+    private fun updateProfileVisibility() {
+        val visibility = if (showProfileInfo) VISIBLE else GONE
+        binding.groupProfile.visibility = visibility
+        if (showProfileInfo) {
+            updateProfile()
+            binding.tvGender.clickWithDuration { showProfileToast() }
+            binding.tvAge.clickWithDuration { showProfileToast() }
+        } else {
+            binding.tvGender.setOnClickListener(null)
+            binding.tvAge.setOnClickListener(null)
+        }
+    }
+
     /** 更新圆点背景为指定颜色 */
     private fun updateStatusDot(colorInt: Int) {
         val dot = GradientDrawable().apply {
@@ -160,12 +178,22 @@ class LeveStatusView @JvmOverloads constructor(
         updateRangeIconVisibility()
     }
 
-    private fun setupUserProfile(){
-        with(binding){
-            tvGender.text = context.getString(if(isMale()) R.string.male else R.string.female)
-            tvAge.text = context.getString(R.string.temp_age,getUserAge().toString())
-        }
+    /** 外部控制：显示或隐藏性别/年龄信息 */
+    fun setShowProfileInfo(visible: Boolean) {
+        showProfileInfo = visible
+        updateProfileVisibility()
     }
+
+    private fun showProfileToast() {
+
+    }
+
+    fun updateProfile(){
+        binding.tvGender.text = context.getString(if (isMale()) R.string.male else R.string.female)
+        binding.tvAge.text = context.getString(R.string.temp_age, getUserAge().toString())
+    }
+
+
 }
 
 /**
