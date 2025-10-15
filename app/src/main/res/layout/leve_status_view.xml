@@ -11,11 +11,11 @@
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
         android:background="@drawable/circle_shape"
+        app:layout_constraintBottom_toBottomOf="@id/statusText"
         app:layout_constraintEnd_toStartOf="@+id/statusText"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/statusText"
-        app:layout_constraintBottom_toBottomOf="@id/statusText"
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <!-- 血压等级文本 -->
@@ -59,9 +59,55 @@
         app:indicatorCornerRadius="@dimen/dp_8"
         app:indicatorFillColor="@color/color_13ABA1"
         app:indicatorStrokeColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rangeText" />
+
+
+    <View
+        android:id="@+id/div_line"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_30"
+        android:background="@color/color_D2D2D2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/levelBar" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_gender"
+        style="@style/TextViewFont_RobotoRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:drawableStart="@drawable/ic_avatar"
+        android:drawablePadding="@dimen/dp_8"
+        android:gravity="center"
+        android:textColor="@color/color_666"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="@id/div_line"
+        app:layout_constraintEnd_toStartOf="@id/div_line"
+        app:layout_constraintTop_toTopOf="@id/div_line"
+        tools:text="@string/male" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_age"
+        style="@style/TextViewFont_RobotoRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:gravity="center"
+        android:textColor="@color/color_666"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="@id/div_line"
+        app:layout_constraintStart_toEndOf="@id/div_line"
+        app:layout_constraintTop_toTopOf="@id/div_line"
+        tools:text="Age : 24" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="div_line,tv_age,tv_gender"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

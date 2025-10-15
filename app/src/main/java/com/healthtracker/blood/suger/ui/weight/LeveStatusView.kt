@@ -9,6 +9,8 @@ import android.widget.FrameLayout
 import androidx.core.content.withStyledAttributes
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.LeveStatusViewBinding
+import com.healthtracker.blood.suger.getUserAge
+import com.healthtracker.blood.suger.isMale
 import com.healthtracker.framework.ext.clickWithDuration
 
 /**
@@ -58,6 +60,7 @@ class LeveStatusView @JvmOverloads constructor(
         setupRangeClickIfNeeded()
         updateRangeIconVisibility()
         refreshUI()
+        setupUserProfile()
     }
 
     /** 设置等级列表（空列表将重置索引并隐藏组件） */
@@ -155,6 +158,13 @@ class LeveStatusView @JvmOverloads constructor(
         this.explainClickable = clickable
         setupRangeClickIfNeeded()
         updateRangeIconVisibility()
+    }
+
+    private fun setupUserProfile(){
+        with(binding){
+            tvGender.text = context.getString(if(isMale()) R.string.male else R.string.female)
+            tvAge.text = context.getString(R.string.temp_age,getUserAge().toString())
+        }
     }
 }
 

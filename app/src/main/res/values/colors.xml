@@ -54,4 +54,5 @@
     <!-- BMI grade colors -->
     <color name="color_E030DD">#E030DD</color>
     <color name="color_942DE2">#942DE2</color>
+    <color name="color_D2D2D2">#D2D2D2</color>
 </resources>
