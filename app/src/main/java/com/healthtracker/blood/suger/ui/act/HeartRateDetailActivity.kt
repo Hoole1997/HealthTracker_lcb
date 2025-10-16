@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Html
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -69,13 +70,6 @@ class HeartRateDetailActivity :
         val levels = LeveDataFactory.HeartRate.buildItems(this)
         mViewBind.bpmStatusView.apply {
             setLevels(levels)
-            setExplainClickable(true)
-            setOnExplainClick {
-                LevelExplainDialog.show(
-                    supportFragmentManager,
-                    items = ArrayList(LeveDataFactory.HeartRate.buildExplainItems(this@HeartRateDetailActivity))
-                )
-            }
         }
     }
 
@@ -121,13 +115,14 @@ class HeartRateDetailActivity :
         mViewBind.tvTime.text = DateTimeUtils.formatDateTime(record.recordTime)
         val index = LeveDataFactory.HeartRate.indexFor(record.heartRateBpm)
         mViewBind.bpmStatusView.setCurrentLevel(index)
+        val desArray = resources.getStringArray(R.array.hr_level_expert_advice)
+        mViewBind.tvLeveDes.text = Html.fromHtml(desArray[index])
     }
 
     private fun updateStatus(status: HeartRateStatus) {
         mViewBind.bpmStatusView.setCurrentLevel(
             LeveDataFactory.HeartRate.indexFor(status)
         )
-        mViewBind.tvLeveDes.text = getString(status.descriptionRes)
     }
 
     private fun updateTags(tags: List<HealthTag>) {

@@ -183,20 +183,68 @@
                 app:layout_constraintTop_toBottomOf="@+id/space"
                 app:lsvRangeTextColor="@color/t1" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_leve_des"
+            
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bpm_status_view"
                 android:layout_marginHorizontal="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@drawable/bg_rect_white_12"
-                android:lineSpacingExtra="@dimen/dp_4"
                 android:padding="@dimen/dp_16"
-                android:textColor="@color/t1"
-                android:textSize="@dimen/sp_14"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bpm_status_view" />
+                android:orientation="vertical">
+                <androidx.constraintlayout.utils.widget.ImageFilterView
+                    android:id="@+id/iv_avatar_bg"
+                    android:layout_width="@dimen/dp_26"
+                    android:layout_height="@dimen/dp_26"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:round="@dimen/dp_13"
+                    android:background="@color/c5"/>
+                
+                <androidx.constraintlayout.utils.widget.ImageFilterView
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    app:srcCompat="@mipmap/ic_doctor_avatar"
+                    app:layout_constraintTop_toTopOf="@id/iv_avatar_bg"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_avatar_bg"
+                    app:layout_constraintStart_toStartOf="@id/iv_avatar_bg"
+                    app:layout_constraintEnd_toEndOf="@id/iv_avatar_bg"
+                    app:round="@dimen/dp_12"
+                    android:background="@color/c5"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_16"
+                    app:layout_constraintTop_toTopOf="@id/iv_avatar_bg"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_avatar_bg"
+                    app:layout_constraintStart_toEndOf="@id/iv_avatar_bg"
+                    android:maxLines="1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:text="@string/exclusive_advice"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_leve_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_12"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_avatar_bg"
+
+                    android:lineSpacingExtra="@dimen/dp_4"
+
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_14"
+                    />
+                
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

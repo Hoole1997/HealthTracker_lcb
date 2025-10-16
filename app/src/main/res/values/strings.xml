@@ -1035,6 +1035,7 @@
     <string name="tc_hdl">TC/HDL</string>
     <string name="ldl_hdl">LDL/HDL</string>
     <string name="result">Result</string>
+    <string name="exclusive_advice">Exclusive Advice</string>
 
     <string-array name="heart_rate_labels">
         <item>Excited state</item>
@@ -1045,6 +1046,75 @@
         <item>After anaerobic exercise</item>
         <item>Dieting</item>
         <item>After drinking</item>
+    </string-array>
+
+    <!-- 心率等级专家建议文案数组 -->
+    <string-array name="hr_level_expert_advice">
+        <!-- 低心率建议 -->
+        <item>
+            <![CDATA[
+            Your heart rate is <font color="#FFB901"><b>lower than the normal range</b></font>. This could make you feel tired, dizzy, or lightheaded. Here are five suggestions to consider:
+
+            <br><b>Monitor Symptoms:</b><br>
+            Pay close attention to dizziness, fainting, or unusual fatigue. If these occur frequently, seek medical help.
+
+            <br><b>Limit Certain Medications:</b><br>
+            Some medications (like beta-blockers) may lower heart rate. Consult your doctor if you suspect your prescription is contributing.
+
+            <br><b>Stay Active Safely:</b><br>
+            Gentle exercises like walking or yoga can help maintain circulation without straining your heart. Avoid overexertion.
+
+            <br><b>Eat a Balanced Diet:</b><br>
+            Ensure sufficient intake of nutrients like potassium and magnesium, which help regulate heart rhythm.
+
+            <br><b>Consult a Doctor:</b><br>
+            Persistent low heart rate may require professional evaluation, especially if accompanied by symptoms.
+            ]]>
+        </item>
+
+        <!-- 正常心率建议 -->
+        <item>
+            <![CDATA[
+            Your heart rate is within the <font color="#02BC77"><b>normal range</b></font>. This is a good sign for your cardiovascular system. Here are five suggestions to continue maintaining good heart health:
+
+            <br><b>Stay Hydrated:</b><br>
+            Drink enough water daily to support circulation and overall heart function.
+
+            <br><b>Exercise Regularly:</b><br>
+            Engage in at least 150 minutes of moderate aerobic activity per week, such as brisk walking or swimming.
+
+            <br><b>Eat Heart-Healthy Foods:</b><br>
+            Choose more fruits, vegetables, whole grains, lean proteins, and healthy fats like olive oil.
+
+            <br><b>Manage Stress:</b><br>
+            Practice relaxation techniques like meditation, deep breathing, or light stretching to keep stress hormones in check.
+
+            <br><b>Schedule Regular Check-ups:</b><br>
+            Even if your heart rate is normal, routine health screenings help catch potential issues early.
+            ]]>
+        </item>
+
+        <!-- 高心率建议 -->
+        <item>
+            <![CDATA[
+            Your heart rate is <font color="#FA0202"><b>higher than the normal range</b></font>. If this persists, it may increase your risk of heart problems. Here are five suggestions to consider:
+
+            <br><b>Avoid Stimulants:</b><br>
+            Limit caffeine, alcohol, and nicotine, which can elevate heart rate.
+
+            <br><b>Practice Stress Management:</b><br>
+            High stress and anxiety can trigger rapid heartbeats. Use mindfulness, meditation, or breathing exercises.
+
+            <br><b>Stay Physically Active:</b><br>
+            Moderate, consistent exercise helps strengthen the heart and regulate rhythm. Avoid sudden overexertion.
+
+            <br><b>Maintain a Healthy Weight:</b><br>
+            Extra weight makes your heart work harder. Adopt a balanced diet and regular activity to stay in a healthy range.
+
+            <br><b>Seek Medical Evaluation:</b><br>
+            Persistent high heart rate, especially at rest, should be reviewed by a healthcare professional to rule out underlying conditions.
+            ]]>
+        </item>
     </string-array>
 
 </resources>
