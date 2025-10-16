@@ -24,6 +24,9 @@ interface CholesterolDao {
     @Query("SELECT * FROM cholesterol_records WHERE id = :id AND is_delete = 0")
     suspend fun getById(id: Long): CholesterolRecord?
 
+    @Query("SELECT * FROM cholesterol_records WHERE id = :id AND is_delete = 0")
+    fun observeById(id: Long): Flow<CholesterolRecord?>
+
     @Query("SELECT * FROM cholesterol_records WHERE is_delete = 0 ORDER BY record_time DESC LIMIT 1")
     suspend fun getLatestRecord(): CholesterolRecord?
 

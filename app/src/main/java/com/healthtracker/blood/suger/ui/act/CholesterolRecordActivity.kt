@@ -69,7 +69,13 @@ class CholesterolRecordActivity :
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 when (val result = mViewModel.saveRecord()) {
                     is CholesterolRecordViewModel.SaveResult.Created,
-                    is CholesterolRecordViewModel.SaveResult.Updated -> finish()
+                    is CholesterolRecordViewModel.SaveResult.Updated -> {
+                        result.recordIdOrNull()?.let {
+                            CholesterolDetailActivity.start(this@CholesterolRecordActivity,it)
+                            finish()
+                        }
+
+                    }
                     is CholesterolRecordViewModel.SaveResult.Failed -> {
                         showToast(result.error)
                     }

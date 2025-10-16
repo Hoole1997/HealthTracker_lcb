@@ -107,4 +107,11 @@ class CholesterolRepository @Inject constructor(
     suspend fun updateCholesterolRecord(record: CholesterolRecord): Int = updateRecord(record)
     suspend fun deleteCholesterolRecord(recordId: Long): Int = deleteRecordById(recordId)
     suspend fun getLatestRecord(): CholesterolRecord? = dao.getLatestRecord()
+
+    /**
+     * 观察单条胆固醇记录（返回Flow用于实时更新）
+     */
+    fun observerRecord(recordId: Long): Flow<CholesterolRecord?> {
+        return cholesterolDao.observeById(recordId)
+    }
 }
