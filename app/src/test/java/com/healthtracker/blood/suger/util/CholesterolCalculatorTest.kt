@@ -23,9 +23,9 @@ class CholesterolCalculatorTest {
     @Test
     fun `ldl near optimal downgrades level`() {
         val metrics = CholesterolCalculator.buildMetrics(
-            hdl = 55f,
+            hdl = 45f,
             ldl = 110f,
-            triglyceride = 80f
+            triglyceride = 75f
         )
         assertEquals(CholesterolLevel.NEAR_OPTIMAL, metrics.riskLevel)
     }
@@ -33,9 +33,9 @@ class CholesterolCalculatorTest {
     @Test
     fun `borderline metrics detected`() {
         val metrics = CholesterolCalculator.buildMetrics(
-            hdl = 50f,
-            ldl = 135f,
-            triglyceride = 120f
+            hdl = 45f,
+            ldl = 140f,
+            triglyceride = 95f
         )
         assertEquals(CholesterolLevel.BORDERLINE, metrics.riskLevel)
     }
@@ -43,9 +43,9 @@ class CholesterolCalculatorTest {
     @Test
     fun `high non hdl escalates risk`() {
         val metrics = CholesterolCalculator.buildMetrics(
-            hdl = 42f,
-            ldl = 150f,
-            triglyceride = 180f
+            hdl = 40f,
+            ldl = 170f,
+            triglyceride = 200f
         )
         assertEquals(CholesterolLevel.HIGH, metrics.riskLevel)
     }
@@ -58,5 +58,15 @@ class CholesterolCalculatorTest {
             triglyceride = 160f
         )
         assertEquals(CholesterolLevel.VERY_HIGH, metrics.riskLevel)
+    }
+
+    @Test
+    fun `tie favors higher severity`() {
+        val metrics = CholesterolCalculator.buildMetrics(
+            hdl = 72f,
+            ldl = 98f,
+            triglyceride = 189f
+        )
+        assertEquals(CholesterolLevel.BORDERLINE, metrics.riskLevel)
     }
 }

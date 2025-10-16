@@ -184,10 +184,10 @@ class CholesterolRecordActivity :
 
 
     private fun NumberPickerView.setupRange() {
-        val values = Array(220) { i -> DateTimeUtils.formatTwoDigit(i + 1) }
+        val values = Array(200) { i -> DateTimeUtils.formatTwoDigit(i + 1) }
         displayedValues = values
         minValue = 0
-        maxValue = 219
+        maxValue = 199
     }
 
     /**

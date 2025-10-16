@@ -73,23 +73,10 @@ enum class CholesterolLevel(
     );
 
     companion object {
-        private const val LDL_NEAR_OPTIMAL_MIN = 100f
-        private const val LDL_BORDERLINE_MIN = 130f
-        private const val LDL_HIGH_MIN = 160f
-        private const val LDL_VERY_HIGH_MIN = 190f
-
-        private const val NON_HDL_BORDERLINE_MIN = 130f
-        private const val NON_HDL_HIGH_MIN = 160f
-        private const val NON_HDL_VERY_HIGH_MIN = 190f
-
-        private const val TC_BORDERLINE_MIN = 200f
-        private const val TC_HIGH_MIN = 240f
-
-        private const val HDL_LOW_THRESHOLD = 45f
-        private const val HDL_VERY_LOW_THRESHOLD = 35f
 
         /**
-         * 根据多项指标综合得出胆固醇等级
+         * 统计各等级满足条件的数量，取命中最多的等级
+         * 若数量相同，倾向于等级较低者以避免过度判定
          */
         fun fromMetrics(
             totalCholesterol: Float?,
@@ -97,60 +84,56 @@ enum class CholesterolLevel(
             ldl: Float?,
             hdl: Float?
         ): CholesterolLevel {
-            if (totalCholesterol == null || nonHdl == null || ldl == null || hdl == null) {
+            if (totalCholesterol == null && nonHdl == null && ldl == null && hdl == null) {
                 return UNKNOWN
             }
 
-            // 评估各指标对应的风险等级分值，取最高项作为最终风险
-            val worstScore = listOf(
-                scoreFromTotalCholesterol(totalCholesterol),
-                scoreFromNonHdl(nonHdl),
-                scoreFromLdl(ldl),
-                scoreFromHdl(hdl)
-            ).maxOrNull() ?: 0
+            val levels = listOf(NORMAL, NEAR_OPTIMAL, BORDERLINE, HIGH, VERY_HIGH)
+            val best = levels
+                .map { level ->
+                    val matches = when (level) {
+                        NORMAL -> listOfNotNull(
+                            totalCholesterol?.let { it < 200f },
+                            nonHdl?.let { it < 130f },
+                            ldl?.let { it < 100f },
+                            hdl?.let { it > 40f }
+                        )
+                        NEAR_OPTIMAL -> listOfNotNull(
+                            totalCholesterol?.let { it < 200f },
+                            nonHdl?.let { it < 130f },
+                            ldl?.let { it in 100f..129f },
+                            hdl?.let { it <= 45f }
+                        )
+                        BORDERLINE -> listOfNotNull(
+                            totalCholesterol?.let { it in 200f..239f },
+                            nonHdl?.let { it in 130f..159f },
+                            ldl?.let { it in 130f..159f },
+                            hdl?.let { it <= 45f }
+                        )
+                        HIGH -> listOfNotNull(
+                            totalCholesterol?.let { it >= 240f },
+                            nonHdl?.let { it >= 130f },
+                            ldl?.let { it in 160f..189f },
+                            hdl?.let { it <= 45f }
+                        )
+                        VERY_HIGH -> listOfNotNull(
+                            totalCholesterol?.let { it >= 240f },
+                            nonHdl?.let { it >= 130f },
+                            ldl?.let { it >= 190f },
+                            hdl?.let { it <= 45f }
+                        )
+                        else -> emptyList()
+                    }.count { it }
+                    level to matches
+                }
+                .maxWithOrNull { a, b ->
+                    when {
+                        a.second != b.second -> a.second.compareTo(b.second)
+                        else -> a.first.ordinal.compareTo(b.first.ordinal)
+                    }
+                }
 
-            return when (worstScore) {
-                4 -> VERY_HIGH
-                3 -> HIGH
-                2 -> BORDERLINE
-                1 -> NEAR_OPTIMAL
-                else -> NORMAL
-            }
-        }
-
-        private fun scoreFromTotalCholesterol(value: Float): Int {
-            return when {
-                value >= TC_HIGH_MIN -> 3
-                value >= TC_BORDERLINE_MIN -> 2
-                else -> 0
-            }
-        }
-
-        private fun scoreFromNonHdl(value: Float): Int {
-            return when {
-                value >= NON_HDL_VERY_HIGH_MIN -> 4
-                value >= NON_HDL_HIGH_MIN -> 3
-                value >= NON_HDL_BORDERLINE_MIN -> 2
-                else -> 0
-            }
-        }
-
-        private fun scoreFromLdl(value: Float): Int {
-            return when {
-                value >= LDL_VERY_HIGH_MIN -> 4
-                value >= LDL_HIGH_MIN -> 3
-                value >= LDL_BORDERLINE_MIN -> 2
-                value >= LDL_NEAR_OPTIMAL_MIN -> 1
-                else -> 0
-            }
-        }
-
-        private fun scoreFromHdl(value: Float): Int {
-            return when {
-                value <= HDL_VERY_LOW_THRESHOLD -> 2
-                value <= HDL_LOW_THRESHOLD -> 1
-                else -> 0
-            }
+            return best?.takeIf { it.second > 0 }?.first ?: UNKNOWN
         }
     }
 }

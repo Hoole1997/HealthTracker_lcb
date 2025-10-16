@@ -28,11 +28,11 @@
     <string name="cholesterol_level_normal">Normal</string>
     <string name="cholesterol_level_normal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
     <string name="cholesterol_level_near_optimal">Near Optimal</string>
-    <string name="cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100–129; HDL ≤ 45</string>
+    <string name="cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
     <string name="cholesterol_level_borderline">Borderline</string>
-    <string name="cholesterol_level_borderline_desc">TC 200–239; Non-HDL &lt; 130; LDL 130–159; HDL ≤ 45</string>
+    <string name="cholesterol_level_borderline_desc">TC 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
     <string name="cholesterol_level_high">High</string>
-    <string name="cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160–189; HDL ≤ 45</string>
+    <string name="cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
     <string name="cholesterol_level_very_high">Very High</string>
     <string name="cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
     <string name="cholesterol_level_unknown">Unknown</string>
