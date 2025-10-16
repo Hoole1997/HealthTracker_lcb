@@ -1011,6 +1011,7 @@
     <string name="record_not_ready">Record is loading</string>
     <string name="delete_record_failed">Failed to delete record</string>
     <string name="heart_rate_record_deleted">Record deleted</string>
+    <string name="blood_sugar_record_deleted">Blood sugar record deleted</string>
     <string name="bpm">BPM</string>
     <string name="cholesterol">Cholesterol</string>
     <string name="weight_and_bmi"><![CDATA[Weight & BMI]]></string>

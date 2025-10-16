@@ -129,6 +129,7 @@ class BloodSugarRepository @Inject constructor(
     suspend fun deleteBloodSugarRecord(recordId: Long): Int = deleteRecordById(recordId)
     suspend fun getBloodSugarRecordById(recordId: Long): BloodSugarRecord? = getRecordById(recordId)
     fun getAllBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getAllRecords()
+    fun observeBloodSugarRecordById(recordId: Long): Flow<BloodSugarRecord?> = bloodSugarDao.observeById(recordId)
 
     // 公共API方法，委托给基类实现
     fun getRecentBloodSugarRecords(days: Int = 7): Flow<List<BloodSugarRecord>> = getRecentRecords(days)

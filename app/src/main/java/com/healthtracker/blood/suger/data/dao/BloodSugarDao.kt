@@ -61,6 +61,12 @@ interface BloodSugarDao {
     suspend fun getById(id: Long): BloodSugarRecord?
 
     /**
+     * 根据ID监听血糖记录变化
+     */
+    @Query("SELECT * FROM blood_sugar_records WHERE id = :id")
+    fun observeById(id: Long): Flow<BloodSugarRecord?>
+
+    /**
      * 获取所有血糖记录，按时间倒序排列
      * @return Flow形式的血糖记录列表，支持数据变化监听
      */

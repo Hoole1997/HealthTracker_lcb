@@ -3,15 +3,19 @@ package com.healthtracker.blood.suger.ui.act
 import android.content.Context
 import android.os.Bundle
 import android.text.Html
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityBsDetailBinding
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BsDetailViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -49,6 +53,7 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
                 finish()
             }
             btnDelete.clickWithDuration {
+                showDeleteConfirm()
 
             }
 
@@ -65,7 +70,7 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
         lifecycleScope.launch {
             // 观察血糖记录数据变化
             mViewModel.bloodSugarRecord.collect { record ->
-                record?.let {
+                if (record != null) {
                     updateUI()
                 }
             }
@@ -75,7 +80,8 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
             // 观察错误状态
             mViewModel.error.collect { error ->
                 error?.let {
-                    // TODO: 显示错误信息
+                    showToast(it)
+                    mViewModel.clearError()
                 }
             }
         }
@@ -121,4 +127,29 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
     }
 
     override fun getStatusBarColor() = R.color.c5
+
+
+    private fun showDeleteConfirm() {
+        ConfirmDialog(
+            title = getString(R.string.delete_record_remind_title),
+            message = getString(R.string.delete_record_remind),
+            leftText = getString(R.string.cancel),
+            rightText = getString(R.string.confirm),
+            onDialogListener = object : DialogListener {
+                override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
+                    super.onItemClick(dialogFragment, which)
+                    if (which == R.id.btn_ok) {
+                        lifecycleScope.launch {
+                            if (mViewModel.deleteRecord()) {
+                                finish()
+                            } else {
+                                showToast(getString(R.string.delete_record_failed))
+                            }
+                        }
+                    }
+                }
+            }
+        ).show(supportFragmentManager)
+    }
+
 }

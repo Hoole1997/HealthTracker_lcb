@@ -14,6 +14,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,6 +35,10 @@ class BsDetailViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    private var hasNotifiedMissing = false
+
+    private var isDelete = false
+
     /**
      * 根据记录ID初始化并加载记录
      * @param recordId 血糖记录ID
@@ -42,23 +47,25 @@ class BsDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
-
             try {
-                val record = bloodSugarRepository.getBloodSugarRecordById(recordId)
-                _bloodSugarRecord.value = record
-
-                if (record == null) {
-                    _error.value = "Blood sugar record not found"
+                bloodSugarRepository.observeBloodSugarRecordById(recordId).collect { record ->
+                    _bloodSugarRecord.value = record
+                    _isLoading.value = false
+                    if (record == null) {
+                        if (!hasNotifiedMissing && !isDelete) {
+                            _error.value = "Blood sugar record not found"
+                            hasNotifiedMissing = true
+                        }
+                    } else {
+                        hasNotifiedMissing = false
+                    }
                 }
             } catch (e: CancellationException) {
-                // 协程正常取消，不记录为错误
                 "Blood sugar record loading cancelled: ID=$recordId".logd(TAG)
-                throw e // 重新抛出以保持协程取消语义
+                throw e
             } catch (e: Exception) {
-                // 真正的异常情况：数据库操作失败等
-                "Failed to load blood sugar record: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                "Failed to observe blood sugar record: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
                 _error.value = "Failed to load blood sugar record: ${e.message}"
-            } finally {
                 _isLoading.value = false
             }
         }
@@ -95,5 +102,23 @@ class BsDetailViewModel @Inject constructor(
      */
     private fun convertMeasurementTagToBloodSugarStatus(statusCode: Int): BloodSugarStatus {
         return BloodSugarStatus.fromStatusType(statusCode)
+    }
+
+    fun clearError() {
+        _error.value = null
+    }
+
+    suspend fun deleteRecord(): Boolean {
+        return try {
+            val id = _bloodSugarRecord.value?.id ?: return false
+            _isLoading.value = true
+            isDelete = true
+            bloodSugarRepository.deleteBloodSugarRecord(id) > 0
+        } catch (e: Exception) {
+            _error.value = e.message ?: "Delete failed"
+            false
+        } finally {
+            _isLoading.value = false
+        }
     }
 }
