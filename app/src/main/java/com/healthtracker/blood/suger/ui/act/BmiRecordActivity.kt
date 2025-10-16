@@ -139,18 +139,20 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
     }
 
     private fun setupSaveButton() {
-        mViewBind.btnSave.click {
+        mViewBind.btnSave.clickWithDuration {
             lifecycleScope.launch {
                 mViewBind.dateTimeSelectionView.getSelectDate().let { date ->
                     mViewModel.updateRecordTime(date)
                 }
                 mViewModel.saveBmiRecord { result ->
                     when (result) {
-                        is BmiRecordViewModel.SaveRecordResult.Created -> {
-                            finish()
-                        }
+                        is BmiRecordViewModel.SaveRecordResult.Created,
                         is BmiRecordViewModel.SaveRecordResult.Updated -> {
-                            finish()
+                            result.getRecordId()?.let {
+                                BmiDetailActivity.start(this@BmiRecordActivity,it)
+                                finish()
+                            }
+
                         }
                         is BmiRecordViewModel.SaveRecordResult.Failed -> {
                             showToast(result.error)

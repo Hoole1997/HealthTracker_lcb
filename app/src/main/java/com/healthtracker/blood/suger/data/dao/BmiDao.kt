@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.data.dao
 
 import androidx.room.*
+import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -50,4 +51,11 @@ interface BmiDao {
     /** 清空所有记录（硬删除） */
     @Query("DELETE FROM bmi_records")
     suspend fun deleteAllRecords(): Int
+
+
+    /**
+     * 根据ID监听血糖记录变化
+     */
+    @Query("SELECT * FROM bmi_records WHERE id = :id")
+    fun observeById(id: Long): Flow<BmiRecord?>
 }

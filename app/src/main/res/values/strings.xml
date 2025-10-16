@@ -1037,6 +1037,7 @@
     <string name="ldl_hdl">LDL/HDL</string>
     <string name="result">Result</string>
     <string name="exclusive_advice">Exclusive Advice</string>
+    <string name="bmi">BMI</string>
 
     <string-array name="heart_rate_labels">
         <item>Excited state</item>
@@ -1116,6 +1117,33 @@
             Persistent high heart rate, especially at rest, should be reviewed by a healthcare professional to rule out underlying conditions.
             ]]>
         </item>
+    </string-array>
+
+    <!-- BMI 等级专家建议文案数组 -->
+    <string-array name="bmi_level_expert_advice">
+        <!-- Very Severely Underweight -->
+        <item>Your BMI is in the &lt;font color="#E030DD"&gt;&lt;b&gt;Very Severely Underweight&lt;/b&gt;&lt;/font&gt; category. This significantly increases health risks. Here are important suggestions: &lt;br&gt;&lt;b&gt;Consult Healthcare Professional:&lt;/b&gt;&lt;br&gt; Immediate medical evaluation is crucial to identify underlying causes and develop a safe weight gain plan. &lt;br&gt;&lt;b&gt;Increase Caloric Intake:&lt;/b&gt;&lt;br&gt; Focus on nutrient-dense, high-calorie foods like nuts, avocados, whole grains, and lean proteins. &lt;br&gt;&lt;b&gt;Eat Frequently:&lt;/b&gt;&lt;br&gt; Consume 5-6 smaller meals throughout the day rather than 3 large meals. &lt;br&gt;&lt;b&gt;Strength Training:&lt;/b&gt;&lt;br&gt; Engage in resistance exercises to build muscle mass with professional guidance. &lt;br&gt;&lt;b&gt;Monitor Progress:&lt;/b&gt;&lt;br&gt; Regular check-ups to track weight gain and overall health improvements.</item>
+
+        <!-- Severely Underweight -->
+        <item>Your BMI indicates you are &lt;font color="#942DE2"&gt;&lt;b&gt;Severely Underweight&lt;/b&gt;&lt;/font&gt;. This requires attention to improve your health. Here are suggestions: &lt;br&gt;&lt;b&gt;Seek Medical Advice:&lt;/b&gt;&lt;br&gt; Consult a healthcare provider to rule out medical conditions and create a personalized plan. &lt;br&gt;&lt;b&gt;Nutrient-Rich Diet:&lt;/b&gt;&lt;br&gt; Include calorie-dense foods: whole milk, cheese, nuts, seeds, and healthy oils. &lt;br&gt;&lt;b&gt;Increase Meal Frequency:&lt;/b&gt;&lt;br&gt; Eat every 2-3 hours with healthy snacks between meals. &lt;br&gt;&lt;b&gt;Build Muscle Mass:&lt;/b&gt;&lt;br&gt; Incorporate weight training exercises 2-3 times per week. &lt;br&gt;&lt;b&gt;Track Progress:&lt;/b&gt;&lt;br&gt; Monitor weight weekly and adjust diet as needed.</item>
+
+        <!-- Underweight -->
+        <item>Your BMI shows you are &lt;font color="#3487FC"&gt;&lt;b&gt;Underweight&lt;/b&gt;&lt;/font&gt;. Consider these suggestions to reach a healthier weight: &lt;br&gt;&lt;b&gt;Balanced Nutrition:&lt;/b&gt;&lt;br&gt; Focus on whole foods, protein-rich meals, and healthy fats. &lt;br&gt;&lt;b&gt;Regular Meals:&lt;/b&gt;&lt;br&gt; Don\'t skip meals. Eat 3 main meals plus 2-3 snacks daily. &lt;br&gt;&lt;b&gt;Strength Training:&lt;/b&gt;&lt;br&gt; Build muscle through resistance exercises. &lt;br&gt;&lt;b&gt;Healthy Calorie Boost:&lt;/b&gt;&lt;br&gt; Add nutritious calories through smoothies, nuts, and protein shakes. &lt;br&gt;&lt;b&gt;Medical Consultation:&lt;/b&gt;&lt;br&gt; If gaining weight is difficult, consult a healthcare provider.</item>
+
+        <!-- Normal -->
+        <item>Congratulations! Your BMI is in the &lt;font color="#05BA7B"&gt;&lt;b&gt;Normal&lt;/b&gt;&lt;/font&gt; range. Here\'s how to maintain it: &lt;br&gt;&lt;b&gt;Balanced Diet:&lt;/b&gt;&lt;br&gt; Continue eating a variety of fruits, vegetables, whole grains, and lean proteins. &lt;br&gt;&lt;b&gt;Regular Exercise:&lt;/b&gt;&lt;br&gt; Aim for 150 minutes of moderate aerobic activity weekly plus strength training. &lt;br&gt;&lt;b&gt;Portion Control:&lt;/b&gt;&lt;br&gt; Maintain awareness of serving sizes to avoid unintended weight gain. &lt;br&gt;&lt;b&gt;Stay Hydrated:&lt;/b&gt;&lt;br&gt; Drink adequate water throughout the day. &lt;br&gt;&lt;b&gt;Regular Check-ups:&lt;/b&gt;&lt;br&gt; Monitor your weight and health metrics regularly.</item>
+
+        <!-- Overweight -->
+        <item>Your BMI indicates you are &lt;font color="#FFE902"&gt;&lt;b&gt;Overweight&lt;/b&gt;&lt;/font&gt;. Consider these suggestions to improve your health: &lt;br&gt;&lt;b&gt;Reduce Calorie Intake:&lt;/b&gt;&lt;br&gt; Focus on portion control and choose lower-calorie, nutrient-dense foods. &lt;br&gt;&lt;b&gt;Increase Physical Activity:&lt;/b&gt;&lt;br&gt; Aim for 30-60 minutes of moderate exercise most days of the week. &lt;br&gt;&lt;b&gt;Limit Processed Foods:&lt;/b&gt;&lt;br&gt; Reduce intake of sugary drinks, fast food, and high-fat processed items. &lt;br&gt;&lt;b&gt;Set Realistic Goals:&lt;/b&gt;&lt;br&gt; Aim for gradual weight loss of 1-2 pounds per week. &lt;br&gt;&lt;b&gt;Track Progress:&lt;/b&gt;&lt;br&gt; Monitor your food intake, exercise, and weight regularly.</item>
+
+        <!-- Obesity Class I -->
+        <item>Your BMI falls into &lt;font color="#FFB909"&gt;&lt;b&gt;Obesity Class I&lt;/b&gt;&lt;/font&gt;. Taking action now can significantly improve your health: &lt;br&gt;&lt;b&gt;Medical Consultation:&lt;/b&gt;&lt;br&gt; Work with healthcare professionals to develop a comprehensive weight management plan. &lt;br&gt;&lt;b&gt;Dietary Changes:&lt;/b&gt;&lt;br&gt; Reduce calorie intake by 500-750 calories daily through healthier food choices. &lt;br&gt;&lt;b&gt;Regular Exercise:&lt;/b&gt;&lt;br&gt; Start with low-impact activities like walking, swimming, or cycling for 30+ minutes daily. &lt;br&gt;&lt;b&gt;Behavioral Changes:&lt;/b&gt;&lt;br&gt; Address emotional eating patterns and develop healthy stress management techniques. &lt;br&gt;&lt;b&gt;Monitor Health Markers:&lt;/b&gt;&lt;br&gt; Regular check-ups for blood pressure, blood sugar, and cholesterol levels.</item>
+
+        <!-- Obesity Class II -->
+        <item>Your BMI is in &lt;font color="#FF8000"&gt;&lt;b&gt;Obesity Class II&lt;/b&gt;&lt;/font&gt;, which significantly increases health risks. Here are important steps: &lt;br&gt;&lt;b&gt;Medical Supervision:&lt;/b&gt;&lt;br&gt; Essential to work closely with healthcare team including doctor and dietitian. &lt;br&gt;&lt;b&gt;Structured Diet Plan:&lt;/b&gt;&lt;br&gt; Follow a medically supervised calorie-restricted diet tailored to your needs. &lt;br&gt;&lt;b&gt;Gradual Physical Activity:&lt;/b&gt;&lt;br&gt; Start with gentle exercises and gradually increase intensity under professional guidance. &lt;br&gt;&lt;b&gt;Health Monitoring:&lt;/b&gt;&lt;br&gt; Regular screening for obesity-related conditions like diabetes, heart disease, and sleep apnea. &lt;br&gt;&lt;b&gt;Consider All Options:&lt;/b&gt;&lt;br&gt; Discuss various treatment approaches including lifestyle changes, medication, or surgical options with your doctor.</item>
+
+        <!-- Obesity Class III -->
+        <item>Your BMI indicates &lt;font color="#FB0301"&gt;&lt;b&gt;Obesity Class III&lt;/b&gt;&lt;/font&gt;, which requires immediate medical attention. Here\'s what to do: &lt;br&gt;&lt;b&gt;Immediate Medical Care:&lt;/b&gt;&lt;br&gt; Seek comprehensive evaluation and treatment from a multidisciplinary healthcare team. &lt;br&gt;&lt;b&gt;Comprehensive Treatment Plan:&lt;/b&gt;&lt;br&gt; Work with specialists to develop an individualized plan combining diet, exercise, behavioral therapy, and possibly medical interventions. &lt;br&gt;&lt;b&gt;Manage Comorbidities:&lt;/b&gt;&lt;br&gt; Address associated conditions like diabetes, hypertension, and sleep disorders. &lt;br&gt;&lt;b&gt;Supervised Exercise:&lt;/b&gt;&lt;br&gt; Physical activity under medical supervision to ensure safety and effectiveness. &lt;br&gt;&lt;b&gt;Consider Advanced Options:&lt;/b&gt;&lt;br&gt; Discuss bariatric surgery or other medical interventions with qualified specialists if appropriate.</item>
     </string-array>
 
 </resources>

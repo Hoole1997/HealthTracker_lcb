@@ -64,6 +64,8 @@ class BmiRepository @Inject constructor(
         return bmiDao.deleteAllRecords()
     }
 
+    fun observerRecord(recordId:Long) = bmiDao.observeById(recordId)
+
     // 标签相关实现
     override suspend fun addTagsToRecord(recordId: Long, tagIds: List<Long>): Boolean {
         val record = bmiDao.getById(recordId) ?: return false

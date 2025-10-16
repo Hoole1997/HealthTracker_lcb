@@ -1,0 +1,137 @@
+package com.healthtracker.blood.suger.ui.viewmodel
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import com.healthtracker.blood.suger.data.entity.BmiRecord
+import com.healthtracker.blood.suger.data.enums.BMIEnum
+import com.healthtracker.blood.suger.data.repository.BmiRepository
+import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.logd
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.math.pow
+
+@HiltViewModel
+class BmiDetailViewModel @Inject constructor(
+    private val bmiRepository: BmiRepository,
+    savedStateHandle: SavedStateHandle
+) : BaseViewModel() {
+
+    companion object {
+        private const val TAG = "BmiDetailViewModel"
+        private const val RECORD_ID = "record_id"
+    }
+
+    // 编辑模式的记录ID
+    private var recordId: Long? = null
+
+    // BMI 记录数据
+    private val _bmiRecord = MutableStateFlow<BmiRecord?>(null)
+    val bmiRecord: StateFlow<BmiRecord?> = _bmiRecord.asStateFlow()
+
+    // 加载状态
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    // 错误信息
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+
+    /**
+     * 初始化并加载记录
+     */
+    fun initializeWithRecord(recordId: Long) {
+        this.recordId = recordId
+        loadRecord(recordId)
+    }
+
+    /**
+     * 加载 BMI 记录
+     */
+    private fun loadRecord(recordId: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                "Loading BMI record with ID: $recordId".logd(TAG)
+                bmiRepository.observerRecord(recordId).collect { record ->
+                    "BMI record loaded: $record".logd(TAG)
+                    _bmiRecord.value = record
+                }
+            } catch (e: Exception) {
+                "Failed to load BMI record: ${e.message}".logd(TAG)
+                _error.value = "Failed to load record: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    /**
+     * 计算 BMI 值
+     * BMI = weight (kg) / [height (m)]²
+     */
+    fun calculateBmi(): Float? {
+        val record = _bmiRecord.value ?: return null
+        val heightInMeters = record.heightCm / 100.0
+        if (heightInMeters <= 0) return null
+
+        val bmi = record.weightKg / heightInMeters.pow(2.0)
+        return bmi.toFloat()
+    }
+
+    /**
+     * 获取 BMI 分类
+     */
+    fun getBmiCategory(): BMIEnum? {
+        val bmi = calculateBmi() ?: return null
+        return BMIEnum.fromBmi(bmi)
+    }
+
+    /**
+     * 获取体重值（kg）
+     */
+    fun getWeightValue(): Double? {
+        return _bmiRecord.value?.weightKg
+    }
+
+    /**
+     * 获取身高值（cm）
+     */
+    fun getHeightValue(): Double? {
+        return _bmiRecord.value?.heightCm
+    }
+
+    /**
+     * 获取记录时间
+     */
+    fun getRecordTime() = _bmiRecord.value?.recordTime
+
+    /**
+     * 删除记录
+     */
+    suspend fun deleteRecord(): Boolean {
+        val id = recordId ?: return false
+        return try {
+            _isLoading.value = true
+            val result = bmiRepository.deleteBmiRecord(id)
+            result > 0
+        } catch (e: Exception) {
+            "Failed to delete record: ${e.message}".logd(TAG)
+            _error.value = "Failed to delete record: ${e.message}"
+            false
+        } finally {
+            _isLoading.value = false
+        }
+    }
+
+    /**
+     * 清除错误信息
+     */
+    fun clearError() {
+        _error.value = null
+    }
+}
