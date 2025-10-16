@@ -109,4 +109,8 @@ class HeartRateRepository @Inject constructor(
     fun getRecentHeartRateRecords(days: Int = 7): Flow<List<HeartRateRecord>> = getRecentRecords(days)
     fun getTodayHeartRateRecords(): Flow<List<HeartRateRecord>> = getTodayRecords()
     fun getThisWeekHeartRateRecords(): Flow<List<HeartRateRecord>> = getThisWeekRecords()
+
+    fun observeHeartRateRecordById(recordId: Long): Flow<HeartRateRecord?> {
+        return heartRateDao.observeById(recordId)
+    }
 }

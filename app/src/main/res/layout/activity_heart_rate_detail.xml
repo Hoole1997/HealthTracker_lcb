@@ -141,14 +141,17 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_tags"
                 style="@style/TextViewFont_RobotoBold"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14"
+                android:layout_marginStart="@dimen/dp_8"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="end"
+                app:layout_constraintStart_toEndOf="@id/tv_bpm_value_unit"
                 tools:text="@string/blood_sugar_status_after_exercise" />
 
             <Space

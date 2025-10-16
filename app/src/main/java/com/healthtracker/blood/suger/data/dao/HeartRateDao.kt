@@ -31,6 +31,10 @@ interface HeartRateDao {
     @Query("SELECT * FROM heart_rate_records WHERE id = :id AND is_delete = 0")
     suspend fun getById(id: Long): HeartRateRecord?
 
+    /** 根据ID监听 */
+    @Query("SELECT * FROM heart_rate_records WHERE id = :id AND is_delete = 0")
+    fun observeById(id: Long): Flow<HeartRateRecord?>
+
     /** 获取最近一条记录 */
     @Query("SELECT * FROM heart_rate_records WHERE is_delete = 0 ORDER BY record_time DESC LIMIT 1")
     suspend fun getLatestRecord(): HeartRateRecord?

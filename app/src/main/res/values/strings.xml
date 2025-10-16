@@ -1007,7 +1007,10 @@
     <string name="heart_rate">Heart Rate</string>
     <string name="heart_rate_detail_description">Heart rate reflects your cardiovascular response. Track long-term trends and consult your doctor for abnormal readings.</string>
     <string name="record_time_placeholder">--</string>
-    <string name="record_time_format">Recorded at %1$s</string>
+    <string name="heart_rate_no_tags">No tags</string>
+    <string name="record_not_ready">Record is loading</string>
+    <string name="delete_record_failed">Failed to delete record</string>
+    <string name="heart_rate_record_deleted">Record deleted</string>
     <string name="bpm">BPM</string>
     <string name="cholesterol">Cholesterol</string>
     <string name="weight_and_bmi"><![CDATA[Weight & BMI]]></string>
