@@ -78,6 +78,12 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.act.HeartRateDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.act.CholesterolRecordActivity"

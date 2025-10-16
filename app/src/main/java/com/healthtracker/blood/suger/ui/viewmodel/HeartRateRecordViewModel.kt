@@ -152,7 +152,7 @@ class HeartRateRecordViewModel @Inject constructor(
                     )
                     if (newId > 0) {
                         editingRecordId = newId
-                        onResult(SaveRecordResult.Created)
+                        onResult(SaveRecordResult.Created(newId))
                     } else {
                         onResult(SaveRecordResult.Failed("创建失败"))
                     }
@@ -168,7 +168,7 @@ class HeartRateRecordViewModel @Inject constructor(
                         )
                         val rows = heartRateRepository.updateHeartRateRecord(updated)
                         if (rows > 0) {
-                            onResult(SaveRecordResult.Updated)
+                            onResult(SaveRecordResult.Updated(updated.id))
                         } else {
                             onResult(SaveRecordResult.Failed("更新失败"))
                         }
@@ -235,9 +235,15 @@ class HeartRateRecordViewModel @Inject constructor(
     }
 
     sealed class SaveRecordResult {
-        object Created : SaveRecordResult()
-        object Updated : SaveRecordResult()
+        data class Created(val recordId: Long) : SaveRecordResult()
+        data class Updated(val recordId: Long) : SaveRecordResult()
         data class Failed(val error: String) : SaveRecordResult()
+
+        fun getRecordId(): Long? = when (this) {
+            is Created -> recordId
+            is Updated -> recordId
+            is Failed -> null
+        }
     }
 
     companion object {

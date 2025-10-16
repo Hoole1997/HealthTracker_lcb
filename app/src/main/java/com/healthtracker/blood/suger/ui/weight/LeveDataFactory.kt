@@ -222,6 +222,10 @@ object LeveDataFactory {
             return order.indexOf(status).coerceAtLeast(0)
         }
 
+        fun indexFor(status: HeartRateStatus): Int {
+            return order.indexOf(status).coerceAtLeast(0)
+        }
+
         fun defaultIndex(): Int = order.indexOf(HeartRateStatus.NORMAL).coerceAtLeast(0)
     }
 

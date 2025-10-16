@@ -67,10 +67,16 @@ class HeartRateRecordActivity :
         mViewBind.btnSave.clickWithDuration {
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
-                mViewModel.saveHeartRateRecord { result ->
+                mViewModel.saveHeartRateRecord { result: HeartRateRecordViewModel.SaveRecordResult ->
                     when (result) {
-                        HeartRateRecordViewModel.SaveRecordResult.Created,
-                        HeartRateRecordViewModel.SaveRecordResult.Updated -> finish()
+                        is HeartRateRecordViewModel.SaveRecordResult.Created,
+                        is HeartRateRecordViewModel.SaveRecordResult.Updated -> {
+                            result.getRecordId()?.let {
+                                HeartRateDetailActivity.start(this@HeartRateRecordActivity,it)
+                            }
+
+                            finish()
+                        }
                         is HeartRateRecordViewModel.SaveRecordResult.Failed -> {
                             showToast(result.error)
                         }
@@ -186,4 +192,6 @@ class HeartRateRecordActivity :
         val index = LeveDataFactory.HeartRate.indexFor(bpm)
         mViewBind.lsvStatus.setCurrentLevel(index)
     }
+
+
 }
