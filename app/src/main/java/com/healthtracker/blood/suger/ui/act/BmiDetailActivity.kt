@@ -101,15 +101,15 @@ class BmiDetailActivity: BaseMVVMActivity<BmiDetailViewModel, ActivityBmiDetailB
 
     private fun updateUI() {
         with(mViewBind) {
-            // Display weight value
-            val weight = mViewModel.getWeightValue()
-            tvWeightValue.text = weight?.let { String.format("%.1f", it) } ?: "--"
+            // Display weight value (converted to preferred unit, without unit label)
+            val displayWeight = mViewModel.getDisplayWeight()
+            tvWeightValue.text = displayWeight
 
-            // Display height value
-            val height = mViewModel.getHeightValue()
-            tvHeightValue.text = height?.let { String.format("%.1f", it) } ?: "--"
+            // Display height value (converted to preferred unit, without unit label)
+            val displayHeight = mViewModel.getDisplayHeight()
+            tvHeightValue.text = displayHeight
 
-            // Calculate and display BMI value
+            // Calculate and display BMI value (always unitless)
             val bmi = mViewModel.calculateBmi()
             tvBmiValue.text = bmi?.let { String.format("%.1f", it) } ?: "--"
 

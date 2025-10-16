@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.enums.BMIEnum
+import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
@@ -109,6 +110,24 @@ class BmiDetailViewModel @Inject constructor(
      * 获取记录时间
      */
     fun getRecordTime() = _bmiRecord.value?.recordTime
+
+    /**
+     * 获取格式化的显示体重（根据用户偏好单位）
+     */
+    fun getDisplayWeight(): String {
+        val weightKg = _bmiRecord.value?.weightKg ?: return "--"
+        val preferredUnit = BmiUnit.getPreferredWeightUnit()
+        return BmiUnit.formatDisplayWeight(weightKg.toFloat(), preferredUnit)
+    }
+
+    /**
+     * 获取格式化的显示身高（根据用户偏好单位）
+     */
+    fun getDisplayHeight(): String {
+        val heightCm = _bmiRecord.value?.heightCm ?: return "--"
+        val preferredUnit = BmiUnit.getPreferredHeightUnit()
+        return BmiUnit.formatDisplayHeight(heightCm.toFloat(), preferredUnit)
+    }
 
     /**
      * 删除记录

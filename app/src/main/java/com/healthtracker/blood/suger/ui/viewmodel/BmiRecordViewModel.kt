@@ -180,7 +180,6 @@ class BmiRecordViewModel @Inject constructor(
 
                 // 基本校验
                 if (height <= 0 || weight <= 0) {
-                    onResult(SaveRecordResult.Failed("身高或体重值不合法"))
                     return@launch
                 }
 
@@ -189,7 +188,6 @@ class BmiRecordViewModel @Inject constructor(
                     // 编辑模式：更新记录
                     val existing = bmiRepository.getBmiRecordById(recordId)
                     if (existing == null) {
-                        onResult(SaveRecordResult.Failed("记录不存在，无法更新"))
                         return@launch
                     }
                     val updatedTags = TagUtils.mergeTagIds(existing.getTagIdList(), tags)
@@ -204,8 +202,6 @@ class BmiRecordViewModel @Inject constructor(
                     if (rows > 0) {
                         _isSaved.value = true
                         onResult(SaveRecordResult.Updated(recordId))
-                    } else {
-                        onResult(SaveRecordResult.Failed("更新失败"))
                     }
                 } else {
                     // 新增模式：创建记录
@@ -221,15 +217,13 @@ class BmiRecordViewModel @Inject constructor(
                         _isSaved.value = true
                         editingRecordId = newId
                         onResult(SaveRecordResult.Created(newId))
-                    } else {
-                        onResult(SaveRecordResult.Failed("创建失败"))
                     }
                 }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 e.printStackTrace()
-                onResult(SaveRecordResult.Failed("保存失败: ${e.message}"))
+                onResult(SaveRecordResult.Failed(e.message ?: ""))
             } finally {
                 _isLoading.value = false
             }
