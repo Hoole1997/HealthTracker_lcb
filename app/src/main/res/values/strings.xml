@@ -1028,6 +1028,7 @@
     <string name="non_hdl">Non-HDL</string>
     <string name="tc_hdl">TC/HDL</string>
     <string name="ldl_hdl">LDL/HDL</string>
+    <string name="result">Result</string>
 
     <string-array name="heart_rate_labels">
         <item>Excited state</item>
