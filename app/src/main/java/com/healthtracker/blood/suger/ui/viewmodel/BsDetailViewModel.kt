@@ -87,6 +87,8 @@ class BsDetailViewModel @Inject constructor(
         return _bloodSugarRecord.value?.getDisplayGlucoseValue()?.toFloat()
     }
 
+    fun getRecordTime() = _bloodSugarRecord.value?.recordTime
+
     /**
      * 转换测量标签为血糖状态
      * 参考BsRecordViewModel的实现

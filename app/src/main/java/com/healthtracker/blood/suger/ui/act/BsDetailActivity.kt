@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.text.Html
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityBsDetailBinding
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BsDetailViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -45,6 +47,13 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
         with(mViewBind){
             btnBack.click {
                 finish()
+            }
+            btnDelete.clickWithDuration {
+
+            }
+
+            btnEdit.clickWithDuration {
+                BsRecordActivity.start(this@BsDetailActivity,recordId)
             }
         }
 
@@ -86,6 +95,13 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
             val unit = mViewModel.getDisplayUnit()
             val value = mViewModel.getDisplayValue()
 
+            tvBsValue.text = value.toString()
+            tvBsValueUnit.text = unit?.displayName ?: ""
+            mViewModel.getRecordTime()?.let {
+                tvTime.text = DateTimeUtils.formatDateTime(it)
+            }
+
+
             if (status != null && unit != null && value != null) {
                 // 使用通用 LeveStatusView：设置等级列表与当前索引
                 val levels = LeveDataFactory.BloodSugar.buildItems(this@BsDetailActivity, unit, status)
@@ -93,9 +109,7 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
                 val index = LeveDataFactory.BloodSugar.indexFor(value, unit, status)
                 bsStatusView.setCurrentLevel(index)
 
-                // 维持专家建议文案展示
-                val leve = status.getBloodSugarLevel(value, unit)
-                val leveDescription = resources.getStringArray(R.array.bs_level_expert_advice)[leve.level]
+                val leveDescription = resources.getStringArray(R.array.bs_level_expert_advice)[index]
                 tvLeveDes.text = Html.fromHtml(leveDescription)
             }
 
@@ -105,4 +119,6 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
             }
         }
     }
+
+    override fun getStatusBarColor() = R.color.c5
 }
