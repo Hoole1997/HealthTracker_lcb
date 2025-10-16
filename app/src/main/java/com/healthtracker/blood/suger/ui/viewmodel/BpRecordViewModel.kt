@@ -161,10 +161,15 @@ class BpRecordViewModel @Inject constructor(
                     _diastolicPressure.value = it.diastolicPressure
                     _pulseRate.value = it.pulseRate
                     _recordTime.value = it.recordTime
-                    
+
                     // 注意：getRecordTags方法已删除，标签功能现在由HealthTagRepository统一处理
                     // TODO: 需要根据新的HealthTag系统重新实现标签加载逻辑
-                    _selectedTagIds.value = emptyList()
+                    _selectedTagIds.value = it.tagIds?.let { tags ->
+                        val split = tags.split(",")
+                        split.map { id -> id.toLong() }
+                    } ?: kotlin.run {
+                        emptyList()
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -84,12 +84,11 @@ class BsRecordViewModel @Inject constructor(
                     _currentValue.value = displayValue
                     _currentStatus.value = convertMeasurementTagToBloodSugarStatus(it.satus)
                     _recordTime.value = it.recordTime
-                    it.tagIds?.let { tags ->
+                    _healthTags.value = it.tagIds?.let { tags ->
                         val split = tags.split(",")
-                        if(split.isNotEmpty()){
-                            _healthTags.value = split.map { id -> id.toLong() }
-                        }
-
+                        split.map { id -> id.toLong() }
+                    } ?: kotlin.run {
+                        emptyList()
                     }
                 }
             } catch (e: Exception) {

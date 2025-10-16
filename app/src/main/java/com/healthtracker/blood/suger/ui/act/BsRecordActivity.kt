@@ -50,13 +50,6 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
     override fun getVMModelClass() = BsRecordViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        // 获取传入的记录ID（如果有）
-        val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L)
-        val editRecordId = if (recordId == -1L) null else recordId
-
-        // 初始化ViewModel
-        mViewModel.initializeWithRecord(editRecordId)
-
         with(mViewBind) {
             btnBack.click {
                 finish()
@@ -87,7 +80,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                         lifecycleScope.launch {
                             val id = mViewModel.createCustomTag(tagName)
                             if (id <= 0L) {
-                                showToast("创建失败或标签已存在")
+                                showToast(getString(R.string.create_label_failed))
                             }
                         }
                     }
@@ -99,8 +92,16 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             setupRangeView()
             setupStatusSelector()
             setupSaveButton()
+            // 先设置观察者，确保能接收到数据变化
             observeViewModel()
         }
+
+        // 获取传入的记录ID（如果有）
+        val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L)
+        val editRecordId = if (recordId == -1L) null else recordId
+
+        // 在观察者设置完成后再初始化ViewModel数据
+        mViewModel.initializeWithRecord(editRecordId)
     }
 
     private fun setupRulerView() {
@@ -174,7 +175,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
     }
 
     private fun observeViewModel() {
-        this.collect(mViewModel.currentValue.debounce(50L).distinctUntilChanged()) { value ->
+        this.collectLatest(mViewModel.currentValue) { value ->
             try {
                 updateDisplayValues()
                 updateRangeView()
