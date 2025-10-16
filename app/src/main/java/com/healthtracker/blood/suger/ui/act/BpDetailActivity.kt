@@ -3,15 +3,21 @@ package com.healthtracker.blood.suger.ui.act
 import android.content.Context
 import android.os.Bundle
 import android.text.Html
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityBpDetailBinding
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BpDetailViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -35,6 +41,15 @@ class BpDetailActivity: BaseMVVMActivity<BpDetailViewModel, ActivityBpDetailBind
         with(mViewBind){
             btnBack.click {
                 finish()
+            }
+            btnDelete.clickWithDuration {
+                showDeleteConfirm()
+            }
+
+            btnEdit.clickWithDuration {
+                mViewModel.bloodPressureRecord.value?.let {
+                    BpRecordActivity.start(this@BpDetailActivity,it.id)
+                }
             }
         }
 
@@ -76,6 +91,10 @@ class BpDetailActivity: BaseMVVMActivity<BpDetailViewModel, ActivityBpDetailBind
             bpStatusView.setLevels(levels)
             val idx = LeveDataFactory.BloodPressure.indexFor(record.systolicPressure, record.diastolicPressure)
             bpStatusView.setCurrentLevel(idx)
+            tvSystolicValue.text = record.systolicPressure.toString()
+            tvDiastolicValue.text = record.diastolicPressure.toString()
+            tvPulseValue.text = record.pulseRate.toString()
+            tvTime.text = DateTimeUtils.formatDateTime(record.recordTime)
 
             // 获取血压等级描述
             val category = record.getBloodPressureCategoryEnum()
@@ -93,5 +112,30 @@ class BpDetailActivity: BaseMVVMActivity<BpDetailViewModel, ActivityBpDetailBind
             // 设置等级描述文案
             tvLeveDes.text = Html.fromHtml(String.format(levelDescription,record.systolicPressure,record.diastolicPressure))
         }
+    }
+
+    override fun getStatusBarColor() = R.color.c5
+
+    private fun showDeleteConfirm() {
+        ConfirmDialog(
+            title = getString(R.string.delete_record_remind_title),
+            message = getString(R.string.delete_record_remind),
+            leftText = getString(R.string.cancel),
+            rightText = getString(R.string.confirm),
+            onDialogListener = object : DialogListener {
+                override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
+                    super.onItemClick(dialogFragment, which)
+                    if (which == R.id.btn_ok) {
+                        lifecycleScope.launch {
+                            if (mViewModel.deleteRecord()) {
+                                finish()
+                            } else {
+                                showToast(getString(R.string.delete_record_failed))
+                            }
+                        }
+                    }
+                }
+            }
+        ).show(supportFragmentManager)
     }
 }
