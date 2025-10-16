@@ -129,6 +129,16 @@ class BloodPressureRepository @Inject constructor(
     suspend fun updateBloodPressureRecord(record: BloodPressureRecord): Int = updateRecord(record)
     suspend fun deleteBloodPressureRecord(recordId: Long): Int = deleteRecordById(recordId)
     suspend fun getBloodPressureRecordById(recordId: Long): BloodPressureRecord? = getRecordById(recordId)
+    
+    /**
+     * 根据ID获取血压记录（Flow响应式）
+     * @param recordId 记录ID
+     * @return Flow形式的血压记录对象，支持数据变化监听
+     */
+    fun getBloodPressureRecordByIdFlow(recordId: Long): Flow<BloodPressureRecord?> {
+        return bloodPressureDao.getByIdFlow(recordId)
+    }
+    
     fun getAllBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getAllRecords()
 
     // 时间范围查询的公共API方法，委托给基类实现

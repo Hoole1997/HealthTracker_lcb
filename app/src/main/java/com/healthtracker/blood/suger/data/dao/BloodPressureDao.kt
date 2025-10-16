@@ -61,6 +61,14 @@ interface BloodPressureDao {
     suspend fun getById(id: Long): BloodPressureRecord?
 
     /**
+     * 根据ID获取血压记录（Flow响应式）
+     * @param id 记录ID
+     * @return Flow形式的血压记录对象，支持数据变化监听
+     */
+    @Query("SELECT * FROM blood_pressure_records WHERE id = :id")
+    fun getByIdFlow(id: Long): Flow<BloodPressureRecord?>
+
+    /**
      * 获取所有血压记录，按时间倒序排列
      * @return Flow形式的血压记录列表，支持数据变化监听
      */

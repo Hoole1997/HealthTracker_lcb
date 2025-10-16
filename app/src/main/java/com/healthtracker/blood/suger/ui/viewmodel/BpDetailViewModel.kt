@@ -13,6 +13,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,7 +32,7 @@ class BpDetailViewModel @Inject constructor(
         const val RECORD_ID = "record_id"
     }
 
-    // 血压记录数据
+    // 血压记录数据，使用StateFlow进行状态管理
     private val _bloodPressureRecord = MutableStateFlow<BloodPressureRecord?>(null)
     val bloodPressureRecord: StateFlow<BloodPressureRecord?> = _bloodPressureRecord.asStateFlow()
 
@@ -46,37 +48,43 @@ class BpDetailViewModel @Inject constructor(
     private val recordId: Long = savedStateHandle.get<Long>(RECORD_ID) ?: -1L
 
     init {
+        // 获取传入的记录ID
+        "BpDetailViewModel init with recordId: $recordId".logd(TAG)
+        
         if (recordId != -1L) {
-            loadBloodPressureRecord(recordId)
+            // 使用Flow响应式查询，自动监听数据变化
+            observeBloodPressureRecord(recordId)
+        } else {
+            "Invalid recordId: $recordId".loge(TAG)
         }
     }
 
     /**
-     * 加载血压记录详情
+     * 使用Flow响应式查询血压记录，支持数据变化监听
      * @param recordId 记录ID
      */
-    private fun loadBloodPressureRecord(recordId: Long) {
+    private fun observeBloodPressureRecord(recordId: Long) {
         viewModelScope.launch {
             try {
-                _isLoading.value = true
-                _error.value = null
-
-                val record = bloodPressureRepository.getBloodPressureRecordById(recordId)
-                _bloodPressureRecord.value = record
-
-                if (record == null) {
-                    _error.value = "Blood pressure record not found"
-                }
+                "开始监听血压记录变化，recordId: $recordId".logd(TAG)
+                
+                // 使用Repository的Flow方法进行响应式查询
+                bloodPressureRepository.getBloodPressureRecordByIdFlow(recordId)
+                    .stateIn(
+                        scope = viewModelScope,
+                        started = SharingStarted.WhileSubscribed(5000),
+                        initialValue = null
+                    )
+                    .collect { record ->
+                        "血压记录数据更新: $record".logd(TAG)
+                        _bloodPressureRecord.value = record
+                    }
             } catch (e: CancellationException) {
-                // 协程正常取消，不记录为错误
-                "Blood pressure record loading cancelled: ID=$recordId".logd(TAG)
-                throw e // 重新抛出以保持协程取消语义
+                "血压记录查询被取消".logd(TAG)
+                throw e
             } catch (e: Exception) {
-                // 真正的异常情况：数据库操作失败等
-                "Failed to load blood pressure record: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
-                _error.value = "Failed to load blood pressure record: ${e.message}"
-            } finally {
-                _isLoading.value = false
+                "查询血压记录失败: ${e.message}".loge(TAG)
+                _bloodPressureRecord.value = null
             }
         }
     }
@@ -86,7 +94,7 @@ class BpDetailViewModel @Inject constructor(
      */
     fun refresh() {
         if (recordId != -1L) {
-            loadBloodPressureRecord(recordId)
+            observeBloodPressureRecord(recordId)
         }
     }
 

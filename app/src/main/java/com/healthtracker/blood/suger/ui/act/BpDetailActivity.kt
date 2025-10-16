@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.ui.act
 
+import android.R.attr.category
 import android.content.Context
 import android.os.Bundle
 import android.text.Html
@@ -95,22 +96,9 @@ class BpDetailActivity: BaseMVVMActivity<BpDetailViewModel, ActivityBpDetailBind
             tvDiastolicValue.text = record.diastolicPressure.toString()
             tvPulseValue.text = record.pulseRate.toString()
             tvTime.text = DateTimeUtils.formatDateTime(record.recordTime)
-
-            // 获取血压等级描述
-            val category = record.getBloodPressureCategoryEnum()
             val rangeDes = resources.getStringArray(R.array.bp_level_expert_advice)
-            val levelDescription = when(category) {
-                BloodPressureCategory.LOW -> rangeDes[0] // 低血压建议
-                BloodPressureCategory.NORMAL -> rangeDes[1] // 正常建议
-                BloodPressureCategory.ELEVATED -> rangeDes[2] // 偏高建议
-                BloodPressureCategory.HIGH_STAGE_1 -> rangeDes[3] // 1级高血压建议
-                BloodPressureCategory.HIGH_STAGE_2 -> rangeDes[4] // 2级高血压建议
-                BloodPressureCategory.HYPERTENSIVE_CRISIS -> rangeDes[5] // 高血压危象建议
-                else -> "UnKnow"
-            }
-
             // 设置等级描述文案
-            tvLeveDes.text = Html.fromHtml(String.format(levelDescription,record.systolicPressure,record.diastolicPressure))
+            tvLeveDes.text = Html.fromHtml(String.format(rangeDes[idx],record.systolicPressure,record.diastolicPressure))
         }
     }
 
