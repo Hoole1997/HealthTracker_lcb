@@ -15,6 +15,7 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,30 +68,30 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
     }
 
     private fun observeData() {
-        lifecycleScope.launch {
-            // 观察血糖记录数据变化
-            mViewModel.bloodSugarRecord.collect { record ->
-                if (record != null) {
-                    updateUI()
-                }
+
+        collectLatest(mViewModel.bloodSugarRecord){
+            if (it != null) {
+                updateUI()
             }
         }
 
-        lifecycleScope.launch {
-            // 观察错误状态
-            mViewModel.error.collect { error ->
-                error?.let {
-                    showToast(it)
-                    mViewModel.clearError()
-                }
+        collectLatest(mViewModel.error){error ->
+            error?.let {
+                showToast(it)
+                mViewModel.clearError()
             }
         }
+
 
         lifecycleScope.launch {
             // 观察加载状态
             mViewModel.isLoading.collect { isLoading ->
                 // TODO: 显示/隐藏加载状态
             }
+        }
+
+        collectLatest(mViewModel.tags){
+            updateTags(it.take(2))
         }
     }
 
@@ -123,6 +124,14 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
             status?.let {
 
             }
+        }
+    }
+
+    private fun updateTags(tags: List<com.healthtracker.blood.suger.data.entity.HealthTag>) {
+        mViewBind.tvTags.text = if (tags.isEmpty()) {
+            getString(R.string.heart_rate_no_tags)
+        } else {
+            tags.joinToString(" · ") { it.name }
         }
     }
 

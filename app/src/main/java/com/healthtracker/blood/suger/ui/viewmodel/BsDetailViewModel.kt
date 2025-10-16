@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
+import com.healthtracker.blood.suger.data.repository.HealthTagRepository
+import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
@@ -20,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BsDetailViewModel @Inject constructor(
-    private val bloodSugarRepository: BloodSugarRepository
+    private val bloodSugarRepository: BloodSugarRepository,
+    private val healthTagRepository: HealthTagRepository
 ) : BaseViewModel() {
 
     // 血糖记录状态
@@ -35,9 +38,20 @@ class BsDetailViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    private val _tags = MutableStateFlow<List<HealthTag>>(emptyList())
+    val tags: StateFlow<List<HealthTag>> = _tags.asStateFlow()
+
     private var hasNotifiedMissing = false
 
     private var isDelete = false
+
+    private suspend fun loadTags(ids: List<Long>) {
+        try {
+            _tags.value = if (ids.isEmpty()) emptyList() else healthTagRepository.getTagsByIds(ids)
+        } catch (e: Exception) {
+            _tags.value = emptyList()
+        }
+    }
 
     /**
      * 根据记录ID初始化并加载记录
@@ -58,6 +72,7 @@ class BsDetailViewModel @Inject constructor(
                         }
                     } else {
                         hasNotifiedMissing = false
+                        loadTags(record.getTagIdList())
                     }
                 }
             } catch (e: CancellationException) {
