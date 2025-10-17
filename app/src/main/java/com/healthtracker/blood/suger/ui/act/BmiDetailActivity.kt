@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.databinding.ActivityBmiDetailBinding
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BmiDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
+import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
@@ -72,6 +73,21 @@ class BmiDetailActivity: BaseMVVMActivity<BmiDetailViewModel, ActivityBmiDetailB
             btnDelete.clickWithDuration {
                 showDeleteConfirmDialog()
             }
+
+            // 设置专家建议控件监听器
+            expertAdviceView.setOnExpertAdviceListener(object : ExpertAdviceView.OnExpertAdviceListener {
+                override fun onCountdownFinished() {
+                    // TODO: 倒计时结束，显示广告或解锁内容
+                }
+
+                override fun onGetTipClicked() {
+                    // TODO: 点击获取提示，显示广告
+                }
+
+                override fun onCancelClicked() {
+                    // 用户取消倒计时
+                }
+            })
         }
     }
 
@@ -147,7 +163,7 @@ class BmiDetailActivity: BaseMVVMActivity<BmiDetailViewModel, ActivityBmiDetailB
     private fun updateExpertAdvice() {
         val bmiCategory = mViewModel.getBmiCategory()
         if (bmiCategory == null) {
-            mViewBind.tvLeveDes.text = ""
+            mViewBind.expertAdviceView.setAdviceText("")
             return
         }
 
@@ -157,9 +173,9 @@ class BmiDetailActivity: BaseMVVMActivity<BmiDetailViewModel, ActivityBmiDetailB
 
         if (categoryIndex in adviceArray.indices) {
             val adviceText = adviceArray[categoryIndex]
-            mViewBind.tvLeveDes.text = Html.fromHtml(adviceText, Html.FROM_HTML_MODE_LEGACY)
+            mViewBind.expertAdviceView.setAdviceText(adviceText)
         } else {
-            mViewBind.tvLeveDes.text = ""
+            mViewBind.expertAdviceView.setAdviceText("")
         }
 
         "Displaying advice for category: $bmiCategory (index: $categoryIndex)".logd(TAG)

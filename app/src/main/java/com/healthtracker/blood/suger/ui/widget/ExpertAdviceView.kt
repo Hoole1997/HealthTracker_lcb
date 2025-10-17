@@ -45,7 +45,7 @@ class ExpertAdviceView @JvmOverloads constructor(
 
     // 状态
     private var isMaskVisible = false
-    private var countdownSeconds = 2
+    private var countdownSeconds = 5
     private var blurRadius = 20f
     private var minHeightWithMask = 0
 
@@ -141,7 +141,6 @@ class ExpertAdviceView @JvmOverloads constructor(
         if (visible) {
             setupBlurEffect()
         }
-
         // 同步控制遮罩层
         binding.clMask.isVisible = visible
 
@@ -150,9 +149,10 @@ class ExpertAdviceView @JvmOverloads constructor(
 
         // 控制按钮显示（不自动开始倒计时）
         if (visible) {
+            "${countdownSeconds}s".also { binding.btnCountdown.text = it }
             // 显示倒计时按钮，隐藏获取提示按钮
-            binding.llCountdownButtons.isVisible = true
-            binding.btnGetTip.isVisible = false
+            binding.llCountdownButtons.visible()
+            binding.btnGetTip.gone()
             // 移除自动开始倒计时，由外部控制
         } else {
             // 隐藏遮罩时停止倒计时
@@ -251,7 +251,7 @@ class ExpertAdviceView @JvmOverloads constructor(
             }
         } catch (e: Exception) {
             // 模糊设置失败，静默处理
-            binding.blurView.isVisible = false
+            binding.blurView.gone()
         }
     }
 

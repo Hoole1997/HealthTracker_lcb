@@ -117,7 +117,6 @@ class BpDetailActivity: BaseMVVMActivity<BpDetailViewModel, ActivityBpDetailBind
             // 设置专家建议文案
             val adviceText = String.format(rangeDes[idx], record.systolicPressure, record.diastolicPressure)
             expertAdviceView.setAdviceText(adviceText)
-            expertAdviceView.startCountdown()
         }
     }
 

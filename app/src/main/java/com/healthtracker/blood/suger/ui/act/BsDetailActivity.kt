@@ -11,6 +11,7 @@ import com.healthtracker.blood.suger.databinding.ActivityBsDetailBinding
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BsDetailViewModel
+import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
@@ -61,6 +62,21 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
             btnEdit.clickWithDuration {
                 BsRecordActivity.start(this@BsDetailActivity,recordId)
             }
+
+            // 设置专家建议控件监听器
+            expertAdviceView.setOnExpertAdviceListener(object : ExpertAdviceView.OnExpertAdviceListener {
+                override fun onCountdownFinished() {
+                    // TODO: 倒计时结束，显示广告或解锁内容
+                }
+
+                override fun onGetTipClicked() {
+                    // TODO: 点击获取提示，显示广告
+                }
+
+                override fun onCancelClicked() {
+                    // 用户取消倒计时
+                }
+            })
         }
 
         // 观察数据变化
@@ -117,7 +133,7 @@ class BsDetailActivity: BaseMVVMActivity<BsDetailViewModel, ActivityBsDetailBind
                 bsStatusView.setCurrentLevel(index)
 
                 val leveDescription = resources.getStringArray(R.array.bs_level_expert_advice)[index]
-                tvLeveDes.text = Html.fromHtml(leveDescription)
+                expertAdviceView.setAdviceText(leveDescription)
             }
 
             // 更新等级描述文案

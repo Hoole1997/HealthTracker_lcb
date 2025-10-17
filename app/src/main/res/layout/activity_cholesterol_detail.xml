@@ -224,116 +224,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_time"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_advance"
+            <!-- 专家建议自定义控件 -->
+            <com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
+                android:id="@+id/expert_advice_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/dp_237"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cholesterol_status_view"
-                android:layout_marginHorizontal="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:background="@drawable/bg_rect_white_12"
-                android:padding="@dimen/dp_16"
-                android:orientation="vertical">
-                <androidx.constraintlayout.utils.widget.ImageFilterView
-                    android:id="@+id/iv_avatar_bg"
-                    android:layout_width="@dimen/dp_26"
-                    android:layout_height="@dimen/dp_26"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:round="@dimen/dp_13"
-                    android:background="@color/c5"/>
-
-                <androidx.constraintlayout.utils.widget.ImageFilterView
-                    android:layout_width="@dimen/dp_24"
-                    android:layout_height="@dimen/dp_24"
-                    app:srcCompat="@mipmap/ic_doctor_avatar"
-                    app:layout_constraintTop_toTopOf="@id/iv_avatar_bg"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_avatar_bg"
-                    app:layout_constraintStart_toStartOf="@id/iv_avatar_bg"
-                    app:layout_constraintEnd_toEndOf="@id/iv_avatar_bg"
-                    app:round="@dimen/dp_12"
-                    android:background="@color/c5"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    style="@style/TextViewFont_RobotoBold"
-                    android:textColor="@color/t1"
-                    android:textSize="@dimen/sp_16"
-                    app:layout_constraintTop_toTopOf="@id/iv_avatar_bg"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_avatar_bg"
-                    app:layout_constraintStart_toEndOf="@id/iv_avatar_bg"
-                    android:maxLines="1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:text="@string/exclusive_advice"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_leve_des"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_avatar_bg"
-                    android:lineSpacingExtra="@dimen/dp_4"
-                    android:textColor="@color/t1"
-                    android:textSize="@dimen/sp_14"
-                    />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_watch_ad"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_0"
-                app:layout_constraintTop_toTopOf="@id/cl_advance"
-                app:layout_constraintBottom_toBottomOf="@id/cl_advance"
-                android:layout_marginHorizontal="@dimen/sp_16"
-                android:visibility="gone">
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:drawablePadding="@dimen/dp_4"
-                    android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:drawableTop="@mipmap/ic_lock"
-                    android:textColor="@color/t1"
-                    android:textSize="@dimen/sp_16"
-                    style="@style/TextViewFont_RobotoBold"
-                    android:text="@string/watch_ads_to_see_exclusive_advice"/>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    app:layout_constraintBottom_toBottomOf="parent">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_count_down"
-                        style="@style/MaterialButton.b1"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/dp_48"
-                        android:layout_marginEnd="@dimen/dp_12"
-                        android:layout_weight="1"
-                        tools:text="2s" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_cancel"
-                        style="@style/MaterialButton.b1"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/dp_48"
-                        android:layout_weight="1"
-                        android:text="@string/cancel" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:eav_showMask="true"
+                app:eav_countdownSeconds="5"
+                app:eav_blurRadius="5"
+                app:eav_minHeightWithMask="@dimen/dp_237" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

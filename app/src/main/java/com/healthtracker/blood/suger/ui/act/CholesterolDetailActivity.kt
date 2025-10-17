@@ -12,6 +12,7 @@ import com.healthtracker.blood.suger.databinding.ActivityCholesterolDetailBindin
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.viewmodel.CholesterolDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
+import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
@@ -64,6 +65,21 @@ class CholesterolDetailActivity : BaseMVVMActivity<CholesterolDetailViewModel, A
             btnDelete.clickWithDuration {
                 showDeleteConfirm()
             }
+
+            // 设置专家建议控件监听器
+            expertAdviceView.setOnExpertAdviceListener(object : ExpertAdviceView.OnExpertAdviceListener {
+                override fun onCountdownFinished() {
+                    // TODO: 倒计时结束，显示广告或解锁内容
+                }
+
+                override fun onGetTipClicked() {
+                    // TODO: 点击获取提示，显示广告
+                }
+
+                override fun onCancelClicked() {
+                    // 用户取消倒计时
+                }
+            })
         }
     }
 
@@ -117,7 +133,7 @@ class CholesterolDetailActivity : BaseMVVMActivity<CholesterolDetailViewModel, A
                 com.healthtracker.blood.suger.data.enums.CholesterolLevel.HIGH -> 4
                 com.healthtracker.blood.suger.data.enums.CholesterolLevel.VERY_HIGH -> 5
             }
-            tvLeveDes.text = Html.fromHtml(adviceArray[adviceIndex])
+            expertAdviceView.setAdviceText(adviceArray[adviceIndex])
         }
     }
 

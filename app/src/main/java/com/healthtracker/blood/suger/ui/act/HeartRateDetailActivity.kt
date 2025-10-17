@@ -18,6 +18,7 @@ import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HeartRateDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
+import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
@@ -63,6 +64,21 @@ class HeartRateDetailActivity :
                     HeartRateRecordActivity.start(this@HeartRateDetailActivity, id)
                 } ?: showToast(getString(R.string.record_not_ready))
             }
+
+            // 设置专家建议控件监听器
+            expertAdviceView.setOnExpertAdviceListener(object : ExpertAdviceView.OnExpertAdviceListener {
+                override fun onCountdownFinished() {
+                    // TODO: 倒计时结束，显示广告或解锁内容
+                }
+
+                override fun onGetTipClicked() {
+                    // TODO: 点击获取提示，显示广告
+                }
+
+                override fun onCancelClicked() {
+                    // 用户取消倒计时
+                }
+            })
         }
     }
 
@@ -116,7 +132,7 @@ class HeartRateDetailActivity :
         val index = LeveDataFactory.HeartRate.indexFor(record.heartRateBpm)
         mViewBind.bpmStatusView.setCurrentLevel(index)
         val desArray = resources.getStringArray(R.array.hr_level_expert_advice)
-        mViewBind.tvLeveDes.text = Html.fromHtml(desArray[index])
+        mViewBind.expertAdviceView.setAdviceText(desArray[index])
     }
 
     private fun updateStatus(status: HeartRateStatus) {
