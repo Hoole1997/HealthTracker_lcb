@@ -1,23 +1,26 @@
 package com.healthtracker.blood.suger.ui.act
 
-import android.R.attr.category
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
+import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import eightbitlab.com.blurview.RenderScriptBlur
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
-import com.healthtracker.blood.suger.data.enums.BloodPressureCategory
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityBpDetailBinding
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
-import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BpDetailViewModel
+import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,6 +55,9 @@ class BpDetailActivity: BaseMVVMActivity<BpDetailViewModel, ActivityBpDetailBind
                     BpRecordActivity.start(this@BpDetailActivity,it.id)
                 }
             }
+
+            // 初始化毛玻璃模糊效果
+            setupBlurEffect()
         }
 
         // 观察数据变化
@@ -125,5 +131,29 @@ class BpDetailActivity: BaseMVVMActivity<BpDetailViewModel, ActivityBpDetailBind
                 }
             }
         ).show(supportFragmentManager)
+    }
+
+    /**
+     * 设置毛玻璃模糊效果
+     *
+     * 配置说明：
+     * - blurRadius: 模糊半径 (10-25 推荐, 默认 20)
+     * - overlayColor: 叠加颜色 (#40FFFFFF = 25% 白色)
+     * - blurAutoUpdate: 自动更新模糊效果
+     */
+    private fun setupBlurEffect() {
+        try {
+            with(mViewBind){
+                blurView.apply {
+                    outlineProvider = ViewOutlineProvider.BACKGROUND
+                    clipToOutline = true
+                    setupWith(window.decorView as ViewGroup)
+                        .setFrameClearDrawable(window.decorView.background)
+                        .setBlurRadius(5f)
+                }
+            }
+        } catch (e: Exception) {
+            e.toString().loge()
+        }
     }
 }

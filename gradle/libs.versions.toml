@@ -46,6 +46,7 @@ firebase_mock_version = "2.0.5"
 multidex = "2.0.1"
 gson = "2.13.2"
 hilt_version = "2.57.1"
+blur_view_version = "version-2.0.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -139,7 +140,7 @@ kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-pl
 kotlin-compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room_version" }
-
+blur-veiw = { module = "com.github.Dimezis:BlurView", version.ref = "blur_view_version" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

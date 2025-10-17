@@ -16,6 +16,7 @@ dependencyResolutionManagement {
         }
         maven {
             setUrl("https://jitpack.io")
+            isAllowInsecureProtocol = false
         }
     }
 }

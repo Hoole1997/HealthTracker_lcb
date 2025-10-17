@@ -166,6 +166,9 @@ dependencies {
     implementation(libs.imagepicker)
     implementation(libs.ucrop)
 
+    // 毛玻璃模糊效果库
+    implementation(libs.blur.veiw)
+
     api(libs.flexbox)
 }
 
