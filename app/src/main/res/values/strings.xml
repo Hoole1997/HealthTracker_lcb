@@ -1039,6 +1039,7 @@
     <string name="exclusive_advice">Exclusive Advice</string>
     <string name="bmi">BMI</string>
     <string name="watch_ads_to_see_exclusive_advice">Watch Ads to see exclusive advice.</string>
+    <string name="get_exclusive_tips">Get Exclusive Tips</string>
 
     <string-array name="heart_rate_labels">
         <item>Excited state</item>

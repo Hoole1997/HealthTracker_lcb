@@ -207,5 +207,22 @@
         <attr name="android:orientation" />
     </declare-styleable>
 
+    <!-- ExpertAdviceView 专家建议视图自定义属性 -->
+    <declare-styleable name="ExpertAdviceView">
+        <!-- 是否显示遮罩层（同时控制模糊效果） -->
+        <attr name="eav_showMask" format="boolean" />
+
+        <!-- 倒计时秒数（默认2秒） -->
+        <attr name="eav_countdownSeconds" format="integer" />
+
+        <!-- 模糊半径（默认20f） -->
+        <attr name="eav_blurRadius" format="float" />
+
+        <!-- 专家建议文本 -->
+        <attr name="eav_adviceText" format="string|reference" />
+
+        <!-- 有遮罩时的最小高度（默认237dp） -->
+        <attr name="eav_minHeightWithMask" format="dimension" />
+    </declare-styleable>
 
 </resources>
