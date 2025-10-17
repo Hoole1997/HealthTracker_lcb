@@ -150,26 +150,9 @@ class HeartRateDetailActivity :
     }
     override fun getStatusBarColor() = R.color.c5
     private fun showDeleteConfirm() {
-        ConfirmDialog(
-            title = getString(R.string.delete_record_remind_title),
-            message = getString(R.string.delete_record_remind),
-            leftText = getString(R.string.cancel),
-            rightText = getString(R.string.confirm),
-            onDialogListener = object : DialogListener {
-                override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
-                    super.onItemClick(dialogFragment, which)
-                    if (which == R.id.btn_ok) {
-                        lifecycleScope.launch {
-                            if (mViewModel.deleteRecord()) {
-                                finish()
-                            } else {
-                                showToast(getString(R.string.delete_record_failed))
-                            }
-                        }
-                    }
-                }
-            }
-        ).show(supportFragmentManager)
+        showDeleteConfirm {
+            mViewModel.deleteRecord()
+        }
     }
 
 }
