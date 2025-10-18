@@ -32,3 +32,23 @@ inline fun AppCompatActivity.showDeleteConfirm(crossinline onConfirm: suspend ()
         }
     ).show(supportFragmentManager)
 }
+
+
+inline fun AppCompatActivity.showFreeLockConfirm(crossinline onConfirm: () -> Unit,crossinline onCancel:() -> Unit) {
+    ConfirmDialog(
+        title = getString(R.string.kindly_note),
+        message = getString(R.string.your_health_data_requires),
+        leftText = getString(R.string.cancel),
+        rightText = getString(R.string.free_unlock),
+        onDialogListener = object : DialogListener {
+            override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
+                super.onItemClick(dialogFragment, which)
+                if (which == R.id.btn_ok) {
+                    onConfirm.invoke()
+                }else{
+                    onCancel.invoke()
+                }
+            }
+        }
+    ).show(supportFragmentManager)
+}

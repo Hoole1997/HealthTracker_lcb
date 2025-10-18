@@ -7,10 +7,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.LayoutExpertAdviceBinding
+import com.healthtracker.blood.suger.ui.act.showFreeLockConfirm
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
@@ -154,6 +156,13 @@ class ExpertAdviceView @JvmOverloads constructor(
             binding.llCountdownButtons.visible()
             binding.btnGetTip.gone()
             // 移除自动开始倒计时，由外部控制
+            if(context is AppCompatActivity){
+                (context as AppCompatActivity).showFreeLockConfirm({
+                    listener?.onGetTipClicked()
+                },{
+                    startCountdown()
+                })
+            }
         } else {
             // 隐藏遮罩时停止倒计时
             stopCountdown()
