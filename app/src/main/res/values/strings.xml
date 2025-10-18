@@ -1052,6 +1052,9 @@
     <string name="skip">Skip</string>
     <string name="next">Next</string>
     <string name="start_health_journey">Start Health Journey!</string>
+    <string name="guide_bp_des">Click to add your first Blood Pressure reading now.</string>
+    <string name="guide_bs_des">Click to add your first Blood Sugar reading now.</string>
+    <string name="guide_hr_des">Click to add your first Heart Rate reading now.</string>
 
     <string-array name="heart_rate_labels">
         <item>Excited state</item>

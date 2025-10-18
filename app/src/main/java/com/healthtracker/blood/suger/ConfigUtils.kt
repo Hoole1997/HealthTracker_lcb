@@ -2,6 +2,9 @@ package com.healthtracker.blood.suger
 
 import com.healthtracker.blood.suger.constants.KEY_HAS_ADD_PROFILE
 import com.healthtracker.blood.suger.constants.KEY_HAS_GUIDE_NEW
+import com.healthtracker.blood.suger.constants.KEY_HAS_SHOW_GUIDE_BP
+import com.healthtracker.blood.suger.constants.KEY_HAS_SHOW_GUIDE_BS
+import com.healthtracker.blood.suger.constants.KEY_HAS_SHOW_GUIDE_HR
 import com.healthtracker.blood.suger.constants.KEY_IS_NEW_USER
 import com.healthtracker.blood.suger.constants.KEY_USER_AGE
 import com.healthtracker.blood.suger.constants.KEY_USER_GENDER
@@ -27,3 +30,21 @@ fun hasAddProfile() = SpUtils.getBoolean(KEY_HAS_ADD_PROFILE,false)
 fun saveHasNewGuide() = SpUtils.putBoolean(KEY_HAS_GUIDE_NEW,true)
 
 fun hasNewGuide() = SpUtils.getBoolean(KEY_HAS_GUIDE_NEW,false)
+
+
+fun saveShowGuideBp() = SpUtils.putBoolean(KEY_HAS_SHOW_GUIDE_BP,true)
+
+fun hasShowGuideBp() = SpUtils.getBoolean(KEY_HAS_SHOW_GUIDE_BP,false)
+
+fun saveShowGuideBs() = SpUtils.putBoolean(KEY_HAS_SHOW_GUIDE_BS,true)
+
+fun hasShowGuideBs() = SpUtils.getBoolean(KEY_HAS_SHOW_GUIDE_BS,false)
+
+fun saveShowGuideHr() = SpUtils.putBoolean(KEY_HAS_SHOW_GUIDE_HR,true)
+
+fun hasShowGuideHr() = SpUtils.getBoolean(KEY_HAS_SHOW_GUIDE_HR,false)
+
+
+fun hasShowAllGuide() = hasShowGuideBp() && hasShowGuideBs() && hasShowGuideHr()
+
+

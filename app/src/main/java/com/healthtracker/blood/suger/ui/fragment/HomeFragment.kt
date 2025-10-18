@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,6 +18,13 @@ import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
+import com.healthtracker.blood.suger.hasShowAllGuide
+import com.healthtracker.blood.suger.hasShowGuideBp
+import com.healthtracker.blood.suger.hasShowGuideBs
+import com.healthtracker.blood.suger.hasShowGuideHr
+import com.healthtracker.blood.suger.saveShowGuideBp
+import com.healthtracker.blood.suger.saveShowGuideBs
+import com.healthtracker.blood.suger.saveShowGuideHr
 import com.healthtracker.blood.suger.ui.act.BmiRecordActivity
 import com.healthtracker.blood.suger.ui.act.BpRecordActivity
 import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
@@ -29,6 +37,12 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.startActivity
+import com.hyy.highlightpro.HighlightPro
+import com.hyy.highlightpro.parameter.Constraints
+import com.hyy.highlightpro.parameter.HighlightParameter
+import com.hyy.highlightpro.parameter.MarginOffset
+import com.hyy.highlightpro.shape.RectShape
+import com.hyy.highlightpro.util.dp
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -115,6 +129,11 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         collectLatest(mViewModel.latestCholesterolRecord) { record ->
             updateCholesterolUI(record)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        guidFeature()
     }
 
     /**
@@ -246,5 +265,107 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         getString(R.string.unit_kg)
     } else {
         getString(R.string.unit_lb)
+    }
+
+    private fun guidFeature(){
+        if(hasShowAllGuide()){
+            return
+        }
+
+        if(guideBp()){
+            return
+        }
+
+        if(guideBs()){
+            return
+        }
+
+        guideHr()
+
+    }
+
+    private fun guideBp(): Boolean{
+        if(hasShowGuideBp()){
+            return false
+        }
+        HighlightPro.with(this)
+            .setHighlightParameter {
+                HighlightParameter.Builder()
+                    .setHighlightViewId(R.id.cl_blood_pressure)
+                    .setTipsViewId(R.layout.layout_guide_bp)
+                    .setHighlightShape(RectShape(4f.dp, 4f.dp, 12f))
+                    .setHighlightHorizontalPadding(0f.dp)
+                    .setConstraints(Constraints.StartToStartOfHighlight + Constraints.TopToBottomOfHighlight + Constraints.EndToEndOfHighlight)
+                    .setMarginOffset(MarginOffset(start = 7.dp, top = 16.dp, end = 16.dp))
+                    .build()
+            }
+            .setOnMaskViewClickCallback { index ->
+                //do something
+                BpRecordActivity.start(requireActivity())
+            }
+            .setOnShowCallback {
+                saveShowGuideBp()
+
+            }
+            .show()
+
+        return true
+
+    }
+
+    private fun guideBs(): Boolean{
+        if(hasShowGuideBs()){
+            return false
+        }
+        HighlightPro.with(this)
+            .setHighlightParameter {
+                HighlightParameter.Builder()
+                    .setHighlightViewId(R.id.cl_ps_record)
+                    .setTipsViewId(R.layout.layout_guide_bs)
+                    .setHighlightShape(RectShape(4f.dp, 4f.dp, 12f))
+                    .setHighlightHorizontalPadding(0f.dp)
+                    .setConstraints(Constraints.StartToStartOfHighlight + Constraints.TopToBottomOfHighlight + Constraints.EndToEndOfHighlight)
+                    .setMarginOffset(MarginOffset(start = 7.dp, top = 16.dp, end = 16.dp))
+                    .build()
+            }
+            .setOnMaskViewClickCallback { index ->
+                //do something
+                BsRecordActivity.start(requireActivity())
+            }
+            .setOnShowCallback {
+                saveShowGuideBs()
+            }
+            .show()
+
+        return true
+
+    }
+
+    private fun guideHr(): Boolean{
+        if(hasShowGuideHr()){
+            return false
+        }
+        HighlightPro.with(this)
+            .setHighlightParameter {
+                HighlightParameter.Builder()
+                    .setHighlightViewId(R.id.cl_heart_rate)
+                    .setTipsViewId(R.layout.layout_guide_hr)
+                    .setHighlightShape(RectShape(4f.dp, 4f.dp, 12f))
+                    .setHighlightHorizontalPadding(0f.dp)
+                    .setConstraints(Constraints.StartToStartOfHighlight + Constraints.TopToBottomOfHighlight + Constraints.EndToEndOfHighlight)
+                    .setMarginOffset(MarginOffset(start = 7.dp, top = 16.dp, end = 16.dp))
+                    .build()
+            }
+            .setOnMaskViewClickCallback { index ->
+                //do something
+                HeartRateRecordActivity.start(requireActivity())
+            }
+            .setOnShowCallback {
+                saveShowGuideHr()
+            }
+            .show()
+
+        return true
+
     }
 }
