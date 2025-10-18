@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger
 
 import com.healthtracker.blood.suger.constants.KEY_HAS_ADD_PROFILE
+import com.healthtracker.blood.suger.constants.KEY_HAS_GUIDE_NEW
 import com.healthtracker.blood.suger.constants.KEY_IS_NEW_USER
 import com.healthtracker.blood.suger.constants.KEY_USER_AGE
 import com.healthtracker.blood.suger.constants.KEY_USER_GENDER
@@ -22,3 +23,7 @@ fun isNewUser() = SpUtils.getBoolean(KEY_IS_NEW_USER,true)
  * 用户是否设置年龄and性别
  */
 fun hasAddProfile() = SpUtils.getBoolean(KEY_HAS_ADD_PROFILE,false)
+
+fun saveHasNewGuide() = SpUtils.putBoolean(KEY_HAS_GUIDE_NEW,true)
+
+fun hasNewGuide() = SpUtils.getBoolean(KEY_HAS_GUIDE_NEW,false)

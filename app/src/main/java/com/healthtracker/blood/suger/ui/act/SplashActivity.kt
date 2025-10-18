@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
+import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.isNewUser
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -36,7 +37,12 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         SplashStateMachine(
             scope = lifecycleScope,
             onNavigate = {
-                startActivity<MainActivity>(isFinishSelf = true)
+                if(hasNewGuide()){
+                    startActivity<MainActivity>(isFinishSelf = true)
+                }else{
+                    startActivity<GuideActivity>(isFinishSelf = true)
+                }
+
             }
         )
     }

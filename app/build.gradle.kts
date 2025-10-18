@@ -169,6 +169,9 @@ dependencies {
     // 毛玻璃模糊效果库
     implementation(libs.blur.veiw)
 
+    implementation(libs.viewpagerindicator)
+    implementation(libs.highlightpro)
+
     api(libs.flexbox)
 }
 

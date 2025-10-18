@@ -4,6 +4,7 @@
 compileSdk = "35"
 # @keep
 flexbox = "3.0.0"
+highlightpro = "1.4.0"
 imagepicker = "2.1"
 minSdk = "24"
 # @keep
@@ -30,6 +31,7 @@ google_service_version = "4.4.3"
 glide = "5.0.4"
 fragmentKtx = "1.8.9"
 ucrop = "2.2.11"
+viewpagerindicator = "1.2.3"
 webkit = "1.11.0"
 
 navigation_version = "2.9.4"
@@ -52,6 +54,7 @@ blur_view_version = "version-2.0.5"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
+highlightpro = { module = "com.github.hyy920109:HighLightPro", version.ref = "highlightpro" }
 imagepicker = { module = "com.github.dhaval2404:imagepicker", version.ref = "imagepicker" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -80,6 +83,7 @@ lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 stringfogPlugin = { module = "com.github.megatronking.stringfog:gradle-plugin", version.ref = "stringfog" }
 ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
+viewpagerindicator = { module = "com.github.zhpanvip:viewpagerindicator", version.ref = "viewpagerindicator" }
 xorLibrary = { module = "com.github.megatronking.stringfog:xor", version.ref = "xor" }
 aabresguardPlugin = { group = "com.bytedance.android", name = "aabresguard-plugin", version.ref = "aabresguard" }
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
