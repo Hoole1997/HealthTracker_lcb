@@ -19,14 +19,14 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_status_title"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/TextViewFont_RobotoBold"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_16"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_reset"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_bar"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_8"/>

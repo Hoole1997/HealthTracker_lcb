@@ -43,10 +43,10 @@ class TargetRangeAdapter(
 
                 // 格式化范围值显示
                 val unitText = if (currentUnit == BsUnit.MG_DL) "mg/dL" else "mmol/L"
-                tvLeveLowValue.text = "< ${formatValue(item.ranges.lowHigh)} $unitText"
-                tvLeveNormalValue.text = "${formatValue(item.ranges.lowHigh)} ~ ${formatValue(item.ranges.normalHigh)} $unitText"
-                tvLevePreValue.text = "${formatValue(item.ranges.normalHigh)} ~ ${formatValue(item.ranges.prediabetesHigh)} $unitText"
-                tvLeveDiaValue.text = "≥ ${formatValue(item.ranges.diabetesLow)} $unitText"
+                tvLeveLowValue.text = "< ${BsUnit.formatValue(item.ranges.lowHigh, currentUnit)} $unitText"
+                tvLeveNormalValue.text = "${BsUnit.formatValue(item.ranges.lowHigh, currentUnit)} ~ ${BsUnit.formatValue(item.ranges.normalHigh, currentUnit)} $unitText"
+                tvLevePreValue.text = "${BsUnit.formatValue(item.ranges.normalHigh, currentUnit)} ~ ${BsUnit.formatValue(item.ranges.prediabetesHigh, currentUnit)} $unitText"
+                tvLeveDiaValue.text = "≥ ${BsUnit.formatValue(item.ranges.diabetesLow, currentUnit)} $unitText"
 
                 tvLeveLowName.apply {
                     text = context.getString(R.string.blood_sugar_level_low)
@@ -65,14 +65,6 @@ class TargetRangeAdapter(
 
                 // 点击事件
                 root.click { onItemClick(item) }
-            }
-        }
-
-        private fun formatValue(value: Float): String {
-            return if (currentUnit == BsUnit.MG_DL) {
-                value.toInt().toString()
-            } else {
-                String.format("%.1f", value)
             }
         }
 

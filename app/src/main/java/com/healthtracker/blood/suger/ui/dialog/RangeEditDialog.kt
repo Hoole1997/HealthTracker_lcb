@@ -99,7 +99,7 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
                     val currentRanges = getCurrentInputRanges() ?: return@setOnCheckedChangeListener
 
                     // 转换单位
-                    val convertedRanges = convertRanges(currentRanges, currentUnit, newUnit)
+                    val convertedRanges = BsUnit.convertRanges(currentRanges, currentUnit, newUnit)
                     currentUnit = newUnit
 
                     // 显示转换后的值
@@ -122,9 +122,9 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
      */
     private fun displayRanges(ranges: BloodSugarRanges) {
         mViewBind?.apply {
-            etLowValueMax.setText(formatValue(ranges.lowHigh))
-            etNormalValueMax.setText(formatValue(ranges.normalHigh))
-            etDisValueMin.setText(formatValue(ranges.diabetesLow))
+            etLowValueMax.setText(BsUnit.formatValue(ranges.lowHigh, currentUnit))
+            etNormalValueMax.setText(BsUnit.formatValue(ranges.normalHigh, currentUnit))
+            etDisValueMin.setText(BsUnit.formatValue(ranges.diabetesLow, currentUnit))
 
             // TextView会通过输入联动自动更新:
             // tvNormalValueMin = etLowValueMax (lowHigh)
@@ -283,60 +283,6 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
             ranges.lowHigh >= 0.6f && ranges.diabetesLow <= 33.3f
         }
     }
-
-    /**
-     * 单位转换
-     */
-    private fun convertRanges(
-        ranges: BloodSugarRanges,
-        fromUnit: BsUnit,
-        toUnit: BsUnit
-    ): BloodSugarRanges {
-        if (fromUnit == toUnit) return ranges
-
-        return if (fromUnit == BsUnit.MG_DL && toUnit == BsUnit.MMOL_L) {
-            // mg/dL → mmol/L: 除以 18
-            BloodSugarRanges(
-                low = (ranges.low / 18f).roundToOneDecimal(),
-                lowHigh = (ranges.lowHigh / 18f).roundToOneDecimal(),
-                normalLow = (ranges.normalLow / 18f).roundToOneDecimal(),
-                normalHigh = (ranges.normalHigh / 18f).roundToOneDecimal(),
-                prediabetesLow = (ranges.prediabetesLow / 18f).roundToOneDecimal(),
-                prediabetesHigh = (ranges.prediabetesHigh / 18f).roundToOneDecimal(),
-                diabetesLow = (ranges.diabetesLow / 18f).roundToOneDecimal()
-            )
-        } else {
-            // mmol/L → mg/dL: 乘以 18
-            BloodSugarRanges(
-                low = (ranges.low * 18f).roundToOneDecimal(),
-                lowHigh = (ranges.lowHigh * 18f).roundToOneDecimal(),
-                normalLow = (ranges.normalLow * 18f).roundToOneDecimal(),
-                normalHigh = (ranges.normalHigh * 18f).roundToOneDecimal(),
-                prediabetesLow = (ranges.prediabetesLow * 18f).roundToOneDecimal(),
-                prediabetesHigh = (ranges.prediabetesHigh * 18f).roundToOneDecimal(),
-                diabetesLow = (ranges.diabetesLow * 18f).roundToOneDecimal()
-            )
-        }
-    }
-
-    /**
-     * 浮点数保留一位小数
-     */
-    private fun Float.roundToOneDecimal(): Float {
-        return (this * 10).toInt() / 10f
-    }
-
-    /**
-     * 格式化值显示
-     */
-    private fun formatValue(value: Float): String {
-        return if (currentUnit == BsUnit.MG_DL) {
-            value.toInt().toString()
-        } else {
-            String.format("%.1f", value)
-        }
-    }
-
 
     companion object {
         private const val ARG_STATUS_TYPE = "status_type"

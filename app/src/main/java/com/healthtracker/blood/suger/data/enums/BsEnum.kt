@@ -322,6 +322,31 @@ enum class BsUnit(
             }
         }
 
+        /**
+         * 转换 BloodSugarRanges 对象的单位
+         * @param ranges 原始范围对象
+         * @param fromUnit 原始单位
+         * @param toUnit 目标单位
+         * @return 转换后的范围对象
+         */
+        fun convertRanges(
+            ranges: BloodSugarRanges,
+            fromUnit: BsUnit,
+            toUnit: BsUnit
+        ): BloodSugarRanges {
+            if (fromUnit == toUnit) return ranges
+
+            return BloodSugarRanges(
+                low = convertValue(ranges.low, fromUnit, toUnit),
+                lowHigh = convertValue(ranges.lowHigh, fromUnit, toUnit),
+                normalLow = convertValue(ranges.normalLow, fromUnit, toUnit),
+                normalHigh = convertValue(ranges.normalHigh, fromUnit, toUnit),
+                prediabetesLow = convertValue(ranges.prediabetesLow, fromUnit, toUnit),
+                prediabetesHigh = convertValue(ranges.prediabetesHigh, fromUnit, toUnit),
+                diabetesLow = convertValue(ranges.diabetesLow, fromUnit, toUnit)
+            )
+        }
+
         fun getScaleConfig(unit: BsUnit): ScaleConfig {
             return ScaleConfig(
                 minScale = unit.minValue,

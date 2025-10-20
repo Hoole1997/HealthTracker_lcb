@@ -63,7 +63,7 @@ class TargetRangeViewModel @Inject constructor() : BaseViewModel() {
 
             // 2. 同步转换并保存另一个单位的范围
             val otherUnit = if (inputUnit == BsUnit.MG_DL) BsUnit.MMOL_L else BsUnit.MG_DL
-            val convertedRanges = convertRanges(ranges, inputUnit, otherUnit)
+            val convertedRanges = BsUnit.convertRanges(ranges, inputUnit, otherUnit)
             BloodSugarRangeManager.updateCustomRanges(status.statusType, otherUnit, convertedRanges)
 
             // 3. 重新加载数据
@@ -85,52 +85,6 @@ class TargetRangeViewModel @Inject constructor() : BaseViewModel() {
             // 重新加载数据
             loadRangeItems()
         }
-    }
-
-    /**
-     * 单位转换：将范围值从一个单位转换到另一个单位
-     * @param ranges 原始范围
-     * @param fromUnit 原始单位
-     * @param toUnit 目标单位
-     * @return 转换后的范围
-     */
-    private fun convertRanges(
-        ranges: BloodSugarRanges,
-        fromUnit: BsUnit,
-        toUnit: BsUnit
-    ): BloodSugarRanges {
-        if (fromUnit == toUnit) return ranges
-
-        return if (fromUnit == BsUnit.MG_DL && toUnit == BsUnit.MMOL_L) {
-            // mg/dL → mmol/L: 除以 18
-            BloodSugarRanges(
-                low = (ranges.low / 18f).roundToOneDecimal(),
-                lowHigh = (ranges.lowHigh / 18f).roundToOneDecimal(),
-                normalLow = (ranges.normalLow / 18f).roundToOneDecimal(),
-                normalHigh = (ranges.normalHigh / 18f).roundToOneDecimal(),
-                prediabetesLow = (ranges.prediabetesLow / 18f).roundToOneDecimal(),
-                prediabetesHigh = (ranges.prediabetesHigh / 18f).roundToOneDecimal(),
-                diabetesLow = (ranges.diabetesLow / 18f).roundToOneDecimal()
-            )
-        } else {
-            // mmol/L → mg/dL: 乘以 18
-            BloodSugarRanges(
-                low = (ranges.low * 18f).roundToOneDecimal(),
-                lowHigh = (ranges.lowHigh * 18f).roundToOneDecimal(),
-                normalLow = (ranges.normalLow * 18f).roundToOneDecimal(),
-                normalHigh = (ranges.normalHigh * 18f).roundToOneDecimal(),
-                prediabetesLow = (ranges.prediabetesLow * 18f).roundToOneDecimal(),
-                prediabetesHigh = (ranges.prediabetesHigh * 18f).roundToOneDecimal(),
-                diabetesLow = (ranges.diabetesLow * 18f).roundToOneDecimal()
-            )
-        }
-    }
-
-    /**
-     * 浮点数保留一位小数
-     */
-    private fun Float.roundToOneDecimal(): Float {
-        return (this * 10).toInt() / 10f
     }
 }
 
