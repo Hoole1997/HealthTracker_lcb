@@ -1,7 +1,10 @@
 package com.healthtracker.blood.suger.ui.act
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
@@ -33,6 +36,14 @@ import java.util.Calendar
 @AndroidEntryPoint
 class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
 
+    // ActivityResult launcher for target range settings
+    private val targetRangeLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            updateBloodSugarRangeView()
+        }
+    }
 
     private val healthTags = mutableListOf<HealthTag>()
     private val addTagIds = mutableListOf<Long>()
@@ -57,8 +68,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             }
 
             clRangeTarget.clickWithDuration {
-                //获取当前的范围，并传递给TargetRangeActivity
-
+                targetRangeLauncher.launch(Intent(this@BsRecordActivity, TargetRangeActivity::class.java))
             }
 
             // 设置DateTimeSelectionView的标签点击监听
@@ -297,5 +307,12 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         return getString(stringRes)
     }
 
+    /**
+     * 更新血糖范围视图
+     * 当从目标范围设置页面返回时调用
+     */
+    private fun updateBloodSugarRangeView() {
+        mViewBind.rangeView.updateStatus(mViewModel.currentStatus.value)
+    }
 
 }

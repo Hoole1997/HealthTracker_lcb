@@ -1186,4 +1186,12 @@
         <item>Your cholesterol level is very high and poses a serious risk to your heart and overall health. Immediate action is necessary. Here are five urgent suggestions: &lt;br&gt;&lt;b&gt;Seek Medical Attention:&lt;/b&gt;&lt;br&gt; Consult your doctor promptly for evaluation and treatment. &lt;br&gt;&lt;b&gt;Follow Prescribed Treatment:&lt;/b&gt;&lt;br&gt; Take cholesterol-lowering medication exactly as instructed if prescribed. &lt;br&gt;&lt;b&gt;Adopt a Strict Diet:&lt;/b&gt;&lt;br&gt; Avoid high-fat, fried, and processed foods; prioritize heart-healthy meals. &lt;br&gt;&lt;b&gt;Lifestyle Adjustments:&lt;/b&gt;&lt;br&gt; Quit smoking, avoid alcohol, and manage stress carefully. &lt;br&gt;&lt;b&gt;Frequent Monitoring:&lt;/b&gt;&lt;br&gt; Conduct cholesterol tests more often to ensure treatment is effective.</item>
     </string-array>
 
+    <!-- 血糖目标范围设置 -->
+    <string name="please_input_complete_data">Please enter complete data</string>
+    <string name="range_order_error">Range values must be in increasing order</string>
+    <string name="range_bounds_error">Range values are out of acceptable bounds</string>
+    <string name="reset_all_ranges_confirm">Reset all target ranges to default values?</string>
+    <string name="reset_success">Reset successful</string>
+    <string name="save_success">Saved successfully</string>
+
 </resources>

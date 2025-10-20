@@ -72,7 +72,7 @@
         android:paddingHorizontal="@dimen/dp_16"
         android:paddingVertical="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_bar"
         tools:itemCount="8"
         tools:listitem="@layout/item_target_range" />
 

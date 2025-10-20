@@ -113,14 +113,14 @@
                 android:includeFontPadding="false"
                 android:textColor="@color/t1"
                 android:textSize="@dimen/sp_16"
-                tools:text="@string/blood_sugar_level_low" />
+                android:text="@string/blood_sugar_level_low" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextViewFont_RobotoMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_6"
-                android:text="<"
+                android:text="&lt;"
                 android:textColor="@color/color_999"
                 android:textSize="@dimen/sp_16" />
 
@@ -160,7 +160,7 @@
                 android:includeFontPadding="false"
                 android:textColor="@color/t1"
                 android:textSize="@dimen/sp_16"
-                tools:text="@string/blood_sugar_level_normal" />
+                android:text="@string/blood_sugar_level_normal" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_normal_value_min"
@@ -210,7 +210,6 @@
                 android:backgroundTint="@color/color_prediabetes" />
 
             <androidx.appcompat.widget.AppCompatTextView
-
                 style="@style/TextViewFont_RobotoMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -219,7 +218,7 @@
                 android:includeFontPadding="false"
                 android:textColor="@color/t1"
                 android:textSize="@dimen/sp_16"
-                tools:text="@string/blood_sugar_level_prediabetes" />
+                android:text="@string/blood_sugar_level_prediabetes" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_pre_value_min"
@@ -274,7 +273,7 @@
                 android:includeFontPadding="false"
                 android:textColor="@color/t1"
                 android:textSize="@dimen/sp_16"
-                tools:text="@string/blood_sugar_level_low" />
+                android:text="@string/blood_sugar_level_diabetes" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextViewFont_RobotoMedium"

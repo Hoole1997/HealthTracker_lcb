@@ -199,6 +199,16 @@ enum class BloodSugarStatus(
         }
     }
 
+    /**
+     * 获取默认范围值（不考虑自定义）
+     */
+    fun getDefaultRanges(unit: BsUnit): BloodSugarRanges {
+        return when (unit) {
+            BsUnit.MG_DL -> defaultMgdlRanges
+            BsUnit.MMOL_L -> defaultMmolRanges
+        }
+    }
+
     fun getBloodSugarLevel(value: Float, unit: BsUnit): BloodSugarLevel {
         val ranges = getRangesForUnit(unit)
         return when {
