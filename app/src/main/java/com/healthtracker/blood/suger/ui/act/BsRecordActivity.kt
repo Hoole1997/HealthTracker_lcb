@@ -15,6 +15,7 @@ import com.healthtracker.blood.suger.ui.weight.RulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
@@ -53,6 +54,11 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
         with(mViewBind) {
             btnBack.click {
                 finish()
+            }
+
+            clRangeTarget.clickWithDuration {
+                //获取当前的范围，并传递给TargetRangeActivity
+
             }
 
             // 设置DateTimeSelectionView的标签点击监听

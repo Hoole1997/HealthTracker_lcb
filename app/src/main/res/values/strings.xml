@@ -1055,6 +1055,8 @@
     <string name="guide_bp_des">Click to add your first Blood Pressure reading now.</string>
     <string name="guide_bs_des">Click to add your first Blood Sugar reading now.</string>
     <string name="guide_hr_des">Click to add your first Heart Rate reading now.</string>
+    <string name="target_range">Target Range</string>
+    <string name="reset">Reset</string>
 
     <string-array name="heart_rate_labels">
         <item>Excited state</item>

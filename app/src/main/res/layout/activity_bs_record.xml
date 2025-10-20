@@ -203,6 +203,38 @@
                     app:rangeTextSize="@dimen/sp_16" />
 
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/cl_range_target"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:gravity="center_vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rangeView">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_edit"
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        android:scaleType="centerCrop"
+                        android:tint="@color/color_888"
+                        app:srcCompat="@drawable/ic_edit" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_targe_range"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextViewFont_RobotoMedium"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:text="@string/target_range"
+                        android:textColor="@color/color_888"
+                        android:textSize="@dimen/sp_16" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
