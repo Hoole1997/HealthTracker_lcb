@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         style="@style/TextViewFont_RobotoBold"
         android:text="@string/status"
-        android:textColor="#222222"
+        android:textColor="@color/t1"
         android:textSize="@dimen/sp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

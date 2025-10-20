@@ -17,6 +17,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_status_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/TextViewFont_RobotoBold"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_reset"
+        app:layout_constraintTop_toBottomOf="@id/v_bar"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_8"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:paddingHorizontal="@dimen/dp_10"
+        android:paddingVertical="@dimen/dp_4"
+        android:text="@string/reset"
+        android:textColor="@color/color_666"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_status_title"
+        app:layout_constraintBottom_toBottomOf="@id/tv_status_title" />
+
     <RadioGroup
         android:id="@+id/rg_unit"
         android:layout_width="wrap_content"
@@ -26,7 +56,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/v_bar">
+        app:layout_constraintTop_toBottomOf="@id/tv_status_title">
 
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/rb_mgdl"
