@@ -27,6 +27,10 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
     private var currentUnit: BsUnit = BsUnit.MG_DL
     private var onSaveCallback: ((BloodSugarStatus, BsUnit, BloodSugarRanges) -> Unit)? = null
 
+    // 记录初始单位和初始范围值，用于检测是否有修改
+    private var initialUnit: BsUnit = BsUnit.MG_DL
+    private var initialRanges: BloodSugarRanges? = null
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -56,6 +60,9 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
 
             // 设置输入联动
             setupInputLinkage()
+
+            // 初始化时检查是否需要显示Reset按钮
+            updateResetButtonVisibility()
 
             // 重置按钮
             tvReset.click {
@@ -114,6 +121,9 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
      */
     private fun loadRangeValues(unit: BsUnit) {
         val ranges = bloodSugarStatus.getRangesForUnit(unit)
+        // 记录初始值，用于检测是否有修改
+        initialUnit = unit
+        initialRanges = ranges
         displayRanges(ranges)
     }
 
@@ -185,16 +195,6 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
     }
 
     /**
-     * 比较两个范围是否相等
-     */
-    private fun rangesAreEqual(r1: BloodSugarRanges, r2: BloodSugarRanges): Boolean {
-        val epsilon = 0.1f
-        return kotlin.math.abs(r1.lowHigh - r2.lowHigh) < epsilon &&
-                kotlin.math.abs(r1.normalHigh - r2.normalHigh) < epsilon &&
-                kotlin.math.abs(r1.diabetesLow - r2.diabetesLow) < epsilon
-    }
-
-    /**
      * 获取当前输入的范围值
      * 返回完整的7字段BloodSugarRanges
      */
@@ -239,9 +239,45 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
     }
 
     /**
+     * 检查是否有编辑过
+     * 包括单位变化和数值变化
+     */
+    private fun hasChanges(): Boolean {
+        val currentRanges = getCurrentInputRanges() ?: return false
+        val initial = initialRanges ?: return false
+
+        // 检查单位是否变化
+        if (currentUnit != initialUnit) return true
+
+        // 检查值是否变化（需要考虑浮点数精度）
+        return !rangesAreEqual(currentRanges, initial)
+    }
+
+    /**
+     * 比较两个范围是否相等（考虑浮点数精度）
+     */
+    private fun rangesAreEqual(r1: BloodSugarRanges, r2: BloodSugarRanges): Boolean {
+        val epsilon = 0.01f  // 精度阈值
+        return kotlin.math.abs(r1.low - r2.low) < epsilon &&
+                kotlin.math.abs(r1.lowHigh - r2.lowHigh) < epsilon &&
+                kotlin.math.abs(r1.normalLow - r2.normalLow) < epsilon &&
+                kotlin.math.abs(r1.normalHigh - r2.normalHigh) < epsilon &&
+                kotlin.math.abs(r1.prediabetesLow - r2.prediabetesLow) < epsilon &&
+                kotlin.math.abs(r1.prediabetesHigh - r2.prediabetesHigh) < epsilon &&
+                kotlin.math.abs(r1.diabetesLow - r2.diabetesLow) < epsilon
+    }
+
+    /**
      * 保存范围值
      */
     private fun saveRanges() {
+        // 0. 检查是否有修改
+        if (!hasChanges()) {
+            // 没有修改，直接关闭对话框
+            dismissAllowingStateLoss()
+            return
+        }
+
         // 1. 获取当前输入
         val ranges = getCurrentInputRanges()
         if (ranges == null) {

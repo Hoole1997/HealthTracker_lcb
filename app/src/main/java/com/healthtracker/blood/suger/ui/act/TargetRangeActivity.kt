@@ -97,6 +97,11 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, ActivityTarge
             status = rangeItem.status,
             unit = mViewModel.currentUnit.value,
             onSave = { status, unit, ranges ->
+                // 1. 如果单位发生变化，先切换单位
+                if (unit != mViewModel.currentUnit.value) {
+                    mViewModel.switchUnit(unit)
+                }
+                // 2. 保存范围值
                 mViewModel.saveRanges(status, unit, ranges)
                 hasChanged = true
                 showToast(getString(R.string.save_success))

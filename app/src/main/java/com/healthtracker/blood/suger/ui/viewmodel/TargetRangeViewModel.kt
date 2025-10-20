@@ -86,6 +86,18 @@ class TargetRangeViewModel @Inject constructor() : BaseViewModel() {
             loadRangeItems()
         }
     }
+
+    /**
+     * 切换显示单位
+     * 当用户在对话框中切换单位后，需要同步更新页面显示单位
+     */
+    fun switchUnit(newUnit: BsUnit) {
+        if (_currentUnit.value != newUnit) {
+            _currentUnit.value = newUnit
+            BsUnit.savePreferredUnit(newUnit)  // 保存首选单位
+            loadRangeItems()  // 重新加载数据
+        }
+    }
 }
 
 /**
