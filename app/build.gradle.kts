@@ -14,7 +14,7 @@ plugins {
     alias(libs.plugins.android.compose.convention)
     alias(libs.plugins.android.hilt.convention)
     alias(libs.plugins.android.room.convention)
-//    alias(libs.plugins.android.firebase.convention)
+    alias(libs.plugins.android.firebase.convention)
     // 特殊插件保留
     id("stringfog")
     alias(libs.plugins.kotlin.parcelize)
@@ -96,9 +96,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-//            configure<CrashlyticsExtension> {
-//                mappingFileUploadEnabled = false
-//            }
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+            }
         }
     }
 

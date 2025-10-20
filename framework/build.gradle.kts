@@ -43,10 +43,10 @@ dependencies {
     implementation(libs.gson)
 
     // Firebase - API 导出给其他模块使用
-//    api(platform(libs.firebase.bom))
-//    api(libs.firebase.config)
-//    api(libs.firebase.analytics.ktx)
-//    api(libs.firebase.crashlytics.ktx)
-//    api(libs.firebase.perf.ktx)
+    api(platform(libs.firebase.bom))
+    api(libs.firebase.config)
+    api(libs.firebase.analytics.ktx)
+    api(libs.firebase.crashlytics.ktx)
+    api(libs.firebase.perf.ktx)
     api(libs.utilcodex)
 }

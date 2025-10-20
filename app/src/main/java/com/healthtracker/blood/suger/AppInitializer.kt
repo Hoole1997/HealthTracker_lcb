@@ -10,6 +10,7 @@ import com.healthtracker.framework.util.LogUtils
 import com.healthtracker.framework.util.LogUtils.logException
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.hasP
+import com.healthtracker.framework.util.logException
 import com.healthtracker.framework.util.postRunnable
 import com.knightboot.spwaitkiller.SpWaitKiller
 import kotlinx.coroutines.CoroutineDispatcher
@@ -150,11 +151,11 @@ class AppInitializer @Inject constructor(
             LogUtils.logException(exception, false)
             exception.printStackTrace()
             if (thread.id != Looper.getMainLooper().thread.id) {
-//                logException(exception)
+                logException(exception)
                 return@setDefaultUncaughtExceptionHandler
             }
             if (isInBackground) {
-//                logException(exception)
+                logException(exception)
             } else {
                 defaultHandler?.uncaughtException(thread, exception)
             }
