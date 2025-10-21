@@ -93,6 +93,13 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, ActivityTarge
                 adapter.submitList(mViewModel.rangeItems.value)
             }
         }
+
+        // 观察是否有自定义范围，控制 Reset 按钮显示
+        lifecycleScope.launch {
+            mViewModel.hasAnyCustomRanges.collect { hasCustom ->
+                updateResetButtonVisibility(hasCustom)
+            }
+        }
     }
 
     /**
@@ -135,6 +142,18 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, ActivityTarge
                 }
             }
         ).show(supportFragmentManager)
+    }
+
+    /**
+     * 更新 Reset 按钮的可见性
+     * @param hasCustomRanges 是否有任何自定义范围
+     */
+    private fun updateResetButtonVisibility(hasCustomRanges: Boolean) {
+        mViewBind.tvReset.visibility = if (hasCustomRanges) {
+            android.view.View.VISIBLE
+        } else {
+            android.view.View.GONE
+        }
     }
 
     /**

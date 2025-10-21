@@ -27,6 +27,11 @@ class TargetRangeViewModel @Inject constructor() : BaseViewModel() {
     private val _rangeItems = MutableStateFlow<List<RangeItem>>(emptyList())
     val rangeItems: StateFlow<List<RangeItem>> = _rangeItems.asStateFlow()
 
+    // 是否有任何自定义范围（任何状态、任何单位）
+    // 用于控制 Reset 按钮的显示
+    private val _hasAnyCustomRanges = MutableStateFlow(false)
+    val hasAnyCustomRanges: StateFlow<Boolean> = _hasAnyCustomRanges.asStateFlow()
+
     init {
         loadRangeItems()
     }
@@ -47,6 +52,9 @@ class TargetRangeViewModel @Inject constructor() : BaseViewModel() {
                 )
             }
             _rangeItems.value = items
+
+            // 更新是否有任何自定义范围的状态
+            updateHasAnyCustomRanges()
         }
     }
 
@@ -97,6 +105,19 @@ class TargetRangeViewModel @Inject constructor() : BaseViewModel() {
             BsUnit.savePreferredUnit(newUnit)  // 保存首选单位
             loadRangeItems()  // 重新加载数据
         }
+    }
+
+    /**
+     * 检查是否有任何自定义范围（任何状态、任何单位）
+     * 用于控制 Reset 按钮的显示
+     */
+    private fun updateHasAnyCustomRanges() {
+        val hasAny = BloodSugarStatus.entries.any { status ->
+            BsUnit.entries.any { unit ->
+                BloodSugarRangeManager.hasCustomRanges(status.statusType, unit)
+            }
+        }
+        _hasAnyCustomRanges.value = hasAny
     }
 }
 
