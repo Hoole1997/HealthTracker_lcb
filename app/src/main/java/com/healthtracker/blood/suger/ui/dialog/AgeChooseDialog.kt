@@ -51,13 +51,13 @@ class AgeChooseDialog : BaseVbDialogFragment<DialogChooseAgeBinding>() {
     }
 
     private fun setupNumberPicker() {
-        val ages = (2..110).map { it.toString() }.toTypedArray()
+        val ages = (1..110).map { it.toString() }.toTypedArray()
         val picker = mViewBind?.numberPicker ?: return
 
         picker.displayedValues = ages
         picker.minValue = 0
         picker.maxValue = ages.lastIndex
-        val normalizedAge = selectedAge.coerceIn(2, 110)
+        val normalizedAge = selectedAge.coerceIn(1, 110)
         val currentIndex = ages.indexOf(normalizedAge.toString())
         picker.value = if (currentIndex >= 0) currentIndex else 0
         selectedAge = if (currentIndex >= 0) normalizedAge else ages.first().toInt()

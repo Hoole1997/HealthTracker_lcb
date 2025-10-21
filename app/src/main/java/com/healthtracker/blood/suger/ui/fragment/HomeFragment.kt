@@ -1,9 +1,11 @@
 package com.healthtracker.blood.suger.ui.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +20,7 @@ import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
+import com.healthtracker.blood.suger.hasAddProfile
 import com.healthtracker.blood.suger.hasShowAllGuide
 import com.healthtracker.blood.suger.hasShowGuideBp
 import com.healthtracker.blood.suger.hasShowGuideBs
@@ -30,6 +33,7 @@ import com.healthtracker.blood.suger.ui.act.BpRecordActivity
 import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
+import com.healthtracker.blood.suger.ui.act.ProfileActivity
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.blood.suger.util.CholesterolCalculator
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
@@ -60,6 +64,23 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
 
     private var latestSugerID :Long? = null
 
+    private val profileLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            navigateToPendingActivity()
+        }
+        pendingActivityType = null
+    }
+
+    private var pendingActivityType: PendingActivityType? = null
+
+    private enum class PendingActivityType {
+        BMI,
+        CHOLESTEROL,
+        HEART_RATE
+    }
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -89,16 +110,15 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clHeartRate.clickWithDuration {
-                requireActivity().startActivity<HeartRateRecordActivity>()
-
+                navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
             }
 
             clCholesterol.clickWithDuration {
-                CholesterolRecordActivity.start(requireActivity())
+                navigateToActivityWithProfileCheck(PendingActivityType.CHOLESTEROL)
             }
 
             clBmi.clickWithDuration {
-                requireActivity().startActivity<BmiRecordActivity>()
+                navigateToActivityWithProfileCheck(PendingActivityType.BMI)
             }
 
 
@@ -328,6 +348,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                     .setMarginOffset(MarginOffset(start = 7.dp, top = 16.dp, end = 16.dp))
                     .build()
             }
+            .interceptBackPressed(true)
             .setOnMaskViewClickCallback { index ->
                 //do something
                 BsRecordActivity.start(requireActivity())
@@ -358,7 +379,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
             .setOnMaskViewClickCallback { index ->
                 //do something
-                HeartRateRecordActivity.start(requireActivity())
+                navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
             }
             .setOnShowCallback {
                 saveShowGuideHr()
@@ -367,5 +388,34 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
 
         return true
 
+    }
+
+    private fun navigateToActivityWithProfileCheck(activityType: PendingActivityType) {
+        if (hasAddProfile()) {
+            navigateToActivity(activityType)
+        } else {
+            pendingActivityType = activityType
+            profileLauncher.launch(ProfileActivity.createGuideIntent(requireContext()))
+        }
+    }
+
+    private fun navigateToPendingActivity() {
+        pendingActivityType?.let { activityType ->
+            navigateToActivity(activityType)
+        }
+    }
+
+    private fun navigateToActivity(activityType: PendingActivityType) {
+        when (activityType) {
+            PendingActivityType.BMI -> {
+                requireActivity().startActivity<BmiRecordActivity>()
+            }
+            PendingActivityType.CHOLESTEROL -> {
+                CholesterolRecordActivity.start(requireActivity())
+            }
+            PendingActivityType.HEART_RATE -> {
+                requireActivity().startActivity<HeartRateRecordActivity>()
+            }
+        }
     }
 }

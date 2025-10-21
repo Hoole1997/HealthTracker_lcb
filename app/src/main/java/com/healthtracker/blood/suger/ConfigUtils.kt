@@ -12,7 +12,7 @@ import com.healthtracker.framework.util.SpUtils
 
 fun saveUserAge(age:Int) = SpUtils.putInt(KEY_USER_AGE,age)
 
-fun getUserAge() = SpUtils.getInt(KEY_USER_AGE,45)
+fun getUserAge() = SpUtils.getInt(KEY_USER_AGE,40)
 
 
 fun isMale() = SpUtils.getInt(KEY_USER_GENDER,0) == 0

@@ -1,5 +1,7 @@
 package com.healthtracker.blood.suger.ui.act
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.constants.KEY_HAS_ADD_PROFILE
@@ -18,10 +20,24 @@ import com.healthtracker.framework.util.SpUtils
 class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>() {
     companion object{
         private const val TAG = "ProfileActivity"
+
+        private const val EXTRA_LAUNCH_MODE = "extra_launch_mode"
+        const val MODE_SETTINGS = 0
+        const val MODE_GUIDE = 1
+
+        fun createGuideIntent(context: Context): Intent {
+            return Intent(context, ProfileActivity::class.java).apply {
+                putExtra(EXTRA_LAUNCH_MODE, MODE_GUIDE)
+            }
+        }
     }
 
     private var age = getUserAge()
     private var gender = if(isMale()) 0 else 1
+
+    private val launchMode by lazy {
+        intent.getIntExtra(EXTRA_LAUNCH_MODE, MODE_SETTINGS)
+    }
 
 
 
@@ -33,10 +49,15 @@ class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>()
     override fun initView(savedInstanceState: Bundle?) {
         with(mViewBind){
             btnContinue.clickWithDuration {
-                saveUserAge(age)
-                saveUserGender(gender)
-                SpUtils.putBoolean(KEY_HAS_ADD_PROFILE,true)
-                startActivity<MainActivity>(isFinishSelf = true)
+                handleSaveAndFinish()
+            }
+
+            tvSkip.clickWithDuration {
+                handleSaveAndFinish()
+            }
+
+            btnBack.clickWithDuration {
+                finish()
             }
 
             rbMale.isChecked = isMale()
@@ -61,16 +82,32 @@ class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>()
             val normalFont = FontUtils.getInstance().robotoLight
             numberPicker.setContentSelectedTextTypeface(selectFont)
             numberPicker.setContentNormalTextTypeface(normalFont)
-            val ages = (2..110).map { it.toString() }.toTypedArray()
+            val ages = (1..110).map { it.toString() }.toTypedArray()
             numberPicker.displayedValues = ages
             numberPicker.minValue = 0
             numberPicker.maxValue = ages.lastIndex
-            val normalizedAge = age.coerceIn(2, 110)
+            val normalizedAge = age.coerceIn(1, 110)
             val currentIndex = ages.indexOf(normalizedAge.toString())
             numberPicker.value = if (currentIndex >= 0) currentIndex else 0
             age = if (currentIndex >= 0) normalizedAge else ages.first().toInt()
             numberPicker.setOnValueChangedListener { _,_, newVal ->
-                age = newVal
+                age = ages[newVal].toInt()
+            }
+        }
+    }
+
+    private fun handleSaveAndFinish() {
+        saveUserAge(age)
+        saveUserGender(gender)
+        SpUtils.putBoolean(KEY_HAS_ADD_PROFILE, true)
+
+        when (launchMode) {
+            MODE_GUIDE -> {
+                setResult(RESULT_OK)
+                finish()
+            }
+            else -> {
+                startActivity<MainActivity>(isFinishSelf = true)
             }
         }
     }
