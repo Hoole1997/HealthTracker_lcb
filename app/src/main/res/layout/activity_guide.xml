@@ -15,6 +15,7 @@
         android:padding="@dimen/dp_16"
         android:text="@string/skip"
         android:textColor="@color/color_666"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

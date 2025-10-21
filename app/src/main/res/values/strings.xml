@@ -1056,6 +1056,7 @@
     <string name="guide_bs_des">Click to add your first Blood Sugar reading now.</string>
     <string name="guide_hr_des">Click to add your first Heart Rate reading now.</string>
     <string name="target_range">Target Range</string>
+    <string name="target_range_temp">Target Range(%1$s)</string>
     <string name="reset">Reset</string>
 
     <string-array name="heart_rate_labels">

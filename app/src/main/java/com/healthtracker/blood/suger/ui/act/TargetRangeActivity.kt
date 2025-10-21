@@ -10,6 +10,10 @@ import com.healthtracker.blood.suger.ui.dialog.RangeEditDialog
 import com.healthtracker.blood.suger.ui.viewmodel.TargetRangeViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import android.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import com.healthtracker.blood.suger.data.enums.BsUnit
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
+import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,6 +49,8 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, ActivityTarge
         mViewBind.tvReset.click {
             showResetConfirmDialog()
         }
+
+        mViewBind.tvTitle.text = getString(R.string.target_range_temp, BsUnit.getPreferredUnit().displayName)
     }
 
     /**
@@ -113,16 +119,22 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, ActivityTarge
      * 显示重置确认对话框
      */
     private fun showResetConfirmDialog() {
-        AlertDialog.Builder(this)
-            .setTitle(R.string.reset)
-            .setMessage(R.string.reset_all_ranges_confirm)
-            .setPositiveButton(R.string.confirm) { _, _ ->
-                mViewModel.resetAllRanges()
-                hasChanged = true
-                showToast(getString(R.string.reset_success))
+        ConfirmDialog(
+            getString(R.string.reset),
+            getString(R.string.reset_all_ranges_confirm),
+            leftText = getString(R.string.cancel),
+            rightText = getString(R.string.confirm),
+            onDialogListener = object :DialogListener{
+                override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
+                    super.onItemClick(dialogFragment, which)
+                    if(which == R.id.btn_ok){
+                        mViewModel.resetAllRanges()
+                        hasChanged = true
+                        showToast(getString(R.string.reset_success))
+                    }
+                }
             }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        ).show(supportFragmentManager)
     }
 
     /**
