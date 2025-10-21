@@ -71,15 +71,15 @@
     <!-- 闹钟通知相关字符串 -->
     <string name="notification_channel_alarm_name">Health Reminder</string>
     <string name="notification_channel_alarm_description">Health monitoring reminder notifications</string>
-    
+
     <!-- 血糖提醒通知 -->
     <string name="alarm_blood_sugar_title">Blood Sugar Reminder</string>
     <string name="alarm_blood_sugar_content">Time to record your blood sugar!</string>
-    
+
     <!-- 血压提醒通知 -->
     <string name="alarm_blood_pressure_title">Blood Pressure Reminder</string>
     <string name="alarm_blood_pressure_content">Record your blood pressure daily for better health!</string>
-    
+
     <!-- 默认健康提醒 -->
     <string name="alarm_default_title">Health Reminder</string>
     <string name="alarm_default_content">Please monitor your health on time</string>
@@ -775,13 +775,13 @@
     <string-array name="bs_level_expert_advice">
         <!-- 低血糖建议 -->
         <item>Your blood sugar level is &lt;font color="#3489FE"&gt;&lt;b&gt;low&lt;/b&gt;&lt;/font&gt;, also known as hypoglycemia, it\'s important to take immediate action to raise your blood sugar. Here are some simple suggestions: &lt;br&gt;&lt;b&gt;Consume a fast-acting source of glucose:&lt;/b&gt;&lt;br&gt; Consume 15 to 20 grams of fast-acting carbohydrates to raise your blood sugar quickly. Examples include glucose tablets or gel, fruit juice, regular soda, or a small serving of raisins. &lt;br&gt;&lt;b&gt;Check your blood sugar after 15 minutes:&lt;/b&gt;&lt;br&gt; If it is still low, repeat the process. &lt;br&gt;&lt;b&gt;Follow up with a balanced snack or meal:&lt;/b&gt;&lt;br&gt; Once your blood sugar has risen, it\'s important to stabilize it with a balanced snack or meal containing protein, complex carbohydrates, and healthy fats. This will help maintain your blood sugar at a normal level and prevent another drop. Good options include whole-grain crackers with peanut butter, a small sandwich, or a piece of fruit with a handful of nuts. &lt;br&gt;&lt;b&gt;Discuss with your healthcare provider:&lt;/b&gt;&lt;br&gt; If you frequently experience low blood sugar, it\'s important to discuss it with your healthcare provider. They can evaluate the underlying cause and adjust your treatment plan accordingly. They may recommend changes in your medication regimen, diet, or exercise routine to better manage your blood sugar levels.</item>
-        
+
         <!-- 正常血糖建议 -->
         <item>To help manage your blood sugar levels and keep them within a &lt;font color="#02BC77"&gt;&lt;b&gt;normal&lt;/b&gt;&lt;/font&gt; range, here are some simple suggestions: &lt;br&gt;&lt;b&gt;Follow a balanced and healthy diet:&lt;/b&gt;&lt;br&gt; Opt for a balanced diet that includes a variety of fruits, vegetables, whole grains, lean proteins, and healthy fats. Limit your intake of sugary and processed foods. Focus on portion control and consider working with a registered dietitian to develop a personalized meal plan that suits your specific needs. &lt;br&gt;&lt;b&gt;Engage in regular physical activity:&lt;/b&gt;&lt;br&gt; Regular exercise can help improve insulin sensitivity and regulate blood sugar levels. Aim for at least 150 minutes of moderate-intensity aerobic activity, such as brisk walking or cycling, spread throughout the week. Additionally, incorporate strength training exercises to build muscle mass and further support blood sugar management. &lt;br&gt;&lt;b&gt;Monitor your blood sugar levels:&lt;/b&gt;&lt;br&gt; Regularly check your blood sugar levels as advised by your healthcare provider. This will help you understand how your body responds to different foods, activities, and medications. By monitoring consistently, you can make necessary adjustments to your diet, exercise, or medication regimen to keep your blood sugar within the target range.</item>
-        
+
         <!-- 糖尿病前期建议 -->
         <item>Managing &lt;font color="#FFB901"&gt;&lt;b&gt;prediabetes&lt;/b&gt;&lt;/font&gt; is essential to prevent or delay the onset of diabetes. Here are some simple suggestions: &lt;br&gt;&lt;b&gt;Make dietary changes:&lt;/b&gt;&lt;br&gt; Adopt a balanced and nutritious diet to help control your blood sugar levels. Focus on consuming whole foods, including fruits, vegetables, whole grains, lean proteins, and healthy fats. Limit your intake of processed foods, sugary drinks, and refined carbohydrates. Consider working with a registered dietitian to create a personalized meal plan that suits your specific needs. &lt;br&gt;&lt;b&gt;Increase fiber intake:&lt;/b&gt;&lt;br&gt; Include high-fiber foods in your diet, such as whole grains, legumes, vegetables, and fruits. Fiber helps regulate blood sugar levels, improves satiety, and supports overall digestive health. &lt;br&gt;&lt;b&gt;Manage stress:&lt;/b&gt;&lt;br&gt; Chronic stress can impact blood sugar levels and overall health. Find healthy ways to manage stress, such as practicing relaxation techniques, engaging in hobbies, exercising, or seeking support from friends, family, or a mental health professional.</item>
-        
+
         <!-- 糖尿病建议 -->
         <item>When you have &lt;font color="#FA0202"&gt;&lt;b&gt;diabetes&lt;/b&gt;&lt;/font&gt;, it\'s crucial to manage your condition effectively to maintain stable blood sugar levels and prevent complications. &lt;br&gt;&lt;b&gt;Maintain regular healthcare appointments:&lt;/b&gt;&lt;br&gt; Regularly visit your healthcare provider to monitor your diabetes and receive necessary medical care. These appointments may include routine check-ups, blood tests, eye exams, and foot exams. Your healthcare provider will also review your medications, offer education, and provide guidance for managing your condition effectively. &lt;br&gt;&lt;b&gt;Keep a diabetes management journal:&lt;/b&gt;&lt;br&gt; Maintain a journal to track your daily activities, meals, blood sugar readings, medication doses, and any notable symptoms or patterns. This can help you identify trends, understand how different factors affect your blood sugar levels, and make informed adjustments to your diabetes management plan. &lt;br&gt;&lt;b&gt;Plan ahead for sick days:&lt;/b&gt;&lt;br&gt; Illness or infections can impact blood sugar levels and require adjustments to your diabetes management plan. Develop a sick-day plan in collaboration with your healthcare provider, which includes guidelines for monitoring blood sugar, adjusting medication dosages if necessary, staying hydrated, and seeking medical attention if symptoms worsen.</item>
     </string-array>
@@ -1047,7 +1047,9 @@
     <string name="guide_title_2">Master Blood Pressure Trends</string>
     <string name="guide_1_des">Record blood pressure data at any time</string>
     <string name="guide_2_des">Data charts are clear at a glance</string>
-    <string name="guide_3_des">We are designed for personal daily blood pressure tracking and does not offer professional medical advice.For professional health guidance and diagnosis,we strongly encourage you to consult with a qualified healthcare pr</string>
+    <string name="guide_3_des">We are designed for personal daily blood pressure tracking and does not offer professional medical advice.
+For professional health guidance and diagnosis, we strongly encourage you to consult with a qualified
+healthcare provider or medical institution.</string>
     <string name="disclaimers">Disclaimers</string>
     <string name="skip">Skip</string>
     <string name="next">Next</string>
