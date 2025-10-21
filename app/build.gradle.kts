@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.android.hilt.convention)
     alias(libs.plugins.android.room.convention)
     alias(libs.plugins.android.firebase.convention)
+    alias(libs.plugins.google.service)
     // 特殊插件保留
     id("stringfog")
     alias(libs.plugins.kotlin.parcelize)

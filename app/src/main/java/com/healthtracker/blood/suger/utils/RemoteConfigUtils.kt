@@ -21,8 +21,13 @@ object RemoteConfigUtils {
 //            SpUtils.putBoolean(Constants.KEY_SHOW_VIP_ICON, true)
 //        }
 
-        val configSettings = FirebaseRemoteConfigSettings.Builder()
-            .build()
+        val configSettings = if (BuildState.debug) {
+            FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(5L)
+                .setFetchTimeoutInSeconds(60L).build()
+        } else {
+            FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(3600L)
+                .setFetchTimeoutInSeconds(60L).build()
+        }
         val remoteConfig = FirebaseRemoteConfig.getInstance()
         remoteConfig.setConfigSettingsAsync(configSettings)
         remoteConfig.fetchAndActivate()
@@ -31,34 +36,21 @@ object RemoteConfigUtils {
                     if (it.isSuccessful) {
                         if (BuildState.debug) "fetchRemoteConfig success".logd("firebase")
                         try {
-                            val sFileListNum = remoteConfig.getString("filelist_num").trim()
-                            val count = sFileListNum.toInt()
-                            if (BuildState.debug) "获取到文件间隔数量-->${count}".loge("firebase")
-                        } catch (_: Throwable) {
-                        }
-
-
-
-                        try {
-                            val userCountry = remoteConfig.getString("user_country").trim()
-                            if (userCountry.isNotEmpty()) {
-                                SpUtils.putString(KEY_USER_COUNTRY, userCountry)
+                            if(BuildState.debug){
+                                for ((k, v) in remoteConfig.all) {
+                                    "$k:${v?.asString()}".logd("firebase")
+                                }
                             }
                         } catch (_: Throwable) {
-                            if (BuildState.debug) "user_country fail".logd("firebase")
                         }
 
 
                     } else {
                         if (BuildState.debug) "fetchRemoteConfig fail".logd("firebase")
-
-//                        SpUtils.putBoolean(Constants.GET_FIREBASE_CONFIG, false)
                     }
                 } finally {
                     fetchRemoteConfig.set(false)
                 }
             }
-
-        // PlacementManager.onRemoteAdGroupTick() - 广告系统已删除
     }
 }
