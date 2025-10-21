@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Point
 import android.os.Build
+import android.os.PowerManager
 import android.os.Process
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.constants.KEY_APP_OPEN_TIMES
@@ -66,3 +67,5 @@ fun getScreenSize(context: Context): Point {
     val y: Int = context.resources.displayMetrics.heightPixels
     return Point(x, y)
 }
+
+fun isInteractive(context: Context) = (context.getSystemService(Context.POWER_SERVICE) as PowerManager).isInteractive

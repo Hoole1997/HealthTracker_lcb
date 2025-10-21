@@ -11,3 +11,7 @@ const val KEY_HAS_GUIDE_NEW = "key_has_guide_new"
 const val KEY_HAS_SHOW_GUIDE_BP= "key_has_show_guide_bp"
 const val KEY_HAS_SHOW_GUIDE_BS= "key_has_show_guide_bs"
 const val KEY_HAS_SHOW_GUIDE_HR= "key_has_show_guide_hr"
+
+
+const val KEY_REMOTE_FILE_L_COUNT = "key_remote_file_l_count"
+const val KEY_USER_COUNTRY = "key_user_country"

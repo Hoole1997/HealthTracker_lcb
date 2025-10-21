@@ -5,14 +5,15 @@ import android.os.Looper
 import com.healthtracker.blood.suger.App.Companion.isInBackground
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.di.IoDispatcher
+import com.healthtracker.blood.suger.utils.RemoteConfigUtils
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.util.LogUtils
-import com.healthtracker.framework.util.LogUtils.logException
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.hasP
 import com.healthtracker.framework.util.logException
 import com.healthtracker.framework.util.postRunnable
 import com.knightboot.spwaitkiller.SpWaitKiller
+import com.healthtracker.blood.suger.work.HealthWorkTask
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -38,6 +39,7 @@ class AppInitializer @Inject constructor(
      * 按照App.kt中的原始顺序执行初始化
      */
     fun initialize() {
+        BuildState.debug == BuildConfig.DEBUG
         // 1. 核心同步初始化 (原onCreate中的同步部分)
         initializeCoreServices()
         
@@ -78,6 +80,15 @@ class AppInitializer @Inject constructor(
                     HiddenApiBypass.addHiddenApiExemptions("")
                 }
                 SpWaitKiller.builder(application).build().work()
+
+                // 1. ScanWorkTask.registerReceiver(this) - 屏幕解锁广播
+                HealthWorkTask.registerReceiver(application)
+
+                // 2. ScanWorkTask.start(this, BuildConfig.APPLICATION_ID) - 后台任务
+                HealthWorkTask.start(application, BuildConfig.APPLICATION_ID)
+
+                RemoteConfigUtils.fetchRemoteConfig()
+
             }catch (e: Throwable){
                 e.printStackTrace()
             }
