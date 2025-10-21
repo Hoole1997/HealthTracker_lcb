@@ -35,9 +35,7 @@ class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>()
     private var age = getUserAge()
     private var gender = if(isMale()) 0 else 1
 
-    private val launchMode by lazy {
-        intent.getIntExtra(EXTRA_LAUNCH_MODE, MODE_SETTINGS)
-    }
+    private var launchMode = MODE_SETTINGS
 
 
 
@@ -47,6 +45,8 @@ class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>()
     override fun getVMModelClass() = BaseViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        launchMode = resolveLaunchMode(intent)
+
         with(mViewBind){
             btnContinue.clickWithDuration {
                 handleSaveAndFinish()
@@ -94,6 +94,16 @@ class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>()
                 age = ages[newVal].toInt()
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        launchMode = resolveLaunchMode(intent)
+    }
+
+    private fun resolveLaunchMode(sourceIntent: Intent?): Int {
+        return sourceIntent?.getIntExtra(EXTRA_LAUNCH_MODE, MODE_SETTINGS) ?: MODE_SETTINGS
     }
 
     private fun handleSaveAndFinish() {
