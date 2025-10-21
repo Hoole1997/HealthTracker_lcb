@@ -10,7 +10,10 @@ import android.os.Process
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.constants.KEY_APP_OPEN_TIMES
 import com.healthtracker.blood.suger.constants.KEY_APP_START_TIME
+import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils
+import java.util.Calendar
 
 
 // 第一次启动时间
@@ -69,3 +72,15 @@ fun getScreenSize(context: Context): Point {
 }
 
 fun isInteractive(context: Context) = (context.getSystemService(Context.POWER_SERVICE) as PowerManager).isInteractive
+
+fun isSameDay(time: Long, time2: Long, tag: String) = Calendar.getInstance().let {
+    val date1 = getDateInt(it, time)
+    val date2 = getDateInt(it, time2)
+    if (BuildState.debug) "isSameDay [$tag] $date1 $date2".logi("Util")
+    date1 == date2
+}
+
+private fun getDateInt(calendar: Calendar, time: Long): Int {
+    calendar.timeInMillis = time
+    return calendar[Calendar.YEAR] * 10000 + (calendar[Calendar.MONTH] + 1) * 100 + calendar[Calendar.DAY_OF_MONTH]
+}

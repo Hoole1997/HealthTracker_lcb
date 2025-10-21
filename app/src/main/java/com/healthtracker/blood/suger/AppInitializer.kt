@@ -2,7 +2,6 @@ package com.healthtracker.blood.suger
 
 import android.app.Application
 import android.os.Looper
-import com.healthtracker.blood.suger.App.Companion.isInBackground
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.di.IoDispatcher
 import com.healthtracker.blood.suger.utils.RemoteConfigUtils
@@ -14,6 +13,7 @@ import com.healthtracker.framework.util.logException
 import com.healthtracker.framework.util.postRunnable
 import com.knightboot.spwaitkiller.SpWaitKiller
 import com.healthtracker.blood.suger.work.HealthWorkTask
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -165,7 +165,7 @@ class AppInitializer @Inject constructor(
                 logException(exception)
                 return@setDefaultUncaughtExceptionHandler
             }
-            if (isInBackground) {
+            if (AppLifecycleManager.isBackground()) {
                 logException(exception)
             } else {
                 defaultHandler?.uncaughtException(thread, exception)

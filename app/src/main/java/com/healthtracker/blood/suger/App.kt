@@ -2,14 +2,11 @@ package com.healthtracker.blood.suger
 
 import android.content.Context
 import android.text.TextUtils
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.utils.WebViewZygote
 import com.healthtracker.blood.suger.utils.getCurProcessName
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +26,6 @@ class App : MultiDexApplication() {
     companion object {
         lateinit var INSTANCE: App
             private set
-        var isInBackground = true
     }
 
     /**
@@ -60,7 +56,15 @@ class App : MultiDexApplication() {
         if (isMainProcess(this)) {
             // 应用初始化将通过AppInitializer统一管理
             appInitializer.initialize()
-            initProcessLifeCycle()
+
+            // ✅ 初始化应用生命周期管理器(替代旧的initProcessLifeCycle)
+            AppLifecycleManager.initialize(this)
+
+            // 可选: 配置生命周期管理器(如需自定义参数)
+             AppLifecycleManager.configure {
+                 debounceMillis = 300
+                 trackScreenLock = true
+             }
 
             // 初始化权限管理器session
             permissionManager.initializeSession()
@@ -80,28 +84,5 @@ class App : MultiDexApplication() {
             }
         }
         return isMainProcess ?: false
-    }
-
-    private fun initProcessLifeCycle() {
-        ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                when (event) {
-                    Lifecycle.Event.ON_RESUME -> {
-                        if (isInBackground) {
-                            isInBackground = false
-
-                        }
-                    }
-
-                    Lifecycle.Event.ON_PAUSE -> {
-                        isInBackground = true
-                    }
-
-                    else -> {
-
-                    }
-                }
-            }
-        })
     }
 }
