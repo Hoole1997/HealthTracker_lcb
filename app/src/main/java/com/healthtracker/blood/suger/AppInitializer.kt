@@ -6,6 +6,11 @@ import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.di.IoDispatcher
 import com.healthtracker.blood.suger.utils.RemoteConfigUtils
 import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.config.AppConfigRegistry
+import com.healthtracker.framework.config.core.RemoteConfigManager
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.lifecycle.AppForegroundObserver
 import com.healthtracker.framework.util.LogUtils
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.hasP
@@ -30,10 +35,27 @@ import javax.inject.Singleton
 @Singleton
 class AppInitializer @Inject constructor(
     private val application: Application,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val remoteConfigManager: RemoteConfigManager,
+    private val appConfigRegistry: AppConfigRegistry
 ) {
     
     private val initScope = CoroutineScope(SupervisorJob() + ioDispatcher)
+
+    /**
+     * 配置刷新观察者
+     *
+     * 监听应用生命周期，在进入前台时自动刷新配置
+     */
+    private val configRefreshObserver = object : AppForegroundObserver {
+        override fun onAppForeground() {
+            "App entered foreground, refreshing config...".logd("AppInitializer")
+            initScope.launch {
+                remoteConfigManager.refreshConfig()
+            }
+        }
+    }
+
     /**
      * 执行应用初始化
      * 按照App.kt中的原始顺序执行初始化
@@ -42,12 +64,15 @@ class AppInitializer @Inject constructor(
         BuildState.debug == BuildConfig.DEBUG
         // 1. 核心同步初始化 (原onCreate中的同步部分)
         initializeCoreServices()
-        
+
         // 2. 延迟异步初始化 (原UIUtils.postRunnable中的部分)
         initializeDelayedServices()
-        
+
         // 3. 架构验证初始化
         initializeArchitectureValidation()
+
+        // 4. 远程配置初始化
+        initializeRemoteConfig()
     }
     
     /**
@@ -86,8 +111,6 @@ class AppInitializer @Inject constructor(
 
                 // 2. ScanWorkTask.start(this, BuildConfig.APPLICATION_ID) - 后台任务
                 HealthWorkTask.start(application, BuildConfig.APPLICATION_ID)
-
-                RemoteConfigUtils.fetchRemoteConfig()
 
             }catch (e: Throwable){
                 e.printStackTrace()
@@ -170,6 +193,47 @@ class AppInitializer @Inject constructor(
             } else {
                 defaultHandler?.uncaughtException(thread, exception)
             }
+        }
+    }
+
+    /**
+     * 初始化远程配置框架
+     *
+     * 包括:
+     * 1. 注册所有配置解析器
+     * 2. 初始化 RemoteConfigManager
+     */
+    private fun initializeRemoteConfig() {
+        initScope.launch {
+            try {
+                // 1. 注册所有配置解析器
+                appConfigRegistry.registerAllParsers()
+                "Config parsers registered: ${appConfigRegistry.getRegisteredCount()}".logd("AppInitializer")
+
+                // 2. 初始化 RemoteConfigManager
+                val result = remoteConfigManager.initialize()
+                result.onSuccess {
+                    "RemoteConfigManager initialized successfully".logd("AppInitializer")
+                }.onFailure { e ->
+                    "Failed to initialize RemoteConfigManager: ${e.message}".loge("AppInitializer")
+                }
+            } catch (e: Exception) {
+                "Failed to initialize remote config: ${e.message}".loge("AppInitializer")
+            }
+        }
+    }
+
+    /**
+     * 注册生命周期观察者
+     *
+     * 必须在 AppLifecycleManager 初始化后调用
+     */
+    fun registerLifecycleObservers() {
+        try {
+            AppLifecycleManager.addObserver(configRefreshObserver)
+            "Config refresh observer registered".logd("AppInitializer")
+        } catch (e: Exception) {
+            "Failed to register lifecycle observers: ${e.message}".loge("AppInitializer")
         }
     }
 } 

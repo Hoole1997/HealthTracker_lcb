@@ -24,6 +24,7 @@ class App : MultiDexApplication() {
 
 
     companion object {
+        private const val TAG = "App"
         lateinit var INSTANCE: App
             private set
     }
@@ -35,6 +36,7 @@ class App : MultiDexApplication() {
     private var isMainProcess: Boolean? = null
 
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
@@ -54,17 +56,20 @@ class App : MultiDexApplication() {
         super.onCreate()
         // 只在主进程中进行初始化 (对应原App.kt中的isMainProcess检查)
         if (isMainProcess(this)) {
-            // 应用初始化将通过AppInitializer统一管理
+            // 应用初始化（包含远程配置初始化）
             appInitializer.initialize()
 
             // ✅ 初始化应用生命周期管理器(替代旧的initProcessLifeCycle)
             AppLifecycleManager.initialize(this)
 
             // 可选: 配置生命周期管理器(如需自定义参数)
-             AppLifecycleManager.configure {
-                 debounceMillis = 300
-                 trackScreenLock = true
-             }
+            AppLifecycleManager.configure {
+                debounceMillis = 300
+                trackScreenLock = true
+            }
+
+            // 注册生命周期观察者（包含配置刷新观察者）
+            appInitializer.registerLifecycleObservers()
 
             // 初始化权限管理器session
             permissionManager.initializeSession()
