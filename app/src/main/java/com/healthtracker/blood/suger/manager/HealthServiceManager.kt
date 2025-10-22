@@ -1,0 +1,109 @@
+package com.healthtracker.blood.suger.manager
+
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import com.healthtracker.blood.suger.alarm.PermissionManager
+import com.healthtracker.blood.suger.service.HealthService
+import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.ext.logw
+import com.healthtracker.framework.util.SpUtils
+import com.healthtracker.framework.util.hasOreo
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/**
+ * 健康服务管理器
+ * 负责健康服务的启动、停止和状态管理
+ */
+@Singleton
+class HealthServiceManager @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val permissionManager: PermissionManager
+) {
+
+    companion object {
+        private const val TAG = "HealthServiceManager"
+    }
+
+    /**
+     * 启动健康服务
+     */
+    fun startHealthService() {
+        // 检查通知权限
+        if (!permissionManager.isNotificationPermissionGranted()) {
+            "Cannot start health service: notification permission not granted".logw(TAG)
+            return
+        }
+
+        try {
+            val intent = Intent(context, HealthService::class.java)
+
+            // Android 8.0+ 使用 startForegroundService
+            if (hasOreo()) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
+
+            // 记录用户启用了服务
+            SpUtils.putBoolean(HealthServiceConstants.PREF_HEALTH_SERVICE_ENABLED, true)
+
+            "Health service started successfully".logd(TAG)
+
+        } catch (e: IllegalStateException) {
+            // Android 12+ 后台启动前台服务异常
+            "Cannot start foreground service from background".loge(TAG)
+        } catch (e: Exception) {
+            "Failed to start health service: ${e.message}".loge(TAG)
+        }
+    }
+
+    /**
+     * 停止健康服务
+     */
+    fun stopHealthService() {
+        try {
+            val intent = Intent(context, HealthService::class.java)
+            context.stopService(intent)
+
+            // 记录用户禁用了服务
+            SpUtils.putBoolean(HealthServiceConstants.PREF_HEALTH_SERVICE_ENABLED, false)
+
+            "Health service stopped successfully".logd(TAG)
+
+        } catch (e: Exception) {
+            "Failed to stop health service: ${e.message}".loge(TAG)
+        }
+    }
+
+    /**
+     * 检查健康服务是否正在运行
+     */
+    fun isServiceRunning(): Boolean {
+        return try {
+            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            @Suppress("DEPRECATION")
+            for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+                if (HealthService::class.java.name == service.service.className) {
+                    return true
+                }
+            }
+            false
+        } catch (e: Exception) {
+            "Failed to check service status: ${e.message}".loge(TAG)
+            false
+        }
+    }
+
+    /**
+     * 检查用户是否启用了健康服务
+     */
+    fun isServiceEnabled(): Boolean {
+        return SpUtils.getBoolean(HealthServiceConstants.PREF_HEALTH_SERVICE_ENABLED, false)
+    }
+}

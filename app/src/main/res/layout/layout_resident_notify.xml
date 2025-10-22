@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_4"
+    android:paddingBottom="@dimen/dp_4"
+
     android:background="@drawable/bg_rect_white_12"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp">
+    android:gravity="center_vertical">
 
     <LinearLayout
         android:id="@+id/ll_bs"
@@ -14,15 +16,15 @@
         android:orientation="vertical"
         android:gravity="center">
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:src="@drawable/ic_bs_primery"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextViewFont_RobotoMedium"
-            android:layout_marginTop="@dimen/dp_6"
-            android:textSize="12sp"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textSize="11sp"
             android:textColor="@color/t1"
             android:text="@string/blood_suger"/>
     </LinearLayout>
@@ -35,15 +37,15 @@
         android:orientation="vertical"
         android:gravity="center">
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:src="@drawable/ic_bp_resident"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextViewFont_RobotoMedium"
-            android:layout_marginTop="@dimen/dp_6"
-            android:textSize="12sp"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textSize="11sp"
             android:textColor="@color/t1"
             android:text="@string/blood_pressure"/>
     </LinearLayout>
@@ -56,15 +58,15 @@
         android:orientation="vertical"
         android:gravity="center">
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:src="@drawable/ic_hr_resident"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextViewFont_RobotoMedium"
-            android:layout_marginTop="@dimen/dp_6"
-            android:textSize="12sp"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textSize="11sp"
             android:textColor="@color/t1"
             android:text="@string/heart_rate"/>
     </LinearLayout>

@@ -1197,4 +1197,8 @@ healthcare provider or medical institution.</string>
     <string name="reset_success">Reset successful</string>
     <string name="save_success">Saved successfully</string>
 
+    <!-- 健康服务通知渠道 -->
+    <string name="health_service_channel_name">Health Monitoring Service</string>
+    <string name="health_service_channel_description">Displays persistent notification for quick health data recording</string>
+
 </resources>

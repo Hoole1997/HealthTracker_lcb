@@ -17,6 +17,7 @@ import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
 import com.healthtracker.blood.suger.ui.fragment.RecordFragment
+import com.healthtracker.blood.suger.ui.viewmodel.MainViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
@@ -29,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
+class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
 
     companion object{
         private const val TAG = "MainActivity"
@@ -125,9 +126,10 @@ class MainActivity : BaseMVVMActivity<BaseViewModel, ActivityMainBinding>() {
 
     override fun createViewBinding() = ActivityMainBinding.inflate(layoutInflater)
 
-    override fun getVMModelClass() = BaseViewModel::class.java
+    override fun getVMModelClass() = MainViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        mViewModel.startHealthService()
         with(mViewBind){
             ivSetting.clickWithDuration {
                 "setting click".logd(TAG)
