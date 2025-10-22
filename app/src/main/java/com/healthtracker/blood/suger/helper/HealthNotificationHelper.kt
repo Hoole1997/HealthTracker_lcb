@@ -92,7 +92,7 @@ class HealthNotificationHelper @Inject constructor(
 
         // 构建通知
         return NotificationCompat.Builder(context, HealthServiceConstants.CHANNEL_ID_HEALTH_SERVICE)
-            .setSmallIcon(R.drawable.ic_notifcation_pb)  // 使用项目中的通知图标
+            .setSmallIcon(R.drawable.ic_notification_bs)  // 使用项目中的通知图标
             .setCustomContentView(remoteViews)  // 设置自定义布局
             .setCustomBigContentView(remoteViews)  // 展开后也使用相同布局
             .setPriority(NotificationCompat.PRIORITY_HIGH)  // 高优先级
