@@ -7,6 +7,7 @@
     android:paddingBottom="12dp">
 
     <LinearLayout
+        android:id="@+id/ll_bs"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -27,6 +28,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_bp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -47,6 +49,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_hr"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

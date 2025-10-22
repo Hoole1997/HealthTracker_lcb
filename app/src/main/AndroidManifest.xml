@@ -8,6 +8,9 @@
     <!-- 全屏通知权限 -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
+
     <!-- 系统级闹钟权限 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -201,14 +204,11 @@
             </intent-filter>
         </receiver>
 
-<!--        <receiver-->
-<!--            android:name=".work.ScreenUnlockReceiver"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.USER_PRESENT" />-->
-<!--                <action android:name="android.intent.action.SCREEN_ON" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
+        <service
+            android:name=".service.HealthService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="health" />
     </application>
 
 </manifest>
