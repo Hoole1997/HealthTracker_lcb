@@ -11,8 +11,8 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
-import com.healthtracker.blood.suger.receiver.HealthNotificationReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -105,15 +105,28 @@ class HealthNotificationHelper @Inject constructor(
 
     /**
      * 创建点击事件的PendingIntent
+     * 直接启动 SplashActivity，不再通过 BroadcastReceiver 中转
+     * 这样可以避免 Android 10+ 从后台启动 Activity 的限制
      */
     private fun createClickPendingIntent(action: String): PendingIntent {
-        val intent = Intent(context, HealthNotificationReceiver::class.java).apply {
-            this.action = action
+        // 将内部 action 映射到对应的参数值
+        val actionValue = when(action) {
+            HealthServiceConstants.ACTION_BLOOD_SUGAR -> HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR
+            HealthServiceConstants.ACTION_BLOOD_PRESSURE -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
+            HealthServiceConstants.ACTION_HEART_RATE -> HealthServiceConstants.ACTION_VALUE_HEART_RATE
+            else -> null
+        }
+
+        // 直接创建启动 SplashActivity 的 Intent
+        val intent = Intent(context, SplashActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, actionValue)
         }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
-        return PendingIntent.getBroadcast(
+        // 使用 getActivity 而不是 getBroadcast，符合 Android 10+ 要求
+        return PendingIntent.getActivity(
             context,
             action.hashCode(),  // 使用action的hashCode作为requestCode确保唯一性
             intent,

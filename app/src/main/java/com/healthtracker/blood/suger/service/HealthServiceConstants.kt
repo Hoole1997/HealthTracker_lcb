@@ -18,4 +18,12 @@ object HealthServiceConstants {
 
     // SharedPreferences 键
     const val PREF_HEALTH_SERVICE_ENABLED = "health_service_enabled"
+
+    // Intent Extra Keys - 通知点击参数
+    const val EXTRA_NOTIFICATION_ACTION = "extra_notification_action"
+
+    // Action Values - 通知点击动作值
+    const val ACTION_VALUE_BLOOD_SUGAR = "blood_sugar"
+    const val ACTION_VALUE_BLOOD_PRESSURE = "blood_pressure"
+    const val ACTION_VALUE_HEART_RATE = "heart_rate"
 }

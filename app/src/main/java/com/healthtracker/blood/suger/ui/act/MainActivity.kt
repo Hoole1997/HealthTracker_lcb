@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.ui.act
 
 // 移除广播接收器相关导入，改用页面可见状态检查月份变化
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.compose.ui.geometry.Rect
@@ -12,6 +13,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
+import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.ui.act.AlarmManageActivity
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
@@ -142,6 +144,11 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
 
             setupBottomNavBar()
             setupViewPager()
+
+            // 延迟处理通知点击参数，确保UI完全初始化
+            mViewBind.root.postDelayed({
+                handleNotificationAction(intent)
+            }, 500)
         }
     }
 
@@ -229,6 +236,39 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
                 override fun onPageScrollStateChanged(state: Int) {}
 
             })
+        }
+    }
+
+    /**
+     * 处理通知点击参数
+     * 根据传入的action参数跳转到对应的记录页面
+     */
+    private fun handleNotificationAction(intent: Intent?) {
+        val action = intent?.getStringExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION)
+
+        if (action == null) {
+            "No notification action, normal app launch".logd(TAG)
+            return
+        }
+
+        "Handling notification action: $action".logd(TAG)
+
+        when (action) {
+            HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR -> {
+                "Launching BsRecordActivity from notification".logd(TAG)
+                startActivity<BsRecordActivity>()
+            }
+            HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE -> {
+                "Launching BpRecordActivity from notification".logd(TAG)
+                startActivity<BpRecordActivity>()
+            }
+            HealthServiceConstants.ACTION_VALUE_HEART_RATE -> {
+                "Launching HeartRateRecordActivity from notification".logd(TAG)
+                startActivity<HeartRateRecordActivity>()
+            }
+            else -> {
+                "Unknown notification action: $action".logd(TAG)
+            }
         }
     }
 

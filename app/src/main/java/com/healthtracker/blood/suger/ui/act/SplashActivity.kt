@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.animation.addListener
@@ -32,17 +33,33 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         private const val TAG = "SplashActivity"
     }
 
+    // 从通知传递过来的动作参数
+    private val notificationAction: String? by lazy {
+        intent.getStringExtra(com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION)
+    }
+
     // 状态机负责协调动画、权限、前后台状态与跳转
     private val stateMachine by lazy {
         SplashStateMachine(
             scope = lifecycleScope,
             onNavigate = {
-                if(hasNewGuide()){
-                    startActivity<MainActivity>(isFinishSelf = true)
-                }else{
-                    startActivity<GuideActivity>(isFinishSelf = true)
+                // 判断应该跳转到哪个页面
+                val targetActivity = if(hasNewGuide()){
+                    MainActivity::class.java
+                } else {
+                    GuideActivity::class.java
                 }
 
+                // 创建Intent并传递通知参数
+                val targetIntent = Intent(this, targetActivity).apply {
+                    notificationAction?.let { action ->
+                        putExtra(com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, action)
+                        "Passing notification action to ${targetActivity.simpleName}: $action".logd(TAG)
+                    }
+                }
+
+                startActivity(targetIntent)
+                finish()
             }
         )
     }

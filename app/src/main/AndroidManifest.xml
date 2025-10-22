@@ -204,13 +204,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- 健康通知点击接收器 -->
-        <receiver
-            android:name=".receiver.HealthNotificationReceiver"
-            android:enabled="true"
-            android:exported="false"/>
-
-
         <service
             android:name=".service.HealthService"
             android:enabled="true"
