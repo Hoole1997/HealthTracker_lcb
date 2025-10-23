@@ -36,7 +36,8 @@ class AppInitializer @Inject constructor(
     private val application: Application,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val remoteConfigManager: RemoteConfigManager,
-    private val appConfigRegistry: AppConfigRegistry
+    private val appConfigRegistry: AppConfigRegistry,
+    private val healthServiceForegroundObserver: com.healthtracker.blood.suger.observer.HealthServiceForegroundObserver
 ) {
     
     private val initScope = CoroutineScope(SupervisorJob() + ioDispatcher)
@@ -229,8 +230,15 @@ class AppInitializer @Inject constructor(
      */
     fun registerLifecycleObservers() {
         try {
+            // 注册配置刷新观察器
             AppLifecycleManager.addObserver(configRefreshObserver)
             "Config refresh observer registered".logd("AppInitializer")
+
+            // ✅ 注册健康服务前台观察器
+            // 监听应用前后台切换，自动启动/管理健康服务
+            AppLifecycleManager.addObserver(healthServiceForegroundObserver)
+            "HealthServiceForegroundObserver registered".logd("AppInitializer")
+
         } catch (e: Exception) {
             "Failed to register lifecycle observers: ${e.message}".loge("AppInitializer")
         }

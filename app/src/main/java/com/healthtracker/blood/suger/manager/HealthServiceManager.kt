@@ -1,12 +1,14 @@
 package com.healthtracker.blood.suger.manager
 
 import android.app.ActivityManager
+import android.app.ForegroundServiceStartNotAllowedException
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.service.HealthService
 import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
@@ -55,9 +57,12 @@ class HealthServiceManager @Inject constructor(
 
             "Health service started successfully".logd(TAG)
 
+        } catch (e: ForegroundServiceStartNotAllowedException) {
+            // ✅ 优化 2: Android 12+ 专用异常处理
+            "Cannot start foreground service from background (Android 12+): ${e.message}".loge(TAG)
+            "Suggestion: Service will start when app returns to foreground".logw(TAG)
         } catch (e: IllegalStateException) {
-            // Android 12+ 后台启动前台服务异常
-            "Cannot start foreground service from background".loge(TAG)
+            "Cannot start foreground service: illegal state - ${e.message}".loge(TAG)
         } catch (e: Exception) {
             "Failed to start health service: ${e.message}".loge(TAG)
         }

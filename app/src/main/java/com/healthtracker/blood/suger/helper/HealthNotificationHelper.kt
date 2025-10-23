@@ -15,6 +15,7 @@ import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.ext.logw
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -101,6 +102,60 @@ class HealthNotificationHelper @Inject constructor(
             .setShowWhen(false)  // 不显示时间
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)  // 锁屏可见
             .build()
+    }
+
+    /**
+     * 发送普通通知（非前台服务）
+     * 用于 Android 12+ 后台场景，规避前台服务启动限制
+     *
+     * 注意：
+     * - 使用与前台服务相同的 notification ID
+     * - 这样当前台服务启动时，会自动替换普通通知
+     * - 普通通知可被用户滑动删除（这是可接受的）
+     *
+     * @return true 表示发送成功
+     */
+    fun sendNormalNotification(): Boolean {
+        // 检查通知权限
+        if (!permissionManager.isNotificationPermissionGranted()) {
+            "Cannot send normal notification: permission not granted".logw(TAG)
+            return false
+        }
+
+        try {
+            // 创建通知渠道（如果尚未创建）
+            createNotificationChannel()
+
+            // 构建通知（复用现有方法）
+            val notification = buildNotification()
+
+            // ✅ 使用 NotificationManager 发送普通通知
+            // 关键：使用与前台服务相同的 ID，便于后续替换
+            notificationManager.notify(
+                HealthServiceConstants.NOTIFICATION_ID_HEALTH_SERVICE,
+                notification
+            )
+
+            "Normal notification sent successfully".logd(TAG)
+            return true
+
+        } catch (e: Exception) {
+            "Failed to send normal notification: ${e.message}".loge(TAG)
+            return false
+        }
+    }
+
+    /**
+     * 取消普通通知
+     * 通常不需要手动调用，前台服务启动时会自动替换
+     */
+    fun cancelNormalNotification() {
+        try {
+            notificationManager.cancel(HealthServiceConstants.NOTIFICATION_ID_HEALTH_SERVICE)
+            "Normal notification cancelled".logd(TAG)
+        } catch (e: Exception) {
+            "Failed to cancel normal notification: ${e.message}".loge(TAG)
+        }
     }
 
     /**
