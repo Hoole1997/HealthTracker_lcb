@@ -2,23 +2,22 @@ package com.healthtracker.blood.suger
 
 import android.app.Application
 import android.os.Looper
+import com.healthtracker.blood.suger.config.registry.AppConfigRegistry
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.di.IoDispatcher
-import com.healthtracker.blood.suger.utils.RemoteConfigUtils
+import com.healthtracker.blood.suger.work.HealthWorkTask
 import com.healthtracker.framework.BuildState
-import com.healthtracker.framework.config.AppConfigRegistry
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.lifecycle.AppForegroundObserver
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LogUtils
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.hasP
 import com.healthtracker.framework.util.logException
 import com.healthtracker.framework.util.postRunnable
 import com.knightboot.spwaitkiller.SpWaitKiller
-import com.healthtracker.blood.suger.work.HealthWorkTask
-import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob

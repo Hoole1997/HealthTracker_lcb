@@ -1,12 +1,12 @@
-package com.healthtracker.framework.config.parsers
+package com.healthtracker.blood.suger.config.parsers
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
-import com.healthtracker.framework.config.core.ConfigKey
+import com.healthtracker.blood.suger.config.ConfigKeys
+import com.healthtracker.blood.suger.config.models.ChannelConfig
+import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.framework.config.core.ConfigParser
-import com.healthtracker.framework.config.models.ChannelConfig
-import com.healthtracker.framework.config.models.PushConfig
 import javax.inject.Inject
 
 /**
@@ -35,7 +35,7 @@ class PushConfigParser @Inject constructor(
     private val pushMessageParser: PushMessageParser
 ) : ConfigParser<PushConfig> {
 
-    override val configKey: String = ConfigKey.PUSH_CONFIG_JSON
+    override val configKey: String = ConfigKeys.PUSH_CONFIG_JSON
 
     override fun parse(rawValue: String): PushConfig? {
         return try {

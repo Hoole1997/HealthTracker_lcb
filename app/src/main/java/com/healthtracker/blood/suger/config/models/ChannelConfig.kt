@@ -1,4 +1,4 @@
-package com.healthtracker.framework.config.models
+package com.healthtracker.blood.suger.config.models
 
 /**
  * 渠道推送配置模型

@@ -1,10 +1,9 @@
-package com.healthtracker.framework.config
+package com.healthtracker.blood.suger.config.registry
 
+import com.healthtracker.blood.suger.config.models.PushConfig
+import com.healthtracker.blood.suger.config.parsers.PushConfigParser
+import com.healthtracker.blood.suger.config.parsers.PushMessageParser
 import com.healthtracker.framework.config.core.ConfigRegistry
-import com.healthtracker.framework.config.models.PushConfig
-import com.healthtracker.framework.config.models.PushMessage
-import com.healthtracker.framework.config.parsers.PushConfigParser
-import com.healthtracker.framework.config.parsers.PushMessageParser
 import javax.inject.Inject
 import javax.inject.Singleton
 
