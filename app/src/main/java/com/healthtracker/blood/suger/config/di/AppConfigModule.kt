@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.config.di
 
 import com.google.gson.Gson
+import com.healthtracker.blood.suger.config.parsers.FsiConfigParser
 import com.healthtracker.blood.suger.config.parsers.PushConfigParser
 import com.healthtracker.blood.suger.config.parsers.PushMessageParser
 import com.healthtracker.blood.suger.config.registry.AppConfigRegistry
@@ -42,6 +43,15 @@ object AppConfigModule {
     }
 
     /**
+     * 提供FSI锁屏推送配置解析器
+     */
+    @Provides
+    @Singleton
+    fun provideFsiConfigParser(): FsiConfigParser {
+        return FsiConfigParser()
+    }
+
+    /**
      * 提供应用配置注册表
      */
     @Provides
@@ -49,8 +59,9 @@ object AppConfigModule {
     fun provideAppConfigRegistry(
         registry: ConfigRegistry,
         pushConfigParser: PushConfigParser,
-        pushMessageParser: PushMessageParser
+        pushMessageParser: PushMessageParser,
+        fsiConfigParser: FsiConfigParser
     ): AppConfigRegistry {
-        return AppConfigRegistry(registry, pushConfigParser, pushMessageParser)
+        return AppConfigRegistry(registry, pushConfigParser, pushMessageParser, fsiConfigParser)
     }
 }
