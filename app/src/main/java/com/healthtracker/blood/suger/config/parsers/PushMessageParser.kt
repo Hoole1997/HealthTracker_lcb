@@ -45,7 +45,7 @@ class PushMessageParser @Inject constructor(
     }
 
     override fun getDefault(): List<PushMessage> {
-        return listOf(PushMessage.createDefault())
+        return PushMessage.createDefaultList()
     }
 
     override fun validate(config: List<PushMessage>): Boolean {

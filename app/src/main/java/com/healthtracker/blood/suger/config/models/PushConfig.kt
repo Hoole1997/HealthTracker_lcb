@@ -22,7 +22,7 @@ data class PushConfig(
             return PushConfig(
                 paidChannel = ChannelConfig.createDefaultPaid(),
                 organicChannel = ChannelConfig.createDefaultOrganic(),
-                pushMessages = listOf(PushMessage.createDefault())
+                pushMessages = PushMessage.createDefaultList()
             )
         }
     }
