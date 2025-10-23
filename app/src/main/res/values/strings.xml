@@ -1201,4 +1201,8 @@ healthcare provider or medical institution.</string>
     <string name="health_service_channel_name">Health Monitoring Service</string>
     <string name="health_service_channel_description">Displays persistent notification for quick health data recording</string>
 
+    <!-- 自定义推送通知渠道 -->
+    <string name="custom_notification_channel_name">Health Alerts</string>
+    <string name="custom_notification_channel_description">Reminders for blood sugar, blood pressure, heart rate and more</string>
+
 </resources>

@@ -4,24 +4,25 @@ package com.healthtracker.blood.suger.ui.act
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.compose.ui.geometry.Rect
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.data.utils.DateTimeUtils
+import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
+import com.healthtracker.blood.suger.helper.CustomNotificationHelper
 import com.healthtracker.blood.suger.service.HealthServiceConstants
-import com.healthtracker.blood.suger.ui.act.AlarmManageActivity
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
 import com.healthtracker.blood.suger.ui.fragment.RecordFragment
 import com.healthtracker.blood.suger.ui.viewmodel.MainViewModel
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.logd
@@ -29,7 +30,9 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.Restore
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
@@ -41,6 +44,9 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
     private var homeFrg: HomeFragment? = null
     private var medFrg: MedsFragment? = null
     private var recordFrg: RecordFragment? = null
+
+    @Inject
+    lateinit var customNotificationHelper: CustomNotificationHelper
 
     @Restore
     private var currentTabIndex = 0
@@ -133,9 +139,20 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.startHealthService()
         with(mViewBind){
+            if(BuildState.debug){
+                ivSetting.visible()
+            }
             ivSetting.clickWithDuration {
                 "setting click".logd(TAG)
                 // TODO: 添加设置页面功能
+            }
+
+            // Debug 专用：长按发送测试通知
+            if (BuildConfig.DEBUG) {
+                ivSetting.setOnLongClickListener {
+                    sendTestNotifications()
+                    true
+                }
             }
 
             ivRemind.clickWithDuration {
@@ -255,16 +272,29 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
 
         when (action) {
             HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR -> {
-                "Launching BsRecordActivity from notification".logd(TAG)
                 startActivity<BsRecordActivity>()
             }
             HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE -> {
-                "Launching BpRecordActivity from notification".logd(TAG)
                 startActivity<BpRecordActivity>()
             }
             HealthServiceConstants.ACTION_VALUE_HEART_RATE -> {
-                "Launching HeartRateRecordActivity from notification".logd(TAG)
                 startActivity<HeartRateRecordActivity>()
+            }
+            // 自定义通知的新增动作处理分支
+            HealthServiceConstants.ACTION_VALUE_HOMEPAGE -> {
+                // 已在主页，无需跳转
+            }
+            HealthServiceConstants.ACTION_VALUE_CHOLESTEROL -> {
+                startActivity<CholesterolRecordActivity>()
+            }
+            HealthServiceConstants.ACTION_VALUE_BMI -> {
+                startActivity<BmiRecordActivity>()
+            }
+            HealthServiceConstants.ACTION_VALUE_HISTORY -> {
+                startActivity<HistoryRecordActivity>()
+            }
+            HealthServiceConstants.ACTION_VALUE_MEDICATION -> {
+                mViewBind.viewPagerHome.currentItem = 1
             }
             else -> {
                 "Unknown notification action: $action".logd(TAG)
@@ -272,5 +302,39 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
         }
     }
 
+    /**
+     * 发送测试通知（仅 Debug 构建）
+     * 一次性发送 11 条预配置的测试通知，用于验证 UI
+     */
+    private fun sendTestNotifications() {
+        lifecycleScope.launch {
+            val messages = PushMessage.createDefaultList()
+            Toast.makeText(
+                this@MainActivity,
+                "Sending ${messages.size} test notifications...",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            "Starting to send ${messages.size} test notifications".logd(TAG)
+
+            messages.forEachIndexed { index, message ->
+                customNotificationHelper.showCustomNotification(message)
+                "Test notification ${index + 1}/${messages.size} sent: ${message.title}".logd(TAG)
+
+                // 添加间隔避免通知瞬间全部显示
+                if (index < messages.size - 1) {
+                    delay(300) // 300ms 间隔
+                }
+            }
+
+            Toast.makeText(
+                this@MainActivity,
+                "✅ All ${messages.size} test notifications sent!",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            "All test notifications sent successfully".logd(TAG)
+        }
+    }
 
 }

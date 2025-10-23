@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_root"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_hr_notify">
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bg_hr_notify"/>
 
     <ImageView
         android:id="@+id/ic_bg_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:background="@mipmap/bg_hr_notify_icon" />
+        android:src="@mipmap/bg_hr_notify_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,6 +43,7 @@
                 style="@style/TextViewFont_RobotoBold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:layout_marginStart="10dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/white"
@@ -49,6 +56,7 @@
             style="@style/TextViewFont_RobotoBold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:lineSpacingExtra="4dp"
             android:layout_marginTop="16dp"
             android:gravity="center_vertical"
@@ -60,6 +68,7 @@
             android:id="@+id/tv_btn"
             style="@style/TextViewFont_RobotoBold"
             android:layout_width="match_parent"
+            android:textStyle="bold"
             android:layout_height="45dp"
             android:layout_marginTop="18dp"
             android:background="@drawable/bg_rect_white_40"

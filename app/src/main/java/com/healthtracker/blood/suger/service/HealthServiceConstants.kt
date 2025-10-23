@@ -26,4 +26,11 @@ object HealthServiceConstants {
     const val ACTION_VALUE_BLOOD_SUGAR = "blood_sugar"
     const val ACTION_VALUE_BLOOD_PRESSURE = "blood_pressure"
     const val ACTION_VALUE_HEART_RATE = "heart_rate"
+
+    // 自定义通知的新增动作值
+    const val ACTION_VALUE_HOMEPAGE = "homepage"
+    const val ACTION_VALUE_CHOLESTEROL = "cholesterol"
+    const val ACTION_VALUE_BMI = "bmi"
+    const val ACTION_VALUE_HISTORY = "history"
+    const val ACTION_VALUE_MEDICATION = "medication"
 }
