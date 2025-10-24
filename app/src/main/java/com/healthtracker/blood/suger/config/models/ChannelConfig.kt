@@ -6,11 +6,11 @@ package com.healthtracker.blood.suger.config.models
  * 针对不同渠道（付费/自然量）的差异化推送策略
  *
  * @property totalPushCount 每日推送总次数限制
- * @property unlockPushInterval 解锁推送间隔（小时）
- * @property backgroundPushInterval 后台推送间隔（小时）
+ * @property unlockPushInterval 解锁推送间隔（分钟）
+ * @property backgroundPushInterval 后台推送间隔（分钟）
  * @property hoverDurationStrategySwitch 悬浮时长策略开关 (0=关闭, 1=开启)
  * @property hoverDurationLoopCount 悬浮时长循环次数
- * @property newUserCooldown 新用户冷却期（小时）
+ * @property newUserCooldown 新用户冷却期（分钟）
  * @property doNotDisturbStart 免打扰开始时间 (格式: "HH:mm")
  * @property doNotDisturbEnd 免打扰结束时间 (格式: "HH:mm")
  * @property notificationEnabled 通知开关 (0=关闭, 1=开启)
@@ -18,11 +18,11 @@ package com.healthtracker.blood.suger.config.models
  */
 data class ChannelConfig(
     val totalPushCount: Int,
-    val unlockPushInterval: String,
-    val backgroundPushInterval: String,
+    val unlockPushInterval: Int,
+    val backgroundPushInterval: Int,
     val hoverDurationStrategySwitch: Int,
     val hoverDurationLoopCount: Int,
-    val newUserCooldown: String,
+    val newUserCooldown: Int,
     val doNotDisturbStart: String,
     val doNotDisturbEnd: String,
     val notificationEnabled: Int,
@@ -35,11 +35,11 @@ data class ChannelConfig(
         fun createDefaultPaid(): ChannelConfig {
             return ChannelConfig(
                 totalPushCount = 999,
-                unlockPushInterval = "10",
-                backgroundPushInterval = "10",
+                unlockPushInterval = 10,
+                backgroundPushInterval = 10,
                 hoverDurationStrategySwitch = 1,
                 hoverDurationLoopCount = 9,
-                newUserCooldown = "0",
+                newUserCooldown = 0,
                 doNotDisturbStart = "02:00",
                 doNotDisturbEnd = "07:00",
                 notificationEnabled = 1,
@@ -53,11 +53,11 @@ data class ChannelConfig(
         fun createDefaultOrganic(): ChannelConfig {
             return ChannelConfig(
                 totalPushCount = 3,
-                unlockPushInterval = "10",
-                backgroundPushInterval = "10",
+                unlockPushInterval = 10,
+                backgroundPushInterval = 10,
                 hoverDurationStrategySwitch = 0,
                 hoverDurationLoopCount = 0,
-                newUserCooldown = "24",
+                newUserCooldown = 24,
                 doNotDisturbStart = "02:00",
                 doNotDisturbEnd = "08:00",
                 notificationEnabled = 1,
@@ -71,11 +71,8 @@ data class ChannelConfig(
      */
     fun isValid(): Boolean {
         return totalPushCount > 0 &&
-                unlockPushInterval.toIntOrNull() != null &&
-                backgroundPushInterval.toIntOrNull() != null &&
                 hoverDurationStrategySwitch in 0..1 &&
                 hoverDurationLoopCount >= 0 &&
-                newUserCooldown.toIntOrNull() != null &&
                 doNotDisturbStart.matches(Regex("\\d{2}:\\d{2}")) &&
                 doNotDisturbEnd.matches(Regex("\\d{2}:\\d{2}")) &&
                 notificationEnabled in 0..1 &&
@@ -85,17 +82,17 @@ data class ChannelConfig(
     /**
      * 获取解锁推送间隔（小时）
      */
-    fun getUnlockPushIntervalHours(): Int = unlockPushInterval.toIntOrNull() ?: 10
+    fun getUnlockPushIntervalHours(): Int = unlockPushInterval
 
     /**
      * 获取后台推送间隔（小时）
      */
-    fun getBackgroundPushIntervalHours(): Int = backgroundPushInterval.toIntOrNull() ?: 10
+    fun getBackgroundPushIntervalHours(): Int = backgroundPushInterval
 
     /**
      * 获取新用户冷却期（小时）
      */
-    fun getNewUserCooldownHours(): Int = newUserCooldown.toIntOrNull() ?: 24
+    fun getNewUserCooldownHours(): Int = newUserCooldown
 
     /**
      * 检查是否在免打扰时段

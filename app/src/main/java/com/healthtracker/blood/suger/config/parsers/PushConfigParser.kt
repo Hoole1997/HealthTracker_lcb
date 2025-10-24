@@ -75,11 +75,11 @@ class PushConfigParser @Inject constructor(
             jsonObject?.let {
                 ChannelConfig(
                     totalPushCount = it.get("total_push_count")?.asInt ?: 0,
-                    unlockPushInterval = it.get("unlock_push_interval")?.asString ?: "10",
-                    backgroundPushInterval = it.get("background_push_interval")?.asString ?: "10",
+                    unlockPushInterval = it.get("unlock_push_interval")?.asInt ?: 10,
+                    backgroundPushInterval = it.get("background_push_interval")?.asInt ?: 10,
                     hoverDurationStrategySwitch = it.get("hover_duration_strategy_switch")?.asInt ?: 0,
                     hoverDurationLoopCount = it.get("hover_duration_loop_count")?.asInt ?: 0,
-                    newUserCooldown = it.get("new_user_cooldown")?.asString ?: "24",
+                    newUserCooldown = it.get("new_user_cooldown")?.asInt ?: 24,
                     doNotDisturbStart = it.get("do_not_disturb_start")?.asString ?: "02:00",
                     doNotDisturbEnd = it.get("do_not_disturb_end")?.asString ?: "08:00",
                     notificationEnabled = it.get("notification_enabled")?.asInt ?: 1,

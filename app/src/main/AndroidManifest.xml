@@ -204,6 +204,17 @@
             </intent-filter>
         </receiver>
 
+        <!-- 通知动作广播接收器（Loop 推送） -->
+        <receiver
+            android:name=".receiver.NotificationActionReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.healthtracker.NOTIFICATION_CLICKED" />
+                <action android:name="com.healthtracker.NOTIFICATION_DISMISSED" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".service.HealthService"
             android:enabled="true"

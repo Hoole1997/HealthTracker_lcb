@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import androidx.multidex.MultiDexApplication
 import com.healthtracker.blood.suger.alarm.PermissionManager
+import com.healthtracker.blood.suger.observer.AppForegroundObserver
 import com.healthtracker.blood.suger.utils.WebViewZygote
 import com.healthtracker.blood.suger.utils.getCurProcessName
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
@@ -22,6 +23,8 @@ class App : MultiDexApplication() {
     @Inject
     lateinit var permissionManager: PermissionManager
 
+    @Inject
+    lateinit var appForegroundObserver: AppForegroundObserver
 
     companion object {
         private const val TAG = "App"
@@ -73,6 +76,9 @@ class App : MultiDexApplication() {
 
             // 初始化权限管理器session
             permissionManager.initializeSession()
+
+            // 初始化前后台状态观察器（用于 Loop 推送）
+            appForegroundObserver.initialize()
         }
     }
 

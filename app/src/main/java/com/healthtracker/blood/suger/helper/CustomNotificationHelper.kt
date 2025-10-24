@@ -13,10 +13,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.models.PushMessage
+import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.util.hasOreo
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -50,7 +52,7 @@ class CustomNotificationHelper @Inject constructor(
      * Android 8.0+ 需要
      */
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (hasOreo()) {
             try {
                 val channel = NotificationChannel(
                     CHANNEL_ID_CUSTOM,
@@ -89,8 +91,15 @@ class CustomNotificationHelper @Inject constructor(
     /**
      * 显示自定义通知
      * @param pushMessage PushMessage 配置对象
+     * @param isSilent 是否为静音通知（Loop推送使用）
+     * @param notificationId 指定的通知ID（Loop推送复用），null则自动生成
+     * @return 通知ID
      */
-    fun showCustomNotification(pushMessage: PushMessage) {
+    fun showCustomNotification(
+        pushMessage: PushMessage,
+        isSilent: Boolean = false,
+        notificationId: Int? = null
+    ): Int {
         try {
             // 首次调用时创建渠道并缓存
             ensureChannelCreated()
@@ -106,29 +115,49 @@ class CustomNotificationHelper @Inject constructor(
             val collapsedView = createCollapsedView(pushMessage, notifResources, layoutResources)
             val expandedView = createExpandedView(pushMessage, notifResources, layoutResources)
 
-            // 创建点击 PendingIntent（完全遵循 HealthNotificationHelper 模式）
-            val clickIntent = createClickPendingIntent(actionValue)
+            // 创建点击和删除 PendingIntent
+            val finalNotificationId = notificationId ?: (NOTIFICATION_ID_BASE + pushMessage.id.hashCode())
+            val clickIntent = createClickPendingIntent(actionValue, finalNotificationId)
+            val deleteIntent = createDeletePendingIntent(finalNotificationId)
 
-            // 构建通知
-            val notification = NotificationCompat.Builder(context, CHANNEL_ID_CUSTOM)
+            // 构建通知（根据 isSilent 参数决定是否静音）
+            val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID_CUSTOM)
                 .setSmallIcon(notifResources.smallIcon)
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
                 .setContentIntent(clickIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDeleteIntent(deleteIntent)
                 .setAutoCancel(true)
                 .setShowWhen(true)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .build()
 
-            // 发送通知，使用 pushMessage.id 的 hashCode 作为唯一 ID
-            val notificationId = NOTIFICATION_ID_BASE + pushMessage.id.hashCode()
-            NotificationManagerCompat.from(context).notify(notificationId, notification)
+            // 静音通知设置（Loop推送）
+            if (isSilent) {
+                notificationBuilder
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setSound(null)
+                    .setVibrate(null)
+                    .setDefaults(0)
+                    .setOnlyAlertOnce(true)  // 关键：使用相同ID替换通知时不发声
+            } else {
+                notificationBuilder
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-            "Custom notification shown: ${pushMessage.title}".logd(TAG)
+            }
+
+            val notification = notificationBuilder.build()
+
+            // 发送通知
+            NotificationManagerCompat.from(context).notify(finalNotificationId, notification)
+
+            val silentTag = if (isSilent) "[Silent]" else ""
+            "Custom notification shown $silentTag: ${pushMessage.title}, ID=$finalNotificationId".logd(TAG)
+
+            return finalNotificationId
 
         } catch (e: Exception) {
             "Failed to show custom notification: ${e.message}".loge(TAG)
+            return notificationId ?: -1
         }
     }
 
@@ -210,21 +239,40 @@ class CustomNotificationHelper @Inject constructor(
 
     /**
      * 创建点击事件的 PendingIntent
-     * 完全遵循 HealthNotificationHelper 的实现模式
+     * 通过 NotificationActionReceiver 处理，以支持 Loop 推送停止
      */
-    private fun createClickPendingIntent(actionValue: String): PendingIntent {
-        // 直接创建启动 SplashActivity 的 Intent
-        val intent = Intent(context, SplashActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, actionValue)
+    private fun createClickPendingIntent(actionValue: String, notificationId: Int): PendingIntent {
+        val intent = Intent(context, NotificationActionReceiver::class.java).apply {
+            action = NotificationActionReceiver.ACTION_NOTIFICATION_CLICKED
+            putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+            putExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE, actionValue)
         }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
-        // 使用 actionValue 的 hashCode 作为 requestCode 确保唯一性
-        return PendingIntent.getActivity(
+        return PendingIntent.getBroadcast(
             context,
-            actionValue.hashCode(),
+            notificationId,
+            intent,
+            flags
+        )
+    }
+
+    /**
+     * 创建删除事件的 PendingIntent
+     * 用于处理用户划掉通知的情况
+     */
+    private fun createDeletePendingIntent(notificationId: Int): PendingIntent {
+        val intent = Intent(context, NotificationActionReceiver::class.java).apply {
+            action = NotificationActionReceiver.ACTION_NOTIFICATION_DISMISSED
+            putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+        }
+
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+
+        return PendingIntent.getBroadcast(
+            context,
+            notificationId + 10000,  // 使用不同的 requestCode 避免冲突
             intent,
             flags
         )

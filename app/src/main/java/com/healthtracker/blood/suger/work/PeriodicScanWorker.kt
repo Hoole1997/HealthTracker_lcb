@@ -6,6 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.healthtracker.blood.suger.helper.HealthNotificationHelper
 import com.healthtracker.blood.suger.manager.HealthServiceManager
+import com.healthtracker.blood.suger.strategy.PushResult
 import com.healthtracker.blood.suger.utils.isInteractive
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
@@ -55,6 +56,10 @@ class PeriodicScanWorker(
         dependencies.notificationHelper()
     }
 
+    private val pushOrchestrator: com.healthtracker.blood.suger.strategy.PushOrchestrator by lazy {
+        dependencies.pushOrchestrator()
+    }
+
     override suspend fun doWork(): Result {
         if (BuildState.debug) "PeriodicScanWorker Run".logd(TAG)
 
@@ -65,12 +70,6 @@ class PeriodicScanWorker(
                 handleNotificationStrategy()
             } else {
                 if (BuildState.debug) "Service already running, skipping notification".logd(TAG)
-            }
-
-            // ✅ 步骤 2: 执行原有业务逻辑
-            // 只在解锁状态下触发一次性扫描任务
-            if (isInteractive(applicationContext)) {
-                HealthWorkTask.scheduleScanTask(applicationContext)
             }
 
         } catch (e: Throwable) {
@@ -102,7 +101,7 @@ class PeriodicScanWorker(
      * 1. Android 11- 或应用在前台 → 启动前台服务（常驻通知）
      * 2. Android 12+ 且应用在后台 → 发送普通通知（可被删除）
      */
-    private fun handleNotificationStrategy(): Boolean {
+    private suspend fun handleNotificationStrategy(): Boolean {
         val isAndroid12Plus = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
         val isForeground = AppLifecycleManager.isForeground()
 
@@ -120,12 +119,33 @@ class PeriodicScanWorker(
                 true
             }
 
-            // 场景 2: Android 12+ 且应用在后台 → 发送普通通知
+            // 场景 2: Android 12+ 且应用在后台 → 触发后台场景推送
             isAndroid12Plus && !isForeground -> {
                 if (BuildState.debug) {
-                    "Sending normal notification (Android 12+ background)".logd(TAG)
+                    "Triggering background push (Android 12+ background)".logd(TAG)
                 }
-                notificationHelper.sendNormalNotification()
+
+                // Phase 2: 触发后台场景推送策略
+                val result = pushOrchestrator.triggerPush(
+                    scenario = com.healthtracker.blood.suger.strategy.PushScenario.BACKGROUND,
+                    isPaidUser = false  // Phase 2 默认值，Phase 3 从配置读取
+                )
+
+                // 根据推送结果返回成功/失败
+                when (result) {
+                    is PushResult.Success -> {
+                        if (BuildState.debug) {
+                            "Background push succeeded: ${result.pushId}".logd(TAG)
+                        }
+                        true
+                    }
+                    else -> {
+                        if (BuildState.debug) {
+                            "Background push failed or blocked: $result".logd(TAG)
+                        }
+                        false
+                    }
+                }
             }
 
             // 其他场景（理论上不会到达）

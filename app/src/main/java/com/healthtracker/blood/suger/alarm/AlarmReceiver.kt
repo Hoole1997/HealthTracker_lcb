@@ -53,7 +53,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var medicineReminderRepository: MedicineReminderRepository
-    
+
     // 协程作用域，用于异步处理
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     
@@ -133,7 +133,7 @@ class AlarmReceiver : BroadcastReceiver() {
             
             // 显示通知
             showAlarmNotification(alarmRecord)
-            
+
             // 更新最后触发时间
             updateLastTriggerTime(alarmId)
             
@@ -252,7 +252,7 @@ class AlarmReceiver : BroadcastReceiver() {
     
     /**
      * 调度重复闹钟的下次触发
-     * 
+     *
      * @param alarmRecord 闹钟记录
      */
     private fun scheduleNextRepeat(alarmRecord: AlarmRecord) {
