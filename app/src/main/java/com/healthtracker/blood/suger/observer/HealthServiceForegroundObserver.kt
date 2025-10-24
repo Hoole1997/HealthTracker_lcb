@@ -1,9 +1,18 @@
 package com.healthtracker.blood.suger.observer
 
 import com.healthtracker.blood.suger.manager.HealthServiceManager
+import com.healthtracker.blood.suger.strategy.PushOrchestrator
+import com.healthtracker.blood.suger.strategy.PushResult
+import com.healthtracker.blood.suger.strategy.PushScenario
+import com.healthtracker.blood.suger.work.ScreenUnlockReceiver
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.lifecycle.AppForegroundObserver
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,6 +51,8 @@ class HealthServiceForegroundObserver @Inject constructor(
     companion object {
         private const val TAG = "HealthServiceForegroundObserver"
     }
+    @Inject
+    lateinit var pushOrchestrator: PushOrchestrator
 
     override fun onAppForeground() {
         // 应用回到前台时，启动健康服务
@@ -70,6 +81,58 @@ class HealthServiceForegroundObserver @Inject constructor(
 
         if (BuildState.debug) {
             "App entered background, HealthService will continue if running".logd(TAG)
+        }
+        // 在 IO 线程执行推送逻辑
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // 触发解锁场景推送
+                // Phase 1: 所有用户视为自然用户（isPaidUser = false）
+                // Phase 2: 将从配置或用户数据读取付费状态
+                val result = pushOrchestrator.triggerPush(
+                    scenario = PushScenario.BACKGROUND,
+                    isPaidUser = true,  // Phase 1 默认值
+                    extras = null
+                )
+
+                // 处理推送结果
+                handlePushResult(result)
+
+            } catch (e: Exception) {
+                "Error handling unlock event: ${e.message}".loge(TAG)
+                e.printStackTrace()
+            } finally {
+            }
+        }
+    }
+
+    /**
+     * 处理推送结果
+     * 根据不同的结果类型记录相应的日志
+     */
+    private fun handlePushResult(result: PushResult) {
+        when (result) {
+            is PushResult.Success -> {
+                if (BuildState.debug) {
+                    "Unlock push successful: pushId=${result.pushId}".logd(TAG)
+                }
+            }
+
+            is PushResult.Blocked -> {
+                if (BuildState.debug) {
+                    "Unlock push blocked: ${result.reason}".logw(TAG)
+                }
+            }
+
+            is PushResult.NoSuitableMessage -> {
+                if (BuildState.debug) {
+                    "Unlock push skipped: no suitable message".logw(TAG)
+                }
+            }
+
+            is PushResult.Error -> {
+                "Unlock push failed: ${result.exception.message}".loge(TAG)
+                result.exception.printStackTrace()
+            }
         }
     }
 }

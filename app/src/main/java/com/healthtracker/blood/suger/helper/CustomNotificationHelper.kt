@@ -1,5 +1,7 @@
 package com.healthtracker.blood.suger.helper
 
+import android.Manifest
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -8,6 +10,7 @@ import android.content.Intent
 import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
+import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -63,6 +66,9 @@ class CustomNotificationHelper @Inject constructor(
                     setShowBadge(true)
                     enableVibration(true)
                     enableLights(true)
+                    // 启用弹出通知（Heads-up notification）
+                    setBypassDnd(false)
+                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 }
 
                 notificationManager.createNotificationChannel(channel)
@@ -95,6 +101,7 @@ class CustomNotificationHelper @Inject constructor(
      * @param notificationId 指定的通知ID（Loop推送复用），null则自动生成
      * @return 通知ID
      */
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun showCustomNotification(
         pushMessage: PushMessage,
         isSilent: Boolean = false,
@@ -124,25 +131,25 @@ class CustomNotificationHelper @Inject constructor(
             val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID_CUSTOM)
                 .setSmallIcon(notifResources.smallIcon)
                 .setCustomContentView(collapsedView)
+                .setCustomHeadsUpContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .setContentIntent(clickIntent)
                 .setDeleteIntent(deleteIntent)
                 .setAutoCancel(true)
                 .setShowWhen(true)
+                .setWhen(System.currentTimeMillis())
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
 
             // 静音通知设置（Loop推送）
             if (isSilent) {
                 notificationBuilder
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setSound(null)
                     .setVibrate(null)
                     .setDefaults(0)
                     .setOnlyAlertOnce(true)  // 关键：使用相同ID替换通知时不发声
-            } else {
-                notificationBuilder
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-
             }
 
             val notification = notificationBuilder.build()
