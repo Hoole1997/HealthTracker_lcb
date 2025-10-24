@@ -29,7 +29,8 @@
         android:layout_marginHorizontal="@dimen/dp_6"
         android:gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_20"
-        android:text="@string/fsi_permission_title" />
+        android:text="@string/fsi_permission_title"
+        android:textSize="@dimen/sp_16"/>
 
     <!-- 说明内容 -->
     <androidx.appcompat.widget.AppCompatTextView
@@ -50,7 +51,7 @@
         style="@style/T1_14"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/dp_4"
+        android:lineSpacingExtra="@dimen/dp_6"
         android:gravity="start"
         android:layout_marginHorizontal="@dimen/dp_6"
         android:layout_marginTop="@dimen/dp_8"

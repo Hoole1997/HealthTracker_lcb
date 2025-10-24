@@ -963,12 +963,15 @@
     <string name="medication_notification_title_with_time">%1$s at %2$s</string>
 
     <!-- FSI权限对话框字符串 -->
-    <string name="fsi_permission_title">🔔 Important Reminder Permission</string>
-    <string name="fsi_permission_message">To ensure you don\'t miss important medication times, we recommend enabling full-screen reminders.</string>
-    <string name="fsi_permission_advantages">📱 Full-screen reminder advantages:\n• Visible even when screen is locked\n• Cannot be covered by other apps\n• Ensures timely medication for health</string>
-    <string name="fsi_permission_warning">⚠️ If you deny this permission, standard notifications will be used (may be ignored)</string>
-    <string name="allow">Allow</string>
-    <string name="fsi_permission_deny">Not Now</string>
+    <string name="fsi_permission_title">💊 Don’t Worry, We’ve Got You Covered ❤️</string>
+    <string name="fsi_permission_message">Life gets busy — we\'ll make sure you never miss a medication. Enable full-screen reminders so we can gently alert you even when your phone is locked.</string>
+    <string name="fsi_permission_advantages">  Why it helps you:\n
+  💊Keeps your medication routine on time\n
+  🕒 Always visible, even on the lock screen when you need it\n
+  ❤️ Just to help you stay healthy </string>
+    <string name="fsi_permission_warning">We only use this to support your health.</string>
+    <string name="allow">Turn on</string>
+    <string name="fsi_permission_deny">Not now</string>
 
     <!-- 通知权限相关字符串 -->
     <string name="notification_permission_title">Notification permission required</string>
