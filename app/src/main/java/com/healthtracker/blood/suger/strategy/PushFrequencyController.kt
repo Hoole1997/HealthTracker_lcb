@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.strategy
 import android.content.Context
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.config.models.ChannelConfig
+import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
@@ -43,7 +44,6 @@ class PushFrequencyController @Inject constructor(
         private const val KEY_UNLOCK_LAST_PUSH_TIME = "unlock_last_push_time"
         private const val KEY_BACKGROUND_LAST_PUSH_TIME = "background_last_push_time"
         private const val KEY_OTHER_LAST_PUSH_TIME = "other_last_push_time"
-        private const val KEY_FIRST_INSTALL_TIME = "first_install_time"
         private const val KEY_LAST_PUSH_SCENARIO = "last_push_scenario"
     }
 
@@ -166,12 +166,11 @@ class PushFrequencyController @Inject constructor(
         }
 
         // 获取首次安装时间
-        var firstInstallTime = SpUtils.getLong(KEY_FIRST_INSTALL_TIME, 0L)
-        //TODO 首次安装时间
+        var firstInstallTime = SpUtils.getLong(KEY_APP_FIRST_START_TIME, 0L)
         if (firstInstallTime == 0L) {
             // 首次运行，记录当前时间为首次安装时间
             firstInstallTime = System.currentTimeMillis()
-            SpUtils.putLong(KEY_FIRST_INSTALL_TIME, firstInstallTime)
+            SpUtils.putLong(KEY_APP_FIRST_START_TIME, firstInstallTime)
 
             if (BuildState.debug) {
                 "First install time recorded: $firstInstallTime".logd(TAG)
