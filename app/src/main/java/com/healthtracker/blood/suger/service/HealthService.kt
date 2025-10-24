@@ -33,7 +33,7 @@ class HealthService : Service() {
         private const val TAG = "HealthService"
 
         // 通知刷新间隔：5 分钟
-        private const val REFRESH_INTERVAL_MINUTES = 1L
+        private const val REFRESH_INTERVAL_MINUTES = 5L
     }
 
     @Inject
@@ -112,20 +112,17 @@ class HealthService : Service() {
         refreshJob?.cancel()
 
         refreshJob = serviceScope.launch {
-            // 首次延迟 5 分钟后执行
-            delay(REFRESH_INTERVAL_MINUTES * 60 * 1000L)
+
 
             while (isActive) {
                 try {
+                    // 首次延迟 5 分钟后执行
+                    delay(REFRESH_INTERVAL_MINUTES * 60 * 1000L)
                     refreshNotification()
 
                     if (BuildState.debug) {
                         "Notification refreshed at ${System.currentTimeMillis()}".logd(TAG)
                     }
-
-                    // 等待 5 分钟后继续下一次刷新
-                    delay(REFRESH_INTERVAL_MINUTES * 60 * 1000L)
-
                 } catch (e: Exception) {
                     "Failed to refresh notification: ${e.message}".loge(TAG)
                     // 发生错误后继续循环，不中断

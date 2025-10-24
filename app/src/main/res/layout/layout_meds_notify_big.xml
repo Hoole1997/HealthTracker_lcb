@@ -67,7 +67,7 @@
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@mipmap/ic_meds_notify"/>
+            android:src="@mipmap/ic_meds_notify_big"/>
     </LinearLayout>
 
     <TextView
