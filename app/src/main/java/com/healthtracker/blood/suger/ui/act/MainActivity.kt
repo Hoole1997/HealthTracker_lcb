@@ -306,6 +306,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
      * 发送测试通知（仅 Debug 构建）
      * 一次性发送 11 条预配置的测试通知，用于验证 UI
      */
+    @androidx.annotation.RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
     private fun sendTestNotifications() {
         lifecycleScope.launch {
             val messages = PushMessage.createDefaultList()

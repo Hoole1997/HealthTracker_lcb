@@ -85,6 +85,7 @@ class LoopPushManager @Inject constructor(
      * @param isPaidUser 是否付费用户
      * @param loopCount 循环次数（来自 ChannelConfig.hoverDurationLoopCount）
      */
+    @androidx.annotation.RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
     fun startLoopPush(
         pushMessage: PushMessage,
         notificationId: Int,
@@ -113,7 +114,7 @@ class LoopPushManager @Inject constructor(
             try {
                 // 注意：首条通知已经发送，这里从第 2 条开始
                 // loopCount - 1 是因为首条已发送
-                repeat(loopCount - 1) { index ->
+                repeat(loopCount - 1){ index ->
                     // 延迟 4 秒
                     delay(LOOP_INTERVAL_SECONDS * 1000)
 

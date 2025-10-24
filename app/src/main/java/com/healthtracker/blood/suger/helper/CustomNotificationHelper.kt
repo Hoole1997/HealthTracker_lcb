@@ -38,7 +38,11 @@ class CustomNotificationHelper @Inject constructor(
 
     companion object {
         private const val TAG = "CustomNotificationHelper"
-        private const val CHANNEL_ID_CUSTOM = "health_tracker_custom_push"
+
+        const val CHANNEL_NAME_GENERAL = "recovery_single"
+        const val CHANNEL_NAME_GENERAL_SILENT = "recovery_loop"
+        const val CHANNEL_ID_GENERAL = "general_notification"
+        const val CHANNEL_ID_GENERAL_SILENT = "general_silent_notification"
         private const val NOTIFICATION_ID_BASE = 20000
     }
 
@@ -57,21 +61,47 @@ class CustomNotificationHelper @Inject constructor(
     private fun createNotificationChannel() {
         if (hasOreo()) {
             try {
-                val channel = NotificationChannel(
-                    CHANNEL_ID_CUSTOM,
-                    context.getString(R.string.custom_notification_channel_name),
-                    NotificationManager.IMPORTANCE_HIGH
+
+                // 普通通知通道
+                val generalChannel = NotificationChannel(
+                    CHANNEL_ID_GENERAL, CHANNEL_NAME_GENERAL, NotificationManager.IMPORTANCE_HIGH
                 ).apply {
-                    description = context.getString(R.string.custom_notification_channel_description)
+                    description = "recovery_single"
                     setShowBadge(true)
-                    enableVibration(true)
-                    enableLights(true)
-                    // 启用弹出通知（Heads-up notification）
-                    setBypassDnd(false)
+                    enableLights(false)
+                    enableVibration(false)
                     lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 }
 
-                notificationManager.createNotificationChannel(channel)
+                // 静音通知通道
+                val silentChannel = NotificationChannel(
+                    CHANNEL_ID_GENERAL_SILENT,
+                    CHANNEL_NAME_GENERAL_SILENT,
+                    NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    description = " recovery_loop "
+                    setShowBadge(true)
+                    enableLights(false)
+                    enableVibration(false)
+                    setSound(null, null)  // 设置为静音
+                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                }
+
+//                val channel = NotificationChannel(
+//                    CHANNEL_ID_CUSTOM,
+//                    context.getString(R.string.custom_notification_channel_name),
+//                    NotificationManager.IMPORTANCE_HIGH
+//                ).apply {
+//                    description = context.getString(R.string.custom_notification_channel_description)
+//                    setShowBadge(true)
+//                    enableVibration(true)
+//                    enableLights(true)
+//                    // 启用弹出通知（Heads-up notification）
+//                    setBypassDnd(false)
+//                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+//                }
+
+                notificationManager.createNotificationChannels(listOf(silentChannel,generalChannel))
                 "Custom notification channel created".logd(TAG)
 
             } catch (e: Exception) {
@@ -127,8 +157,9 @@ class CustomNotificationHelper @Inject constructor(
             val clickIntent = createClickPendingIntent(actionValue, finalNotificationId)
             val deleteIntent = createDeletePendingIntent(finalNotificationId)
 
+            val channelId = if(isSilent) CHANNEL_ID_GENERAL_SILENT else CHANNEL_ID_GENERAL
             // 构建通知（根据 isSilent 参数决定是否静音）
-            val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID_CUSTOM)
+            val notificationBuilder = NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(notifResources.smallIcon)
                 .setCustomContentView(collapsedView)
                 .setCustomHeadsUpContentView(collapsedView)
@@ -142,16 +173,6 @@ class CustomNotificationHelper @Inject constructor(
                 .setWhen(System.currentTimeMillis())
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-
-            // 静音通知设置（Loop推送）
-            if (isSilent) {
-                notificationBuilder
-                    .setSound(null)
-                    .setVibrate(null)
-                    .setDefaults(0)
-                    .setOnlyAlertOnce(true)  // 关键：使用相同ID替换通知时不发声
-            }
-
             val notification = notificationBuilder.build()
 
             // 发送通知

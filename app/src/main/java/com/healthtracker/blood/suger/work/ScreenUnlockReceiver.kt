@@ -44,7 +44,7 @@ class ScreenUnlockReceiver : BroadcastReceiver() {
                     // Phase 2: 将从配置或用户数据读取付费状态
                     val result = pushOrchestrator.triggerPush(
                         scenario = PushScenario.UNLOCK,
-                        isPaidUser = true,  // Phase 1 默认值
+                        isPaidUser = false,  // Phase 1 默认值
                         extras = null
                     )
 

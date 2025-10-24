@@ -124,28 +124,7 @@ class PeriodicScanWorker(
                 if (BuildState.debug) {
                     "Triggering background push (Android 12+ background)".logd(TAG)
                 }
-
-                // Phase 2: 触发后台场景推送策略
-                val result = pushOrchestrator.triggerPush(
-                    scenario = com.healthtracker.blood.suger.strategy.PushScenario.BACKGROUND,
-                    isPaidUser = false  // Phase 2 默认值，Phase 3 从配置读取
-                )
-
-                // 根据推送结果返回成功/失败
-                when (result) {
-                    is PushResult.Success -> {
-                        if (BuildState.debug) {
-                            "Background push succeeded: ${result.pushId}".logd(TAG)
-                        }
-                        true
-                    }
-                    else -> {
-                        if (BuildState.debug) {
-                            "Background push failed or blocked: $result".logd(TAG)
-                        }
-                        false
-                    }
-                }
+                notificationHelper.sendNormalNotification()
             }
 
             // 其他场景（理论上不会到达）

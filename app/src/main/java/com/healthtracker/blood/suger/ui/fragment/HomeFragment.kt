@@ -287,8 +287,9 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         getString(R.string.unit_lb)
     }
 
+    private var isShowHighligh = false
     private fun guidFeature(){
-        if(hasShowAllGuide()){
+        if(hasShowAllGuide() || isShowHighligh){
             return
         }
 
@@ -324,8 +325,11 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 BpRecordActivity.start(requireActivity())
             }
             .setOnShowCallback {
+                isShowHighligh = true
                 saveShowGuideBp()
-
+            }
+            .setOnDismissCallback {
+                isShowHighligh = false
             }
             .show()
 
@@ -351,10 +355,14 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             .interceptBackPressed(true)
             .setOnMaskViewClickCallback { index ->
                 //do something
+                isShowHighligh = true
                 BsRecordActivity.start(requireActivity())
             }
             .setOnShowCallback {
                 saveShowGuideBs()
+            }
+            .setOnDismissCallback {
+                isShowHighligh = false
             }
             .show()
 
@@ -382,7 +390,11 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
             }
             .setOnShowCallback {
+                isShowHighligh = true
                 saveShowGuideHr()
+            }
+            .setOnDismissCallback {
+                isShowHighligh = false
             }
             .show()
 
