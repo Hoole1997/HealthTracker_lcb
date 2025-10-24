@@ -1,6 +1,6 @@
 package com.healthtracker.blood.suger.work
 
-import com.healthtracker.blood.suger.helper.HealthNotificationHelper
+import com.healthtracker.blood.suger.helper.ResidentNotificationHelper
 import com.healthtracker.blood.suger.manager.HealthServiceManager
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -41,7 +41,7 @@ interface WorkerDependencies {
      * 提供 HealthNotificationHelper 单例
      * 负责创建和管理常驻通知
      */
-    fun notificationHelper(): HealthNotificationHelper
+    fun notificationHelper(): ResidentNotificationHelper
 
     /**
      * 提供 CustomNotificationHelper 单例

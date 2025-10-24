@@ -3,7 +3,7 @@ package com.healthtracker.blood.suger.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.healthtracker.blood.suger.helper.HealthNotificationHelper
+import com.healthtracker.blood.suger.helper.ResidentNotificationHelper
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
@@ -37,7 +37,7 @@ class HealthService : Service() {
     }
 
     @Inject
-    lateinit var notificationHelper: HealthNotificationHelper
+    lateinit var notificationHelper: ResidentNotificationHelper
 
     // 服务级别的协程作用域
     private val serviceScope = CoroutineScope(Main + SupervisorJob())
@@ -48,8 +48,6 @@ class HealthService : Service() {
     override fun onCreate() {
         super.onCreate()
         "Health service created".logd(TAG)
-
-        // 创建通知渠道
         notificationHelper.createNotificationChannel()
     }
 

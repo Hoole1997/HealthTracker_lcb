@@ -1,13 +1,9 @@
 package com.healthtracker.blood.suger.helper
 
 import android.Manifest
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
@@ -18,10 +14,8 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
-import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
-import com.healthtracker.framework.util.hasOreo
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,95 +28,16 @@ import javax.inject.Singleton
 class CustomNotificationHelper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val resourceMapper: NotificationResourceMapper
-) {
+): BaseNotificationHelper(context) {
 
     companion object {
         private const val TAG = "CustomNotificationHelper"
-
-        const val CHANNEL_NAME_GENERAL = "recovery_single"
-        const val CHANNEL_NAME_GENERAL_SILENT = "recovery_loop"
-        const val CHANNEL_ID_GENERAL = "general_notification"
-        const val CHANNEL_ID_GENERAL_SILENT = "general_silent_notification"
         private const val NOTIFICATION_ID_BASE = 20000
+
     }
 
-    private val notificationManager: NotificationManager by lazy {
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
 
-    // 渠道创建标志，使用线程安全的懒加载模式
-    @Volatile
-    private var isChannelCreated = false
 
-    /**
-     * 创建通知渠道（懒加载初始化 + 缓存）
-     * Android 8.0+ 需要
-     */
-    private fun createNotificationChannel() {
-        if (hasOreo()) {
-            try {
-
-                // 普通通知通道
-                val generalChannel = NotificationChannel(
-                    CHANNEL_ID_GENERAL, CHANNEL_NAME_GENERAL, NotificationManager.IMPORTANCE_HIGH
-                ).apply {
-                    description = "recovery_single"
-                    setShowBadge(true)
-                    enableLights(false)
-                    enableVibration(false)
-                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                }
-
-                // 静音通知通道
-                val silentChannel = NotificationChannel(
-                    CHANNEL_ID_GENERAL_SILENT,
-                    CHANNEL_NAME_GENERAL_SILENT,
-                    NotificationManager.IMPORTANCE_HIGH
-                ).apply {
-                    description = " recovery_loop "
-                    setShowBadge(true)
-                    enableLights(false)
-                    enableVibration(false)
-                    setSound(null, null)  // 设置为静音
-                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                }
-
-//                val channel = NotificationChannel(
-//                    CHANNEL_ID_CUSTOM,
-//                    context.getString(R.string.custom_notification_channel_name),
-//                    NotificationManager.IMPORTANCE_HIGH
-//                ).apply {
-//                    description = context.getString(R.string.custom_notification_channel_description)
-//                    setShowBadge(true)
-//                    enableVibration(true)
-//                    enableLights(true)
-//                    // 启用弹出通知（Heads-up notification）
-//                    setBypassDnd(false)
-//                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-//                }
-
-                notificationManager.createNotificationChannels(listOf(silentChannel,generalChannel))
-                "Custom notification channel created".logd(TAG)
-
-            } catch (e: Exception) {
-                "Failed to create notification channel: ${e.message}".loge(TAG)
-            }
-        }
-    }
-
-    /**
-     * 确保通知渠道已创建（线程安全的双重检查锁定）
-     */
-    private fun ensureChannelCreated() {
-        if (!isChannelCreated) {
-            synchronized(this) {
-                if (!isChannelCreated) {
-                    createNotificationChannel()
-                    isChannelCreated = true
-                }
-            }
-        }
-    }
 
     /**
      * 显示自定义通知

@@ -4,10 +4,8 @@ import android.content.Context
 import android.os.Build
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.healthtracker.blood.suger.helper.HealthNotificationHelper
+import com.healthtracker.blood.suger.helper.ResidentNotificationHelper
 import com.healthtracker.blood.suger.manager.HealthServiceManager
-import com.healthtracker.blood.suger.strategy.PushResult
-import com.healthtracker.blood.suger.utils.isInteractive
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
@@ -52,7 +50,7 @@ class PeriodicScanWorker(
         dependencies.healthServiceManager()
     }
 
-    private val notificationHelper: HealthNotificationHelper by lazy {
+    private val notificationHelper: ResidentNotificationHelper by lazy {
         dependencies.notificationHelper()
     }
 

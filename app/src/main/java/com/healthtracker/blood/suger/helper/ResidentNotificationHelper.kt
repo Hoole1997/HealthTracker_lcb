@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.helper
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -12,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.blood.suger.service.HealthServiceConstants.NOTIFICATION_ID_HEALTH_SERVICE
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
@@ -25,17 +27,15 @@ import javax.inject.Singleton
  * 负责创建和管理常驻通知
  */
 @Singleton
-class HealthNotificationHelper @Inject constructor(
+class ResidentNotificationHelper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val permissionManager: PermissionManager
-) {
+): BaseNotificationHelper(context) {
 
     companion object {
         private const val TAG = "HealthNotificationHelper"
-    }
 
-    private val notificationManager: NotificationManager by lazy {
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
     }
 
     /**
@@ -43,26 +43,7 @@ class HealthNotificationHelper @Inject constructor(
      * Android 8.0+ 需要
      */
     fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            try {
-                val channel = NotificationChannel(
-                    HealthServiceConstants.CHANNEL_ID_HEALTH_SERVICE,
-                    context.getString(R.string.health_service_channel_name),
-                    NotificationManager.IMPORTANCE_LOW  // 低重要性，不打扰用户
-                ).apply {
-                    description = context.getString(R.string.health_service_channel_description)
-                    setShowBadge(false)  // 不显示角标
-                    enableVibration(false)  // 不震动
-                    setSound(null, null)  // 无声音
-                }
-
-                notificationManager.createNotificationChannel(channel)
-                "Health service notification channel created".logd(TAG)
-
-            } catch (e: Exception) {
-                "Failed to create notification channel: ${e.message}".loge(TAG)
-            }
-        }
+        ensureChannelCreated()
     }
 
     /**
@@ -100,6 +81,7 @@ class HealthNotificationHelper @Inject constructor(
             .setOngoing(true)  // 常驻通知，不可滑动删除
             .setAutoCancel(false)  // 不自动取消
             .setShowWhen(false)  // 不显示时间
+            .setSilent(false)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)  // 锁屏可见
             .build()
     }
@@ -123,9 +105,6 @@ class HealthNotificationHelper @Inject constructor(
         }
 
         try {
-            // 创建通知渠道（如果尚未创建）
-            createNotificationChannel()
-
             // 构建通知（复用现有方法）
             val notification = buildNotification()
 
@@ -188,4 +167,11 @@ class HealthNotificationHelper @Inject constructor(
             flags
         )
     }
+
+    /**
+     * 检查并确保常驻通知存在
+     * 如果通知中心不存在常驻通知，则触发常驻通知
+     */
+    @SuppressLint("MissingPermission")
+    private fun ensureResidentNotificationExists() = notificationManager.activeNotifications.any { it.id == NOTIFICATION_ID_HEALTH_SERVICE }
 }
