@@ -1,6 +1,8 @@
 package com.healthtracker.blood.suger.strategy
 
+import android.Manifest
 import android.os.Bundle
+import androidx.annotation.RequiresPermission
 import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.helper.CustomNotificationHelper
@@ -67,10 +69,10 @@ class PushOrchestrator @Inject constructor(
      */
     suspend fun triggerPush(
         scenario: PushScenario,
-        isPaidUser: Boolean,
         extras: Bundle? = null
     ): PushResult = withContext(Dispatchers.IO) {
         val pushId = generatePushId(scenario)
+        val isPaidUser = true
 
         if (BuildState.debug) {
             "Triggering push: pushId=$pushId, scenario=$scenario, isPaid=$isPaidUser".logd(TAG)
@@ -151,6 +153,7 @@ class PushOrchestrator @Inject constructor(
      * @param isPaidUser 是否付费用户
      * @return 是否成功
      */
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun executePush(message: PushMessage, isPaidUser: Boolean): Boolean {
         return try {
             if (BuildState.debug) {

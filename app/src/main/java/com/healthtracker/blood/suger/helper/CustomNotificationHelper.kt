@@ -1,9 +1,11 @@
 package com.healthtracker.blood.suger.helper
 
 import android.Manifest
+import android.R.attr.action
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.icu.text.Normalizer.NO
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
@@ -12,8 +14,13 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.models.PushMessage
+import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
+import com.healthtracker.blood.suger.receiver.NotificationActionReceiver.Companion.EXTRA_ACTION_VALUE
 import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
+import com.healthtracker.blood.suger.ui.act.SplashActivity
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -60,16 +67,13 @@ class CustomNotificationHelper @Inject constructor(
             val notifResources = resourceMapper.getNotificationResources(pushMessage.iconType)
             val layoutResources = resourceMapper.getLayoutResources(pushMessage.iconType)
 
-            // 映射 actionType 到 action value
-            val actionValue = mapActionType(pushMessage.actionType)
-
             // 创建 RemoteViews
             val collapsedView = createCollapsedView(pushMessage, notifResources, layoutResources)
             val expandedView = createExpandedView(pushMessage, notifResources, layoutResources)
 
             // 创建点击和删除 PendingIntent
             val finalNotificationId = notificationId ?: (NOTIFICATION_ID_BASE + pushMessage.id.hashCode())
-            val clickIntent = createClickPendingIntent(actionValue, finalNotificationId)
+            val clickIntent = createClickPendingIntent(pushMessage.actionType,finalNotificationId)
             val deleteIntent = createDeletePendingIntent(finalNotificationId)
 
             val channelId = if(isSilent) CHANNEL_ID_GENERAL_SILENT else CHANNEL_ID_GENERAL
@@ -184,18 +188,21 @@ class CustomNotificationHelper @Inject constructor(
      * 创建点击事件的 PendingIntent
      * 通过 NotificationActionReceiver 处理，以支持 Loop 推送停止
      */
-    private fun createClickPendingIntent(actionValue: String, notificationId: Int): PendingIntent {
-        val intent = Intent(context, NotificationActionReceiver::class.java).apply {
-            action = NotificationActionReceiver.ACTION_NOTIFICATION_CLICKED
+    private fun createClickPendingIntent(actionType:Int,notificationId: Int): PendingIntent {
+        if(BuildState.debug) "createClickPendingIntent actionType = $actionType,notificationId = $notificationId".logd(TAG)
+        // 直接创建启动 SplashActivity 的 Intent
+        val intent = Intent(context, SplashActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
-            putExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE, actionValue)
+            putExtra(EXTRA_NOTIFICATION_ACTION,mapActionType(actionType))
         }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
-        return PendingIntent.getBroadcast(
+        // 使用 getActivity 而不是 getBroadcast，符合 Android 10+ 要求
+        return PendingIntent.getActivity(
             context,
-            notificationId,
+            notificationId.hashCode(),  // 使用action的hashCode作为requestCode确保唯一性
             intent,
             flags
         )

@@ -74,11 +74,11 @@
 
     <!-- 血糖提醒通知 -->
     <string name="alarm_blood_sugar_title">Blood Sugar Reminder</string>
-    <string name="alarm_blood_sugar_content">Time to record your blood sugar!</string>
+    <string name="alarm_blood_sugar_content">It\'s time to record your blood sugar!</string>
 
     <!-- 血压提醒通知 -->
     <string name="alarm_blood_pressure_title">Blood Pressure Reminder</string>
-    <string name="alarm_blood_pressure_content">Record your blood pressure daily for better health!</string>
+    <string name="alarm_blood_pressure_content">It\'s time to record your blood pressure!</string>
 
     <!-- 默认健康提醒 -->
     <string name="alarm_default_title">Health Reminder</string>
@@ -954,6 +954,7 @@
     <string name="hint_meds_notes">Instructions: After meals, 3x daily.</string>
     <string name="sync_with_calendar">Sync with Calendar</string>
     <string name="take_now">Take now</string>
+    <string name="view_now">View_now</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
 

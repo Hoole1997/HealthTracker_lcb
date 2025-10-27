@@ -1,8 +1,12 @@
 package com.healthtracker.blood.suger.work
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.strategy.PushResult
 import com.healthtracker.blood.suger.strategy.PushScenario
@@ -32,6 +36,21 @@ class ScreenUnlockReceiver : BroadcastReceiver() {
                 "Screen unlock detected, triggering push".logd(TAG)
             }
 
+           if (ActivityCompat.checkSelfPermission(
+                   App.INSTANCE,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
+
             // 使用 goAsync() 处理异步操作
             // 这会给 BroadcastReceiver 额外的时间完成协程操作
             val pendingResult = goAsync()
@@ -44,7 +63,6 @@ class ScreenUnlockReceiver : BroadcastReceiver() {
                     // Phase 2: 将从配置或用户数据读取付费状态
                     val result = pushOrchestrator.triggerPush(
                         scenario = PushScenario.UNLOCK,
-                        isPaidUser = false,  // Phase 1 默认值
                         extras = null
                     )
 

@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.alarm
 
 import android.Manifest
+import android.R.attr.action
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,12 +10,22 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.view.View
+import android.widget.RemoteViews
+import androidx.compose.foundation.layout.Row
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
+import com.healthtracker.blood.suger.helper.CustomNotificationHelper
+import com.healthtracker.blood.suger.helper.NotificationResourceMapper
+import com.healthtracker.blood.suger.helper.NotificationResourceMapper.NotificationResources
+import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
+import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.ui.act.MedicationReminderFullScreenActivity
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.logd
@@ -103,27 +114,30 @@ class AlarmNotificationManager @Inject constructor(
      */
     fun showAlarmNotification(alarmRecord: AlarmRecord) {
         try {
-            val (channelId, title, content) = getNotificationContent(alarmRecord)
+
             val notificationId = generateNotificationId(alarmRecord)
             val icon = if(alarmRecord.type == AlarmRecord.TYPE_BLOOD_PRESSURE) R.drawable.ic_notifcation_pb else R.drawable.ic_notification_bs
             // 创建点击意图
-            val clickIntent = createClickIntent(alarmRecord)
-            
-            // 构建通知
-            val notification = NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(icon) // 需要添加通知图标
-                .setContentTitle(title)
-                .setContentText(content)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(content))
+            val clickIntent = createClickPendingIntent(alarmRecord.type)
+
+            val collapsedView = createCollapsedView(alarmRecord)
+            val expandedView = createExpandedView(alarmRecord)
+
+            // 构建通知（根据 isSilent 参数决定是否静音）
+            val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID_ALARM)
+                .setSmallIcon(icon)
+                .setCustomContentView(collapsedView)
+                .setCustomHeadsUpContentView(collapsedView)
+                .setCustomBigContentView(expandedView)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_REMINDER)
+                .setContentIntent(clickIntent)
                 .setAutoCancel(true)
                 .setShowWhen(true)
                 .setWhen(System.currentTimeMillis())
-                .setContentIntent(clickIntent)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) // 锁屏可见
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .build()
+            val notification = notificationBuilder.build()
             
             // 显示通知
             if (ActivityCompat.checkSelfPermission(
@@ -145,6 +159,49 @@ class AlarmNotificationManager @Inject constructor(
             "Alarm notification shown: ID=${alarmRecord.id}, Type=${alarmRecord.type}".logd(TAG)
         } catch (e: Exception) {
             "Failed to show alarm notification: ${e.message}".loge(TAG)
+        }
+    }
+
+    /**
+     * 创建折叠状态的 RemoteViews
+     */
+    private fun createCollapsedView(
+        alarmRecord: AlarmRecord,
+    ): RemoteViews {
+        val (time,des,btnText) = getNotificationContent(alarmRecord)
+        val notifResources = getAlarmNotificationRes(alarmRecord.type)
+        return RemoteViews(context.packageName, R.layout.layout_meds_notify).apply {
+
+            // 设置标题和按钮文字
+            setTextViewText(R.id.tv_title, des)
+            setTextViewText(R.id.tv_btn,btnText)
+            notifResources?.decorIcon?.let { icon ->
+                setImageViewResource(R.id.iv_type, icon)
+            }
+        }
+    }
+
+    /**
+     * 创建展开状态的 RemoteViews
+     */
+    private fun createExpandedView(alarmRecord: AlarmRecord
+    ): RemoteViews {
+        val (time,des,btnText) = getNotificationContent(alarmRecord)
+        val notifResources = getAlarmNotificationRes(alarmRecord.type)
+        return RemoteViews(context.packageName, R.layout.layout_meds_notify_big).apply {
+           // 设置背景（如果有）
+            notifResources?.decorIcon?.let { bg ->
+                setImageViewResource(R.id.ic_bg_icon,bg)
+            }
+
+
+            // 设置标题和按钮文字
+            setTextViewText(R.id.tv_title, time)
+            setTextViewText(R.id.tv_content, des)
+            setTextViewText(R.id.tv_btn,btnText)
+            notifResources?.decorIcon?.let { icon ->
+                setImageViewResource(R.id.iv_type, icon)
+            }
         }
     }
     
@@ -194,25 +251,38 @@ class AlarmNotificationManager @Inject constructor(
         return when (alarmRecord.type) {
             AlarmRecord.TYPE_BLOOD_SUGAR -> {
                 Triple(
-                    CHANNEL_ID_ALARM, 
-                    context.getString(R.string.alarm_blood_sugar_title), 
-                    context.getString(R.string.alarm_blood_sugar_content)
+
+                    alarmRecord.getFormattedTime(),
+                    context.getString(R.string.alarm_blood_sugar_content),
+                    context.getString(R.string.record_now)
+
                 )
             }
             AlarmRecord.TYPE_BLOOD_PRESSURE -> {
                 Triple(
-                    CHANNEL_ID_ALARM, 
-                    context.getString(R.string.alarm_blood_pressure_title), 
-                    context.getString(R.string.alarm_blood_pressure_content)
+
+                    alarmRecord.getFormattedTime(),
+                    context.getString(R.string.alarm_blood_pressure_content),
+                    context.getString(R.string.record_now)
+                )
+            }
+            AlarmRecord.TYPE_MEDICATION -> {
+                Triple(
+
+                    alarmRecord.getFormattedTime(),
+                    context.getString(R.string.alarm_blood_pressure_content),
+                    context.getString(R.string.take_now)
                 )
             }
             else -> {
                 // 默认使用健康提醒
                 Triple(
-                    CHANNEL_ID_ALARM, 
+
                     context.getString(R.string.alarm_default_title), 
-                    context.getString(R.string.alarm_default_content)
-                )
+                    context.getString(R.string.alarm_default_content),
+                    context.getString(R.string.view_now),
+
+                    )
             }
         }
     }
@@ -228,28 +298,52 @@ class AlarmNotificationManager @Inject constructor(
         return NOTIFICATION_ID_BASE + alarmRecord.id.toInt()
     }
     
+
+
     /**
-     * 创建通知点击意图
-     * 点击通知后跳转到主页面
-     * 
-     * @param alarmRecord 闹钟记录
-     * @return PendingIntent
+     * 创建点击事件的PendingIntent
+     * 直接启动 SplashActivity，不再通过 BroadcastReceiver 中转
+     * 这样可以避免 Android 10+ 从后台启动 Activity 的限制
      */
-    private fun createClickIntent(alarmRecord: AlarmRecord): PendingIntent {
-        val intent = Intent(context, SplashActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            // 可以添加额外数据，用于跳转到特定页面
-            putExtra("alarm_type", alarmRecord.type)
+    private fun createClickPendingIntent(alarmType: Int): PendingIntent {
+        // 将内部 action 映射到对应的参数值
+        val actionValue = when(alarmType) {
+            AlarmRecord.TYPE_BLOOD_SUGAR -> HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR
+            AlarmRecord.TYPE_BLOOD_PRESSURE -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
+            AlarmRecord.TYPE_MEDICATION -> HealthServiceConstants.ACTION_VALUE_MEDICATION
+            else -> null
         }
-        
+
+        // 直接创建启动 SplashActivity 的 Intent
+        val intent = Intent(context, SplashActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, actionValue)
+        }
+
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        
+
+        // 使用 getActivity 而不是 getBroadcast，符合 Android 10+ 要求
         return PendingIntent.getActivity(
             context,
-            generateNotificationId(alarmRecord),
+            action.hashCode(),  // 使用action的hashCode作为requestCode确保唯一性
             intent,
             flags
         )
+    }
+
+    /**
+     * 将 PushMessage.actionType 映射到 ACTION_VALUE 常量
+     */
+    private fun mapActionType(alarmType: Int): String {
+        return when (alarmType) {
+            0 -> HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR
+            1 -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
+            2 -> HealthServiceConstants.ACTION_VALUE_MEDICATION
+            else -> {
+                "Unknown actionType: $alarmType, defaulting to homepage".logd(TAG)
+                HealthServiceConstants.ACTION_VALUE_HOMEPAGE
+            }
+        }
     }
     
     /**
@@ -485,6 +579,31 @@ class AlarmNotificationManager @Inject constructor(
         } catch (e: Exception) {
             "Failed to cancel medication notification: ${e.message}".loge(TAG)
         }
+    }
+
+    private fun getAlarmNotificationRes(recordType:Int) = when(recordType){
+        AlarmRecord.TYPE_BLOOD_SUGAR -> NotificationResources(
+            smallIcon = R.drawable.ic_notification_bs,
+            background = R.drawable.bg_rect_white_12,
+            largeIcon = R.drawable.ic_remind_notify,
+            decorIcon = R.mipmap.ic_bs_notify_icon,
+            btnTextColor = com.healthtracker.framework.R.color.white
+        )
+        AlarmRecord.TYPE_BLOOD_PRESSURE-> NotificationResources(
+            smallIcon = R.drawable.ic_notification_bs,
+            background = R.drawable.bg_rect_white_12,
+            largeIcon = R.drawable.ic_remind_notify,
+            decorIcon = R.mipmap.ic_bp_notify_icon,
+            btnTextColor = com.healthtracker.framework.R.color.white
+        )
+        AlarmRecord.TYPE_MEDICATION -> NotificationResources(
+            smallIcon = R.drawable.ic_notification_bs,
+            background = R.drawable.bg_rect_white_12,
+            largeIcon = R.drawable.ic_remind_notify,
+            decorIcon = R.mipmap.ic_meds_notify,
+            btnTextColor = com.healthtracker.framework.R.color.white
+        )
+        else -> null
     }
 }
 

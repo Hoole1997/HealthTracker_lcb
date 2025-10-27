@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.helper
 
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import javax.inject.Inject
 import javax.inject.Singleton
 

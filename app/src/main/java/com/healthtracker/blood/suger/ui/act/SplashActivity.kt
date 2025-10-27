@@ -12,11 +12,14 @@ import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.isNewUser
+import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -77,6 +80,23 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         }
         playAnimations()
         checkNotificationPermission()
+        checkNotificationOpen()
+    }
+
+    private fun checkNotificationOpen() {
+       val notificationId = intent.getIntExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,-1)
+        if (notificationId == -1) {
+            "Invalid notification ID: $notificationId".logw(TAG)
+            return
+        }
+        val actionType = intent.getStringExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE)
+        if(BuildState.debug) "checkNotificationOpen actionType = $actionType".logd(TAG)
+        sendBroadcast(Intent(this, NotificationActionReceiver::class.java).apply {
+            action = NotificationActionReceiver.ACTION_NOTIFICATION_CLICKED
+            putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,notificationId)
+        })
+
+
     }
 
     override fun onResume() {

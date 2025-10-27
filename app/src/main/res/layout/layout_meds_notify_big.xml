@@ -65,6 +65,7 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@id/ic_bg_icon"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:src="@mipmap/ic_meds_notify_big"/>
