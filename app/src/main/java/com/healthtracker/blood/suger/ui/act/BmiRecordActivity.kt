@@ -11,6 +11,7 @@ import com.healthtracker.blood.suger.ui.dialog.AddTagDialog
 import com.healthtracker.blood.suger.ui.dialog.BmiPickerDialog
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
+import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BmiRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -146,13 +147,11 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
                 }
                 mViewModel.saveBmiRecord { result ->
                     when (result) {
-                        is BmiRecordViewModel.SaveRecordResult.Created,
+                        is BmiRecordViewModel.SaveRecordResult.Created -> {
+                            goDetail(result.recordId)
+                        }
                         is BmiRecordViewModel.SaveRecordResult.Updated -> {
-                            result.getRecordId()?.let {
-                                BmiDetailActivity.start(this@BmiRecordActivity,it)
-                                finish()
-                            }
-
+                           goDetail(result.recordId)
                         }
                         is BmiRecordViewModel.SaveRecordResult.Failed -> {
                             showToast(result.error)
@@ -160,6 +159,13 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
                     }
                 }
             }
+        }
+    }
+
+    private fun goDetail(recordId:Long){
+        SaveCompleteDialog.show(supportFragmentManager){
+            BmiDetailActivity.start(this@BmiRecordActivity,recordId)
+            finish()
         }
     }
 

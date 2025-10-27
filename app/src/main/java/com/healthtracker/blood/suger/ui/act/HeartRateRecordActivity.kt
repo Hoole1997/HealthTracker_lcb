@@ -9,6 +9,7 @@ import com.healthtracker.blood.suger.data.enums.HeartRateStatus
 import com.healthtracker.blood.suger.databinding.ActivityHeartRateRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
+import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HeartRateRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -69,13 +70,11 @@ class HeartRateRecordActivity :
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 mViewModel.saveHeartRateRecord { result: HeartRateRecordViewModel.SaveRecordResult ->
                     when (result) {
-                        is HeartRateRecordViewModel.SaveRecordResult.Created,
+                        is HeartRateRecordViewModel.SaveRecordResult.Created -> {
+                            goDetail(result.recordId)
+                        }
                         is HeartRateRecordViewModel.SaveRecordResult.Updated -> {
-                            result.getRecordId()?.let {
-                                HeartRateDetailActivity.start(this@HeartRateRecordActivity,it)
-                            }
-
-                            finish()
+                            goDetail(result.recordId)
                         }
                         is HeartRateRecordViewModel.SaveRecordResult.Failed -> {
                             showToast(result.error)
@@ -83,6 +82,13 @@ class HeartRateRecordActivity :
                     }
                 }
             }
+        }
+    }
+
+    private fun goDetail(recordId:Long){
+        SaveCompleteDialog.show(supportFragmentManager){
+            HeartRateDetailActivity.start(this@HeartRateRecordActivity,recordId)
+            finish()
         }
     }
 

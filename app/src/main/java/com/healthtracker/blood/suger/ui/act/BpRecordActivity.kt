@@ -7,6 +7,7 @@ import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
+import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -147,14 +148,10 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
 
                 when (result) {
                     is BpRecordViewModel.SaveRecordResult.Created -> {
-                        // 新建记录成功，跳转到详情页
-                        BpDetailActivity.start(this@BpRecordActivity, result.recordId)
-                        finish()
+                        goDetail(result.recordId)
                     }
                     is BpRecordViewModel.SaveRecordResult.Updated -> {
-                        // 更新记录成功，跳转到详情页
-                        BpDetailActivity.start(this@BpRecordActivity, result.recordId)
-                        finish()
+                       goDetail(result.recordId)
                     }
                     is BpRecordViewModel.SaveRecordResult.Failed -> {
                         // 显示保存失败提示
@@ -165,6 +162,13 @@ class BpRecordActivity: BaseMVVMActivity<BpRecordViewModel, ActivityBpRecordBind
         }
     }
 
+
+    private fun goDetail(recordId:Long){
+        SaveCompleteDialog.show(supportFragmentManager){
+            BpDetailActivity.start(this@BpRecordActivity, recordId)
+            finish()
+        }
+    }
     private fun observeViewModel() {
         this.collect(mViewModel.systolicPressure) {
             with(mViewBind){

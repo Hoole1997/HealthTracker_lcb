@@ -9,6 +9,7 @@ import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityCholesterolRecordBinding
 import com.healthtracker.blood.suger.databinding.LayoutCholesterolDetailValueBinding
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
+import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.viewmodel.CholesterolRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.widget.NumberPickerView
@@ -68,12 +69,11 @@ class CholesterolRecordActivity :
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 when (val result = mViewModel.saveRecord()) {
-                    is CholesterolRecordViewModel.SaveResult.Created,
+                    is CholesterolRecordViewModel.SaveResult.Created -> {
+                        goDetail(result.recordId)
+                    }
                     is CholesterolRecordViewModel.SaveResult.Updated -> {
-                        result.recordIdOrNull()?.let {
-                            CholesterolDetailActivity.start(this@CholesterolRecordActivity,it)
-                            finish()
-                        }
+                       goDetail(result.recordId)
 
                     }
                     is CholesterolRecordViewModel.SaveResult.Failed -> {
@@ -81,6 +81,13 @@ class CholesterolRecordActivity :
                     }
                 }
             }
+        }
+    }
+
+    private fun goDetail(recordId:Long){
+        SaveCompleteDialog.show(supportFragmentManager){
+            CholesterolDetailActivity.start(this@CholesterolRecordActivity,recordId)
+            finish()
         }
     }
 

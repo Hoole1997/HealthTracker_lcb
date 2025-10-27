@@ -12,6 +12,7 @@ import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
+import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.RulerView
@@ -173,13 +174,11 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                 when (result) {
                     is BsRecordViewModel.SaveRecordResult.Created -> {
                         // 新建记录成功，跳转到详情页
-                        BsDetailActivity.start(this@BsRecordActivity, result.recordId)
-                        finish()
+                        goDetail(result.recordId)
                     }
                     is BsRecordViewModel.SaveRecordResult.Updated -> {
                         // 更新记录成功，跳转到详情页
-                        BsDetailActivity.start(this@BsRecordActivity, result.recordId)
-                        finish()
+                        goDetail(result.recordId)
                     }
                     is BsRecordViewModel.SaveRecordResult.Failed -> {
                         // 显示保存失败提示
@@ -187,6 +186,13 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
                     }
                 }
             }
+        }
+    }
+
+    private fun goDetail(recordId:Long){
+        SaveCompleteDialog.show(supportFragmentManager){
+            BsDetailActivity.start(this@BsRecordActivity, recordId)
+            finish()
         }
     }
 
