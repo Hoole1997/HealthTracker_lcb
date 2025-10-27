@@ -54,6 +54,7 @@ android {
         }
 
         buildConfigField("String", "PRIVACY_POLICY", "\"${url["privacyUrl"]}\"")
+        buildConfigField("String", "FCM_URL", "\"${url["fcmUrl"]}\"")
 
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
@@ -174,6 +175,9 @@ dependencies {
     implementation(libs.highlightpro)
 
     api(libs.flexbox)
+
+    api(libs.okhttp)
+    implementation(libs.logging.interceptor)
 }
 
 // BuildConfig 扩展函数

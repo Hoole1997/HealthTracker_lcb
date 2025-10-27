@@ -155,24 +155,7 @@ class AlarmReceiver : BroadcastReceiver() {
      */
     private fun showAlarmNotification(alarmRecord: AlarmRecord) {
         try {
-            when (alarmRecord.type) {
-                AlarmRecord.TYPE_MEDICATION -> {
-                    // 服药提醒：显示全屏通知
-                    showMedicationNotification(alarmRecord)
-                    "Medication FSI notification shown: ID=${alarmRecord.id}".logd(TAG)
-                }
-                AlarmRecord.TYPE_BLOOD_SUGAR,
-                AlarmRecord.TYPE_BLOOD_PRESSURE -> {
-                    // 血糖血压测量提醒：显示普通通知
-                    notificationManager.showAlarmNotification(alarmRecord)
-                    "Health reminder notification shown: ID=${alarmRecord.id}".logd(TAG)
-                }
-                else -> {
-                    // 其他类型：使用默认通知
-                    notificationManager.showAlarmNotification(alarmRecord)
-                    "Default alarm notification shown: ID=${alarmRecord.id}".logd(TAG)
-                }
-            }
+            notificationManager.showAlarmNotification(alarmRecord)
         } catch (e: Exception) {
             "Failed to show alarm notification: ID=${alarmRecord.id}, Type=${alarmRecord.type}, Error=${e.message}".loge(TAG)
         }

@@ -270,7 +270,7 @@ class AlarmNotificationManager @Inject constructor(
                 Triple(
 
                     alarmRecord.getFormattedTime(),
-                    context.getString(R.string.alarm_blood_pressure_content),
+                    context.getString(R.string.medication_reminder_content),
                     context.getString(R.string.take_now)
                 )
             }
@@ -329,21 +329,6 @@ class AlarmNotificationManager @Inject constructor(
             intent,
             flags
         )
-    }
-
-    /**
-     * 将 PushMessage.actionType 映射到 ACTION_VALUE 常量
-     */
-    private fun mapActionType(alarmType: Int): String {
-        return when (alarmType) {
-            0 -> HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR
-            1 -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
-            2 -> HealthServiceConstants.ACTION_VALUE_MEDICATION
-            else -> {
-                "Unknown actionType: $alarmType, defaulting to homepage".logd(TAG)
-                HealthServiceConstants.ACTION_VALUE_HOMEPAGE
-            }
-        }
     }
     
     /**

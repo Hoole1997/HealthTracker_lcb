@@ -13,6 +13,7 @@ ext {
     ]
 
     url = [privacyUrl: "https://www.google.com.hk",
-           teamUrl   : "https://www.google.com.hk"
+           teamUrl   : "https://www.google.com.hk",
+           fcmUrl    : "https://sandc.gameztsvc.com"
     ]
 }

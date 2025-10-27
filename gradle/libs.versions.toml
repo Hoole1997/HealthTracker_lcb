@@ -8,6 +8,7 @@ highlightpro = "1.4.0"
 imagepicker = "2.1"
 minSdk = "24"
 # @keep
+okhttp = "4.12.0"
 targetSdk = "35"
 
 agp = "8.10.1"
@@ -74,12 +75,14 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 stringfogPlugin = { module = "com.github.megatronking.stringfog:gradle-plugin", version.ref = "stringfog" }
 ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }

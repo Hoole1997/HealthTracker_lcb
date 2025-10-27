@@ -13,5 +13,6 @@ ext {
     ]
 
     url = [privacyUrl: "https://blazelabstudio.com/privacy.html",
-           teamUrl   : "https://blazelabstudio.com/privacy.html",]
+           teamUrl   : "https://blazelabstudio.com/privacy.html",
+           fcmUrl    : "https://sandc.gameztsvc.com",]
 }
