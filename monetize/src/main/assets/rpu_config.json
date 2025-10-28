@@ -1,0 +1,9 @@
+[
+  {
+    "name": "",
+    "enabled": true,
+    "revenue": 0.0,
+    "reset_after_trigger": true,
+    "ad_types": ["SP", "IV", "NA", "RV", "BA"]
+  }
+]

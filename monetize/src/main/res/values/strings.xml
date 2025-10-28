@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">bill</string>
+    <string name="bill_ad_loading">Loading AD…</string>
+    <string name="loading">Loading</string>
+</resources>

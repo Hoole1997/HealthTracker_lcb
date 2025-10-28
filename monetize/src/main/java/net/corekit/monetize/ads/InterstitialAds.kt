@@ -1,0 +1,541 @@
+package net.corekit.monetize.ads
+
+import android.app.Activity
+import android.content.Context
+import com.blankj.utilcode.util.ActivityUtils
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdValue
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.OnPaidEventListener
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import net.corekit.monetize.ads.report.FpuController
+import com.remax.bill.ads.report.IpuController
+import com.remax.bill.ads.report.RpuController
+import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.interceptor.ClickLimitInterceptor
+import net.corekit.monetize.ads.interceptor.GlobalAdSwitchInterceptor
+import net.corekit.monetize.ads.interceptor.InterceptorChain
+import net.corekit.monetize.ads.interceptor.ShowCountLimitInterceptor
+import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
+import net.corekit.core.ads.RevenueAdData
+import net.corekit.core.ads.RevenueAdManager
+import net.corekit.core.ads.RevenueInfo
+import net.corekit.core.ext.DataStoreIntDelegate
+import net.corekit.core.report.ReportDataManager
+import net.corekit.monetize.ads.log.AdLogger
+import kotlin.math.ceil
+import net.corekit.monetize.ui.FullScreenNativeAdActivity
+import net.corekit.monetize.ui.dialog.ADLoadingDialog
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+
+/**
+ * 插页广告控制器
+ */
+class InterstitialAds private constructor() {
+    
+    // 累积点击统计（持久化）
+    private var totalClickCount by DataStoreIntDelegate("pdf_j5k2m9x6", 0)
+
+    // 累积关闭统计（持久化）
+    private var totalCloseCount by DataStoreIntDelegate("pdf_k7n1p4v8", 0)
+    
+    // 累积加载次数统计（持久化）
+    private var totalLoadCount by DataStoreIntDelegate("pdf_l4q8r6w3", 0)
+
+    // 累积加载成功次数统计（持久化）
+    private var totalLoadSucCount by DataStoreIntDelegate("pdf_m9s3t7y5", 0)
+    
+    // 累积展示失败次数统计（持久化）
+    private var totalShowFailCount by DataStoreIntDelegate("pdf_n2w6z1j8", 0)
+    
+    // 累积触发统计（持久化）
+    private var totalShowTriggerCount by DataStoreIntDelegate("pdf_o6x4h9k2", 0)
+    
+    // 累积展示统计（持久化）
+    private var totalShowCount by DataStoreIntDelegate("pdf_p1y7m5q3", 0)
+    
+    // 当前广告的收益信息（临时存储）
+    private var currentAdValue: AdValue? = null
+    
+    // 插页广告是否正在显示的标识
+    private var isShowing: Boolean = false
+    
+    companion object {
+        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 2
+
+        @Volatile
+        private var INSTANCE: InterstitialAds? = null
+
+        fun getInstance(): InterstitialAds {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: InterstitialAds().also { INSTANCE = it }
+            }
+        }
+    }
+
+    // 内存缓存池 - 存储预加载的广告
+    private val adCachePool = mutableListOf<CachedInterstitialAd>()
+    private val maxCacheSizePerAdUnit = DEFAULT_CACHE_SIZE_PER_AD_UNIT
+
+    // 拦截器链
+    private val interceptorChain = InterceptorChain(
+        interceptors = listOf(
+            GlobalAdSwitchInterceptor(),
+            ShowCountLimitInterceptor(),
+            ShowIntervalLimitInterceptor(),
+            ClickLimitInterceptor()
+        )
+    )
+
+    /**
+     * 缓存的插页广告数据类
+     */
+    private data class CachedInterstitialAd(
+        val ad: InterstitialAd,
+        val adUnitId: String,
+        val loadTime: Long = System.currentTimeMillis()
+    ) {
+        fun isExpired(): Boolean {
+            return System.currentTimeMillis() - loadTime > 1 * 60 * 60 * 1000L
+        }
+    }
+
+    /**
+     * 预加载广告
+     */
+    suspend fun loadInAdvance(context: Context, adUnitId: String? = null): AdResult<Unit> {
+        if(!GlobalAdSwitchInterceptor.isGlobalAdEnabled()){
+            return AdResult.Failure(
+                AdException(
+                    code = -100,
+                    message = "开屏全局广告已关闭，中断加载"
+                ))
+        }
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
+        return loadAdToCache(context, finalAdUnitId)
+    }
+
+    /**
+     * 显示广告
+     */
+    suspend fun displayAd(activity: Activity, adUnitId: String? = null,ignoreFullNative: Boolean  = false): AdResult<Unit> {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
+        
+        // 累积触发统计
+        totalShowTriggerCount++
+        AdLogger.d("插页广告累积触发展示次数: $totalShowTriggerCount")
+        
+        reportAdData(
+            eventName = "ad_position",
+            params = mapOf(
+                "ad_unit_name" to finalAdUnitId,
+                "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                "number" to totalShowTriggerCount
+            )
+        )
+        
+        // 拦截器检查
+        when (val interceptResult = interceptorChain.intercept(activity, AdConfigManager.getInterstitialConfig())) {
+            is AdResult.Failure -> {
+                // 累积展示失败次数统计
+                totalShowFailCount++
+                AdLogger.d("插页广告累积展示失败次数: $totalShowFailCount")
+                
+                reportAdData(
+                    eventName = "ad_show_fail",
+                    params = mapOf(
+                        "ad_unit_name" to finalAdUnitId,
+                        "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                        "number" to totalShowFailCount,
+                        "reason" to interceptResult.error.message
+                    )
+                )
+                
+                return interceptResult
+            }
+            else -> { /* continue */ }
+        }
+
+        // 是否加载全屏原生
+        val interval = AdConfigManager.getFullscreenNativeAfterInterstitialCount()
+        val todayShowInter = AdConfigManager.getInterstitialConfig().getDailyShowCount()
+        val needShowNativeFull = interval > 0 && todayShowInter > 0 && todayShowInter % interval == 0
+        AdLogger.d("当日已展示${todayShowInter}个插页，每显示${interval}个插页将显示原生，下一个是否显示全屏原生${needShowNativeFull}")
+
+        if(!ignoreFullNative && needShowNativeFull && FullNativeAds.getInstance().checkCachedAdAvailable()){
+            return FullScreenNativeAdActivity.start(activity,showInterstitial = true)
+        }
+
+        return try {
+            // 1. 尝试从缓存获取广告
+            var cachedAd = getCachedAd(finalAdUnitId)
+
+            // 2. 如果缓存为空，立即加载并缓存一个广告
+            if (cachedAd == null) {
+                // 插页阻塞loading
+                ADLoadingDialog.show(activity)
+                AdLogger.d("缓存为空，立即加载插页广告，广告位ID: %s", finalAdUnitId)
+                loadAdToCache(activity, finalAdUnitId)
+                cachedAd = getCachedAd(finalAdUnitId)
+            }
+
+            if (cachedAd != null) {
+                ADLoadingDialog.hide()
+                AdLogger.d("使用缓存中的插页广告，广告位ID: %s", finalAdUnitId)
+
+                // 3. 显示广告
+                val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId)
+
+                result
+            } else {
+                AdResult.Failure(createAdException("广告加载失败"))
+            }
+        } catch (e: Exception) {
+            AdLogger.e("显示插页广告异常", e)
+            AdResult.Failure(createAdException("显示广告异常: ${e.message}", e))
+        } finally {
+            ADLoadingDialog.hide()
+        }
+    }
+
+    /**
+     * 基础广告加载方法（可复用）
+     */
+    private suspend fun loadAd(context: Context, adUnitId: String): InterstitialAd? {
+        // 累积加载次数统计
+        totalLoadCount++
+        AdLogger.d("插页广告累积加载次数: $totalLoadCount")
+        
+        reportAdData(
+            eventName = "ad_start_load",
+            params = mapOf(
+                "ad_unit_name" to adUnitId,
+                "number" to totalLoadCount
+            )
+        )
+        
+        return suspendCancellableCoroutine { continuation ->
+            val startTime = System.currentTimeMillis()
+            
+            val adRequest = AdRequest.Builder()
+                .setHttpTimeoutMillis(7000) // 7秒超时
+                .build()
+
+            InterstitialAd.load(context, adUnitId, adRequest, object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    val loadTime = System.currentTimeMillis() - startTime
+                    AdLogger.d("插页广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
+                    totalLoadSucCount++
+                    reportAdData(
+                        eventName = "ad_loaded",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "number" to totalLoadSucCount,
+                            "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "pass_time" to ceil(loadTime / 1000.0).toInt()
+                        )
+                    )
+                    FpuController.onAdFill("IV")
+                    
+                    // 设置收益监听器
+                    interstitialAd.onPaidEventListener = OnPaidEventListener { adValue ->
+                        AdLogger.d("插页广告收益回调: value=${adValue.valueMicros}, currency=${adValue.currencyCode}")
+                        
+                        // 存储当前广告的收益信息
+                        currentAdValue = adValue
+
+                        reportAdData(
+                            eventName = "ad_impression",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "position" to context::class.java.simpleName,
+                                "number" to totalShowCount,
+                                "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                                "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                "currency" to (currentAdValue?.currencyCode ?: "")
+                            )
+                        )
+                        
+                        // 上报真实的广告收益数据
+                        reportAdRevenueWithValue(interstitialAd, adValue)
+
+                        IpuController.onAdImpression("IV", adValue.valueMicros)
+                        RpuController.onAdRevenue("IV", adValue.valueMicros)
+                    }
+                    
+                    continuation.resume(interstitialAd)
+                }
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    val loadTime = System.currentTimeMillis() - startTime
+                    AdLogger.e("插页广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, loadAdError.message)
+                    
+                    reportAdData(
+                        eventName = "ad_load_fail",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "number" to totalLoadSucCount,
+                            "ad_source" to (loadAdError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                            "reason" to loadAdError.message
+                        )
+                    )
+                    
+                    continuation.resume(null)
+                }
+            })
+        }
+    }
+
+    /**
+     * 加载广告到缓存
+     */
+    private suspend fun loadAdToCache(context: Context, adUnitId: String): AdResult<Unit> {
+        return try {
+
+            // 检查缓存是否已满
+            val currentAdUnitCount = adCachePool.count { it.adUnitId == adUnitId && !it.isExpired() }
+            if (currentAdUnitCount >= maxCacheSizePerAdUnit) {
+                AdLogger.w("广告位 %s 缓存已满，当前缓存: %d/%d", adUnitId, currentAdUnitCount, maxCacheSizePerAdUnit)
+                return AdResult.Success(Unit)
+            }
+
+            // 加载广告
+            val interstitialAd = loadAd(context, adUnitId)
+            if (interstitialAd != null) {
+                synchronized(adCachePool) {
+                    adCachePool.add(CachedInterstitialAd(interstitialAd, adUnitId))
+                    val currentCount = getCachedAdCount(adUnitId)
+                    AdLogger.d("插页广告加载成功并缓存，广告位ID: %s，该广告位缓存数量: %d/%d", adUnitId, currentCount, maxCacheSizePerAdUnit)
+                }
+                AdResult.Success(Unit)
+            } else {
+                AdResult.Failure(createAdException("广告加载失败"))
+            }
+        } catch (e: Exception) {
+            AdLogger.e("插页loadAdToCache异常", e)
+            AdResult.Failure(AdException(0, "加载异常: ${e.message}", e))
+        }
+    }
+
+    /**
+     * 从缓存获取广告
+     */
+    private fun getCachedAd(adUnitId: String): CachedInterstitialAd? {
+        synchronized(adCachePool) {
+            val index = adCachePool.indexOfFirst { it.adUnitId == adUnitId && !it.isExpired() }
+            return if (index != -1) {
+                adCachePool.removeAt(index)
+            } else {
+                null
+            }
+        }
+    }
+
+    /**
+     * 获取指定广告位的缓存数量
+     */
+    private fun getCachedAdCount(adUnitId: String): Int {
+        synchronized(adCachePool) {
+            return adCachePool.count { it.adUnitId == adUnitId && !it.isExpired() }
+        }
+    }
+
+    /**
+     * 检查指定广告位缓存是否已满
+     */
+    private fun isCacheFull(adUnitId: String): Boolean {
+        return getCachedAdCount(adUnitId) >= maxCacheSizePerAdUnit
+    }
+
+    /**
+     * 显示广告的内部实现
+     */
+    private suspend fun showAdInternal(activity: Activity, interstitialAd: InterstitialAd, adUnitId: String): AdResult<Unit> {
+        return suspendCancellableCoroutine { continuation ->
+            interstitialAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    AdLogger.d("插页广告关闭")
+                    
+                    // 设置广告不再显示标识
+                    isShowing = false
+                    
+                    totalCloseCount++
+                    
+                    reportAdData(
+                        eventName = "ad_close",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                            "number" to totalCloseCount,
+                            "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                            "currency" to (currentAdValue?.currencyCode ?: "")
+                        )
+                    )
+                    
+                    val result = AdResult.Success(Unit)
+                    if (continuation.isActive) {
+                        continuation.resume(result)
+                    }
+                }
+
+                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                    AdLogger.w("插页广告显示失败: %s", adError.message)
+                    
+                    // 累积展示失败次数统计
+                    totalShowFailCount++
+                    AdLogger.d("插页广告累积展示失败次数: $totalShowFailCount")
+                    
+                    reportAdData(
+                        eventName = "ad_show_fail",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                            "number" to totalShowFailCount,
+                            "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "reason" to adError.message
+                        )
+                    )
+                    
+                    val result = AdResult.Failure(createAdException("显示失败: ${adError.message}"))
+                    if (continuation.isActive) {
+                        continuation.resume(result)
+                    }
+                }
+
+                override fun onAdShowedFullScreenContent() {
+                    AdLogger.d("插页广告开始显示")
+                    
+                    AdConfigManager.getInterstitialConfig().recordShow()
+                }
+
+                override fun onAdClicked() {
+                    AdLogger.d("插页广告被点击")
+                    
+                    // 累积点击统计
+                    totalClickCount++
+                    AdLogger.d("插页广告累积点击次数: $totalClickCount")
+                    
+                    AdConfigManager.getInterstitialConfig().recordClick()
+                    
+                    reportAdData(
+                        eventName = "ad_click",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                            "number" to totalClickCount,
+                            "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                            "currency" to (currentAdValue?.currencyCode ?: "")
+                        )
+                    )
+                }
+
+                override fun onAdImpression() {
+                    AdLogger.d("插页广告展示完成")
+                    
+                    // 设置广告正在显示标识
+                    isShowing = true
+
+                    // 累积展示统计
+                    totalShowCount++
+                    AdLogger.d("插页广告累积展示次数: $totalShowCount")
+
+                    // 异步预加载下一个广告到缓存（如果缓存未满）
+                    if (!isCacheFull(adUnitId)) {
+                        PreloadController.preload(activity)
+                    }
+                }
+            }
+
+            interstitialAd.show(activity)
+        }
+    }
+
+    /**
+     * 销毁广告
+     */
+    fun releaseAd() {
+        synchronized(adCachePool) {
+            adCachePool.clear()
+        }
+        AdLogger.d("插页广告已销毁")
+    }
+    
+    /**
+     * 上报广告收益数据（使用真实收益值）
+     * @param interstitialAd 插页广告对象
+     * @param adValue 广告收益值
+     */
+    private fun reportAdRevenueWithValue(interstitialAd: InterstitialAd, adValue: AdValue) {
+        // 创建广告收益数据
+        val adRevenueData = RevenueAdData(
+            revenue = RevenueInfo(
+                value = adValue.valueMicros / 1_000_000.0,
+                currencyCode = adValue.currencyCode
+            ),
+            adRevenueNetwork = interstitialAd.responseInfo.loadedAdapterResponseInfo?.adSourceName.orEmpty(),
+            adRevenueUnit = interstitialAd.adUnitId,
+            adRevenuePlacement = interstitialAd.responseInfo.loadedAdapterResponseInfo?.adSourceInstanceName.orEmpty(),
+            adFormat = "Interstitial"
+        )
+        
+        // 上报收益数据（内部已处理初始化和异常）
+        RevenueAdManager.reportAdRevenue(adRevenueData)
+        AdLogger.d("插页广告真实收益数据已上报，广告位ID: ${interstitialAd.adUnitId}, 收益: ${adValue.valueMicros}微元 ${adValue.currencyCode}")
+    }
+
+    /**
+     * 销毁控制器
+     */
+    fun cleanup() {
+        releaseAd()
+        AdLogger.d("插页广告控制器已清理")
+    }
+
+    /**
+     * 通用数据上报函数
+     * @param eventName 事件名称
+     * @param params 参数Map，会与基础参数合并
+     */
+    private fun reportAdData(eventName: String, params: Map<String, Any>) {
+        val data = mutableMapOf<String, Any>(
+            "ad_platform" to "Admob",
+            "ad_format" to "Interstitial"
+        )
+        
+        // 直接合并传入的参数
+        data.putAll(params)
+
+        if(eventName == "ad_impression"){
+            ReportDataManager.reportDataByName("ThinkingData",eventName, data)
+        } else{
+            ReportDataManager.reportData(eventName, data)
+        }
+    }
+    
+    /**
+     * 创建广告异常
+     */
+    private fun createAdException(message: String, cause: Throwable? = null): AdException {
+        return AdException(
+            code = 0,
+            message = message,
+            cause = cause
+        )
+    }
+    
+    /**
+     * 获取插页广告是否正在显示的状态
+     * @return true 如果插页广告正在显示，false 否则
+     */
+    fun checkAdShowing(): Boolean {
+        return isShowing
+    }
+} 

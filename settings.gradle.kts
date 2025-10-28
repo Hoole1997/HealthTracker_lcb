@@ -4,6 +4,10 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://maven.aliyun.com/nexus/content/groups/public/")
+        maven("https://maven.aliyun.com/nexus/content/repositories/jcenter")
+        maven("https://maven.aliyun.com/nexus/content/repositories/google")
+        maven("https://maven.aliyun.com/nexus/content/repositories/gradle-plugin")
     }
 }
 dependencyResolutionManagement {
@@ -16,6 +20,12 @@ dependencyResolutionManagement {
         }
         maven {
             setUrl("https://jitpack.io")
+            maven("https://artifact.bytedance.com/repository/pangle/")
+            maven("https://repo.dgtverse.cn/repository/maven-public/")
+            maven("https://maven.aliyun.com/nexus/content/groups/public/")
+            maven("https://maven.aliyun.com/nexus/content/repositories/jcenter")
+            maven("https://maven.aliyun.com/nexus/content/repositories/google")
+            maven("https://maven.aliyun.com/nexus/content/repositories/gradle-plugin")
             isAllowInsecureProtocol = false
         }
     }
@@ -24,5 +34,7 @@ dependencyResolutionManagement {
 rootProject.name = "HealthTracker"
 include(":app")
 include(":framework")
+include(":monetize")
+include(":core")
 
  

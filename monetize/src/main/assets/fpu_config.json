@@ -1,0 +1,9 @@
+[
+  {
+    "name": "",
+    "enabled": true,
+    "fpu": 2,
+    "reset_after_trigger": true,
+    "ad_types": ["SP", "IV", "NA", "RV", "BA"]
+  }
+]

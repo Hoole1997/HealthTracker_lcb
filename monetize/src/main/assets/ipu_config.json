@@ -1,0 +1,10 @@
+[
+  {
+    "name": "",
+    "enabled": true,
+    "ecpm": 0.0,
+    "ipu": 2,
+    "reset_after_trigger": true,
+    "ad_types": ["SP", "RV"]
+  }
+]

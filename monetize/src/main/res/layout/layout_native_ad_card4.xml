@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <androidx.cardview.widget.CardView
+        tools:layout_margin="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardElevation="0dp"
+        >
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <!-- 媒体内容-->
+            <com.google.android.gms.ads.nativead.MediaView
+                android:id="@+id/ads_mv_media"
+                android:layout_width="match_parent"
+                tools:background="@color/text_gray"
+                android:layout_height="@dimen/dp_200" />
+
+            <!-- 应用图标 -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ads_icon_cv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                app:cardCornerRadius="@dimen/dp_8"
+                app:cardElevation="0dp"
+                android:layout_gravity="center_horizontal"
+                >
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ads_iv_icon"
+                    android:layout_width="@dimen/dp_60"
+                    android:layout_height="@dimen/dp_60"
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_info_details" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- 广告标题 -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/ads_tv_title"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:paddingHorizontal="@dimen/dp_16"
+                tools:text="广告标题广告标题广告标题广告标题广告标题asasa"
+                android:textColor="#222222"
+                android:textSize="@dimen/sp_16"
+                style="@style/TextViewFont_RobotoBold"/>
+
+            <!-- 广告描述 -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/ads_tv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingHorizontal="@dimen/dp_16"
+                tools:text="广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述"
+                android:textColor="#666666"
+                android:textSize="@dimen/sp_12" />
+
+
+            <!-- CTA按钮 -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/ads_btn_cta"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_12"
+                android:background="@drawable/bg_ad_cta_button_02bc77"
+                android:backgroundTint="#00DD8B"
+                android:gravity="center"
+                tools:text="INSTALL"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/sp_14"
+                android:layout_marginBottom="@dimen/dp_16"
+                style="@style/TextViewFont_RobotoBold" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <!-- AD 标签 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ads_tv_label"
+            android:layout_width="@dimen/dp_27"
+            android:layout_height="@dimen/dp_17"
+            android:gravity="center"
+            android:background="@drawable/bg_ad_label_enhanced_04"
+            android:text="AD"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:textColor="#fff"
+            android:textSize="@dimen/sp_11" />
+
+    </androidx.cardview.widget.CardView>
+
+</com.google.android.gms.ads.nativead.NativeAdView> 
