@@ -74,7 +74,7 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBin
                     // 用户取消倒计时
                 }
             })
-            loadNative(adContainer, style = NativeAdStyle.CARD)
+            loadNative(adContainer, style = NativeAdStyle.CARD_5)
         }
 
         // 观察数据变化

@@ -184,13 +184,7 @@
                 android:background="@drawable/bg_rect_white_12"
                 android:paddingVertical="@dimen/dp_24"
                 android:paddingHorizontal="@dimen/dp_16"/>
-            <FrameLayout
-                android:id="@+id/ad_Container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
-                app:layout_constraintTop_toBottomOf="@id/bs_status_view"
-                android:background="@drawable/bg_rect_white_12"/>
+
 
 
             <!-- 专家建议自定义控件 -->
@@ -202,11 +196,20 @@
                 android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ad_Container"
+                app:layout_constraintTop_toBottomOf="@id/bs_status_view"
                 app:eav_showMask="true"
                 app:eav_countdownSeconds="5"
                 app:eav_blurRadius="5"
                 app:eav_minHeightWithMask="@dimen/dp_237" />
+
+            <FrameLayout
+                android:id="@+id/ad_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_12"
+                app:layout_constraintTop_toBottomOf="@id/expert_advice_view"
+                android:background="@drawable/bg_rect_white_12"
+                android:backgroundTint="#EEF5FF"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

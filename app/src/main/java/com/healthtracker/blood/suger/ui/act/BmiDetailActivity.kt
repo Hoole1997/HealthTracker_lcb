@@ -83,7 +83,7 @@ class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, ActivityBmiDetail
                     // 用户取消倒计时
                 }
             })
-            loadNative(adContainer, style = NativeAdStyle.CARD)
+            loadNative(adContainer, style = NativeAdStyle.CARD_5)
         }
     }
 

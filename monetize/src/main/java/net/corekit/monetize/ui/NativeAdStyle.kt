@@ -42,6 +42,14 @@ data class NativeAdStyle(
             layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card4,
             description = "card4",
         )
+
+        /**
+         * 卡片样式3：另一种卡片布局
+         */
+        val CARD_5 = NativeAdStyle(
+            layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card5,
+            description = "card5",
+        )
         
         /**
          * 创建自定义样式
