@@ -93,6 +93,7 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
                 }
             }
 
+            hideNavigationBar(this)
             afterAppleyWindowInsets()
             insets
         }

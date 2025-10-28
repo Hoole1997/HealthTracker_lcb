@@ -1,10 +1,13 @@
 package com.healthtracker.blood.suger
 
 import android.app.Application
+import android.content.Intent
 import android.os.Looper
+import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.config.registry.AppConfigRegistry
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.di.IoDispatcher
+import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.blood.suger.work.HealthWorkTask
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
@@ -25,6 +28,7 @@ import kotlinx.coroutines.launch
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.jvm.java
 
 /**
  * 应用初始化器
@@ -41,7 +45,7 @@ class AppInitializer @Inject constructor(
 ) {
     
     private val initScope = CoroutineScope(SupervisorJob() + ioDispatcher)
-
+    private var isFirstLaunch = true
     /**
      * 配置刷新观察者
      *
@@ -53,6 +57,23 @@ class AppInitializer @Inject constructor(
             initScope.launch {
                 remoteConfigManager.refreshConfig()
             }
+
+            if(!isFirstLaunch){
+                startSplashActivity()
+            }else{
+                isFirstLaunch = false
+            }
+        }
+    }
+
+    fun startSplashActivity() {
+        try {
+            val intent = Intent(application, SplashActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            application.startActivity(intent)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

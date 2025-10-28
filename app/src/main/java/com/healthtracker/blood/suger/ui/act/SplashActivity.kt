@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.animation.addListener
 import androidx.lifecycle.lifecycleScope
+import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
@@ -59,6 +60,11 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         SplashStateMachine(
             scope = lifecycleScope,
             onNavigate = {
+
+                if(ActivityUtils.isActivityExistsInStack(MainActivity::class.java)){
+                    finish()
+                    return@SplashStateMachine
+                }
                 // 判断应该跳转到哪个页面
                 val targetActivity = if(hasNewGuide()){
                     MainActivity::class.java
