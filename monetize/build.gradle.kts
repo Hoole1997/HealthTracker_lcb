@@ -51,6 +51,7 @@ dependencies {
     api(libs.kotlinx.coroutines.android)
     api(libs.androidx.appcompat)
     api(libs.material)
+    api(libs.lottie)
     compileOnly(project(":core"))
     api(project(":framework"))
     

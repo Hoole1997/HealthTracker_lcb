@@ -11,4 +11,18 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="AdLoadingDialog" parent="Dialog">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
+    <style name="Dialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:navigationBarColor">@color/white</item>
+    </style>
 </resources>
