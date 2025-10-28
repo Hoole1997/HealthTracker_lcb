@@ -34,6 +34,7 @@ import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
 import com.healthtracker.blood.suger.ui.act.ProfileActivity
+import com.healthtracker.blood.suger.ui.dialog.NativeCardDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.blood.suger.util.CholesterolCalculator
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
@@ -153,7 +154,9 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
 
     override fun onResume() {
         super.onResume()
-        guidFeature()
+        if(!guidFeature()){
+            NativeCardDialog.showOncePerMinute(requireActivity())
+        }
     }
 
     /**
@@ -288,20 +291,23 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     }
 
     private var isShowHighligh = false
-    private fun guidFeature(){
+    private fun guidFeature(): Boolean{
         if(hasShowAllGuide() || isShowHighligh){
-            return
+            return false
         }
 
         if(guideBp()){
-            return
+            return true
         }
 
         if(guideBs()){
-            return
+            return true
         }
 
-        guideHr()
+        if(guideHr()){
+            return true
+        }
+        return false
 
     }
 

@@ -1,19 +1,18 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.entity.HealthTag
-import com.healthtracker.blood.suger.data.enums.HeartRateStatus
 import com.healthtracker.blood.suger.databinding.ActivityHeartRateRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HeartRateRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
-import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.ext.click
+import com.healthtracker.blood.suger.utils.loadNative
+import com.healthtracker.blood.suger.utils.showInter
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
@@ -21,6 +20,7 @@ import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ui.NativeAdStyle
 import java.util.ArrayList
 import java.util.Calendar
 import kotlin.collections.indexOf
@@ -30,7 +30,7 @@ import kotlin.collections.indexOf
  */
 @AndroidEntryPoint
 class HeartRateRecordActivity :
-    BaseMVVMActivity<HeartRateRecordViewModel, ActivityHeartRateRecordBinding>() {
+    BaseInterActivity<HeartRateRecordViewModel, ActivityHeartRateRecordBinding>() {
 
     private val healthTags = mutableListOf<HealthTag>()
     private val addTagIds = mutableListOf<Long>()
@@ -61,10 +61,11 @@ class HeartRateRecordActivity :
         setupStatusView()
         setupDateTimeView()
         observeViewModel()
+        loadNative(mViewBind.adContainer, style = NativeAdStyle.STANDARD)
     }
 
     private fun setupAction() {
-        mViewBind.btnBack.click { finish() }
+        mViewBind.btnBack.clickWithDuration { onBackPress() }
         mViewBind.btnSave.clickWithDuration {
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
@@ -87,8 +88,10 @@ class HeartRateRecordActivity :
 
     private fun goDetail(recordId:Long){
         SaveCompleteDialog.show(supportFragmentManager){
-            HeartRateDetailActivity.start(this@HeartRateRecordActivity,recordId)
-            finish()
+            showInter {
+                HeartRateDetailActivity.start(this@HeartRateRecordActivity,recordId)
+                finish()
+            }
         }
     }
 

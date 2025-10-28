@@ -8,18 +8,24 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.ethanhua.skeleton.ViewSkeletonScreen
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityGuideBinding
 import com.healthtracker.blood.suger.databinding.FragmentGuide1Binding
+import com.healthtracker.blood.suger.databinding.FragmentGuide2Binding
 import com.healthtracker.blood.suger.databinding.FragmentGuide3Binding
 import com.healthtracker.blood.suger.saveHasNewGuide
+import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.framework.ext.visible
 import com.zhpan.indicator.enums.IndicatorSlideMode
 import com.zhpan.indicator.enums.IndicatorStyle
+import net.corekit.monetize.ui.NativeAdStyle
 
 class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
     override fun createViewBinding() = ActivityGuideBinding.inflate(layoutInflater)
@@ -29,14 +35,14 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         with(mViewBind) {
 
-            val frags = arrayListOf(GuideFrag1(), GuideFrag2(), GuideFrag3())
+            val frags = arrayListOf(GuideFrag1(), GuideFragAd(), GuideFrag2(), GuideFrag3())
             viewpager.adapter = GuidePageAdapter(frags, this@GuideActivity)
 
             tvSkip.clickWithDuration {
                 goNext()
             }
 
-            btnNext.clickWithDuration(300) {
+            btnNext.clickWithDuration{
                 val currentItem = viewpager.currentItem
                 if (currentItem == frags.size - 1) {
                     goNext()
@@ -54,10 +60,14 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     indicatorView.onPageSelected(position)
+                    group.visible()
                     if (position == frags.size - 1) {
                         btnNext.text = getString(R.string.start_health_journey)
                     } else {
                         btnNext.text = getString(R.string.next)
+                        if(position == 1){
+                            group.gone()
+                        }
                     }
                 }
 
@@ -119,6 +129,42 @@ class GuideFrag1 : BaseMVVMFragment<BaseViewModel, FragmentGuide1Binding>() {
 
     }
 }
+
+
+class GuideFragAd : BaseMVVMFragment<BaseViewModel, FragmentGuide2Binding>() {
+
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ) = FragmentGuide2Binding.inflate(inflater, parent, attachToParent)
+
+    override fun getVMModelClass() = BaseViewModel::class.java
+    private lateinit var skeleton: ViewSkeletonScreen
+    override fun initView(savedInstanceState: Bundle?) {
+        mViewBind?.apply {
+            skeleton = ViewSkeletonScreen.Builder(adContainer)
+                .load(R.layout.fragment_guide_ad)
+                .shimmer(true)
+                .angle(30)
+                .duration(1200)
+                .color(com.healthtracker.framework.R.color.white)
+                .show()
+
+            if(context is GuideActivity){
+                val activity = context as GuideActivity
+                activity.loadNative(adContainer, style = NativeAdStyle.createCustom(
+                    net.corekit.monetize.R.layout.layout_fullscreen_native_ad,"full_native"), call = {
+                    if(it){
+                        skeleton.hide()
+                    }
+                })
+            }
+        }
+
+    }
+}
+
 
 class GuideFrag2 : BaseMVVMFragment<BaseViewModel, FragmentGuide1Binding>() {
 

@@ -13,8 +13,6 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import androidx.viewbinding.ViewBinding
@@ -24,8 +22,6 @@ import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.SysBarUtils.hideNavigationBar
 import com.healthtracker.framework.SysBarUtils.hideStateBar
 import com.healthtracker.framework.util.RestoreUtils
-import com.healthtracker.framework.ext.collectLatest
-import com.healthtracker.framework.ext.collect
 import kotlin.math.max
 
 
@@ -135,13 +131,12 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
         initView(savedInstanceState)
         initData()
         // 统一处理返回键禁用逻辑
-        if (shouldDisableBackPressed()) {
-            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    // 禁用返回键，什么都不做
-                }
-            })
-        }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 禁用返回键，什么都不做
+                onBackPress()
+            }
+        })
     }
 
     /**
@@ -217,6 +212,10 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
 
     protected open fun hasStatusbarPlaceView() = false
     protected open fun afterAppleyWindowInsets() {
+
+    }
+
+    protected open fun onBackPress(){
 
     }
 

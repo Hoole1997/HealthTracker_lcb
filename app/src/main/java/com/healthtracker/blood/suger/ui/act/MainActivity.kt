@@ -17,10 +17,12 @@ import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
 import com.healthtracker.blood.suger.helper.CustomNotificationHelper
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
+import com.healthtracker.blood.suger.ui.dialog.ExitDialog
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
 import com.healthtracker.blood.suger.ui.fragment.RecordFragment
 import com.healthtracker.blood.suger.ui.viewmodel.MainViewModel
+import com.healthtracker.blood.suger.utils.loadBanner
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
@@ -161,6 +163,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
 
             setupBottomNavBar()
             setupViewPager()
+            loadBanner(adViewContainer)
 
             // 延迟处理通知点击参数，确保UI完全初始化
             mViewBind.root.postDelayed({
@@ -335,6 +338,12 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
             ).show()
 
             "All test notifications sent successfully".logd(TAG)
+        }
+    }
+
+    override fun onBackPress() {
+        ExitDialog.show(supportFragmentManager){
+            finish()
         }
     }
 

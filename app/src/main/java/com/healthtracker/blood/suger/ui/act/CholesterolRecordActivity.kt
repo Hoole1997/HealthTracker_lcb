@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.enums.CholesterolLevel
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityCholesterolRecordBinding
@@ -14,14 +15,16 @@ import com.healthtracker.blood.suger.ui.viewmodel.CholesterolRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.widget.NumberPickerView
 import com.healthtracker.blood.suger.util.CholesterolMetrics
-import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.ext.click
+import com.healthtracker.blood.suger.utils.loadNative
+import com.healthtracker.blood.suger.utils.showInter
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.util.FontUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Calendar
 import java.util.Locale
 
@@ -30,7 +33,7 @@ import java.util.Locale
  */
 @AndroidEntryPoint
 class CholesterolRecordActivity :
-    BaseMVVMActivity<CholesterolRecordViewModel, ActivityCholesterolRecordBinding>() {
+    BaseInterActivity<CholesterolRecordViewModel, ActivityCholesterolRecordBinding>() {
 
     companion object {
         private const val EXTRA_RECORD_ID = "extra_record_id"
@@ -61,11 +64,12 @@ class CholesterolRecordActivity :
         setupLeveStatusView()
         setupDateTimeSection()
         observeViewModel()
+        loadNative(mViewBind.adContainer, style = NativeAdStyle.STANDARD)
     }
 
     private fun setupActionBar() {
-        mViewBind.btnBack.click { finish() }
-        mViewBind.btnSave.click {
+        mViewBind.btnBack.clickWithDuration { onBackPress() }
+        mViewBind.btnSave.clickWithDuration {
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 when (val result = mViewModel.saveRecord()) {
@@ -86,8 +90,10 @@ class CholesterolRecordActivity :
 
     private fun goDetail(recordId:Long){
         SaveCompleteDialog.show(supportFragmentManager){
-            CholesterolDetailActivity.start(this@CholesterolRecordActivity,recordId)
-            finish()
+           showInter {
+               CholesterolDetailActivity.start(this@CholesterolRecordActivity,recordId)
+               finish()
+           }
         }
     }
 

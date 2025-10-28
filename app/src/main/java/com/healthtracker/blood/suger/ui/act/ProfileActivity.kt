@@ -4,20 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.constants.KEY_HAS_ADD_PROFILE
 import com.healthtracker.blood.suger.databinding.ActivityProfileBinding
 import com.healthtracker.blood.suger.getUserAge
 import com.healthtracker.blood.suger.isMale
 import com.healthtracker.blood.suger.saveUserAge
 import com.healthtracker.blood.suger.saveUserGender
-import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.FontUtils
 import com.healthtracker.framework.util.SpUtils
 
-class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>() {
+class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>() {
     companion object{
         private const val TAG = "ProfileActivity"
 
@@ -57,7 +57,7 @@ class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>()
             }
 
             btnBack.clickWithDuration {
-                finish()
+                onBackPress()
             }
 
             rbMale.isChecked = isMale()
@@ -114,7 +114,7 @@ class ProfileActivity: BaseMVVMActivity<BaseViewModel, ActivityProfileBinding>()
         when (launchMode) {
             MODE_GUIDE -> {
                 setResult(RESULT_OK)
-                finish()
+                onBackPress()
             }
             else -> {
                 startActivity<MainActivity>(isFinishSelf = true)

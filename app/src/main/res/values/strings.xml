@@ -1208,5 +1208,7 @@ healthcare provider or medical institution.</string>
     <!-- 自定义推送通知渠道 -->
     <string name="custom_notification_channel_name">Health Alerts</string>
     <string name="custom_notification_channel_description">Reminders for blood sugar, blood pressure, heart rate and more</string>
+    <string name="exit">Exit</string>
+    <string name="are_you_sure_exit">Are you sure want to exit the app?</string>
 
 </resources>

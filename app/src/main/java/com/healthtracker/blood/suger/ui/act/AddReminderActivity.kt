@@ -1,24 +1,19 @@
 package com.healthtracker.blood.suger.ui.act
 
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
-import android.nfc.Tag
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.input.key.Key.Companion.G
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityAddReminderBinding
@@ -34,19 +29,16 @@ import com.healthtracker.blood.suger.ui.dialog.ImgGetTypeDialog
 import com.healthtracker.blood.suger.ui.viewmodel.AddReminderUiState
 import com.healthtracker.blood.suger.ui.viewmodel.AddReminderViewModel
 import com.healthtracker.blood.suger.ui.viewmodel.SaveState
-import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.hideSoftKeyBoard
 import com.healthtracker.framework.ext.logd
-import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AddReminderActivity : BaseMVVMActivity<AddReminderViewModel, ActivityAddReminderBinding>(),
+class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddReminderBinding>(),
     PhotoPermissionProvider, CameraPermissionProvider {
 
     @Inject
@@ -131,8 +123,8 @@ class AddReminderActivity : BaseMVVMActivity<AddReminderViewModel, ActivityAddRe
     private fun setupViews() {
         with(mViewBind) {
             // 返回按钮
-            btnBack.click {
-                finish()
+            btnBack.clickWithDuration {
+                onBackPress()
             }
 
             // 药物名称输入监听
@@ -253,7 +245,7 @@ class AddReminderActivity : BaseMVVMActivity<AddReminderViewModel, ActivityAddRe
             }
 
             is SaveState.Success -> {
-                finish()
+                onBackPress()
             }
 
             is SaveState.Error -> {

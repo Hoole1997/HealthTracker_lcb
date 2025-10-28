@@ -55,7 +55,7 @@
         android:clipToPadding="false"
         android:paddingTop="@dimen/sp_16"
         android:paddingBottom="@dimen/dp_80"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/btn_save"
         app:layout_constraintTop_toBottomOf="@id/action_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -264,8 +264,16 @@
         android:layout_marginHorizontal="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_15"
         android:text="@string/save"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ad_Container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
+    <FrameLayout
+        android:id="@+id/ad_Container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

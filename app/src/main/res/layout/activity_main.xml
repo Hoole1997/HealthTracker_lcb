@@ -83,13 +83,20 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/home_nav_bar_height"
         android:background="@color/white"
-        android:elevation="@dimen/dp_8"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ad_view_container"
         app:tabIndicator="@null"
         app:tabIndicatorHeight="0dp"
         app:tabMaxWidth="0dp"
         app:tabPaddingEnd="0dp"
         app:tabPaddingStart="0dp"
         app:tabRippleColor="@color/color_tap_ripple" />
+
+    <FrameLayout
+        android:id="@+id/ad_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

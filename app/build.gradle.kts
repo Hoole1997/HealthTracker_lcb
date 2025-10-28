@@ -141,6 +141,8 @@ apply<Any> {
 dependencies {
     implementation(fileTree(mapOf("include" to listOf("*.jar", "*.aar"), "dir" to "libs")))
     api(project(":framework"))
+    api(project(":monetize"))
+    api(project(":core"))
 
     // Core Android
     implementation(libs.androidx.core.ktx)
@@ -178,6 +180,9 @@ dependencies {
 
     api(libs.okhttp)
     implementation(libs.logging.interceptor)
+    implementation(libs.xxpermissions)
+    implementation(libs.skeleton)
+    implementation(libs.shimmerlayout)
 }
 
 // BuildConfig 扩展函数

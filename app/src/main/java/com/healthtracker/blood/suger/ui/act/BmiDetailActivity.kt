@@ -2,29 +2,24 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Html
-import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.databinding.ActivityBmiDetailBinding
-import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BmiDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
-import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.base.fragment.DialogListener
-import com.healthtracker.framework.ext.click
+import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import net.corekit.monetize.ui.NativeAdStyle
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @AndroidEntryPoint
-class BmiDetailActivity: BaseMVVMActivity<BmiDetailViewModel, ActivityBmiDetailBinding>() {
+class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, ActivityBmiDetailBinding>() {
 
     companion object {
         private const val TAG = "BmiDetailActivity"
@@ -57,8 +52,8 @@ class BmiDetailActivity: BaseMVVMActivity<BmiDetailViewModel, ActivityBmiDetailB
     private fun setupViews() {
         with(mViewBind) {
             // Back button
-            btnBack.click {
-                finish()
+            btnBack.clickWithDuration {
+                onBackPress()
             }
 
             // Edit button
@@ -88,6 +83,7 @@ class BmiDetailActivity: BaseMVVMActivity<BmiDetailViewModel, ActivityBmiDetailB
                     // 用户取消倒计时
                 }
             })
+            loadNative(adContainer, style = NativeAdStyle.CARD)
         }
     }
 

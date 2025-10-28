@@ -3,29 +3,30 @@ package com.healthtracker.blood.suger.ui.act
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.ActivityBmiRecordBinding
-import com.healthtracker.blood.suger.ui.dialog.AddTagDialog
 import com.healthtracker.blood.suger.ui.dialog.BmiPickerDialog
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BmiRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
-import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.ext.click
+import com.healthtracker.blood.suger.utils.loadNative
+import com.healthtracker.blood.suger.utils.showInter
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Calendar
 
 @AndroidEntryPoint
-class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecordBinding>() {
+class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, ActivityBmiRecordBinding>() {
 
     private val healthTags = mutableListOf<HealthTag>()
     private val addTagIds = mutableListOf<Long>()
@@ -59,7 +60,7 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
         mViewModel.initializeWithRecord(editRecordId)
 
         with(mViewBind) {
-            btnBack.click { finish() }
+            btnBack.clickWithDuration { onBackPress() }
 
             // 体重/身高编辑：复用通用输入 BottomSheet
             clWeight.clickWithDuration {
@@ -134,6 +135,7 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
 
             // 初始化 BMI 等级视图
             setupLeveStatusView()
+            loadNative(adContainer, style = NativeAdStyle.STANDARD)
         }
 
         observeViewModel()
@@ -164,8 +166,10 @@ class BmiRecordActivity : BaseMVVMActivity<BmiRecordViewModel, ActivityBmiRecord
 
     private fun goDetail(recordId:Long){
         SaveCompleteDialog.show(supportFragmentManager){
-            BmiDetailActivity.start(this@BmiRecordActivity,recordId)
-            finish()
+           showInter {
+               BmiDetailActivity.start(this@BmiRecordActivity,recordId)
+               finish()
+           }
         }
     }
 

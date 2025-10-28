@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.animation.addListener
 import androidx.lifecycle.lifecycleScope
@@ -25,8 +26,15 @@ import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
+import net.corekit.monetize.ads.AdResult
+import net.corekit.monetize.ads.AdsManager
+import net.corekit.monetize.ads.FullNativeAds
+import net.corekit.monetize.ads.InterstitialAds
+import net.corekit.monetize.ads.LaunchAds
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,6 +44,11 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         private const val TAG = "SplashActivity"
     }
 
+    private var isAdLoaded = false
+    private val hasFullNativeShowing : Boolean
+        get() = FullNativeAds.getInstance().checkAdShowing()
+    private val hasInterstitialShowing : Boolean
+        get() = InterstitialAds.getInstance().checkAdShowing()
     // 从通知传递过来的动作参数
     private val notificationAction: String? by lazy {
         intent.getStringExtra(com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION)
@@ -97,6 +110,44 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         })
 
 
+    }
+
+    /**
+     * 初始化 AdMob 并显示开屏广告
+     * @return 广告是否加载成功
+     */
+    private suspend fun initializeAndShowAd(): Boolean {
+        try {
+            // 初始化 AdMob SDK
+            Log.d(TAG, "开始初始化 AdMob SDK")
+            val initResult = AdsManager.init(this)
+
+            if (initResult is AdResult.Success) {
+                Log.d(TAG, "AdMob SDK 初始化成功，准备显示开屏广告")
+
+                // 显示开屏广告
+                val adResult = LaunchAds.getInstance().displayAd(
+                    activity = this,
+                    onLoaded = { isSuccess ->
+                        isAdLoaded = isSuccess
+                    }
+                )
+
+                if (adResult is AdResult.Success) {
+                    Log.d(TAG, "开屏广告关闭")
+                    return true
+                } else {
+                    Log.d(TAG, "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}")
+                    return false
+                }
+            } else {
+                Log.e(TAG, "AdMob SDK 初始化失败: ${(initResult as? AdResult.Failure)?.error?.message}")
+                return false
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "广告初始化或显示异常", e)
+            return false
+        }
     }
 
     override fun onResume() {
@@ -164,7 +215,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     /**
      * 检查通知权限
      */
-    private fun checkNotificationPermission() {
+    private  fun checkNotificationPermission() {
         "Checking notification permission...".logd(TAG)
 
         val notificationStatus = permissionManager.checkNotificationPermission()
@@ -188,12 +239,49 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
      */
     private fun onPermissionCheckCompleted() {
         stateMachine.onPermissionCheckCompleted()
+        lifecycleScope.launch {
+            val adJob = async {
+                initializeAndShowAd()
+            }
+
+            val timeoutJob = async {
+                delay(10000L)
+            }
+
+            // 等待广告完成或10秒超时（哪个先完成就继续）
+            val timeoutTriggered = select<Boolean> {
+                adJob.onAwait {
+                    // 广告任务完成
+                    false
+                }
+                timeoutJob.onAwait {
+                    // 10秒超时触发
+                    true
+                }
+            }
+
+            // 如果是超时触发，检查兜底策略
+            if (timeoutTriggered) {
+                val hasAdLoaded = isAdLoaded
+                if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
+                    // 没有任何广告，执行继续流程
+                    Log.d(TAG, "10秒超时兜底：无广告，执行继续流程")
+                } else {
+                    // 有广告加载或显示，继续等待广告完成
+                    Log.d(TAG, "10秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
+                    adJob.await()
+                }
+            }
+
+            stateMachine.onAdCompleted()
+        }
     }
 
     /**
      * 动画完成回调
      */
     private fun onAnimationCompleted() {
+        "动画执行完成".logd(TAG)
         stateMachine.onAnimationCompleted()
     }
 
@@ -231,6 +319,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 
         private var animationDone = false
         private var permissionDone = false
+        private var adDone = false
         private var isForeground = true
         private var pendingForegroundNavigation = false
         private var hasNavigated = false
@@ -243,6 +332,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             animationDone = true
             "Animation completed".logd(TAG)
             tryNavigate()
+
         }
 
         fun onPermissionCheckCompleted() {
@@ -251,6 +341,16 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             }
             permissionDone = true
             "Permission check completed".logd(TAG)
+            tryNavigate()
+
+        }
+
+        fun onAdCompleted() {
+            if (adDone) {
+                return
+            }
+            adDone = true
+            "Ad completed".logd(TAG)
             tryNavigate()
         }
 
@@ -270,13 +370,13 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             navigationJob = null
         }
 
-        private fun tryNavigate() {
+      private  fun tryNavigate() {
             if (hasNavigated) {
                 "Already navigated, ignore further requests".logd(TAG)
                 return
             }
 
-            if (!(animationDone && permissionDone)) {
+            if (!(animationDone && permissionDone && adDone )) {
                 "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(
                     TAG
                 )

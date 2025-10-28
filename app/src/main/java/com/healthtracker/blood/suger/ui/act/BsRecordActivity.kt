@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
@@ -17,7 +18,8 @@ import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.RulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
-import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.blood.suger.utils.loadNative
+import com.healthtracker.blood.suger.utils.showInter
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
@@ -27,15 +29,14 @@ import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Calendar
 
 @OptIn(FlowPreview::class)
 @AndroidEntryPoint
-class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
+class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
 
     // ActivityResult launcher for target range settings
     private val targetRangeLauncher = registerForActivityResult(
@@ -64,8 +65,8 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mViewBind) {
-            btnBack.click {
-                finish()
+            btnBack.clickWithDuration {
+                onBackPress()
             }
 
             clRangeTarget.clickWithDuration {
@@ -111,6 +112,7 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
             setupSaveButton()
             // 先设置观察者，确保能接收到数据变化
             observeViewModel()
+            loadNative(adContainer, style = NativeAdStyle.STANDARD)
         }
 
         // 获取传入的记录ID（如果有）
@@ -191,8 +193,10 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
 
     private fun goDetail(recordId:Long){
         SaveCompleteDialog.show(supportFragmentManager){
-            BsDetailActivity.start(this@BsRecordActivity, recordId)
-            finish()
+           showInter {
+               BsDetailActivity.start(this@BsRecordActivity, recordId)
+               finish()
+           }
         }
     }
 
@@ -320,5 +324,6 @@ class BsRecordActivity: BaseMVVMActivity<BsRecordViewModel, ActivityBsRecordBind
     private fun updateBloodSugarRangeView() {
         mViewBind.rangeView.updateStatus(mViewModel.currentStatus.value)
     }
+
 
 }

@@ -224,6 +224,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_time"/>
 
+            <FrameLayout
+                android:id="@+id/ad_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/cholesterol_status_view"
+                android:background="@drawable/bg_rect_white_12"/>
+
             <!-- 专家建议自定义控件 -->
             <com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
                 android:id="@+id/expert_advice_view"
@@ -233,7 +241,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cholesterol_status_view"
+                app:layout_constraintTop_toBottomOf="@id/ad_Container"
                 app:eav_showMask="true"
                 app:eav_countdownSeconds="5"
                 app:eav_blurRadius="5"

@@ -2,36 +2,30 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Html
-import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.enums.HeartRateStatus
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityHeartRateDetailBinding
-import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
-import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
-import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HeartRateDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
-import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.base.fragment.DialogListener
+import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import net.corekit.monetize.ui.NativeAdStyle
 
 @AndroidEntryPoint
 class HeartRateDetailActivity :
-    BaseMVVMActivity<HeartRateDetailViewModel, ActivityHeartRateDetailBinding>() {
+    BaseInterActivity<HeartRateDetailViewModel, ActivityHeartRateDetailBinding>() {
 
     companion object {
         fun start(context: Context, recordId: Long) {
@@ -54,7 +48,7 @@ class HeartRateDetailActivity :
 
     private fun setupActionBar() {
         with(mViewBind) {
-            btnBack.click { finish() }
+            btnBack.clickWithDuration { onBackPress() }
             btnDelete.click {
                 showDeleteConfirm()
             }
@@ -79,6 +73,7 @@ class HeartRateDetailActivity :
                     // 用户取消倒计时
                 }
             })
+            loadNative(adContainer, style = NativeAdStyle.CARD)
         }
     }
 
