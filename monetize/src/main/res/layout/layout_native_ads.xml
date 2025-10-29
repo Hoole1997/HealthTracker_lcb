@@ -18,6 +18,13 @@
             android:layout_height="@dimen/dp_80"
             android:paddingHorizontal="@dimen/dp_10">
 
+            <View
+                android:id="@+id/v_div"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="#f7f7f7"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <!-- 应用图标 -->
             <androidx.cardview.widget.CardView
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -28,7 +35,7 @@
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toStartOf="@id/ads_content_ll"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/v_div">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ads_iv_icon"
