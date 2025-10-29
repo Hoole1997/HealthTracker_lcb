@@ -178,6 +178,9 @@ class LaunchAds private constructor() {
             AppOpenAd.load(context, adUnitId, adRequest, loadCallback)
         }
     }
+
+    suspend fun checkInterceptor(context: Context) = interceptorChain.intercept(context,
+        AdConfigManager.getAppOpenConfig())
     
     /**
      * 加载广告到缓存

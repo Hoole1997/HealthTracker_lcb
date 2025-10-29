@@ -1,6 +1,8 @@
 package net.corekit.monetize.ads
 
+import android.app.Activity
 import android.content.Context
+import android.util.DisplayMetrics
 import android.view.ViewGroup
 import com.blankj.utilcode.util.ActivityUtils
 import com.google.android.gms.ads.AdListener
@@ -126,8 +128,24 @@ class BannerAds private constructor() {
     fun createBannerAdView(context: Context, adUnitId: String? = null): AdView {
         return AdView(context).apply {
             this.adUnitId = adUnitId ?: BuildConfig.ADMOB_BANNER_ID
-            setAdSize(AdSize.BANNER) // 320x50 标准Banner尺寸
+            if(context is Activity){
+                setAdSize(getAdSize(context)) // 320x50 标准Banner尺寸
+            }
+
         }
+    }
+
+    private fun getAdSize(activity: Activity):AdSize{
+        val context = activity.applicationContext
+        val outMetrics = DisplayMetrics()
+        val display = activity.windowManager.defaultDisplay
+        display.getMetrics(outMetrics)
+        val widthPixels = outMetrics.widthPixels.toFloat()
+        val density = outMetrics.density
+        val adWidth = (widthPixels / density).toInt()
+        val adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context,adWidth)
+
+        return adSize
     }
     
     /**

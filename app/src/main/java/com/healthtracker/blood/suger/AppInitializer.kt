@@ -25,6 +25,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ads.AdResult
+import net.corekit.monetize.ads.LaunchAds
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -56,13 +58,17 @@ class AppInitializer @Inject constructor(
             "App entered foreground, refreshing config...".logd("AppInitializer")
             initScope.launch {
                 remoteConfigManager.refreshConfig()
+                //检查是否满足展示开屏广告条件
+                val result = LaunchAds.getInstance().checkInterceptor(application)
+                if(!isFirstLaunch && result is AdResult.Success){
+                    startSplashActivity()
+                }else{
+                    isFirstLaunch = false
+                }
             }
 
-            if(!isFirstLaunch){
-                startSplashActivity()
-            }else{
-                isFirstLaunch = false
-            }
+
+
         }
     }
 
