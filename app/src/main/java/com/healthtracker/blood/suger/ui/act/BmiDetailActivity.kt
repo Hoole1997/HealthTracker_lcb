@@ -72,11 +72,11 @@ class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, ActivityBmiDetail
             // 设置专家建议控件监听器
             expertAdviceView.setOnExpertAdviceListener(object : ExpertAdviceView.OnExpertAdviceListener {
                 override fun onCountdownFinished() {
-                    // TODO: 倒计时结束，显示广告或解锁内容
+                    showReword()
                 }
 
                 override fun onGetTipClicked() {
-                    // TODO: 点击获取提示，显示广告
+                    showReword()
                 }
 
                 override fun onCancelClicked() {
@@ -184,4 +184,8 @@ class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, ActivityBmiDetail
     }
 
     override fun getStatusBarColor() = R.color.c5
+
+    override fun hideMask() {
+        mViewBind.expertAdviceView.setMaskVisible(false)
+    }
 }

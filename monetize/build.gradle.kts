@@ -18,6 +18,7 @@ android {
         buildConfigField("String", "ADMOB_INTERSTITIAL_ID", "\"${adMobUnitConfig["interstitial"]}\"")
         buildConfigField("String", "ADMOB_NATIVE_ID", "\"${adMobUnitConfig["native"]}\"")
         buildConfigField("String", "ADMOB_FULL_NATIVE_ID", "\"${adMobUnitConfig["full_native"]}\"")
+        buildConfigField("String", "ADMOB_REWARDED_ID", "\"${adMobUnitConfig["rewarded"]}\"")
     }
 
     buildTypes {

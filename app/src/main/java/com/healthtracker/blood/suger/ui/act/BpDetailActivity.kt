@@ -52,12 +52,12 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBin
             expertAdviceView.setOnExpertAdviceListener(object : ExpertAdviceView.OnExpertAdviceListener {
                 override fun onCountdownFinished() {
                     // TODO: 倒计时结束，显示广告或解锁内容
-//                    expertAdviceView.setMaskVisible(false)
+                    showReword()
                 }
 
                 override fun onGetTipClicked() {
                     // TODO: 点击获取提示，显示广告
-                    // 示例：显示遮罩并开始倒计时
+                    showReword()
 
                 }
 
@@ -123,6 +123,13 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBin
         showDeleteConfirm {
             mViewModel.deleteRecord()
         }
+    }
+
+
+
+
+    override fun hideMask() {
+        mViewBind.expertAdviceView.setMaskVisible(false)
     }
 
 }

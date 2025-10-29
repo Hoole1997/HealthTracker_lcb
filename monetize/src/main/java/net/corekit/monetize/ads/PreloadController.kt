@@ -44,5 +44,13 @@ object PreloadController {
                 AdLogger.e("全屏原生异步预加载广告失败", e)
             }
         }
+        MainScope().launch {
+            try {
+                AdLogger.d("激励开始异步预加载，广告位ID: %s", BuildConfig.ADMOB_REWARDED_ID)
+                RewardedAds.getInstance().load(context, BuildConfig.ADMOB_REWARDED_ID)
+            } catch (e: Exception) {
+                AdLogger.e("激励异步预加载广告失败", e)
+            }
+        }
     }
 }
