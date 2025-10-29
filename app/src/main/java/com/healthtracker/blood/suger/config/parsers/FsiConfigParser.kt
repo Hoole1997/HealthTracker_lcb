@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.config.parsers
 import com.healthtracker.blood.suger.config.ConfigKeys
 import com.healthtracker.blood.suger.config.models.FsiConfig
 import com.healthtracker.framework.config.core.ConfigParser
+import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,8 +16,7 @@ import javax.inject.Singleton
 @Singleton
 class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
 
-    // FSI配置不使用单一的JSON key，而是使用多个独立的配置项
-    override val configKey: String = ConfigKeys.FSI_ENABLED
+    override val configKey: String = ConfigKeys.FSI_CONFIG_JSON
 
     /**
      * 解析FSI配置
@@ -25,8 +25,10 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
      * 实际解析通过 parseFsiConfig() 方法完成
      */
     override fun parse(rawValue: String): FsiConfig? {
-        // 不使用此方法，因为FSI配置不是单一JSON
-        return null
+        if (rawValue.isBlank()) {
+            return null
+        }
+        return parseFromJson(rawValue)
     }
 
     /**
@@ -42,6 +44,9 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
         getString: (String, String) -> String,
         getInt: (String, Int) -> Int
     ): FsiConfig {
+        val jsonValue = getString(ConfigKeys.FSI_CONFIG_JSON, "")
+        parse(jsonValue)?.takeIf { validate(it) }?.let { return it }
+
         val enabled = getBoolean(ConfigKeys.FSI_ENABLED, true)
 
         // 兼容 String 和 Int 两种格式
@@ -71,5 +76,73 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
      */
     override fun validate(config: FsiConfig): Boolean {
         return config.isValid()
+    }
+
+    private fun parseFromJson(rawValue: String): FsiConfig? {
+        return runCatching {
+            val json = JSONObject(rawValue)
+
+            val enabled = json.optBooleanCompat("fsi_enable", true)
+            val quietPeriodHours = json.optIntCompat("quiet_period", 24)
+            val maxPrompt = json.optIntCompat("max_prompts", 3)
+            val timeWindow = parseTimeWindow(json.optString("time_window", "00:00-23:00"))
+
+            FsiConfig(
+                enabled = enabled,
+                quietPeriodHours = quietPeriodHours,
+                timeWindow = timeWindow,
+                maxTriggerCount = maxPrompt
+            )
+        }.getOrNull()
+    }
+
+    private fun parseTimeWindow(raw: String): Int {
+        val defaultWindow = 23 // 0-23
+        if (raw.isBlank()) {
+            return defaultWindow
+        }
+
+        val parts = raw.split("-")
+        if (parts.size != 2) {
+            return defaultWindow
+        }
+
+        val startHour = parseHour(parts[0])
+        val endHour = parseHour(parts[1])
+
+        if (startHour == null || endHour == null) {
+            return defaultWindow
+        }
+
+        if (startHour !in 0..23 || endHour !in 0..23 || startHour > endHour) {
+            return defaultWindow
+        }
+
+        return startHour * 100 + endHour
+    }
+
+    private fun parseHour(segment: String): Int? {
+        val normalized = segment.trim().substringBefore(":")
+        return normalized.toIntOrNull()
+    }
+
+    private fun JSONObject.optBooleanCompat(key: String, default: Boolean): Boolean {
+        if (!has(key)) return default
+        val value = opt(key)
+        return when (value) {
+            is Boolean -> value
+            is Number -> value.toInt() != 0
+            else -> value.toString().equals("true", ignoreCase = true)
+        }
+    }
+
+    private fun JSONObject.optIntCompat(key: String, default: Int): Int {
+        if (!has(key)) return default
+        val value = opt(key)
+        return when (value) {
+            is Number -> value.toInt()
+            is String -> value.toIntOrNull() ?: default
+            else -> default
+        }
     }
 }
