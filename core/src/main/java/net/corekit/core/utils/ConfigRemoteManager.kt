@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.firebase.FirebaseApp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.healthtracker.framework.BuildState
 import net.corekit.core.BuildConfig
 import net.corekit.core.log.CoreLogger
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -39,10 +40,11 @@ object ConfigRemoteManager {
             FirebaseApp.initializeApp(ProviderContext.getAppContext())
             // 初始化 Firebase Remote Config
             firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-            
+
+            val interval = if(BuildState.debug) 5 * 60 else MINIMUM_FETCH_INTERVAL
             // 配置 Remote Config 设置
             val configSettings = FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(MINIMUM_FETCH_INTERVAL)
+                .setMinimumFetchIntervalInSeconds(interval)
                 .setFetchTimeoutInSeconds(60) // 60秒超时
                 .build()
             firebaseRemoteConfig.setConfigSettingsAsync(configSettings)

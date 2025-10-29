@@ -32,39 +32,6 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
     }
 
     /**
-     * 从 RemoteConfigManager 解析完整的 FSI 配置
-     *
-     * @param getBoolean 获取布尔值的函数
-     * @param getString 获取字符串值的函数
-     * @param getInt 获取整数值的函数
-     * @return FsiConfig 配置对象
-     */
-    fun parseFsiConfig(
-        getBoolean: (String, Boolean) -> Boolean,
-        getString: (String, String) -> String,
-        getInt: (String, Int) -> Int
-    ): FsiConfig {
-        val jsonValue = getString(ConfigKeys.FSI_CONFIG_JSON, "")
-        parse(jsonValue)?.takeIf { validate(it) }?.let { return it }
-
-        val enabled = getBoolean(ConfigKeys.FSI_ENABLED, true)
-
-        // 兼容 String 和 Int 两种格式
-        val quietPeriodStr = getString(ConfigKeys.FSI_QUIET_PERIOD, "24")
-        val quietPeriodHours = quietPeriodStr.toIntOrNull() ?: 24
-
-        val timeWindow = getInt(ConfigKeys.FSI_TIME_WINDOW, 23)  // 23 = 0023 (0-23点)
-        val maxTriggerCount = getInt(ConfigKeys.FSI_MAX_TRIGGER_COUNT, 3)
-
-        return FsiConfig(
-            enabled = enabled,
-            quietPeriodHours = quietPeriodHours,
-            timeWindow = timeWindow,
-            maxTriggerCount = maxTriggerCount
-        )
-    }
-
-    /**
      * 获取默认FSI配置
      */
     override fun getDefault(): FsiConfig {
