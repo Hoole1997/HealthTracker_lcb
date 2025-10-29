@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Build
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.healthtracker.blood.suger.helper.NotificationHelper
 import com.healthtracker.blood.suger.helper.ResidentNotificationHelper
 import com.healthtracker.blood.suger.manager.HealthServiceManager
+import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
@@ -54,10 +56,6 @@ class PeriodicScanWorker(
         dependencies.notificationHelper()
     }
 
-    private val pushOrchestrator: com.healthtracker.blood.suger.strategy.PushOrchestrator by lazy {
-        dependencies.pushOrchestrator()
-    }
-
     override suspend fun doWork(): Result {
         if (BuildState.debug) "PeriodicScanWorker Run".logd(TAG)
 
@@ -69,6 +67,8 @@ class PeriodicScanWorker(
             } else {
                 if (BuildState.debug) "Service already running, skipping notification".logd(TAG)
             }
+
+            NotificationHelper.show(PushScenario.BACKGROUND)
 
         } catch (e: Throwable) {
             "PeriodicScanWorker error: ${e.message}".logd(TAG)

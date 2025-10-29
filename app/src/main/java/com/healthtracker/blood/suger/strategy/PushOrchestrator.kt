@@ -11,6 +11,7 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -67,10 +68,11 @@ class PushOrchestrator @Inject constructor(
      * @param extras 附加数据（可选）
      * @return 推送结果
      */
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     suspend fun triggerPush(
         scenario: PushScenario,
         extras: Bundle? = null
-    ): PushResult = withContext(Dispatchers.IO) {
+    ): PushResult = withContext(Dispatchers.IO)  {
         val pushId = generatePushId(scenario)
         val isPaidUser = true
 
@@ -180,30 +182,44 @@ class PushOrchestrator @Inject constructor(
             try {
                 val pushConfig = configManager.getConfig<PushConfig>()
                 val channelConfig = pushConfig.getChannelConfig(isPaidUser)
-                val hoverSwitch = channelConfig.hoverDurationStrategySwitch
-                val hoverCount = channelConfig.hoverDurationLoopCount
 
-                if (BuildState.debug) {
-                    "Loop config: switch=$hoverSwitch, count=$hoverCount, isPaid=$isPaidUser".logd(TAG)
-                }
-
-                // 如果配置开启且循环次数 > 1，启动 Loop 推送
-                if (hoverSwitch == 1 && hoverCount > 1) {
-                    loopPushManager.startLoopPush(
-                        pushMessage = message,
-                        notificationId = notificationId,
-                        isPaidUser = isPaidUser,
-                        loopCount = hoverCount
+                if (AppLifecycleManager.isScreenLock()) {
+                    "Loop push disabled,screen is off".logd(
+                        TAG
                     )
+                } else {
+                    val hoverSwitch = channelConfig.hoverDurationStrategySwitch
+                    val hoverCount = channelConfig.hoverDurationLoopCount
 
                     if (BuildState.debug) {
-                        "Loop push started: notificationId=$notificationId, count=$hoverCount".logd(TAG)
+                        "Loop config: switch=$hoverSwitch, count=$hoverCount, isPaid=$isPaidUser".logd(
+                            TAG
+                        )
                     }
-                } else {
-                    if (BuildState.debug) {
-                        "Loop push disabled or invalid config: switch=$hoverSwitch, count=$hoverCount".logd(TAG)
+
+                    // 如果配置开启且循环次数 > 1，启动 Loop 推送
+                    if (hoverSwitch == 1 && hoverCount > 1) {
+                        loopPushManager.startLoopPush(
+                            pushMessage = message,
+                            notificationId = notificationId,
+                            isPaidUser = isPaidUser,
+                            loopCount = hoverCount
+                        )
+
+                        if (BuildState.debug) {
+                            "Loop push started: notificationId=$notificationId, count=$hoverCount".logd(
+                                TAG
+                            )
+                        }
+                    } else {
+                        if (BuildState.debug) {
+                            "Loop push disabled or invalid config: switch=$hoverSwitch, count=$hoverCount".logd(
+                                TAG
+                            )
+                        }
                     }
                 }
+
             } catch (e: Exception) {
                 // Loop 推送配置失败不应阻塞主推送流程
                 "Failed to get Loop config or start Loop push: ${e.message}".logw(TAG)

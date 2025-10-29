@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.observer
 
+import com.healthtracker.blood.suger.helper.NotificationHelper
 import com.healthtracker.blood.suger.manager.HealthServiceManager
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.strategy.PushResult
@@ -82,56 +83,6 @@ class HealthServiceForegroundObserver @Inject constructor(
         if (BuildState.debug) {
             "App entered background, HealthService will continue if running".logd(TAG)
         }
-        // 在 IO 线程执行推送逻辑
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                // 触发解锁场景推送
-                // Phase 1: 所有用户视为自然用户（isPaidUser = false）
-                // Phase 2: 将从配置或用户数据读取付费状态
-                val result = pushOrchestrator.triggerPush(
-                    scenario = PushScenario.BACKGROUND,
-                    extras = null
-                )
-
-                // 处理推送结果
-                handlePushResult(result)
-
-            } catch (e: Exception) {
-                "Error handling unlock event: ${e.message}".loge(TAG)
-                e.printStackTrace()
-            } finally {
-            }
-        }
-    }
-
-    /**
-     * 处理推送结果
-     * 根据不同的结果类型记录相应的日志
-     */
-    private fun handlePushResult(result: PushResult) {
-        when (result) {
-            is PushResult.Success -> {
-                if (BuildState.debug) {
-                    "Unlock push successful: pushId=${result.pushId}".logd(TAG)
-                }
-            }
-
-            is PushResult.Blocked -> {
-                if (BuildState.debug) {
-                    "Unlock push blocked: ${result.reason}".logw(TAG)
-                }
-            }
-
-            is PushResult.NoSuitableMessage -> {
-                if (BuildState.debug) {
-                    "Unlock push skipped: no suitable message".logw(TAG)
-                }
-            }
-
-            is PushResult.Error -> {
-                "Unlock push failed: ${result.exception.message}".loge(TAG)
-                result.exception.printStackTrace()
-            }
-        }
+        NotificationHelper.show(PushScenario.BACKGROUND)
     }
 }

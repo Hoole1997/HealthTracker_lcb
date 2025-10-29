@@ -23,5 +23,5 @@ ext {
     analytics = [adjustAppToken: "hvcpqjnvcm4g",           // Adjust App Token
                  thinkingDataAppId: "7299dcd9a5564f5db2f6be555057dd15",   // 数数 SDK APP ID
                  thinkingDataServerUrl: "https://app.blazelabstudio.com",     // 数数上报域名
-                 defaultUserChannel: "paid"]                           // 默认用户渠道，internal默认paid
+                 defaultUserChannel: "paid"]
 }

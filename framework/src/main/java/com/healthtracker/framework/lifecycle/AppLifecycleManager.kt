@@ -133,6 +133,8 @@ object AppLifecycleManager {
      */
     fun isBackground(): Boolean = currentState.isBackground
 
+    fun isScreenLock() = isScreenLocked
+
     /**
      * 添加观察器
      * @return true表示添加成功
