@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.ethanhua.skeleton.ViewSkeletonScreen
@@ -25,6 +26,8 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.zhpan.indicator.enums.IndicatorSlideMode
 import com.zhpan.indicator.enums.IndicatorStyle
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
 
 class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
@@ -109,6 +112,16 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
 
     }
 
+    fun scrollNextPage() {
+        mViewBind?.viewpager?.let { pager ->
+            val itemCount = pager.adapter?.itemCount ?: return
+            val nextIndex = (pager.currentItem + 1).coerceAtMost(itemCount - 1)
+            if (nextIndex != pager.currentItem) {
+                pager.post { pager.setCurrentItem(nextIndex, true) }
+            }
+        }
+    }
+
     companion object {
         const val IS_SHOW_GUIDE = "is_show_guide"
     }
@@ -151,14 +164,28 @@ class GuideFragAd : BaseMVVMFragment<BaseViewModel, FragmentGuide2Binding>() {
                 .color(com.healthtracker.framework.R.color.white)
                 .show()
 
-            if(context is GuideActivity){
+            if (context is GuideActivity) {
                 val activity = context as GuideActivity
-                activity.loadNative(adContainer, style = NativeAdStyle.createCustom(
-                    net.corekit.monetize.R.layout.layout_fullscreen_native_ad,"full_native"), call = {
-                    if(it){
-                        skeleton.hide()
+                activity.loadNative(
+                    adContainer,
+                    style = NativeAdStyle.createCustom(
+                        net.corekit.monetize.R.layout.layout_fullscreen_native_ad,
+                        "full_native"
+                    ),
+                    call = { success ->
+                        if (success) {
+                            skeleton.hide()
+                        } else {
+                           lifecycleScope.launch {
+                               delay(2000)
+                               if (!isAdded || activity.isFinishing || isDetached || activity.isDestroyed) {
+                                   return@launch
+                               }
+                               activity.scrollNextPage()
+                           }
+                        }
                     }
-                })
+                )
             }
         }
 
