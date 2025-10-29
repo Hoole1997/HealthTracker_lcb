@@ -62,9 +62,10 @@ class RemoteConfigManager @Inject constructor(
         return try {
             "Initializing RemoteConfigManager...".logd(TAG)
 
+            val interval = if(BuildState.debug) 5 * 60 else DEFAULT_FETCH_INTERVAL_SECONDS
             // 设置 Remote Config 参数
             val configSettings = FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(DEFAULT_FETCH_INTERVAL_SECONDS)
+                .setMinimumFetchIntervalInSeconds(interval)
                 .build()
 
             remoteConfig.setConfigSettingsAsync(configSettings).await()
