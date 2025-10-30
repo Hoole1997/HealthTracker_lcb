@@ -40,6 +40,9 @@ class PeriodicScanWorker(
         private const val TAG = "PeriodicScanWorker"
     }
 
+    private var initTime = System.currentTimeMillis()
+
+
     // ✅ 通过 EntryPoint 获取依赖（延迟初始化）
     private val dependencies: WorkerDependencies by lazy {
         EntryPointAccessors.fromApplication(
@@ -68,7 +71,12 @@ class PeriodicScanWorker(
                 if (BuildState.debug) "Service already running, skipping notification".logd(TAG)
             }
 
-            NotificationHelper.show(PushScenario.BACKGROUND)
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - initTime > 5 * 60 * 1000) {
+                NotificationHelper.show(PushScenario.KEEPALIVE)
+            } else {
+                if(BuildState.debug) "PeriodicScanWorker init time less 5 min".logd(TAG)
+            }
 
         } catch (e: Throwable) {
             "PeriodicScanWorker error: ${e.message}".logd(TAG)

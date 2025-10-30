@@ -3,6 +3,9 @@ package com.healthtracker.blood.suger.service
 import com.blankj.utilcode.util.AppUtils
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.healthtracker.blood.suger.helper.NotificationHelper
+import com.healthtracker.blood.suger.strategy.PushScenario
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import net.corekit.core.report.ReportDataManager
 
@@ -56,11 +59,12 @@ class MessageService : FirebaseMessagingService() {
 
         ReportDataManager.reportData("Notific_Pull", mapOf("topic" to "ALL_TOKEN"))
 
-        "收到 FCM 消息".logd(TAG)
-        "消息来源: ${remoteMessage.from}".logd(TAG)
-        "消息 ID: ${remoteMessage.messageId}".logd(TAG)
-        "消息类型: ${remoteMessage.messageType}".logd(TAG)
-
+        if(BuildState.debug){
+            "收到 FCM 消息".logd(TAG)
+            "消息来源: ${remoteMessage.from}".logd(TAG)
+            "消息 ID: ${remoteMessage.messageId}".logd(TAG)
+            "消息类型: ${remoteMessage.messageType}".logd(TAG)
+        }
         // 处理数据载荷
         if (remoteMessage.data.isNotEmpty()) {
             "消息数据载荷:".logd(TAG)
@@ -72,28 +76,18 @@ class MessageService : FirebaseMessagingService() {
         // 检查version字段
         val messageVersion = remoteMessage.data[VERSION_KEY]
         val currentVersion = AppUtils.getAppVersionName()
-        
-//        Logger.d("FCM消息version检查开始")
-        "当前应用版本: $currentVersion".logd(TAG)
-        "消息version字段: $messageVersion".logd(TAG)
-        
-        // 根据version字段决定是否处理消息
-//        if (!isVersionMatched(messageVersion, currentVersion)) {
-//            Logger.d("FCM消息version不匹配，忽略此消息")
-//            return
-//        }
-        
-//        Logger.d("FCM消息version检查通过，继续处理消息")
+        if(BuildState.debug){
+            "当前应用版本: $currentVersion".logd(TAG)
+            "消息version字段: $messageVersion".logd(TAG)
+        }
 
         // 处理真正的操作
         triggerFCMNotification()
     }
 
     private fun triggerFCMNotification() {
-//        KeepAliveServiceManager.startKeepAliveService(context = this, from = "fcm")
-//        TimingCtrl.getInstance().triggerNotificationIfAllowed(
-//            CheckCtrl.NotificationType.FCM
-//        )
+        NotificationHelper.show(PushScenario.FCM)
+
     }
 
     /**

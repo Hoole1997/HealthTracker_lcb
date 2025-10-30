@@ -10,8 +10,8 @@ enum class PushScenario {
     /** 后台场景 */
     BACKGROUND,
 
-    /** 闹钟场景 */
-    ALARM,
+    /** 保活场景 */
+    KEEPALIVE,
 
     /** FCM 推送场景 */
     FCM

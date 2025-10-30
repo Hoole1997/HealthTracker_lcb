@@ -1,9 +1,12 @@
 package com.healthtracker.blood.suger.strategy
 
+import android.R.string.no
 import android.content.Context
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.config.models.ChannelConfig
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
+import com.healthtracker.blood.suger.push.getFirstInstallTime
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
@@ -83,11 +86,9 @@ class PushFrequencyController @Inject constructor(
         }
 
         // 检查 3: 免打扰时间（闹钟场景除外）
-        if (scenario != PushScenario.ALARM) {
-            val dndResult = checkDoNotDisturbTime(config)
-            if (!dndResult.canTrigger) {
-                return dndResult
-            }
+        val dndResult = checkDoNotDisturbTime(config)
+        if (!dndResult.canTrigger) {
+            return dndResult
         }
 
         // 检查 4: 每日推送限额
@@ -162,28 +163,22 @@ class PushFrequencyController @Inject constructor(
 
         // 付费用户无冷却期，直接通过
         if (cooldownMinutes == 0) {
+            if (BuildState.debug) "new user cool time = 0,pass".logd(TAG)
             return FrequencyCheckResult(canTrigger = true)
-        }
-
-        // 获取首次安装时间
-        var firstInstallTime = SpUtils.getLong(KEY_APP_FIRST_START_TIME, 0L)
-        if (firstInstallTime == 0L) {
-            // 首次运行，记录当前时间为首次安装时间
-            firstInstallTime = System.currentTimeMillis()
-            SpUtils.putLong(KEY_APP_FIRST_START_TIME, firstInstallTime)
-
-            if (BuildState.debug) {
-                "First install time recorded: $firstInstallTime".logd(TAG)
-            }
         }
 
         // 计算已过去的分钟数
         val currentTime = System.currentTimeMillis()
+        val firstInstallTime = getFirstInstallTime()
         val elapsedMinutes = (currentTime - firstInstallTime) / (60 * 1000)
 
         if (elapsedMinutes < cooldownMinutes) {
             val remainingMinutes = cooldownMinutes - elapsedMinutes
-            val reason = "New user cooldown: $remainingMinutes minutes remaining"
+            val reason = "New user cooldown: $remainingMinutes minutes remaining,installTime:${
+                DateTimeUtils.formatDateTimeWithSeconds(
+                    Date(firstInstallTime)
+                )
+            }"
             if (BuildState.debug) reason.logw(TAG)
             return FrequencyCheckResult(false, reason)
         }
@@ -268,7 +263,8 @@ class PushFrequencyController @Inject constructor(
      */
     private fun checkPushInterval(scenario: PushScenario,config: ChannelConfig): FrequencyCheckResult {
         // 闹钟场景无间隔限制
-        if (scenario == PushScenario.ALARM) {
+        if (scenario == PushScenario.FCM || scenario == PushScenario.KEEPALIVE) {
+            if (BuildState.debug) "scenario = $scenario,no interval limit".logd(TAG)
             return FrequencyCheckResult(canTrigger = true)
         }
 
