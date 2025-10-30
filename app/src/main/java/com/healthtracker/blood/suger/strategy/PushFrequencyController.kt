@@ -179,7 +179,6 @@ class PushFrequencyController @Inject constructor(
                     Date(firstInstallTime)
                 )
             }"
-            if (BuildState.debug) reason.logw(TAG)
             return FrequencyCheckResult(false, reason)
         }
 
@@ -216,7 +215,6 @@ class PushFrequencyController @Inject constructor(
         if (isInDoNotDisturbPeriod) {
             val reason = "Do-not-disturb time: $currentHour:00 (blocked between " +
                     "$startHour:00-$endHour:00)"
-            if (BuildState.debug) reason.logw(TAG)
             return FrequencyCheckResult(false, reason)
         }
 
@@ -248,7 +246,6 @@ class PushFrequencyController @Inject constructor(
 
         if (dailyCount >= dailyLimit) {
             val reason = "Daily limit reached: $dailyCount/$dailyLimit"
-            if (BuildState.debug) reason.logw(TAG)
             return FrequencyCheckResult(false, reason)
         }
 

@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.healthtracker.framework.util.SpUtils
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 /**
@@ -104,8 +107,8 @@ class AdConfig private constructor(
      * 检查并重置每日统计
      */
     private fun checkAndResetDaily() {
-        //TODO 这里需要用兼容的API
-        val today = java.time.LocalDate.now().toString()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val today = dateFormat.format(Date())
         val lastDate = SpUtils.getString("${configKey}_${KEY_LAST_DATE}", "")
         
         if (today != lastDate) {
