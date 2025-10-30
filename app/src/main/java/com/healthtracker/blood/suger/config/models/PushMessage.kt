@@ -19,7 +19,7 @@ data class PushMessage(
     val buttonText: String,
     val iconType: Int,
     val actionType: Int
-) {
+) : java.io.Serializable {
     companion object {
         /**
          * 创建默认推送消息

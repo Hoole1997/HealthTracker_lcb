@@ -7,6 +7,8 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.config.registry.AppConfigRegistry
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.di.IoDispatcher
+import com.healthtracker.blood.suger.helper.NotificationHelper
+import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.blood.suger.work.HealthWorkTask
 import com.healthtracker.framework.BuildState
@@ -24,6 +26,7 @@ import com.knightboot.spwaitkiller.SpWaitKiller
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.LaunchAds
@@ -69,6 +72,17 @@ class AppInitializer @Inject constructor(
 
 
 
+        }
+
+        override fun onScreenLocked() {
+            super.onScreenLocked()
+            if(BuildState.debug){
+                //TODO 测试用的
+                initScope.launch {
+                    delay(5000)
+                    NotificationHelper.show(PushScenario.BACKGROUND)
+                }
+            }
         }
     }
 

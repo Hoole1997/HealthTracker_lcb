@@ -6,8 +6,10 @@ package com.healthtracker.blood.suger.config.models
  * 用于控制针对"推送沉默用户"的锁屏全屏提醒功能
  *
  * @property enabled 功能全局开关
- * @property quietPeriodHours 沉默期（新用户冷却时间，单位：小时）
- * @property timeWindow 触发时间窗口（SSEE编码，如 822 表示 8-22点）
+ * @property quietPeriodHours 沉默时间（距离上次关闭首页的时间要求，单位：小时）
+ *                            例如：12 表示用户 12 小时未使用 APP 才触发 FSI
+ *                            注意：安装后冷却期固定为 24 小时，不受此参数影响
+ * @property timeWindow 触发时间窗口（编码格式：startHour*100 + endHour，如 822 表示 8-22点）
  * @property maxTriggerCount 最大触发次数
  */
 data class FsiConfig(
@@ -22,14 +24,15 @@ data class FsiConfig(
          *
          * 默认配置说明：
          * - 启用FSI功能
-         * - 新用户冷却24小时
+         * - 沉默时间 12 小时（用户 12 小时未使用才触发）
+         * - 安装后冷却期固定 24 小时（代码中硬编码）
          * - 全天候触发（0-23点，编码为 23）
          * - 最多触发3次
          */
         fun createDefault(): FsiConfig {
             return FsiConfig(
                 enabled = true,
-                quietPeriodHours = 24,
+                quietPeriodHours = 12,
                 timeWindow = 23,
                 maxTriggerCount = 3
             )

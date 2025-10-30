@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.healthtracker.blood.suger.push.recordLastClickNotifyTime
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.strategy.LoopPushManager
 import com.healthtracker.blood.suger.ui.act.SplashActivity
@@ -77,7 +78,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         if (BuildState.debug) {
             "Notification clicked: notificationId=$notificationId".logd(TAG)
         }
-
+        recordLastClickNotifyTime()
         // 1. 停止 Loop 推送
         loopPushManager.stopLoopPush(notificationId, "clicked")
 

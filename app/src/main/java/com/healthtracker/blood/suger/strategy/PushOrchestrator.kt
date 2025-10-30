@@ -118,7 +118,7 @@ class PushOrchestrator @Inject constructor(
             }
 
             // ===== 步骤 3: 执行推送（Phase 2 修改）=====
-            val pushSuccess = executePush(selectedMessage, isPaidUser)
+            val pushSuccess = executePush(selectedMessage, isPaidUser,scenario)
 
             if (!pushSuccess) {
                 if (BuildState.debug) {
@@ -156,7 +156,7 @@ class PushOrchestrator @Inject constructor(
      * @return 是否成功
      */
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    private fun executePush(message: PushMessage, isPaidUser: Boolean): Boolean {
+    private fun executePush(message: PushMessage, isPaidUser: Boolean, scenario: PushScenario): Boolean {
         return try {
             if (BuildState.debug) {
                 "Executing push for message: ${message.id}, isPaidUser=$isPaidUser".logd(TAG)
@@ -166,7 +166,9 @@ class PushOrchestrator @Inject constructor(
             val notificationId = customNotificationHelper.showCustomNotification(
                 pushMessage = message,
                 isSilent = false,
-                notificationId = null
+                notificationId = null,
+                scenario
+
             )
 
             if (notificationId <= 0) {
@@ -203,7 +205,8 @@ class PushOrchestrator @Inject constructor(
                             pushMessage = message,
                             notificationId = notificationId,
                             isPaidUser = isPaidUser,
-                            loopCount = hoverCount
+                            loopCount = hoverCount,
+                            scenario
                         )
 
                         if (BuildState.debug) {

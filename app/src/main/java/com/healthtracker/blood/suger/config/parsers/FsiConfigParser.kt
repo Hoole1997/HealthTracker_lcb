@@ -50,7 +50,11 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
             val json = JSONObject(rawValue)
 
             val enabled = json.optBooleanCompat("fsi_enable", true)
-            val quietPeriodHours = json.optIntCompat("quiet_period", 24)
+
+            // quiet_period: 沉默时间（距离上次使用APP的时间要求，单位：小时）
+            // 注意：安装后冷却期固定为 24 小时，不受此参数影响
+            val quietPeriodHours = json.optIntCompat("quiet_period", 12)
+
             val maxPrompt = json.optIntCompat("max_prompts", 3)
             val timeWindow = parseTimeWindow(json.optString("time_window", "00:00-23:00"))
 

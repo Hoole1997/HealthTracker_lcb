@@ -15,6 +15,7 @@ import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.isNewUser
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
+import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -75,7 +76,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 // 创建Intent并传递通知参数
                 val targetIntent = Intent(this, targetActivity).apply {
                     notificationAction?.let { action ->
-                        putExtra(com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, action)
+                        putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, action)
                         "Passing notification action to ${targetActivity.simpleName}: $action".logd(TAG)
                     }
                 }

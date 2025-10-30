@@ -1,5 +1,8 @@
 package com.healthtracker.blood.suger.helper
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.strategy.PushResult
@@ -35,13 +38,30 @@ object NotificationHelper {
                 // 触发解锁场景推送
                 // Phase 1: 所有用户视为自然用户（isPaidUser = false）
                 // Phase 2: 将从配置或用户数据读取付费状态
-                val result = pushOrchestrator.triggerPush(
-                    scenario = scenario,
-                    extras = null
-                )
+                 if (ActivityCompat.checkSelfPermission(
+                        App.INSTANCE,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return@launch
+                }else{
+                     val result = pushOrchestrator.triggerPush(
+                        scenario = scenario,
+                        extras = null
+                    )
+                    // 处理推送结果
+                    handlePushResult(result)
+                }
 
-                // 处理推送结果
-                handlePushResult(result)
+
+
 
             } catch (e: Exception) {
                 "Error handling unlock event: ${e.message}".loge(TAG)

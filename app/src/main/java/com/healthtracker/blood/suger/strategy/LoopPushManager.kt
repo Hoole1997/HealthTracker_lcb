@@ -90,7 +90,8 @@ class LoopPushManager @Inject constructor(
         pushMessage: PushMessage,
         notificationId: Int,
         isPaidUser: Boolean,
-        loopCount: Int
+        loopCount: Int,
+        scenario: PushScenario
     ) {
         if (BuildState.debug) {
             "Starting Loop push: notificationId=$notificationId, loopCount=$loopCount, " +
@@ -144,7 +145,8 @@ class LoopPushManager @Inject constructor(
                         customNotificationHelper.showCustomNotification(
                             pushMessage = pushMessage,
                             isSilent = true,
-                            notificationId = notificationId
+                            notificationId = notificationId,
+                            scenario
                         )
 
                         if (BuildState.debug) {

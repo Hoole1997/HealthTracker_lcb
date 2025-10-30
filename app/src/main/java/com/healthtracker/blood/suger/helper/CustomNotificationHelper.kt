@@ -1,11 +1,10 @@
 package com.healthtracker.blood.suger.helper
 
 import android.Manifest
-import android.R.attr.action
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.icu.text.Normalizer.NO
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
@@ -13,14 +12,19 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.config.models.FsiConfig
 import com.healthtracker.blood.suger.config.models.PushMessage
-import com.healthtracker.blood.suger.data.entity.AlarmRecord
+import com.healthtracker.blood.suger.push.canUpgradeToFullScreen
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver.Companion.EXTRA_ACTION_VALUE
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
+import com.healthtracker.blood.suger.strategy.PushScenario
+import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity
+import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity.Companion.EXTRA_PUSH_MESSAGE
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -34,7 +38,8 @@ import javax.inject.Singleton
 @Singleton
 class CustomNotificationHelper @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val resourceMapper: NotificationResourceMapper
+    private val resourceMapper: NotificationResourceMapper,
+    private val configManager: RemoteConfigManager
 ): BaseNotificationHelper(context) {
 
     companion object {
@@ -53,11 +58,13 @@ class CustomNotificationHelper @Inject constructor(
      * @param notificationId 指定的通知ID（Loop推送复用），null则自动生成
      * @return 通知ID
      */
+    @SuppressLint("FullScreenIntentPolicy")
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun showCustomNotification(
         pushMessage: PushMessage,
         isSilent: Boolean = false,
-        notificationId: Int? = null
+        notificationId: Int? = null,
+        scenario: PushScenario
     ): Int {
         try {
             // 首次调用时创建渠道并缓存
@@ -92,6 +99,24 @@ class CustomNotificationHelper @Inject constructor(
                 .setWhen(System.currentTimeMillis())
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
+
+            if((scenario == PushScenario.BACKGROUND || scenario == PushScenario.FCM) && canUpgradeToFullScreen(configManager.getConfig<FsiConfig>())){
+                val fullScreenIntent = Intent(context, FsiNotificationActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    putExtra(EXTRA_PUSH_MESSAGE, pushMessage)
+                    putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,finalNotificationId)
+                    putExtra(EXTRA_NOTIFICATION_ACTION,mapActionType(pushMessage.actionType))
+                }
+
+                val fullScreenPendingIntent = PendingIntent.getActivity(
+                    context,
+                    finalNotificationId,
+                    fullScreenIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                notificationBuilder.setFullScreenIntent(fullScreenPendingIntent,true)
+            }
+
             val notification = notificationBuilder.build()
 
             // 发送通知

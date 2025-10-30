@@ -15,7 +15,9 @@ import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
 import com.healthtracker.blood.suger.helper.CustomNotificationHelper
+import com.healthtracker.blood.suger.push.recordLastActiveTime
 import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.dialog.ExitDialog
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
@@ -58,7 +60,15 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
     override fun onResume() {
         super.onResume()
     }
-    
+
+    override fun onStop() {
+        super.onStop()
+
+        // 记录用户最后活跃时间（首页关闭时）
+        recordLastActiveTime()
+        "Recorded last active time when MainActivity stopped".logd(TAG)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
     }
@@ -322,7 +332,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
             "Starting to send ${messages.size} test notifications".logd(TAG)
 
             messages.forEachIndexed { index, message ->
-                customNotificationHelper.showCustomNotification(message)
+                customNotificationHelper.showCustomNotification(message, scenario = PushScenario.BACKGROUND)
                 "Test notification ${index + 1}/${messages.size} sent: ${message.title}".logd(TAG)
 
                 // 添加间隔避免通知瞬间全部显示
