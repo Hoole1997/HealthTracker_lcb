@@ -6,10 +6,15 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.config.core.RemoteConfigManager
+import com.healthtracker.framework.ext.logd
 import net.corekit.core.BuildConfig
 import net.corekit.core.log.CoreLogger
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.delay
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.iterator
 import kotlin.coroutines.resume
 
 /**
@@ -54,6 +59,15 @@ object ConfigRemoteManager {
                 if (task.isSuccessful) {
                     isInitialized = true
                     logDebug("Remote Config 初始化成功")
+                    "New config fetched and activated successfully".logd(TAG)
+                    try {
+                        if(BuildState.debug){
+                            for ((k, v) in firebaseRemoteConfig.all) {
+                                "$k:${v?.asString()}".logd(TAG)
+                            }
+                        }
+                    } catch (_: Throwable) {
+                    }
                 } else {
                     logError("Remote Config 初始化失败", task.exception)
                 }
