@@ -130,7 +130,6 @@ class AdConfig private constructor(
          * 设置每日最大展示次数
          */
         fun setMaxDailyShow(count: Int): Builder {
-            require(count > 0) { "每日最大展示次数必须大于0" }
             maxDailyShow = count
             return this
         }
@@ -139,7 +138,6 @@ class AdConfig private constructor(
          * 设置每日最大点击次数
          */
         fun setMaxDailyClick(count: Int): Builder {
-            require(count > 0) { "每日最大点击次数必须大于0" }
             maxDailyClick = count
             return this
         }
@@ -148,7 +146,6 @@ class AdConfig private constructor(
          * 设置最小展示间隔（秒）
          */
         fun setMinInterval(seconds: Long): Builder {
-            require(seconds >= 0) { "最小展示间隔不能为负数" }
             minInterval = seconds
             return this
         }
