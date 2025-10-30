@@ -36,5 +36,6 @@ include(":app")
 include(":framework")
 include(":monetize")
 include(":core")
+include(":metrics")
 
  

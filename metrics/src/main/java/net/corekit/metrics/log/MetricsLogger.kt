@@ -1,15 +1,15 @@
-package net.corekit.core.log
+package net.corekit.metrics.log
 
 import android.util.Log
 import com.healthtracker.framework.BuildState
-import net.corekit.core.BuildConfig
+import net.corekit.metrics.BuildConfig
 
 /**
- * Base模块日志工具类
+ * 分析统计日志工具类
  * 提供统一的日志输出控制和管理
  */
-object CoreLogger {
-    private const val TAG = "CoreModule"
+object MetricsLogger {
+    private const val TAG = "AnalyticsModule"
     
     /**
      * 日志开关，默认为true
@@ -20,7 +20,7 @@ object CoreLogger {
      * 设置日志开关
      * @param enabled 是否启用日志
      */
-    fun setLogEnabled(enabled: Boolean) {
+    fun enableLog(enabled: Boolean) {
         isLogEnabled = enabled
     }
     
@@ -28,7 +28,7 @@ object CoreLogger {
      * 获取日志开关状态
      * @return 是否启用日志
      */
-    fun isLogEnabled(): Boolean = isLogEnabled
+    fun checkLogEnabled(): Boolean = isLogEnabled
     
     /**
      * Debug日志
@@ -158,4 +158,3 @@ object CoreLogger {
         }
     }
 }
-

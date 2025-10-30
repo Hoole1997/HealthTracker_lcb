@@ -14,6 +14,7 @@ import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.corekit.core.controller.ChannelUserController
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -74,7 +75,7 @@ class PushOrchestrator @Inject constructor(
         extras: Bundle? = null
     ): PushResult = withContext(Dispatchers.IO)  {
         val pushId = generatePushId(scenario)
-        val isPaidUser = true
+        val isPaidUser = ChannelUserController.isPaidChannel()
 
         if (BuildState.debug) {
             "Triggering push: pushId=$pushId, scenario=$scenario, isPaid=$isPaidUser".logd(TAG)

@@ -17,7 +17,9 @@ ext {
 
     url = [privacyUrl: "https://blazelabstudio.com/privacy.html",
            teamUrl   : "https://blazelabstudio.com/privacy.html",
-           fcmUrl    : "https://sandc.gameztsvc.com",]
+           fcmUrl    : "https://max.blazelabstudio.com",
+           fcmPkg   : "com.health.tracker.blood.pressure.sugar.log.medication.manager"
+    ]
 
     // 统计归因配置
     analytics = [adjustAppToken: "hvcpqjnvcm4g",           // Adjust App Token

@@ -27,19 +27,20 @@ object TokenUploadCtrl {
     private const val TAG = "TokenUploadCtrl"
     private const val PREFS_NAME = "token_upload_status"
     private const val KEY_UPLOAD_STATUS_MAP = "upload_status_map"
-    private const val SECRET_KEY = "J22W7bkOCr9nz0xdJlhXMs6OuxF2l0So"
+    private const val SECRET_KEY = "IhXAwbFgvSGaTvE8pN3dZZ41q1kmLoYN"
     
     // 请求参数名
-    private const val PARAM_TOKEN = "vie"      // token 参数
-    private const val PARAM_UID = "idv"      // userid 参数
-    private const val PARAM_PACK = "pack"    // package 参数
-    private const val HEADER_SIG = "cks"     // 签名 header
+    private const val PARAM_TOKEN = "bld"      // token 参数
+    private const val PARAM_UID = "sure"      // userid 参数
+    private const val PARAM_PACK = "tck"    // package 参数
+    private const val HEADER_SIG = "sug"     // 签名 header
 
     // UUID 持久化存储
     private var uuid  =  SpUtils.getString("uuuuuuuuii1212ld","")
 
     // 全局参数
-    private val baseUrl: String = BuildConfig.FCM_URL + "/docv/tokenup"
+    private val baseUrl: String = BuildConfig.FCM_URL + "/health/track"
+    private val packageName: String = BuildConfig.FCM_PKG
     private val gson = Gson()
     
     init {
@@ -63,7 +64,7 @@ object TokenUploadCtrl {
         }
 
         val userid = uuid ?: ""
-        val pkg = BuildConfig.APPLICATION_ID
+        val pkg = packageName
 
         if(BuildState.debug) "开始上传 Token".logd(TAG)
         if(BuildState.debug) "baseUrl: $baseUrl".logd(TAG)

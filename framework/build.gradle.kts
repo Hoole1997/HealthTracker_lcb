@@ -49,5 +49,6 @@ dependencies {
     api(libs.firebase.analytics.ktx)
     api(libs.firebase.crashlytics.ktx)
     api(libs.firebase.perf.ktx)
+    api(libs.firebase.messaging)
     api(libs.utilcodex)
 }

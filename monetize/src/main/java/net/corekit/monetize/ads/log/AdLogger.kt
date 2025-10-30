@@ -1,6 +1,7 @@
 package net.corekit.monetize.ads.log
 
 import android.util.Log
+import com.healthtracker.framework.BuildState
 import net.corekit.monetize.BuildConfig
 
 /**
@@ -13,7 +14,7 @@ object AdLogger {
     /**
      * 日志开关，默认为true
      */
-    private var isLogEnabled = BuildConfig.DEBUG
+    private var isLogEnabled = BuildState.debug
     
     /**
      * 设置日志开关

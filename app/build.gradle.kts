@@ -55,6 +55,7 @@ android {
 
         buildConfigField("String", "PRIVACY_POLICY", "\"${url["privacyUrl"]}\"")
         buildConfigField("String", "FCM_URL", "\"${url["fcmUrl"]}\"")
+        buildConfigField("String", "FCM_PKG", "\"${url["fcmPkg"]}\"")
 
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
@@ -143,6 +144,7 @@ dependencies {
     api(project(":framework"))
     api(project(":monetize"))
     api(project(":core"))
+    api(project(":metrics"))
 
     // Core Android
     implementation(libs.androidx.core.ktx)
