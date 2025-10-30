@@ -5,10 +5,10 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 
-class DataStoreStringDelegate(private val key: String, private val def: String? = null) :
+class DataStoreStringDelegate(private val key: String, private val def: String) :
     ReadWriteProperty<Any?, String?> {
     override fun getValue(thisRef: Any?, property: KProperty<*>): String? {
-        return SpUtils.getString(key)
+        return SpUtils.getString(key,def)
     }
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: String?) {

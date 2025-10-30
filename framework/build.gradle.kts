@@ -51,4 +51,5 @@ dependencies {
     api(libs.firebase.perf.ktx)
     api(libs.firebase.messaging)
     api(libs.utilcodex)
+    api(libs.xorLibrary)
 }

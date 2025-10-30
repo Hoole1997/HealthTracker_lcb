@@ -78,85 +78,84 @@ object AdjustTracker {
             adjustConfig.enableCostDataInAttribution()
 
             // 设置归因回调
-            adjustConfig.setOnAttributionChangedListener(object : OnAttributionChangedListener {
-                override fun onAttributionChanged(attribution: AdjustAttribution?) {
+            adjustConfig.setOnAttributionChangedListener { attribution ->
+                attributionData = attribution
+                MetricsLogger.d("Adjust归因数据更新: $attribution")
 
-                    attributionData = attribution
-                    MetricsLogger.d("Adjust归因数据更新: $attribution")
+                // 设置公共参数
+                attribution?.let { attr ->
+                    // 设置公共参数，并限制长度
+                    SharedParamsManager.adNetwork = (attr.network ?: "").take(10)
+                    SharedParamsManager.campaign = (attr.campaign ?: "").take(20)
+                    SharedParamsManager.adgroup = (attr.adgroup ?: "").take(10)
+                    SharedParamsManager.creative = (attr.creative ?: "").take(20)
 
-                    // 设置公共参数
-                    attribution?.let { attr ->
-                        // 设置公共参数，并限制长度
-                        SharedParamsManager.adNetwork = (attr.network ?: "").take(10)
-                        SharedParamsManager.campaign = (attr.campaign ?: "").take(20)
-                        SharedParamsManager.adgroup = (attr.adgroup ?: "").take(10)
-                        SharedParamsManager.creative = (attr.creative ?: "").take(20)
+                    MetricsLogger.d("公共参数设置完成 - ad_network: ${SharedParamsManager.adNetwork}, campaign: ${SharedParamsManager.campaign}, adgroup: ${SharedParamsManager.adgroup}, creative: ${SharedParamsManager.creative}")
 
-                        MetricsLogger.d("公共参数设置完成 - ad_network: ${SharedParamsManager.adNetwork}, campaign: ${SharedParamsManager.campaign}, adgroup: ${SharedParamsManager.adgroup}, creative: ${SharedParamsManager.creative}")
+                    // 将公共参数设置到ReportDataManager
+                    val commonParams = SharedParamsManager.retrieveAllCommonParams()
+                    val userParams = SharedParamsManager.retrieveUserCommonParams()
+                    ReportDataManager.setCommonParams(commonParams)
+                    ReportDataManager.setUserParams(userParams)
+                    MetricsLogger.d("公共参数已设置到ReportDataManager: $commonParams")
 
-                        // 将公共参数设置到ReportDataManager
-                        val commonParams = SharedParamsManager.retrieveAllCommonParams()
-                        val userParams = SharedParamsManager.retrieveUserCommonParams()
-                        ReportDataManager.setCommonParams(commonParams)
-                        ReportDataManager.setUserParams(userParams)
-                        MetricsLogger.d("公共参数已设置到ReportDataManager: $commonParams")
+                    // 计算从初始化开始到归因回调的总耗时（秒数，向上取整）
+                    val totalDurationSeconds =
+                        kotlin.math.ceil((System.currentTimeMillis() - initStartTime) / 1000.0)
+                            .toInt()
+                    MetricsLogger.d("Adjust初始化到归因回调总耗时: ${totalDurationSeconds}秒")
+                    ReportDataManager.reportData(
+                        "adjust_get_success",
+                        mapOf("pass_time" to totalDurationSeconds)
+                    )
 
-                        // 计算从初始化开始到归因回调的总耗时（秒数，向上取整）
-                        val totalDurationSeconds = kotlin.math.ceil((System.currentTimeMillis() - initStartTime) / 1000.0).toInt()
-                        MetricsLogger.d("Adjust初始化到归因回调总耗时: ${totalDurationSeconds}秒")
-                        ReportDataManager.reportData("adjust_get_success", mapOf("pass_time" to totalDurationSeconds))
+                    // 设置当前用户渠道类型
+                    val userChannelType = if (MetricsLogger.checkLogEnabled()) {
+                        // 内部版本强制设置为买量类型
+                        MetricsLogger.d("内部版本强制设置为买量类型")
+                        ChannelUserController.UserChannelType.PAID
+                    } else {
+                        determineUserChannelType(attr)
+                    }
+                    MetricsLogger.d("根据归因数据判断用户渠道类型: $userChannelType")
 
-                        // 设置当前用户渠道类型
-                        val userChannelType = if (MetricsLogger.checkLogEnabled()) {
-                            // 内部版本强制设置为买量类型
-                            MetricsLogger.d("内部版本强制设置为买量类型")
-                            ChannelUserController.UserChannelType.PAID
-                        } else {
-                            determineUserChannelType(attr)
-                        }
-                        MetricsLogger.d("根据归因数据判断用户渠道类型: $userChannelType")
-
-                        // 设置用户渠道类型
-                        val success = ChannelUserController.setChannel(userChannelType)
-                        if (success) {
-                            MetricsLogger.i("用户渠道类型设置成功: $userChannelType")
-                        } else {
-                            MetricsLogger.w("用户渠道类型已经设置过，无法修改")
-                        }
+                    // 设置用户渠道类型
+                    val success = ChannelUserController.setChannel(userChannelType)
+                    if (success) {
+                        MetricsLogger.i("用户渠道类型设置成功: $userChannelType")
+                    } else {
+                        MetricsLogger.w("用户渠道类型已经设置过，无法修改")
                     }
                 }
-            })
+            }
 
             // 设置事件跟踪成功回调
-            adjustConfig.setOnEventTrackingSucceededListener(object :
-                OnEventTrackingSucceededListener {
-                override fun onEventTrackingSucceeded(eventSuccessResponseData: AdjustEventSuccess?) {
-                    MetricsLogger.d("Adjust事件跟踪成功: ${eventSuccessResponseData?.message}")
-                }
-            })
+            adjustConfig.setOnEventTrackingSucceededListener { eventSuccessResponseData ->
+                MetricsLogger.d(
+                    "Adjust事件跟踪成功: ${eventSuccessResponseData?.message}"
+                )
+            }
 
             // 设置事件跟踪失败回调
-            adjustConfig.setOnEventTrackingFailedListener(object : OnEventTrackingFailedListener {
-                override fun onEventTrackingFailed(eventFailureResponseData: AdjustEventFailure?) {
-                    MetricsLogger.e("Adjust事件跟踪失败: ${eventFailureResponseData?.message}")
-                }
-            })
+            adjustConfig.setOnEventTrackingFailedListener { eventFailureResponseData ->
+                MetricsLogger.e(
+                    "Adjust事件跟踪失败: ${eventFailureResponseData?.message}"
+                )
+            }
 
             // 设置会话跟踪成功回调
-            adjustConfig.setOnSessionTrackingSucceededListener(object :
-                OnSessionTrackingSucceededListener {
-                override fun onSessionTrackingSucceeded(sessionSuccessResponseData: AdjustSessionSuccess?) {
-                    MetricsLogger.d("Adjust会话跟踪成功: ${sessionSuccessResponseData?.message}")
-                }
-            })
+            adjustConfig.setOnSessionTrackingSucceededListener { sessionSuccessResponseData ->
+                MetricsLogger.d(
+                    "Adjust会话跟踪成功: ${sessionSuccessResponseData?.message}"
+                )
+            }
 
             // 设置会话跟踪失败回调
-            adjustConfig.setOnSessionTrackingFailedListener(object :
-                OnSessionTrackingFailedListener {
-                override fun onSessionTrackingFailed(sessionFailureResponseData: AdjustSessionFailure?) {
-                    MetricsLogger.e("Adjust会话跟踪失败: ${sessionFailureResponseData?.message}")
-                }
-            })
+            adjustConfig.setOnSessionTrackingFailedListener { sessionFailureResponseData ->
+                MetricsLogger.e(
+                    "Adjust会话跟踪失败: ${sessionFailureResponseData?.message}"
+                )
+            }
 
             // 启动Adjust SDK
             Adjust.initSdk(adjustConfig)

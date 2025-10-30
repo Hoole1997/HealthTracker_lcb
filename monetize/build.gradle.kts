@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    // StringFog 字符串混淆插件
+    alias(libs.plugins.android.stringfog.convention)
 }
 
 val adMobConfig = findProperty("admob") as Map<*, *>

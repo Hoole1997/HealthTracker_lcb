@@ -23,6 +23,7 @@ dependencies {
     compileOnly(libs.kotlin.compose.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.room.gradlePlugin)
+    compileOnly(libs.stringfogPlugin)
 }
 
 tasks {
@@ -57,6 +58,10 @@ gradlePlugin {
         register("androidFirebase") {
             id = "android.firebase"
             implementationClass = "convention.plugins.AndroidFirebaseConventionPlugin"
+        }
+        register("androidStringFog") {
+            id = "android.stringfog"
+            implementationClass = "convention.plugins.AndroidStringFogConventionPlugin"
         }
     }
 }

@@ -177,4 +177,5 @@ android-compose-convention = { id = "android.compose", version = "unspecified" }
 android-hilt-convention = { id = "android.hilt", version = "unspecified" }
 android-room-convention = { id = "android.room", version = "unspecified" }
 android-firebase-convention = { id = "android.firebase", version = "unspecified" }
+android-stringfog-convention = { id = "android.stringfog", version = "unspecified" }
 

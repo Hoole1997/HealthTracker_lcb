@@ -22,6 +22,7 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.ext.startActivity
@@ -77,7 +78,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 val targetIntent = Intent(this, targetActivity).apply {
                     notificationAction?.let { action ->
                         putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, action)
-                        "Passing notification action to ${targetActivity.simpleName}: $action".logd(TAG)
+                        if(BuildState.debug) "Passing notification action to ${targetActivity.simpleName}: $action".logd(TAG)
                     }
                 }
 
@@ -106,7 +107,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     private fun checkNotificationOpen() {
        val notificationId = intent.getIntExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,-1)
         if (notificationId == -1) {
-            "Invalid notification ID: $notificationId".logw(TAG)
+            if(BuildState.debug) "Invalid notification ID: $notificationId".logw(TAG)
             return
         }
         val actionType = intent.getStringExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE)
@@ -126,11 +127,11 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     private suspend fun initializeAndShowAd(): Boolean {
         try {
             // 初始化 AdMob SDK
-            Log.d(TAG, "开始初始化 AdMob SDK")
+            if(BuildState.debug) "开始初始化 AdMob SDK".logd(TAG)
             val initResult = AdsManager.init(this)
 
             if (initResult is AdResult.Success) {
-                Log.d(TAG, "AdMob SDK 初始化成功，准备显示开屏广告")
+                if(BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
 
                 // 显示开屏广告
                 val adResult = LaunchAds.getInstance().displayAd(
@@ -141,18 +142,18 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 )
 
                 if (adResult is AdResult.Success) {
-                    Log.d(TAG, "开屏广告关闭")
+                    if(BuildState.debug) "开屏广告关闭".logd(TAG)
                     return true
                 } else {
-                    Log.d(TAG, "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}")
+                    if(BuildState.debug)  "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(TAG)
                     return false
                 }
             } else {
-                Log.e(TAG, "AdMob SDK 初始化失败: ${(initResult as? AdResult.Failure)?.error?.message}")
+                if(BuildState.debug) "AdMob SDK 初始化失败: ${(initResult as? AdResult.Failure)?.error?.message}".logd(TAG)
                 return false
             }
         } catch (e: Exception) {
-            Log.e(TAG, "广告初始化或显示异常", e)
+            if(BuildState.debug) "广告初始化或显示异常 e:$e".loge(TAG)
             return false
         }
     }
@@ -230,12 +231,12 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         when (notificationStatus) {
             PermissionManager.Companion.PermissionStatus.GRANTED,
             PermissionManager.Companion.PermissionStatus.NOT_REQUIRED -> {
-                "Notification permission already granted or not required".logd(TAG)
+                if(BuildState.debug) "Notification permission already granted or not required".logd(TAG)
                 onPermissionCheckCompleted()
             }
 
             PermissionManager.Companion.PermissionStatus.DENIED -> {
-                "Notification permission denied, requesting...".logd(TAG)
+                if(BuildState.debug) "Notification permission denied, requesting...".logd(TAG)
                 permissionManager.requestNotificationPermission(this)
             }
         }
@@ -272,10 +273,10 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 val hasAdLoaded = isAdLoaded
                 if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
                     // 没有任何广告，执行继续流程
-                    Log.d(TAG, "10秒超时兜底：无广告，执行继续流程")
+                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：无广告，执行继续流程")
                 } else {
                     // 有广告加载或显示，继续等待广告完成
-                    Log.d(TAG, "10秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
+                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
                     adJob.await()
                 }
             }
@@ -288,7 +289,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
      * 动画完成回调
      */
     private fun onAnimationCompleted() {
-        "动画执行完成".logd(TAG)
+        if(BuildState.debug)  "动画执行完成".logd(TAG)
         stateMachine.onAnimationCompleted()
     }
 
@@ -308,9 +309,9 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             // 无论用户是否授权，都完成权限检查流程
             val currentStatus = permissionManager.checkNotificationPermission()
             if (currentStatus == PermissionManager.Companion.PermissionStatus.GRANTED) {
-                "Notification permission granted by user".logd(TAG)
+                if(BuildState.debug) "Notification permission granted by user".logd(TAG)
             } else {
-                "Notification permission denied by user, but continue to main activity".logd(TAG)
+                if(BuildState.debug) "Notification permission denied by user, but continue to main activity".logd(TAG)
             }
             onPermissionCheckCompleted()
         }
@@ -337,7 +338,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 return
             }
             animationDone = true
-            "Animation completed".logd(TAG)
+            if(BuildState.debug) "Animation completed".logd(TAG)
             tryNavigate()
 
         }
@@ -347,7 +348,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 return
             }
             permissionDone = true
-            "Permission check completed".logd(TAG)
+            if(BuildState.debug) "Permission check completed".logd(TAG)
             tryNavigate()
 
         }
@@ -357,7 +358,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 return
             }
             adDone = true
-            "Ad completed".logd(TAG)
+            if(BuildState.debug) "Ad completed".logd(TAG)
             tryNavigate()
         }
 
@@ -379,19 +380,19 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 
       private  fun tryNavigate() {
             if (hasNavigated) {
-                "Already navigated, ignore further requests".logd(TAG)
+                if(BuildState.debug)  "Already navigated, ignore further requests".logd(TAG)
                 return
             }
 
             if (!(animationDone && permissionDone && adDone )) {
-                "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(
+                if(BuildState.debug)  "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(
                     TAG
                 )
                 return
             }
 
             if (navigationJob?.isActive == true) {
-                "Navigation coroutine is already running".logd(TAG)
+                if(BuildState.debug)  "Navigation coroutine is already running".logd(TAG)
                 return
             }
 

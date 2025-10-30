@@ -25,10 +25,12 @@ HealthTracker 是一个基于 Android 的健康追踪应用，采用模块化架
 - `android.hilt` - Hilt 依赖注入配置
 - `android.room` - Room 数据库配置
 - `android.firebase` - Firebase 服务配置
+- `android.stringfog` - StringFog 字符串混淆配置
 
 详细的构建配置说明请参考：
 - [构建配置指南](./BUILD_GUIDE.md)
 - [插件使用说明](./build-common/README.md)
+- [StringFog 插件说明](./build-common/STRINGFOG.md)
 
 ### Core Tech Stack
 - Kotlin + Android Gradle Plugin 8.13.0
@@ -319,15 +321,42 @@ android {
 - `BloodSugarRangeView` - 血糖范围视图
 
 ### StringFog Configuration
-字符串混淆配置支持多层级控制：
-1. 环境变量控制 (`STRINGFOG_ENABLED`)
-2. Gradle 属性控制
-3. 配置文件控制 (`config.properties`)
-4. 构建类型控制（默认仅 release 启用）
+字符串混淆现在通过 Convention Plugin 统一管理：
+
+**启用方式**：
+```kotlin
+plugins {
+    alias(libs.plugins.android.stringfog.convention)
+}
+
+dependencies {
+    implementation(libs.xorLibrary)  // 运行时依赖
+}
+```
+
+**配置控制**：
+- 通过 `gradle.properties` 中的 `app.stable_release` 控制
+- Release 版本自动启用混淆
+- Debug 版本禁用混淆以加快构建速度
+
+**已启用模块**：
+- ✅ `app` - 主应用模块
+- ✅ `core` - 核心模块
+
+详细说明请参考：[StringFog 插件文档](./build-common/STRINGFOG.md)
+
+### StringFog Configuration (Legacy - Deprecated)
+以下配置方式已废弃，请使用上述 Convention Plugin 方式：
+
+~~字符串混淆配置支持多层级控制：~~
+1. ~~环境变量控制 (`STRINGFOG_ENABLED`)~~
+2. ~~Gradle 属性控制~~
+3. ~~配置文件控制 (`config.properties`)~~
+4. ~~构建类型控制（默认仅 release 启用）~~
 
 配置示例：
 ```properties
-# config.properties
+# config.properties (已废弃)
 stable_release=true
 stringfog.packages=com.healthtracker.blood.suger,com.healthtracker.framework
 stringfog.exclude=androidx.,kotlin.,kotlinx.,com.google.

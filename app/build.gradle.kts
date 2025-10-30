@@ -1,10 +1,5 @@
 import com.android.build.api.dsl.DefaultConfig
-import com.github.megatronking.stringfog.plugin.StringFogExtension
-import com.github.megatronking.stringfog.plugin.StringFogMode
-import com.github.megatronking.stringfog.plugin.kg.RandomKeyGenerator
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
-//import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
-//import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import kotlin.collections.get
 import kotlin.collections.plusAssign
 
@@ -16,8 +11,9 @@ plugins {
     alias(libs.plugins.android.room.convention)
     alias(libs.plugins.android.firebase.convention)
     alias(libs.plugins.google.service)
-    // 特殊插件保留
-    id("stringfog")
+    // StringFog 字符串混淆插件
+    alias(libs.plugins.android.stringfog.convention)
+    // 其他特殊插件
     alias(libs.plugins.kotlin.parcelize)
     kotlin("plugin.serialization")
 }
@@ -30,18 +26,6 @@ val isRelease = findProperty("app")?.let { (it as Map<*, *>)["stable_release"] a
 val url = findProperty("url") as Map<*, *>
 
 println("isRelease = $isRelease")
-configure<StringFogExtension> {
-    // 必要：加解密库的实现类路径，需和上面配置的加解密算法库一致。
-    implementation = "com.github.megatronking.stringfog.xor.StringFogImpl"
-    // 可选：加密开关，默认开启。
-    enable = isRelease
-    // 可选：指定需加密的代码包路径，可配置多个，未指定将默认全部加密。
-    // fogPackages = arrayOf("com.xxx.xxx")
-    kg = RandomKeyGenerator()
-    // base64或者bytes
-    mode = StringFogMode.bytes
-}
-
 
 android {
     namespace = "com.healthtracker.blood.suger"
@@ -151,7 +135,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.constraintlayout)
 
-    implementation(libs.xorLibrary)
     implementation(libs.multidex)
     implementation(libs.material)
     implementation(libs.gson)

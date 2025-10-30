@@ -58,7 +58,7 @@ class AppInitializer @Inject constructor(
      */
     private val configRefreshObserver = object : AppForegroundObserver {
         override fun onAppForeground() {
-            "App entered foreground, refreshing config...".logd("AppInitializer")
+            if(BuildState.debug) "App entered foreground, refreshing config...".logd("AppInitializer")
             initScope.launch {
                 remoteConfigManager.refreshConfig()
                 //检查是否满足展示开屏广告条件
@@ -102,7 +102,6 @@ class AppInitializer @Inject constructor(
      * 按照App.kt中的原始顺序执行初始化
      */
     fun initialize() {
-        BuildState.debug == BuildConfig.DEBUG
         // 1. 核心同步初始化 (原onCreate中的同步部分)
         initializeCoreServices()
 
@@ -126,7 +125,7 @@ class AppInitializer @Inject constructor(
                 //捕获非主线程和后台发生的异常
                 setBackgroundExceptionHandler()
             }
-            SpUtils.init(application)
+
             
         } catch (e: Throwable) {
             e.printStackTrace()
@@ -249,17 +248,17 @@ class AppInitializer @Inject constructor(
             try {
                 // 1. 注册所有配置解析器
                 appConfigRegistry.registerAllParsers()
-                "Config parsers registered: ${appConfigRegistry.getRegisteredCount()}".logd("AppInitializer")
+                if(BuildState.debug) "Config parsers registered: ${appConfigRegistry.getRegisteredCount()}".logd("AppInitializer")
 
                 // 2. 初始化 RemoteConfigManager
                 val result = remoteConfigManager.initialize()
                 result.onSuccess {
-                    "RemoteConfigManager initialized successfully".logd("AppInitializer")
+                    if(BuildState.debug)  "RemoteConfigManager initialized successfully".logd("AppInitializer")
                 }.onFailure { e ->
-                    "Failed to initialize RemoteConfigManager: ${e.message}".loge("AppInitializer")
+                    if(BuildState.debug) "Failed to initialize RemoteConfigManager: ${e.message}".loge("AppInitializer")
                 }
             } catch (e: Exception) {
-                "Failed to initialize remote config: ${e.message}".loge("AppInitializer")
+                if(BuildState.debug)  "Failed to initialize remote config: ${e.message}".loge("AppInitializer")
             }
         }
     }
@@ -273,15 +272,15 @@ class AppInitializer @Inject constructor(
         try {
             // 注册配置刷新观察器
             AppLifecycleManager.addObserver(configRefreshObserver)
-            "Config refresh observer registered".logd("AppInitializer")
+            if(BuildState.debug)  "Config refresh observer registered".logd("AppInitializer")
 
             // ✅ 注册健康服务前台观察器
             // 监听应用前后台切换，自动启动/管理健康服务
             AppLifecycleManager.addObserver(healthServiceForegroundObserver)
-            "HealthServiceForegroundObserver registered".logd("AppInitializer")
+            if(BuildState.debug) "HealthServiceForegroundObserver registered".logd("AppInitializer")
 
         } catch (e: Exception) {
-            "Failed to register lifecycle observers: ${e.message}".loge("AppInitializer")
+            if(BuildState.debug) "Failed to register lifecycle observers: ${e.message}".loge("AppInitializer")
         }
     }
 } 

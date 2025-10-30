@@ -1,7 +1,11 @@
+import com.android.build.api.dsl.DefaultConfig
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     kotlin("kapt")
+    // StringFog 字符串混淆插件
+    alias(libs.plugins.android.stringfog.convention)
 }
 
 val analyticsConfig = findProperty("analytics") as Map<*, *>
@@ -48,6 +52,7 @@ dependencies {
     implementation(libs.work.runtime)
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.android)
+
     api(project(":framework"))
 
 

@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    // StringFog 字符串混淆插件
+    alias(libs.plugins.android.stringfog.convention)
 }
 
 val analyticsConfig = findProperty("analytics") as Map<*, *>
@@ -43,7 +45,7 @@ android {
 
 dependencies {
     compileOnly(project(":core"))
-    
+    api(project(":framework"))
     // Adjust SDK
     api("com.adjust.sdk:adjust-android:5.4.3")
     api("com.android.installreferrer:installreferrer:2.2")
