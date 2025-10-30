@@ -95,18 +95,18 @@ class LoopPushManager @Inject constructor(
     ) {
         if (BuildState.debug) {
             "Starting Loop push: notificationId=$notificationId, loopCount=$loopCount, " +
-                    "isPaid=$isPaidUser, pushId=${pushMessage.id}".logd(TAG)
+                    "isPaid=$isPaidUser, pushId=${pushMessage.id}".logd(PushOrchestrator.TAG)
         }
 
         // 参数验证
         if (loopCount <= 1) {
-            "Invalid loop count: $loopCount (must be > 1), skipping Loop push".logw(TAG)
+            "Invalid loop count: $loopCount (must be > 1), skipping Loop push".logw(PushOrchestrator.TAG)
             return
         }
 
         // 检查是否已存在相同 notificationId 的 Loop（防止重复启动）
         if (activeLoops.containsKey(notificationId)) {
-            "Loop push already active for notificationId=$notificationId, skipping".logw(TAG)
+            "Loop push already active for notificationId=$notificationId, skipping".logw(PushOrchestrator.TAG)
             return
         }
 
@@ -122,7 +122,7 @@ class LoopPushManager @Inject constructor(
                     // 检查是否已被停止
                     if (!activeLoops.containsKey(notificationId)) {
                         if (BuildState.debug) {
-                            "Loop push stopped during delay: notificationId=$notificationId".logd(TAG)
+                            "Loop push stopped during delay: notificationId=$notificationId".logd(PushOrchestrator.TAG)
                         }
                         return@launch
                     }
@@ -131,7 +131,7 @@ class LoopPushManager @Inject constructor(
                     if (!permissionManager.isNotificationPermissionGranted()) {
                         if (BuildState.debug) {
                             "Notification permission revoked, stopping Loop push: " +
-                                    "notificationId=$notificationId".logw(TAG)
+                                    "notificationId=$notificationId".logw(PushOrchestrator.TAG)
                         }
                         stopLoopPush(notificationId, "permission_revoked")
                         return@launch
@@ -151,10 +151,10 @@ class LoopPushManager @Inject constructor(
 
                         if (BuildState.debug) {
                             "Loop push sent: notificationId=$notificationId, " +
-                                    "loop=${index + 2}/$loopCount".logd(TAG)
+                                    "loop=${index + 2}/$loopCount".logd(PushOrchestrator.TAG)
                         }
                     } catch (e: Exception) {
-                        "Failed to send Loop push notification: ${e.message}".logw(TAG)
+                        "Failed to send Loop push notification: ${e.message}".logw(PushOrchestrator.TAG)
                         // 不中断 Loop，继续下一次
                     }
                 }
@@ -163,11 +163,11 @@ class LoopPushManager @Inject constructor(
                 activeLoops.remove(notificationId)
                 if (BuildState.debug) {
                     "Loop push completed: notificationId=$notificationId, " +
-                            "total=$loopCount".logd(TAG)
+                            "total=$loopCount".logd(PushOrchestrator.TAG)
                 }
 
             } catch (e: Exception) {
-                "Loop push failed: notificationId=$notificationId, error=${e.message}".logw(TAG)
+                "Loop push failed: notificationId=$notificationId, error=${e.message}".logw(PushOrchestrator.TAG)
                 activeLoops.remove(notificationId)
             }
         }
@@ -186,7 +186,7 @@ class LoopPushManager @Inject constructor(
 
         if (BuildState.debug) {
             "Loop push state saved: notificationId=$notificationId, " +
-                    "activeLoops=${activeLoops.size}".logd(TAG)
+                    "activeLoops=${activeLoops.size}".logd(PushOrchestrator.TAG)
         }
     }
 
@@ -206,12 +206,12 @@ class LoopPushManager @Inject constructor(
             if (BuildState.debug) {
                 "Loop push stopped: notificationId=$notificationId, " +
                         "reason=$reason, " +
-                        "progress=${loopState.currentLoop}/${loopState.maxLoops}".logd(TAG)
+                        "progress=${loopState.currentLoop}/${loopState.maxLoops}".logd(PushOrchestrator.TAG)
             }
         } else {
             if (BuildState.debug) {
                 "Loop push not found for stop: notificationId=$notificationId, " +
-                        "reason=$reason".logd(TAG)
+                        "reason=$reason".logd(PushOrchestrator.TAG)
             }
         }
     }
@@ -226,7 +226,7 @@ class LoopPushManager @Inject constructor(
 
         if (count > 0) {
             if (BuildState.debug) {
-                "Stopping all Loop pushes: count=$count, reason=$reason".logd(TAG)
+                "Stopping all Loop pushes: count=$count, reason=$reason".logd(PushOrchestrator.TAG)
             }
 
             // 取消所有协程
@@ -238,11 +238,11 @@ class LoopPushManager @Inject constructor(
             activeLoops.clear()
 
             if (BuildState.debug) {
-                "All Loop pushes stopped: count=$count".logd(TAG)
+                "All Loop pushes stopped: count=$count".logd(PushOrchestrator.TAG)
             }
         } else {
             if (BuildState.debug) {
-                "No active Loop pushes to stop: reason=$reason".logd(TAG)
+                "No active Loop pushes to stop: reason=$reason".logd(PushOrchestrator.TAG)
             }
         }
     }

@@ -26,7 +26,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class AppForegroundObserver @Inject constructor(
-    private val loopPushManager: LoopPushManager
+
 ) : DefaultLifecycleObserver {
 
     companion object {
@@ -57,9 +57,6 @@ class AppForegroundObserver @Inject constructor(
         if (BuildState.debug) {
             "App moved to foreground, stopping all Loop pushes".logd(TAG)
         }
-
-        // 停止所有 Loop 推送
-        loopPushManager.stopAllLoopPushes("app_foreground")
     }
 
     /**

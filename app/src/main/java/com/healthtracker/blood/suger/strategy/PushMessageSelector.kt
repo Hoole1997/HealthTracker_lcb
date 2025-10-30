@@ -65,12 +65,13 @@ class PushMessageSelector @Inject constructor(
             val allMessages = messageRepository.getAllMessages()
 
             if (allMessages.isEmpty()) {
-                "No messages available in repository".logw(TAG)
+                if(BuildState.debug)
+                "No messages available in repository".logw(PushOrchestrator.TAG)
                 return@withContext null
             }
 
             if (BuildState.debug) {
-                "Total messages available: ${allMessages.size}".logd(TAG)
+                "Total messages available: ${allMessages.size}".logd(PushOrchestrator.TAG)
             }
 
             // 步骤 2: 获取上次发送的索引
@@ -80,7 +81,7 @@ class PushMessageSelector @Inject constructor(
             val nextIndex = (lastIndex + 1) % allMessages.size
 
             if (BuildState.debug) {
-                "Round-robin selection: lastIndex=$lastIndex, nextIndex=$nextIndex, total=${allMessages.size}".logd(TAG)
+                "Round-robin selection: lastIndex=$lastIndex, nextIndex=$nextIndex, total=${allMessages.size}".logd(PushOrchestrator.TAG)
             }
 
             // 步骤 4: 保存新索引
@@ -90,7 +91,7 @@ class PushMessageSelector @Inject constructor(
             val selectedMessage = allMessages[nextIndex]
 
             if (BuildState.debug) {
-                "Selected message: id=${selectedMessage.id}, title=${selectedMessage.title}, index=$nextIndex".logd(TAG)
+                "Selected message: id=${selectedMessage.id}, title=${selectedMessage.title}, index=$nextIndex".logd(PushOrchestrator.TAG)
             }
 
             selectedMessage

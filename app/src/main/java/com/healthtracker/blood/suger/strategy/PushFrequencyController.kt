@@ -69,13 +69,13 @@ class PushFrequencyController @Inject constructor(
         config: ChannelConfig
     ): FrequencyCheckResult {
         if (BuildState.debug) {
-            "Frequency check for pushId=$pushId, scenario=$scenario, config=$config".logd(TAG)
+            "Frequency check for pushId=$pushId, scenario=$scenario, config=$config".logd(PushOrchestrator.TAG)
         }
 
         // 检查 1: 通知权限
         if (!permissionManager.isNotificationPermissionGranted()) {
             val reason = "Notification permission not granted"
-            if (BuildState.debug) reason.logw(TAG)
+            if (BuildState.debug) reason.logw(PushOrchestrator.TAG)
             return FrequencyCheckResult(false, reason)
         }
 
@@ -104,7 +104,7 @@ class PushFrequencyController @Inject constructor(
         }
 
         if (BuildState.debug) {
-            "All frequency checks passed".logd(TAG)
+            "All frequency checks passed".logd(PushOrchestrator.TAG)
         }
 
         return FrequencyCheckResult(canTrigger = true)
@@ -127,7 +127,7 @@ class PushFrequencyController @Inject constructor(
             SpUtils.putInt(KEY_DAILY_COUNT, 1)
             SpUtils.putString(KEY_LAST_RESET_DATE, currentDate)
             if (BuildState.debug) {
-                "Daily counter reset for new day: $currentDate".logd(TAG)
+                "Daily counter reset for new day: $currentDate".logd(PushOrchestrator.TAG)
             }
         } else {
             // 同一天，计数器 +1
@@ -143,7 +143,7 @@ class PushFrequencyController @Inject constructor(
 
         if (BuildState.debug) {
             val count = SpUtils.getInt(KEY_DAILY_COUNT, 0)
-            "Push recorded: pushId=$pushId, scenario=$scenario, dailyCount=$count".logd(TAG)
+            "Push recorded: pushId=$pushId, scenario=$scenario, dailyCount=$count".logd(PushOrchestrator.TAG)
         }
     }
 
@@ -163,7 +163,7 @@ class PushFrequencyController @Inject constructor(
 
         // 付费用户无冷却期，直接通过
         if (cooldownMinutes == 0) {
-            if (BuildState.debug) "new user cool time = 0,pass".logd(TAG)
+            if (BuildState.debug) "new user cool time = 0,pass".logd(PushOrchestrator.TAG)
             return FrequencyCheckResult(canTrigger = true)
         }
 
@@ -236,7 +236,7 @@ class PushFrequencyController @Inject constructor(
         val dailyCount = if (lastResetDate != currentDate) {
             // 新的一天，计数器重置为 0
             if (BuildState.debug) {
-                "New day detected, daily count reset".logd(TAG)
+                "New day detected, daily count reset".logd(PushOrchestrator.TAG)
             }
             0
         } else {
@@ -280,7 +280,6 @@ class PushFrequencyController @Inject constructor(
             val remainingMinutes = interval - elapsedMinutes
             val reason = "Push interval not met: $elapsedMinutes/$interval minutes " +
                     "(remaining: $remainingMinutes minutes)"
-            if (BuildState.debug) reason.logw(TAG)
             return FrequencyCheckResult(false, reason)
         }
 
@@ -306,7 +305,7 @@ class PushFrequencyController @Inject constructor(
      */
     fun resetAll() {
         if (BuildState.debug) {
-            "All frequency control data reset".logd(TAG)
+            "All frequency control data reset".logd(PushOrchestrator.TAG)
         }
     }
 
@@ -327,7 +326,7 @@ class PushFrequencyController @Inject constructor(
             }
         } catch (e: Exception) {
             if (BuildState.debug) {
-                "Failed to parse time string: $timeString, error: ${e.message}".logw(TAG)
+                "Failed to parse time string: $timeString, error: ${e.message}".logw(PushOrchestrator.TAG)
             }
             0
         }

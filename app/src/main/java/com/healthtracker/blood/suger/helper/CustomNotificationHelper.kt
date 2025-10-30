@@ -19,6 +19,7 @@ import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver.Companion.EXTRA_ACTION_VALUE
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
+import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity
 import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity.Companion.EXTRA_PUSH_MESSAGE
@@ -123,12 +124,14 @@ class CustomNotificationHelper @Inject constructor(
             NotificationManagerCompat.from(context).notify(finalNotificationId, notification)
 
             val silentTag = if (isSilent) "[Silent]" else ""
-            "Custom notification shown $silentTag: ${pushMessage.title}, ID=$finalNotificationId".logd(TAG)
+            "Custom notification shown $silentTag: ${pushMessage.title}, ID=$finalNotificationId".logd(
+                PushOrchestrator.TAG
+            )
 
             return finalNotificationId
 
         } catch (e: Exception) {
-            "Failed to show custom notification: ${e.message}".loge(TAG)
+            "Failed to show custom notification: ${e.message}".loge(PushOrchestrator.TAG)
             return notificationId ?: -1
         }
     }
@@ -214,7 +217,7 @@ class CustomNotificationHelper @Inject constructor(
      * 通过 NotificationActionReceiver 处理，以支持 Loop 推送停止
      */
     private fun createClickPendingIntent(actionType:Int,notificationId: Int): PendingIntent {
-        if(BuildState.debug) "createClickPendingIntent actionType = $actionType,notificationId = $notificationId".logd(TAG)
+        if(BuildState.debug) "createClickPendingIntent actionType = $actionType,notificationId = $notificationId".logd(PushOrchestrator.TAG)
         // 直接创建启动 SplashActivity 的 Intent
         val intent = Intent(context, SplashActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -267,7 +270,7 @@ class CustomNotificationHelper @Inject constructor(
             7 -> HealthServiceConstants.ACTION_VALUE_HISTORY
             8 -> HealthServiceConstants.ACTION_VALUE_MEDICATION
             else -> {
-                "Unknown actionType: $actionType, defaulting to homepage".logd(TAG)
+                "Unknown actionType: $actionType, defaulting to homepage".logd(PushOrchestrator.TAG)
                 HealthServiceConstants.ACTION_VALUE_HOMEPAGE
             }
         }

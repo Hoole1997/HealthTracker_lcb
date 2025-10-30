@@ -1,6 +1,5 @@
 package com.healthtracker.blood.suger.push
 
-import android.content.Context
 import com.healthtracker.blood.suger.config.models.FsiConfig
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
@@ -17,29 +16,29 @@ fun canUpgradeToFullScreen(
 ): Boolean {
     // 1. 检查开关
     if (!checkEnabled(config)) {
-        "FSI disabled".logd(TAG)
+        if (BuildState.debug) "FSI disabled".logd(TAG)
         return false
     }
 
     // 2. 检查冷却期
     if (!checkQuietPeriod(config)) {
-        "Quiet period not met".logd(TAG)
+        if (BuildState.debug) "Quiet period not met".logd(TAG)
         return false
     }
 
     // 3. 检查时间窗口
     if (!checkTimeWindow(config)) {
-        "Outside time window".logd(TAG)
+        if (BuildState.debug) "Outside time window".logd(TAG)
         return false
     }
 
     // 4. 检查触发次数
     if (!checkTriggerCount(config)) {
-        "Max trigger count reached".logd(TAG)
+        if (BuildState.debug) "Max trigger count reached".logd(TAG)
         return false
     }
 
-    "All FSI conditions met".logd(TAG)
+    if (BuildState.debug) "All FSI conditions met".logd(TAG)
     return true
 }
 

@@ -52,7 +52,7 @@ class PushOrchestrator @Inject constructor(
 ) {
 
     companion object {
-        private const val TAG = "PushOrchestrator"
+         const val TAG = "PushOrchestrator"
     }
 
     /**
@@ -112,10 +112,6 @@ class PushOrchestrator @Inject constructor(
                     "No suitable message found for scenario=$scenario".logw(TAG)
                 }
                 return@withContext PushResult.NoSuitableMessage
-            }
-
-            if (BuildState.debug) {
-                "Selected message: id=${selectedMessage.id}, title=${selectedMessage.title}".logd(TAG)
             }
 
             // ===== 步骤 3: 执行推送（Phase 2 修改）=====

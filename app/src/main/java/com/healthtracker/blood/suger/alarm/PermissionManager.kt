@@ -11,11 +11,13 @@ import android.os.Build
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
+import net.corekit.core.report.ReportDataManager
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,6 +50,7 @@ class PermissionManager @Inject constructor(
         private const val PREF_FSI_LAST_REQUEST_TIME = "fsi_last_request_time"
         private const val PREF_FSI_USER_DENIED = "fsi_user_permanently_denied"
         private const val PREF_APP_SESSION_ID = "app_session_id"
+        private const val HAS_NOTIFICATION_PERMISSION = "has_notification_permission"
 
         // FSI权限请求限制
         private const val FSI_MAX_TOTAL_REQUESTS = 3
@@ -86,14 +89,21 @@ class PermissionManager @Inject constructor(
             ) == PackageManager.PERMISSION_GRANTED
             
             if (granted) {
-                "Notification permission granted".logd(TAG)
+                if(BuildState.debug){
+                    "Notification permission granted".logd(TAG)
+                }
+                SpUtils.putBoolean(HAS_NOTIFICATION_PERMISSION,true)
                 PermissionStatus.GRANTED
             } else {
-                "Notification permission denied".logw(TAG)
+                if(BuildState.debug) "Notification permission denied".logw(TAG)
+                if(SpUtils.getBoolean(HAS_NOTIFICATION_PERMISSION,false)){
+                    if(BuildState.debug) "notification permission is revoked"
+                    ReportDataManager.reportData("notify_permission_revoked", mapOf())
+                }
                 PermissionStatus.DENIED
             }
         } else {
-            "Notification permission not required for this Android version".logd(TAG)
+            if(BuildState.debug) "Notification permission not required for this Android version".logd(TAG)
             PermissionStatus.NOT_REQUIRED
         }
     }
@@ -110,7 +120,7 @@ class PermissionManager @Inject constructor(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                 REQUEST_CODE_NOTIFICATION
             )
-            "Requesting notification permission".logd(TAG)
+            if(BuildState.debug) "Requesting notification permission".logd(TAG)
         }
     }
     
@@ -143,9 +153,9 @@ class PermissionManager @Inject constructor(
                 val granted = grantResults.isNotEmpty() &&
                              grantResults[0] == PackageManager.PERMISSION_GRANTED
                 if (granted) {
-                    "Notification permission granted by user".logd(TAG)
+                    if(BuildState.debug)  "Notification permission granted by user".logd(TAG)
                 } else {
-                    "Notification permission denied by user".logw(TAG)
+                    if(BuildState.debug)  "Notification permission denied by user".logw(TAG)
                 }
                 true
             }
@@ -168,9 +178,9 @@ class PermissionManager @Inject constructor(
                 recordFSIPermissionRequest(granted)
 
                 if (granted) {
-                    "FSI permission granted after settings".logd(TAG)
+                    if(BuildState.debug) "FSI permission granted after settings".logd(TAG)
                 } else {
-                    "FSI permission still denied after settings".logw(TAG)
+                    if(BuildState.debug)  "FSI permission still denied after settings".logw(TAG)
                 }
                 true
             }
@@ -190,9 +200,9 @@ class PermissionManager @Inject constructor(
                 data = Uri.parse("package:${context.packageName}")
             }
             activity.startActivity(intent)
-            "Opening app settings".logd(TAG)
+            if(BuildState.debug) "Opening app settings".logd(TAG)
         } catch (e: Exception) {
-            "Failed to open app settings: ${e.message}".loge(TAG)
+            if(BuildState.debug) "Failed to open app settings: ${e.message}".loge(TAG)
         }
     }
 
@@ -222,19 +232,19 @@ class PermissionManager @Inject constructor(
                 val canUseFullScreenIntent = notificationManager.canUseFullScreenIntent()
 
                 if (canUseFullScreenIntent) {
-                    "FSI permission granted".logd(TAG)
+                    if(BuildState.debug) "FSI permission granted".logd(TAG)
                     PermissionStatus.GRANTED
                 } else {
-                    "FSI permission denied".logw(TAG)
+                    if(BuildState.debug) "FSI permission denied".logw(TAG)
                     PermissionStatus.DENIED
                 }
             } else {
                 // Android 10-13 只需要Manifest声明
-                "FSI permission not required for runtime (Android 10-13)".logd(TAG)
+                if(BuildState.debug)  "FSI permission not required for runtime (Android 10-13)".logd(TAG)
                 PermissionStatus.GRANTED
             }
         } else {
-            "FSI not supported on this Android version".logd(TAG)
+            if(BuildState.debug) "FSI not supported on this Android version".logd(TAG)
             PermissionStatus.NOT_REQUIRED
         }
     }
@@ -252,14 +262,14 @@ class PermissionManager @Inject constructor(
                     data = Uri.fromParts("package",context.packageName,null)
                 }
                 activity.startActivityForResult(intent, REQUEST_CODE_FSI)
-                "Requesting FSI permission via settings".logd(TAG)
+                if(BuildState.debug) "Requesting FSI permission via settings".logd(TAG)
             } catch (e: Exception) {
-                "Failed to open FSI settings: ${e.message}".loge(TAG)
+                if(BuildState.debug) "Failed to open FSI settings: ${e.message}".loge(TAG)
                 // 降级到通用应用设置
                 openAppSettings(activity)
             }
         } else {
-            "FSI permission request not needed for this Android version".logd(TAG)
+            if(BuildState.debug) "FSI permission request not needed for this Android version".logd(TAG)
         }
     }
 
@@ -298,7 +308,7 @@ class PermissionManager @Inject constructor(
             // 新Session，重置session计数
             SpUtils.putString("last_session_id", currentSessionId)
             SpUtils.putInt(PREF_FSI_SESSION_REQUESTS, 0)
-            "New session initialized: $currentSessionId".logd(TAG)
+            if(BuildState.debug) "New session initialized: $currentSessionId".logd(TAG)
         }
     }
 
@@ -334,7 +344,7 @@ class PermissionManager @Inject constructor(
 
         val shouldRequest = withinTotalLimit && withinSessionLimit && notPermanentlyDenied
 
-        "FSI permission request check: total=${state.totalRequestCount}/$FSI_MAX_TOTAL_REQUESTS, " +
+        if(BuildState.debug) "FSI permission request check: total=${state.totalRequestCount}/$FSI_MAX_TOTAL_REQUESTS, " +
                 "session=${state.sessionRequestCount}/$FSI_MAX_SESSION_REQUESTS, " +
                 "denied=${state.userPermanentlyDenied}, shouldRequest=$shouldRequest".logd(TAG)
 
@@ -360,15 +370,15 @@ class PermissionManager @Inject constructor(
             val newTotalCount = state.totalRequestCount + 1
             if (newTotalCount >= FSI_MAX_TOTAL_REQUESTS) {
                 SpUtils.putBoolean(PREF_FSI_USER_DENIED, true)
-                "User permanently denied FSI permission after $newTotalCount attempts".logw(TAG)
+                if(BuildState.debug) "User permanently denied FSI permission after $newTotalCount attempts".logw(TAG)
             }
         } else {
             // 用户授权了，清除拒绝标记
             SpUtils.putBoolean(PREF_FSI_USER_DENIED, false)
-            "User granted FSI permission".logd(TAG)
+            if(BuildState.debug) "User granted FSI permission".logd(TAG)
         }
 
-        "FSI permission request recorded: granted=$granted, " +
+        if(BuildState.debug) "FSI permission request recorded: granted=$granted, " +
                 "total=${state.totalRequestCount + 1}, session=${state.sessionRequestCount + 1}".logd(TAG)
     }
 
@@ -381,7 +391,7 @@ class PermissionManager @Inject constructor(
             val state = getFSIPermissionState()
             if (state.userPermanentlyDenied) {
                 SpUtils.putBoolean(PREF_FSI_USER_DENIED, false)
-                "FSI permission restored via system settings".logd(TAG)
+                if(BuildState.debug) "FSI permission restored via system settings".logd(TAG)
             }
             return true
         }
@@ -396,6 +406,6 @@ class PermissionManager @Inject constructor(
         SpUtils.remove(PREF_FSI_SESSION_REQUESTS)
         SpUtils.remove(PREF_FSI_LAST_REQUEST_TIME)
         SpUtils.remove(PREF_FSI_USER_DENIED)
-        "FSI permission state reset".logd(TAG)
+        if(BuildState.debug) "FSI permission state reset".logd(TAG)
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent
 import com.healthtracker.blood.suger.push.recordLastClickNotifyTime
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.strategy.LoopPushManager
+import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
@@ -48,13 +49,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (BuildState.debug) {
-            "onReceive: action=${intent.action}".logd(TAG)
+            "onReceive: action=${intent.action}".logd(PushOrchestrator.TAG)
         }
 
         // 获取通知 ID
         val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
         if (notificationId == -1) {
-            "Invalid notification ID: $notificationId".logw(TAG)
+            "Invalid notification ID: $notificationId".logw(PushOrchestrator.TAG)
             return
         }
 
@@ -62,7 +63,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             ACTION_NOTIFICATION_CLICKED -> handleNotificationClicked(notificationId)
             ACTION_NOTIFICATION_DISMISSED -> handleNotificationDismissed(notificationId)
             else -> {
-                "Unknown action: ${intent.action}".logw(TAG)
+                "Unknown action: ${intent.action}".logw(PushOrchestrator.TAG)
             }
         }
     }
@@ -76,7 +77,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
      */
     private fun handleNotificationClicked(notificationId: Int) {
         if (BuildState.debug) {
-            "Notification clicked: notificationId=$notificationId".logd(TAG)
+            "Notification clicked: notificationId=$notificationId".logd(PushOrchestrator.TAG)
         }
         recordLastClickNotifyTime()
         // 1. 停止 Loop 推送
@@ -111,7 +112,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
      */
     private fun handleNotificationDismissed(notificationId: Int) {
         if (BuildState.debug) {
-            "Notification dismissed: notificationId=$notificationId".logd(TAG)
+            "Notification dismissed: notificationId=$notificationId".logd(PushOrchestrator.TAG)
         }
 
         // 停止 Loop 推送
