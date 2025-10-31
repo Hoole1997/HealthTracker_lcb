@@ -22,10 +22,10 @@ plugins {
 apply(from = "../scripts/sign.gradle")
 
 // 使用默认配置，避免不同变种间的冲突
-val isRelease = findProperty("app")?.let { (it as Map<*, *>)["stable_release"] as Boolean } ?: false
+val showLog = findProperty("app")?.let { (it as Map<*, *>)["show_log"] as Boolean } ?: false
 val url = findProperty("url") as Map<*, *>
 
-println("isRelease = $isRelease")
+println("showLog = $showLog")
 
 android {
     namespace = "com.healthtracker.blood.suger"
@@ -34,7 +34,7 @@ android {
         versionCode = 3
         versionName = "1.0.1"
         buildConfig {
-            boolean("StableRelease", isRelease)
+            boolean("showLog", showLog)
         }
 
         buildConfigField("String", "PRIVACY_POLICY", "\"${url["privacyUrl"]}\"")

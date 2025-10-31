@@ -12,7 +12,8 @@ ext {
     ]
     // 应用版本配置
     app = [applicationId    : "com.healthtracker.blood.suger.internal",
-           stable_release   : false
+           show_log   : true,
+           string_fog   : true,
     ]
 
     url = [privacyUrl: "https://www.google.com.hk",

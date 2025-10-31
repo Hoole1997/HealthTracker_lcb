@@ -9,7 +9,6 @@ import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.log.CoreLogger
-import net.corekit.core.utils.ConfigRemoteManager
 
 /**
  * Base模块内容提供者
@@ -32,7 +31,7 @@ class AppModuleProvider : ContentProvider() {
         applicationContext = context?.applicationContext
         applicationContext?.let { ctx ->
             try {
-                BuildState.debug = !BuildConfig.StableRelease
+                BuildState.debug = BuildConfig.showLog
                 SpUtils.init(ctx)
                 CoreLogger.d("AppModuleProvider 初始化完成，Context 已准备就绪")
 

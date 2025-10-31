@@ -16,7 +16,7 @@ class AndroidStringFogConventionPlugin : Plugin<Project> {
 
             // 从 gradle.properties 读取 release 标志
             val isRelease = findProperty("app")?.let {
-                (it as Map<*, *>)["stable_release"] as Boolean
+                (it as Map<*, *>)["string_fog"] as Boolean
             } ?: false
 
             logger.lifecycle("StringFog enabled: $isRelease")
