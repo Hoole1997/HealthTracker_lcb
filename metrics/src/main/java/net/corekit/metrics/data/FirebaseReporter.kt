@@ -111,6 +111,10 @@ class FirebaseReporter : ReporterData {
      */
     override fun reportData(eventName: String, data: Map<String, Any>) {
         try {
+            //TODO 保留字段不能上报
+            if(eventName == "ad_click"){
+                return
+            }
             // 先尝试直接获取Firebase Analytics实例
             var analytics = retrieveFirebaseAnalytics()
 

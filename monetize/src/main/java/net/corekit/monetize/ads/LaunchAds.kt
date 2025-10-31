@@ -3,16 +3,21 @@ package net.corekit.monetize.ads
 import android.app.Activity
 import android.content.Context
 import com.blankj.utilcode.util.ActivityUtils
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdValue
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.OnPaidEventListener
-import com.google.android.gms.ads.appopen.AppOpenAd
-import net.corekit.monetize.ads.report.FpuController
+import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
+import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAdEventCallback
+import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
+import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
+import com.google.android.libraries.ads.mobile.sdk.common.AdValue
+import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
+import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
 import com.remax.bill.ads.report.IpuController
 import com.remax.bill.ads.report.RpuController
+import kotlinx.coroutines.suspendCancellableCoroutine
+import net.corekit.core.ads.RevenueAdData
+import net.corekit.core.ads.RevenueAdManager
+import net.corekit.core.ads.RevenueInfo
+import net.corekit.core.ext.DataStoreIntDelegate
+import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.interceptor.ClickLimitInterceptor
@@ -21,12 +26,7 @@ import net.corekit.monetize.ads.interceptor.InterceptorChain
 import net.corekit.monetize.ads.interceptor.ShowCountLimitInterceptor
 import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
 import net.corekit.monetize.ads.log.AdLogger
-import net.corekit.core.ads.RevenueAdData
-import net.corekit.core.ads.RevenueAdManager
-import net.corekit.core.ads.RevenueInfo
-import net.corekit.core.ext.DataStoreIntDelegate
-import net.corekit.core.report.ReportDataManager
-import kotlinx.coroutines.suspendCancellableCoroutine
+import net.corekit.monetize.ads.report.FpuController
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -135,11 +135,10 @@ class LaunchAds private constructor() {
         return suspendCancellableCoroutine { continuation ->
             val startTime = System.currentTimeMillis()
 
-            val adRequest = AdRequest.Builder()
-                .setHttpTimeoutMillis(7000) // HTTP请求超时7秒
+            val adRequest = AdRequest.Builder(adUnitId)
                 .build()
 
-            val loadCallback = object : AppOpenAd.AppOpenAdLoadCallback() {
+            val loadCallback = object : AdLoadCallback<AppOpenAd> {
                 override fun onAdLoaded(ad: AppOpenAd) {
                     val loadTime = System.currentTimeMillis() - startTime
                     AdLogger.d("开屏广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
@@ -149,7 +148,7 @@ class LaunchAds private constructor() {
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
                             "number" to totalLoadSucCount,
-                            "ad_source" to (ad.responseInfo.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt()
                         )
                     )
@@ -165,7 +164,7 @@ class LaunchAds private constructor() {
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
                             "number" to totalLoadSucCount,
-                            "ad_source" to (loadAdError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "ad_source" to (loadAdError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt(),
                             "reason" to loadAdError.message
                         )
@@ -175,7 +174,7 @@ class LaunchAds private constructor() {
             }
 
             // 启动广告加载
-            AppOpenAd.load(context, adUnitId, adRequest, loadCallback)
+            AppOpenAd.load(adRequest, loadCallback)
         }
     }
 
@@ -334,32 +333,32 @@ class LaunchAds private constructor() {
             var currentAdValue: AdValue? = null
             
             // 设置收益监听器
-            appOpenAd.onPaidEventListener = OnPaidEventListener { adValue ->
-                AdLogger.d("开屏广告收益回调: value=${adValue.valueMicros}, currency=${adValue.currencyCode}")
-                
-                // 保存到临时变量
-                currentAdValue = adValue
+            appOpenAd.adEventCallback = object : AppOpenAdEventCallback {
+                override fun onAdPaid(value: AdValue) {
+                    AdLogger.d("开屏广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
 
-                reportAdData(
-                    eventName = "ad_impression",
-                    params = mapOf(
-                        "ad_unit_name" to adUnitId,
-                        "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
-                        "number" to totalShowCount,
-                        "ad_source" to (appOpenAd.responseInfo.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                        "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
-                        "currency" to (currentAdValue?.currencyCode ?: "")
+                    // 保存到临时变量
+                    currentAdValue = value
+
+                    reportAdData(
+                        eventName = "ad_impression",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                            "number" to totalShowCount,
+                            "ad_source" to (appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
+                            "currency" to (currentAdValue?.currencyCode ?: "")
+                        )
                     )
-                )
-                
-                // 上报真实的广告收益数据
-                reportAdRevenueWithValue(appOpenAd, adValue)
 
-                IpuController.onAdImpression("SP", adValue.valueMicros)
-                RpuController.onAdRevenue("SP", adValue.valueMicros)
-            }
-            
-            appOpenAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                    // 上报真实的广告收益数据
+                    reportAdRevenueWithValue(appOpenAd, adUnitId,value)
+
+                    IpuController.onAdImpression("SP", value.valueMicros)
+                    RpuController.onAdRevenue("SP", value.valueMicros)
+                }
+
                 override fun onAdDismissedFullScreenContent() {
                     totalCloseCount ++
                     AdLogger.d("开屏广告关闭")
@@ -369,7 +368,7 @@ class LaunchAds private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
                             "number" to totalCloseCount,
-                            "ad_source" to (appOpenAd.responseInfo.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "ad_source" to (appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
                             "currency" to (currentAdValue?.currencyCode ?: "")
                         )
@@ -380,8 +379,8 @@ class LaunchAds private constructor() {
                     }
                 }
 
-                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                    AdLogger.w("开屏广告显示失败: %s", adError.message)
+                override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
+                    AdLogger.w("开屏广告显示失败: %s", fullScreenContentError.message)
                     totalShowFailCount++
                     reportAdData(
                         eventName = "ad_show_fail",
@@ -389,10 +388,10 @@ class LaunchAds private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
                             "number" to totalShowFailCount,
-                            "reason" to adError.message
+                            "reason" to fullScreenContentError.message
                         )
                     )
-                    val result = AdResult.Failure(createAdException("显示失败: ${adError.message}"))
+                    val result = AdResult.Failure(createAdException("显示失败: ${fullScreenContentError.message}"))
                     if (continuation.isActive) {
                         continuation.resume(result)
                     }
@@ -400,37 +399,40 @@ class LaunchAds private constructor() {
 
                 override fun onAdShowedFullScreenContent() {
                     AdLogger.d("开屏广告开始显示")
-                    
+
                     // 累积展示统计
                     totalShowCount++
                     AdLogger.d("开屏广告累积展示次数: $totalShowCount")
-                    
+
                     AdConfigManager.getAppOpenConfig().recordShow()
                 }
 
                 override fun onAdClicked() {
+                    super.onAdClicked()
                     AdLogger.d("开屏广告被点击")
-                    
+
                     // 累积点击统计
                     totalClickCount++
                     AdLogger.d("开屏广告累积点击次数: $totalClickCount")
-                    AdLogger.d("开屏广告点击时收益数据: ${if (currentAdValue != null) "value=${currentAdValue!!.valueMicros}, currency=${currentAdValue!!.currencyCode}" else "暂无收益数据"}")
-                    
+                    AdLogger.d("开屏广告点击时收益数据: ${if (currentAdValue != null) "value=${currentAdValue.valueMicros}, currency=${currentAdValue.currencyCode}" else "暂无收益数据"}")
+
                     AdConfigManager.getAppOpenConfig().recordClick()
-                reportAdData(
-                    eventName = "ad_click",
-                    params = mapOf(
-                        "ad_unit_name" to adUnitId,
-                        "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
-                        "number" to totalClickCount,
-                        "ad_source" to (appOpenAd.responseInfo.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                        "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
-                        "currency" to (currentAdValue?.currencyCode ?: "")
+                    reportAdData(
+                        eventName = "ad_click",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                            "number" to totalClickCount,
+                            "ad_source" to (appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
+                            "currency" to (currentAdValue?.currencyCode ?: "")
+                        )
                     )
-                )
+
                 }
 
                 override fun onAdImpression() {
+                    super.onAdImpression()
                     AdLogger.d("开屏广告展示完成")
 
                     // 异步预加载下一个广告到缓存（如果缓存未满）
@@ -439,6 +441,7 @@ class LaunchAds private constructor() {
                         PreloadController.preload(activity)
                     }
                 }
+
             }
             
             appOpenAd.show(activity)
@@ -450,22 +453,22 @@ class LaunchAds private constructor() {
      * @param appOpenAd 开屏广告对象
      * @param adValue 广告收益值
      */
-    private fun reportAdRevenueWithValue(appOpenAd: AppOpenAd, adValue: AdValue) {
+    private fun reportAdRevenueWithValue(appOpenAd: AppOpenAd,adUnitId: String, adValue: AdValue) {
         // 创建广告收益数据
         val adRevenueData = RevenueAdData(
             revenue = RevenueInfo(
                 value = adValue.valueMicros / 1_000_000.0,
                 currencyCode = adValue.currencyCode
             ),
-            adRevenueNetwork = appOpenAd.responseInfo.loadedAdapterResponseInfo?.adSourceName.orEmpty(),
-            adRevenueUnit = appOpenAd.adUnitId,
-            adRevenuePlacement = appOpenAd.responseInfo.loadedAdapterResponseInfo?.adSourceInstanceName.orEmpty(),
+            adRevenueNetwork = appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty(),
+            adRevenueUnit = adUnitId,
+            adRevenuePlacement = appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.instanceName.orEmpty(),
             adFormat = "Splash"
         )
 
         // 上报收益数据（内部已处理初始化和异常）
         RevenueAdManager.reportAdRevenue(adRevenueData)
-        AdLogger.d("开屏广告真实收益数据已上报，广告位ID: ${appOpenAd.adUnitId}, 收益: ${adValue.valueMicros}微元 ${adValue.currencyCode}")
+        AdLogger.d("开屏广告真实收益数据已上报，广告位ID: ${adUnitId}, 收益: ${adValue.valueMicros}微元 ${adValue.currencyCode}")
     }
 
     

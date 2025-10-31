@@ -123,6 +123,11 @@ apply<Any> {
     }
 }
 
+configurations.all {
+    exclude(group = "com.google.android.gms", module = "play-services-ads")
+    exclude(group = "com.google.android.gms", module = "play-services-ads-lite")
+}
+
 dependencies {
     implementation(fileTree(mapOf("include" to listOf("*.jar", "*.aar"), "dir" to "libs")))
     api(project(":framework"))

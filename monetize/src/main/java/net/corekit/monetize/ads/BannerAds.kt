@@ -1,20 +1,28 @@
 package net.corekit.monetize.ads
 
-import android.app.Activity
 import android.content.Context
-import android.util.DisplayMetrics
+import android.content.res.Resources
 import android.view.ViewGroup
 import com.blankj.utilcode.util.ActivityUtils
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdValue
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.OnPaidEventListener
-import net.corekit.monetize.ads.report.FpuController
+import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
+import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
+import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdEventCallback
+import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
+import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
+import com.google.android.libraries.ads.mobile.sdk.common.AdValue
+import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
+import com.healthtracker.framework.util.ScreenUtil
 import com.remax.bill.ads.report.IpuController
 import com.remax.bill.ads.report.RpuController
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
+import net.corekit.core.ads.RevenueAdData
+import net.corekit.core.ads.RevenueAdManager
+import net.corekit.core.ads.RevenueInfo
+import net.corekit.core.ext.DataStoreIntDelegate
+import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.interceptor.ClickLimitInterceptor
@@ -22,19 +30,11 @@ import net.corekit.monetize.ads.interceptor.GlobalAdSwitchInterceptor
 import net.corekit.monetize.ads.interceptor.InterceptorChain
 import net.corekit.monetize.ads.interceptor.ShowCountLimitInterceptor
 import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
-import net.corekit.core.ads.RevenueAdData
-import net.corekit.core.ads.RevenueAdManager
-import net.corekit.core.ads.RevenueInfo
-import net.corekit.core.ext.DataStoreIntDelegate
-import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.log.AdLogger
-import kotlin.math.ceil
+import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.BannerAdView
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import kotlin.math.ceil
 
 /**
  * Banner广告控制器
@@ -99,7 +99,7 @@ class BannerAds private constructor() {
      * 缓存的Banner广告数据类
      */
     private data class CachedBannerAd(
-        val adView: AdView,
+        val ad: BannerAd,
         val adUnitId: String,
         val loadTime: Long = System.currentTimeMillis()
     ) {
@@ -107,41 +107,22 @@ class BannerAds private constructor() {
             return System.currentTimeMillis() - loadTime > AD_TIMEOUT
         }
     }
-    
-    private var bannerAdView: AdView? = null
+
     private var loadTime: Long = 0L
     private val adUnitId = BuildConfig.ADMOB_BANNER_ID
     private val bannerView = BannerAdView()
     
     // 状态流
-    private val _loadingState = MutableStateFlow<AdResult<AdView>>(AdResult.Loading)
-    val loadingState: StateFlow<AdResult<AdView>> = _loadingState.asStateFlow()
+    private val _loadingState = MutableStateFlow<AdResult<BannerAd>>(AdResult.Loading)
+    val loadingState: StateFlow<AdResult<BannerAd>> = _loadingState.asStateFlow()
     
     private val _adExpiredState = MutableStateFlow(false)
     val adExpiredState: StateFlow<Boolean> = _adExpiredState.asStateFlow()
-    
-    /**
-     * 创建Banner广告视图
-     * @param context 上下文
-     * @param adUnitId 广告位ID，如果为空则使用默认ID
-     */
-    fun createBannerAdView(context: Context, adUnitId: String? = null): AdView {
-        return AdView(context).apply {
-            this.adUnitId = adUnitId ?: BuildConfig.ADMOB_BANNER_ID
-            if(context is Activity){
-                setAdSize(getAdSize(context)) // 320x50 标准Banner尺寸
-            }
 
-        }
-    }
 
-    private fun getAdSize(activity: Activity):AdSize{
-        val context = activity.applicationContext
-        val outMetrics = DisplayMetrics()
-        val display = activity.windowManager.defaultDisplay
-        display.getMetrics(outMetrics)
-        val widthPixels = outMetrics.widthPixels.toFloat()
-        val density = outMetrics.density
+    private fun getAdSize(context: Context): AdSize{
+        val widthPixels = ScreenUtil.screenWidth()
+        val density = Resources.getSystem().displayMetrics.density
         val adWidth = (widthPixels / density).toInt()
         val adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context,adWidth)
 
@@ -213,9 +194,9 @@ class BannerAds private constructor() {
     /**
      * 加载Banner广告
      * @param context 上下文
-     * @param adView AdView实例
+     * @param adUnitId 广告单元id
      */
-    private suspend fun loadAdInternal(context: Context, adView: AdView): AdView? {
+    private suspend fun loadAdInternal(context: Context, adUnitId: String): BannerAd? {
         // 累积加载次数统计
         totalLoadCount++
         AdLogger.d("Banner广告累积加载次数: $totalLoadCount")
@@ -223,133 +204,125 @@ class BannerAds private constructor() {
         reportAdData(
             eventName = "ad_start_load",
             params = mapOf(
-                "ad_unit_name" to adView.adUnitId,
+                "ad_unit_name" to adUnitId,
                 "number" to totalLoadCount
             )
         )
         
         return suspendCancellableCoroutine { continuation ->
-            // 设置收益监听器
-            adView.onPaidEventListener = OnPaidEventListener { adValue ->
-                AdLogger.d("Banner广告收益回调: value=${adValue.valueMicros}, currency=${adValue.currencyCode}")
-
-                // 存储当前广告的收益信息
-                currentAdValue = adValue
-
-                reportAdData(
-                    eventName = "ad_impression",
-                    params = mapOf(
-                        "ad_unit_name" to adView.adUnitId,
-                        "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
-                        "number" to totalShowCount,
-                        "ad_source" to (adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                        "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
-                        "currency" to (currentAdValue?.currencyCode ?: "")
-                    )
-                )
-
-                // 上报真实的广告收益数据
-                reportAdRevenueWithValue(adView, adValue)
-
-                IpuController.onAdImpression("BA", adValue.valueMicros)
-                RpuController.onAdRevenue("BA", adValue.valueMicros)
-            }
-
-            adView.adListener = object : AdListener() {
+            val adRequest = BannerAdRequest.Builder(adUnitId, getAdSize(context)).build()
+            BannerAd.load(adRequest,object : AdLoadCallback<BannerAd>{
                 private var loadStartTime = System.currentTimeMillis()
-                
-                override fun onAdLoaded() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
                     val loadTime = System.currentTimeMillis() - loadStartTime
-                    AdLogger.d("Banner广告加载成功，广告位ID: %s, 耗时: %dms", adView.adUnitId, loadTime)
+                    AdLogger.e("Banner广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
+
+                    reportAdData(
+                        eventName = "ad_load_fail",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "number" to totalLoadSucCount,
+                            "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                            "reason" to adError.message
+                        )
+                    )
+
+                    // 重置开始时间，为下次刷新做准备
+                    loadStartTime = System.currentTimeMillis()
+                    continuation.resume(null)
+                }
+                override fun onAdLoaded(ad: BannerAd) {
+                    val loadTime = System.currentTimeMillis() - loadStartTime
+                    AdLogger.d("Banner广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
                     totalLoadSucCount++
                     reportAdData(
                         eventName = "ad_loaded",
                         params = mapOf(
-                            "ad_unit_name" to adView.adUnitId,
+                            "ad_unit_name" to adUnitId,
                             "number" to totalLoadSucCount,
-                            "ad_source" to (adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt()
                         )
                     )
                     // 重置开始时间，为下次刷新做准备
                     loadStartTime = System.currentTimeMillis()
                     FpuController.onAdFill("BA")
-                    continuation.resume(adView)
+                    ad.adEventCallback = object : BannerAdEventCallback{
+                        override fun onAdPaid(value: AdValue) {
+                            AdLogger.d("Banner广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
+
+                            // 存储当前广告的收益信息
+                            currentAdValue = value
+
+                            reportAdData(
+                                eventName = "ad_impression",
+                                params = mapOf(
+                                    "ad_unit_name" to adUnitId,
+                                    "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                    "number" to totalShowCount,
+                                    "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                    "currency" to (currentAdValue?.currencyCode ?: "")
+                                )
+                            )
+
+                            // 上报真实的广告收益数据
+                            reportAdRevenueWithValue(ad, adUnitId,value)
+
+                            IpuController.onAdImpression("BA", value.valueMicros)
+                            RpuController.onAdRevenue("BA", value.valueMicros)
+                        }
+
+                        override fun onAdClicked() {
+                            super.onAdClicked()
+                            AdLogger.d("Banner广告被点击")
+                            // 累积点击统计
+                            totalClickCount++
+                            AdLogger.d("Banner广告累积点击次数: $totalClickCount")
+
+                            AdConfigManager.getBannerConfig().recordClick()
+
+                            reportAdData(
+                                eventName = "ad_click",
+                                params = mapOf(
+                                    "ad_unit_name" to adUnitId,
+                                    "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                    "number" to totalClickCount,
+                                    "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                    "currency" to (currentAdValue?.currencyCode ?: "")
+                                )
+                            )
+                        }
+
+                        override fun onAdImpression() {
+                            AdLogger.d("Banner广告展示完成")
+
+                            // 累积展示统计
+                            totalShowCount++
+                            AdLogger.d("Banner广告累积展示次数: $totalShowCount")
+                        }
+
+                        override fun onAdDismissedFullScreenContent() {
+                            AdLogger.d("Banner广告关闭")
+                            totalCloseCount++
+                            reportAdData(
+                                eventName = "ad_close",
+                                params = mapOf(
+                                    "ad_unit_name" to adUnitId,
+                                    "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                    "number" to totalCloseCount,
+                                    "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                    "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
+                                    "currency" to (currentAdValue?.currencyCode ?: "")
+                                )
+                            )
+                        }
+                    }
+                    continuation.resume(ad)
                 }
-                
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    val loadTime = System.currentTimeMillis() - loadStartTime
-                    AdLogger.e("Banner广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adView.adUnitId, loadTime, loadAdError.message)
-                    
-                    reportAdData(
-                        eventName = "ad_load_fail",
-                        params = mapOf(
-                            "ad_unit_name" to adView.adUnitId,
-                            "number" to totalLoadSucCount,
-                            "ad_source" to (loadAdError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                            "pass_time" to ceil(loadTime / 1000.0).toInt(),
-                            "reason" to loadAdError.message
-                        )
-                    )
-                    
-                    // 重置开始时间，为下次刷新做准备
-                    loadStartTime = System.currentTimeMillis()
-                    continuation.resume(null)
-                }
-                
-                override fun onAdClicked() {
-                    AdLogger.d("Banner广告被点击")
-                    
-                    // 累积点击统计
-                    totalClickCount++
-                    AdLogger.d("Banner广告累积点击次数: $totalClickCount")
-                    
-                    AdConfigManager.getBannerConfig().recordClick()
-                    
-                    reportAdData(
-                        eventName = "ad_click",
-                        params = mapOf(
-                            "ad_unit_name" to adView.adUnitId,
-                            "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
-                            "number" to totalClickCount,
-                            "ad_source" to (adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                            "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
-                            "currency" to (currentAdValue?.currencyCode ?: "")
-                        )
-                    )
-                }
-                
-                override fun onAdImpression() {
-                    AdLogger.d("Banner广告展示完成")
-                    
-                    // 累积展示统计
-                    totalShowCount++
-                    AdLogger.d("Banner广告累积展示次数: $totalShowCount")
-                }
-                
-                override fun onAdOpened() {
-                    AdLogger.d("Banner广告打开")
-                }
-                
-                override fun onAdClosed() {
-                    AdLogger.d("Banner广告关闭")
-                    totalCloseCount++
-                    reportAdData(
-                        eventName = "ad_close",
-                        params = mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
-                            "number" to totalCloseCount,
-                            "ad_source" to (adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                            "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
-                            "currency" to (currentAdValue?.currencyCode ?: "")
-                        )
-                    )
-                }
-            }
-            
-            // 加载广告
-            adView.loadAd(AdRequest.Builder().build())
+            })
         }
     }
     
@@ -363,8 +336,7 @@ class BannerAds private constructor() {
                 AdLogger.w("广告位 %s 缓存已满，当前缓存: %d/%d", adUnitId, currentAdUnitCount, maxCacheSizePerAdUnit)
                 return AdResult.Success(Unit)
             }
-            val adView = createBannerAdView(context, adUnitId)
-            val loadedAdView = loadAdInternal(context, adView)
+            val loadedAdView = loadAdInternal(context, adUnitId)
             if (loadedAdView != null) {
                 synchronized(adCachePool) {
                     adCachePool.add(CachedBannerAd(loadedAdView, adUnitId))
@@ -404,7 +376,7 @@ class BannerAds private constructor() {
      * @param container 目标容器
      * @param adUnitId 广告位ID，如果为空则使用默认ID
      */
-    suspend fun displayAd(context: Context, container: ViewGroup, adUnitId: String? = null): AdResult<AdView> {
+    suspend fun displayAd(context: Context, container: ViewGroup, adUnitId: String? = null): AdResult<Unit> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_BANNER_ID
         
         // 累积触发统计
@@ -460,7 +432,7 @@ class BannerAds private constructor() {
 //                container.addView(bannerView.createBannerLoadingView(context))
                 
                 val success = bannerView.bindBannerAdToContainer(
-                    context, container, cachedAd.adView, null
+                    context, container, cachedAd.ad, null
                 )
                 
                 if (success) {
@@ -468,7 +440,7 @@ class BannerAds private constructor() {
                     if (!isCacheFull(finalAdUnitId)) {
                         PreloadController.preload(context)
                     }
-                    AdResult.Success(cachedAd.adView)
+                    AdResult.Success(Unit)
                 } else {
                     AdResult.Failure(createAdException("广告绑定失败"))
                 }
@@ -512,20 +484,8 @@ class BannerAds private constructor() {
     }
     
 
-    
-    /**
-     * 获取当前广告视图
-     */
-    fun retrieveCurrentView(): AdView? {
-        return if (!checkAdExpired()) bannerAdView else null
-    }
-    
-    /**
-     * 检查是否有可用的广告
-     */
-    fun checkAdReady(): Boolean {
-        return bannerAdView != null && !checkAdExpired()
-    }
+
+
     
     /**
      * 检查广告是否已过期
@@ -554,50 +514,44 @@ class BannerAds private constructor() {
      * 暂停广告
      */
     fun pause() {
-        bannerAdView?.pause()
+
         AdLogger.d("Banner广告已暂停")
     }
     
     /**
      * 上报广告收益数据（使用真实收益值）
-     * @param adView Banner广告视图
+     * @param ad BannerAd
+     * @param adUnitId
      * @param adValue 广告收益值
      */
-    private fun reportAdRevenueWithValue(adView: AdView, adValue: AdValue) {
+    private fun reportAdRevenueWithValue(ad: BannerAd,adUnitId: String, adValue: AdValue) {
         // 创建广告收益数据
         val adRevenueData = RevenueAdData(
             revenue = RevenueInfo(
                 value = adValue.valueMicros / 1_000_000.0,
                 currencyCode = adValue.currencyCode
             ),
-            adRevenueNetwork = adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty(),
-            adRevenueUnit = adView.adUnitId,
-            adRevenuePlacement = adView.responseInfo?.loadedAdapterResponseInfo?.adSourceInstanceName.orEmpty(),
+            adRevenueNetwork = ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty(),
+            adRevenueUnit = adUnitId,
+            adRevenuePlacement = ad.getResponseInfo().loadedAdSourceResponseInfo?.instanceName.orEmpty(),
             adFormat = "Banner"
         )
         
         // 上报收益数据（内部已处理初始化和异常）
         RevenueAdManager.reportAdRevenue(adRevenueData)
-        AdLogger.d("Banner广告真实收益数据已上报，广告位ID: ${adView.adUnitId}, 收益: ${adValue.valueMicros}微元 ${adValue.currencyCode}")
+        AdLogger.d("Banner广告真实收益数据已上报，广告位ID: ${adUnitId}, 收益: ${adValue.valueMicros}微元 ${adValue.currencyCode}")
     }
     
-    /**
-     * 恢复广告
-     */
-    fun resume() {
-        bannerAdView?.resume()
-        AdLogger.d("Banner广告已恢复")
-    }
+
     
     /**
      * 销毁广告
      */
     fun releaseAd() {
         synchronized(adCachePool) {
-            adCachePool.forEach { cachedAd -> cachedAd.adView.destroy() }
+            adCachePool.forEach { cachedAd -> cachedAd.ad.destroy()}
             adCachePool.clear()
         }
-        bannerAdView = null
         bannerView.reset()
         loadTime = 0L
         AdLogger.d("Banner广告已销毁")

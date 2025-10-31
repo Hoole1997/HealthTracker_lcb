@@ -1,25 +1,17 @@
 package net.corekit.monetize.ui
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RatingBar
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.ads.nativead.MediaView
-import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.libraries.ads.mobile.sdk.nativead.MediaView
+import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
+
 import net.corekit.monetize.R
 import net.corekit.monetize.ads.log.AdLogger
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.util.Locale
 
 /**
  * 全屏原生广告UI视图组件
@@ -92,15 +84,15 @@ class FullScreenNativeAdView {
     /**
      * 创建全屏原生广告布局
      */
-    private fun createFullScreenNativeAdLayout(context: Context): com.google.android.gms.ads.nativead.NativeAdView {
-        return LayoutInflater.from(context).inflate(R.layout.layout_fullscreen_native_ad, null) as com.google.android.gms.ads.nativead.NativeAdView
+    private fun createFullScreenNativeAdLayout(context: Context): com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView {
+        return LayoutInflater.from(context).inflate(R.layout.layout_fullscreen_native_ad, null) as com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView
     }
     
     /**
      * 绑定全屏原生广告数据到视图
      */
     private fun bindFullScreenNativeAdData(
-        adView: com.google.android.gms.ads.nativead.NativeAdView, 
+        adView: com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView,
         nativeAd: NativeAd,
         lifecycleOwner: LifecycleOwner,
     ) {
@@ -131,8 +123,8 @@ class FullScreenNativeAdView {
             }
             
             // 设置媒体内容（如果有）
-            nativeAd.mediaContent?.let { mediaContent ->
-                mediaView?.setMediaContent(mediaContent)
+            nativeAd.mediaContent.let { mediaContent ->
+                mediaView.mediaContent = mediaContent
                 mediaView?.visibility = View.VISIBLE
             } ?: run {
                 mediaView?.visibility = View.GONE
@@ -144,13 +136,12 @@ class FullScreenNativeAdView {
             adView.callToActionView = ctaButton
             adView.iconView = iconView
             adView.starRatingView = null
-            adView.mediaView = mediaView
             adView.advertiserView = null
             adView.priceView = null
             adView.storeView = null
             
             // 绑定广告数据
-            adView.setNativeAd(nativeAd)
+            adView.registerNativeAd(nativeAd,mediaView)
 
             AdLogger.d("全屏原生广告数据绑定完成")
             

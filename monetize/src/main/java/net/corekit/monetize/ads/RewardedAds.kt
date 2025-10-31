@@ -1,16 +1,17 @@
 package net.corekit.monetize.ads
 
+
 import android.app.Activity
 import android.content.Context
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdValue
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.OnPaidEventListener
-import com.google.android.gms.ads.rewarded.RewardItem
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.blankj.utilcode.util.ActivityUtils
+import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
+import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
+import com.google.android.libraries.ads.mobile.sdk.common.AdValue
+import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
+import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
+import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardItem
+import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAd
+import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAdEventCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -20,6 +21,7 @@ import net.corekit.core.ads.RevenueInfo
 import net.corekit.core.ext.DataStoreIntDelegate
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import kotlin.coroutines.resume
@@ -61,6 +63,9 @@ class RewardedAds private constructor() {
     private var totalShowCount by DataStoreIntDelegate("reward_show_count", 0)
     private var totalFailCount by DataStoreIntDelegate("reward_fail_count", 0)
     private var totalRewardCount by DataStoreIntDelegate("reward_reward_count", 0)
+    private var totalClickCount by DataStoreIntDelegate("reward_click_count", 0)
+
+    private var currentAdValue: AdValue? = null
 
     /**
      * 预加载激励广告
@@ -155,7 +160,17 @@ class RewardedAds private constructor() {
             suspendCancellableCoroutine<AdResult<RewardOutcome>> { continuation ->
                 var rewardItem: RewardItem? = null
 
-                adHolder.ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+                adHolder.ad.adEventCallback = object : RewardedAdEventCallback {
+                    override fun onAdPaid(value: AdValue) {
+                        super.onAdPaid(value)
+                        currentAdValue = value
+                        AdLogger.d(
+                            "激励广告收益回调: value=%d, currency=%s",
+                            value.valueMicros,
+                            value.currencyCode
+                        )
+                        reportRevenue(adHolder.ad, finalAdUnitId,value)
+                    }
                     override fun onAdShowedFullScreenContent() {
                         totalShowCount++
                         AdLogger.d("激励广告展示成功，总展示次数: %d", totalShowCount)
@@ -184,7 +199,7 @@ class RewardedAds private constructor() {
                         if (!continuation.isCompleted) {
                             continuation.resume(AdResult.Success(outcome))
                         }
-                        adHolder.ad.fullScreenContentCallback = null
+                        adHolder.ad.adEventCallback = null
 
                         // 自动拉起下一次预加载
                         if (!isCacheFull(finalAdUnitId)) {
@@ -193,26 +208,50 @@ class RewardedAds private constructor() {
                         }
                     }
 
-                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                    override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
                         totalFailCount++
-                        AdLogger.e("激励广告展示失败: %s", adError.message)
-                        val error = createAdException("展示失败: ${adError.message}")
+                        AdLogger.e("激励广告展示失败: %s", fullScreenContentError.message)
+                        val error = createAdException("展示失败: ${fullScreenContentError.message}")
                         reportAdData(
                             "ad_reward_show_fail",
                             mapOf(
                                 "ad_unit_name" to finalAdUnitId,
-                                "reason" to adError.message,
-                                "code" to adError.code
+                                "reason" to fullScreenContentError.message,
+                                "code" to fullScreenContentError.code
                             )
                         )
                         if (!continuation.isCompleted) {
                             continuation.resume(AdResult.Failure(error))
                         }
-                        adHolder.ad.fullScreenContentCallback = null
+                        adHolder.ad.adEventCallback = null
                     }
 
                     override fun onAdImpression() {
+                        super.onAdImpression()
                         AdLogger.d("激励广告曝光完成")
+                    }
+
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                        AdLogger.d("原生广告被点击")
+
+                        // 累积点击统计
+                        totalClickCount++
+                        AdLogger.d("原生广告累积点击次数: $totalClickCount")
+
+                        AdConfigManager.getNativeConfig().recordClick()
+
+                        reportAdData(
+                            eventName = "ad_click",
+                            params = mapOf(
+                                "ad_unit_name" to finalAdUnitId,
+                                "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                "number" to totalClickCount,
+                                "ad_source" to (adHolder.ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                "currency" to (currentAdValue?.currencyCode ?: "")
+                            )
+                        )
                     }
                 }
 
@@ -236,11 +275,11 @@ class RewardedAds private constructor() {
                     if (!continuation.isCompleted) {
                         continuation.resume(AdResult.Failure(error))
                     }
-                    adHolder.ad.fullScreenContentCallback = null
+
                 }
 
                 continuation.invokeOnCancellation {
-                    adHolder.ad.fullScreenContentCallback = null
+                    adHolder.ad.adEventCallback = null
                 }
             }
         } catch (e: Exception) {
@@ -270,16 +309,15 @@ class RewardedAds private constructor() {
     private suspend fun loadInternal(context: Context, adUnitId: String): RewardedAd? =
         suspendCancellableCoroutine { continuation ->
             val startTime = System.currentTimeMillis()
-            val adRequest = AdRequest.Builder()
-                .setHttpTimeoutMillis(7000)
+            val adRequest = AdRequest.Builder(adUnitId)
                 .build()
 
             RewardedAd.load(
-                context,
-                adUnitId,
                 adRequest,
-                object : RewardedAdLoadCallback() {
-                    override fun onAdLoaded(rewardedAd: RewardedAd) {
+                object : AdLoadCallback<RewardedAd> {
+
+
+                    override fun onAdLoaded(ad: RewardedAd) {
                         val loadTime = System.currentTimeMillis() - startTime
                         AdLogger.d("激励广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
                         reportAdData(
@@ -289,26 +327,17 @@ class RewardedAds private constructor() {
                                 "pass_time" to ceil(loadTime / 1000.0).toInt()
                             )
                         )
-
-                        rewardedAd.onPaidEventListener = OnPaidEventListener { adValue ->
-                            AdLogger.d(
-                                "激励广告收益回调: value=%d, currency=%s",
-                                adValue.valueMicros,
-                                adValue.currencyCode
-                            )
-                            reportRevenue(rewardedAd, adValue)
-                        }
-                        continuation.resume(rewardedAd)
+                        continuation.resume(ad)
                     }
 
-                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        AdLogger.w("激励广告加载失败: %s", loadAdError.message)
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        AdLogger.w("激励广告加载失败: %s", adError.message)
                         reportAdData(
                             "ad_reward_load_fail",
                             mapOf(
                                 "ad_unit_name" to adUnitId,
-                                "reason" to loadAdError.message,
-                                "code" to loadAdError.code
+                                "reason" to adError.message,
+                                "code" to adError.code
                             )
                         )
                         continuation.resume(null)
@@ -340,22 +369,22 @@ class RewardedAds private constructor() {
         return getCachedAdCount(adUnitId) >= maxCacheSizePerAdUnit
     }
 
-    private fun reportRevenue(rewardedAd: RewardedAd, adValue: AdValue) {
+    private fun reportRevenue(rewardedAd: RewardedAd, adUnitId: String,adValue: AdValue) {
         val adRevenueData = RevenueAdData(
             revenue = RevenueInfo(
                 value = adValue.valueMicros / 1_000_000.0,
                 currencyCode = adValue.currencyCode
             ),
-            adRevenueNetwork = rewardedAd.responseInfo.loadedAdapterResponseInfo?.adSourceName.orEmpty(),
-            adRevenueUnit = rewardedAd.adUnitId,
-            adRevenuePlacement = rewardedAd.responseInfo.loadedAdapterResponseInfo?.adSourceInstanceName.orEmpty(),
+            adRevenueNetwork = rewardedAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty(),
+            adRevenueUnit = adUnitId,
+            adRevenuePlacement = rewardedAd.getResponseInfo().loadedAdSourceResponseInfo?.adapterClassName.orEmpty(),
             adFormat = "Rewarded"
         )
 
         RevenueAdManager.reportAdRevenue(adRevenueData)
         AdLogger.d(
             "激励广告收益已上报，广告位ID: %s, 收益(微元): %d %s",
-            rewardedAd.adUnitId,
+            adUnitId,
             adValue.valueMicros,
             adValue.currencyCode
         )

@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-        manifestPlaceholders["ADMOB_APPLICATION_ID"] = adMobConfig["applicationId"] as String
+        buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${adMobConfig["applicationId"]}\"")
         buildConfigField("String", "ADMOB_SPLASH_ID", "\"${adMobUnitConfig["splash"]}\"")
         buildConfigField("String", "ADMOB_BANNER_ID", "\"${adMobUnitConfig["banner"]}\"")
         buildConfigField("String", "ADMOB_INTERSTITIAL_ID", "\"${adMobUnitConfig["interstitial"]}\"")
@@ -63,4 +63,5 @@ dependencies {
     api("com.google.ads.mediation:pangle:7.5.0.4.0")
     // ump
     api("com.google.android.ump:user-messaging-platform:3.1.0")
+    api("com.google.android.libraries.ads.mobile.sdk:ads-mobile-sdk:0.21.0-beta01")
 }

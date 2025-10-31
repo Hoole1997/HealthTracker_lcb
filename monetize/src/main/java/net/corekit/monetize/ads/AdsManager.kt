@@ -1,12 +1,14 @@
 package net.corekit.monetize.ads
 
 import android.content.Context
-import com.google.android.gms.ads.MobileAds
+import com.google.android.libraries.ads.mobile.sdk.MobileAds
+import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
 import net.corekit.monetize.ads.log.AdLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
+import net.corekit.monetize.BuildConfig
 import kotlin.coroutines.resume
 
 /**
@@ -32,8 +34,8 @@ object AdsManager {
         
         return suspendCancellableCoroutine { continuation ->
             _initializationState.value = AdResult.Loading
-            
-            MobileAds.initialize(context) { initializationStatus ->
+            val initConfig = InitializationConfig.Builder(BuildConfig.ADMOB_APPLICATION_ID).build()
+            MobileAds.initialize(context,initConfig) { initializationStatus ->
                 try {
                     val statusMap = initializationStatus.adapterStatusMap
                     AdLogger.d("AdMob SDK初始化完成")

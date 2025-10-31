@@ -4,13 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RatingBar
 import android.widget.TextView
-import com.google.android.gms.ads.nativead.MediaView
-import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.libraries.ads.mobile.sdk.nativead.MediaView
+import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
 import net.corekit.monetize.R
 import net.corekit.monetize.ads.log.AdLogger
 
@@ -65,9 +63,9 @@ class NativeAdView {
     private fun createNativeAdLayout(
         context: Context,
         style: NativeAdStyle
-    ): com.google.android.gms.ads.nativead.NativeAdView {
+    ): com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView {
         return LayoutInflater.from(context)
-            .inflate(style.layoutResId, null) as com.google.android.gms.ads.nativead.NativeAdView
+            .inflate(style.layoutResId, null) as com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView
     }
 
     /**
@@ -75,7 +73,7 @@ class NativeAdView {
      */
     private fun bindNativeAdData(
         style: NativeAdStyle,
-        adView: com.google.android.gms.ads.nativead.NativeAdView,
+        adView: com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView,
         nativeAd: NativeAd
     ) {
         try {
@@ -95,9 +93,10 @@ class NativeAdView {
             // 设置广告描述
             descView?.text = nativeAd.body
 
+
             // 设置媒体内容（如果有）
             nativeAd.mediaContent?.let { mediaContent ->
-                mediaView?.setMediaContent(mediaContent)
+                mediaView?.mediaContent = nativeAd.mediaContent
                 mediaView?.visibility = View.VISIBLE
             } ?: run {
                 mediaView?.visibility = View.GONE
@@ -131,12 +130,10 @@ class NativeAdView {
             adView.bodyView = descView
             adView.starRatingView = ratingLayout
             adView.advertiserView = null
-            adView.mediaView = mediaView
             adView.priceView = null
             adView.storeView = null
-
             // 绑定广告数据
-            adView.setNativeAd(nativeAd)
+            adView.registerNativeAd(nativeAd,mediaView)
 
             AdLogger.d("原生广告数据绑定完成")
 

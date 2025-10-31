@@ -3,14 +3,14 @@ package net.corekit.monetize.ads
 import android.app.Activity
 import android.content.Context
 import com.blankj.utilcode.util.ActivityUtils
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdValue
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.OnPaidEventListener
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+
+import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
+import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
+import com.google.android.libraries.ads.mobile.sdk.common.AdValue
+import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
+import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
+import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAd
+import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAdEventCallback
 import net.corekit.monetize.ads.report.FpuController
 import com.remax.bill.ads.report.IpuController
 import com.remax.bill.ads.report.RpuController
@@ -222,12 +222,12 @@ class InterstitialAds private constructor() {
         return suspendCancellableCoroutine { continuation ->
             val startTime = System.currentTimeMillis()
             
-            val adRequest = AdRequest.Builder()
-                .setHttpTimeoutMillis(7000) // 7秒超时
+            val adRequest = AdRequest.Builder(adUnitId)
+                 // 7秒超时
                 .build()
 
-            InterstitialAd.load(context, adUnitId, adRequest, object : InterstitialAdLoadCallback() {
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+            InterstitialAd.load(adRequest, object : AdLoadCallback<InterstitialAd> {
+                override fun onAdLoaded(ad: InterstitialAd) {
                     val loadTime = System.currentTimeMillis() - startTime
                     AdLogger.d("插页广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
                     totalLoadSucCount++
@@ -236,53 +236,57 @@ class InterstitialAds private constructor() {
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
                             "number" to totalLoadSucCount,
-                            "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt()
                         )
                     )
                     FpuController.onAdFill("IV")
-                    
-                    // 设置收益监听器
-                    interstitialAd.onPaidEventListener = OnPaidEventListener { adValue ->
-                        AdLogger.d("插页广告收益回调: value=${adValue.valueMicros}, currency=${adValue.currencyCode}")
-                        
-                        // 存储当前广告的收益信息
-                        currentAdValue = adValue
+                    ad.adEventCallback = object :InterstitialAdEventCallback{
+                        override fun onAdPaid(value: AdValue) {
+                            AdLogger.d("插页广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
 
-                        reportAdData(
-                            eventName = "ad_impression",
-                            params = mapOf(
-                                "ad_unit_name" to adUnitId,
-                                "position" to context::class.java.simpleName,
-                                "number" to totalShowCount,
-                                "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                                "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
-                                "currency" to (currentAdValue?.currencyCode ?: "")
+                            // 存储当前广告的收益信息
+                            currentAdValue = value
+
+                            reportAdData(
+                                eventName = "ad_impression",
+                                params = mapOf(
+                                    "ad_unit_name" to adUnitId,
+                                    "position" to context::class.java.simpleName,
+                                    "number" to totalShowCount,
+                                    "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }
+                                        ?: 0.0),
+                                    "currency" to (currentAdValue?.currencyCode ?: "")
+                                )
                             )
-                        )
-                        
-                        // 上报真实的广告收益数据
-                        reportAdRevenueWithValue(interstitialAd, adValue)
 
-                        IpuController.onAdImpression("IV", adValue.valueMicros)
-                        RpuController.onAdRevenue("IV", adValue.valueMicros)
+                            // 上报真实的广告收益数据
+                            reportAdRevenueWithValue(ad, adUnitId,value)
+
+                            IpuController.onAdImpression("IV", value.valueMicros)
+                            RpuController.onAdRevenue("IV", value.valueMicros)
+                        }
+
                     }
                     
-                    continuation.resume(interstitialAd)
+
+                    
+                    continuation.resume(ad)
                 }
 
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
                     val loadTime = System.currentTimeMillis() - startTime
-                    AdLogger.e("插页广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, loadAdError.message)
+                    AdLogger.e("插页广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
                     
                     reportAdData(
                         eventName = "ad_load_fail",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
                             "number" to totalLoadSucCount,
-                            "ad_source" to (loadAdError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt(),
-                            "reason" to loadAdError.message
+                            "reason" to adError.message
                         )
                     )
                     
@@ -358,7 +362,7 @@ class InterstitialAds private constructor() {
      */
     private suspend fun showAdInternal(activity: Activity, interstitialAd: InterstitialAd, adUnitId: String): AdResult<Unit> {
         return suspendCancellableCoroutine { continuation ->
-            interstitialAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+            interstitialAd.adEventCallback = object : InterstitialAdEventCallback{
                 override fun onAdDismissedFullScreenContent() {
                     AdLogger.d("插页广告关闭")
                     
@@ -373,7 +377,7 @@ class InterstitialAds private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
                             "number" to totalCloseCount,
-                            "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "ad_source" to (interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
                             "currency" to (currentAdValue?.currencyCode ?: "")
                         )
@@ -385,29 +389,32 @@ class InterstitialAds private constructor() {
                     }
                 }
 
-                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                    AdLogger.w("插页广告显示失败: %s", adError.message)
-                    
+                override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
+                    super.onAdFailedToShowFullScreenContent(fullScreenContentError)
+                    AdLogger.w("插页广告显示失败: %s", fullScreenContentError.message)
+
                     // 累积展示失败次数统计
                     totalShowFailCount++
                     AdLogger.d("插页广告累积展示失败次数: $totalShowFailCount")
-                    
+
                     reportAdData(
                         eventName = "ad_show_fail",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
                             "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
                             "number" to totalShowFailCount,
-                            "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                            "reason" to adError.message
+                            "ad_source" to (interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "reason" to fullScreenContentError.message
                         )
                     )
-                    
-                    val result = AdResult.Failure(createAdException("显示失败: ${adError.message}"))
+
+                    val result = AdResult.Failure(createAdException("显示失败: ${fullScreenContentError.message}"))
                     if (continuation.isActive) {
                         continuation.resume(result)
                     }
                 }
+
+
 
                 override fun onAdShowedFullScreenContent() {
                     AdLogger.d("插页广告开始显示")
@@ -416,6 +423,7 @@ class InterstitialAds private constructor() {
                 }
 
                 override fun onAdClicked() {
+                    super.onAdClicked()
                     AdLogger.d("插页广告被点击")
                     
                     // 累积点击统计
@@ -430,7 +438,7 @@ class InterstitialAds private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
                             "number" to totalClickCount,
-                            "ad_source" to (interstitialAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "ad_source" to (interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
                             "currency" to (currentAdValue?.currencyCode ?: "")
                         )
@@ -438,6 +446,7 @@ class InterstitialAds private constructor() {
                 }
 
                 override fun onAdImpression() {
+                    super.onAdImpression()
                     AdLogger.d("插页广告展示完成")
                     
                     // 设置广告正在显示标识
@@ -473,22 +482,22 @@ class InterstitialAds private constructor() {
      * @param interstitialAd 插页广告对象
      * @param adValue 广告收益值
      */
-    private fun reportAdRevenueWithValue(interstitialAd: InterstitialAd, adValue: AdValue) {
+    private fun reportAdRevenueWithValue(interstitialAd: InterstitialAd,adUnitId: String, adValue: AdValue) {
         // 创建广告收益数据
         val adRevenueData = RevenueAdData(
             revenue = RevenueInfo(
                 value = adValue.valueMicros / 1_000_000.0,
                 currencyCode = adValue.currencyCode
             ),
-            adRevenueNetwork = interstitialAd.responseInfo.loadedAdapterResponseInfo?.adSourceName.orEmpty(),
-            adRevenueUnit = interstitialAd.adUnitId,
-            adRevenuePlacement = interstitialAd.responseInfo.loadedAdapterResponseInfo?.adSourceInstanceName.orEmpty(),
+            adRevenueNetwork = interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty(),
+            adRevenueUnit = adUnitId,
+            adRevenuePlacement = interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.instanceName.orEmpty(),
             adFormat = "Interstitial"
         )
         
         // 上报收益数据（内部已处理初始化和异常）
         RevenueAdManager.reportAdRevenue(adRevenueData)
-        AdLogger.d("插页广告真实收益数据已上报，广告位ID: ${interstitialAd.adUnitId}, 收益: ${adValue.valueMicros}微元 ${adValue.currencyCode}")
+        AdLogger.d("插页广告真实收益数据已上报，广告位ID: ${adUnitId}, 收益: ${adValue.valueMicros}微元 ${adValue.currencyCode}")
     }
 
     /**

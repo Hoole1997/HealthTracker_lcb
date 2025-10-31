@@ -1,13 +1,9 @@
 package net.corekit.monetize.ui
 
+import android.app.Activity
 import android.content.Context
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import com.google.android.gms.ads.AdView
-import net.corekit.monetize.R
+import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
 import net.corekit.monetize.ads.log.AdLogger
 
 /**
@@ -31,7 +27,7 @@ class BannerAdView {
     fun bindBannerAdToContainer(
         context: Context,
         container: ViewGroup,
-        adView: AdView,
+        ad: BannerAd,
         onExpandCallback: ((Boolean) -> Unit)? = null
     ): Boolean {
         return try {
@@ -47,7 +43,10 @@ class BannerAdView {
 //            adContainer.addView(adView)
             
             // 添加到目标容器
-            container.addView(adView)
+            if (context is Activity) {
+                container.addView(ad.getView(context))
+            }
+
 
             AdLogger.d("Banner广告视图绑定成功")
             true
