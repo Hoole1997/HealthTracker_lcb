@@ -30,6 +30,7 @@
             app:srcCompat="@drawable/ic_back" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title"
             style="@style/TextViewFont_RobotoBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

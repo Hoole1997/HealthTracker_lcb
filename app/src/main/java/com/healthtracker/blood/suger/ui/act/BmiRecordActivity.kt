@@ -61,7 +61,9 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, ActivityBmiRecor
 
         with(mViewBind) {
             btnBack.clickWithDuration { onBackPress() }
-
+            editRecordId?.let {
+                tvTitle.text = getString(R.string.edit_record)
+            }
             // 体重/身高编辑：复用通用输入 BottomSheet
             clWeight.clickWithDuration {
                 val curDisplay = BmiUnit.toDisplayWeight(latestWeightKg, currentWeightUnit)

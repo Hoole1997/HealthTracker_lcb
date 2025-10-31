@@ -59,6 +59,9 @@ class CholesterolRecordActivity :
     override fun initView(savedInstanceState: Bundle?) {
         val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L).let { if (it == -1L) null else it }
         mViewModel.initialize(recordId)
+        recordId?.let {
+            mViewBind.tvTitle.text = getString(R.string.edit_record)
+        }
         setupActionBar()
         setupNumberPickers()
         setupLeveStatusView()

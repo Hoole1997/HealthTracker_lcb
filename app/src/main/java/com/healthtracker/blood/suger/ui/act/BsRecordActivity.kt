@@ -64,9 +64,21 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBin
     override fun getVMModelClass() = BsRecordViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+
+        // 获取传入的记录ID（如果有）
+        val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L)
+        val editRecordId = if (recordId == -1L) null else recordId
+
+        // 在观察者设置完成后再初始化ViewModel数据
+        mViewModel.initializeWithRecord(editRecordId)
+
         with(mViewBind) {
             btnBack.clickWithDuration {
                 onBackPress()
+            }
+
+            editRecordId?.let {
+                tvTitle.text = getString(R.string.edit_record)
             }
 
             clRangeTarget.clickWithDuration {
@@ -114,13 +126,6 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBin
             observeViewModel()
             loadNative(adContainer, style = NativeAdStyle.STANDARD)
         }
-
-        // 获取传入的记录ID（如果有）
-        val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L)
-        val editRecordId = if (recordId == -1L) null else recordId
-
-        // 在观察者设置完成后再初始化ViewModel数据
-        mViewModel.initializeWithRecord(editRecordId)
     }
 
     private fun setupRulerView() {

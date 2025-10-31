@@ -67,6 +67,11 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, ActivityBpRecordBin
             btnBack.clickWithDuration {
                 finish()
             }
+
+            editRecordId?.let {
+                mViewModel.loadEditRecord(it)
+                tvTitle.text = getString(R.string.edit_record)
+            }
             
             val tfRegular = FontUtils.getInstance().robotoRegular
             val tfBold = FontUtils.getInstance().robotoBold
