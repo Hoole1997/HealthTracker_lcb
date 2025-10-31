@@ -8,10 +8,13 @@ import com.healthtracker.framework.base.BaseViewModel
 
 abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVMActivity<VM,VB>() {
 
-    override fun onBackPress() {
+    override fun handleBackPress(): Boolean {
         showInter {
+            // 显示插屏广告后关闭 Activity
             finish()
         }
+        // 返回 true 表示已处理返回键事件
+        return true
     }
 
 

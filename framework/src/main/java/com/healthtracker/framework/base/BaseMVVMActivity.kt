@@ -37,6 +37,11 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
 
     open var isSaveInstance = true
 
+    /**
+     * 返回键回调处理器
+     */
+    private var backPressedCallback: OnBackPressedCallback? = null
+
 
     abstract fun createViewBinding(): VB
 
@@ -98,6 +103,9 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
             insets
         }
 
+        // 设置返回键处理
+        setupBackPressedCallback()
+
         init(savedInstanceState)
     }
 
@@ -131,13 +139,39 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
         }
         initView(savedInstanceState)
         initData()
-        // 统一处理返回键禁用逻辑
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+    }
+
+    /**
+     * 设置返回键处理回调
+     * 使用现代 OnBackPressedDispatcher API 替代已废弃的 onBackPressed()
+     */
+    private fun setupBackPressedCallback() {
+        backPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // 禁用返回键，什么都不做
-                onBackPress()
+                // 检查是否禁用返回键
+                if (shouldDisableBackPressed()) {
+                    return
+                }
+
+                // 调用子类可重写的方法
+                if (!handleBackPress()) {
+                    // 子类返回 false，执行默认返回行为
+                    performDefaultBackAction()
+                }
             }
-        })
+        }
+
+        onBackPressedDispatcher.addCallback(this, backPressedCallback!!)
+    }
+
+    /**
+     * 执行默认的返回行为（finish Activity）
+     */
+    private fun performDefaultBackAction() {
+        // 临时禁用回调，让系统处理默认行为
+        backPressedCallback?.isEnabled = false
+        onBackPressedDispatcher.onBackPressed()
+        backPressedCallback?.isEnabled = true
     }
 
     /**
@@ -208,6 +242,7 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
 
     /**
      * 子类可重写，返回true则禁用返回键，默认false
+     * 注意：当返回 true 时，返回键将完全不响应
      */
     protected open fun shouldDisableBackPressed(): Boolean = false
 
@@ -216,7 +251,31 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
 
     }
 
+    /**
+     * 处理返回键按下事件
+     *
+     * 子类可以重写此方法来自定义返回键行为：
+     * - 返回 true 表示已处理事件，不会执行默认的 finish() 行为
+     * - 返回 false 表示使用默认行为（finish Activity）
+     *
+     * @return true 如果已处理返回键事件，false 使用默认行为
+     */
+    protected open fun handleBackPress(): Boolean {
+        // 向后兼容：调用旧的 onBackPress() 方法
+        return false
+    }
+
+    /**
+     * @deprecated 使用 handleBackPress() 替代，返回 Boolean 表示是否已处理
+     * 此方法保留用于向后兼容，未来版本可能移除
+     */
+    @Deprecated(
+        message = "使用 handleBackPress() 替代，返回 Boolean 表示是否已处理",
+        replaceWith = ReplaceWith("handleBackPress()"),
+        level = DeprecationLevel.WARNING
+    )
     protected open fun onBackPress(){
+        handleBackPress()
 
     }
 
