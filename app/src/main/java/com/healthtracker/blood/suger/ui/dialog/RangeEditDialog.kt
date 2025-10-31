@@ -137,9 +137,9 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
             etDisValueMin.setText(BsUnit.formatValue(ranges.diabetesLow, currentUnit))
 
             // TextView会通过输入联动自动更新:
-            // tvNormalValueMin = etLowValueMax (lowHigh)
-            // tvPreValueMin = etNormalValueMax (normalHigh)
-            // tvPreValueMax = etDisValueMin (diabetesLow)
+             tvNormalValueMin.text = BsUnit.formatValue(ranges.normalLow,currentUnit)
+             tvPreValueMin.text = BsUnit.formatValue(ranges.prediabetesLow,currentUnit)
+             tvPreValueMax.text = BsUnit.formatValue(ranges.prediabetesHigh,currentUnit)
         }
     }
 
