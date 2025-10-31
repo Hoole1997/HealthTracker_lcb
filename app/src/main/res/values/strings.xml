@@ -146,14 +146,14 @@
     <string name="alarm_management">Alarm Management</string>
 
     <string-array name="blood_sugar_labels">
-        <item>Excited</item>
-        <item>After Cardio</item>
-        <item>Upset</item>
+        <item>Feeling excited</item>
+        <item>After cardio</item>
+        <item>Feeling down</item>
         <item>Calm</item>
-        <item>After Anaerobic Exercise</item>
-        <item>After Intense Workout</item>
-        <item>Dieting</item>
-        <item>After Alcohol</item>
+        <item>After strength training</item>
+        <item>After intense workout</item>
+        <item>While dieting</item>
+        <item>After drinking</item>
     </string-array>
 
     <string-array name="blood_pressure_labels">
@@ -204,13 +204,13 @@
 
     <!-- BMI record tag labels -->
     <string-array name="bmi_labels">
-        <item>Excited state</item>
-        <item>Depression</item>
+        <item>Feeling excited</item>
+        <item>After cardio</item>
+        <item>Feeling down</item>
         <item>Calm</item>
-        <item>After intense exercise</item>
-        <item>After aerobic exercise</item>
-        <item>After anaerobic exercise</item>
-        <item>Dieting</item>
+        <item>After strength training</item>
+        <item>After intense workout</item>
+        <item>While dieting</item>
         <item>After drinking</item>
     </string-array>
 
