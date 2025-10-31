@@ -60,6 +60,7 @@ class RemoteConfigManager @Inject constructor(
      */
     suspend fun initialize(): Result<Unit> {
         return try {
+            if(BuildState.debug)
             "Initializing RemoteConfigManager...".logd(TAG)
 
             val interval = if(BuildState.debug) 5 * 60 else DEFAULT_FETCH_INTERVAL_SECONDS
@@ -74,6 +75,7 @@ class RemoteConfigManager @Inject constructor(
             val activated = remoteConfig.fetchAndActivate().await()
 
             if (activated) {
+                if(BuildState.debug)
                 "New config fetched and activated successfully".logd(TAG)
                 try {
                     if(BuildState.debug){
@@ -84,15 +86,19 @@ class RemoteConfigManager @Inject constructor(
                 } catch (_: Throwable) {
                 }
             } else {
+                if(BuildState.debug)
                 "Config is already up to date".logd(TAG)
             }
-
+            if(BuildState.debug)
             "Registered ${registry.getRegisteredCount()} config parsers".logd(TAG)
 
             Result.success(Unit)
         } catch (e: Exception) {
-            "Failed to fetch config during initialization: ${e.message}".loge(TAG)
-            "Will continue with default/cached config".logd(TAG)
+            if(BuildState.debug){
+                "Failed to fetch config during initialization: ${e.message}".loge(TAG)
+                "Will continue with default/cached config".logd(TAG)
+            }
+
             // 不返回 failure，避免阻塞应用启动
             Result.success(Unit)
         }
@@ -122,6 +128,7 @@ class RemoteConfigManager @Inject constructor(
         // 1. 如果不强制刷新，先从缓存获取
         if (!forceRefresh) {
             cache.get(configClass)?.let {
+                if(BuildState.debug)
                 "Config loaded from cache: ${configClass.simpleName}".logd(TAG)
                 return it
             }
@@ -143,18 +150,22 @@ class RemoteConfigManager @Inject constructor(
                 parser.parse(rawValue)?.also { parsed ->
                     // 验证配置
                     if (!parser.validate(parsed)) {
+                        if(BuildState.debug)
                         "Config validation failed for ${configClass.simpleName}, using default".logd(TAG)
                         null
                     } else {
+                        if(BuildState.debug)
                         "Config parsed successfully: ${configClass.simpleName}".logd(TAG)
                         parsed
                     }
                 }
             } else {
+                if(BuildState.debug)
                 "Empty config value for ${configClass.simpleName}, using default".logd(TAG)
                 null
             }
         } catch (e: Exception) {
+            if(BuildState.debug)
             "Failed to parse config for ${configClass.simpleName}, using default: ${e.message}".loge(TAG)
             null
         } ?: parser.getDefault()
@@ -198,6 +209,7 @@ class RemoteConfigManager @Inject constructor(
      */
     suspend fun refreshConfig(): Result<Unit> {
         return try {
+            if(BuildState.debug)
             "Refreshing config from server...".logd(TAG)
             _configUpdates.value = ConfigUpdateEvent.Refreshing
 
@@ -205,6 +217,7 @@ class RemoteConfigManager @Inject constructor(
             val activated = remoteConfig.fetchAndActivate().await()
 
             if (activated) {
+                if(BuildState.debug)
                 "Config refreshed successfully, clearing cache".logd(TAG)
 
                 // 清除缓存
@@ -216,11 +229,13 @@ class RemoteConfigManager @Inject constructor(
                 _configUpdates.value = ConfigUpdateEvent.Success
                 Result.success(Unit)
             } else {
+                if(BuildState.debug)
                 "Config is already up to date".logd(TAG)
                 _configUpdates.value = ConfigUpdateEvent.NoChange
                 Result.success(Unit)
             }
         } catch (e: Exception) {
+            if(BuildState.debug)
             "Failed to refresh config: ${e.message}".loge(TAG)
             _configUpdates.value = ConfigUpdateEvent.Error(e)
             Result.failure(e)
@@ -241,6 +256,7 @@ class RemoteConfigManager @Inject constructor(
      */
     fun <T : Any> clearCacheInternal(configClass: KClass<T>) {
         cache.remove(configClass)
+        if(BuildState.debug)
         "Cache cleared for ${configClass.simpleName}".logd(TAG)
     }
 
@@ -249,6 +265,7 @@ class RemoteConfigManager @Inject constructor(
      */
     fun clearAllCache() {
         cache.clearAll()
+        if(BuildState.debug)
         "All config cache cleared".logd(TAG)
     }
 
@@ -270,6 +287,7 @@ class RemoteConfigManager @Inject constructor(
                 val config = getConfigInternal(configClass as KClass<Any>, forceRefresh = true)
                 updateObserver(configClass, config)
             } catch (e: Exception) {
+                if(BuildState.debug)
                 "Failed to refresh observer for ${configClass.simpleName}: ${e.message}".loge(TAG)
             }
         }

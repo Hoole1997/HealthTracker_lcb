@@ -37,12 +37,14 @@ class MessageService : FirebaseMessagingService() {
         private fun isVersionMatched(messageVersion: String?, currentVersion: String): Boolean {
             // version没有值的时候不判断，全量发送
             if (messageVersion.isNullOrBlank()) {
+                if(BuildState.debug)
                 "FCM消息无version字段，全量发送".logd("FCM消息无version字段，全量发送")
                 return true
             }
             
             // 有值的时候，客户端需要判断=当前值才发送
             val isMatched = messageVersion == currentVersion
+            if(BuildState.debug)
             "FCM消息version检查: 消息version=$messageVersion, 当前version=$currentVersion, 匹配结果=$isMatched".logd(TAG)
             return isMatched
         }
@@ -67,6 +69,7 @@ class MessageService : FirebaseMessagingService() {
         }
         // 处理数据载荷
         if (remoteMessage.data.isNotEmpty()) {
+            if(BuildState.debug)
             "消息数据载荷:".logd(TAG)
             for ((key, value) in remoteMessage.data) {
                 "  $key: $value".logd(TAG)
@@ -95,6 +98,7 @@ class MessageService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+        if(BuildState.debug)
         "FCM 令牌已更新: $token".logd(TAG)
 
     }
