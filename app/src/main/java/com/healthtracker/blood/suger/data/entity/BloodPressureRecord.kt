@@ -25,6 +25,12 @@ data class BloodPressureRecord(
     val recordTime: Date,
 
     /**
+     * 更新时间戳（毫秒）。创建与更新时维护。
+     */
+    @ColumnInfo(name = "updated_at")
+    val updatedAt: Long = System.currentTimeMillis(),
+
+    /**
      * 收缩压 (mmHg)
      * 正常范围: 90-140 mmHg
      */

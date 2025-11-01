@@ -72,7 +72,7 @@ interface BloodPressureDao {
      * 获取所有血压记录，按时间倒序排列
      * @return Flow形式的血压记录列表，支持数据变化监听
      */
-    @Query("SELECT * FROM blood_pressure_records ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_pressure_records ORDER BY record_time DESC, updated_at DESC")
     fun getAllRecords(): Flow<List<BloodPressureRecord>>
 
     /**

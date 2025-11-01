@@ -30,7 +30,7 @@ interface CholesterolDao {
     @Query("SELECT * FROM cholesterol_records WHERE is_delete = 0 ORDER BY record_time DESC LIMIT 1")
     suspend fun getLatestRecord(): CholesterolRecord?
 
-    @Query("SELECT * FROM cholesterol_records WHERE is_delete = 0 ORDER BY record_time DESC")
+    @Query("SELECT * FROM cholesterol_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC")
     fun getAllRecords(): Flow<List<CholesterolRecord>>
 
     @Query(

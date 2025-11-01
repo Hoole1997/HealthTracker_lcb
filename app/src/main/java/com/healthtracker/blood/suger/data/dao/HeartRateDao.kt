@@ -40,7 +40,7 @@ interface HeartRateDao {
     suspend fun getLatestRecord(): HeartRateRecord?
 
     /** 获取全部记录（按时间倒序） */
-    @Query("SELECT * FROM heart_rate_records WHERE is_delete = 0 ORDER BY record_time DESC")
+    @Query("SELECT * FROM heart_rate_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC")
     fun getAllRecords(): Flow<List<HeartRateRecord>>
 
     /** 按时间范围查询 */

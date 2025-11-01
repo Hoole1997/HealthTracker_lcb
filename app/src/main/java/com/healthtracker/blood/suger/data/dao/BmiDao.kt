@@ -25,7 +25,7 @@ interface BmiDao {
     suspend fun getById(id: Long): BmiRecord?
 
     /** 获取所有（过滤已删除），按时间倒序 */
-    @Query("SELECT * FROM bmi_records WHERE is_delete = 0 ORDER BY record_time DESC")
+    @Query("SELECT * FROM bmi_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC")
     fun getAllRecords(): Flow<List<BmiRecord>>
 
     /** 获取最近一条记录（过滤已删除） */

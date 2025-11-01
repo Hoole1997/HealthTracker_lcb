@@ -24,6 +24,12 @@ data class BloodSugarRecord(
     val recordTime: Date,
 
     /**
+     * 更新时间戳（毫秒）。创建与更新时维护。
+     */
+    @ColumnInfo(name = "updated_at")
+    val updatedAt: Long = System.currentTimeMillis(),
+
+    /**
      * 血糖值 (mg/dL)
      * 有效范围: 18.0~630.0 mg/dL
      */

@@ -70,7 +70,7 @@ interface BloodSugarDao {
      * 获取所有血糖记录，按时间倒序排列
      * @return Flow形式的血糖记录列表，支持数据变化监听
      */
-    @Query("SELECT * FROM blood_sugar_records ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_sugar_records ORDER BY record_time DESC, updated_at DESC")
     fun getAllRecords(): Flow<List<BloodSugarRecord>>
 
     /**
