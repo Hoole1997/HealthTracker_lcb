@@ -158,7 +158,7 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
                         .cropSquare()        // 打开裁剪功能，可传入比例 crop(1f, 1f) 做正方形
                         .compress(1024) // 压缩图片至1MB以内
                         .maxResultSize(1080, 1080) // 限制分辨率
-                        .galleryOnly()
+                        .cameraOnly()
                         .createIntent {
                             startForProfileImageResult.launch(it)
                         }
@@ -167,7 +167,7 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
                         .cropSquare()
                         .compress(1024) // 压缩图片至1MB以内
                         .maxResultSize(1080, 1080) // 限制分辨率
-                        .cameraOnly()
+                        .galleryOnly()
                         .createIntent {
                             startForProfileImageResult.launch(it)
                         }
