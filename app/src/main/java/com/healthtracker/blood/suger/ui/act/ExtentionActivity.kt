@@ -35,6 +35,7 @@ inline fun AppCompatActivity.showDeleteConfirm(crossinline onConfirm: suspend ()
 
 
 inline fun AppCompatActivity.showFreeLockConfirm(crossinline onConfirm: () -> Unit,crossinline onCancel:() -> Unit) {
+    //TODO 这个最好只展示异常，不然会影响下面原生广告有效展示
     ConfirmDialog(
         title = getString(R.string.kindly_note),
         message = getString(R.string.your_health_data_requires),
@@ -50,5 +51,7 @@ inline fun AppCompatActivity.showFreeLockConfirm(crossinline onConfirm: () -> Un
                 }
             }
         }
-    ).show(supportFragmentManager)
+    ).apply {
+        isCancelable = false
+    }.show(supportFragmentManager)
 }

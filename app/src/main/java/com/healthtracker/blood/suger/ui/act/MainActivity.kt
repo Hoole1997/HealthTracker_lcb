@@ -351,10 +351,11 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
         }
     }
 
-    override fun onBackPress() {
+    override fun handleBackPress(): Boolean {
         ExitDialog.show(supportFragmentManager){
             finish()
         }
+        return true
     }
 
 }
