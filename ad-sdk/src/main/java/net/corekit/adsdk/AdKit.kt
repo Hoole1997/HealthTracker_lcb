@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
-import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
 import com.tencent.mmkv.MMKV
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -50,7 +50,7 @@ object AdKit {
 
     // 控制器存储
     private val controllers = ConcurrentHashMap<AdType, AdController<*>>()
-
+    private val initDeferred = CompletableDeferred<Boolean>()
     // 🔧 FIX: 初始化互斥锁，防止并发初始化
     private val initializationMutex = Mutex()
 
@@ -106,8 +106,9 @@ object AdKit {
             if (initResult.isSuccess) {
                 // 初始化控制器
                 initializeControllers()
-
                 isInitialized = true
+                initDeferred.complete(isInitialized)
+
                 AdLogger.i("AdSdk initialized successfully")
                 AdResult.Success(Unit)
             } else {
@@ -117,6 +118,10 @@ object AdKit {
             AdLogger.e("AdSdk initialization failed", e)
             AdResult.Failure(AdException.from(e))
         }
+    }
+
+    private suspend fun awaitInitialized() {
+        initDeferred.await()  // 阻塞调用方直到初始化完成
     }
 
     /**
@@ -185,8 +190,8 @@ object AdKit {
         adType: AdType,
         onEvent: ((AdEvent) -> Unit)? = null
     ): AdResult<AdShowData> {
-        checkInitialized()
-
+        AdLogger.d("到达开屏场景")
+        awaitInitialized()
         val config = configManager.getConfig(adType)
 
         if (!config.enabled) {
@@ -217,11 +222,12 @@ object AdKit {
         adUnitId: String,
         onEvent: ((AdEvent) -> Unit)? = null
     ): AdResult<AdShowData> {
-        checkInitialized()
+        awaitInitialized()
 
         val controller = getController<Any>(adType)
             ?: return AdResult.Failure(AdException.unsupportedAdType(adType))
 
+        AdLogger.d("准备展示开屏广告")
         return controller.show(activity, adUnitId, onEvent)
     }
 
