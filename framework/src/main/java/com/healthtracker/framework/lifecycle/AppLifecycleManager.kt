@@ -16,6 +16,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.ext.logd
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -197,7 +198,11 @@ object AppLifecycleManager {
     private fun setupActivityLifecycleCallbacks(application: Application) {
         application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
-            override fun onActivityStarted(activity: Activity) {}
+            override fun onActivityStarted(activity: Activity) {
+                if(activity.javaClass.simpleName contentEquals "AdActivity" || activity.javaClass.simpleName contentEquals "FullScreenNativeAdActivity"){
+                    SysBarUtils.hideNavigationBar(activity)
+                }
+            }
 
             override fun onActivityResumed(activity: Activity) {
                 activeActivityCount++
