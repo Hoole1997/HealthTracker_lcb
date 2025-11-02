@@ -134,6 +134,7 @@ dependencies {
     api(project(":monetize"))
     api(project(":core"))
     api(project(":metrics"))
+    api(project(":ad-sdk"))
 
     // Core Android
     implementation(libs.androidx.core.ktx)
