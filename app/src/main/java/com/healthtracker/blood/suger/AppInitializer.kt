@@ -28,6 +28,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.corekit.adsdk.AdKit
+import net.corekit.adsdk.config.AdUnitConfig
+import net.corekit.adsdk.core.AdType
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.LaunchAds
 import org.lsposed.hiddenapibypass.HiddenApiBypass
@@ -126,6 +129,15 @@ class AppInitializer @Inject constructor(
                 setBackgroundExceptionHandler()
             }
 
+            initScope.launch {
+                AdKit.initialize(application, BuildConfig.ADMOB_APPLICATION_ID, configs = listOf(
+                    AdUnitConfig(
+                        adType = AdType.APP_OPEN,
+                        adUnitId = BuildConfig.ADMOB_SPLASH_ID,
+                        expiryDurationMs = 4 * 3600_000L
+                    )
+                ))
+            }
             
         } catch (e: Throwable) {
             e.printStackTrace()

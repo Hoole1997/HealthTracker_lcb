@@ -24,7 +24,8 @@ apply(from = "../scripts/sign.gradle")
 // 使用默认配置，避免不同变种间的冲突
 val showLog = findProperty("app")?.let { (it as Map<*, *>)["show_log"] as Boolean } ?: false
 val url = findProperty("url") as Map<*, *>
-
+val adMobConfig = findProperty("admob") as Map<*, *>
+val adMobUnitConfig = adMobConfig["adUnitIds"] as Map<*, *>
 println("showLog = $showLog")
 
 android {
@@ -40,7 +41,8 @@ android {
         buildConfigField("String", "PRIVACY_POLICY", "\"${url["privacyUrl"]}\"")
         buildConfigField("String", "FCM_URL", "\"${url["fcmUrl"]}\"")
         buildConfigField("String", "FCM_PKG", "\"${url["fcmPkg"]}\"")
-
+        buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${adMobConfig["applicationId"]}\"")
+        buildConfigField("String", "ADMOB_SPLASH_ID", "\"${adMobUnitConfig["splash"]}\"")
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
         }

@@ -13,7 +13,6 @@ import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
-import com.healthtracker.blood.suger.isNewUser
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.framework.BuildState
@@ -25,7 +24,6 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
-import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -33,11 +31,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
-import net.corekit.monetize.ads.AdResult
-import net.corekit.monetize.ads.AdsManager
+import net.corekit.adsdk.AdKit
+import net.corekit.adsdk.core.AdResult
+import net.corekit.adsdk.core.AdShowData
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.InterstitialAds
-import net.corekit.monetize.ads.LaunchAds
+import net.corekit.monetize.ads.log.AdLogger
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -126,32 +125,48 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
      */
     private suspend fun initializeAndShowAd(): Boolean {
         try {
-            // 初始化 AdMob SDK
+
+//            // 初始化 AdMob SDK
             if(BuildState.debug) "开始初始化 AdMob SDK".logd(TAG)
-            val initResult = AdsManager.init(this)
 
-            if (initResult is AdResult.Success) {
-                if(BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
-
-                // 显示开屏广告
-                val adResult = LaunchAds.getInstance().displayAd(
-                    activity = this,
-                    onLoaded = { isSuccess ->
-                        isAdLoaded = isSuccess
-                    }
-                )
-
-                if (adResult is AdResult.Success) {
-                    if(BuildState.debug) "开屏广告关闭".logd(TAG)
-                    return true
-                } else {
-                    if(BuildState.debug)  "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(TAG)
-                    return false
-                }
-            } else {
-                if(BuildState.debug) "AdMob SDK 初始化失败: ${(initResult as? AdResult.Failure)?.error?.message}".logd(TAG)
-                return false
-            }
+             val result = AdKit.showOpen(this)
+           return  when(result){
+                 is AdResult.Success<AdShowData> -> {
+                     AdLogger.d("开屏广告关闭")
+                     true
+                 }
+                 is AdResult.Loading -> {
+                     AdLogger.d("开屏广告加载中...")
+                     false
+                 }
+                 else -> {
+                     false
+                 }
+             }
+//            val initResult = AdsManager.init(this)
+//
+//            if (initResult is AdResult.Success) {
+//                if(BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
+//
+//                // 显示开屏广告
+//                val adResult = LaunchAds.getInstance().displayAd(
+//                    activity = this,
+//                    onLoaded = { isSuccess ->
+//                        isAdLoaded = isSuccess
+//                    }
+//                )
+//
+//                if (adResult is AdResult.Success) {
+//                    if(BuildState.debug) "开屏广告关闭".logd(TAG)
+//                    return true
+//                } else {
+//                    if(BuildState.debug)  "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(TAG)
+//                    return false
+//                }
+//            } else {
+//                if(BuildState.debug) "AdMob SDK 初始化失败: ${(initResult as? AdResult.Failure)?.error?.message}".logd(TAG)
+//                return false
+//            }
         } catch (e: Exception) {
             if(BuildState.debug) "广告初始化或显示异常 e:$e".loge(TAG)
             return false
