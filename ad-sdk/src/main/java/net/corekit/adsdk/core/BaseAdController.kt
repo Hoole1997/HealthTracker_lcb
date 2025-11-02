@@ -11,6 +11,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import net.corekit.adsdk.event.AdEvent
 import net.corekit.adsdk.event.AdEventBus
 import net.corekit.adsdk.metric.AdMetrics
@@ -193,10 +194,12 @@ internal abstract class BaseAdController<T>(
                             adUnitId,
                             "Load failed: ${loadResult.error.message}"
                         ))
+                        isShowingAd.set(false)
                         return loadResult
                     }
 
                     else -> {
+                        isShowingAd.set(false)
                         return AdResult.Failure(AdException.noAd(adUnitId))
                     }
                 }
@@ -264,7 +267,9 @@ internal abstract class BaseAdController<T>(
 
             // 6. 展示广告（子类实现）
             // ad 在此处不可能为 null，因为上面的逻辑已经保证了
-            val showResult = showInternal(activity, ad!!, adUnitId, onEvent)
+            val showResult = withContext(Dispatchers.Main.immediate) {
+                showInternal(activity, ad!!, adUnitId, onEvent)
+            }
 
             // 🔧 FIX: 重置展示标志
             isShowingAd.set(false)
@@ -422,7 +427,9 @@ internal abstract class BaseAdController<T>(
 
                         lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) -> {
                             // 继续展示广告
-                            showInternal(activity, pending.ad, pending.adUnitId, pending.onEvent)
+                            withContext(Dispatchers.Main.immediate) {
+                                showInternal(activity, pending.ad, pending.adUnitId, pending.onEvent)
+                            }
                         }
 
                         else -> {
