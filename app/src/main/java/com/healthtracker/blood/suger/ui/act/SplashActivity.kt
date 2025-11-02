@@ -98,6 +98,9 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         mViewBind.tvPrivacy.clickWithDuration {
             openBrowser(this, BuildConfig.PRIVACY_POLICY)
         }
+        lifecycleScope.launch {
+            initializeAndShowAd()
+        }
         playAnimations()
         checkNotificationPermission()
         checkNotificationOpen()
@@ -133,6 +136,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
            return  when(result){
                  is AdResult.Success<AdShowData> -> {
                      AdLogger.d("开屏广告关闭")
+                     stateMachine.onAdCompleted()
                      true
                  }
                  is AdResult.Loading -> {
@@ -140,6 +144,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                      false
                  }
                  else -> {
+                     stateMachine.onAdCompleted()
                      false
                  }
              }
@@ -262,42 +267,42 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
      */
     private fun onPermissionCheckCompleted() {
         stateMachine.onPermissionCheckCompleted()
-        lifecycleScope.launch {
-            val adJob = async {
-                initializeAndShowAd()
-            }
-
-            val timeoutJob = async {
-                delay(10000L)
-            }
-
-            // 等待广告完成或10秒超时（哪个先完成就继续）
-            val timeoutTriggered = select<Boolean> {
-                adJob.onAwait {
-                    // 广告任务完成
-                    false
-                }
-                timeoutJob.onAwait {
-                    // 10秒超时触发
-                    true
-                }
-            }
-
-            // 如果是超时触发，检查兜底策略
-            if (timeoutTriggered) {
-                val hasAdLoaded = isAdLoaded
-                if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
-                    // 没有任何广告，执行继续流程
-                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：无广告，执行继续流程")
-                } else {
-                    // 有广告加载或显示，继续等待广告完成
-                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
-                    adJob.await()
-                }
-            }
-
-            stateMachine.onAdCompleted()
-        }
+//        lifecycleScope.launch {
+//            val adJob = async {
+//                initializeAndShowAd()
+//            }
+//
+//            val timeoutJob = async {
+//                delay(10000L)
+//            }
+//
+//            // 等待广告完成或10秒超时（哪个先完成就继续）
+//            val timeoutTriggered = select<Boolean> {
+//                adJob.onAwait {
+//                    // 广告任务完成
+//                    false
+//                }
+//                timeoutJob.onAwait {
+//                    // 10秒超时触发
+//                    true
+//                }
+//            }
+//
+//            // 如果是超时触发，检查兜底策略
+//            if (timeoutTriggered) {
+//                val hasAdLoaded = isAdLoaded
+//                if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
+//                    // 没有任何广告，执行继续流程
+//                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：无广告，执行继续流程")
+//                } else {
+//                    // 有广告加载或显示，继续等待广告完成
+//                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
+//                    adJob.await()
+//                }
+//            }
+//
+//            stateMachine.onAdCompleted()
+//        }
     }
 
     /**

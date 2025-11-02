@@ -1,11 +1,16 @@
 package net.corekit.adsdk.core
 
 import android.app.Activity
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.adsdk.event.AdEvent
 import net.corekit.adsdk.event.AdEventBus
 import net.corekit.adsdk.metric.AdMetrics
@@ -13,6 +18,7 @@ import net.corekit.adsdk.service.AdCache
 import net.corekit.adsdk.service.AdLoader
 import net.corekit.adsdk.util.AdLogger
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.coroutines.resume
 
 /**
  * 广告控制器抽象基类
@@ -46,6 +52,30 @@ internal abstract class BaseAdController<T>(
 
     // 🔧 FIX: 防止并发 show() 调用的竞态条件
     private val isShowingAd = AtomicBoolean(false)
+
+    /**
+     * 待恢复的展示请求
+     * 当 Activity 暂时不可交互时保存，等待恢复后继续展示
+     *
+     * @param ad 广告对象
+     * @param adUnitId 广告位 ID
+     * @param onEvent 事件回调
+     * @param continuation 挂起的协程 continuation，用于恢复执行
+     * @param wasFromCache 广告是否来自缓存
+     */
+    private data class PendingShowRequest<T>(
+        val ad: T,
+        val adUnitId: String,
+        val onEvent: ((AdEvent) -> Unit)?,
+        val continuation: CancellableContinuation<AdResult<AdShowData>>,
+        val wasFromCache: Boolean
+    )
+
+    /**
+     * 当前待恢复的展示请求
+     * 只保存一个请求，新请求会覆盖旧请求
+     */
+    private var pendingRequest: PendingShowRequest<T>? = null
 
     /**
      * 预加载广告到缓存
@@ -116,8 +146,16 @@ internal abstract class BaseAdController<T>(
      * 1. 发布触发展示事件
      * 2. 尝试从缓存获取广告
      * 3. 如果缓存为空，立即加载
-     * 4. 调用 showInternal() 展示
-     * 5. 展示成功后触发预加载下一个广告
+     * 4. 检查 Activity 是否正在销毁或已销毁
+     *    - 如果是，直接返回失败（不会恢复）
+     * 5. 检查 Activity 是否处于可交互状态（RESUMED）
+     *    - 如果不可交互但未销毁，挂起协程等待 Activity 恢复
+     *    - 等待 onResume（继续展示）或 onDestroy（返回失败）
+     *    - 无超时限制，完全依赖 Activity 生命周期
+     * 6. 调用 showInternal() 展示
+     * 7. 展示成功后触发预加载下一个广告
+     *
+     * @return 展示结果，可能需要等待 Activity 恢复后才返回
      */
     override suspend fun show(
         activity: Activity,
@@ -136,6 +174,7 @@ internal abstract class BaseAdController<T>(
 
             // 2. 尝试从缓存获取
             var ad = cache.get(adUnitId)
+            val wasFromCache = (ad != null)  // 记录广告是否来自缓存
 
             // 3. 缓存为空则立即加载
             if (ad == null) {
@@ -163,7 +202,67 @@ internal abstract class BaseAdController<T>(
                 }
             }
 
-            // 4. 展示广告（子类实现）
+            // 4. 检查 Activity 是否正在销毁或已销毁（明确不会恢复的情况）
+            if (activity.isFinishing || activity.isDestroyed) {
+                AdLogger.w("[$adType] Activity is finishing or destroyed, cannot show ad")
+
+                // 如果广告是新加载的，放回缓存
+                if (!wasFromCache && ad != null) {
+                    cache.cache(adUnitId, ad)
+                    AdLogger.d("[$adType] Ad returned to cache")
+                }
+
+                // 发布失败事件
+                eventBus.post(AdEvent.ShowFailure(
+                    adType,
+                    adUnitId,
+                    "Activity finishing or destroyed"
+                ))
+
+                // 重置展示标志
+                isShowingAd.set(false)
+
+                return AdResult.Failure(AdException.showFailed("Activity is finishing or destroyed"))
+            }
+
+            // 5. 检查 Activity 是否可交互（生命周期检查）
+            if (activity is LifecycleOwner) {
+                val isResumed = activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+
+                if (!isResumed) {
+                    // Activity 暂时不可交互但未销毁，挂起协程等待恢复
+                    AdLogger.d("[$adType] Activity not in RESUMED state (current: ${activity.lifecycle.currentState}), waiting for resume...")
+
+                    // 挂起协程，等待 Activity 恢复或销毁
+                    return suspendCancellableCoroutine { continuation ->
+                        // 创建 LifecycleObserver
+                        val observer = ResumeLifecycleObserver(activity, activity)
+
+                        // 保存待恢复请求
+                        pendingRequest = PendingShowRequest(
+                            ad = ad!!,
+                            adUnitId = adUnitId,
+                            onEvent = onEvent,
+                            continuation = continuation,
+                            wasFromCache = wasFromCache
+                        )
+
+                        // 注册生命周期观察者
+                        activity.lifecycle.addObserver(observer)
+
+                        // 协程取消时清理资源
+                        continuation.invokeOnCancellation {
+                            pendingRequest = null
+                            activity.lifecycle.removeObserver(observer)
+                            isShowingAd.set(false)
+
+                            AdLogger.d("[$adType] Pending show cancelled for $adUnitId")
+                        }
+                    }
+                }
+            }
+
+            // 6. 展示广告（子类实现）
             // ad 在此处不可能为 null，因为上面的逻辑已经保证了
             val showResult = showInternal(activity, ad!!, adUnitId, onEvent)
 
@@ -286,5 +385,100 @@ internal abstract class BaseAdController<T>(
     fun cleanup() {
         controllerScope.cancel()
         AdLogger.d("[$adType] Controller cleaned up")
+    }
+
+    /**
+     * Activity 生命周期观察者
+     * 监听 Activity 的 onResume 和 onDestroy 事件
+     * - onResume: 继续展示待展示的广告
+     * - onDestroy: 清理待展示状态，返回失败结果
+     */
+    private inner class ResumeLifecycleObserver(
+        private val activity: Activity,
+        private val lifecycleOwner: LifecycleOwner
+    ) : DefaultLifecycleObserver {
+
+        /**
+         * Activity 恢复到可交互状态，继续展示广告
+         */
+        override fun onResume(owner: LifecycleOwner) {
+            val pending = pendingRequest ?: return
+
+            // 清理状态
+            pendingRequest = null
+            lifecycleOwner.lifecycle.removeObserver(this)
+
+            AdLogger.d("[$adType] Activity resumed, continue showing ad for ${pending.adUnitId}")
+
+            // 在协程中继续展示
+            controllerScope.launch {
+                val result = try {
+                    // 再次检查 Activity 状态（防止竞态条件）
+                    when {
+                        activity.isFinishing || activity.isDestroyed -> {
+                            AdLogger.w("[$adType] Activity is finishing/destroyed after resume event")
+                            AdResult.Failure(AdException.showFailed("Activity destroyed"))
+                        }
+
+                        lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) -> {
+                            // 继续展示广告
+                            showInternal(activity, pending.ad, pending.adUnitId, pending.onEvent)
+                        }
+
+                        else -> {
+                            AdLogger.w("[$adType] Activity not in RESUMED state after resume event")
+                            AdResult.Failure(AdException.showFailed("Activity not resumed"))
+                        }
+                    }
+                } catch (e: Exception) {
+                    AdLogger.e("[$adType] Failed to show ad after resume", e)
+                    AdResult.Failure(AdException.from(e))
+                } finally {
+                    // 重置展示标志
+                    isShowingAd.set(false)
+                }
+
+                // 恢复挂起的协程，返回最终结果
+                if (pending.continuation.isActive) {
+                    pending.continuation.resume(result)
+                }
+            }
+        }
+
+        /**
+         * Activity 销毁，取消待展示的广告
+         */
+        override fun onDestroy(owner: LifecycleOwner) {
+            val pending = pendingRequest ?: return
+
+            // 清理状态
+            pendingRequest = null
+            lifecycleOwner.lifecycle.removeObserver(this)
+
+            AdLogger.d("[$adType] Activity destroyed, cancel pending show for ${pending.adUnitId}")
+
+            // 如果广告是新加载的，放回缓存
+            if (!pending.wasFromCache) {
+                cache.cache(pending.adUnitId, pending.ad)
+                AdLogger.d("[$adType] Newly loaded ad returned to cache")
+            }
+
+            // 发布失败事件
+            eventBus.post(AdEvent.ShowFailure(
+                adType,
+                pending.adUnitId,
+                "Activity destroyed while waiting"
+            ))
+
+            // 恢复协程并返回失败结果
+            if (pending.continuation.isActive) {
+                pending.continuation.resume(
+                    AdResult.Failure(AdException.showFailed("Activity destroyed"))
+                )
+            }
+
+            // 重置展示标志
+            isShowingAd.set(false)
+        }
     }
 }

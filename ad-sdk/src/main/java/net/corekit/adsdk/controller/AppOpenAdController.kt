@@ -123,8 +123,11 @@ internal class AppOpenAdController(
                 }
             }
 
-            // 展示广告
-            ad.show(activity)
+            if(continuation.isActive){
+                // 展示广告
+                ad.show(activity)
+            }
+
         } catch (e: Exception) {
             // 捕获 show() 过程中的任何异常
             if (continuation.isActive) {
