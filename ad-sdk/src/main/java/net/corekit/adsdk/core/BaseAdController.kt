@@ -8,6 +8,7 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -18,6 +19,7 @@ import net.corekit.adsdk.metric.AdMetrics
 import net.corekit.adsdk.service.AdCache
 import net.corekit.adsdk.service.AdLoader
 import net.corekit.adsdk.util.AdLogger
+import net.corekit.adsdk.util.awaitWithBusinessTimeout
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resume
 
@@ -38,6 +40,7 @@ import kotlin.coroutines.resume
  * @param eventBus 事件总线
  * @param metrics 指标统计
  * @param maxCacheSize 最大缓存数量（默认 2）
+ * @param loadTimeoutMillis 即时加载时的超时时间，单位毫秒，null 表示不限制
  */
 internal abstract class BaseAdController<T>(
     override val adType: AdType,
@@ -45,7 +48,8 @@ internal abstract class BaseAdController<T>(
     protected val cache: AdCache<T>,
     protected val eventBus: AdEventBus,
     protected val metrics: AdMetrics,
-    private val maxCacheSize: Int = 2
+    private val maxCacheSize: Int = 2,
+    private val loadTimeoutMillis: Long? = null
 ) : AdController<T> {
 
     // 🔧 FIX: 管理的协程作用域，防止内存泄漏
@@ -181,10 +185,69 @@ internal abstract class BaseAdController<T>(
             if (ad == null) {
                 AdLogger.d("[$adType] No cached ad for $adUnitId, loading...")
 
-                when (val loadResult = loader.load(adUnitId)) {
+                val timeout = loadTimeoutMillis?.takeIf { it > 0 }
+                val start = System.currentTimeMillis()
+                val loadDeferred = controllerScope.async {
+                    loader.load(adUnitId)
+                }
+
+                /**
+                 * 处理业务层的超时逻辑
+                 */
+                val loadResult = loadDeferred.awaitWithBusinessTimeout(timeout) { deferred ->
+                    controllerScope.launch {
+                        runCatching { deferred.await() }
+                            .onSuccess { result ->
+                                when (result) {
+                                    is AdResult.Success -> {
+                                        if (cache.size(adUnitId) < maxCacheSize) {
+                                            cache.cache(adUnitId, result.data)
+                                            AdLogger.d(
+                                                "[$adType] Cached ad for $adUnitId after timeout completion, load duration: ${System.currentTimeMillis() - start}ms"
+                                            )
+                                        }
+                                    }
+
+                                    is AdResult.Failure -> {
+                                        AdLogger.e(
+                                            "[$adType] Deferred load failed after timeout for $adUnitId: ${result.error.message}"
+                                        )
+                                    }
+
+                                    else -> {
+                                        AdLogger.w("[$adType] Unexpected load result after timeout for $adUnitId")
+                                    }
+                                }
+                            }
+                            .onFailure { error ->
+                                AdLogger.e(
+                                    "[$adType] Failed to obtain deferred load result after timeout for $adUnitId",
+                                    error
+                                )
+                            }
+                    }
+                }
+
+                if (loadResult == null) {
+                    val effectiveTimeout = timeout ?: loadTimeoutMillis ?: -1L
+                    val message = "Load timeout after ${effectiveTimeout}ms"
+                    AdLogger.e("[$adType] $message for $adUnitId")
+                    eventBus.post(AdEvent.ShowFailure(
+                        adType,
+                        adUnitId,
+                        message
+                    ))
+                    isShowingAd.set(false)
+                    return AdResult.Failure(AdException.timeout("Load ad for $adUnitId"))
+                }
+
+                /**
+                 * 业务层的超时逻辑结束，没有超时
+                 */
+                when (loadResult) {
                     is AdResult.Success -> {
                         ad = loadResult.data
-                        AdLogger.d("[$adType] Ad loaded successfully for immediate show")
+                        AdLogger.d("[$adType] Ad loaded successfully for immediate show, duration: ${System.currentTimeMillis() - start}ms")
                     }
 
                     is AdResult.Failure -> {

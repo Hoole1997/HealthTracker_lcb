@@ -27,15 +27,22 @@ internal class AppOpenAdController(
     cache: AdCache<AppOpenAd>,
     eventBus: AdEventBus,
     metrics: AdMetrics,
-    maxCacheSize: Int = 2
+    maxCacheSize: Int = 2,
+    loadTimeoutMillis: Long = -1L
 ) : BaseAdController<AppOpenAd>(
     adType = AdType.APP_OPEN,
     loader = loader,
     cache = cache,
     eventBus = eventBus,
     metrics = metrics,
-    maxCacheSize = maxCacheSize
+    maxCacheSize = maxCacheSize,
+    loadTimeoutMillis = if(loadTimeoutMillis > 0L) loadTimeoutMillis else DEFAULT_LOAD_TIMEOUT_MS
 ) {
+
+    companion object {
+        // 默认开屏广告即时加载的超时时间（毫秒）
+        private const val DEFAULT_LOAD_TIMEOUT_MS = 8_000L
+    }
 
     /**
      * 开屏广告展示逻辑

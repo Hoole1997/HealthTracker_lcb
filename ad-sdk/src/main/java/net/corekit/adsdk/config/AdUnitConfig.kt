@@ -11,13 +11,15 @@ import net.corekit.adsdk.core.AdType
  * @param enabled 是否启用
  * @param maxCacheSize 最大缓存数量
  * @param expiryDurationMs 广告过期时间（毫秒）
+ * @param loadTimeoutMillis 即时加载超时时间（毫秒），-1 表示使用控制器默认值
  */
 data class AdUnitConfig(
     val adType: AdType,
     val adUnitId: String,
     val enabled: Boolean = true,
     val maxCacheSize: Int = 2,
-    val expiryDurationMs: Long = 3600_000L // 1 小时
+    val expiryDurationMs: Long = 3600_000L, // 1 小时
+    val loadTimeoutMillis: Long = -1
 ) {
     companion object {
         /**
@@ -29,7 +31,8 @@ data class AdUnitConfig(
                 adUnitId = adUnitId,
                 enabled = true,
                 maxCacheSize = 2,
-                expiryDurationMs = 3600_000L
+                expiryDurationMs = 3600_000L,
+                loadTimeoutMillis = -1
             )
         }
     }

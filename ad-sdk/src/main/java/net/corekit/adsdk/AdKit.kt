@@ -163,7 +163,8 @@ object AdKit {
                 ),
                 eventBus = eventBus,
                 metrics = metrics,
-                maxCacheSize = appOpenConfig.maxCacheSize
+                maxCacheSize = appOpenConfig.maxCacheSize,
+                loadTimeoutMillis = appOpenConfig.loadTimeoutMillis
             )
             AdLogger.d("AppOpenAdController initialized")
         }

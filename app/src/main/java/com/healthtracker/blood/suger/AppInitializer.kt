@@ -71,7 +71,7 @@ class AppInitializer @Inject constructor(
                 }else{
                     isFirstLaunch = false
                 }
-            }
+}
 
 
 
@@ -134,7 +134,8 @@ class AppInitializer @Inject constructor(
                     AdUnitConfig(
                         adType = AdType.APP_OPEN,
                         adUnitId = BuildConfig.ADMOB_SPLASH_ID,
-                        expiryDurationMs = 4 * 3600_000L
+                        expiryDurationMs = 4 * 3600_000L,
+                        loadTimeoutMillis = 10_000L
                     )
                 ))
             }
@@ -295,4 +296,4 @@ class AppInitializer @Inject constructor(
             if(BuildState.debug) "Failed to register lifecycle observers: ${e.message}".loge("AppInitializer")
         }
     }
-} 
+}
