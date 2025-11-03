@@ -2,6 +2,7 @@ package net.corekit.monetize.ads
 
 import android.content.Context
 import android.content.res.Resources
+import android.os.Bundle
 import android.view.ViewGroup
 import com.blankj.utilcode.util.ActivityUtils
 import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
@@ -69,7 +70,7 @@ class BannerAds private constructor() {
     companion object {
         private const val TAG = "BannerAds"
         private const val AD_TIMEOUT = 1 * 60 * 60 * 1000L
-        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 2
+        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 1
         
         @Volatile
         private var INSTANCE: BannerAds? = null
@@ -210,7 +211,10 @@ class BannerAds private constructor() {
         )
         
         return suspendCancellableCoroutine { continuation ->
-            val adRequest = BannerAdRequest.Builder(adUnitId, getAdSize(context)).build()
+            val adRequest = BannerAdRequest.Builder(adUnitId, getAdSize(context)).setGoogleExtrasBundle(
+                Bundle().apply {
+                    putString("collapsible", "bottom")
+                }).build()
             BannerAd.load(adRequest,object : AdLoadCallback<BannerAd>{
                 private var loadStartTime = System.currentTimeMillis()
                 override fun onAdFailedToLoad(adError: LoadAdError) {

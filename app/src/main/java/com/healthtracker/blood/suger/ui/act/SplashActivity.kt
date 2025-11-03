@@ -31,12 +31,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
-import net.corekit.adsdk.AdKit
-import net.corekit.adsdk.core.AdResult
-import net.corekit.adsdk.core.AdShowData
+import net.corekit.monetize.ads.AdResult
+import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.InterstitialAds
-import net.corekit.monetize.ads.log.AdLogger
+import net.corekit.monetize.ads.LaunchAds
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -98,9 +97,6 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         mViewBind.tvPrivacy.clickWithDuration {
             openBrowser(this, BuildConfig.PRIVACY_POLICY)
         }
-        lifecycleScope.launch {
-            initializeAndShowAd()
-        }
         playAnimations()
         checkNotificationPermission()
         checkNotificationOpen()
@@ -132,46 +128,30 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 //            // 初始化 AdMob SDK
             if(BuildState.debug) "开始初始化 AdMob SDK".logd(TAG)
 
-             val result = AdKit.showOpen(this)
-           return  when(result){
-                 is AdResult.Success<AdShowData> -> {
-                     AdLogger.d("开屏广告关闭")
-                     stateMachine.onAdCompleted()
-                     true
-                 }
-                 is AdResult.Loading -> {
-                     AdLogger.d("开屏广告加载中...")
-                     false
-                 }
-                 else -> {
-                     stateMachine.onAdCompleted()
-                     false
-                 }
-             }
-//            val initResult = AdsManager.init(this)
-//
-//            if (initResult is AdResult.Success) {
-//                if(BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
-//
-//                // 显示开屏广告
-//                val adResult = LaunchAds.getInstance().displayAd(
-//                    activity = this,
-//                    onLoaded = { isSuccess ->
-//                        isAdLoaded = isSuccess
-//                    }
-//                )
-//
-//                if (adResult is AdResult.Success) {
-//                    if(BuildState.debug) "开屏广告关闭".logd(TAG)
-//                    return true
-//                } else {
-//                    if(BuildState.debug)  "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(TAG)
-//                    return false
-//                }
-//            } else {
-//                if(BuildState.debug) "AdMob SDK 初始化失败: ${(initResult as? AdResult.Failure)?.error?.message}".logd(TAG)
-//                return false
-//            }
+            val initResult = AdsManager.init(this)
+
+            if (initResult is AdResult.Success) {
+                if(BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
+
+                // 显示开屏广告
+                val adResult = LaunchAds.getInstance().displayAd(
+                    activity = this,
+                    onLoaded = { isSuccess ->
+                        isAdLoaded = isSuccess
+                    }
+                )
+
+                if (adResult is AdResult.Success) {
+                    if(BuildState.debug) "开屏广告关闭".logd(TAG)
+                    return true
+                } else {
+                    if(BuildState.debug)  "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(TAG)
+                    return false
+                }
+            } else {
+                if(BuildState.debug) "AdMob SDK 初始化失败: ${(initResult as? AdResult.Failure)?.error?.message}".logd(TAG)
+                return false
+            }
         } catch (e: Exception) {
             if(BuildState.debug) "广告初始化或显示异常 e:$e".loge(TAG)
             return false
@@ -267,42 +247,42 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
      */
     private fun onPermissionCheckCompleted() {
         stateMachine.onPermissionCheckCompleted()
-//        lifecycleScope.launch {
-//            val adJob = async {
-//                initializeAndShowAd()
-//            }
-//
-//            val timeoutJob = async {
-//                delay(10000L)
-//            }
-//
-//            // 等待广告完成或10秒超时（哪个先完成就继续）
-//            val timeoutTriggered = select<Boolean> {
-//                adJob.onAwait {
-//                    // 广告任务完成
-//                    false
-//                }
-//                timeoutJob.onAwait {
-//                    // 10秒超时触发
-//                    true
-//                }
-//            }
-//
-//            // 如果是超时触发，检查兜底策略
-//            if (timeoutTriggered) {
-//                val hasAdLoaded = isAdLoaded
-//                if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
-//                    // 没有任何广告，执行继续流程
-//                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：无广告，执行继续流程")
-//                } else {
-//                    // 有广告加载或显示，继续等待广告完成
-//                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
-//                    adJob.await()
-//                }
-//            }
-//
-//            stateMachine.onAdCompleted()
-//        }
+        lifecycleScope.launch {
+            val adJob = async {
+                initializeAndShowAd()
+            }
+
+            val timeoutJob = async {
+                delay(10000L)
+            }
+
+            // 等待广告完成或10秒超时（哪个先完成就继续）
+            val timeoutTriggered = select<Boolean> {
+                adJob.onAwait {
+                    // 广告任务完成
+                    false
+                }
+                timeoutJob.onAwait {
+                    // 10秒超时触发
+                    true
+                }
+            }
+
+            // 如果是超时触发，检查兜底策略
+            if (timeoutTriggered) {
+                val hasAdLoaded = isAdLoaded
+                if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
+                    // 没有任何广告，执行继续流程
+                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：无广告，执行继续流程")
+                } else {
+                    // 有广告加载或显示，继续等待广告完成
+                    if(BuildState.debug)  Log.d(TAG, "10秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
+                    adJob.await()
+                }
+            }
+
+            stateMachine.onAdCompleted()
+        }
     }
 
     /**
