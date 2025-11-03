@@ -12,6 +12,8 @@ import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
 import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardItem
 import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAd
 import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAdEventCallback
+import com.remax.bill.ads.report.IpuController
+import com.remax.bill.ads.report.RpuController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -169,7 +171,25 @@ class RewardedAds private constructor() {
                             value.valueMicros,
                             value.currencyCode
                         )
-                        reportRevenue(adHolder.ad, finalAdUnitId,value)
+                        // 上报收益
+                        reportRevenue(adHolder.ad, finalAdUnitId, value)
+
+                        // 补充 ad_impression 事件并路由到 ThinkingData
+                        reportAdData(
+                            "ad_impression",
+                            mapOf(
+                                "ad_unit_name" to finalAdUnitId,
+                                "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                "number" to totalShowCount,
+                                "ad_source" to (adHolder.ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "value" to (value.valueMicros / 1_000_000.0),
+                                "currency" to value.currencyCode
+                            )
+                        )
+
+                        // 触发 Ipu / Rpu 钩子
+                        IpuController.onAdImpression("RW", value.valueMicros)
+                        RpuController.onAdRevenue("RW", value.valueMicros)
                     }
                     override fun onAdShowedFullScreenContent() {
                         totalShowCount++
@@ -377,7 +397,7 @@ class RewardedAds private constructor() {
             ),
             adRevenueNetwork = rewardedAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty(),
             adRevenueUnit = adUnitId,
-            adRevenuePlacement = rewardedAd.getResponseInfo().loadedAdSourceResponseInfo?.adapterClassName.orEmpty(),
+            adRevenuePlacement = rewardedAd.getResponseInfo().loadedAdSourceResponseInfo?.instanceName.orEmpty(),
             adFormat = "Rewarded"
         )
 
@@ -396,7 +416,11 @@ class RewardedAds private constructor() {
             "ad_format" to "Rewarded"
         )
         data.putAll(params)
-        ReportDataManager.reportData(eventName, data)
+        if (eventName == "ad_impression") {
+            ReportDataManager.reportDataByName("ThinkingData", eventName, data)
+        } else {
+            ReportDataManager.reportData(eventName, data)
+        }
     }
 
     private fun createAdException(message: String, cause: Throwable? = null): AdException {
