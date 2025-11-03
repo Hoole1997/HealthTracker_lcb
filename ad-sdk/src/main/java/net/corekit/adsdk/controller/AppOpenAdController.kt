@@ -1,5 +1,6 @@
 package net.corekit.adsdk.controller
 
+import ads_mobile_sdk.fs0
 import android.app.Activity
 import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
 import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAdEventCallback
@@ -132,6 +133,7 @@ internal class AppOpenAdController(
 
             if(continuation.isActive){
                 // 展示广告
+                ad.setImmersiveMode(true)
                 ad.show(activity)
             }
 
