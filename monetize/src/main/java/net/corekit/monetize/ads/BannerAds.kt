@@ -34,6 +34,7 @@ import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.BannerAdView
+import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -263,7 +264,7 @@ class BannerAds private constructor() {
                                 eventName = "ad_impression",
                                 params = mapOf(
                                     "ad_unit_name" to adUnitId,
-                                    "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                    "position" to PositionGet.get(),
                                     "number" to totalShowCount,
                                     "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -291,7 +292,7 @@ class BannerAds private constructor() {
                                 eventName = "ad_click",
                                 params = mapOf(
                                     "ad_unit_name" to adUnitId,
-                                    "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                    "position" to PositionGet.get(),
                                     "number" to totalClickCount,
                                     "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -315,7 +316,7 @@ class BannerAds private constructor() {
                                 eventName = "ad_close",
                                 params = mapOf(
                                     "ad_unit_name" to adUnitId,
-                                    "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                    "position" to PositionGet.get(),
                                     "number" to totalCloseCount,
                                     "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
@@ -391,7 +392,7 @@ class BannerAds private constructor() {
             eventName = "ad_position",
             params = mapOf(
                 "ad_unit_name" to finalAdUnitId,
-                "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                "position" to PositionGet.get(),
                 "number" to totalShowTriggerCount
             )
         )
@@ -407,7 +408,7 @@ class BannerAds private constructor() {
                     eventName = "ad_show_fail",
                     params = mapOf(
                         "ad_unit_name" to finalAdUnitId,
-                        "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                        "position" to PositionGet.get(),
                         "number" to totalShowFailCount,
                         "reason" to interceptResult.error.message
                     )
@@ -457,7 +458,7 @@ class BannerAds private constructor() {
                     eventName = "ad_show_fail",
                     params = mapOf(
                         "ad_unit_name" to finalAdUnitId,
-                        "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                        "position" to PositionGet.get(),
                         "number" to totalShowFailCount,
                         "reason" to "No fill"
                     )
@@ -470,7 +471,7 @@ class BannerAds private constructor() {
                 eventName = "ad_show_fail",
                 params = mapOf(
                     "ad_unit_name" to finalAdUnitId,
-                    "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                    "position" to PositionGet.get(),
                     "number" to totalShowFailCount,
                     "reason" to e.message.orEmpty()
                 )

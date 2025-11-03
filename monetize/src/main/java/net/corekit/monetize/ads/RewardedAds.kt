@@ -26,6 +26,7 @@ import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
+import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -63,7 +64,8 @@ class RewardedAds private constructor() {
 
     private var totalTriggerCount by DataStoreIntDelegate("reward_trigger_count", 0)
     private var totalShowCount by DataStoreIntDelegate("reward_show_count", 0)
-    private var totalFailCount by DataStoreIntDelegate("reward_fail_count", 0)
+    private var totalLoadFailCount by DataStoreIntDelegate("reward_load_fail_count", 0)
+    private var totalShowFailCount by DataStoreIntDelegate("reward_show_fail_count", 0)
     private var totalRewardCount by DataStoreIntDelegate("reward_reward_count", 0)
     private var totalClickCount by DataStoreIntDelegate("reward_click_count", 0)
 
@@ -124,6 +126,7 @@ class RewardedAds private constructor() {
             "ad_reward_trigger",
             mapOf(
                 "ad_unit_name" to finalAdUnitId,
+                "position" to PositionGet.get(),
                 "number" to totalTriggerCount
             )
         )
@@ -138,7 +141,7 @@ class RewardedAds private constructor() {
                 when (val loadResult = load(activity, finalAdUnitId)) {
                     is AdResult.Failure -> {
                         ADLoadingDialog.hide()
-                        totalFailCount++
+                        totalLoadFailCount++
                         return@withContext AdResult.Failure(loadResult.error)
                     }
 
@@ -154,7 +157,6 @@ class RewardedAds private constructor() {
                 if (!loadingShown) {
                     ADLoadingDialog.hide()
                 }
-                totalFailCount++
                 val error = createAdException("激励广告缓存为空")
                 return@withContext AdResult.Failure(error)
             }
@@ -179,7 +181,7 @@ class RewardedAds private constructor() {
                             "ad_impression",
                             mapOf(
                                 "ad_unit_name" to finalAdUnitId,
-                                "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                "position" to PositionGet.get(),
                                 "number" to totalShowCount,
                                 "ad_source" to (adHolder.ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                 "value" to (value.valueMicros / 1_000_000.0),
@@ -213,7 +215,11 @@ class RewardedAds private constructor() {
                             "ad_reward_close",
                             mapOf(
                                 "ad_unit_name" to finalAdUnitId,
-                                "reward_granted" to outcome.rewarded
+                                "position" to PositionGet.get(),
+                                "reward_granted" to outcome.rewarded,
+                                "ad_source" to (adHolder.ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                "currency" to (currentAdValue?.currencyCode ?: "")
                             )
                         )
                         if (!continuation.isCompleted) {
@@ -229,7 +235,7 @@ class RewardedAds private constructor() {
                     }
 
                     override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
-                        totalFailCount++
+                        totalShowFailCount++
                         AdLogger.e("激励广告展示失败: %s", fullScreenContentError.message)
                         val error = createAdException("展示失败: ${fullScreenContentError.message}")
                         reportAdData(
@@ -265,7 +271,7 @@ class RewardedAds private constructor() {
                             eventName = "ad_click",
                             params = mapOf(
                                 "ad_unit_name" to finalAdUnitId,
-                                "position" to ActivityUtils.getTopActivity()::class.java.simpleName,
+                                "position" to PositionGet.get(),
                                 "number" to totalClickCount,
                                 "ad_source" to (adHolder.ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                 "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -275,27 +281,19 @@ class RewardedAds private constructor() {
                     }
                 }
 
-                try {
-                    adHolder.ad.show(activity) { item ->
-                        rewardItem = item
-                        totalRewardCount++
-                        reportAdData(
-                            "ad_reward_earned",
-                            mapOf(
-                                "ad_unit_name" to finalAdUnitId,
-                                "number" to totalRewardCount,
-                                "type" to item.type,
-                                "amount" to item.amount
-                            )
+                adHolder.ad.show(activity) { item ->
+                    rewardItem = item
+                    totalRewardCount++
+                    reportAdData(
+                        "ad_reward_earned",
+                        mapOf(
+                            "ad_unit_name" to finalAdUnitId,
+                            "number" to totalRewardCount,
+                            "type" to item.type,
+                            "amount" to item.amount,
+                            "ad_source" to (adHolder.ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                         )
-                    }
-                } catch (e: Exception) {
-                    totalFailCount++
-                    val error = createAdException("展示异常: ${e.message}", e)
-                    if (!continuation.isCompleted) {
-                        continuation.resume(AdResult.Failure(error))
-                    }
-
+                    )
                 }
 
                 continuation.invokeOnCancellation {
@@ -303,10 +301,10 @@ class RewardedAds private constructor() {
                 }
             }
         } catch (e: Exception) {
-            ADLoadingDialog.hide()
-            totalFailCount++
             val error = createAdException("展示异常: ${e.message}", e)
             AdResult.Failure(error)
+        }finally {
+            ADLoadingDialog.hide()
         }
     }
 
