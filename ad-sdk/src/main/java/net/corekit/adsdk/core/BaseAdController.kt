@@ -83,6 +83,16 @@ internal abstract class BaseAdController<T>(
     private var pendingRequest: PendingShowRequest<T>? = null
 
     /**
+     * 预加载锁映射：adUnitId -> 是否正在预加载
+     *
+     * 用于防止同一广告位的并发预加载：
+     * - 当预加载开始时，设置为 true
+     * - 当预加载完成（成功或失败）时，重置为 false
+     * - 使用 AtomicBoolean 保证线程安全的 CAS 操作
+     */
+    private val preloadLocks = java.util.concurrent.ConcurrentHashMap<String, AtomicBoolean>()
+
+    /**
      * 预加载广告到缓存
      *
      * 流程：
@@ -262,6 +272,11 @@ internal abstract class BaseAdController<T>(
                     }
 
                     else -> {
+                        // ✅ 实际错误：意外的加载结果类型
+                        publishEvent(
+                            AdEvent.ShowFailure(adType, adUnitId, "Unexpected load result"),
+                            onEvent
+                        )
                         isShowingAd.set(false)
                         return AdResult.Failure(AdException.noAd(adUnitId))
                     }
@@ -278,12 +293,8 @@ internal abstract class BaseAdController<T>(
                     AdLogger.d("[$adType] Ad returned to cache")
                 }
 
-                // 发布失败事件
-                eventBus.post(AdEvent.ShowFailure(
-                    adType,
-                    adUnitId,
-                    "Activity finishing or destroyed"
-                ))
+                // ✅ 生命周期拦截：不发布事件，不通知业务层
+                // 这是正常流程，业务方通过返回的 AdResult.Failure 自行判断即可
 
                 // 重置展示标志
                 isShowingAd.set(false)
@@ -331,7 +342,7 @@ internal abstract class BaseAdController<T>(
             // 6. 展示广告（子类实现）
             // ad 在此处不可能为 null，因为上面的逻辑已经保证了
             val showResult = withContext(Dispatchers.Main.immediate) {
-                showInternal(activity, ad!!, adUnitId, onEvent)
+                showInternal(activity, checkNotNull(ad) { "Ad should not be null at this point" }, adUnitId, onEvent)
             }
 
             // 🔧 FIX: 重置展示标志
@@ -384,13 +395,24 @@ internal abstract class BaseAdController<T>(
      */
     protected fun triggerPreloadIfNeeded(adUnitId: String) {
         if (cache.size(adUnitId) < maxCacheSize) {
-            AdLogger.d("[$adType] Triggering preload for next ad after impression")
-            controllerScope.launch {
-                try {
-                    preload(adUnitId)
-                } catch (e: Exception) {
-                    AdLogger.e("[$adType] Preload after impression failed", e)
+            // ✅ 获取或创建该广告位的预加载锁
+            val lock = preloadLocks.getOrPut(adUnitId) { AtomicBoolean(false) }
+
+            // ✅ 原子检查并设置预加载标志（CAS 操作）
+            if (lock.compareAndSet(false, true)) {
+                AdLogger.d("[$adType] Triggering preload for next ad after impression")
+                controllerScope.launch {
+                    try {
+                        preload(adUnitId)
+                    } catch (e: Exception) {
+                        AdLogger.e("[$adType] Preload after impression failed", e)
+                    } finally {
+                        // ✅ 无论成功或失败，都释放锁
+                        lock.set(false)
+                    }
                 }
+            } else {
+                AdLogger.d("[$adType] Preload already in progress for $adUnitId, skipping")
             }
         }
     }
@@ -502,6 +524,11 @@ internal abstract class BaseAdController<T>(
                     }
                 } catch (e: Exception) {
                     AdLogger.e("[$adType] Failed to show ad after resume", e)
+                    // ✅ 实际错误：发布事件通知业务层
+                    publishEvent(
+                        AdEvent.ShowFailure(adType, pending.adUnitId, "Exception after resume: ${e.message}"),
+                        pending.onEvent
+                    )
                     AdResult.Failure(AdException.from(e))
                 } finally {
                     // 重置展示标志
@@ -533,12 +560,8 @@ internal abstract class BaseAdController<T>(
                 AdLogger.d("[$adType] Newly loaded ad returned to cache")
             }
 
-            // 发布失败事件
-            eventBus.post(AdEvent.ShowFailure(
-                adType,
-                pending.adUnitId,
-                "Activity destroyed while waiting"
-            ))
+            // ✅ 生命周期拦截：不发布事件，不通知业务层
+            // Activity 销毁是正常生命周期，业务方通过返回的 AdResult.Failure 自行判断
 
             // 恢复协程并返回失败结果
             if (pending.continuation.isActive) {
