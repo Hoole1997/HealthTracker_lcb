@@ -73,7 +73,7 @@ object ChannelUserController {
      */
     fun getCurrentChannel(): UserChannelType {
         return try {
-            val currentChannelString = ""
+            val currentChannelString = channelTypeString
             if (currentChannelString.isNullOrEmpty()) {
                 CoreLogger.w("渠道字符串为空，使用默认NATURAL")
                 return UserChannelType.NATURAL
