@@ -25,6 +25,7 @@ import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
+import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
