@@ -188,8 +188,8 @@ class RewardedAds private constructor() {
                         )
 
                         // 触发 Ipu / Rpu 钩子
-                        IpuController.onAdImpression("RW", value.valueMicros)
-                        RpuController.onAdRevenue("RW", value.valueMicros)
+                        IpuController.onAdImpression("RV", value.valueMicros)
+                        RpuController.onAdRevenue("RV", value.valueMicros)
                     }
                     override fun onAdShowedFullScreenContent() {
                         totalShowCount++
@@ -347,6 +347,7 @@ class RewardedAds private constructor() {
                                 "pass_time" to ceil(loadTime / 1000.0).toInt()
                             )
                         )
+                        FpuController.onAdFill("RV")
                         continuation.resume(ad)
                     }
 
