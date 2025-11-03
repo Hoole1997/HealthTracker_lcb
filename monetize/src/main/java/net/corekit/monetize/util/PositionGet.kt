@@ -2,7 +2,7 @@ package net.corekit.monetize.util
 
 import android.app.Activity
 import com.blankj.utilcode.util.ActivityUtils
-import com.google.android.gms.ads.AdActivity
+import com.google.android.libraries.ads.mobile.sdk.common.AdActivity
 import net.corekit.monetize.ui.FullScreenNativeAdActivity
 
 object PositionGet {

@@ -294,7 +294,7 @@ class NativeAds private constructor() {
                 .setAdChoicesPlacement(
                     AdChoicesPlacement.TOP_RIGHT
                 ).setMediaAspectRatio(
-                    NativeAd.NativeMediaAspectRatio.LANDSCAPE
+                    NativeAd.NativeMediaAspectRatio.ANY
                 ).setVideoOptions(videoOptions).build()
             NativeAdLoader.load(adRequest,object : NativeAdLoaderCallback{
                 override fun onNativeAdLoaded(nativeAd: NativeAd) {
