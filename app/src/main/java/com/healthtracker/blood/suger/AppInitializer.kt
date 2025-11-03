@@ -3,7 +3,6 @@ package com.healthtracker.blood.suger
 import android.app.Application
 import android.content.Intent
 import android.os.Looper
-import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.config.registry.AppConfigRegistry
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.di.IoDispatcher
@@ -28,15 +27,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.corekit.adsdk.AdKit
-import net.corekit.adsdk.config.AdUnitConfig
-import net.corekit.adsdk.core.AdType
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.LaunchAds
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.jvm.java
 
 /**
  * 应用初始化器
@@ -129,16 +124,16 @@ class AppInitializer @Inject constructor(
                 setBackgroundExceptionHandler()
             }
 
-            initScope.launch {
-                AdKit.initialize(application, BuildConfig.ADMOB_APPLICATION_ID, configs = listOf(
-                    AdUnitConfig(
-                        adType = AdType.APP_OPEN,
-                        adUnitId = BuildConfig.ADMOB_SPLASH_ID,
-                        expiryDurationMs = 4 * 3600_000L,
-                        loadTimeoutMillis = 10_000L
-                    )
-                ))
-            }
+//            initScope.launch {
+//                AdKit.initialize(application, BuildConfig.ADMOB_APPLICATION_ID, configs = listOf(
+//                    AdUnitConfig(
+//                        adType = AdType.APP_OPEN,
+//                        adUnitId = BuildConfig.ADMOB_SPLASH_ID,
+//                        expiryDurationMs = 4 * 3600_000L,
+//                        loadTimeoutMillis = 10_000L
+//                    )
+//                ))
+//            }
             
         } catch (e: Throwable) {
             e.printStackTrace()
