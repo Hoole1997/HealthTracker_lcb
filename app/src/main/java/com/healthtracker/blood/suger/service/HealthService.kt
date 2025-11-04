@@ -19,6 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import net.corekit.core.controller.ChannelUserController
+import net.corekit.core.report.ReportDataManager
 import net.corekit.core.utils.ConfigRemoteManager
 import javax.inject.Inject
 
@@ -122,6 +123,7 @@ class HealthService : Service() {
                 try {
                     // 首次延迟 5 分钟后执行
                     delay(interval * 60 * 1000L)
+                    ReportDataManager.reportData("Notific_Pull", mapOf("topic" to "timer"))
                     refreshNotification()
 
                     if (BuildState.debug) {

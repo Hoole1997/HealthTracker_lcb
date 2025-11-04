@@ -37,8 +37,6 @@ class ThinkingReporter : ReporterData {
                     MetricsLogger.e("数数SDK App ID 未配置")
                     return
                 }
-
-                TDAnalytics.enableLog(true)
                 // 初始化数数SDK
                 TDAnalytics.init(context, appId, serverUrl)
                 TDAnalytics.enableLog(MetricsLogger.checkLogEnabled())

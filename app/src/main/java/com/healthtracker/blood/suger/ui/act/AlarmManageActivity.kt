@@ -9,6 +9,8 @@ import com.healthtracker.blood.suger.databinding.ActivityAlarmManagerBinding
 import com.healthtracker.blood.suger.ui.adapter.AlarmAdapter
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.AlarmViewModel
+import com.healthtracker.blood.suger.util.pushRequest
+import com.healthtracker.blood.suger.util.pushResult
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.clickWithDuration
@@ -121,6 +123,7 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
     private fun checkNotificationPermission() {
         if (!permissionManager.isNotificationPermissionGranted()) {
             "Notification permission not granted, requesting...".logw(TAG)
+            pushRequest("alarm_manager")
             permissionManager.requestNotificationPermission(this)
         } else {
             "Notification permission already granted".logd(TAG)
@@ -137,10 +140,13 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
         val handled = permissionManager.handlePermissionResult(requestCode, permissions, grantResults)
         if (handled) {
             if (permissionManager.isNotificationPermissionGranted()) {
+                pushResult("allow","alarm_manager")
                 "Notification permission granted".logd(TAG)
             } else {
+                pushResult("denied","alarm_manager")
                 "Notification permission denied".logw(TAG)
             }
+
         }
     }
 

@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.models.FsiConfig
 import com.healthtracker.blood.suger.config.models.PushMessage
+import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.push.canUpgradeToFullScreen
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver.Companion.EXTRA_ACTION_VALUE
@@ -81,7 +82,7 @@ class CustomNotificationHelper @Inject constructor(
 
             // 创建点击和删除 PendingIntent
             val finalNotificationId = notificationId ?: (NOTIFICATION_ID_BASE + pushMessage.id.hashCode())
-            val clickIntent = createClickPendingIntent(pushMessage.actionType,finalNotificationId)
+            val clickIntent = createClickPendingIntent(pushMessage.actionType,finalNotificationId,scenario)
             val deleteIntent = createDeletePendingIntent(finalNotificationId)
 
             val channelId = if(isSilent) CHANNEL_ID_GENERAL_SILENT else CHANNEL_ID_GENERAL
@@ -216,13 +217,17 @@ class CustomNotificationHelper @Inject constructor(
      * 创建点击事件的 PendingIntent
      * 通过 NotificationActionReceiver 处理，以支持 Loop 推送停止
      */
-    private fun createClickPendingIntent(actionType:Int,notificationId: Int): PendingIntent {
+    private fun createClickPendingIntent(actionType:Int,notificationId: Int,scenario: PushScenario): PendingIntent {
         if(BuildState.debug) "createClickPendingIntent actionType = $actionType,notificationId = $notificationId".logd(PushOrchestrator.TAG)
         // 直接创建启动 SplashActivity 的 Intent
         val intent = Intent(context, SplashActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
             putExtra(EXTRA_NOTIFICATION_ACTION,mapActionType(actionType))
+            putExtra(LANDING_NOTIFICATION_FROM,when(scenario){
+                PushScenario.FCM -> "firebase_push"
+                else -> "local_push"
+            })
         }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE

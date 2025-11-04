@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger
 import android.app.Application
 import android.content.Intent
 import android.os.Looper
+import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.config.registry.AppConfigRegistry
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.di.IoDispatcher
@@ -62,10 +63,8 @@ class AppInitializer @Inject constructor(
                 remoteConfigManager.refreshConfig()
                 //检查是否满足展示开屏广告条件
                 val result = LaunchAds.getInstance().checkInterceptor(application)
-                if(!isFirstLaunch && result is AdResult.Success){
+                if(!ActivityUtils.isActivityExistsInStack(SplashActivity::class.java) && result is AdResult.Success){
                     startSplashActivity()
-                }else{
-                    isFirstLaunch = false
                 }
 }
 

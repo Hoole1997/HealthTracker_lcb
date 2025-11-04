@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.ui.act
 
+import android.Manifest
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
@@ -7,14 +8,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.animation.addListener
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.alarm.PermissionManager
+import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.blood.suger.util.logEvent
+import com.healthtracker.blood.suger.util.pushRequest
+import com.healthtracker.blood.suger.util.pushResult
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -24,6 +30,8 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
+import com.healthtracker.framework.util.isLeast12
+import com.healthtracker.framework.util.isLeast13
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -31,6 +39,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
+import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.InterstitialAds
@@ -38,6 +47,8 @@ import net.corekit.monetize.ads.LaunchAds
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import javax.inject.Inject
+import kotlin.jvm.java
+import kotlin.math.ceil
 
 @AndroidEntryPoint
 class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
@@ -93,8 +104,10 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     override fun createViewBinding() = ActivitySplashBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
-
+    private var launchTime = 0L
     override fun initView(savedInstanceState: Bundle?) {
+        launchTime = System.currentTimeMillis()
+        logEvent("loading_pagge_show")
         mViewBind.tvPrivacy.clickWithDuration {
             openBrowser(this, BuildConfig.PRIVACY_POLICY)
         }
@@ -141,6 +154,13 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 
     private fun checkNotificationOpen() {
        val notificationId = intent.getIntExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,-1)
+        ReportDataManager.reportData(
+            "app_open", mapOf(
+                "type" to if (isTaskRoot) "cold_open" else "hot_open",
+                "position" to if (intent.hasExtra(LANDING_NOTIFICATION_FROM)) intent.getStringExtra(
+                    LANDING_NOTIFICATION_FROM
+                ).orEmpty().ifBlank { "other" } else "other"
+            ))
         if (notificationId == -1) {
             if(BuildState.debug) "Invalid notification ID: $notificationId".logw(TAG)
             return
@@ -201,6 +221,11 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     override fun onDestroy() {
         stateMachine.onDestroy()
         super.onDestroy()
+        logEvent(
+            "loading_page_end", mapOf(
+                "pass_time" to ceil((System.currentTimeMillis() - launchTime) / 1000.0).toInt()
+            )
+        )
     }
 
     override fun isFullscreen() = true
@@ -254,10 +279,14 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
      */
     private  fun checkNotificationPermission() {
         "Checking notification permission...".logd(TAG)
+        if(!isLeast13()){
+            pushResult("allow1","Appstart")
+        }
+        pushRequest("Appstart")
 
         val notificationStatus = permissionManager.checkNotificationPermission()
 
-        when (notificationStatus) {
+      when (notificationStatus) {
             PermissionManager.Companion.PermissionStatus.GRANTED,
             PermissionManager.Companion.PermissionStatus.NOT_REQUIRED -> {
                 if(BuildState.debug) "Notification permission already granted or not required".logd(TAG)
@@ -303,8 +332,11 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             val currentStatus = permissionManager.checkNotificationPermission()
             if (currentStatus == PermissionManager.Companion.PermissionStatus.GRANTED) {
                 if(BuildState.debug) "Notification permission granted by user".logd(TAG)
+                pushResult("allow","Appstart")
             } else {
                 if(BuildState.debug) "Notification permission denied by user, but continue to main activity".logd(TAG)
+                val result = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)
+                pushResult(if(result) "denied" else "denied_forever","Appstart")
             }
             onPermissionCheckCompleted()
         }

@@ -15,3 +15,5 @@ const val KEY_HAS_SHOW_GUIDE_HR= "key_has_show_guide_hr"
 
 const val KEY_REMOTE_FILE_L_COUNT = "key_remote_file_l_count"
 const val KEY_USER_COUNTRY = "key_user_country"
+
+val LANDING_NOTIFICATION_FROM = "landing_notification_from"
