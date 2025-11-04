@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.animation.addListener
 import androidx.lifecycle.lifecycleScope
@@ -45,7 +46,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         private const val TAG = "SplashActivity"
     }
 
-
+    private var isAdLoaded = false
     private val hasFullNativeShowing : Boolean
         get() = FullNativeAds.getInstance().checkAdShowing()
     private val hasInterstitialShowing : Boolean
@@ -107,7 +108,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             val timeoutJob = async {
                 delay(timeout * 1000L)
             }
-            select<Boolean> {
+           val timeoutTriggered = select<Boolean> {
                 adJob.onAwait {
                     false
                 }
@@ -115,6 +116,22 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                     true
                 }
             }
+
+            if(timeoutTriggered){
+                "触发超时".logd(TAG)
+                val hasAdLoaded = isAdLoaded
+                if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
+                    // 没有任何广告，执行继续流程
+                    if(BuildState.debug)  Log.d(TAG, "${timeout}秒超时兜底：无广告，执行继续流程")
+                } else {
+                    // 有广告加载或显示，继续等待广告完成
+                    if(BuildState.debug)  Log.d(TAG, "${timeout}秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
+                    adJob.await()
+                }
+            }else{
+                "非超时触发".logd(TAG)
+            }
+
             stateMachine.onAdCompleted()
         }
         playAnimations()
@@ -152,6 +169,9 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             // 显示开屏广告
             val adResult = LaunchAds.getInstance().displayAd(
                 activity = this,
+                onLoaded = { isSuccess ->
+                    isAdLoaded = isSuccess
+                }
             )
 
             if (adResult is AdResult.Success) {
