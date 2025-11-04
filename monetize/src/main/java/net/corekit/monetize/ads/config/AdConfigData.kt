@@ -35,7 +35,9 @@ data class AdConfigData(
         @SerializedName("onboarding_dialog_ad_enabled")
         val showGuideDialogNative: Int,
         @SerializedName(value = "native_time_interval")
-        val homeNativeTimeInterval: Int
+        val homeNativeTimeInterval: Int,
+        @SerializedName(value = "splash_time_out")
+        val splashTimeout:Int
     )
     
     data class AdTypeConfig(

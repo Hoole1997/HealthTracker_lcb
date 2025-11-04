@@ -226,6 +226,18 @@ object AdConfigManager {
     }
 
     /**
+     * 获取开屏失败后是否展示插屏
+     */
+    fun getSplashTimeout(): Int {
+        return configData?.let { config ->
+            when (ChannelUserController.getCurrentChannel()) {
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.splashTimeout
+                ChannelUserController.UserChannelType.PAID -> config.paid.splashTimeout
+            }
+        } ?: 10
+    }
+
+    /**
      * 获取返回主页时是否展示插屏
      */
     fun shouldShowInterstitialOnHomeReturn(): Boolean {

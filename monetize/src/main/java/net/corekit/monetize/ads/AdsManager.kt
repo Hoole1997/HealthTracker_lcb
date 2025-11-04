@@ -47,7 +47,7 @@ object AdsManager {
                     }
                     
                     isInitialized = true
-                    initDeferred.complete(isInitialized)
+                    initDeferred.complete(true)
                     val result = AdResult.Success(Unit)
                     _initializationState.value = result
                     continuation.resume(result)

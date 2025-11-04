@@ -31,11 +31,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
-import net.corekit.core.utils.ConfigRemoteManager
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.InterstitialAds
 import net.corekit.monetize.ads.LaunchAds
+import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import javax.inject.Inject
 
@@ -103,7 +103,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 initializeAndShowAd()
             }
 
-            val timeout = ConfigRemoteManager.getInt("splash_time_out",10)
+            val timeout = AdConfigManager.getSplashTimeout()
             AdLogger.d("启动页面，超时时长：$timeout s")
             val timeoutJob = async {
                 delay(timeout * 1000L)
