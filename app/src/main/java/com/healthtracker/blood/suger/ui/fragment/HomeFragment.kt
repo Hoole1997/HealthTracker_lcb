@@ -154,9 +154,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
 
     override fun onResume() {
         super.onResume()
-        if(!guidFeature()){
+        if(!guidFeature() && !isHeighLightLeave){
             NativeCardDialog.showOncePerMinute(requireActivity())
         }
+        isHeighLightLeave = false
     }
 
     /**
@@ -291,6 +292,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     }
 
     private var isShowHighligh = false
+    private var isHeighLightLeave = false
     private fun guidFeature(): Boolean{
         if(hasShowAllGuide() || isShowHighligh){
             return false
@@ -393,6 +395,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
             .setOnMaskViewClickCallback { index ->
                 //do something
+                isHeighLightLeave = true
                 navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
             }
             .setOnShowCallback {
