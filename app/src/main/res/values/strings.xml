@@ -961,7 +961,7 @@
 
     <!-- 药物提醒通知相关字符串 -->
     <string name="medication_reminder_title">🔔 Medication Reminder</string>
-    <string name="medication_reminder_content">It\'s time to take your medication</string>
+    <string name="medication_reminder_content">It is time for your medication, please take it on time and take good care of yourself.</string>
     <string name="medication_notification_title_with_time">%1$s at %2$s</string>
 
     <!-- FSI权限对话框字符串 -->
