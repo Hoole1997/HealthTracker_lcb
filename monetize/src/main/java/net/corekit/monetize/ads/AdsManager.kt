@@ -3,6 +3,7 @@ package net.corekit.monetize.ads
 import android.content.Context
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
+import kotlinx.coroutines.CompletableDeferred
 import net.corekit.monetize.ads.log.AdLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,7 @@ object AdsManager {
     
     private val _initializationState = MutableStateFlow<AdResult<Unit>>(AdResult.Loading)
     val initializationState: StateFlow<AdResult<Unit>> = _initializationState.asStateFlow()
-    
+    private val initDeferred = CompletableDeferred<Boolean>()
     private var isInitialized = false
     
     /**
@@ -46,6 +47,7 @@ object AdsManager {
                     }
                     
                     isInitialized = true
+                    initDeferred.complete(isInitialized)
                     val result = AdResult.Success(Unit)
                     _initializationState.value = result
                     continuation.resume(result)
@@ -65,7 +67,10 @@ object AdsManager {
             }
         }
     }
-    
+
+    internal suspend fun awaitInitialized() {
+        initDeferred.await()  // 阻塞调用方直到初始化完成
+    }
     /**
      * 检查SDK是否已初始化
      */

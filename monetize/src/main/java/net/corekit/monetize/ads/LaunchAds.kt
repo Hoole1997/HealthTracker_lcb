@@ -1,7 +1,13 @@
 package net.corekit.monetize.ads
 
+import ads_mobile_sdk.ac
+import ads_mobile_sdk.el
+import ads_mobile_sdk.nu
 import android.app.Activity
 import android.content.Context
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.blankj.utilcode.util.ActivityUtils
 import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
 import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAdEventCallback
@@ -12,7 +18,13 @@ import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
 import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
 import com.remax.bill.ads.report.IpuController
 import com.remax.bill.ads.report.RpuController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import net.corekit.core.ads.RevenueAdData
 import net.corekit.core.ads.RevenueAdManager
 import net.corekit.core.ads.RevenueInfo
@@ -26,6 +38,7 @@ import net.corekit.monetize.ads.interceptor.InterceptorChain
 import net.corekit.monetize.ads.interceptor.ShowCountLimitInterceptor
 import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
 import net.corekit.monetize.ads.log.AdLogger
+import net.corekit.monetize.ads.model.PendingShowRequest
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
@@ -58,6 +71,12 @@ class LaunchAds private constructor() {
     
     // 累积展示统计（持久化）
     private var totalShowCount by DataStoreIntDelegate("pdf_k2m5x3n6", 0)
+    private val controllerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    /**
+     * 当前待恢复的展示请求
+     * 只保存一个请求，新请求会覆盖旧请求
+     */
+    private var pendingRequest: PendingShowRequest<AppOpenAd>? = null
     
     companion object {
         private const val TAG = "LaunchAds"
@@ -219,6 +238,7 @@ class LaunchAds private constructor() {
      * @param adUnitId 广告位ID，如果为空则使用默认ID
      */
     suspend fun displayAd(activity: Activity, adUnitId: String = BuildConfig.ADMOB_SPLASH_ID, onLoaded:((isSuc: Boolean)->Unit) ?= null): AdResult<Unit> {
+        AdsManager.awaitInitialized()
         // 累积触发广告展示次数统计
         totalShowTriggerCount++
         AdLogger.d("开屏广告累积触发展示次数: $totalShowTriggerCount")
@@ -274,10 +294,35 @@ class LaunchAds private constructor() {
                 AdLogger.d("使用缓存中的开屏广告，广告位ID: %s", finalAdUnitId)
                 onLoaded?.invoke(true)
 
+                if(activity.isFinishing || activity.isDestroyed){
+                    AdLogger.d("页面${activity.javaClass.simpleName}，已关闭")
+                   return AdResult.Failure(createAdException("activity is finish"))
+                }
+
+                if(activity is LifecycleOwner){
+                   val isResume = activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+                    if(!isResume){
+                        AdLogger.d(" Activity ${activity.javaClass.simpleName} not in RESUMED state (current: ${activity.lifecycle.currentState}), waiting for resume...")
+                        return suspendCancellableCoroutine { continuation ->
+                            val observer = ResumeLifecycleObserver(activity,activity)
+                            pendingRequest = PendingShowRequest(
+                                cachedAd.ad,finalAdUnitId,continuation
+                            )
+                            activity.lifecycle.addObserver(observer)
+                            continuation.invokeOnCancellation {
+                                pendingRequest = null
+                                activity.lifecycle.removeObserver(observer)
+                                AdLogger.d("[OpenAd] Pending show cancelled for $adUnitId")
+                            }
+                        }
+                    }
+                }
+
                 // 3. 显示广告
                 val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId)
 
                 result
+
             } else {
                 onLoaded?.invoke(false)
                 AdResult.Failure(createAdException("广告加载失败"))
@@ -444,7 +489,6 @@ class LaunchAds private constructor() {
                 }
 
             }
-            
             appOpenAd.show(activity)
         }
     }
@@ -520,6 +564,52 @@ class LaunchAds private constructor() {
             ReportDataManager.reportDataByName("ThinkingData",eventName, data)
         } else{
             ReportDataManager.reportData(eventName, data)
+        }
+    }
+
+
+    /**
+     * Activity 生命周期观察者
+     * 监听 Activity 的 onResume 和 onDestroy 事件
+     * - onResume: 继续展示待展示的广告
+     * - onDestroy: 清理待展示状态，返回失败结果
+     */
+    private inner class ResumeLifecycleObserver(
+        private val activity: Activity,
+        private val lifecycleOwner: LifecycleOwner
+    ) : DefaultLifecycleObserver {
+        override fun onResume(owner: LifecycleOwner) {
+            val pending = pendingRequest ?: return
+            pendingRequest = null
+            lifecycleOwner.lifecycle.removeObserver(this)
+            controllerScope.launch {
+                val result = try {
+                    when{
+                        activity.isFinishing || activity.isDestroyed ->{
+                            AdLogger.w("Activity ${activity.javaClass.simpleName} is finishing/destroyed after resume event")
+                            AdResult.Failure(createAdException("activity finish"))
+                        }
+
+                        lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) -> {
+                            withContext(Dispatchers.Main.immediate){
+                                showAdInternal(activity,pending.ad,pending.adUnitId)
+                            }
+                        }
+
+                        else ->{
+                            AdLogger.w("[OpenAd] Activity not in RESUMED state after resume event")
+                            AdResult.Failure(createAdException("activity not resume"))
+                        }
+                    }
+                }catch (e: Throwable){
+                    AdLogger.e("[OpenAd] Failed to show ad after resume", e)
+                    AdResult.Failure(createAdException("OpenAd show failed",e))
+                }
+
+                if(pending.continuation.isActive){
+                    pending.continuation.resume(result)
+                }
+            }
         }
     }
 } 

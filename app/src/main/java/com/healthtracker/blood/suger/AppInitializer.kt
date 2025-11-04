@@ -28,6 +28,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.AdResult
+import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.LaunchAds
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import javax.inject.Inject
@@ -122,6 +123,10 @@ class AppInitializer @Inject constructor(
             if (!BuildState.debug) {
                 //捕获非主线程和后台发生的异常
                 setBackgroundExceptionHandler()
+            }
+
+            initScope.launch {
+                AdsManager.init(application)
             }
 
 //            initScope.launch {

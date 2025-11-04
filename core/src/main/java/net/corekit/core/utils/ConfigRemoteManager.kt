@@ -153,10 +153,10 @@ object ConfigRemoteManager {
      * @param defaultValue 默认值
      * @return 配置值，如果初始化超时则返回 null
      */
-    suspend fun getInt(key: String, defaultValue: Int = 0): Int? {
+    suspend fun getInt(key: String, defaultValue: Int = 0): Int {
         if (!waitForInitialization()) {
             logError("初始化超时，无法获取配置 $key")
-            return null
+            return defaultValue
         }
         
         return try {
