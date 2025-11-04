@@ -3,8 +3,10 @@ package com.healthtracker.blood.suger.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.blood.suger.helper.ResidentNotificationHelper
 import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,6 +18,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import net.corekit.core.controller.ChannelUserController
 import net.corekit.core.utils.ConfigRemoteManager
 import javax.inject.Inject
 
@@ -39,7 +42,8 @@ class HealthService : Service() {
 
     @Inject
     lateinit var notificationHelper: ResidentNotificationHelper
-
+    @Inject
+    lateinit var configManager: RemoteConfigManager
     // 服务级别的协程作用域
     private val serviceScope = CoroutineScope(Main + SupervisorJob())
 
@@ -109,15 +113,15 @@ class HealthService : Service() {
     private fun startNotificationRefreshLoop() {
         // 如果已有刷新任务，先取消
         refreshJob?.cancel()
-        val intervalTime = ConfigRemoteManager.get
 
+        val interval = configManager.getConfig<PushConfig>().getChannelConfig(ChannelUserController.isPaidChannel()).keepalivePollingIntervalMinutes
         refreshJob = serviceScope.launch {
 
 
             while (isActive) {
                 try {
                     // 首次延迟 5 分钟后执行
-                    delay(REFRESH_INTERVAL_MINUTES * 60 * 1000L)
+                    delay(interval * 60 * 1000L)
                     refreshNotification()
 
                     if (BuildState.debug) {
@@ -131,7 +135,7 @@ class HealthService : Service() {
         }
 
         if (BuildState.debug) {
-            "Notification refresh loop started (interval: $REFRESH_INTERVAL_MINUTES minutes)".logd(TAG)
+            "Notification refresh loop started (interval: $interval minutes)".logd(TAG)
         }
     }
 
