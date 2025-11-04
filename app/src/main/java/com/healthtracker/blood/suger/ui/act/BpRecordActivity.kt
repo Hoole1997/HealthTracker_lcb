@@ -65,7 +65,7 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, ActivityBpRecordBin
         
         with(mViewBind){
             btnBack.clickWithDuration {
-                finish()
+                handleBackPress()
             }
 
             editRecordId?.let {
