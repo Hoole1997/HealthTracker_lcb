@@ -16,6 +16,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import net.corekit.core.utils.ConfigRemoteManager
 import javax.inject.Inject
 
 /**
@@ -54,7 +55,7 @@ class HealthService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         try {
             // 构建通知
-            val notification = notificationHelper.buildNotification()
+            val notification = notificationHelper.buildNotification(false)
 
             // 启动前台服务
             startForeground(
@@ -108,6 +109,7 @@ class HealthService : Service() {
     private fun startNotificationRefreshLoop() {
         // 如果已有刷新任务，先取消
         refreshJob?.cancel()
+        val intervalTime = ConfigRemoteManager.get
 
         refreshJob = serviceScope.launch {
 

@@ -2,12 +2,9 @@ package com.healthtracker.blood.suger.helper
 
 import android.annotation.SuppressLint
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.healthtracker.blood.suger.R
@@ -49,7 +46,7 @@ class ResidentNotificationHelper @Inject constructor(
     /**
      * 构建常驻通知
      */
-    fun buildNotification(): Notification {
+    fun buildNotification(silent: Boolean = true): Notification {
         // 创建自定义通知布局
         val remoteViews = RemoteViews(
             context.packageName,
@@ -81,7 +78,7 @@ class ResidentNotificationHelper @Inject constructor(
             .setOngoing(true)  // 常驻通知，不可滑动删除
             .setAutoCancel(false)  // 不自动取消
             .setShowWhen(false)  // 不显示时间
-            .setSilent(false)
+            .setSilent(silent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)  // 锁屏可见
             .build()
     }
