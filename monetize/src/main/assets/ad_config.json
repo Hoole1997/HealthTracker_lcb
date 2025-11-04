@@ -47,6 +47,7 @@
     "enable_bottom_ad_on_locale": 1,
     "random_fullpage_cooldown": 60,
     "onboarding_bottom_ad_enabled": 1,
-    "onboarding_dialog_ad_enabled": 1
+    "onboarding_dialog_ad_enabled": 1,
+    "native_time_interval": 120
   }
 } 

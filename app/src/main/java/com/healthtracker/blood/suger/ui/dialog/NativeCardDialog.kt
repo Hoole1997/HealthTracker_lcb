@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.NativeAds
+import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
 
 class NativeCardDialog : BaseVbDialogFragment<DialogCardNativeAdBinding>() {
@@ -29,7 +30,7 @@ class NativeCardDialog : BaseVbDialogFragment<DialogCardNativeAdBinding>() {
     companion object{
         private const val MIN_DISPLAY_TIME = 300L // 最少显示300毫秒
         private var lastShowTime = 0L
-        private const val SHOW_INTERVAL = 60 * 1000L // 一分钟间隔
+        private val SHOW_INTERVAL = AdConfigManager.getHomeNativeTimeInterval() * 1000L // 一分钟间隔
         fun showOncePerMinute(activity: FragmentActivity) {
             val currentTime = System.currentTimeMillis()
 
