@@ -63,9 +63,13 @@ class ShowIntervalLimitInterceptor : AdInterceptor {
             adConfig.resetLastShowTime()
             return AdResult.Success(Unit)
         }
-        
-        if (interval < adConfig.getMinInterval()) {
-            AdLogger.w("[${adConfig.getConfigKey()}] 展示间隔过短: ${interval}s < ${adConfig.getMinInterval()}s")
+
+        val minInterval = adConfig.getMinInterval()
+
+        AdLogger.d("lastInterval: $interval s,config interval:$minInterval s")
+
+        if (interval < minInterval) {
+            AdLogger.w("[${adConfig.getConfigKey()}] 展示间隔过短: ${interval}s < ${minInterval}s")
             return AdResult.Failure(
                 AdException(
                     code = -2,
