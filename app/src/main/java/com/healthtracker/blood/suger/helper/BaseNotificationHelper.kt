@@ -44,7 +44,7 @@ open class BaseNotificationHelper(private val context: Context) {
                 val residentChannel = NotificationChannel(
                     HealthServiceConstants.CHANNEL_ID_HEALTH_SERVICE,
                     context.getString(R.string.health_service_channel_name),
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
                 ).apply {
                     description = context.getString(R.string.health_service_channel_description)
                     setShowBadge(false)

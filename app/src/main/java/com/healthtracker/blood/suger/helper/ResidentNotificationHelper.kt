@@ -77,7 +77,7 @@ class ResidentNotificationHelper @Inject constructor(
             .setPriority(NotificationCompat.PRIORITY_HIGH)  // 高优先级
             .setOngoing(true)  // 常驻通知，不可滑动删除
             .setAutoCancel(false)  // 不自动取消
-            .setShowWhen(false)  // 不显示时间
+            .setShowWhen(true)  // 不显示时间
             .setSilent(silent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)  // 锁屏可见
             .build()
