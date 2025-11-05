@@ -222,6 +222,97 @@ class NativeAds private constructor() {
             
             when (val result = retrieveAd(context, adUnitId,style)) {
                 is AdResult.Success -> {
+                    val nativeAd = result.data
+
+                    nativeAd.adEventCallback = object : NativeAdEventCallback{
+                        override fun onAdPaid(value: AdValue) {
+                            AdLogger.d("原生广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
+
+                            // 存储当前广告的收益信息
+                            currentAdValue = value
+
+                            reportAdData(
+                                eventName = "ad_impression",
+                                params = mapOf(
+                                    "ad_unit_name" to finalAdUnitId,
+                                    "position" to PositionGet.get(),
+                                    "number" to totalShowCount,
+                                    "ad_source" to (nativeAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }
+                                        ?: 0.0),
+                                    "currency" to (currentAdValue?.currencyCode ?: "")
+                                ),
+                                style
+                            )
+
+                            // 上报真实的广告收益数据
+                            reportAdRevenueWithValue(finalAdUnitId, nativeAd, value)
+
+                            IpuController.onAdImpression("NA", value.valueMicros)
+                            RpuController.onAdRevenue("NA", value.valueMicros)
+                        }
+
+                        override fun onAdClicked() {
+                            AdLogger.d("原生广告被点击")
+
+                            // 累积点击统计
+                            totalClickCount++
+                            AdLogger.d("原生广告累积点击次数: $totalClickCount")
+
+                            AdConfigManager.getNativeConfig().recordClick()
+
+                            reportAdData(
+                                eventName = "ad_click",
+                                params = mapOf(
+                                    "ad_unit_name" to finalAdUnitId,
+                                    "position" to PositionGet.get(),
+                                    "number" to totalClickCount,
+                                    "ad_source" to (nativeAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                    "currency" to (currentAdValue?.currencyCode ?: "")
+                                ),
+                                style
+                            )
+                        }
+
+                        override fun onAdImpression() {
+                            AdLogger.d("原生广告展示完成")
+
+                            // 累积展示统计
+                            totalShowCount++
+                            AdLogger.d("原生广告累积展示次数: $totalShowCount")
+
+                            // 记录展示
+                            AdConfigManager.getNativeConfig().recordShow()
+
+                            // 异步预加载下一个广告到缓存（如果缓存未满）
+                            if (!isCacheFull(finalAdUnitId)) {
+                                PreloadController.preload(context)
+                            }
+                        }
+
+                        override fun onAdDismissedFullScreenContent() {
+                            super.onAdDismissedFullScreenContent()
+                            totalCloseCount++
+                            reportAdData(
+                                eventName = "ad_close",
+                                params = mapOf(
+                                    "ad_unit_name" to finalAdUnitId,
+                                    "position" to PositionGet.get(),
+                                    "number" to totalCloseCount,
+                                    "ad_source" to (nativeAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                    "currency" to (currentAdValue?.currencyCode ?: "")
+                                ),
+                                style
+                            )
+                        }
+
+
+
+                    }
+
+
                     // 绑定广告到容器
                     nativeAdView.bindNativeAdToContainer(context, container, result.data, style)
                     true
@@ -320,93 +411,6 @@ class NativeAds private constructor() {
                         style
                     )
                     FpuController.onAdFill("NA")
-                    nativeAd.adEventCallback = object : NativeAdEventCallback{
-                        override fun onAdPaid(value: AdValue) {
-                            AdLogger.d("原生广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
-
-                            // 存储当前广告的收益信息
-                            currentAdValue = value
-
-                            reportAdData(
-                                eventName = "ad_impression",
-                                params = mapOf(
-                                    "ad_unit_name" to adUnitId,
-                                    "position" to PositionGet.get(),
-                                    "number" to totalShowCount,
-                                    "ad_source" to (nativeAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
-                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }
-                                        ?: 0.0),
-                                    "currency" to (currentAdValue?.currencyCode ?: "")
-                                ),
-                                style
-                            )
-
-                            // 上报真实的广告收益数据
-                            reportAdRevenueWithValue(adUnitId, nativeAd, value)
-
-                            IpuController.onAdImpression("NA", value.valueMicros)
-                            RpuController.onAdRevenue("NA", value.valueMicros)
-                        }
-
-                        override fun onAdClicked() {
-                            AdLogger.d("原生广告被点击")
-
-                            // 累积点击统计
-                            totalClickCount++
-                            AdLogger.d("原生广告累积点击次数: $totalClickCount")
-
-                            AdConfigManager.getNativeConfig().recordClick()
-
-                            reportAdData(
-                                eventName = "ad_click",
-                                params = mapOf(
-                                    "ad_unit_name" to adUnitId,
-                                    "position" to PositionGet.get(),
-                                    "number" to totalClickCount,
-                                    "ad_source" to (nativeAds.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
-                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
-                                    "currency" to (currentAdValue?.currencyCode ?: "")
-                                ),
-                                style
-                            )
-                        }
-
-                        override fun onAdImpression() {
-                            AdLogger.d("原生广告展示完成")
-
-                            // 累积展示统计
-                            totalShowCount++
-                            AdLogger.d("原生广告累积展示次数: $totalShowCount")
-
-                            // 记录展示
-                            AdConfigManager.getNativeConfig().recordShow()
-
-                            // 异步预加载下一个广告到缓存（如果缓存未满）
-                            if (!isCacheFull(adUnitId)) {
-                                PreloadController.preload(context)
-                            }
-                        }
-
-                        override fun onAdDismissedFullScreenContent() {
-                            super.onAdDismissedFullScreenContent()
-                            totalCloseCount++
-                            reportAdData(
-                                eventName = "ad_close",
-                                params = mapOf(
-                                    "ad_unit_name" to adUnitId,
-                                    "position" to PositionGet.get(),
-                                    "number" to totalCloseCount,
-                                    "ad_source" to (nativeAds?.getResponseInfo()?.loadedAdSourceResponseInfo?.name.orEmpty()),
-                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
-                                    "currency" to (currentAdValue?.currencyCode ?: "")
-                                ),
-                                style
-                            )
-                        }
-
-
-
-                    }
 
                     val result = AdResult.Success(nativeAd)
                     _loadingState.value = result
