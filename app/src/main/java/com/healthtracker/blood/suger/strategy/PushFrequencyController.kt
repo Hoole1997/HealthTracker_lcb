@@ -1,17 +1,14 @@
 package com.healthtracker.blood.suger.strategy
 
-import ads_mobile_sdk.ty
-import android.R.attr.type
-import android.R.string.no
 import android.content.Context
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.config.models.ChannelConfig
-import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.push.getFirstInstallTime
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
@@ -75,6 +72,13 @@ class PushFrequencyController @Inject constructor(
         }
 
         val type = if(scenario == PushScenario.FCM) "firebase_push" else "local_push"
+
+        if(AppLifecycleManager.isForeground()){
+            val reason = "app_inner_${type}_app_in_foreground"
+            if (BuildState.debug) reason.logw(PushOrchestrator.TAG)
+            return FrequencyCheckResult(false,reason)
+        }
+
 
         if(config.notificationEnabled == 0){
             val reason = "app_inner_${type}_notification_disabled"
