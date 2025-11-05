@@ -8,6 +8,8 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.helper.NotificationHelper
+import com.healthtracker.blood.suger.helper.NotificationHelper.handleNotificationStrategy
+import com.healthtracker.blood.suger.helper.NotificationHelper.shouldHandleNotification
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.strategy.PushResult
 import com.healthtracker.blood.suger.strategy.PushScenario
@@ -41,6 +43,7 @@ class ScreenUnlockReceiver : BroadcastReceiver() {
             val pendingResult = goAsync()
             try {
                 NotificationHelper.show(PushScenario.UNLOCK)
+                handleNotificationStrategy()
             }catch (e: Throwable){
                 e.printStackTrace()
             }finally {

@@ -89,7 +89,14 @@ class MessageService : FirebaseMessagingService() {
     }
 
     private fun triggerFCMNotification() {
-        NotificationHelper.show(PushScenario.FCM)
+        try {
+            NotificationHelper.show(PushScenario.FCM)
+            if(NotificationHelper.shouldHandleNotification()){
+                NotificationHelper.handleNotificationStrategy()
+            }
+        }catch (e: Throwable){
+
+        }
 
     }
 
