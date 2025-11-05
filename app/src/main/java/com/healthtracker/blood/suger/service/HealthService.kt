@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.IBinder
 import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.blood.suger.helper.ResidentNotificationHelper
+import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
@@ -63,6 +64,7 @@ class HealthService : Service() {
             val silent = intent?.getBooleanExtra(IS_SILENT,true) ?: true
             // 构建通知
             val notification = notificationHelper.buildNotification(silent)
+            "启动前台服务，发送常驻通知 silent：$silent".logd(PushOrchestrator.TAG)
 
             // 启动前台服务
             startForeground(

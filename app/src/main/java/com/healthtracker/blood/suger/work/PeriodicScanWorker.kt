@@ -1,19 +1,12 @@
 package com.healthtracker.blood.suger.work
 
 import android.content.Context
-import android.os.Build
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.healthtracker.blood.suger.helper.NotificationHelper
-import com.healthtracker.blood.suger.helper.NotificationHelper.handleNotificationStrategy
-import com.healthtracker.blood.suger.helper.NotificationHelper.shouldHandleNotification
-import com.healthtracker.blood.suger.helper.ResidentNotificationHelper
-import com.healthtracker.blood.suger.manager.HealthServiceManager
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
-import com.healthtracker.framework.lifecycle.AppLifecycleManager
-import dagger.hilt.android.EntryPointAccessors
 
 /**
  * 周期性扫描 Worker
@@ -49,23 +42,13 @@ class PeriodicScanWorker(
 
     override suspend fun doWork(): Result {
         if (BuildState.debug) "PeriodicScanWorker Run".logd(TAG)
-
         try {
-            // ✅ 步骤 1: 处理通知/前台服务策略
-            // 只在首次或服务未运行时处理，避免重复
-            if (shouldHandleNotification()) {
-                handleNotificationStrategy()
-            } else {
-                if (BuildState.debug) "Service already running, skipping notification".logd(TAG)
-            }
-
             val currentTime = System.currentTimeMillis()
             if (currentTime - initTime > 5 * 60 * 1000) {
                 NotificationHelper.show(PushScenario.KEEPALIVE)
             } else {
                 if(BuildState.debug) "PeriodicScanWorker init time less 5 min".logd(TAG)
             }
-
         } catch (e: Throwable) {
             "PeriodicScanWorker error: ${e.message}".logd(TAG)
             e.printStackTrace()

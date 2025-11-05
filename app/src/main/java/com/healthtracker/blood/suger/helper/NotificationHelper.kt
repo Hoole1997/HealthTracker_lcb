@@ -16,6 +16,7 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
+import com.healthtracker.framework.util.isLeast12
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +54,10 @@ object NotificationHelper {
                 )
                 // 处理推送结果
                 handlePushResult(result,scenario)
+
+                handleNotificationStrategy()
+
+
             } catch (e: Exception) {
                 "Error handling unlock event: ${e.message}".loge(TAG)
                 e.printStackTrace()
@@ -95,21 +100,6 @@ object NotificationHelper {
     }
 
     /**
-     * 检查是否应该发送通知
-     * 避免重复发送
-     */
-    fun shouldHandleNotification(): Boolean {
-        val isRunning = healthServiceManager.isServiceRunning()
-
-        if (BuildState.debug) {
-            "Service running status: $isRunning, should handle: ${!isRunning}".logd(TAG
-            )
-        }
-
-        return !isRunning
-    }
-
-    /**
      * 执行通知策略
      *
      * 策略逻辑：
@@ -117,16 +107,15 @@ object NotificationHelper {
      * 2. Android 12+ 且应用在后台 → 发送普通通知（可被删除）
      */
     fun handleNotificationStrategy(): Boolean {
-        val isAndroid12Plus = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
         val isForeground = AppLifecycleManager.isForeground()
 
         if (BuildState.debug) {
-            "Notification strategy: Android12+=$isAndroid12Plus, Foreground=$isForeground".logd(TAG)
+            "Notification strategy: Android12+=${isLeast12()}, Foreground=$isForeground".logd(TAG)
         }
 
         return when {
             // 场景 1: Android 11- 或应用在前台 → 启动前台服务
-            !isAndroid12Plus || isForeground -> {
+            !isLeast12() || isForeground || healthServiceManager.isServiceRunning() -> {
                 if (BuildState.debug) {
                     "Starting foreground service (Android 11- or foreground)".logd(TAG
                     )
@@ -136,7 +125,7 @@ object NotificationHelper {
             }
 
             // 场景 2: Android 12+ 且应用在后台 → 触发后台场景推送
-            isAndroid12Plus && !isForeground -> {
+            isLeast12() && !isForeground -> {
                 if (BuildState.debug) {
                     "Triggering background push (Android 12+ background)".logd(TAG)
                 }

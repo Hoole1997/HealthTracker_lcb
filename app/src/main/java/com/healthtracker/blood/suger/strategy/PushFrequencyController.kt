@@ -263,7 +263,7 @@ class PushFrequencyController @Inject constructor(
         }
 
         if (dailyCount >= dailyLimit) {
-             "Daily limit reached: $dailyCount/$dailyLimit".logd(TAG)
+             "Daily limit reached: $dailyCount/$dailyLimit".logd(PushOrchestrator.TAG)
             val reason = "app_inner_${type}_daily_limit_reached"
             return FrequencyCheckResult(false, reason)
         }

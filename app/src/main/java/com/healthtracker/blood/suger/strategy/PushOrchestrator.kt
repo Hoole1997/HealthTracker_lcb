@@ -11,6 +11,7 @@ import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import kotlinx.coroutines.Dispatchers
@@ -98,6 +99,7 @@ class PushOrchestrator @Inject constructor(
                 ReportDataManager.reportData("Notific_Show_Fail", mapOf(
                     "reason" to reason
                 ))
+                reason.logi(TAG)
                 return@withContext PushResult.Blocked(
                     frequencyResult.reason ?: "Frequency limit reached"
                 )

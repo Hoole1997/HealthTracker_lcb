@@ -1,26 +1,14 @@
 package com.healthtracker.blood.suger.work
 
-import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.helper.NotificationHelper
-import com.healthtracker.blood.suger.helper.NotificationHelper.handleNotificationStrategy
-import com.healthtracker.blood.suger.helper.NotificationHelper.shouldHandleNotification
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
-import com.healthtracker.blood.suger.strategy.PushResult
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
-import com.healthtracker.framework.ext.loge
-import com.healthtracker.framework.ext.logw
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -43,7 +31,7 @@ class ScreenUnlockReceiver : BroadcastReceiver() {
             val pendingResult = goAsync()
             try {
                 NotificationHelper.show(PushScenario.UNLOCK)
-                handleNotificationStrategy()
+
             }catch (e: Throwable){
                 e.printStackTrace()
             }finally {

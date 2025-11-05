@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.healthtracker.blood.suger.alarm.PermissionManager
+import com.healthtracker.blood.suger.helper.ResidentNotificationHelper
 import com.healthtracker.blood.suger.service.HealthService
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.framework.BuildState
@@ -26,7 +27,8 @@ import javax.inject.Singleton
 @Singleton
 class HealthServiceManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val permissionManager: PermissionManager
+    private val permissionManager: PermissionManager,
+    private val residentNotificationHelper: ResidentNotificationHelper
 ) {
 
     companion object {

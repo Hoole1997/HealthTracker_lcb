@@ -13,6 +13,7 @@ import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.NOTIFICATION_ID_HEALTH_SERVICE
+import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
@@ -116,6 +117,7 @@ class ResidentNotificationHelper @Inject constructor(
         }
 
         try {
+            "以普通通知的形式，发送常驻通知".logd(PushOrchestrator.TAG)
             // 构建通知（复用现有方法）
             val notification = buildNotification()
 

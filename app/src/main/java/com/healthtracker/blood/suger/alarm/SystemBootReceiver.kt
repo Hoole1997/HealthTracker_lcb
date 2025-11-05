@@ -53,10 +53,6 @@ class SystemBootReceiver : BroadcastReceiver() {
                 restoreAlarms(context, "BOOT_COMPLETED")
                 tryShowResident(context)
             }
-            Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
-                "System locked boot completed, restoring alarms".logd(TAG)
-                tryShowResident(context)
-            }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 "App package replaced, restoring alarms".logd(TAG)
                 restoreAlarms(context, "PACKAGE_REPLACED")
