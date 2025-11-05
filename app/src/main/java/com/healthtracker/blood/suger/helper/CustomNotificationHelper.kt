@@ -1,17 +1,18 @@
 package com.healthtracker.blood.suger.helper
 
 import android.Manifest
-import android.R.attr.type
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.view.View
 import android.widget.RemoteViews
-import androidx.annotation.RequiresPermission
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.models.FsiConfig
 import com.healthtracker.blood.suger.config.models.PushMessage
@@ -20,7 +21,6 @@ import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
 import com.healthtracker.blood.suger.push.canUpgradeToFullScreen
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
-import com.healthtracker.blood.suger.receiver.NotificationActionReceiver.Companion.EXTRA_ACTION_VALUE
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
@@ -65,7 +65,6 @@ class CustomNotificationHelper @Inject constructor(
      * @return 通知ID
      */
     @SuppressLint("FullScreenIntentPolicy")
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun showCustomNotification(
         pushMessage: PushMessage,
         isSilent: Boolean = false,
@@ -86,7 +85,7 @@ class CustomNotificationHelper @Inject constructor(
 
             // 创建点击和删除 PendingIntent
             val finalNotificationId = notificationId ?: (NOTIFICATION_ID_BASE + pushMessage.id.hashCode())
-            val clickIntent = createClickPendingIntent(pushMessage,finalNotificationId,scenario)
+            val clickIntent = createClickPendingIntent(pushMessage,finalNotificationId,scenario,isSilent)
             val deleteIntent = createDeletePendingIntent(finalNotificationId)
 
             val channelId = if(isSilent) CHANNEL_ID_GENERAL_SILENT else CHANNEL_ID_GENERAL
@@ -126,6 +125,13 @@ class CustomNotificationHelper @Inject constructor(
             val notification = notificationBuilder.build()
 
             // 发送通知
+            if (ActivityCompat.checkSelfPermission(
+                    App.INSTANCE,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return 0
+            }
             NotificationManagerCompat.from(context).notify(finalNotificationId, notification)
 
             val silentTag = if (isSilent) "[Silent]" else ""
@@ -221,7 +227,7 @@ class CustomNotificationHelper @Inject constructor(
      * 创建点击事件的 PendingIntent
      * 通过 NotificationActionReceiver 处理，以支持 Loop 推送停止
      */
-    private fun createClickPendingIntent(pushMessage: PushMessage, notificationId: Int, scenario: PushScenario): PendingIntent {
+    private fun createClickPendingIntent(pushMessage: PushMessage, notificationId: Int, scenario: PushScenario,isSilent: Boolean = false): PendingIntent {
         val actionType = pushMessage.actionType
         if(BuildState.debug) "createClickPendingIntent actionType = $actionType,notificationId = $notificationId".logd(PushOrchestrator.TAG)
         // 直接创建启动 SplashActivity 的 Intent
@@ -238,22 +244,28 @@ class CustomNotificationHelper @Inject constructor(
             })
         }
 
-        ReportDataManager.reportData(
-            "Notific_Show", mapOf(
-                "Notific_Type" to when (scenario) {
-                    PushScenario.UNLOCK -> 1
-                    PushScenario.BACKGROUND -> 1
-                    PushScenario.KEEPALIVE -> 1
-                    PushScenario.FCM -> 3
-                    else -> 4
-                },
-                "Notific_Position" to 1,
-                "Notific_Priority" to "PRIORITY_HIGH",
-                "event_id" to "customer_general_style",
-                "title" to pushMessage.title,
-                "text" to pushMessage.desc,
+        if(!isSilent){
+            if(BuildState.debug) "非静默通知，上报事件".logd(PushOrchestrator.TAG)
+            ReportDataManager.reportData(
+                "Notific_Show", mapOf(
+                    "Notific_Type" to when (scenario) {
+                        PushScenario.UNLOCK -> 1
+                        PushScenario.BACKGROUND -> 1
+                        PushScenario.KEEPALIVE -> 1
+                        PushScenario.FCM -> 3
+                        else -> 4
+                    },
+                    "Notific_Position" to 1,
+                    "Notific_Priority" to "PRIORITY_HIGH",
+                    "event_id" to "customer_general_style",
+                    "title" to pushMessage.title,
+                    "text" to pushMessage.desc,
+                )
             )
-        )
+        }else{
+            if(BuildState.debug) "静默通知，不上报事件".logd(PushOrchestrator.TAG)
+        }
+
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 

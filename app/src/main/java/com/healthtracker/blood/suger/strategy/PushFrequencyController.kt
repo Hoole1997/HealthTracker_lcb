@@ -73,6 +73,13 @@ class PushFrequencyController @Inject constructor(
 
         val type = if(scenario == PushScenario.FCM) "firebase_push" else "local_push"
 
+        // 检查 1: 通知权限
+        if (!permissionManager.isNotificationPermissionGranted()) {
+            val reason = "app_inner_${type}_no_permission"
+            if (BuildState.debug) reason.logw(PushOrchestrator.TAG)
+            return FrequencyCheckResult(false, reason)
+        }
+
         if(AppLifecycleManager.isForeground()){
             val reason = "app_inner_${type}_app_in_foreground"
             if (BuildState.debug) reason.logw(PushOrchestrator.TAG)
@@ -86,12 +93,7 @@ class PushFrequencyController @Inject constructor(
             return FrequencyCheckResult(false,reason)
         }
 
-        // 检查 1: 通知权限
-        if (!permissionManager.isNotificationPermissionGranted()) {
-            val reason = "app_inner_${type}_no_permission"
-            if (BuildState.debug) reason.logw(PushOrchestrator.TAG)
-            return FrequencyCheckResult(false, reason)
-        }
+
 
         // 检查 2: 新用户冷却期
         val cooldownResult = checkNewUserCooldown(config,type)

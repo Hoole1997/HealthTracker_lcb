@@ -71,7 +71,6 @@ class PushOrchestrator @Inject constructor(
      * @param extras 附加数据（可选）
      * @return 推送结果
      */
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     suspend fun triggerPush(
         scenario: PushScenario,
         extras: Bundle? = null
@@ -164,7 +163,6 @@ class PushOrchestrator @Inject constructor(
      * @param isPaidUser 是否付费用户
      * @return 是否成功
      */
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun executePush(message: PushMessage, isPaidUser: Boolean, scenario: PushScenario): Boolean {
         return try {
             if (BuildState.debug) {

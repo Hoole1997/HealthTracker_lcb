@@ -85,7 +85,6 @@ class LoopPushManager @Inject constructor(
      * @param isPaidUser 是否付费用户
      * @param loopCount 循环次数（来自 ChannelConfig.hoverDurationLoopCount）
      */
-    @androidx.annotation.RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
     fun startLoopPush(
         pushMessage: PushMessage,
         notificationId: Int,
