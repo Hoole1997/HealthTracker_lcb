@@ -20,7 +20,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import net.corekit.core.controller.ChannelUserController
 import net.corekit.core.report.ReportDataManager
-import net.corekit.core.utils.ConfigRemoteManager
 import javax.inject.Inject
 
 /**
@@ -39,6 +38,8 @@ class HealthService : Service() {
 
         // 通知刷新间隔：5 分钟
         private const val REFRESH_INTERVAL_MINUTES = 5L
+
+        const val IS_SILENT = "is_silent"
     }
 
     @Inject
@@ -59,8 +60,9 @@ class HealthService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         try {
+            val silent = intent?.getBooleanExtra(IS_SILENT,true) ?: true
             // 构建通知
-            val notification = notificationHelper.buildNotification(false)
+            val notification = notificationHelper.buildNotification(silent)
 
             // 启动前台服务
             startForeground(

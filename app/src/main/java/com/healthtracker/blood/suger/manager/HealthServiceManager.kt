@@ -45,7 +45,9 @@ class HealthServiceManager @Inject constructor(
 
         try {
             ReportDataManager.reportData("Notific_Pull", mapOf("topic" to "permanent"))
-            val intent = Intent(context, HealthService::class.java)
+            val intent = Intent(context, HealthService::class.java).apply {
+                putExtra(HealthService.IS_SILENT,isServiceRunning())
+            }
 
             // Android 8.0+ 使用 startForegroundService
             if (hasOreo()) {
@@ -65,23 +67,6 @@ class HealthServiceManager @Inject constructor(
         }
     }
 
-    /**
-     * 停止健康服务
-     */
-    fun stopHealthService() {
-        try {
-            val intent = Intent(context, HealthService::class.java)
-            context.stopService(intent)
-
-            // 记录用户禁用了服务
-            SpUtils.putBoolean(HealthServiceConstants.PREF_HEALTH_SERVICE_ENABLED, false)
-
-            "Health service stopped successfully".logd(TAG)
-
-        } catch (e: Exception) {
-            "Failed to stop health service: ${e.message}".loge(TAG)
-        }
-    }
 
     /**
      * 检查健康服务是否正在运行
@@ -102,10 +87,4 @@ class HealthServiceManager @Inject constructor(
         }
     }
 
-    /**
-     * 检查用户是否启用了健康服务
-     */
-    fun isServiceEnabled(): Boolean {
-        return SpUtils.getBoolean(HealthServiceConstants.PREF_HEALTH_SERVICE_ENABLED, false)
-    }
 }

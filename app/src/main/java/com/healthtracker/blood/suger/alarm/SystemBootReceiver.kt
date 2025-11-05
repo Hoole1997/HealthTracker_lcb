@@ -5,13 +5,10 @@ import android.content.Context
 import android.content.Intent
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.repository.AlarmRepository
-import com.healthtracker.blood.suger.service.HealthService
-import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.blood.suger.manager.HealthServiceManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
-import com.healthtracker.framework.util.SpUtils
-import com.healthtracker.framework.util.hasOreo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -262,33 +259,11 @@ class SystemBootReceiver : BroadcastReceiver() {
         }
     }
 
+    @Inject
+    lateinit var serviceManager: HealthServiceManager
 
     private fun tryShowResident(context: Context){
-        // 检查用户是否启用了健康服务
-        val enabled = SpUtils.getBoolean(
-            HealthServiceConstants.PREF_HEALTH_SERVICE_ENABLED,
-            false
-        )
-
-        if (enabled) {
-            try {
-                val serviceIntent = Intent(context, HealthService::class.java)
-
-                // Android 8.0+ 使用 startForegroundService
-                if (hasOreo()) {
-                    context.startForegroundService(serviceIntent)
-                } else {
-                    context.startService(serviceIntent)
-                }
-
-                "Health service auto-started after boot".logd(TAG)
-
-            } catch (e: Exception) {
-                "Failed to auto-start health service: ${e.message}".loge(TAG)
-            }
-        } else {
-            "Health service not enabled, skip auto-start".logd(TAG)
-        }
+        serviceManager.startHealthService()
     }
 }
 

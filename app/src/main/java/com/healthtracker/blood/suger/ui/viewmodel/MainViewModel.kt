@@ -33,9 +33,4 @@ class MainViewModel @Inject constructor(
             _serviceRunning.value = true
         }
     }
-
-    fun stopHealthService() {
-        healthServiceManager.stopHealthService()
-        _serviceRunning.value = false
-    }
 }
