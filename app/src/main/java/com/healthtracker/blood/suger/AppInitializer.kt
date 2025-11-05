@@ -58,29 +58,16 @@ class AppInitializer @Inject constructor(
      */
     private val configRefreshObserver = object : AppForegroundObserver {
         override fun onAppForeground() {
-            if(BuildState.debug) "App entered foreground, refreshing config...".logd("AppInitializer")
+            if (BuildState.debug) "App entered foreground, refreshing config...".logd("AppInitializer")
             initScope.launch {
                 remoteConfigManager.refreshConfig()
                 //检查是否满足展示开屏广告条件
                 val result = LaunchAds.getInstance().checkInterceptor(application)
-                if(!ActivityUtils.isActivityExistsInStack(SplashActivity::class.java) && result is AdResult.Success){
+                if (!ActivityUtils.isActivityExistsInStack(SplashActivity::class.java) && result is AdResult.Success) {
                     startSplashActivity()
                 }
-}
-
-
-
-        }
-
-        override fun onScreenLocked() {
-            super.onScreenLocked()
-            if(BuildState.debug){
-                //TODO 测试用的
-                initScope.launch {
-                    delay(5000)
-                    NotificationHelper.show(PushScenario.BACKGROUND)
-                }
             }
+
         }
     }
 
