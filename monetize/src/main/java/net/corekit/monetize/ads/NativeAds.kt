@@ -1,5 +1,6 @@
 package net.corekit.monetize.ads
 
+import android.R.attr.data
 import android.content.Context
 import android.view.ViewGroup
 import com.blankj.utilcode.util.ActivityUtils
@@ -35,6 +36,7 @@ import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.NativeAdStyle
 import net.corekit.monetize.ui.NativeAdView
 import net.corekit.monetize.util.PositionGet
+import java.lang.annotation.Native
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -138,7 +140,7 @@ class NativeAds private constructor() {
      * @param context 上下文
      * @param adUnitId 广告位ID，如果为空则使用默认ID
      */
-    suspend fun retrieveAd(context: Context, adUnitId: String? = null): AdResult<NativeAd> {
+    suspend fun retrieveAd(context: Context, adUnitId: String? = null,style: NativeAdStyle = NativeAdStyle.STANDARD): AdResult<NativeAd> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_NATIVE_ID
         
         // 1. 尝试从缓存获取广告
@@ -147,7 +149,7 @@ class NativeAds private constructor() {
         // 2. 如果缓存为空，立即加载并缓存一个广告
         if (cachedAd == null) {
             AdLogger.d("缓存为空，立即加载原生广告，广告位ID: %s", finalAdUnitId)
-            loadAdToCache(context, finalAdUnitId)
+            loadAdToCache(context, finalAdUnitId,style)
             cachedAd = getCachedAd(finalAdUnitId)
         }
         
@@ -185,7 +187,8 @@ class NativeAds private constructor() {
                 "ad_unit_name" to finalAdUnitId,
                 "position" to PositionGet.get(),
                 "number" to totalShowTriggerCount
-            )
+            ),
+            style
         )
         
         // 拦截器检查
@@ -202,7 +205,8 @@ class NativeAds private constructor() {
                         "position" to PositionGet.get(),
                         "number" to totalShowFailCount,
                         "reason" to interceptResult.error.message
-                    )
+                    ),
+                    style
                 )
                 
                 AdLogger.w("原生广告拦截器检查失败: %s", interceptResult.error.message)
@@ -216,7 +220,7 @@ class NativeAds private constructor() {
 //            container.removeAllViews()
 //            container.addView(nativeAdView.createLoadingView(context))
             
-            when (val result = retrieveAd(context, adUnitId)) {
+            when (val result = retrieveAd(context, adUnitId,style)) {
                 is AdResult.Success -> {
                     // 绑定广告到容器
                     nativeAdView.bindNativeAdToContainer(context, container, result.data, style)
@@ -234,7 +238,8 @@ class NativeAds private constructor() {
                             "position" to PositionGet.get(),
                             "number" to totalShowFailCount,
                             "reason" to result.error.message
-                        )
+                        ),
+                        style
                     )
                     
                     // 显示错误视图
@@ -259,7 +264,8 @@ class NativeAds private constructor() {
                     "position" to PositionGet.get(),
                     "number" to totalShowFailCount,
                     "reason" to "${e.message}"
-                )
+                ),
+                style
             )
             
             AdLogger.e("显示原生广告失败", e)
@@ -272,7 +278,7 @@ class NativeAds private constructor() {
     /**
      * 基础广告加载方法（可复用）
      */
-    private suspend fun loadAd(context: Context, adUnitId: String): NativeAd? {
+    private suspend fun loadAd(context: Context, adUnitId: String,style: NativeAdStyle = NativeAdStyle.STANDARD): NativeAd? {
         // 累积加载次数统计
         totalLoadCount++
         AdLogger.d("原生广告累积加载次数: $totalLoadCount")
@@ -282,7 +288,8 @@ class NativeAds private constructor() {
             params = mapOf(
                 "ad_unit_name" to adUnitId,
                 "number" to totalLoadCount
-            )
+            ),
+            style
         )
         
         return suspendCancellableCoroutine { continuation ->
@@ -309,7 +316,8 @@ class NativeAds private constructor() {
                             "number" to totalLoadSucCount,
                             "ad_source" to (nativeAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt()
-                        )
+                        ),
+                        style
                     )
                     FpuController.onAdFill("NA")
                     nativeAd.adEventCallback = object : NativeAdEventCallback{
@@ -329,7 +337,8 @@ class NativeAds private constructor() {
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }
                                         ?: 0.0),
                                     "currency" to (currentAdValue?.currencyCode ?: "")
-                                )
+                                ),
+                                style
                             )
 
                             // 上报真实的广告收益数据
@@ -357,7 +366,8 @@ class NativeAds private constructor() {
                                     "ad_source" to (nativeAds.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
                                     "currency" to (currentAdValue?.currencyCode ?: "")
-                                )
+                                ),
+                                style
                             )
                         }
 
@@ -389,7 +399,8 @@ class NativeAds private constructor() {
                                     "ad_source" to (nativeAds?.getResponseInfo()?.loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
                                     "currency" to (currentAdValue?.currencyCode ?: "")
-                                )
+                                ),
+                                style
                             )
                         }
 
@@ -433,7 +444,7 @@ class NativeAds private constructor() {
     /**
      * 加载广告到缓存
      */
-    private suspend fun loadAdToCache(context: Context, adUnitId: String): AdResult<Unit> {
+    private suspend fun loadAdToCache(context: Context, adUnitId: String,style: NativeAdStyle = NativeAdStyle.STANDARD): AdResult<Unit> {
         return try {
             
             // 检查缓存是否已满
@@ -444,7 +455,7 @@ class NativeAds private constructor() {
             }
             
             // 加载广告
-            val nativeAd = loadAd(context, adUnitId)
+            val nativeAd = loadAd(context, adUnitId,style)
             if (nativeAd != null) {
                 synchronized(adCachePool) {
                     adCachePool.add(CachedNativeAd(nativeAd, adUnitId))
@@ -562,10 +573,11 @@ class NativeAds private constructor() {
      * @param eventName 事件名称
      * @param params 参数Map，会与基础参数合并
      */
-    private fun reportAdData(eventName: String, params: Map<String, Any>) {
+    private fun reportAdData(eventName: String, params: Map<String, Any>,style: NativeAdStyle = NativeAdStyle.STANDARD) {
+        val format = if(style == NativeAdStyle.CARD_4) "dialognative" else "Native"
         val data = mutableMapOf<String, Any>(
             "ad_platform" to "Admob",
-            "ad_format" to "Native"
+            "ad_format" to format
         )
         
         // 直接合并传入的参数
