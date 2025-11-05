@@ -13,11 +13,14 @@ import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.alarm.PermissionManager
+import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_CONTENT
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
+import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.util.logEvent
 import com.healthtracker.blood.suger.util.pushRequest
 import com.healthtracker.blood.suger.util.pushResult
@@ -154,17 +157,13 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 
     private fun checkNotificationOpen() {
        val notificationId = intent.getIntExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,-1)
-        ReportDataManager.reportData(
-            "app_open", mapOf(
-                "type" to if (isTaskRoot) "cold_open" else "hot_open",
-                "position" to if (intent.hasExtra(LANDING_NOTIFICATION_FROM)) intent.getStringExtra(
-                    LANDING_NOTIFICATION_FROM
-                ).orEmpty().ifBlank { "other" } else "other"
-            ))
+        reportOpen()
+
         if (notificationId == -1) {
             if(BuildState.debug) "Invalid notification ID: $notificationId".logw(TAG)
             return
         }
+        reportNotificationParam()
         val actionType = intent.getStringExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE)
         if(BuildState.debug) "checkNotificationOpen actionType = $actionType".logd(TAG)
         sendBroadcast(Intent(this, NotificationActionReceiver::class.java).apply {
@@ -173,6 +172,54 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         })
 
 
+    }
+
+
+    private fun reportOpen(){
+        ReportDataManager.reportData(
+            "app_open", mapOf(
+                "type" to if (isTaskRoot) "cold_open" else "hot_open",
+                "position" to if (intent.hasExtra(LANDING_NOTIFICATION_FROM)) intent.getStringExtra(
+                    LANDING_NOTIFICATION_FROM
+                ).orEmpty().ifBlank { "other" } else "other"
+            ))
+    }
+
+    private fun reportNotificationParam(){
+        val params = mutableMapOf<String,Any>(
+            "Notific_Type" to when (intent.getStringExtra(LANDING_NOTIFICATION_FROM)
+                .orEmpty()) {
+                "firebase_push" -> 2
+                "top_notification" -> 4
+                else -> 1
+            },
+            "Notific_Position" to when (intent.getStringExtra(LANDING_NOTIFICATION_FROM)
+                .orEmpty()) {
+                "top_notification" -> 2
+                else -> 1
+            },
+            "Notific_Priority" to when (intent.getStringExtra(LANDING_NOTIFICATION_FROM)
+                .orEmpty()) {
+                "top_notification" -> "PRIORITY_DEFAULT"
+                else -> "PRIORITY_HIGH"
+            },
+            "event_id" to when (intent.getStringExtra(LANDING_NOTIFICATION_FROM)
+                .orEmpty()) {
+                "top_notification" -> "permanent"
+                else -> "customer_general_style"
+            },
+            "title" to intent.getStringExtra(LANDING_NOTIFICATION_TITLE).orEmpty(),
+            "text" to intent.getStringExtra(LANDING_NOTIFICATION_CONTENT).orEmpty()
+            )
+        ReportDataManager.reportData(
+            "Notific_Click", params.apply {
+                put("from_background",!ActivityUtils.isActivityExistsInStack(
+                    SplashActivity::class.java))
+
+            }
+        )
+        ReportDataManager.reportData(
+            "Notific_Enter", params)
     }
 
     /**

@@ -10,6 +10,7 @@ import com.healthtracker.framework.util.SpUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.corekit.core.report.ReportDataManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
@@ -154,12 +155,12 @@ object TokenUploadCtrl {
                         if(BuildState.debug) "Token 上传成功".logd(TAG)
                         // 标记为上传成功
                         saveUploadStatus(userid, token, true)
-//                        ReportDataManager.reportData("fcm_token_report_suc", mapOf("userid" to userid,"token" to token,"pkg" to pkg,"sig" to rsig))
+                        ReportDataManager.reportData("fcm_token_report_suc", mapOf("userid" to userid,"token" to token,"pkg" to pkg,"sig" to rsig))
                     } else {
                         if(BuildState.debug) "Token 上传失败".logd(TAG)
                         // 标记为上传失败
                         saveUploadStatus(userid, token, false)
-//                        ReportDataManager.reportData("fcm_token_report_fail", mapOf("userid" to userid,"token" to token,"pkg" to pkg,"sig" to rsig))
+                        ReportDataManager.reportData("fcm_token_report_fail", mapOf("userid" to userid,"token" to token,"pkg" to pkg,"sig" to rsig))
                     }
                 }
 

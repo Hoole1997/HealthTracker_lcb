@@ -15,6 +15,7 @@ import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.hasOreo
 import dagger.hilt.android.qualifiers.ApplicationContext
+import net.corekit.core.report.ReportDataManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,7 +36,7 @@ class HealthServiceManager @Inject constructor(
     /**
      * 启动健康服务
      */
-    fun startHealthService() {
+    fun startHealthService(from: String = "local_push") {
         // 检查通知权限
         if (!permissionManager.isNotificationPermissionGranted()) {
             "Cannot start health service: notification permission not granted".logw(TAG)
@@ -43,6 +44,7 @@ class HealthServiceManager @Inject constructor(
         }
 
         try {
+            ReportDataManager.reportData("Notific_Pull", mapOf("topic" to "permanent"))
             val intent = Intent(context, HealthService::class.java)
 
             // Android 8.0+ 使用 startForegroundService
@@ -57,14 +59,9 @@ class HealthServiceManager @Inject constructor(
 
             "Health service started successfully".logd(TAG)
 
-        } catch (e: ForegroundServiceStartNotAllowedException) {
-            // ✅ 优化 2: Android 12+ 专用异常处理
-            "Cannot start foreground service from background (Android 12+): ${e.message}".loge(TAG)
-            "Suggestion: Service will start when app returns to foreground".logw(TAG)
-        } catch (e: IllegalStateException) {
-            "Cannot start foreground service: illegal state - ${e.message}".loge(TAG)
         } catch (e: Exception) {
             "Failed to start health service: ${e.message}".loge(TAG)
+            ReportDataManager.reportData("Notific_Show_Fail",mapOf("reason" to "alive_service_${from}_${e.message}"))
         }
     }
 

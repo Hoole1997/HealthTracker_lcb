@@ -17,6 +17,7 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import dagger.hilt.android.qualifiers.ApplicationContext
+import net.corekit.core.report.ReportDataManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -48,6 +49,17 @@ class ResidentNotificationHelper @Inject constructor(
      * 构建常驻通知
      */
     fun buildNotification(silent: Boolean = true): Notification {
+
+        ReportDataManager.reportData(
+            "Notific_Show", mapOf(
+                "Notific_Type" to 4,
+                "Notific_Position" to 2,
+                "Notific_Priority" to "PRIORITY_DEFAULT",
+                "event_id" to "permanent",
+                "title" to "",
+                "text" to "",
+            )
+        )
         // 创建自定义通知布局
         val remoteViews = RemoteViews(
             context.packageName,
@@ -75,7 +87,7 @@ class ResidentNotificationHelper @Inject constructor(
             .setSmallIcon(R.drawable.ic_notification_bs)  // 使用项目中的通知图标
             .setCustomContentView(remoteViews)  // 设置自定义布局
             .setCustomBigContentView(remoteViews)  // 展开后也使用相同布局
-            .setPriority(NotificationCompat.PRIORITY_HIGH)  // 高优先级
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)  // 高优先级
             .setOngoing(true)  // 常驻通知，不可滑动删除
             .setAutoCancel(false)  // 不自动取消
             .setShowWhen(true)  // 不显示时间

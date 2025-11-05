@@ -1,5 +1,7 @@
 package com.healthtracker.blood.suger.strategy
 
+import ads_mobile_sdk.ty
+import android.R.attr.type
 import android.R.string.no
 import android.content.Context
 import com.healthtracker.blood.suger.alarm.PermissionManager
@@ -72,33 +74,41 @@ class PushFrequencyController @Inject constructor(
             "Frequency check for pushId=$pushId, scenario=$scenario, config=$config".logd(PushOrchestrator.TAG)
         }
 
+        val type = if(scenario == PushScenario.FCM) "firebase_push" else "local_push"
+
+        if(config.notificationEnabled == 0){
+            val reason = "app_inner_${type}_notification_disabled"
+            if (BuildState.debug) reason.logw(PushOrchestrator.TAG)
+            return FrequencyCheckResult(false,reason)
+        }
+
         // 检查 1: 通知权限
         if (!permissionManager.isNotificationPermissionGranted()) {
-            val reason = "Notification permission not granted"
+            val reason = "app_inner_${type}_no_permission"
             if (BuildState.debug) reason.logw(PushOrchestrator.TAG)
             return FrequencyCheckResult(false, reason)
         }
 
         // 检查 2: 新用户冷却期
-        val cooldownResult = checkNewUserCooldown(config)
+        val cooldownResult = checkNewUserCooldown(config,type)
         if (!cooldownResult.canTrigger) {
             return cooldownResult
         }
 
         // 检查 3: 免打扰时间（闹钟场景除外）
-        val dndResult = checkDoNotDisturbTime(config)
+        val dndResult = checkDoNotDisturbTime(config,type)
         if (!dndResult.canTrigger) {
             return dndResult
         }
 
         // 检查 4: 每日推送限额
-        val dailyLimitResult = checkDailyLimit(config)
+        val dailyLimitResult = checkDailyLimit(config,type)
         if (!dailyLimitResult.canTrigger) {
             return dailyLimitResult
         }
 
         // 检查 5: 推送间隔
-        val intervalResult = checkPushInterval(scenario,config)
+        val intervalResult = checkPushInterval(scenario,config,type)
         if (!intervalResult.canTrigger) {
             return intervalResult
         }
@@ -158,7 +168,7 @@ class PushFrequencyController @Inject constructor(
      * - 付费用户：无冷却期（0 分钟）
      * - 自然用户：24 分钟冷却期
      */
-    private fun checkNewUserCooldown(config: ChannelConfig): FrequencyCheckResult {
+    private fun checkNewUserCooldown(config: ChannelConfig,type:String = "local_push"): FrequencyCheckResult {
         val cooldownMinutes = config.newUserCooldown
 
         // 付费用户无冷却期，直接通过
@@ -174,11 +184,12 @@ class PushFrequencyController @Inject constructor(
 
         if (elapsedMinutes < cooldownMinutes) {
             val remainingMinutes = cooldownMinutes - elapsedMinutes
-            val reason = "New user cooldown: $remainingMinutes minutes remaining,installTime:${
+            if (BuildState.debug) "New user cooldown: $remainingMinutes minutes remaining,installTime:${
                 DateTimeUtils.formatDateTimeWithSeconds(
                     Date(firstInstallTime)
                 )
-            }"
+            }".logd(TAG)
+            val reason = "app_inner_${type}_new_user_cooldown"
             return FrequencyCheckResult(false, reason)
         }
 
@@ -191,7 +202,7 @@ class PushFrequencyController @Inject constructor(
      * - 自然用户：02:00-08:00 不推送
      * （闹钟场景在外部已排除）
      */
-    private fun checkDoNotDisturbTime(config: ChannelConfig): FrequencyCheckResult {
+    private fun checkDoNotDisturbTime(config: ChannelConfig,type:String): FrequencyCheckResult {
         val calendar = Calendar.getInstance()
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
 
@@ -213,8 +224,9 @@ class PushFrequencyController @Inject constructor(
         }
 
         if (isInDoNotDisturbPeriod) {
-            val reason = "Do-not-disturb time: $currentHour:00 (blocked between " +
-                    "$startHour:00-$endHour:00)"
+             "Do-not-disturb time: $currentHour:00 (blocked between " +
+                    "$startHour:00-$endHour:00)".logd(TAG)
+            val reason = "app_inner_${type}_do_not_disturb"
             return FrequencyCheckResult(false, reason)
         }
 
@@ -226,7 +238,7 @@ class PushFrequencyController @Inject constructor(
      * - 付费用户：999 次/天
      * - 自然用户：3 次/天
      */
-    private fun checkDailyLimit(config: ChannelConfig): FrequencyCheckResult {
+    private fun checkDailyLimit(config: ChannelConfig,type:String): FrequencyCheckResult {
         val dailyLimit = config.totalPushCount
 
         // 检查日期是否变更
@@ -245,7 +257,8 @@ class PushFrequencyController @Inject constructor(
         }
 
         if (dailyCount >= dailyLimit) {
-            val reason = "Daily limit reached: $dailyCount/$dailyLimit"
+             "Daily limit reached: $dailyCount/$dailyLimit".logd(TAG)
+            val reason = "app_inner_${type}_daily_limit_reached"
             return FrequencyCheckResult(false, reason)
         }
 
@@ -258,7 +271,7 @@ class PushFrequencyController @Inject constructor(
      * - 闹钟场景：无间隔限制（直接通过）
      * - FCM 场景：10 分钟间隔
      */
-    private fun checkPushInterval(scenario: PushScenario,config: ChannelConfig): FrequencyCheckResult {
+    private fun checkPushInterval(scenario: PushScenario,config: ChannelConfig,type:String): FrequencyCheckResult {
         // 闹钟场景无间隔限制
         if (scenario == PushScenario.FCM || scenario == PushScenario.KEEPALIVE) {
             if (BuildState.debug) "scenario = $scenario,no interval limit".logd(TAG)
@@ -278,8 +291,9 @@ class PushFrequencyController @Inject constructor(
 
         if (elapsedMinutes < interval) {
             val remainingMinutes = interval - elapsedMinutes
-            val reason = "Push interval not met: $elapsedMinutes/$interval minutes " +
-                    "(remaining: $remainingMinutes minutes)"
+            "Push interval not met: $elapsedMinutes/$interval minutes " +
+                    "(remaining: $remainingMinutes minutes)".logd(TAG)
+            val reason = "app_inner_${type}_trigger_interval_not_met "
             return FrequencyCheckResult(false, reason)
         }
 

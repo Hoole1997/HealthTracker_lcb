@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.strategy
 
 import android.Manifest
+import android.R.attr.type
 import android.os.Bundle
 import androidx.annotation.RequiresPermission
 import com.healthtracker.blood.suger.config.models.PushConfig
@@ -15,6 +16,7 @@ import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.corekit.core.controller.ChannelUserController
+import net.corekit.core.report.ReportDataManager
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -77,6 +79,7 @@ class PushOrchestrator @Inject constructor(
         val pushId = generatePushId(scenario)
         val isPaidUser = ChannelUserController.isPaidChannel()
 
+
         if (BuildState.debug) {
             "Triggering push: pushId=$pushId, scenario=$scenario, isPaid=$isPaidUser".logd(TAG)
         }
@@ -92,9 +95,10 @@ class PushOrchestrator @Inject constructor(
             )
 
             if (!frequencyResult.canTrigger) {
-                if (BuildState.debug) {
-                    "Push blocked by frequency controller: ${frequencyResult.reason}".logw(TAG)
-                }
+                val reason = frequencyResult.reason ?: ""
+                ReportDataManager.reportData("Notific_Show_Fail", mapOf(
+                    "reason" to reason
+                ))
                 return@withContext PushResult.Blocked(
                     frequencyResult.reason ?: "Frequency limit reached"
                 )
@@ -118,11 +122,15 @@ class PushOrchestrator @Inject constructor(
             val pushSuccess = executePush(selectedMessage, isPaidUser,scenario)
 
             if (!pushSuccess) {
+                val msg = "Failed to send notification"
                 if (BuildState.debug) {
-                    "Failed to send notification".loge(TAG)
+                    msg.loge(TAG)
                 }
+                ReportDataManager.reportData("Notific_Show_Fail", mapOf(
+                    "reason" to msg
+                ))
                 return@withContext PushResult.Error(
-                    Exception("Failed to send notification")
+                    Exception(msg)
                 )
             }
 
@@ -139,7 +147,11 @@ class PushOrchestrator @Inject constructor(
             PushResult.Success(pushId)
 
         } catch (e: Exception) {
-            "Push execution error: ${e.message}".loge(TAG)
+            val msg = e.message ?: ""
+            "Push execution error: ${msg}".loge(TAG)
+            ReportDataManager.reportData("Notific_Show_Fail", mapOf(
+                "reason" to msg
+            ))
             e.printStackTrace()
             PushResult.Error(e)
         }
