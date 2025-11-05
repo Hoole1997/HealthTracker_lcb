@@ -1,8 +1,7 @@
 package net.corekit.monetize.ads.config
 
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.core.content.edit
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.SpUtils
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -99,7 +98,9 @@ class AdConfig private constructor(
      * 记录点击
      */
     fun recordClick() {
+        AppLifecycleManager
         checkAndResetDaily()
+        AppLifecycleManager.clickAdTime = System.currentTimeMillis()
         SpUtils.putInt("${configKey}_${KEY_DAILY_CLICK_COUNT}", getDailyClickCount() + 1)
     }
     

@@ -3,17 +3,11 @@ package com.healthtracker.blood.suger.observer
 import com.healthtracker.blood.suger.helper.NotificationHelper
 import com.healthtracker.blood.suger.manager.HealthServiceManager
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
-import com.healthtracker.blood.suger.strategy.PushResult
 import com.healthtracker.blood.suger.strategy.PushScenario
-import com.healthtracker.blood.suger.work.ScreenUnlockReceiver
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
-import com.healthtracker.framework.ext.loge
-import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.lifecycle.AppForegroundObserver
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -61,6 +55,7 @@ class HealthServiceForegroundObserver @Inject constructor(
             "App entered foreground, attempting to start HealthService".logd(TAG)
         }
 
+
         // 检查是否已运行，避免重复启动
         if (!healthServiceManager.isServiceRunning()) {
             healthServiceManager.startHealthService()
@@ -82,6 +77,10 @@ class HealthServiceForegroundObserver @Inject constructor(
 
         if (BuildState.debug) {
             "App entered background, HealthService will continue if running".logd(TAG)
+        }
+        if(System.currentTimeMillis() - AppLifecycleManager.clickAdTime < 2000L){
+            "click ad leave app,block all push".logd(PushOrchestrator.TAG)
+            return
         }
         NotificationHelper.show(PushScenario.BACKGROUND)
     }
