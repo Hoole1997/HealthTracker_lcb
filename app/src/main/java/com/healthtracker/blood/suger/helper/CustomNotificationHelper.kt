@@ -239,7 +239,6 @@ class CustomNotificationHelper @Inject constructor(
             putExtra(LANDING_NOTIFICATION_CONTENT,pushMessage.desc)
             putExtra(LANDING_NOTIFICATION_FROM,when(scenario){
                 PushScenario.FCM -> "firebase_push"
-                PushScenario.BACKGROUND, PushScenario.UNLOCK -> "background_push"
                 else -> "local_push"
             })
         }
