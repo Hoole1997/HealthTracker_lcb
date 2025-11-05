@@ -216,6 +216,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_14"
             android:background="@drawable/bg_home_blood_pressure"
+            android:backgroundTint="@color/color_ffe4e3"
             android:foreground="?android:attr/selectableItemBackground"
             android:paddingHorizontal="@dimen/dp_16">
 
