@@ -61,6 +61,8 @@ object AppLifecycleManager {
     private var debounceMillis = 300L
     private var trackScreenLock = true
 
+    var clickAdTime = 0L
+
     // 状态管理
     private val _lifecycleState = MutableStateFlow(AppLifecycleState.initial())
     val lifecycleState: StateFlow<AppLifecycleState> = _lifecycleState.asStateFlow()
