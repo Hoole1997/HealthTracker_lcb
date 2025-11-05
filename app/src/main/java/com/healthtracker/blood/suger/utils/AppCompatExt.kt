@@ -6,8 +6,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import com.healthtracker.blood.suger.utils.loadInterstitial
-import com.healthtracker.framework.ext.toastShort
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.BannerAds
@@ -61,7 +59,9 @@ fun FragmentActivity.loadBanner(
 fun FragmentActivity.loadNative(container: ViewGroup,
                                 style: NativeAdStyle = NativeAdStyle.STANDARD,
                                 condition: () -> Boolean = { true },
+                                onClick:() -> Unit = {},
                                 call: (Boolean) -> Unit = {}
+
 ) {
     lifecycleScope.launch {
         try {
@@ -75,7 +75,8 @@ fun FragmentActivity.loadNative(container: ViewGroup,
             val success = NativeAds.getInstance().displayAdInView(
                 context = container.context,
                 container = container,
-                style = style
+                style = style,
+                onClick = onClick
             )
 
             if (success) {

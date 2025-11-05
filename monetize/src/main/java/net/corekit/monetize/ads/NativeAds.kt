@@ -1,9 +1,7 @@
 package net.corekit.monetize.ads
 
-import android.R.attr.data
 import android.content.Context
 import android.view.ViewGroup
-import com.blankj.utilcode.util.ActivityUtils
 import com.google.android.libraries.ads.mobile.sdk.common.AdChoicesPlacement
 import com.google.android.libraries.ads.mobile.sdk.common.AdValue
 import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
@@ -36,7 +34,6 @@ import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.NativeAdStyle
 import net.corekit.monetize.ui.NativeAdView
 import net.corekit.monetize.util.PositionGet
-import java.lang.annotation.Native
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -173,7 +170,8 @@ class NativeAds private constructor() {
         context: Context, 
         container: ViewGroup,
         style: NativeAdStyle = NativeAdStyle.STANDARD,
-        adUnitId: String? = null
+        adUnitId: String? = null,
+        onClick:(() -> Unit)? = null
     ): Boolean {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_NATIVE_ID
         
@@ -257,6 +255,7 @@ class NativeAds private constructor() {
 
                             // 累积点击统计
                             totalClickCount++
+                            onClick?.invoke()
                             AdLogger.d("原生广告累积点击次数: $totalClickCount")
 
                             AdConfigManager.getNativeConfig().recordClick()
@@ -578,7 +577,11 @@ class NativeAds private constructor() {
      * @param params 参数Map，会与基础参数合并
      */
     private fun reportAdData(eventName: String, params: Map<String, Any>,style: NativeAdStyle = NativeAdStyle.STANDARD) {
-        val format = if(style == NativeAdStyle.CARD_4) "dialognative" else "Native"
+        val format = when(style.description){
+            NativeAdStyle.CARD_4.description -> "dialognative"
+            "full_native" -> "Fullnative"
+            else -> "Native"
+        }
         val data = mutableMapOf<String, Any>(
             "ad_platform" to "Admob",
             "ad_format" to format

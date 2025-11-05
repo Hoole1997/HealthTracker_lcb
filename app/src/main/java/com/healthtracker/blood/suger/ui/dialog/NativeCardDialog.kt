@@ -74,7 +74,10 @@ class NativeCardDialog : BaseVbDialogFragment<DialogCardNativeAdBinding>() {
                 showLoading(this)
                 (context as FragmentActivity).loadNative(
                     adsContainer,
-                    style = NativeAdStyle.CARD_4
+                    style = NativeAdStyle.CARD_4,
+                    onClick = {
+                        dismissAllowingStateLoss()
+                    }
                 ) {
                     if (!it) {
                         showLoading(this)
