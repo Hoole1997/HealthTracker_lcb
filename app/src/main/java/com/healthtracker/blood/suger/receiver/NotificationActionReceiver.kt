@@ -82,26 +82,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
         recordLastClickNotifyTime()
         // 1. 停止 Loop 推送
         loopPushManager.stopLoopPush(notificationId, "clicked")
-
-//        // 2. 获取 action_value 用于导航
-//        val actionValue = intent.getStringExtra(EXTRA_ACTION_VALUE)
-//            ?: HealthServiceConstants.ACTION_VALUE_HOMEPAGE
-//
-//        if (BuildState.debug) {
-//            "Launching SplashActivity with action: $actionValue".logd(TAG)
-//        }
-//
-//        // 3. 启动 SplashActivity
-//        val activityIntent = Intent(context, SplashActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//            putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, actionValue)
-//        }
-//
-//        try {
-//            context.startActivity(activityIntent)
-//        } catch (e: Exception) {
-//            "Failed to start SplashActivity: ${e.message}".logw(TAG)
-//        }
     }
 
     /**

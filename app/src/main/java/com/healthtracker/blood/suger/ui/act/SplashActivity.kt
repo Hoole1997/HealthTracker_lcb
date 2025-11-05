@@ -33,6 +33,7 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.isLeast12
 import com.healthtracker.framework.util.isLeast13
 import dagger.hilt.android.AndroidEntryPoint
@@ -115,40 +116,46 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             openBrowser(this, BuildConfig.PRIVACY_POLICY)
         }
         lifecycleScope.launch {
-            val adJob = async {
-                initializeAndShowAd()
+            try {
+                val adJob = async {
+                    initializeAndShowAd()
+                }
+
+                val timeout = AdConfigManager.getSplashTimeout()
+                AdLogger.d("启动页面，超时时长：$timeout s")
+                val timeoutJob = async {
+                    delay(timeout * 1000L)
+                }
+                val timeoutTriggered = select<Boolean> {
+                    adJob.onAwait {
+                        false
+                    }
+                    timeoutJob.onAwait {
+                        true
+                    }
+                }
+
+                if(timeoutTriggered){
+                    "触发超时".logd(TAG)
+                    val hasAdLoaded = isAdLoaded
+                    if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
+                        // 没有任何广告，执行继续流程
+                        if(BuildState.debug)  Log.d(TAG, "${timeout}秒超时兜底：无广告，执行继续流程")
+                    } else {
+                        // 有广告加载或显示，继续等待广告完成
+                        if(BuildState.debug)  Log.d(TAG, "${timeout}秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
+                        adJob.await()
+                    }
+                }else{
+                    "非超时触发".logd(TAG)
+                }
+            }catch (e: Throwable){
+
+            }finally {
+                stateMachine.onAdCompleted()
             }
 
-            val timeout = AdConfigManager.getSplashTimeout()
-            AdLogger.d("启动页面，超时时长：$timeout s")
-            val timeoutJob = async {
-                delay(timeout * 1000L)
-            }
-           val timeoutTriggered = select<Boolean> {
-                adJob.onAwait {
-                    false
-                }
-                timeoutJob.onAwait {
-                    true
-                }
-            }
 
-            if(timeoutTriggered){
-                "触发超时".logd(TAG)
-                val hasAdLoaded = isAdLoaded
-                if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
-                    // 没有任何广告，执行继续流程
-                    if(BuildState.debug)  Log.d(TAG, "${timeout}秒超时兜底：无广告，执行继续流程")
-                } else {
-                    // 有广告加载或显示，继续等待广告完成
-                    if(BuildState.debug)  Log.d(TAG, "${timeout}秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
-                    adJob.await()
-                }
-            }else{
-                "非超时触发".logd(TAG)
-            }
-
-            stateMachine.onAdCompleted()
         }
         playAnimations()
         checkNotificationPermission()
@@ -156,20 +163,24 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     }
 
     private fun checkNotificationOpen() {
-       val notificationId = intent.getIntExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,-1)
-        reportOpen()
+       try {
+           val notificationId = intent.getIntExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,-1)
+           reportOpen()
 
-        if (notificationId == -1) {
-            if(BuildState.debug) "Invalid notification ID: $notificationId".logw(TAG)
-            return
-        }
-        reportNotificationParam()
-        val actionType = intent.getStringExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE)
-        if(BuildState.debug) "checkNotificationOpen actionType = $actionType".logd(TAG)
-        sendBroadcast(Intent(this, NotificationActionReceiver::class.java).apply {
-            action = NotificationActionReceiver.ACTION_NOTIFICATION_CLICKED
-            putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,notificationId)
-        })
+           if (notificationId == -1) {
+               if(BuildState.debug) "Invalid notification ID: $notificationId".logw(TAG)
+               return
+           }
+           reportNotificationParam()
+           val actionType = intent.getStringExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE)
+           if(BuildState.debug) "checkNotificationOpen actionType = $actionType".logd(TAG)
+           sendBroadcast(Intent(this, NotificationActionReceiver::class.java).apply {
+               action = NotificationActionReceiver.ACTION_NOTIFICATION_CLICKED
+               putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,notificationId)
+           })
+       }catch (e: Throwable){
+
+       }
 
 
     }
@@ -211,15 +222,16 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             "title" to intent.getStringExtra(LANDING_NOTIFICATION_TITLE).orEmpty(),
             "text" to intent.getStringExtra(LANDING_NOTIFICATION_CONTENT).orEmpty()
             )
+
+        ReportDataManager.reportData(
+            "Notific_Enter", params)
+
         ReportDataManager.reportData(
             "Notific_Click", params.apply {
-                put("from_background",!ActivityUtils.isActivityExistsInStack(
-                    SplashActivity::class.java))
+                put("from_background", AppLifecycleManager.isBackground())
 
             }
         )
-        ReportDataManager.reportData(
-            "Notific_Enter", params)
     }
 
     /**

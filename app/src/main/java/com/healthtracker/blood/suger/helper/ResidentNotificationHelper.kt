@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
+import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.NOTIFICATION_ID_HEALTH_SERVICE
 import com.healthtracker.blood.suger.ui.act.SplashActivity
@@ -166,6 +167,7 @@ class ResidentNotificationHelper @Inject constructor(
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, actionValue)
             putExtra(LANDING_NOTIFICATION_FROM,"top_notification")
+            putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, NOTIFICATION_ID_HEALTH_SERVICE)
         }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
