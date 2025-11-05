@@ -210,7 +210,7 @@ object AdConfigManager {
                 ChannelUserController.UserChannelType.NATURAL -> config.natural.homeNativeTimeInterval
                 ChannelUserController.UserChannelType.PAID -> config.paid.homeNativeTimeInterval
             }
-        }?.takeIf { it > 0 } ?: 60
+        } ?: 60
     }
 
     /**

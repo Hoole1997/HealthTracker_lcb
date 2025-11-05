@@ -35,7 +35,7 @@ class NativeCardDialog : BaseVbDialogFragment<DialogCardNativeAdBinding>() {
             val currentTime = System.currentTimeMillis()
 
             // 检查是否在一分钟内已经触发过
-            if (currentTime - lastShowTime < SHOW_INTERVAL) {
+            if (currentTime - lastShowTime < SHOW_INTERVAL || SHOW_INTERVAL <= 0) {
                 return
             }
 
