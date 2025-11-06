@@ -11,12 +11,14 @@ package com.healthtracker.blood.suger.config.models
  *                            注意：安装后冷却期固定为 24 小时，不受此参数影响
  * @property timeWindow 触发时间窗口（编码格式：startHour*100 + endHour，如 822 表示 8-22点）
  * @property maxTriggerCount 最大触发次数
+ * @param delayInstallHour 安装后多久不发送，单位：h
  */
 data class FsiConfig(
     val enabled: Boolean,
     val quietPeriodHours: Int,
     val timeWindow: Int,
-    val maxTriggerCount: Int
+    val maxTriggerCount: Int,
+    val delayInstallHour:Int
 ) {
     companion object {
         /**
@@ -34,7 +36,8 @@ data class FsiConfig(
                 enabled = true,
                 quietPeriodHours = 12,
                 timeWindow = 23,
-                maxTriggerCount = 3
+                maxTriggerCount = 3,
+                delayInstallHour = 12
             )
         }
     }

@@ -78,7 +78,7 @@ private fun checkQuietPeriod(config: FsiConfig): Boolean {
 
     "✓ Quiet period met: ${timeSinceActive / 3600000}h >= ${config.quietPeriodHours}h".logd(TAG)
 
-    // ========== 条件 2: 检查安装冷却期（固定 24h）==========
+    // ========== 条件 2: 检查安装冷却期==========
     val firstInstallTime = getFirstInstallTime()
 
     if (firstInstallTime == 0L) {
@@ -87,12 +87,12 @@ private fun checkQuietPeriod(config: FsiConfig): Boolean {
         return false
     }
 
-    val installCooldownMillis = INSTALL_COOLDOWN_HOURS * 3600 * 1000L
+    val installCooldownMillis = config.delayInstallHour * 3600 * 1000L
     val timeSinceInstall = currentTime - firstInstallTime
 
     if (timeSinceInstall < installCooldownMillis) {
         if (BuildState.debug)
-            "Installed ${timeSinceInstall / 3600000}h ago, need ${INSTALL_COOLDOWN_HOURS}h".logd(TAG)
+            "Installed ${timeSinceInstall / 3600000}h ago, need ${config.delayInstallHour}h".logd(TAG)
         return false
     }
 
