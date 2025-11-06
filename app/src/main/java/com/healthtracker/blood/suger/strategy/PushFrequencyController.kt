@@ -82,7 +82,6 @@ class PushFrequencyController @Inject constructor(
 
         if(AppLifecycleManager.isForeground()){
             val reason = "app_inner_${type}_app_in_foreground"
-            if (BuildState.debug) reason.logw(PushOrchestrator.TAG)
             return FrequencyCheckResult(false,reason)
         }
 

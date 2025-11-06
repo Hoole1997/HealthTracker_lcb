@@ -7,6 +7,8 @@ import com.healthtracker.blood.suger.helper.NotificationHelper
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
+import kotlinx.coroutines.delay
 
 /**
  * 周期性扫描 Worker
@@ -43,17 +45,14 @@ class PeriodicScanWorker(
     override suspend fun doWork(): Result {
         if (BuildState.debug) "PeriodicScanWorker Run".logd(TAG)
         try {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - initTime > 5 * 60 * 1000) {
+            delay(1000L)
+            if(AppLifecycleManager.isBackground()){
                 NotificationHelper.show(PushScenario.KEEPALIVE)
-            } else {
-                if(BuildState.debug) "PeriodicScanWorker init time less 5 min".logd(TAG)
             }
         } catch (e: Throwable) {
             "PeriodicScanWorker error: ${e.message}".logd(TAG)
             e.printStackTrace()
         }
-
         return Result.success()
     }
 

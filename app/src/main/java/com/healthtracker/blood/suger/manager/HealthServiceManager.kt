@@ -19,6 +19,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import net.corekit.core.report.ReportDataManager
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.compareTo
 
 /**
  * 健康服务管理器
@@ -34,11 +35,16 @@ class HealthServiceManager @Inject constructor(
     companion object {
         private const val TAG = "HealthServiceManager"
     }
-
+    private var lastTime = 0L
     /**
      * 启动健康服务
      */
     fun startHealthService(from: String = "local_push") {
+
+        if(System.currentTimeMillis() - lastTime < 5000L){
+            return
+        }
+
         // 检查通知权限
         if (!permissionManager.isNotificationPermissionGranted()) {
             "Cannot start health service: notification permission not granted".logw(TAG)
@@ -60,6 +66,7 @@ class HealthServiceManager @Inject constructor(
 
             // 记录用户启用了服务
             SpUtils.putBoolean(HealthServiceConstants.PREF_HEALTH_SERVICE_ENABLED, true)
+            lastTime = System.currentTimeMillis()
 
             "Health service started successfully".logd(TAG)
 
