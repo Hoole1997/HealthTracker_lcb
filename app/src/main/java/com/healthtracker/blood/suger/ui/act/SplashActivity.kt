@@ -20,10 +20,10 @@ import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
-import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.util.logEvent
 import com.healthtracker.blood.suger.util.pushRequest
 import com.healthtracker.blood.suger.util.pushResult
+import com.healthtracker.blood.suger.utils.isAdPage
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -34,7 +34,6 @@ import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
-import com.healthtracker.framework.util.isLeast12
 import com.healthtracker.framework.util.isLeast13
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +50,6 @@ import net.corekit.monetize.ads.LaunchAds
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import javax.inject.Inject
-import kotlin.jvm.java
 import kotlin.math.ceil
 
 @AndroidEntryPoint
@@ -110,6 +108,18 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     override fun getVMModelClass() = BaseViewModel::class.java
     private var launchTime = 0L
     override fun initView(savedInstanceState: Bundle?) {
+        try {
+            if(!isTaskRoot){
+                val activityList = ActivityUtils.getActivityList()
+                if(isAdPage(activityList[1])){
+                    "当前是广告页面或引导页面，直接关闭启动页".logd(TAG)
+                    finish()
+                    return
+                }
+            }
+        }catch (e: Throwable){
+            e.printStackTrace()
+        }
         launchTime = System.currentTimeMillis()
         logEvent("loading_pagge_show")
         mViewBind.tvPrivacy.clickWithDuration {

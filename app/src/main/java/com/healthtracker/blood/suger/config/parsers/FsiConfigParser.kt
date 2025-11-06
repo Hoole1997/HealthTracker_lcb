@@ -105,7 +105,7 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
         return when (value) {
             is Boolean -> value
             is Number -> value.toInt() != 0
-            else -> value.toString().equals("true", ignoreCase = true)
+            else -> value?.toString().equals("true", ignoreCase = true)
         }
     }
 

@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.di.IoDispatcher
 import com.healthtracker.blood.suger.helper.NotificationHelper
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.act.SplashActivity
+import com.healthtracker.blood.suger.utils.isAdPage
 import com.healthtracker.blood.suger.work.HealthWorkTask
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
@@ -25,6 +26,7 @@ import com.healthtracker.framework.util.postRunnable
 import com.knightboot.spwaitkiller.SpWaitKiller
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -61,10 +63,27 @@ class AppInitializer @Inject constructor(
             if (BuildState.debug) "App entered foreground, refreshing config...".logd("AppInitializer")
             initScope.launch {
                 remoteConfigManager.refreshConfig()
-                //检查是否满足展示开屏广告条件
-                val result = LaunchAds.getInstance().checkInterceptor(application)
-                if (!ActivityUtils.isActivityExistsInStack(SplashActivity::class.java) && result is AdResult.Success) {
-                    startSplashActivity()
+            }
+
+            initScope.launch(Dispatchers.Main) {
+                try {
+                    //检查是否满足展示开屏广告条件
+                    val topActivity = ActivityUtils.getTopActivity()
+                    "回到前台,尝试重走启动页 topActivity:${topActivity::class.java.simpleName}".logd("AppInitializer")
+                    if (!ActivityUtils.isActivityExistsInStack(SplashActivity::class.java) && !isAdPage(topActivity
+                        )) {
+                        val result = LaunchAds.getInstance().checkInterceptor(application)
+                        if(result is AdResult.Success){
+                            startSplashActivity()
+                        }else{
+                            "当前不满足启动页开屏广告条件，不走启动页".logd("AppInitializer")
+                        }
+
+                    }else{
+                        "当前前台页面是启动页或广告页面，或引导页面，不重新走启动页面".logd("AppInitializer")
+                    }
+                }catch (e: Throwable){
+                    e.printStackTrace()
                 }
             }
 

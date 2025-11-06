@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.utils
 
+import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
@@ -7,13 +8,21 @@ import android.graphics.Point
 import android.os.Build
 import android.os.PowerManager
 import android.os.Process
+import com.bytedance.sdk.openadsdk.activity.TTAdActivity
+import com.bytedance.sdk.openadsdk.activity.TTAppOpenAdActivity
+import com.facebook.ads.AudienceNetworkActivity
+import com.google.android.libraries.ads.mobile.sdk.common.AdActivity
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.constants.KEY_APP_OPEN_TIMES
 import com.healthtracker.blood.suger.constants.KEY_APP_START_TIME
+import com.healthtracker.blood.suger.ui.act.GuideActivity
+import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils
+import net.corekit.monetize.ui.FullScreenNativeAdActivity
 import java.util.Calendar
+import kotlin.jvm.java
 
 
 // 第一次启动时间
@@ -84,3 +93,23 @@ private fun getDateInt(calendar: Calendar, time: Long): Int {
     calendar.timeInMillis = time
     return calendar[Calendar.YEAR] * 10000 + (calendar[Calendar.MONTH] + 1) * 100 + calendar[Calendar.DAY_OF_MONTH]
 }
+
+fun isExcludePage(lastVisibleActivity: Activity?) =
+    lastVisibleActivity is SplashActivity ||
+            lastVisibleActivity is GuideActivity
+
+
+fun isAdPage(activity: Activity?) = activity?.run {
+    this.javaClass in adClasses
+}?: run {
+    false
+}
+
+val adClasses = arrayOf(
+    AdActivity::class.java,
+    FullScreenNativeAdActivity::class.java,
+    AudienceNetworkActivity::class.java,
+    TTAppOpenAdActivity::class.java,
+    TTAdActivity::class.java,
+    GuideActivity::class.java
+)
