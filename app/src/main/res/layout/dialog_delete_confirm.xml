@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_rect_white_12"
     android:gravity="center_horizontal"
     android:orientation="vertical"
@@ -48,6 +49,11 @@
             style="@style/MaterialButton.b1"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
+            android:maxLines="1"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMaxTextSize="@dimen/sp_16"
+            app:autoSizeMinTextSize="@dimen/sp_12"
+            app:autoSizeStepGranularity="1sp"
             android:layout_weight="1"
             android:text="@string/confirm" />
     </androidx.appcompat.widget.LinearLayoutCompat>

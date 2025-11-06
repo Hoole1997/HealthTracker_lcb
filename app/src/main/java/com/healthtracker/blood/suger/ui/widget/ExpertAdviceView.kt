@@ -10,6 +10,9 @@ import android.view.ViewOutlineProvider
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.LayoutExpertAdviceBinding
 import com.healthtracker.blood.suger.ui.act.showFreeLockConfirm
@@ -54,8 +57,38 @@ class ExpertAdviceView @JvmOverloads constructor(
     // 倒计时协程
     private var countdownJob: Job? = null
 
+    // 生命周期管理
+    private var lifecycleOwner: LifecycleOwner? = null
+
+    // 倒计时状态（支持暂停/恢复）
+    private var remainingSeconds = 0  // 剩余秒数
+    private var isPaused = false      // 是否暂停状态
+
     // 回调监听器
     private var listener: OnExpertAdviceListener? = null
+
+    // 生命周期观察者（监听页面可见性）
+    private val lifecycleObserver = LifecycleEventObserver { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_PAUSE -> {
+                // 页面不可见，暂停倒计时
+                if (countdownJob?.isActive == true && !isPaused) {
+                    pauseCountdown()
+                }
+            }
+            Lifecycle.Event.ON_RESUME -> {
+                // 页面恢复，继续倒计时
+                if (isPaused && remainingSeconds > 0) {
+                    unpauseCountdown()
+                }
+            }
+            Lifecycle.Event.ON_DESTROY -> {
+                // 页面销毁，停止倒计时并清理
+                stopCountdown()
+            }
+            else -> {}
+        }
+    }
 
     /**
      * 交互回调接口
@@ -196,19 +229,88 @@ class ExpertAdviceView @JvmOverloads constructor(
     }
 
     /**
+     * 设置生命周期所有者
+     * 用于支持 Fragment 等非 Activity 场景
+     *
+     * @param owner LifecycleOwner（Activity 或 Fragment）
+     */
+    fun setLifecycleOwner(owner: LifecycleOwner?) {
+        // 移除旧的观察者
+        lifecycleOwner?.lifecycle?.removeObserver(lifecycleObserver)
+
+        // 设置新的
+        lifecycleOwner = owner
+
+        // 注册新的观察者
+        lifecycleOwner?.lifecycle?.addObserver(lifecycleObserver)
+    }
+
+    /**
      * 手动开始倒计时
      */
     fun startCountdown() {
         stopCountdown() // 先停止之前的倒计时
 
-        countdownJob = CoroutineScope(Dispatchers.Main).launch {
-            for (i in countdownSeconds downTo 1) {
-                "${i}s".also { binding.btnCountdown.text = it }
-                delay(1000)
-            }
-            // 倒计时结束
-            onCountdownFinished()
+        // 初始化倒计时状态
+        remainingSeconds = countdownSeconds
+        isPaused = false
+
+        // 启动倒计时
+        resumeCountdown()
+    }
+
+    /**
+     * 从当前剩余秒数继续倒计时
+     */
+    private fun resumeCountdown() {
+        // 如果没有剩余秒数或已有倒计时在运行，直接返回
+        if (remainingSeconds <= 0 || countdownJob?.isActive == true) {
+            return
         }
+
+        countdownJob = CoroutineScope(Dispatchers.Main).launch {
+            while (remainingSeconds > 0 && !isPaused) {
+                // 更新显示
+                "${remainingSeconds}s".also { binding.btnCountdown.text = it }
+
+                // 等待 1 秒
+                delay(1000)
+
+                // 减少剩余秒数
+                remainingSeconds--
+            }
+
+            // 检查是否正常结束（非暂停导致的退出）
+            if (remainingSeconds <= 0 && !isPaused) {
+                onCountdownFinished()
+            }
+        }
+    }
+
+    /**
+     * 暂停倒计时（保存当前进度）
+     */
+    private fun pauseCountdown() {
+        isPaused = true
+
+        // 取消协程（但保留 remainingSeconds）
+        countdownJob?.cancel()
+        countdownJob = null
+    }
+
+    /**
+     * 恢复倒计时（从暂停位置继续）
+     */
+    private fun unpauseCountdown() {
+        // 只有在暂停状态且有剩余秒数时才恢复
+        if (!isPaused || remainingSeconds <= 0) {
+            return
+        }
+
+        isPaused = false
+
+        // 从剩余秒数继续倒计时
+        resumeCountdown()
     }
 
     /**
@@ -217,6 +319,10 @@ class ExpertAdviceView @JvmOverloads constructor(
     fun stopCountdown() {
         countdownJob?.cancel()
         countdownJob = null
+
+        // 重置状态，防止意外恢复
+        remainingSeconds = 0
+        isPaused = false
     }
 
     /**
@@ -287,10 +393,30 @@ class ExpertAdviceView @JvmOverloads constructor(
     }
 
     /**
+     * View 附加到窗口时自动注册生命周期观察者
+     */
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        // 如果 Context 是 AppCompatActivity，自动获取 LifecycleOwner
+        if (lifecycleOwner == null && context is AppCompatActivity) {
+            lifecycleOwner = context as AppCompatActivity
+        }
+
+        // 注册生命周期观察者
+        lifecycleOwner?.lifecycle?.addObserver(lifecycleObserver)
+    }
+
+    /**
      * View 从窗口分离时清理资源
      */
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+
+        // 停止倒计时
         stopCountdown()
+
+        // 移除生命周期观察者
+        lifecycleOwner?.lifecycle?.removeObserver(lifecycleObserver)
     }
 }
