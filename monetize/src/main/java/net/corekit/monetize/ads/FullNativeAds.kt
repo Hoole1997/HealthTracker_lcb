@@ -366,7 +366,7 @@ class FullNativeAds private constructor() {
                 )
                 return AdResult.Success(Unit)
             }
-            val nativeAd = loadAd(context, adUnitId)
+            val nativeAd = loadAd(context.applicationContext, adUnitId)
             if (nativeAd != null) {
                 synchronized(adCachePool) {
                     adCachePool.add(CachedFullScreenNativeAd(nativeAd, adUnitId))

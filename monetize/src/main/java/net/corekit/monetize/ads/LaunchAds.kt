@@ -419,6 +419,7 @@ class LaunchAds private constructor() {
                             "currency" to (currentAdValue?.currencyCode ?: "")
                         )
                     )
+                    appOpenAd.destroy()
                     val result = AdResult.Success(Unit)
                     if (continuation.isActive) {
                         continuation.resume(result)
@@ -437,6 +438,7 @@ class LaunchAds private constructor() {
                             "reason" to fullScreenContentError.message
                         )
                     )
+                    appOpenAd.destroy()
                     val result = AdResult.Failure(createAdException("显示失败: ${fullScreenContentError.message}"))
                     if (continuation.isActive) {
                         continuation.resume(result)
@@ -610,6 +612,12 @@ class LaunchAds private constructor() {
                     pending.continuation.resume(result)
                 }
             }
+        }
+
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+            pendingRequest?.ad?.adEventCallback = null
+            lifecycleOwner.lifecycle.removeObserver(this)
         }
     }
 } 

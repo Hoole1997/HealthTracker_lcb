@@ -2,8 +2,6 @@ package net.corekit.monetize.ads
 
 import android.app.Activity
 import android.content.Context
-import com.blankj.utilcode.util.ActivityUtils
-
 import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
 import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.AdValue
@@ -11,9 +9,14 @@ import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
 import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
 import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAd
 import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAdEventCallback
-import net.corekit.monetize.ads.report.FpuController
 import com.remax.bill.ads.report.IpuController
 import com.remax.bill.ads.report.RpuController
+import kotlinx.coroutines.suspendCancellableCoroutine
+import net.corekit.core.ads.RevenueAdData
+import net.corekit.core.ads.RevenueAdManager
+import net.corekit.core.ads.RevenueInfo
+import net.corekit.core.ext.DataStoreIntDelegate
+import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.interceptor.ClickLimitInterceptor
@@ -21,18 +24,13 @@ import net.corekit.monetize.ads.interceptor.GlobalAdSwitchInterceptor
 import net.corekit.monetize.ads.interceptor.InterceptorChain
 import net.corekit.monetize.ads.interceptor.ShowCountLimitInterceptor
 import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
-import net.corekit.core.ads.RevenueAdData
-import net.corekit.core.ads.RevenueAdManager
-import net.corekit.core.ads.RevenueInfo
-import net.corekit.core.ext.DataStoreIntDelegate
-import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.log.AdLogger
-import kotlin.math.ceil
+import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.FullScreenNativeAdActivity
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
-import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
+import kotlin.math.ceil
 
 /**
  * 插页广告控制器
@@ -242,36 +240,6 @@ class InterstitialAds private constructor() {
                         )
                     )
                     FpuController.onAdFill("IV")
-                    ad.adEventCallback = object :InterstitialAdEventCallback{
-                        override fun onAdPaid(value: AdValue) {
-                            AdLogger.d("插页广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
-
-                            // 存储当前广告的收益信息
-                            currentAdValue = value
-
-                            reportAdData(
-                                eventName = "ad_impression",
-                                params = mapOf(
-                                    "ad_unit_name" to adUnitId,
-                                    "position" to context::class.java.simpleName,
-                                    "number" to totalShowCount,
-                                    "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
-                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }
-                                        ?: 0.0),
-                                    "currency" to (currentAdValue?.currencyCode ?: "")
-                                )
-                            )
-
-                            // 上报真实的广告收益数据
-                            reportAdRevenueWithValue(ad, adUnitId,value)
-
-                            IpuController.onAdImpression("IV", value.valueMicros)
-                            RpuController.onAdRevenue("IV", value.valueMicros)
-                        }
-
-                    }
-                    
-
                     
                     continuation.resume(ad)
                 }
@@ -311,7 +279,7 @@ class InterstitialAds private constructor() {
             }
 
             // 加载广告
-            val interstitialAd = loadAd(context, adUnitId)
+            val interstitialAd = loadAd(context.applicationContext, adUnitId)
             if (interstitialAd != null) {
                 synchronized(adCachePool) {
                     adCachePool.add(CachedInterstitialAd(interstitialAd, adUnitId))
@@ -383,7 +351,8 @@ class InterstitialAds private constructor() {
                             "currency" to (currentAdValue?.currencyCode ?: "")
                         )
                     )
-                    
+
+                    interstitialAd.destroy()
                     val result = AdResult.Success(Unit)
                     if (continuation.isActive) {
                         continuation.resume(result)
@@ -408,6 +377,7 @@ class InterstitialAds private constructor() {
                             "reason" to fullScreenContentError.message
                         )
                     )
+                    interstitialAd.destroy()
 
                     val result = AdResult.Failure(createAdException("显示失败: ${fullScreenContentError.message}"))
                     if (continuation.isActive) {
@@ -461,6 +431,33 @@ class InterstitialAds private constructor() {
                     if (!isCacheFull(adUnitId)) {
                         PreloadController.preload(activity)
                     }
+                }
+
+                override fun onAdPaid(value: AdValue) {
+                    super.onAdPaid(value)
+                    AdLogger.d("插页广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
+
+                    // 存储当前广告的收益信息
+                    currentAdValue = value
+
+                    reportAdData(
+                        eventName = "ad_impression",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "position" to PositionGet.get(),
+                            "number" to totalShowCount,
+                            "ad_source" to (interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }
+                                ?: 0.0),
+                            "currency" to (currentAdValue?.currencyCode ?: "")
+                        )
+                    )
+
+                    // 上报真实的广告收益数据
+                    reportAdRevenueWithValue(interstitialAd, adUnitId,value)
+
+                    IpuController.onAdImpression("IV", value.valueMicros)
+                    RpuController.onAdRevenue("IV", value.valueMicros)
                 }
             }
 

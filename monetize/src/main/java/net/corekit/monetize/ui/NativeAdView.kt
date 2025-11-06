@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.libraries.ads.mobile.sdk.nativead.MediaView
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
 import net.corekit.monetize.R
@@ -48,6 +50,17 @@ class NativeAdView {
 
             // 添加到容器
             container.addView(adView)
+
+            if(context is LifecycleOwner){
+                context.lifecycle.addObserver(object : DefaultLifecycleObserver{
+                    override fun onDestroy(owner: LifecycleOwner) {
+                        super.onDestroy(owner)
+                        nativeAd.adEventCallback = null
+                        nativeAd.destroy()
+                        context.lifecycle.removeObserver(this)
+                    }
+                })
+            }
 
             AdLogger.d("原生广告视图绑定成功")
             true

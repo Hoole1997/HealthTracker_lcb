@@ -534,6 +534,12 @@ class RewardedAds private constructor() {
                 }
             }
         }
+
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+            pendingRequest?.ad?.adEventCallback = null
+            lifecycleOwner.lifecycle.removeObserver(this)
+        }
     }
 
     data class PendingShowRequest<T>(
