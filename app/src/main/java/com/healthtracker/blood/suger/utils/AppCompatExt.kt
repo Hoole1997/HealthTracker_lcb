@@ -132,13 +132,13 @@ fun FragmentActivity.loadReword(condition: () -> Boolean = { true }, call: (Bool
                 return@launch
             }
 
-            when (val result = RewardedAds.getInstance().show(this@loadReword)) {
+            when (RewardedAds.getInstance().show(this@loadReword)) {
                 is AdResult.Success -> {
                     call.invoke(true)
                 }
                 is AdResult.Failure -> {
                     // result.error.message 可用于提示或上报
-                    call.invoke(true)
+                    call.invoke(false)
                 }
 
                 AdResult.Loading -> {

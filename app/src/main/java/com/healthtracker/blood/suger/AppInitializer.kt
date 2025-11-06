@@ -69,6 +69,17 @@ class AppInitializer @Inject constructor(
             }
 
         }
+
+        override fun onScreenLocked() {
+            super.onScreenLocked()
+            if(BuildState.debug){
+                //TODO 测试用的
+                initScope.launch {
+                    delay(5000)
+                    NotificationHelper.show(PushScenario.BACKGROUND)
+                }
+            }
+        }
     }
 
     fun startSplashActivity() {

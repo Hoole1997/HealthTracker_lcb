@@ -1,10 +1,12 @@
 package com.healthtracker.blood.suger.ad
 
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.healthtracker.blood.suger.utils.loadReword
 import com.healthtracker.blood.suger.utils.showInter
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
+import kotlinx.coroutines.launch
 
 abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVMActivity<VM,VB>() {
 
@@ -19,11 +21,13 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
 
 
     protected fun showReword(){
-        loadReword {
-            if(it){
-                hideMask()
-            }
-        }
+       lifecycleScope.launch {
+           loadReword {
+               if(it){
+                   hideMask()
+               }
+           }
+       }
     }
 
 
