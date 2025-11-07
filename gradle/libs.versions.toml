@@ -1,7 +1,7 @@
 [versions]
 
 # @keep
-compileSdk = "35"
+compileSdk = "36"
 # @keep
 flexbox = "3.0.0"
 highlightpro = "1.4.0"
@@ -133,9 +133,6 @@ app-update = {module = "com.google.android.play:app-update-ktx",version = "2.1.0
 
 lifecycle-process = {module = "androidx.lifecycle:lifecycle-process",version = "2.9.3"}
 
-#反射处理SDK中SP阻塞主线程
-spwaitkiller = {module = "io.github.knight-zxw:spwaitkiller",version = "0.0.8"}
-hiddenapibypass = {module = "org.lsposed.hiddenapibypass:hiddenapibypass",version = "6.1"}
 #监控ANR
 anr-watchdog = {module = "com.github.anrwatchdog:anrwatchdog",version = "1.4.0"}
 debug_blockcanary = {module = "com.github.xuexiangjys.BlockCanary:blockcanary-android",version = "1.0.0"}

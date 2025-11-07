@@ -32,8 +32,8 @@ android {
     namespace = "com.healthtracker.blood.suger"
 
     defaultConfig {
-        versionCode = 3
-        versionName = "1.0.1"
+        versionCode = 5
+        versionName = "1.0.2"
         buildConfig {
             boolean("showLog", showLog)
         }
@@ -155,8 +155,6 @@ dependencies {
     implementation(libs.unPeekLiveData)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.webviewProgress)
-    implementation(libs.spwaitkiller)
-    implementation(libs.hiddenapibypass)
     implementation(libs.work.runtime)
     implementation(libs.lifecycle.process)
     implementation(libs.imagepicker)
@@ -175,6 +173,7 @@ dependencies {
     implementation(libs.xxpermissions)
     implementation(libs.skeleton)
     implementation(libs.shimmerlayout)
+    implementation("com.patrykandpatrick.vico:views:2.3.0")
 }
 
 // BuildConfig 扩展函数

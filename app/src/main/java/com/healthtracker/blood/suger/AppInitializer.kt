@@ -20,10 +20,8 @@ import com.healthtracker.framework.lifecycle.AppForegroundObserver
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LogUtils
 import com.healthtracker.framework.util.SpUtils
-import com.healthtracker.framework.util.hasP
 import com.healthtracker.framework.util.logException
 import com.healthtracker.framework.util.postRunnable
-import com.knightboot.spwaitkiller.SpWaitKiller
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +31,6 @@ import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.LaunchAds
-import org.lsposed.hiddenapibypass.HiddenApiBypass
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -168,13 +165,7 @@ class AppInitializer @Inject constructor(
      */
     private fun initializeDelayedServices() {
         postRunnable {
-            //反射处理sp造成主线程阻塞问
             try {
-                if (hasP()) {
-                    HiddenApiBypass.addHiddenApiExemptions("")
-                }
-                SpWaitKiller.builder(application).build().work()
-
                 // 1. ScanWorkTask.registerReceiver(this) - 屏幕解锁广播
                 HealthWorkTask.registerReceiver(application)
 
