@@ -31,6 +31,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.blankj.utilcode.util.RomUtils;
 import com.blankj.utilcode.util.Utils;
+import com.healthtracker.framework.util.ScreenUtil;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -399,7 +400,7 @@ public final class BarUtils {
                                             final int color) {
         View statusBarView = new View(context);
         statusBarView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(context)));
+                ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(context) + (int)ScreenUtil.dp2px(4)));
         statusBarView.setBackgroundColor(color);
         statusBarView.setTag(TAG_STATUS_BAR);
         return statusBarView;
