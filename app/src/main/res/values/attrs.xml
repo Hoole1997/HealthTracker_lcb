@@ -225,4 +225,121 @@
         <attr name="eav_minHeightWithMask" format="dimension" />
     </declare-styleable>
 
+    <style name="ChartStyle">
+        <item name="layers">line</item>
+        <item name="showBottomAxis">false</item>
+        <item name="showStartAxis">true</item>
+
+    </style>
+
+    <!-- ==================== 图表样式 ==================== -->
+    <style name="BloodPressureChartStyle">
+        <item name="layers">line</item>
+        <item name="showBottomAxis">true</item>
+        <item name="showStartAxis">true</item>
+        <item name="bottomAxisStyle">@style/BloodPressureBottomAxisStyle</item>
+        <item name="startAxisStyle">@style/BloodPressureStartAxisStyle</item>
+        <item name="lineLayerStyle">@style/BloodPressureLineLayerStyle</item>
+        <item name="scalableStartLayerPadding">8dp</item>
+        <item name="scalableEndLayerPadding">8dp</item>
+    </style>
+
+    <!-- ==================== 底部坐标轴样式 ==================== -->
+    <style name="BloodPressureBottomAxisStyle">
+        <item name="showLine">false</item>
+        <item name="showGuidelines">false</item>
+        <item name="showTicks">false</item>
+        <item name="labelStyle">@style/BottomAxisLabelStyle</item>
+        <item name="horizontalAxisItemPlacer">aligned</item>
+        <item name="horizontalAxisLabelSpacing">1</item>
+    </style>
+
+    <!-- 底部坐标轴标签样式 -->
+    <style name="BottomAxisLabelStyle">
+        <item name="android:color">#9E9E9E</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:paddingTop">8dp</item>
+    </style>
+
+    <!-- ==================== 左侧坐标轴样式 ==================== -->
+    <style name="BloodPressureStartAxisStyle">
+        <item name="showLine">false</item>
+        <item name="showGuidelines">true</item>
+        <item name="showTicks">false</item>
+        <item name="guidelineStyle">@style/DashedGuidelineStyle</item>
+        <item name="labelStyle">@style/StartAxisLabelStyle</item>
+        <item name="verticalAxisItemCount">7</item>
+        <item name="verticalAxisHorizontalLabelPosition">outside</item>
+        <item name="verticalAxisVerticalLabelPosition">center</item>
+
+    </style>
+
+    <!-- 虚线网格样式 -->
+    <style name="DashedGuidelineStyle">
+        <item name="android:color">#E5E5E5</item>
+        <item name="thickness">@dimen/dp_1</item>
+        <item name="shapeStyle">@style/DashedShapeStyle</item>
+    </style>
+
+    <!-- 虚线形状 -->
+    <style name="DashedShapeStyle">
+        <item name="dashLength">@dimen/dp_4</item>
+        <item name="gapLength">@dimen/dp_4</item>
+    </style>
+
+    <!-- 左侧坐标轴标签样式 -->
+    <style name="StartAxisLabelStyle">
+        <item name="android:color">@color/color_999</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="android:paddingEnd">@dimen/dp_8</item>
+    </style>
+
+    <!-- ==================== 折线图层样式 ==================== -->
+    <style name="BloodPressureLineLayerStyle">
+        <item name="line1Style">@style/SystolicLineStyle</item>
+        <item name="line2Style">@style/DiastolicLineStyle</item>
+        <item name="pointSpacing">@dimen/dp_20</item>
+    </style>
+
+    <!-- Systolic 线条样式（橙红色） -->
+    <style name="SystolicLineStyle">
+        <item name="android:color">#FF6B4D</item>
+        <item name="thickness">@dimen/dp_1</item>
+        <item name="android:strokeLineCap">round</item>
+        <item name="pointSize">@dimen/dp_8</item>
+        <item name="curvature">30%</item>
+        <item name="pointStyle">@style/SystolicPointStyle</item>
+    </style>
+
+    <!-- Systolic 数据点样式 -->
+    <style name="SystolicPointStyle">
+        <item name="android:color">#FF6B4D</item>
+        <item name="strokeColor">#FFFFFF</item>
+        <item name="strokeThickness">@dimen/dp_1</item>
+        <item name="shapeStyle">@style/CircleShape</item>
+    </style>
+
+    <!-- Diastolic 线条样式（青色） -->
+    <style name="DiastolicLineStyle">
+        <item name="android:color">#4AD7FF</item>
+        <item name="thickness">@dimen/dp_1</item>
+        <item name="android:strokeLineCap">round</item>
+        <item name="pointSize">@dimen/dp_8</item>
+        <item name="curvature">30%</item>
+        <item name="pointStyle">@style/DiastolicPointStyle</item>
+    </style>
+
+    <!-- Diastolic 数据点样式 -->
+    <style name="DiastolicPointStyle">
+        <item name="android:color">#4AD7FF</item>
+        <item name="strokeColor">#FFFFFF</item>
+        <item name="strokeThickness">@dimen/dp_1</item>
+        <item name="shapeStyle">@style/CircleShape</item>
+    </style>
+
+    <!-- 圆形形状 -->
+    <style name="CircleShape">
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>
