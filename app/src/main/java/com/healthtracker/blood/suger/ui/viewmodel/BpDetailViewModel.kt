@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
+import com.healthtracker.blood.suger.util.ChartConfigHelper
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
@@ -11,11 +12,14 @@ import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -27,6 +31,16 @@ class BpDetailViewModel @Inject constructor(
     private val bloodPressureRepository: BloodPressureRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
+
+    data class BpChartUiState(
+        val labels: List<String> = emptyList(),
+        val xValues: List<Float> = emptyList(),
+        val systolicValues: List<Float> = emptyList(),
+        val diastolicValues: List<Float> = emptyList(),
+        val minY: Double = 0.0,
+        val maxY: Double = 1.0,
+        val hasData: Boolean = false
+    )
 
     companion object {
         const val RECORD_ID = "record_id"
@@ -43,6 +57,42 @@ class BpDetailViewModel @Inject constructor(
     // 错误状态
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
+
+    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+
+    val chartUiState: StateFlow<BpChartUiState> =
+        bloodPressureRepository.getChartBloodPressureRecords()
+            .map { records ->
+                val sortedRecords = records.sortedBy { it.recordTime }
+                if (sortedRecords.isEmpty()) {
+                    BpChartUiState()
+                } else {
+                    val labels = sortedRecords.map { chartLabelFormatter.format(it.recordTime) }
+                    val xValues = sortedRecords.indices.map { it.toFloat() }
+                    val systolicValues = sortedRecords.map { it.systolicPressure.toFloat() }
+                    val diastolicValues = sortedRecords.map { it.diastolicPressure.toFloat() }
+                    val (minY, maxY) = ChartConfigHelper.computeNiceRange(
+                        listOf(
+                            systolicValues.map { it.toDouble() },
+                            diastolicValues.map { it.toDouble() }
+                        )
+                    )
+                    BpChartUiState(
+                        labels = labels,
+                        xValues = xValues,
+                        systolicValues = systolicValues,
+                        diastolicValues = diastolicValues,
+                        minY = minY,
+                        maxY = maxY,
+                        hasData = true
+                    )
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = BpChartUiState()
+            )
 
     // 获取传递的记录ID
     private val recordId: Long = savedStateHandle.get<Long>(RECORD_ID) ?: -1L

@@ -11,15 +11,27 @@ import com.healthtracker.blood.suger.databinding.ActivityBpDetailBinding
 import com.healthtracker.blood.suger.ui.viewmodel.BpDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
+import com.healthtracker.blood.suger.util.AxisStyle
+import com.healthtracker.blood.suger.util.ChartConfigHelper
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.startActivity
+import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
+import com.patrykandpatrick.vico.core.cartesian.axis.Axis
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
+import java.text.DecimalFormat
 
 @AndroidEntryPoint
 class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBinding>() {
+
+    private val chartModelProducer = CartesianChartModelProducer()
+    private var chartLabels: List<String> = emptyList()
 
     companion object{
         private const val RECORD_ID = "record_id"
@@ -34,6 +46,7 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBin
     override fun getVMModelClass() = BpDetailViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        setupChart()
         with(mViewBind){
             btnBack.clickWithDuration {
                 onBackPress()
@@ -97,6 +110,12 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBin
                 // TODO: 显示/隐藏加载状态
             }
         }
+
+        lifecycleScope.launch {
+            mViewModel.chartUiState.collectLatest { state ->
+                updateChart(state)
+            }
+        }
     }
 
     private fun updateUI(record: BloodPressureRecord) {
@@ -130,6 +149,51 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBin
 
     override fun hideMask() {
         mViewBind.expertAdviceView.setMaskVisible(false)
+    }
+
+    private fun setupChart() {
+        val axisStyle = AxisStyle(
+            bottomAxisValueFormatter = createBottomAxisFormatter(),
+            deduplicateBottomLabels = true,
+            minY = 0.0,
+            maxY = 200.0,
+            startAxisValueFormatter = CartesianValueFormatter.decimal(DecimalFormat("#"))
+        )
+        mViewBind.chartView.apply {
+            chart = ChartConfigHelper.createDualLineChart(axisStyle = axisStyle)
+            modelProducer = chartModelProducer
+        }
+    }
+
+    private suspend fun updateChart(state: BpDetailViewModel.BpChartUiState) {
+        chartLabels = state.labels
+        val axisStyle = AxisStyle(
+            bottomAxisValueFormatter = createBottomAxisFormatter(),
+            deduplicateBottomLabels = true,
+            minY = state.minY,
+            maxY = state.maxY,
+            startAxisValueFormatter = CartesianValueFormatter.decimal(DecimalFormat("#"))
+        )
+        mViewBind.chartView.chart = ChartConfigHelper.createDualLineChart(axisStyle = axisStyle)
+        if (!state.hasData) return
+        chartModelProducer.runTransaction {
+            lineSeries {
+                series(x = state.xValues, y = state.systolicValues)
+                series(x = state.xValues, y = state.diastolicValues)
+            }
+        }
+    }
+
+    private fun createBottomAxisFormatter(): CartesianValueFormatter {
+        return object : CartesianValueFormatter {
+            override fun format(
+                context: CartesianMeasuringContext,
+                value: Double,
+                verticalAxisPosition: Axis.Position.Vertical?
+            ): CharSequence {
+                return chartLabels.getOrNull(value.toInt()) ?: ""
+            }
+        }
     }
 
 }
