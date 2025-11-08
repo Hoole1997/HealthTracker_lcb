@@ -131,39 +131,13 @@ class ChartConfigHelper {
             val style1 = line1Style ?: LineStyle(color = line1Color)
             val style2 = line2Style ?: LineStyle(color = line2Color)
 
-            // 创建折线图层
-            val lineLayer = createLineLayer(style1, style2, pointSpacingDp, axisStyle = axisStyle)
-
-            // 创建坐标轴
-            val startAxis = createStartAxis(axisStyle)
-            val bottomAxis = createBottomAxis(axisStyle)
-
-            // 创建装饰列表
-            val decorations = mutableListOf<HorizontalLine>()
-            baselineStyle?.let {
-                decorations.add(createBaseline(it))
-            }
-
-            // 组装图表
-            return CartesianChart(
-                lineLayer,
-                startAxis = startAxis,
-                bottomAxis = bottomAxis,
-                layerPadding = {
-                    CartesianLayerPadding(
-                        scalableStartDp = layerPaddingDp,
-                        scalableEndDp = layerPaddingDp
-                    )
-                },
-                decorations = decorations,
-                marker = marker,
-                markerController = object :CartesianMarkerController{
-                    override fun shouldShowMarker(
-                        interaction: Interaction,
-                        targets: List<CartesianMarker.Target>
-                    ) = true
-
-                }
+            return createLineChart(
+                lineStyles = listOf(style1, style2),
+                axisStyle = axisStyle,
+                baselineStyle = baselineStyle,
+                layerPaddingDp = layerPaddingDp,
+                pointSpacingDp = pointSpacingDp,
+                marker = marker
             )
         }
 
@@ -187,19 +161,39 @@ class ChartConfigHelper {
             marker: CartesianMarker? = getDefaultMark()
         ): CartesianChart {
             val style = lineStyle ?: LineStyle(color = lineColor)
+            return createLineChart(
+                lineStyles = listOf(style),
+                axisStyle = axisStyle,
+                baselineStyle = baselineStyle,
+                layerPaddingDp = layerPaddingDp,
+                marker = marker
+            )
+        }
 
-            val lineLayer = LineCartesianLayer(
-                lineProvider = LineCartesianLayer.LineProvider.series(listOf(createLine(style))),
-                pointSpacingDp = POINT_SPACING
+        /**
+         * 创建任意条折线的通用图表
+         */
+        fun createLineChart(
+            lineStyles: List<LineStyle>,
+            axisStyle: AxisStyle = AxisStyle(),
+            baselineStyle: BaselineStyle? = BaselineStyle(axisStyle.minY ?: 0.0),
+            layerPaddingDp: Float = LAYER_PADDING,
+            pointSpacingDp: Float = POINT_SPACING,
+            marker: CartesianMarker? = getDefaultMark()
+        ): CartesianChart {
+            val styles = if (lineStyles.isEmpty()) listOf(LineStyle(color = DEFAULT_LINE1_COLOR)) else lineStyles
+
+            val lineLayer = createLineLayer(
+                lineStyles = styles,
+                spacingDp = pointSpacingDp,
+                axisStyle = axisStyle
             )
 
             val startAxis = createStartAxis(axisStyle)
             val bottomAxis = createBottomAxis(axisStyle)
 
             val decorations = mutableListOf<HorizontalLine>()
-            baselineStyle?.let {
-                decorations.add(createBaseline(it))
-            }
+            baselineStyle?.let { decorations.add(createBaseline(it)) }
 
             return CartesianChart(
                 lineLayer,
@@ -212,28 +206,26 @@ class ChartConfigHelper {
                     )
                 },
                 decorations = decorations,
-                marker = marker
+                marker = marker,
+                markerController = object : CartesianMarkerController {
+                    override fun shouldShowMarker(
+                        interaction: Interaction,
+                        targets: List<CartesianMarker.Target>
+                    ) = true
+                }
             )
         }
 
         // ==================== 内部实现方法 ====================
 
-        /**
-         * 创建折线图层（双线）
-         */
         private fun createLineLayer(
-            line1Style: LineStyle,
-            line2Style: LineStyle,
+            lineStyles: List<LineStyle>,
             spacingDp: Float,
             axisStyle: AxisStyle
         ): LineCartesianLayer {
+            val lines = lineStyles.map { createLine(it) }
             return LineCartesianLayer(
-                lineProvider = LineCartesianLayer.LineProvider.series(
-                    listOf(
-                        createLine(line1Style),
-                        createLine(line2Style)
-                    )
-                ),
+                lineProvider = LineCartesianLayer.LineProvider.series(lines),
                 pointSpacingDp = spacingDp,
                 rangeProvider = CartesianLayerRangeProvider.fixed(
                     minY = axisStyle.minY,

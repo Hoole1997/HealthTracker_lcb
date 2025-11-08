@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
-import com.healthtracker.blood.suger.util.ChartConfigHelper
+import com.healthtracker.blood.suger.ui.chart.ChartDataSet
+import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
+import com.healthtracker.blood.suger.ui.chart.ChartUiState
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
@@ -32,16 +34,6 @@ class BpDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-    data class BpChartUiState(
-        val labels: List<String> = emptyList(),
-        val xValues: List<Float> = emptyList(),
-        val systolicValues: List<Float> = emptyList(),
-        val diastolicValues: List<Float> = emptyList(),
-        val minY: Double = 0.0,
-        val maxY: Double = 1.0,
-        val hasData: Boolean = false
-    )
-
     companion object {
         const val RECORD_ID = "record_id"
     }
@@ -60,38 +52,38 @@ class BpDetailViewModel @Inject constructor(
 
     private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
 
-    val chartUiState: StateFlow<BpChartUiState> =
+    val chartUiState: StateFlow<ChartUiState> =
         bloodPressureRepository.getChartBloodPressureRecords()
             .map { records ->
                 val sortedRecords = records.sortedBy { it.recordTime }
                 if (sortedRecords.isEmpty()) {
-                    BpChartUiState()
+                    ChartUiState()
                 } else {
                     val labels = sortedRecords.map { chartLabelFormatter.format(it.recordTime) }
                     val xValues = sortedRecords.indices.map { it.toFloat() }
-                    val systolicValues = sortedRecords.map { it.systolicPressure.toFloat() }
-                    val diastolicValues = sortedRecords.map { it.diastolicPressure.toFloat() }
-                    val (minY, maxY) = ChartConfigHelper.computeNiceRange(
-                        listOf(
-                            systolicValues.map { it.toDouble() },
-                            diastolicValues.map { it.toDouble() }
-                        )
-                    )
-                    BpChartUiState(
+                    ChartUiState(
                         labels = labels,
-                        xValues = xValues,
-                        systolicValues = systolicValues,
-                        diastolicValues = diastolicValues,
-                        minY = minY,
-                        maxY = maxY,
-                        hasData = true
+                        dataSets = listOf(
+                            ChartDataSet(
+                                id = ChartSeriesIds.BP_SYS,
+                                label = "Systolic",
+                                xValues = xValues,
+                                yValues = sortedRecords.map { it.systolicPressure.toFloat() }
+                            ),
+                            ChartDataSet(
+                                id = ChartSeriesIds.BP_DIA,
+                                label = "Diastolic",
+                                xValues = xValues,
+                                yValues = sortedRecords.map { it.diastolicPressure.toFloat() }
+                            )
+                        )
                     )
                 }
             }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = BpChartUiState()
+                initialValue = ChartUiState()
             )
 
     // 获取传递的记录ID

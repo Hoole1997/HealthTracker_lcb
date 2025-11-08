@@ -2,36 +2,29 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityBpDetailBinding
+import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.viewmodel.BpDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
-import com.healthtracker.blood.suger.util.AxisStyle
-import com.healthtracker.blood.suger.util.ChartConfigHelper
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.startActivity
-import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
-import com.patrykandpatrick.vico.core.cartesian.axis.Axis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
-import java.text.DecimalFormat
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBinding>() {
 
-    private val chartModelProducer = CartesianChartModelProducer()
-    private var chartLabels: List<String> = emptyList()
+    @Inject
+    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+    private lateinit var chartManager: HealthLineChartManager
 
     companion object{
         private const val RECORD_ID = "record_id"
@@ -46,10 +39,11 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBin
     override fun getVMModelClass() = BpDetailViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        setupChart()
+        // 创建chartManager时传入lifecycleOwner，自动绑定生命周期
+        chartManager = chartManagerFactory.create(mViewBind.chartView, this)
         with(mViewBind){
             btnBack.clickWithDuration {
-                onBackPress()
+                handleBackPress()
             }
             btnDelete.clickWithDuration {
                 showDeleteConfirm()
@@ -86,35 +80,22 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBin
     }
 
     private fun observeData() {
-        lifecycleScope.launch {
-            // 观察血压记录数据变化
-            mViewModel.bloodPressureRecord.collect { record ->
-                record?.let {
-                    updateUI(it)
-                }
+        collectLatest(mViewModel.bloodPressureRecord) { record ->
+            record?.let { updateUI(it) }
+        }
+
+        collectLatest(mViewModel.error) { error ->
+            error?.let {
+                // TODO: 显示错误信息
             }
         }
 
-        lifecycleScope.launch {
-            // 观察错误状态
-            mViewModel.error.collect { error ->
-                error?.let {
-                    // TODO: 显示错误信息
-                }
-            }
+        collectLatest(mViewModel.isLoading) { isLoading ->
+            // TODO: 显示/隐藏加载状态
         }
 
-        lifecycleScope.launch {
-            // 观察加载状态
-            mViewModel.isLoading.collect { isLoading ->
-                // TODO: 显示/隐藏加载状态
-            }
-        }
-
-        lifecycleScope.launch {
-            mViewModel.chartUiState.collectLatest { state ->
-                updateChart(state)
-            }
+        collectLatest(mViewModel.chartUiState) { state ->
+            chartManager.render(state)
         }
     }
 
@@ -150,50 +131,4 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBin
     override fun hideMask() {
         mViewBind.expertAdviceView.setMaskVisible(false)
     }
-
-    private fun setupChart() {
-        val axisStyle = AxisStyle(
-            bottomAxisValueFormatter = createBottomAxisFormatter(),
-            deduplicateBottomLabels = true,
-            minY = 0.0,
-            maxY = 200.0,
-            startAxisValueFormatter = CartesianValueFormatter.decimal(DecimalFormat("#"))
-        )
-        mViewBind.chartView.apply {
-            chart = ChartConfigHelper.createDualLineChart(axisStyle = axisStyle)
-            modelProducer = chartModelProducer
-        }
-    }
-
-    private suspend fun updateChart(state: BpDetailViewModel.BpChartUiState) {
-        chartLabels = state.labels
-        val axisStyle = AxisStyle(
-            bottomAxisValueFormatter = createBottomAxisFormatter(),
-            deduplicateBottomLabels = true,
-            minY = state.minY,
-            maxY = state.maxY,
-            startAxisValueFormatter = CartesianValueFormatter.decimal(DecimalFormat("#"))
-        )
-        mViewBind.chartView.chart = ChartConfigHelper.createDualLineChart(axisStyle = axisStyle)
-        if (!state.hasData) return
-        chartModelProducer.runTransaction {
-            lineSeries {
-                series(x = state.xValues, y = state.systolicValues)
-                series(x = state.xValues, y = state.diastolicValues)
-            }
-        }
-    }
-
-    private fun createBottomAxisFormatter(): CartesianValueFormatter {
-        return object : CartesianValueFormatter {
-            override fun format(
-                context: CartesianMeasuringContext,
-                value: Double,
-                verticalAxisPosition: Axis.Position.Vertical?
-            ): CharSequence {
-                return chartLabels.getOrNull(value.toInt()) ?: ""
-            }
-        }
-    }
-
 }
