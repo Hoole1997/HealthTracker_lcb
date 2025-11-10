@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.DialogAlarmTimeSelectBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
-import com.healthtracker.framework.util.FontUtils
-import java.util.Calendar
-import java.util.Locale
-import com.healthtracker.blood.suger.data.utils.DateTimeUtils
+import com.healthtracker.framework.util.getRobotoBold
 
 class AlarmTimeSelectDialog(private val def: Pair<Int,Int>? = null,private val callBack:((Pair<Int, Int>)-> Unit)? = null) : BaseBottomSheetDialogFragment<DialogAlarmTimeSelectBinding>() {
 
@@ -41,7 +39,7 @@ class AlarmTimeSelectDialog(private val def: Pair<Int,Int>? = null,private val c
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.run {
-            val font = FontUtils.getInstance().robotoBold
+            val font = getRobotoBold(view.context)
             hourPicker.setContentSelectedTextTypeface(font)
             minutePicker.setContentSelectedTextTypeface(font)
             setupHourPicker(current.first)

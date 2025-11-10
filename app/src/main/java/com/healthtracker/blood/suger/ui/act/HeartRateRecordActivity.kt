@@ -17,13 +17,12 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
-import com.healthtracker.framework.util.FontUtils
+import com.healthtracker.framework.util.getRobotoBold
+import com.healthtracker.framework.util.getRobotoRegular
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
-import java.util.ArrayList
 import java.util.Calendar
-import kotlin.collections.indexOf
 
 /**
  * 心率记录页面
@@ -100,8 +99,8 @@ class HeartRateRecordActivity :
 
     private fun setupNumberPicker() {
         with(mViewBind.npvHeartRate) {
-            val tfRegular = FontUtils.getInstance().robotoRegular
-            val tfBold = FontUtils.getInstance().robotoBold
+            val tfRegular = getRobotoRegular(this@HeartRateRecordActivity)
+            val tfBold = getRobotoBold(this@HeartRateRecordActivity)
             setContentNormalTextTypeface(tfRegular)
             setContentSelectedTextTypeface(tfBold)
 

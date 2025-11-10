@@ -13,14 +13,14 @@ import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.blood.suger.utils.showInter
-import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.showToast
-import com.healthtracker.framework.util.FontUtils
+import com.healthtracker.framework.util.getRobotoBold
+import com.healthtracker.framework.util.getRobotoRegular
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
@@ -73,8 +73,8 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, ActivityBpRecordBin
                 tvTitle.text = getString(R.string.edit_record)
             }
             
-            val tfRegular = FontUtils.getInstance().robotoRegular
-            val tfBold = FontUtils.getInstance().robotoBold
+            val tfRegular = getRobotoRegular(this@BpRecordActivity)
+            val tfBold = getRobotoBold(this@BpRecordActivity)
             npvDiastolic.setContentSelectedTextTypeface(tfBold)
             npvSystolic.setContentSelectedTextTypeface(tfBold)
             npvPulse.setContentSelectedTextTypeface(tfBold)

@@ -21,7 +21,8 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
-import com.healthtracker.framework.util.FontUtils
+import com.healthtracker.framework.util.getRobotoBold
+import com.healthtracker.framework.util.getRobotoRegular
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
@@ -101,8 +102,8 @@ class CholesterolRecordActivity :
     }
 
     private fun setupNumberPickers() {
-        val tfRegular = FontUtils.getInstance().robotoRegular
-        val tfBold = FontUtils.getInstance().robotoBold
+        val tfRegular = getRobotoRegular(this)
+        val tfBold = getRobotoBold(this)
 
         fun NumberPickerView.applyTypography() {
             setContentNormalTextTypeface(tfRegular)

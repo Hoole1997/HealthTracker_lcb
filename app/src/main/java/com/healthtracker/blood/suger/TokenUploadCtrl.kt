@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger
 
-import com.blankj.utilcode.util.SPUtils
+
+
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
@@ -14,7 +15,6 @@ import net.corekit.core.report.ReportDataManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
-
 import java.security.MessageDigest
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -197,7 +197,7 @@ object TokenUploadCtrl {
 
         // 保存到 SharedPreferences
         val json = gson.toJson(statusMap)
-        SPUtils.getInstance(PREFS_NAME).put(KEY_UPLOAD_STATUS_MAP, json)
+        com.healthtracker.framework.util.SpUtils.putString(KEY_UPLOAD_STATUS_MAP, json)
 
         if(BuildState.debug) "保存上传状态: key=$key, success=$success".logd(TAG)
     }
@@ -207,7 +207,7 @@ object TokenUploadCtrl {
      * @return Map<String, Boolean> key为 "uuid_token"，value为上传状态
      */
     private fun getUploadStatusMap(): Map<String, Boolean> {
-        val json = SPUtils.getInstance(PREFS_NAME).getString(KEY_UPLOAD_STATUS_MAP, null) ?: return emptyMap()
+        val json = com.healthtracker.framework.util.SpUtils.getString(KEY_UPLOAD_STATUS_MAP) ?: return emptyMap()
 
         return try {
             val type = object : TypeToken<Map<String, Boolean>>() {}.type
@@ -222,7 +222,7 @@ object TokenUploadCtrl {
      * 清除所有上传状态记录
      */
     fun clearUploadStatus() {
-        SPUtils.getInstance(PREFS_NAME).remove(KEY_UPLOAD_STATUS_MAP)
+        com.healthtracker.framework.util.SpUtils.remove(KEY_UPLOAD_STATUS_MAP)
         if(BuildState.debug) "清除所有上传状态".logd(TAG)
     }
 

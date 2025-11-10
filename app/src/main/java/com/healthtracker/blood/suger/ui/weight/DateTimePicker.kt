@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.healthtracker.blood.suger.R
-import com.healthtracker.framework.ext.dp2px
-import com.healthtracker.framework.util.FontUtils
-import java.util.Calendar
-import java.util.Locale
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.ui.widget.NumberPickerView
+import com.healthtracker.framework.ext.dp2px
+import com.healthtracker.framework.util.getRobotoBold
+import com.healthtracker.framework.util.getRobotoRegular
+import java.util.Calendar
 
 class DateTimePicker @JvmOverloads constructor(
     context: Context,
@@ -44,8 +44,8 @@ class DateTimePicker @JvmOverloads constructor(
         layoutParams.bottomMargin = context.dp2px(15)
         setLayoutParams(layoutParams)
 
-        val tfRegular = FontUtils.getInstance().robotoRegular
-        val tfBold = FontUtils.getInstance().robotoBold
+        val tfRegular = getRobotoRegular(context)
+        val tfBold = getRobotoBold(context)
 
         yearPicker.setContentNormalTextTypeface(tfRegular)
         yearPicker.setContentSelectedTextTypeface(tfBold)

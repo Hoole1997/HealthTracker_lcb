@@ -8,10 +8,10 @@ import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.databinding.DialogChooseAgeBinding
 import com.healthtracker.blood.suger.getUserAge
 import com.healthtracker.blood.suger.saveUserAge
-import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.ext.clickWithDuration
-import com.healthtracker.framework.util.FontUtils
+import com.healthtracker.framework.util.getRobotoBold
+import com.healthtracker.framework.util.getRobotoRegular
 
 /**
  * 年龄选择弹窗
@@ -62,9 +62,8 @@ class AgeChooseDialog : BaseVbDialogFragment<DialogChooseAgeBinding>() {
         picker.value = if (currentIndex >= 0) currentIndex else 0
         selectedAge = if (currentIndex >= 0) normalizedAge else ages.first().toInt()
 
-        val fontUtils = FontUtils.getInstance()
-        picker.setContentSelectedTextTypeface(fontUtils.robotoBold)
-        picker.setContentNormalTextTypeface(fontUtils.robotoLight)
+        picker.setContentSelectedTextTypeface(getRobotoBold(picker.context))
+        picker.setContentNormalTextTypeface(getRobotoRegular(picker.context))
 
         picker.setOnValueChangedListener { _, _, _ ->
             val value = picker.contentByCurrValue.toIntOrNull()

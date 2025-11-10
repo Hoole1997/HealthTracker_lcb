@@ -14,8 +14,9 @@ import com.healthtracker.blood.suger.saveUserGender
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.startActivity
-import com.healthtracker.framework.util.FontUtils
 import com.healthtracker.framework.util.SpUtils
+import com.healthtracker.framework.util.getRobotoBold
+import com.healthtracker.framework.util.getRobotoRegular
 
 class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>() {
     companion object{
@@ -78,8 +79,8 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>(
 
             }
 
-            val selectFont = FontUtils.getInstance().robotoBold
-            val normalFont = FontUtils.getInstance().robotoLight
+            val selectFont = getRobotoBold(this@ProfileActivity)
+            val normalFont = getRobotoRegular(this@ProfileActivity)
             numberPicker.setContentSelectedTextTypeface(selectFont)
             numberPicker.setContentNormalTextTypeface(normalFont)
             val ages = (1..110).map { it.toString() }.toTypedArray()

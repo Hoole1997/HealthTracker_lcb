@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.healthtracker.blood.suger.databinding.DialogDosesTimesBinding
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.ext.click
-import com.healthtracker.framework.util.FontUtils
+import com.healthtracker.framework.util.getRobotoBold
 
 class DosesTimesDialog(private val def: Int = 3,private val callBack: ((Int) -> Unit)? = null) :
     BaseVbDialogFragment<DialogDosesTimesBinding>() {
@@ -30,7 +30,7 @@ class DosesTimesDialog(private val def: Int = 3,private val callBack: ((Int) -> 
                 callBack?.invoke(numberPicker.contentByCurrValue.toInt())
                 dismissAllowingStateLoss()
             }
-            val font = FontUtils.getInstance().robotoBold
+            val font = getRobotoBold(view.context)
             numberPicker.setContentSelectedTextTypeface(font)
             numberPicker.displayedValues = Array(6) { i -> (i + 1).toString() }
             numberPicker.minValue = 0

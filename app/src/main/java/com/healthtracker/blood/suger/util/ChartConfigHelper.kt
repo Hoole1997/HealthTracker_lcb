@@ -2,8 +2,10 @@ package com.healthtracker.blood.suger.util
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Typeface
 import androidx.core.graphics.toColorInt
-import com.healthtracker.framework.util.FontUtils
+import com.healthtracker.blood.suger.App
+import com.healthtracker.framework.util.getRobotoBold
 import com.patrykandpatrick.vico.core.cartesian.CartesianChart
 import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
 import com.patrykandpatrick.vico.core.cartesian.axis.Axis
@@ -359,7 +361,7 @@ class ChartConfigHelper {
             DefaultCartesianMarker(
                 label = TextComponent(
                     color = Color.WHITE,
-                    typeface = FontUtils.getInstance().robotoBold,
+                    typeface = getRobotoBold(App.INSTANCE) ?: Typeface.DEFAULT,
                     textSizeSp = 12f,
                     padding = Insets(8f, 4f),
                     background = ShapeComponent(
