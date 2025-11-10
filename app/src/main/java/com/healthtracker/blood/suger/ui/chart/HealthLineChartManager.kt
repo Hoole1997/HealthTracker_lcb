@@ -72,13 +72,14 @@ class HealthLineChartManager @AssistedInject constructor(
 
         labels = state.labels
         val (minY, maxY) = state.computeRange()
+        val yFormatter = createStartAxisFormatter(minY, maxY, state.forceIntegerYAxis)
 
         val axisStyle = AxisStyle(
             bottomAxisValueFormatter = createBottomAxisFormatter(),
             deduplicateBottomLabels = true,
             minY = minY,
             maxY = maxY,
-            startAxisValueFormatter = createStartAxisFormatter(minY, maxY)
+            startAxisValueFormatter = yFormatter
         )
 
         val lineStyles = state.dataSets.mapIndexed { index, dataSet ->
@@ -127,7 +128,15 @@ class HealthLineChartManager @AssistedInject constructor(
      * 这里通过 (max-min)/(steps-1) 估算真实步长，再用阈值选择 0~3 位小数，既保证血压等整数型
      * 数据仍显示为整数，又能在血糖等精度更高的图表上展示细粒度刻度。
      */
-    private fun createStartAxisFormatter(minY: Double, maxY: Double): CartesianValueFormatter {
+    private fun createStartAxisFormatter(
+        minY: Double,
+        maxY: Double,
+        forceInteger: Boolean
+    ): CartesianValueFormatter {
+        if (forceInteger) {
+            return CartesianValueFormatter.decimal(DecimalFormat("#"))
+        }
+
         val steps = (DEFAULT_AXIS_STEPS - 1).coerceAtLeast(1)
         val span = (maxY - minY).takeIf { it > 0 } ?: max(abs(maxY), 1.0)
         val step = span / steps
