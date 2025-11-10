@@ -21,7 +21,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
+import java.util.concurrent.ThreadLocalRandom
 import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -206,4 +208,21 @@ class BmiDetailViewModel @Inject constructor(
     fun clearError() {
         _error.value = null
     }
+
+    private fun generateMockBmiPoints(entries: Int = 7): List<BmiChartPoint> {
+        val cal = Calendar.getInstance()
+        val random = ThreadLocalRandom.current()
+        return (0 until entries).map { offset ->
+            cal.timeInMillis = System.currentTimeMillis() - offset * 24L * 60 * 60 * 1000
+            cal.set(Calendar.HOUR_OF_DAY, 7 + random.nextInt(12))
+            cal.set(Calendar.MINUTE, random.nextInt(60))
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            val value = 20f + random.nextFloat() * 12f
+            val rounded = (value * 10f).roundToInt() / 10f
+            BmiChartPoint(cal.timeInMillis, rounded)
+        }.sortedBy { it.timestamp }
+    }
+
+    private data class BmiChartPoint(val timestamp: Long, val value: Float)
 }

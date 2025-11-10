@@ -22,7 +22,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
+import java.util.concurrent.ThreadLocalRandom
 import javax.inject.Inject
 
 @HiltViewModel
@@ -152,4 +154,20 @@ class HeartRateDetailViewModel @Inject constructor(
     }
 
     fun currentRecordId(): Long? = _record.value?.id
+
+    private fun generateMockHeartRatePoints(days: Int = 7): List<HeartRatePoint> {
+        val cal = Calendar.getInstance()
+        val random = ThreadLocalRandom.current()
+        return (0 until days).map { offset ->
+            cal.timeInMillis = System.currentTimeMillis() - offset * 24L * 60 * 60 * 1000
+            cal.set(Calendar.MINUTE, random.nextInt(60))
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            cal.set(Calendar.HOUR_OF_DAY, 6 + random.nextInt(12))
+            val bpm = 63 + random.nextInt(24)
+            HeartRatePoint(cal.timeInMillis, bpm)
+        }.sortedBy { it.timestamp }
+    }
+
+    private data class HeartRatePoint(val timestamp: Long, val bpm: Int)
 }

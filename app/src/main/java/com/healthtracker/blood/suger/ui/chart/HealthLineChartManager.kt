@@ -10,12 +10,14 @@ import com.healthtracker.blood.suger.util.LineStyle
 import com.patrykandpatrick.vico.core.cartesian.AutoScrollCondition
 import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
 import com.patrykandpatrick.vico.core.cartesian.Scroll
+import com.patrykandpatrick.vico.core.cartesian.Zoom
 import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.views.cartesian.CartesianChartView
 import com.patrykandpatrick.vico.views.cartesian.ScrollHandler
+import com.patrykandpatrick.vico.views.cartesian.ZoomHandler
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -96,6 +98,13 @@ class HealthLineChartManager @AssistedInject constructor(
             initialScroll = Scroll.Absolute.End,
             autoScroll = Scroll.Absolute.End,
             autoScrollCondition = AutoScrollCondition.OnModelGrowth
+        )
+
+        chartView.zoomHandler = ZoomHandler(
+            zoomEnabled = true,                 // 允许用户再缩放就保留 true
+            initialZoom = Zoom.x(7.0),          // 初次显示 7 个点
+            minZoom = Zoom.x(14.0),              // 最多放大到只看 5 个点
+            maxZoom = Zoom.x(5.0),             // 最多缩小到 14 个点
         )
 
         if (!state.hasData) {
