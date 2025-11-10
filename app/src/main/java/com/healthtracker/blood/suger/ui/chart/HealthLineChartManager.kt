@@ -17,6 +17,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import java.text.DecimalFormat
+import kotlin.math.abs
+import kotlin.math.max
 
 /**
  * 将 [ChartUiState] 渲染到 Vico 的 [CartesianChartView] 上。
@@ -73,7 +75,7 @@ class HealthLineChartManager @AssistedInject constructor(
             deduplicateBottomLabels = true,
             minY = minY,
             maxY = maxY,
-            startAxisValueFormatter = CartesianValueFormatter.decimal(DecimalFormat("#"))
+            startAxisValueFormatter = createStartAxisFormatter(minY, maxY)
         )
 
         val lineStyles = state.dataSets.mapIndexed { index, dataSet ->
@@ -108,6 +110,36 @@ class HealthLineChartManager @AssistedInject constructor(
         return true
     }
 
+    /**
+     * 根据当前 y 轴范围推导刻度步长，并动态构造匹配的小数格式。
+     *
+     * Vico 默认 formatter 会把值取整，导致 mmol/L 这类小数单位的刻度被折叠成同一个数字。
+     * 这里通过 (max-min)/(steps-1) 估算真实步长，再用阈值选择 0~3 位小数，既保证血压等整数型
+     * 数据仍显示为整数，又能在血糖等精度更高的图表上展示细粒度刻度。
+     */
+    private fun createStartAxisFormatter(minY: Double, maxY: Double): CartesianValueFormatter {
+        val steps = (DEFAULT_AXIS_STEPS - 1).coerceAtLeast(1)
+        val span = (maxY - minY).takeIf { it > 0 } ?: max(abs(maxY), 1.0)
+        val step = span / steps
+
+        val decimalPlaces = when {
+            step >= 1 -> 0
+            step >= 0.1 -> 1
+            step >= 0.01 -> 2
+            else -> 3
+        }
+
+        val pattern = buildString {
+            append("#")
+            if (decimalPlaces > 0) {
+                append('.')
+                repeat(decimalPlaces) { append('#') }
+            }
+        }
+
+        return CartesianValueFormatter.decimal(DecimalFormat(pattern))
+    }
+
     private fun createBottomAxisFormatter(): CartesianValueFormatter {
         return object : CartesianValueFormatter {
             override fun format(
@@ -133,7 +165,6 @@ class HealthLineChartManager @AssistedInject constructor(
     fun release() {
         if (isReleased) return
         isReleased = true
-        chartView.modelProducer = null
         labels = emptyList()
     }
 
@@ -147,6 +178,7 @@ class HealthLineChartManager @AssistedInject constructor(
 
     companion object {
         private const val TAG = "HealthLineChartManager"
+        private const val DEFAULT_AXIS_STEPS = 6
 
         private val DEFAULT_LINE_STYLES = listOf(
             LineStyle(color = "#FF6B4D"),

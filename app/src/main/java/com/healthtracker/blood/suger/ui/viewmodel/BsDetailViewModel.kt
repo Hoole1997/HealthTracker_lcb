@@ -2,11 +2,15 @@ package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
+import com.healthtracker.blood.suger.data.entity.HealthTag
+import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
-import com.healthtracker.blood.suger.data.entity.HealthTag
-import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
+import com.healthtracker.blood.suger.ui.chart.ChartDataSet
+import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
+import com.healthtracker.blood.suger.ui.chart.ChartUiState
+import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
@@ -14,10 +18,15 @@ import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +49,45 @@ class BsDetailViewModel @Inject constructor(
 
     private val _tags = MutableStateFlow<List<HealthTag>>(emptyList())
     val tags: StateFlow<List<HealthTag>> = _tags.asStateFlow()
+
+    private val _chartUnit = MutableStateFlow(BsUnit.getPreferredUnit())
+    private val chartUnit = _chartUnit.asStateFlow()
+
+    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+
+    val chartUiState: StateFlow<ChartUiState> =
+        combine(
+            bloodSugarRepository.getChartBloodSugarRecords(),
+            chartUnit
+        ) { records, unit ->
+            val sortedRecords = records.sortedBy { it.recordTime }
+            if (sortedRecords.isEmpty()) {
+                ChartUiState()
+            } else {
+                val labels = sortedRecords.map { chartLabelFormatter.format(it.recordTime) }
+                val xValues = sortedRecords.indices.map(Int::toFloat)
+                val yValues = sortedRecords.map { record ->
+                    unit.convertFromMgdl(record.glucoseValue).toFloat()
+                }
+                ChartUiState(
+                    labels = labels,
+                    dataSets = listOf(
+                        ChartDataSet(
+                            id = ChartSeriesIds.BS_GLUCOSE,
+                            label = unit.displayName,
+                            xValues = xValues,
+                            yValues = yValues,
+                            style = LineStyle(color = "#FF6B4D")
+                        )
+                    )
+                )
+            }
+        }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = ChartUiState()
+            )
 
     private var hasNotifiedMissing = false
 
@@ -64,6 +112,9 @@ class BsDetailViewModel @Inject constructor(
             try {
                 bloodSugarRepository.observeBloodSugarRecordById(recordId).collect { record ->
                     _bloodSugarRecord.value = record
+                    record?.let {
+                        _chartUnit.value = it.getSelectedUnitEnum()
+                    }
                     _isLoading.value = false
                     if (record == null) {
                         if (!hasNotifiedMissing && !isDelete) {

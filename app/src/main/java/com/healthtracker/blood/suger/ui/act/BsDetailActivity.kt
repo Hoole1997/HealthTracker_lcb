@@ -7,6 +7,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityBsDetailBinding
+import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BsDetailViewModel
 import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
@@ -18,9 +19,14 @@ import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBinding>() {
+
+    @Inject
+    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+    private lateinit var chartManager: HealthLineChartManager
 
 
     companion object{
@@ -43,6 +49,8 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBin
             finish()
             return
         }
+
+        chartManager = chartManagerFactory.create(mViewBind.chartView, this)
 
         // 初始化ViewModel并加载记录
         mViewModel.initializeWithRecord(recordId)
@@ -106,6 +114,10 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBin
 
         collectLatest(mViewModel.tags){
             updateTags(it.take(2))
+        }
+
+        collectLatest(mViewModel.chartUiState) { state ->
+            chartManager.render(state)
         }
     }
 
