@@ -1212,4 +1212,7 @@ healthcare provider or medical institution.</string>
     <string name="exit">Exit</string>
     <string name="are_you_sure_exit">Are you sure want to exit the app?</string>
 
+    <!-- 补水 -->
+    <string name="hydrate">Hydrate</string>
+
 </resources>
