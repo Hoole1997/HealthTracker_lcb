@@ -7,12 +7,15 @@ import androidx.lifecycle.LifecycleOwner
 import com.healthtracker.blood.suger.util.AxisStyle
 import com.healthtracker.blood.suger.util.ChartConfigHelper
 import com.healthtracker.blood.suger.util.LineStyle
+import com.patrykandpatrick.vico.core.cartesian.AutoScrollCondition
 import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
+import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.views.cartesian.CartesianChartView
+import com.patrykandpatrick.vico.views.cartesian.ScrollHandler
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -88,6 +91,12 @@ class HealthLineChartManager @AssistedInject constructor(
             axisStyle = axisStyle
         )
 
+        chartView.scrollHandler = ScrollHandler(
+            initialScroll = Scroll.Absolute.End,
+            autoScroll = Scroll.Absolute.End,
+            autoScrollCondition = AutoScrollCondition.OnModelGrowth
+        )
+
         if (!state.hasData) {
             val placeholder = listOf(0f)
             modelProducer.runTransaction {
@@ -107,6 +116,7 @@ class HealthLineChartManager @AssistedInject constructor(
                 }
             }
         }
+
         return true
     }
 
