@@ -209,12 +209,7 @@ class ChartConfigHelper {
                 },
                 decorations = decorations,
                 marker = marker,
-                markerController = object : CartesianMarkerController {
-                    override fun shouldShowMarker(
-                        interaction: Interaction,
-                        targets: List<CartesianMarker.Target>
-                    ) = true
-                }
+                markerController = CartesianMarkerController.ShowOnPress
             )
         }
 
