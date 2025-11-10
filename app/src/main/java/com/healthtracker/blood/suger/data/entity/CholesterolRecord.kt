@@ -23,31 +23,31 @@ data class CholesterolRecord(
 
     /** 高密度脂蛋白 HDL（mg/dL） */
     @ColumnInfo(name = "hdl")
-    val hdl: Int? = null,
+    val hdl: Int,
 
     /** 低密度脂蛋白 LDL（mg/dL） */
     @ColumnInfo(name = "ldl")
-    val ldl: Int? = null,
+    val ldl: Int,
 
     /** 甘油三酯 TG（mg/dL） */
     @ColumnInfo(name = "triglyceride")
-    val triglyceride: Int? = null,
+    val triglyceride: Int,
 
     /** 总胆固醇 TC（mg/dL） */
     @ColumnInfo(name = "tc")
-    val tc: Float? = null,
+    val tc: Float,
 
     /** 非高密度脂蛋白 Non-HDL（mg/dL） */
     @ColumnInfo(name = "non_hdl")
-    val nonHdl: Float? = null,
+    val nonHdl: Float,
 
     /** TC/HDL 比值 */
     @ColumnInfo(name = "tc_hdl_ratio")
-    val tcHdlRatio: Float? = null,
+    val tcHdlRatio: Float,
 
     /** LDL/HDL 比值 */
     @ColumnInfo(name = "ldl_hdl_ratio")
-    val ldlHdlRatio: Float? = null,
+    val ldlHdlRatio: Float,
 
     /**
      * 标签ID列表（逗号分隔）

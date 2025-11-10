@@ -66,9 +66,9 @@ object CholesterolCalculator {
  * 胆固醇指标结果数据模型
  */
 data class CholesterolMetrics(
-    val totalCholesterol: Float?,
-    val nonHdl: Float?,
-    val tcHdlRatio: Float?,
-    val ldlHdlRatio: Float?,
+    val totalCholesterol: Float,
+    val nonHdl: Float,
+    val tcHdlRatio: Float,
+    val ldlHdlRatio: Float,
     val riskLevel: CholesterolLevel
 )
