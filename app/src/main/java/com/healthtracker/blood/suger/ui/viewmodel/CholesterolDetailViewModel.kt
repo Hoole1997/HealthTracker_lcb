@@ -18,8 +18,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.ThreadLocalRandom
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,33 +57,32 @@ class CholesterolDetailViewModel @Inject constructor(
                     val ldlValues = sorted.map { it.ldl!!.toFloat() }
                     val hdlValues = sorted.map { it.hdl!!.toFloat() }
 
-                    ChartUiState(
-                        labels = labels,
-                        dataSets = listOf(
-                            ChartDataSet(
-                                id = ChartSeriesIds.CHO_TG,
-                                label = "TG",
-                                xValues = xValues,
-                                yValues = tgValues,
-                                style = LineStyle(color = "#9B4AFF")
-                            ),
-                            ChartDataSet(
-                                id = ChartSeriesIds.CHO_LDL,
-                                label = "LDL",
-                                xValues = xValues,
-                                yValues = ldlValues,
-                                style = LineStyle(color = "#FF6B4D")
-                            ),
-                            ChartDataSet(
-                                id = ChartSeriesIds.CHO_HDL,
-                                label = "HDL",
-                                xValues = xValues,
-                                yValues = hdlValues,
-                                style = LineStyle(color = "#4AD7FF")
-                            )
+                ChartUiState(
+                    labels = labels,
+                    dataSets = listOf(
+                        ChartDataSet(
+                            id = ChartSeriesIds.CHO_TG,
+                            label = "TG",
+                            xValues = xValues,
+                            yValues = tgValues,
+                            style = LineStyle(color = "#9B4AFF")
+                        ),
+                        ChartDataSet(
+                            id = ChartSeriesIds.CHO_LDL,
+                            label = "LDL",
+                            xValues = xValues,
+                            yValues = ldlValues,
+                            style = LineStyle(color = "#FF6B4D")
+                        ),
+                        ChartDataSet(
+                            id = ChartSeriesIds.CHO_HDL,
+                            label = "HDL",
+                            xValues = xValues,
+                            yValues = hdlValues,
+                            style = LineStyle(color = "#4AD7FF")
                         )
                     )
-                }
+                )
             }
             .stateIn(
                 scope = viewModelScope,
@@ -170,5 +171,36 @@ class CholesterolDetailViewModel @Inject constructor(
             _errorMessage.value = e.message
             false
         }
+    }
+
+    private fun generateMockCholesterolRecords(days: Int = 7): List<CholesterolRecord> {
+        val cal = Calendar.getInstance()
+        val random = ThreadLocalRandom.current()
+        return (0 until days).map { offset ->
+            cal.timeInMillis = System.currentTimeMillis() - offset * 24L * 60 * 60 * 1000
+            cal.set(Calendar.HOUR_OF_DAY, 7 + random.nextInt(10))
+            cal.set(Calendar.MINUTE, random.nextInt(60))
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+
+            val tg = 90 + random.nextInt(110)
+            val ldl = 80 + random.nextInt(70)
+            val hdl = 40 + random.nextInt(20)
+            val tc = tg / 5f + ldl + hdl
+            val nonHdl = tc - hdl
+            val tcHdlRatio = if (hdl == 0) 0f else tc / hdl
+            val ldlHdlRatio = if (hdl == 0) 0f else ldl.toFloat() / hdl
+
+            CholesterolRecord(
+                recordTime = Date(cal.timeInMillis),
+                hdl = hdl,
+                ldl = ldl,
+                triglyceride = tg,
+                tc = tc,
+                nonHdl = nonHdl,
+                tcHdlRatio = tcHdlRatio,
+                ldlHdlRatio = ldlHdlRatio
+            )
+        }.sortedBy { it.recordTime }
     }
 }
