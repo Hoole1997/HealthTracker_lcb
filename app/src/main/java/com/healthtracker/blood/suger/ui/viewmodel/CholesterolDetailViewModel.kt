@@ -4,12 +4,20 @@ import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.enums.CholesterolLevel
 import com.healthtracker.blood.suger.data.repository.CholesterolRepository
+import com.healthtracker.blood.suger.ui.chart.ChartDataSet
+import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
+import com.healthtracker.blood.suger.ui.chart.ChartUiState
+import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -19,6 +27,8 @@ class CholesterolDetailViewModel @Inject constructor(
     private val cholesterolRepository: CholesterolRepository
 ) : BaseViewModel() {
 
+    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+
     private val _cholesterolRecord = MutableStateFlow<CholesterolRecord?>(null)
     val cholesterolRecord: StateFlow<CholesterolRecord?> = _cholesterolRecord.asStateFlow()
 
@@ -27,6 +37,57 @@ class CholesterolDetailViewModel @Inject constructor(
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    val chartUiState: StateFlow<ChartUiState> =
+        cholesterolRepository.getAllRecords()
+            .map { records ->
+                val sorted = records
+                    .filter { it.hdl != null && it.ldl != null && it.triglyceride != null }
+                    .sortedBy { it.recordTime }
+
+                if (sorted.isEmpty()) {
+                    ChartUiState()
+                } else {
+                    val labels = sorted.map { chartLabelFormatter.format(it.recordTime) }
+                    val xValues = sorted.indices.map(Int::toFloat)
+
+                    val tgValues = sorted.map { it.triglyceride!!.toFloat() }
+                    val ldlValues = sorted.map { it.ldl!!.toFloat() }
+                    val hdlValues = sorted.map { it.hdl!!.toFloat() }
+
+                    ChartUiState(
+                        labels = labels,
+                        dataSets = listOf(
+                            ChartDataSet(
+                                id = ChartSeriesIds.CHO_TG,
+                                label = "TG",
+                                xValues = xValues,
+                                yValues = tgValues,
+                                style = LineStyle(color = "#9B4AFF")
+                            ),
+                            ChartDataSet(
+                                id = ChartSeriesIds.CHO_LDL,
+                                label = "LDL",
+                                xValues = xValues,
+                                yValues = ldlValues,
+                                style = LineStyle(color = "#FF6B4D")
+                            ),
+                            ChartDataSet(
+                                id = ChartSeriesIds.CHO_HDL,
+                                label = "HDL",
+                                xValues = xValues,
+                                yValues = hdlValues,
+                                style = LineStyle(color = "#4AD7FF")
+                            )
+                        )
+                    )
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = ChartUiState()
+            )
 
     /**
      * 初始化并加载记录

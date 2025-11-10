@@ -7,6 +7,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityCholesterolDetailBinding
+import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.viewmodel.CholesterolDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
@@ -18,9 +19,14 @@ import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, ActivityCholesterolDetailBinding>() {
+
+    @Inject
+    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+    private lateinit var chartManager: HealthLineChartManager
 
     companion object {
         private const val RECORD_ID = "record_id"
@@ -42,6 +48,8 @@ class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, 
         }
 
         mViewModel.initializeWithRecord(recordId)
+
+        chartManager = chartManagerFactory.create(mViewBind.chartView, this)
 
         setupActionBar()
         observeData()
@@ -98,6 +106,10 @@ class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, 
             mViewModel.isLoading.collect { isLoading ->
                 // TODO: 显示/隐藏加载状态
             }
+        }
+
+        collectLatest(mViewModel.chartUiState) { state ->
+            chartManager.render(state)
         }
     }
 

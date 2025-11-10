@@ -241,6 +241,84 @@
                 app:eav_blurRadius="5"
                 app:eav_minHeightWithMask="@dimen/dp_237" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ll_chart_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_12"
+                android:background="@drawable/bg_rect_white_12"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_20"
+                app:layout_constraintTop_toBottomOf="@id/expert_advice_view">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_line_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end|center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/dp_16"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <View
+                        android:layout_width="@dimen/dp_6"
+                        android:layout_height="@dimen/dp_6"
+                        android:background="@drawable/bg_rect_white_12"
+                        android:backgroundTint="#9B4AFF"
+                        android:layout_marginEnd="@dimen/dp_4"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cholesterol_tg_label"
+                        android:textColor="@color/color_999"
+                        android:textSize="@dimen/sp_11"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        style="@style/TextViewFont_RobotoRegular"/>
+
+                    <View
+                        android:layout_width="@dimen/dp_6"
+                        android:layout_height="@dimen/dp_6"
+                        android:background="@drawable/bg_rect_white_12"
+                        android:backgroundTint="#FF6B4D"
+                        android:layout_marginEnd="@dimen/dp_4"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cholesterol_ldl_label"
+                        android:textColor="@color/color_999"
+                        android:textSize="@dimen/sp_11"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        style="@style/TextViewFont_RobotoRegular"/>
+
+                    <View
+                        android:layout_width="@dimen/dp_6"
+                        android:layout_height="@dimen/dp_6"
+                        android:background="@drawable/bg_rect_white_12"
+                        android:backgroundTint="#4AD7FF"
+                        android:layout_marginEnd="@dimen/dp_4"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cholesterol_hdl_label"
+                        android:textColor="@color/color_999"
+                        android:textSize="@dimen/sp_11"
+                        style="@style/TextViewFont_RobotoRegular"/>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
+                    android:id="@+id/chart_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_240"
+                    android:layout_marginHorizontal="@dimen/dp_16"
+                    tools:chartStyle="@style/BloodPressureChartStyle"
+                    tools:previewLineSeriesCount="3"
+                    tools:previewMaxX="7"
+                    tools:previewMaxY="300"
+                    app:layout_constraintTop_toBottomOf="@id/ll_line_des"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <FrameLayout
                 android:id="@+id/ad_Container"
                 android:layout_width="match_parent"
