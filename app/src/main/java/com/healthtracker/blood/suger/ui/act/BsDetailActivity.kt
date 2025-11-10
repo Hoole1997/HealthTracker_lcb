@@ -56,6 +56,7 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBin
         mViewModel.initializeWithRecord(recordId)
 
         with(mViewBind){
+            chartManager = chartManagerFactory.create(chartView, this@BsDetailActivity)
             btnBack.clickWithDuration {
                 onBackPress()
             }
