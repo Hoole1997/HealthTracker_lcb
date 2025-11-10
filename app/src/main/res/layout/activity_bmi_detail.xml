@@ -232,6 +232,30 @@
                 app:eav_blurRadius="5"
                 app:eav_minHeightWithMask="@dimen/dp_237" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ll_chart_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_12"
+                android:background="@drawable/bg_rect_white_12"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/dp_20"
+                app:layout_constraintTop_toBottomOf="@id/expert_advice_view">
+
+                <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
+                    android:id="@+id/chart_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_240"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginHorizontal="@dimen/dp_16"
+                    tools:chartStyle="@style/BloodPressureChartStyle"
+                    tools:previewLineSeriesCount="1"
+                    tools:previewMaxX="7"
+                    tools:previewMaxY="40" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <FrameLayout
                 android:id="@+id/ad_Container"
                 android:layout_width="match_parent"

@@ -7,13 +7,22 @@ import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.enums.HeartRateStatus
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.data.repository.HeartRateRepository
+import com.healthtracker.blood.suger.ui.chart.ChartDataSet
+import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
+import com.healthtracker.blood.suger.ui.chart.ChartUiState
+import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,6 +55,39 @@ class HeartRateDetailViewModel @Inject constructor(
     private var hasNotifiedMissing = false
 
     private var isDelete = false
+
+    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+
+    val chartUiState: StateFlow<ChartUiState> =
+        heartRateRepository.getChartHeartRateRecords()
+            .map { records ->
+                val sortedRecords = records.sortedBy { it.recordTime }
+                if (sortedRecords.isEmpty()) {
+                    ChartUiState()
+                } else {
+                    val labels = sortedRecords.map { chartLabelFormatter.format(it.recordTime) }
+                    val xValues = sortedRecords.indices.map(Int::toFloat)
+                    val yValues = sortedRecords.map { it.heartRateBpm.toFloat() }
+                    ChartUiState(
+                        labels = labels,
+                        dataSets = listOf(
+                            ChartDataSet(
+                                id = ChartSeriesIds.HR_MAIN,
+                                label = "BPM",
+                                xValues = xValues,
+                                yValues = yValues,
+                                style = LineStyle(color = "#FF6B4D")
+                            )
+                        ),
+                        forceIntegerYAxis = true
+                    )
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = ChartUiState()
+            )
 
     init {
         if (recordId != -1L) {

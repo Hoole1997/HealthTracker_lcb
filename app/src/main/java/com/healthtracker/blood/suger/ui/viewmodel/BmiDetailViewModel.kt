@@ -6,15 +6,25 @@ import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.enums.BMIEnum
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.repository.BmiRepository
+import com.healthtracker.blood.suger.ui.chart.ChartDataSet
+import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
+import com.healthtracker.blood.suger.ui.chart.ChartUiState
+import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.pow
+import kotlin.math.roundToInt
 
 @HiltViewModel
 class BmiDetailViewModel @Inject constructor(
@@ -41,6 +51,49 @@ class BmiDetailViewModel @Inject constructor(
     // 错误信息
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
+
+    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+
+    val chartUiState: StateFlow<ChartUiState> =
+        bmiRepository.getChartBmiRecords()
+            .map { records ->
+                val sortedRecords = records.sortedBy { it.recordTime }
+                    val points = sortedRecords.mapNotNull { record ->
+                        val heightMeters = record.heightCm / 100.0
+                        if (heightMeters <= 0) {
+                            null
+                        } else {
+                            val bmiRaw = (record.weightKg / heightMeters.pow(2.0)).toFloat()
+                            val bmiValue = ((bmiRaw * 10).roundToInt() / 10f)
+                            record to bmiValue
+                        }
+                    }
+
+                if (points.isEmpty()) {
+                    ChartUiState()
+                } else {
+                    val labels = points.map { (record, _) -> chartLabelFormatter.format(record.recordTime) }
+                    val xValues = points.indices.map(Int::toFloat)
+                    val yValues = points.map { it.second }
+                    ChartUiState(
+                        labels = labels,
+                        dataSets = listOf(
+                            ChartDataSet(
+                                id = ChartSeriesIds.BMI,
+                                label = "BMI",
+                                xValues = xValues,
+                                yValues = yValues,
+                                style = LineStyle(color = "#FF6B4D")
+                            )
+                        )
+                    )
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = ChartUiState()
+            )
 
     /**
      * 初始化并加载记录

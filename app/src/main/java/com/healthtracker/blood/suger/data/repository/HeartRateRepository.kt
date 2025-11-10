@@ -48,6 +48,8 @@ class HeartRateRepository @Inject constructor(
         return getAllRecords()
     }
 
+    fun getChartHeartRateRecords(): Flow<List<HeartRateRecord>> = getChartRecords()
+
     override suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
         // 无图表显隐字段，直接返回成功
         return true

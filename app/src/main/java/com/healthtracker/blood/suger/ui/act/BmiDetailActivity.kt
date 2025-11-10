@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.databinding.ActivityBmiDetailBinding
+import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.viewmodel.BmiDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
@@ -15,11 +16,16 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.monetize.ui.NativeAdStyle
+import javax.inject.Inject
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @AndroidEntryPoint
 class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, ActivityBmiDetailBinding>() {
+
+    @Inject
+    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+    private lateinit var chartManager: HealthLineChartManager
 
     companion object {
         private const val TAG = "BmiDetailActivity"
@@ -44,6 +50,8 @@ class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, ActivityBmiDetail
 
         // Initialize ViewModel with record ID
         mViewModel.initializeWithRecord(recordId)
+
+        chartManager = chartManagerFactory.create(mViewBind.chartView, this)
 
         setupViews()
         observeData()
@@ -108,6 +116,10 @@ class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, ActivityBmiDetail
                 showToast(error)
                 mViewModel.clearError()
             }
+        }
+
+        this.collectLatest(mViewModel.chartUiState) { state ->
+            chartManager.render(state)
         }
     }
 

@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.enums.HeartRateStatus
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityHeartRateDetailBinding
+import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.viewmodel.HeartRateDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
@@ -22,10 +23,15 @@ import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HeartRateDetailActivity :
     BaseInterActivity<HeartRateDetailViewModel, ActivityHeartRateDetailBinding>() {
+
+    @Inject
+    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+    private lateinit var chartManager: HealthLineChartManager
 
     companion object {
         fun start(context: Context, recordId: Long) {
@@ -43,6 +49,7 @@ class HeartRateDetailActivity :
     override fun initView(savedInstanceState: Bundle?) {
         setupActionBar()
         setupStatusView()
+        chartManager = chartManagerFactory.create(mViewBind.chartView, this)
         observeViewModel()
     }
 
@@ -117,6 +124,12 @@ class HeartRateDetailActivity :
                     showToast(it)
                     mViewModel.clearError()
                 }
+            }
+        }
+
+        lifecycleScope.launch {
+            collectLatest(mViewModel.chartUiState) { state ->
+                chartManager.render(state)
             }
         }
     }
