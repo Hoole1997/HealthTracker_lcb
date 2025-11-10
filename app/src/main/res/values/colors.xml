@@ -63,4 +63,19 @@
     <color name="color_f7f7f7">#F7F7F7</color>
     <color name="color_f4f4f4">#F4F4F4</color>
     <color name="color_ffe4e3">#FFE4E3</color>
+    <color name="color_FF6B4D">#FF6B4D</color>
+    <color name="color_4AD7FF">#4AD7FF</color>
+
+    <!-- Chart specific colors -->
+    <color name="chart_line_bp_systolic">@color/color_FF6B4D</color>
+    <color name="chart_line_bp_diastolic">@color/color_4AD7FF</color>
+    <color name="chart_line_bs">@color/color_FF6B4D</color>
+    <color name="chart_line_heart_rate">@color/color_FF6B4D</color>
+    <color name="chart_line_bmi">@color/color_FF6B4D</color>
+    <color name="chart_line_cholesterol_tg">#9B4AFF</color>
+    <color name="chart_line_cholesterol_ldl">@color/color_FF6B4D</color>
+    <color name="chart_line_cholesterol_hdl">@color/color_4AD7FF</color>
+    <color name="chart_point_stroke">@color/white</color>
+    <color name="chart_grid">#E5E5E5</color>
+    <color name="chart_axis_label">#9E9E9E</color>
 </resources>

@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.healthtracker.blood.suger.util.AxisStyle
 import com.healthtracker.blood.suger.util.ChartConfigHelper
+import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.patrykandpatrick.vico.core.cartesian.AutoScrollCondition
 import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
@@ -209,10 +210,10 @@ class HealthLineChartManager @AssistedInject constructor(
         private const val DEFAULT_AXIS_STEPS = 6
 
         private val DEFAULT_LINE_STYLES = listOf(
-            LineStyle(color = "#FF6B4D"),
-            LineStyle(color = "#4AD7FF"),
-            LineStyle(color = "#88C057"),
-            LineStyle(color = "#F7B801")
+            LineStyle(color = ChartPalette.lineBpSystolic),
+            LineStyle(color = ChartPalette.lineBpDiastolic),
+            LineStyle(color = ChartPalette.lineBloodSugar),
+            LineStyle(color = ChartPalette.lineHeartRate)
         )
     }
 }

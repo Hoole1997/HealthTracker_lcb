@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.util
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
+import androidx.annotation.ColorInt
 import androidx.core.graphics.toColorInt
 import com.healthtracker.blood.suger.App
 import com.healthtracker.framework.util.getRobotoBold
@@ -41,12 +42,12 @@ import kotlin.math.pow
 
 
 // 默认颜色
-private const val DEFAULT_LINE1_COLOR = "#FF6B4D"  // Systolic 橙红色
-private const val DEFAULT_LINE2_COLOR = "#4AD7FF"  // Diastolic 青色
-private const val DEFAULT_GRID_COLOR = "#E5E5E5"   // 网格线灰色
-private const val DEFAULT_LABEL_COLOR = "#9E9E9E"  // 标签灰色
-private const val DEFAULT_BASELINE_COLOR = "#E5E5E5" // 基准线灰色
-private const val WHITE_COLOR = "#FFFFFF"
+private val DEFAULT_LINE1_COLOR = ChartPalette.lineBpSystolic
+private val DEFAULT_LINE2_COLOR = ChartPalette.lineBpDiastolic
+private val DEFAULT_GRID_COLOR = ChartPalette.grid
+private val DEFAULT_LABEL_COLOR = ChartPalette.axisLabel
+private val DEFAULT_BASELINE_COLOR = ChartPalette.grid
+private val WHITE_COLOR = ChartPalette.pointStroke
 
 // 默认尺寸
 private const val LINE_THICKNESS = 1f
@@ -119,8 +120,8 @@ class ChartConfigHelper {
          * @return 配置好的 CartesianChart
          */
         fun createDualLineChart(
-            line1Color: String = DEFAULT_LINE1_COLOR,
-            line2Color: String = DEFAULT_LINE2_COLOR,
+            @ColorInt line1Color: Int = DEFAULT_LINE1_COLOR,
+            @ColorInt line2Color: Int = DEFAULT_LINE2_COLOR,
             line1Style: LineStyle? = null,
             line2Style: LineStyle? = null,
             axisStyle: AxisStyle = AxisStyle(),
@@ -155,7 +156,7 @@ class ChartConfigHelper {
          * @return 配置好的 CartesianChart
          */
         fun createSingleLineChart(
-            lineColor: String = DEFAULT_LINE1_COLOR,
+            @ColorInt lineColor: Int = DEFAULT_LINE1_COLOR,
             lineStyle: LineStyle? = null,
             axisStyle: AxisStyle = AxisStyle(),
             baselineStyle: BaselineStyle? = null,
@@ -236,7 +237,7 @@ class ChartConfigHelper {
          */
         private fun createLine(style: LineStyle): LineCartesianLayer.Line {
             return LineCartesianLayer.Line(
-                fill = LineCartesianLayer.LineFill.single(Fill(style.color.toColorInt())),
+                fill = LineCartesianLayer.LineFill.single(Fill(style.color)),
                 stroke = LineCartesianLayer.LineStroke.Continuous(
                     thicknessDp = style.thickness,
                     cap = Paint.Cap.ROUND
@@ -260,9 +261,9 @@ class ChartConfigHelper {
          */
         private fun createPointComponent(style: LineStyle): Component {
             return ShapeComponent(
-                fill = Fill(style.color.toColorInt()),
+                fill = Fill(style.color),
                 shape = CorneredShape.Pill,
-                strokeFill = Fill(style.pointStrokeColor.toColorInt()),
+                strokeFill = Fill(style.pointStrokeColor),
                 strokeThicknessDp = style.pointStrokeThickness
             )
         }
@@ -274,14 +275,14 @@ class ChartConfigHelper {
             return VerticalAxis.start(
                 line = null,
                 label = TextComponent(
-                    color = style.labelColor.toColorInt(),
+                    color = style.labelColor,
                     textSizeSp = style.labelTextSize,
                     padding = Insets(endDp = LABEL_PADDING)
                 ),
                 tick = null,
                 guideline = if (style.showGridLines) {
                     LineComponent(
-                        fill = Fill(style.gridLineColor.toColorInt()),
+                        fill = Fill(style.gridLineColor),
                         thicknessDp = GRID_THICKNESS,
                         shape = DashedShape(
                             shape = Shape.Rectangle,
@@ -318,7 +319,7 @@ class ChartConfigHelper {
             return HorizontalAxis.bottom(
                 line = null,
                 label = TextComponent(
-                    color = style.labelColor.toColorInt(),
+                    color = style.labelColor,
                     textSizeSp = BOTTOM_LABEL_TEXT_SIZE,
                     padding = Insets(topDp = LABEL_PADDING)
                 ),
@@ -339,7 +340,7 @@ class ChartConfigHelper {
             return HorizontalLine(
                 y = { style.yValue },
                 line = LineComponent(
-                    fill = Fill(style.color.toColorInt()),
+                    fill = Fill(style.color),
                     thicknessDp = style.thickness,
                     shape = DashedShape(
                         shape = Shape.Rectangle,
@@ -393,8 +394,8 @@ class ChartConfigHelper {
          * @return 配置好的血压监测图表
          */
         fun createBloodPressureChart(
-            systolicColor: String = DEFAULT_LINE1_COLOR,
-            diastolicColor: String = DEFAULT_LINE2_COLOR,
+            @ColorInt systolicColor: Int = DEFAULT_LINE1_COLOR,
+            @ColorInt diastolicColor: Int = DEFAULT_LINE2_COLOR,
             showBaseline: Boolean = true
         ): CartesianChart {
             return createDualLineChart(
@@ -414,9 +415,9 @@ class ChartConfigHelper {
          * @return 配置好的血糖监测图表
          */
         fun createBloodGlucoseChart(
-            glucoseColor: String = "#4CAF50",
+            @ColorInt glucoseColor: Int = ChartPalette.lineBloodSugar,
             showBaseline: Boolean = true,
-            baselineValue: Double = 5.6  // 正常血糖参考值
+            baselineValue: Double = 5.6  // 正常血糖参考值（若数据为 mg/dL，请传入换算后的值）
         ): CartesianChart {
 
             return createSingleLineChart(
@@ -485,10 +486,10 @@ class ChartConfigHelper {
  * @param curvature 曲线平滑度（0.0-1.0）
  */
 data class LineStyle(
-    val color: String,
+    @ColorInt val color: Int,
     val thickness: Float = LINE_THICKNESS,
     val pointSize: Float = POINT_SIZE,
-    val pointStrokeColor: String = WHITE_COLOR,
+    @ColorInt val pointStrokeColor: Int = WHITE_COLOR,
     val pointStrokeThickness: Float = POINT_STROKE,
     val curvature: Float = CURVATURE
 )
@@ -508,10 +509,10 @@ data class LineStyle(
  */
 data class AxisStyle(
     val showGridLines: Boolean = true,
-    val gridLineColor: String = DEFAULT_GRID_COLOR,
+    @ColorInt val gridLineColor: Int = DEFAULT_GRID_COLOR,
     val gridLineDashLength: Float = DASH_LENGTH,
     val gridLineGapLength: Float = GAP_LENGTH,
-    val labelColor: String = DEFAULT_LABEL_COLOR,
+    @ColorInt val labelColor: Int = DEFAULT_LABEL_COLOR,
     val labelTextSize: Float = LABEL_TEXT_SIZE,
     val verticalItemCount: Int = VERTICAL_AXIS_ITEM_COUNT,
     val startAxisValueFormatter: CartesianValueFormatter = CartesianValueFormatter.decimal(),
@@ -533,7 +534,7 @@ data class AxisStyle(
  */
 data class BaselineStyle(
     val yValue: Double = 0.0,
-    val color: String = DEFAULT_BASELINE_COLOR,
+    @ColorInt val color: Int = DEFAULT_BASELINE_COLOR,
     val thickness: Float = BASELINE_THICKNESS,
     val dashLength: Float = BASELINE_DASH_LENGTH,
     val gapLength: Float = BASELINE_GAP_LENGTH

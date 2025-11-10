@@ -266,7 +266,7 @@
                         android:layout_width="@dimen/dp_6"
                         android:layout_height="@dimen/dp_6"
                         android:background="@drawable/bg_rect_white_12"
-                        android:backgroundTint="#9B4AFF"
+                        android:backgroundTint="@color/chart_line_cholesterol_tg"
                         android:layout_marginEnd="@dimen/dp_4"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -281,7 +281,7 @@
                         android:layout_width="@dimen/dp_6"
                         android:layout_height="@dimen/dp_6"
                         android:background="@drawable/bg_rect_white_12"
-                        android:backgroundTint="#FF6B4D"
+                        android:backgroundTint="@color/chart_line_cholesterol_ldl"
                         android:layout_marginEnd="@dimen/dp_4"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -296,7 +296,7 @@
                         android:layout_width="@dimen/dp_6"
                         android:layout_height="@dimen/dp_6"
                         android:background="@drawable/bg_rect_white_12"
-                        android:backgroundTint="#4AD7FF"
+                        android:backgroundTint="@color/chart_line_cholesterol_hdl"
                         android:layout_marginEnd="@dimen/dp_4"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"

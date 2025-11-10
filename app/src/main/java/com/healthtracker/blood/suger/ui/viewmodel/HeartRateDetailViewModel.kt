@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.blood.suger.ui.chart.ChartDataSet
 import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
 import com.healthtracker.blood.suger.ui.chart.ChartUiState
+import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -78,7 +79,7 @@ class HeartRateDetailViewModel @Inject constructor(
                                 label = "BPM",
                                 xValues = xValues,
                                 yValues = yValues,
-                                style = LineStyle(color = "#FF6B4D")
+                                style = LineStyle(color = ChartPalette.lineHeartRate)
                             )
                         ),
                         forceIntegerYAxis = true

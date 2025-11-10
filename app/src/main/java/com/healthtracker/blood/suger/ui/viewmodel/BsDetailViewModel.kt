@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.ui.chart.ChartDataSet
 import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
 import com.healthtracker.blood.suger.ui.chart.ChartUiState
+import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
@@ -119,7 +120,7 @@ class BsDetailViewModel @Inject constructor(
                             label = unit.displayName,
                             xValues = xValues,
                             yValues = yValues,
-                            style = LineStyle(color = "#FF6B4D")
+                            style = LineStyle(color = ChartPalette.lineBloodSugar)
                         )
                     )
                 )

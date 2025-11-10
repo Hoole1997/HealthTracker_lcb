@@ -7,6 +7,7 @@ import com.healthtracker.blood.suger.data.repository.CholesterolRepository
 import com.healthtracker.blood.suger.ui.chart.ChartDataSet
 import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
 import com.healthtracker.blood.suger.ui.chart.ChartUiState
+import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -65,24 +66,25 @@ class CholesterolDetailViewModel @Inject constructor(
                             label = "TG",
                             xValues = xValues,
                             yValues = tgValues,
-                            style = LineStyle(color = "#9B4AFF")
+                            style = LineStyle(color = ChartPalette.lineCholesterolTg)
                         ),
                         ChartDataSet(
                             id = ChartSeriesIds.CHO_LDL,
                             label = "LDL",
                             xValues = xValues,
                             yValues = ldlValues,
-                            style = LineStyle(color = "#FF6B4D")
+                            style = LineStyle(color = ChartPalette.lineCholesterolLdl)
                         ),
                         ChartDataSet(
                             id = ChartSeriesIds.CHO_HDL,
                             label = "HDL",
                             xValues = xValues,
                             yValues = hdlValues,
-                            style = LineStyle(color = "#4AD7FF")
+                            style = LineStyle(color = ChartPalette.lineCholesterolHdl)
                         )
                     )
                 )
+            }
             }
             .stateIn(
                 scope = viewModelScope,
@@ -203,4 +205,5 @@ class CholesterolDetailViewModel @Inject constructor(
             )
         }.sortedBy { it.recordTime }
     }
+
 }
