@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- WaterCupView 自定义属性，单独文件避免污染现有 attrs.xml -->
+    <declare-styleable name="WaterCupView">
+        <attr name="maxCups" format="integer" />
+        <attr name="currentCups" format="integer" />
+        <attr name="waterColor" format="color" />
+        <attr name="waveAmplitude" format="dimension" />
+        <!-- 波速：单位为 dp/s，内部转换为 px/s（避免与其他库同名属性冲突） -->
+        <attr name="cupWaveSpeed" format="float" />
+        <!-- 杯子左右内边距，用于限制水波纹的水平宽度 -->
+        <attr name="cupSideInset" format="dimension" />
+        <attr name="cupTopInset" format="dimension" />
+        <attr name="cupBottomInset" format="dimension" />
+    </declare-styleable>
+</resources>

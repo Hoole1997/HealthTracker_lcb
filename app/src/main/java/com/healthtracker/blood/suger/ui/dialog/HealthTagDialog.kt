@@ -268,7 +268,6 @@ class HealthTagDialog(
             // 删除标签按钮：切换删除模式
             ivDelete.clickWithDuration {
                 isDeleteMode = !isDeleteMode
-                tagAdapter.switchDelectMode(isDeleteMode)
             }
 
             // 取消按钮

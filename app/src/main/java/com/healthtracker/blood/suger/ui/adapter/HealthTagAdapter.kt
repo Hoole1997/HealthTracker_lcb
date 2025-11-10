@@ -26,13 +26,6 @@ class HealthTagAdapter(
     private val onTagClick: (HealthTag) -> Unit
 ) : ListAdapter<HealthTagAdapter.TagItem, HealthTagAdapter.TagViewHolder>(TagDiffCallback()) {
 
-    private var isDelectMode = false
-
-    fun switchDelectMode(isDelete: Boolean){
-        isDelectMode = isDelete
-        notifyItemRangeChanged(0,itemCount)
-    }
-
     /**
      * 标签项数据类
      * @param tag 健康标签
@@ -56,37 +49,6 @@ class HealthTagAdapter(
             binding.apply {
                 // 设置标签文本
                 tvLabel.text = item.displayText
-
-                if (isDelectMode) {
-                    ivLabelDelete.visible()
-                } else {
-                    ivLabelDelete.gone()
-                }
-                
-                // 设置选中状态样式
-                if (item.isSelected && !isDelectMode) {
-                    tvLabel.setTextColor(
-                        ContextCompat.getColor(
-                            tvLabel.context,
-                            com.healthtracker.framework.R.color.white
-                        )
-                    )
-                    labelItem.background = ContextCompat.getDrawable(
-                        labelItem.context,
-                        R.drawable.bg_label_select_selected
-                    )
-                } else {
-                    tvLabel.setTextColor(
-                        ContextCompat.getColor(
-                            tvLabel.context,
-                            R.color.c5
-                        )
-                    )
-                    labelItem.background = ContextCompat.getDrawable(
-                        labelItem.context,
-                        R.drawable.bg_label_select_normal
-                    )
-                }
                 
                 // 设置点击事件
                 root.click {
