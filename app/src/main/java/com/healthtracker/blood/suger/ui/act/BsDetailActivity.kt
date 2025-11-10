@@ -50,7 +50,7 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBin
             return
         }
 
-        chartManager = chartManagerFactory.create(mViewBind.chartView, this)
+
 
         // 初始化ViewModel并加载记录
         mViewModel.initializeWithRecord(recordId)
