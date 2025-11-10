@@ -186,6 +186,33 @@
                 android:paddingHorizontal="@dimen/dp_16"/>
 
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ll_chart_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_20"
+                android:paddingTop="@dimen/dp_16"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/expert_advice_view"
+                android:background="@drawable/bg_rect_white_12"
+                android:orientation="vertical">
+
+
+
+                <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
+                    android:id="@+id/chart_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_240"
+                    android:layout_marginHorizontal="@dimen/dp_16"
+                    tools:previewLineSeriesCount="1"
+                    tools:previewMaxY="300"
+                    tools:previewMaxX="7"
+                    tools:chartStyle="@style/BloodPressureChartStyle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <!-- 专家建议自定义控件 -->
             <com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
