@@ -14,6 +14,7 @@ import android.view.animation.LinearInterpolator
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.healthtracker.blood.suger.R
 import kotlin.math.min
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
@@ -38,6 +39,7 @@ class WaterCupView @JvmOverloads constructor(
     private var cupTopInsetPx: Float = dp(24f) // 杯内水面顶部预留（避免水漫出杯沿）
     private var cupBottomInsetPx: Float = dp(12f) // 底部预留
     private var cupSideInsetPx: Float = dp(10f) // 左右预留，避免触碰杯壁/白边
+    private var stepMl: Int = 100 // 水位变化的最小触发单位（毫升）
 
     // 位图资源
     private var cupBitmapSrc: Bitmap? = null
@@ -268,10 +270,40 @@ class WaterCupView @JvmOverloads constructor(
     }
 
     // region 对外 API
+    /**
+     * 设置水位变化的最小单位（毫升），默认 100ml。
+     */
+    fun setStepMl(minStepMl: Int) {
+        stepMl = minStepMl.coerceAtLeast(1)
+    }
+
+    /**
+     * 按目标毫升设置最大步数（量化为 stepMl 单位），如目标 2000ml、step 100ml => maxCups=20。
+     */
+    fun setTargetMl(targetMl: Int) {
+        val maxSteps = ceil(targetMl / stepMl.toDouble()).toInt().coerceAtLeast(1)
+        setMaxCups(maxSteps)
+    }
+
+    /**
+     * 设置当前毫升数，水位以 stepMl 为最小单位量化到杯数并过渡动画。
+     */
+    fun setCurrentMl(currentMl: Int) {
+        val newCups = (currentMl / stepMl).coerceIn(0, maxCups)
+        // 无论增减，均直接设置水位并重绘，不执行动画
+        levelAnimator?.cancel()
+        currentCups = newCups
+        animatedLevelRatio = if (maxCups > 0) newCups / maxCups.toFloat() else 0f
+        updateWaveAnimationState()
+        invalidate()
+    }
+
     fun setMaxCups(max: Int) {
+        // 保持当前动画水位比例，不因目标步数变化而重置，避免每次都从同一点开始
+        val prevRatio = animatedLevelRatio
         maxCups = max.coerceAtLeast(1)
-        val targetRatio = currentCups / maxCups.toFloat()
-        animatedLevelRatio = targetRatio
+        animatedLevelRatio = prevRatio
+        updateWaveAnimationState()
         invalidate()
     }
 

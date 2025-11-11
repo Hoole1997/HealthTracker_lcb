@@ -6,7 +6,10 @@ import com.healthtracker.blood.suger.data.repository.HydrateRepository
 import com.healthtracker.blood.suger.ui.adapter.HydrateRecordItem
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -17,6 +20,9 @@ import javax.inject.Inject
 class HydrateViewModel @Inject constructor(
     private val hydrateRepository: HydrateRepository
 ) : BaseViewModel() {
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
 
     // 今日饮水记录列表
     val todayRecords = hydrateRepository.getTodayRecords()
@@ -53,17 +59,22 @@ class HydrateViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
-    // 快捷添加：新增一条饮水记录
-    fun addIntake(intakeMl: Int) {
-        viewModelScope.launch {
-            hydrateRepository.addHydrateRecord(intakeMl)
-        }
-    }
-
     // 预留：按ID删除（当前 UI 未暴露ID，可后续扩展）
     fun deleteRecordById(id: Long) {
         viewModelScope.launch {
             hydrateRepository.deleteHydrateRecordById(id)
+        }
+    }
+
+    fun addIntake(intakeMl: Int) {
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                hydrateRepository.addHydrateRecord(intakeMl)
+                delay(500)
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 }

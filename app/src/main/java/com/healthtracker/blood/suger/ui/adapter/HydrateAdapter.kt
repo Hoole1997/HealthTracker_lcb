@@ -16,6 +16,7 @@ import com.healthtracker.blood.suger.databinding.ItemHydrateTotalSectionBinding
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ItemLabelBinding
 import java.util.Date
+import kotlin.math.max
 
 /**
  * 喝水页面 RecyclerView 适配器
@@ -24,7 +25,8 @@ import java.util.Date
  */
 class HydrateAdapter(
     private val onQuickAddClick: (Int) -> Unit = {},
-    private val onRecordDeleteClick: (HydrateRecordItem) -> Unit = {}
+    private val onRecordDeleteClick: (HydrateRecordItem) -> Unit = {},
+    private val onDrinkClick: (Int) -> Unit = {}
 ) : ListAdapter<HydrateItem, RecyclerView.ViewHolder>(DIFF) {
 
     companion object {
@@ -43,6 +45,9 @@ class HydrateAdapter(
         }
     }
 
+    // 适配器级别维护当前选择的饮水量，避免 ViewHolder 重建后丢失状态
+    private var currentDrinkAmountMl: Int = 100
+
     override fun getItemViewType(position: Int): Int = when (getItem(position)) {
         is HydrateItem.TotalSection -> TYPE_TOTAL_SECTION
         is HydrateItem.QuickAddSection -> TYPE_QUICK_ADD_SECTION
@@ -53,7 +58,8 @@ class HydrateAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_TOTAL_SECTION -> TotalSectionViewHolder(
-                ItemHydrateTotalSectionBinding.inflate(inflater, parent, false)
+                ItemHydrateTotalSectionBinding.inflate(inflater, parent, false),
+                onDrinkClick
             )
             TYPE_QUICK_ADD_SECTION -> QuickAddSectionViewHolder(
                 ItemHydrateQuickAddSectionBinding.inflate(inflater, parent, false),
@@ -75,20 +81,40 @@ class HydrateAdapter(
         }
     }
 
-    class TotalSectionViewHolder(private val binding: ItemHydrateTotalSectionBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class TotalSectionViewHolder(
+        private val binding: ItemHydrateTotalSectionBinding,
+        private val onDrinkClick: (Int) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+        private val drinkTextFormat: String = binding.root.context.getString(R.string.drink_btn_format)
+
+        init {
+            binding.drinkMore.setOnClickListener {
+                currentDrinkAmountMl += 10
+                binding.drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl)
+            }
+            binding.drinkLess.setOnClickListener {
+                currentDrinkAmountMl = max(10, currentDrinkAmountMl - 10)
+                binding.drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl)
+            }
+            binding.drinkBtn.setOnClickListener {
+                onDrinkClick(currentDrinkAmountMl)
+            }
+        }
         fun bind(item: HydrateItem.TotalSection) {
             binding.apply {
                 totalWaterIntake.text = item.totalIntake.toString()
                 totalWaterUnit.text = item.unit
                 totalWaterDesc.text = item.description
 
-                val drinkText = binding.root.context.getString(R.string.drink_btn_format)
-                drinkBtn.text = String.format(drinkText, 100)
+                // 根据当前选择的饮水量更新按钮文案
+                drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl)
 
-                // 更新水杯视图
-                waterCupView.setMaxCups(item.maxCups)
-                waterCupView.setCurrentCups(item.currentCups)
+                // 更新水杯视图：以毫升驱动，最小单位 10ml
+                // 目标毫升按照 1杯 = 250ml 计算（保持与业务“8杯=2000ml”一致）
+                val targetMl = item.maxCups * 250
+                waterCupView.setStepMl(10)
+                waterCupView.setTargetMl(targetMl)
+                waterCupView.setCurrentMl(item.totalIntake)
             }
         }
     }
