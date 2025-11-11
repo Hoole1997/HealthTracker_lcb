@@ -1214,5 +1214,6 @@ healthcare provider or medical institution.</string>
 
     <!-- 补水 -->
     <string name="hydrate">Hydrate</string>
+    <string name="drink_btn_format">Drink %dML</string>
 
 </resources>

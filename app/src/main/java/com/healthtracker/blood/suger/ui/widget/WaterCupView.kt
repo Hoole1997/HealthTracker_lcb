@@ -110,7 +110,8 @@ class WaterCupView @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        startWaveAnimation()
+        // 当水位为 0 时不启动波纹动画
+        updateWaveAnimationState()
     }
 
     override fun onDetachedFromWindow() {
@@ -176,20 +177,22 @@ class WaterCupView @JvmOverloads constructor(
         val waveAreaHeight = (cupH - cupTopInsetPx - cupBottomInsetPx).coerceAtLeast(0f)
         val levelY = waveBottom - animatedLevelRatio.coerceIn(0f, 1f) * waveAreaHeight
 
-        // 3) 绘制两层波纹
-        val shiftRad = (waveShiftPx / waveLengthPx) * (Math.PI.toFloat() * 2f)
-        val innerLeft = left + cupSideInsetPx
-        val innerWidth = (cupW - 2f * cupSideInsetPx).coerceAtLeast(1f)
+        // 3) 若饮水量为 0（比例为 0），不绘制水波纹
+        if (animatedLevelRatio > 0f) {
+            val shiftRad = (waveShiftPx / waveLengthPx) * (Math.PI.toFloat() * 2f)
+            val innerLeft = left + cupSideInsetPx
+            val innerWidth = (cupW - 2f * cupSideInsetPx).coerceAtLeast(1f)
 
-        // 先绘制底层矩形水体，确保底部是水平的
-        canvas.drawRect(innerLeft, levelY, innerLeft + innerWidth, waveBottom, baseWaterPaint)
+            // 先绘制底层矩形水体，确保底部是水平的
+            canvas.drawRect(innerLeft, levelY, innerLeft + innerWidth, waveBottom, baseWaterPaint)
 
-        // 再绘制仅在水面上的波纹，底边闭合到 levelY，保证底部是直线
-        buildWavePath(wavePath, innerLeft, innerWidth, levelY, levelY, waveAmplitudePx, shiftRad)
-        canvas.drawPath(wavePath, waterPaint)
+            // 再绘制仅在水面上的波纹，底边闭合到 levelY，保证底部是直线
+            buildWavePath(wavePath, innerLeft, innerWidth, levelY, levelY, waveAmplitudePx, shiftRad)
+            canvas.drawPath(wavePath, waterPaint)
 
-        buildWavePath(wavePath2, innerLeft, innerWidth, levelY, levelY, waveAmplitudePx * 0.55f, shiftRad + Math.PI.toFloat())
-        canvas.drawPath(wavePath2, waterPaint2)
+            buildWavePath(wavePath2, innerLeft, innerWidth, levelY, levelY, waveAmplitudePx * 0.55f, shiftRad + Math.PI.toFloat())
+            canvas.drawPath(wavePath2, waterPaint2)
+        }
 
         // 4) 绘制遮罩图片（盖在最上层）
         coverBitmap?.let { canvas.drawBitmap(it, left, top, imagePaint) }
@@ -255,6 +258,15 @@ class WaterCupView @JvmOverloads constructor(
         return (seconds * 1000L).toLong()
     }
 
+    // 根据当前水位比例决定是否需要运行波纹动画
+    private fun updateWaveAnimationState() {
+        if (animatedLevelRatio <= 0f) {
+            stopWaveAnimation()
+        } else {
+            startWaveAnimation()
+        }
+    }
+
     // region 对外 API
     fun setMaxCups(max: Int) {
         maxCups = max.coerceAtLeast(1)
@@ -266,6 +278,7 @@ class WaterCupView @JvmOverloads constructor(
     fun setCurrentCups(current: Int) {
         currentCups = current.coerceIn(0, maxCups)
         animatedLevelRatio = currentCups / maxCups.toFloat()
+        updateWaveAnimationState()
         invalidate()
     }
 
@@ -293,11 +306,12 @@ class WaterCupView @JvmOverloads constructor(
             interpolator = FastOutSlowInInterpolator()
             addUpdateListener { animator ->
                 animatedLevelRatio = animator.animatedValue as Float
+                updateWaveAnimationState()
                 postInvalidateOnAnimation()
             }
             addListener(object : android.animation.Animator.AnimatorListener {
                 override fun onAnimationStart(animation: android.animation.Animator) {}
-                override fun onAnimationEnd(animation: android.animation.Animator) { currentCups = newCups }
+                override fun onAnimationEnd(animation: android.animation.Animator) { currentCups = newCups; updateWaveAnimationState() }
                 override fun onAnimationCancel(animation: android.animation.Animator) {}
                 override fun onAnimationRepeat(animation: android.animation.Animator) {}
             })

@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.StringUtils
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ItemHydrateQuickAddSectionBinding
 import com.healthtracker.blood.suger.databinding.ItemHydrateRecordItemBinding
 import com.healthtracker.blood.suger.databinding.ItemHydrateRecordSectionBinding
@@ -81,6 +83,9 @@ class HydrateAdapter(
                 totalWaterUnit.text = item.unit
                 totalWaterDesc.text = item.description
 
+                val drinkText = binding.root.context.getString(R.string.drink_btn_format)
+                drinkBtn.text = String.format(drinkText, 100)
+
                 // 更新水杯视图
                 waterCupView.setMaxCups(item.maxCups)
                 waterCupView.setCurrentCups(item.currentCups)
@@ -150,7 +155,7 @@ class HydrateAdapter(
         private val onDeleteClick: (HydrateRecordItem) -> Unit
     ) : ListAdapter<HydrateRecordItem, RecordViewHolder>(object : DiffUtil.ItemCallback<HydrateRecordItem>() {
         override fun areItemsTheSame(oldItem: HydrateRecordItem, newItem: HydrateRecordItem): Boolean {
-            return oldItem.intakeMl == newItem.intakeMl && oldItem.date.time == newItem.date.time
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: HydrateRecordItem, newItem: HydrateRecordItem): Boolean = oldItem == newItem
@@ -200,6 +205,7 @@ sealed class HydrateItem {
 }
 
 data class HydrateRecordItem(
+    val id: Long,
     val intakeMl: Int,
     val date: Date
 )

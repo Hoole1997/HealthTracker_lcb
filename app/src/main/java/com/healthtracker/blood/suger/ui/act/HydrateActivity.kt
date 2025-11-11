@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.ui.adapter.HydrateItem
 import com.healthtracker.blood.suger.ui.adapter.HydrateRecordItem
 import com.healthtracker.blood.suger.ui.viewmodel.HydrateViewModel
 import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,43 +29,54 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
     override fun getVMModelClass() = HydrateViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        // 配置 RecyclerView：将 "总饮水量" 区块作为第一个部分放入列表
+        // 配置 RecyclerView
         mViewBind.rcyHydrate.layoutManager = LinearLayoutManager(this)
         val adapter = HydrateAdapter(
             onQuickAddClick = { valueMl ->
-                // TODO: 接入ViewModel逻辑，如增加饮水量、更新水杯动画
-                // 这里先简单打印或占位
-                println("QuickAdd clicked: ${valueMl}ml")
+                // 快捷添加饮水记录
+                mViewModel.addIntake(valueMl)
             },
             onRecordDeleteClick = { record ->
-                // TODO: 接入删除逻辑
-                println("Delete record: ${record.intakeMl}ml at ${DateTimeUtils.formatDateTimeWithSeconds(record.date)}")
+                // 删除选中记录
+                mViewModel.deleteRecordById(record.id)
             }
         )
         mViewBind.rcyHydrate.adapter = adapter
 
-        // 第一部分：总饮水量 + 水杯
-        val totalSection = HydrateItem.TotalSection(
-            totalIntake = 200,
-            unit = "ML",
-            description = "You drink 2 cups of water today",
-            currentCups = 3,
-            maxCups = 8
-        )
-
-        // 第二部分：Quick Add 快捷添加
-        val quickAddSection = HydrateItem.QuickAddSection(values = listOf(100, 200, 250, 300, 500, 800))
-
-        // 第三部分：Record 记录列表（示例数据）
-        val now = DateTimeUtils.now()
-        val oneHourAgo = DateTimeUtils.addHours(now, -1)
-        val recordSection = HydrateItem.RecordSection(
-            records = listOf(
-                HydrateRecordItem(intakeMl = 200, date = now),
-                HydrateRecordItem(intakeMl = 200, date = oneHourAgo)
+        // 观察 ViewModel 流，实时更新 UI
+        // 今日总量与次数
+        collectLatest(mViewModel.todayTotalIntakeMl) { totalMl ->
+            val count = mViewModel.todayDrinkCount.value
+            val cups = totalMl / 250
+            val totalSection = HydrateItem.TotalSection(
+                totalIntake = totalMl,
+                unit = "ML",
+                description = "今天已饮水 ${count} 次",
+                currentCups = cups,
+                maxCups = 8
             )
-        )
 
-        adapter.submitList(listOf(totalSection, quickAddSection, recordSection))
+            val quickAddSection = HydrateItem.QuickAddSection(values = listOf(100, 200, 250, 300, 500, 800))
+            val recordSection = HydrateItem.RecordSection(records = mViewModel.todayRecordItems.value)
+
+            adapter.submitList(listOf(totalSection, quickAddSection, recordSection))
+        }
+
+        // 今日记录列表（确保记录变化也能刷新）
+        collectLatest(mViewModel.todayRecordItems) { records ->
+            val totalMl = mViewModel.todayTotalIntakeMl.value
+            val count = records.size
+            val cups = totalMl / 250
+            val totalSection = HydrateItem.TotalSection(
+                totalIntake = totalMl,
+                unit = "ML",
+                description = "今天已饮水 ${count} 次",
+                currentCups = cups,
+                maxCups = 8
+            )
+            val quickAddSection = HydrateItem.QuickAddSection(values = listOf(100, 200, 250, 300, 500, 800))
+            val recordSection = HydrateItem.RecordSection(records = records)
+            adapter.submitList(listOf(totalSection, quickAddSection, recordSection))
+        }
     }
 }

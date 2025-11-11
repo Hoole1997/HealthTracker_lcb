@@ -55,10 +55,10 @@
         app:currentCups="3"
         app:waterColor="#03bc78"
         app:waveAmplitude="8dp"
-        app:cupWaveSpeed="60"
-        app:cupTopInset="24dp"
+        app:cupWaveSpeed="48"
+        app:cupTopInset="92dp"
         app:cupBottomInset="0dp"
-        app:cupSideInset="12dp" />
+        app:cupSideInset="1dp" />
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -74,6 +74,7 @@
             android:layout_marginEnd="20dp"/>
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/drinkBtn"
             android:layout_width="@dimen/dp_185"
             android:layout_height="48dp"
             tools:text="Drink 100ML"
