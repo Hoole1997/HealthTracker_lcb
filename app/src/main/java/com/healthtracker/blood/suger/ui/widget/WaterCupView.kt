@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
@@ -40,6 +42,7 @@ class WaterCupView @JvmOverloads constructor(
     private var cupBottomInsetPx: Float = dp(12f) // 底部预留
     private var cupSideInsetPx: Float = dp(10f) // 左右预留，避免触碰杯壁/白边
     private var stepMl: Int = 100 // 水位变化的最小触发单位（毫升）
+    private var enableBreathing: Boolean = true // 是否开启振幅呼吸动画
 
     // 位图资源
     private var cupBitmapSrc: Bitmap? = null
@@ -52,6 +55,8 @@ class WaterCupView @JvmOverloads constructor(
     private var waveAnimator: ValueAnimator? = null
     private var levelAnimator: ValueAnimator? = null
     private var animatedLevelRatio: Float = 0f // 动画过渡中显示的水位比例（0..1）
+    private var amplitudeAnimator: ValueAnimator? = null // 振幅呼吸动画
+    private var amplitudeBreath: Float = 1f // 呼吸因子（0.9..1.15）
 
     // 绘制对象
     private val baseWaterPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -67,9 +72,15 @@ class WaterCupView @JvmOverloads constructor(
         color = adjustAlpha(waterColor, 0.6f)
     }
     private val imagePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val waterSurfacePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = dp(2f)
+        color = adjustAlpha(Color.WHITE, 0.9f)
+    }
 
     private val wavePath = Path()
     private val wavePath2 = Path()
+    private val waveSurfacePath = Path()
 
     // 计算用缓存
     private var cupDrawLeft = 0f
@@ -118,6 +129,7 @@ class WaterCupView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         stopWaveAnimation()
+        stopAmplitudeAnimation()
         super.onDetachedFromWindow()
     }
 
@@ -184,16 +196,43 @@ class WaterCupView @JvmOverloads constructor(
             val shiftRad = (waveShiftPx / waveLengthPx) * (Math.PI.toFloat() * 2f)
             val innerLeft = left + cupSideInsetPx
             val innerWidth = (cupW - 2f * cupSideInsetPx).coerceAtLeast(1f)
+            // 动态振幅：随水位与呼吸动画变化
+            val amplitude1 = waveAmplitudePx * amplitudeBreath * (0.6f + 0.4f * animatedLevelRatio)
+            val amplitude2 = amplitude1 * 0.55f
 
             // 先绘制底层矩形水体，确保底部是水平的
             canvas.drawRect(innerLeft, levelY, innerLeft + innerWidth, waveBottom, baseWaterPaint)
 
             // 再绘制仅在水面上的波纹，底边闭合到 levelY，保证底部是直线
-            buildWavePath(wavePath, innerLeft, innerWidth, levelY, levelY, waveAmplitudePx, shiftRad)
+            // 设置渐变填充，使水面与底部颜色层次更自然
+            waterPaint.shader = LinearGradient(
+                innerLeft,
+                levelY - amplitude1,
+                innerLeft,
+                waveBottom,
+                adjustAlpha(waterColor, 0.95f),
+                adjustAlpha(waterColor, 0.65f),
+                Shader.TileMode.CLAMP
+            )
+            waterPaint2.shader = LinearGradient(
+                innerLeft,
+                levelY - amplitude2,
+                innerLeft,
+                waveBottom,
+                adjustAlpha(waterColor, 0.7f),
+                adjustAlpha(waterColor, 0.4f),
+                Shader.TileMode.CLAMP
+            )
+
+            buildWavePath(wavePath, innerLeft, innerWidth, levelY, levelY, amplitude1, shiftRad)
             canvas.drawPath(wavePath, waterPaint)
 
-            buildWavePath(wavePath2, innerLeft, innerWidth, levelY, levelY, waveAmplitudePx * 0.55f, shiftRad + Math.PI.toFloat())
+            buildWavePath(wavePath2, innerLeft, innerWidth, levelY, levelY, amplitude2, shiftRad + Math.PI.toFloat())
             canvas.drawPath(wavePath2, waterPaint2)
+
+            // 水面高光描边：仅描绘波面线条，增强动感
+            buildWaveSurfacePath(waveSurfacePath, innerLeft, innerWidth, levelY, amplitude1 * 0.85f, shiftRad)
+            canvas.drawPath(waveSurfacePath, waterSurfacePaint)
         }
 
         // 4) 绘制遮罩图片（盖在最上层）
@@ -222,6 +261,31 @@ class WaterCupView @JvmOverloads constructor(
         path.lineTo(left + width, bottomY)
         path.lineTo(left, bottomY)
         path.close()
+    }
+
+    // 构建水面高光线 Path（不闭合，仅顶部波面）
+    private fun buildWaveSurfacePath(
+        path: Path,
+        left: Float,
+        width: Float,
+        levelY: Float,
+        amplitude: Float,
+        phase: Float
+    ) {
+        path.reset()
+        var x = 0f
+        val step = 4f
+        var started = false
+        while (x <= width) {
+            val y = levelY + amplitude * sin((x / waveLengthPx) * (Math.PI.toFloat() * 2f) + phase)
+            if (!started) {
+                path.moveTo(left + x, y)
+                started = true
+            } else {
+                path.lineTo(left + x, y)
+            }
+            x += step
+        }
     }
 
     // 启动波纹位移动画（循环）
@@ -264,9 +328,36 @@ class WaterCupView @JvmOverloads constructor(
     private fun updateWaveAnimationState() {
         if (animatedLevelRatio <= 0f) {
             stopWaveAnimation()
+            stopAmplitudeAnimation()
         } else {
             startWaveAnimation()
+            startAmplitudeAnimation()
         }
+    }
+
+    // 启动/停止振幅呼吸动画
+    private fun startAmplitudeAnimation() {
+        if (!enableBreathing) return
+        if (amplitudeAnimator?.isRunning == true) return
+        amplitudeAnimator = ValueAnimator.ofFloat(0.9f, 1.15f).apply {
+            duration = 2200L
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+            interpolator = FastOutSlowInInterpolator()
+            addUpdateListener { animator ->
+                amplitudeBreath = animator.animatedValue as Float
+                if (animatedLevelRatio > 0f) {
+                    postInvalidateOnAnimation()
+                }
+            }
+            start()
+        }
+    }
+
+    private fun stopAmplitudeAnimation() {
+        amplitudeAnimator?.cancel()
+        amplitudeAnimator = null
+        amplitudeBreath = 1f
     }
 
     // region 对外 API

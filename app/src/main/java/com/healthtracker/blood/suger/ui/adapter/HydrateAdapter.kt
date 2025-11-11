@@ -1,19 +1,26 @@
 package com.healthtracker.blood.suger.ui.adapter
 
+import android.graphics.Color
+import android.graphics.Rect
+import android.graphics.drawable.GradientDrawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.compose.ui.text.intl.Locale
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.StringUtils
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ItemHydrateQuickAddSectionBinding
 import com.healthtracker.blood.suger.databinding.ItemHydrateRecordItemBinding
 import com.healthtracker.blood.suger.databinding.ItemHydrateRecordSectionBinding
 import com.healthtracker.blood.suger.databinding.ItemHydrateTotalSectionBinding
-import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ItemLabelBinding
 import java.util.Date
 import kotlin.math.max
@@ -130,8 +137,19 @@ class HydrateAdapter(
                 adapter = QuickAddAdapter(onItemClick)
                 binding.rvQuickAdd.layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
                 binding.rvQuickAdd.adapter = adapter
+                binding.rvQuickAdd.addItemDecoration(EndSpacingItemDecoration(16))
             }
             adapter?.submitList(item.values)
+        }
+    }
+
+    private class EndSpacingItemDecoration(private val endDp: Int) : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            val position = parent.getChildAdapterPosition(view)
+            val lastIndex = (parent.adapter?.itemCount ?: 0) - 1
+            if (position != RecyclerView.NO_POSITION && position == lastIndex) {
+                outRect.right = (endDp * view.context.resources.displayMetrics.density + 0.5f).toInt()
+            }
         }
     }
 
@@ -140,6 +158,7 @@ class HydrateAdapter(
         private val onDeleteClick: (HydrateRecordItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private var adapter: RecordAdapter? = null
+        private var emptyView: TextView? = null
 
         fun bind(item: HydrateItem.RecordSection) {
             if (adapter == null) {
@@ -147,7 +166,44 @@ class HydrateAdapter(
                 binding.rvRecords.layoutManager = LinearLayoutManager(binding.root.context)
                 binding.rvRecords.adapter = adapter
             }
-            adapter?.submitList(item.records)
+            if (item.records.isEmpty()) {
+                if (emptyView == null) {
+                    emptyView = TextView(binding.root.context).apply {
+                        val emptyHint = binding.root.context.getString(R.string.hydrate_empty_record)
+                        text = emptyHint
+                        setTextColor("#999999".toColorInt())
+                        textSize = 14f
+                        gravity = Gravity.CENTER
+                        setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16))
+                        background = GradientDrawable().apply {
+                            setColor(Color.TRANSPARENT)
+                            setStroke(dpToPx(1), "#F5F5F5".toColorInt())
+                            cornerRadius = dpToPx(8).toFloat()
+                        }
+                        layoutParams = LinearLayoutCompat.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            topMargin = dpToPx(12)
+                            bottomMargin = dpToPx(24)
+                        }
+                    }
+                    val root = binding.root
+                    root.addView(emptyView)
+                }
+                emptyView?.visibility = View.VISIBLE
+                binding.rvRecords.visibility = View.GONE
+                adapter?.submitList(emptyList())
+            } else {
+                emptyView?.visibility = View.GONE
+                binding.rvRecords.visibility = View.VISIBLE
+                adapter?.submitList(item.records)
+            }
+        }
+
+        private fun dpToPx(dp: Int): Int {
+            val density = binding.root.context.resources.displayMetrics.density
+            return (dp * density + 0.5f).toInt()
         }
     }
 
@@ -172,7 +228,7 @@ class HydrateAdapter(
         private val onItemClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(value: Int) {
-            binding.tvLabel.text = "$value ML"
+            binding.tvLabel.text = String.format(java.util.Locale.getDefault(), "%d ML", value)
             binding.root.setOnClickListener { onItemClick(value) }
         }
     }

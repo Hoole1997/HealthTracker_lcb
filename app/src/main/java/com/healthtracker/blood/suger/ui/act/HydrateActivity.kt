@@ -3,7 +3,6 @@ package com.healthtracker.blood.suger.ui.act
 import android.content.Context
 import android.os.Bundle
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
@@ -16,7 +15,6 @@ import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
-import kotlin.math.max
 
 @AndroidEntryPoint
 class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBinding>() {
