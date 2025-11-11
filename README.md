@@ -190,6 +190,15 @@ export STRINGFOG_ENABLED=false
 - 使用 Material3 设计规范
 - 支持 Edge-to-Edge 显示
 
+## 开发工作流改进建议 (2024-12-20)
+
+在本次创建 `HealthStatisticsActivity` 的任务中，我们发现可以从以下几个方面改进现有的开发工作流，以提高效率和代码质量：
+
+*   **模块化**: 当前所有 `Activity` 和 `ViewModel` 都放在 `com.healthtracker.blood.suger` 这一个包下，随着功能增多，会导致包结构臃肿，难以维护。建议按照功能模块（如 `statistics`, `profile`, `records`）或分层架构（`ui`, `domain`, `data`）来组织代码，提高可读性和可维护性。
+*   **基类细化**: 项目中已定义了 `BaseInterActivity`，这是一个很好的实践。但可以考虑进一步细化基类，例如创建一个 `BaseChartActivity` 来处理图表相关的通用逻辑，避免在每个图表页面重复初始化 `ChartManager`。
+*   **资源命名**: `activity_health_statistics.xml` 这样的命名是清晰的。建议继续保持这种以功能为导向的资源命名规范。
+*   **依赖注入**: 项目已使用 Hilt 进行依赖注入。请确保所有 `ViewModel` 和其他需要注入的类都使用 `@HiltViewModel` 和 `@AndroidEntryPoint` 等注解，以保持一致性。
+
 ## 最近更新
 
 ### StringFog 插件优化 (2024-12-19)

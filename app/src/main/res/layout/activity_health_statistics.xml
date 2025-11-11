@@ -250,8 +250,7 @@
                 android:background="@drawable/bg_rect_white_12"
                 android:orientation="vertical"
                 android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_20"
-                app:layout_constraintTop_toBottomOf="@id/expert_advice_view">
+                android:paddingBottom="@dimen/dp_20">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/ll_line_des"
