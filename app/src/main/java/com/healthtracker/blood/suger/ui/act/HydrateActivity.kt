@@ -33,6 +33,14 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
     override fun getVMModelClass() = HydrateViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        mViewBind.btnBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
+        mViewBind.ivSetting.setOnClickListener {
+            // TODO 饮水设置页
+        }
+
         // 配置 RecyclerView
         mViewBind.rcyHydrate.layoutManager = LinearLayoutManager(this)
         val adapter = HydrateAdapter(
@@ -60,7 +68,7 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
             val cups = totalMl / 250
             val totalSection = HydrateItem.TotalSection(
                 totalIntake = totalMl,
-                unit = "ML",
+                unit = getString(R.string.unit_ml),
                 description = String.format(this@HydrateActivity.getString(R.string.hydrate_cup_count_format), count),
                 currentCups = cups,
                 maxCups = 8

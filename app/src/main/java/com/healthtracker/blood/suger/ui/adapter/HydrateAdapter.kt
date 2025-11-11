@@ -93,15 +93,16 @@ class HydrateAdapter(
         private val onDrinkClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private val drinkTextFormat: String = binding.root.context.getString(R.string.drink_btn_format)
+        private val unit: String = binding.root.context.getString(R.string.unit_ml)
 
         init {
             binding.drinkMore.setOnClickListener {
                 currentDrinkAmountMl += 10
-                binding.drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl)
+                binding.drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl, unit)
             }
             binding.drinkLess.setOnClickListener {
                 currentDrinkAmountMl = max(10, currentDrinkAmountMl - 10)
-                binding.drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl)
+                binding.drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl, unit)
             }
             binding.drinkBtn.setOnClickListener {
                 onDrinkClick(currentDrinkAmountMl)
@@ -114,7 +115,7 @@ class HydrateAdapter(
                 totalWaterDesc.text = item.description
 
                 // 根据当前选择的饮水量更新按钮文案
-                drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl)
+                drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl, unit)
 
                 // 更新水杯视图：以毫升驱动，最小单位 10ml
                 // 目标毫升按照 1杯 = 250ml 计算（保持与业务“8杯=2000ml”一致）
@@ -228,7 +229,12 @@ class HydrateAdapter(
         private val onItemClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(value: Int) {
-            binding.tvLabel.text = String.format(java.util.Locale.getDefault(), "%d ML", value)
+            val unit = binding.root.context.getString(R.string.unit_ml)
+            binding.tvLabel.text = String.format(
+                java.util.Locale.getDefault(), "%d %s",
+                value,
+                unit
+            )
             binding.root.setOnClickListener { onItemClick(value) }
         }
     }
@@ -258,7 +264,7 @@ class HydrateAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HydrateRecordItem) {
             binding.tvAmount.text = item.intakeMl.toString()
-            binding.tvUnit.text = "ML"
+            binding.tvUnit.text = binding.root.context.getString(R.string.unit_ml)
             binding.tvTime.text = DateTimeUtils.formatDateTimeWithSeconds(Date(item.date.time))
             binding.ivDelete.setOnClickListener { onDeleteClick(item) }
         }
