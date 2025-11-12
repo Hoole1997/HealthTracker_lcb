@@ -59,12 +59,12 @@ class HeartRateDetailViewModel @Inject constructor(
 
     private var isDelete = false
 
-    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+    private val chartLabelFormatter = SimpleDateFormat("M/d", Locale.getDefault())
 
     val chartUiState: StateFlow<ChartUiState> =
         heartRateRepository.getChartHeartRateRecords()
             .map { records ->
-                val sortedRecords = records.sortedBy { it.recordTime }
+                val sortedRecords = records.sortedWith(compareBy<HeartRateRecord> { it.recordTime.time }.thenBy { it.updatedAt })
                 if (sortedRecords.isEmpty()) {
                     ChartUiState()
                 } else {

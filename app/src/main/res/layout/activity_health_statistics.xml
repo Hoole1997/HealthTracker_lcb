@@ -37,7 +37,7 @@
             android:includeFontPadding="false"
             android:paddingStart="@dimen/dp_44"
             android:paddingEnd="@dimen/dp_44"
-            android:text="@string/health_statistics"
+            android:text="@string/blood_suger"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -115,13 +115,16 @@
                 android:layout_weight="1"
                 android:background="@drawable/selector_date_range"
                 android:button="@null"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="@dimen/dp_4"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_16"
-                android:text="@string/custom"
+                android:text="@string/select"
                 android:textColor="@color/selector_data_range" />
 
         </RadioGroup>
     </HorizontalScrollView>
+
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -145,28 +148,28 @@
                 android:padding="@dimen/dp_16">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_summary"
-                    style="@style/TextViewFont_RobotoBold"
+                    android:id="@+id/tv_date_range"
+                    style="@style/TextViewFont_RobotoRegular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/summary"
-                    android:textColor="@color/t1"
-                    android:textSize="@dimen/sp_16"
+                    android:textColor="@color/color_999"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    tools:text="Sep 04,2025 - Sep 10,2025" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_avg"
                     style="@style/TextViewFont_RobotoRegular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/avg"
                     android:textColor="@color/c5"
                     android:textSize="@dimen/sp_12"
                     app:layout_constraintEnd_toEndOf="@id/tv_avg_value"
                     app:layout_constraintStart_toStartOf="@id/tv_avg_value"
-                    app:layout_constraintTop_toBottomOf="@id/tv_summary"
+                    app:layout_constraintTop_toBottomOf="@id/tv_date_range"
                     app:layout_constraintVertical_chainStyle="spread_inside" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -179,7 +182,7 @@
                     android:textSize="@dimen/sp_12"
                     app:layout_constraintEnd_toStartOf="@id/tv_max"
                     app:layout_constraintStart_toEndOf="@id/tv_avg"
-                    app:layout_constraintTop_toBottomOf="@id/tv_summary"
+                    app:layout_constraintTop_toBottomOf="@id/tv_date_range"
                     app:layout_constraintTop_toTopOf="@id/tv_avg" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -192,7 +195,7 @@
                     android:textSize="@dimen/sp_12"
                     app:layout_constraintEnd_toEndOf="@id/tv_max_value"
                     app:layout_constraintStart_toStartOf="@id/tv_max_value"
-                    app:layout_constraintTop_toBottomOf="@id/tv_summary"
+                    app:layout_constraintTop_toBottomOf="@id/tv_date_range"
                     app:layout_constraintTop_toTopOf="@id/tv_avg" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -204,7 +207,7 @@
                     android:layout_marginTop="@dimen/dp_4"
                     android:includeFontPadding="false"
                     android:textColor="@color/t1"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_24"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_avg"
                     app:layout_constraintVertical_chainStyle="spread_inside"
@@ -218,7 +221,7 @@
                     android:layout_marginTop="@dimen/dp_4"
                     android:includeFontPadding="false"
                     android:textColor="@color/t1"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_24"
                     app:layout_constraintEnd_toEndOf="@id/tv_min"
                     app:layout_constraintStart_toStartOf="@id/tv_min"
                     app:layout_constraintTop_toBottomOf="@id/tv_avg"
@@ -234,70 +237,35 @@
                     android:layout_marginEnd="@dimen/dp_14"
                     android:includeFontPadding="false"
                     android:textColor="@color/t1"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_24"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_avg"
                     app:layout_constraintVertical_chainStyle="spread_inside"
                     tools:text="120" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_filter_statu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:drawableEnd="@drawable/ic_filter_arrow_down"
+                    android:drawableTint="@color/c5"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/c5"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_date_range"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_date_range"
+                    tools:text="@string/text_default"
+                    android:visibility="gone"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/ll_chart_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
-                android:background="@drawable/bg_rect_white_12"
-                android:orientation="vertical"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_20">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/ll_line_des"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end|center_vertical"
-                    android:paddingHorizontal="@dimen/dp_16"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <View
-                        android:layout_width="@dimen/dp_6"
-                        android:layout_height="@dimen/dp_6"
-                        android:layout_marginEnd="@dimen/dp_4"
-                        android:background="@drawable/bg_rect_white_12"
-                        android:backgroundTint="@color/chart_line_bp_systolic" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        style="@style/TextViewFont_RobotoRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_10"
-                        android:text="@string/systolic"
-                        android:textColor="@color/color_999"
-                        android:textSize="@dimen/sp_11" />
-
-                    <View
-                        android:layout_width="@dimen/dp_6"
-                        android:layout_height="@dimen/dp_6"
-                        android:layout_marginEnd="@dimen/dp_4"
-                        android:background="@drawable/bg_rect_white_12"
-                        android:backgroundTint="@color/chart_line_bp_diastolic" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        style="@style/TextViewFont_RobotoRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/diastolic"
-                        android:textColor="@color/color_999"
-                        android:textSize="@dimen/sp_11" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
                     android:id="@+id/chart_view"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_240"
-                    android:layout_marginHorizontal="@dimen/dp_16"
-                    app:layout_constraintTop_toBottomOf="@id/ll_line_des"
+                    app:layout_constraintTop_toBottomOf="@id/tv_max_value"
                     tools:chartStyle="@style/BloodPressureChartStyle"
                     tools:previewLineSeriesCount="2"
                     tools:previewMaxX="7"
@@ -311,11 +279,11 @@
                 android:layout_marginTop="@dimen/dp_8">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_detail"
+                    android:id="@+id/tv_history"
                     style="@style/TextViewFont_RobotoBold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/details"
+                    android:text="@string/history"
                     android:textColor="@color/t1"
                     android:textSize="@dimen/sp_16"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -341,6 +309,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
@@ -353,7 +322,7 @@
                 style="@style/TextViewFont_RobotoBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginBottom="@dimen/dp_16"
                 android:text="@string/health_tips"
                 android:textColor="@color/t1"

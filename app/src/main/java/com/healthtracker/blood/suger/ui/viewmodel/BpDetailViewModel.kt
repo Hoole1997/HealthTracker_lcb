@@ -50,12 +50,13 @@ class BpDetailViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+    private val chartLabelFormatter = SimpleDateFormat("M/d", Locale.getDefault())
 
     val chartUiState: StateFlow<ChartUiState> =
         bloodPressureRepository.getChartBloodPressureRecords()
             .map { records ->
-                val sortedRecords = records.sortedBy { it.recordTime }
+                val sortedRecords =
+                    records.sortedWith(compareBy<BloodPressureRecord> { it.recordTime.time }.thenBy { it.updatedAt })
                 if (sortedRecords.isEmpty()) {
                     ChartUiState()
                 } else {
@@ -92,7 +93,7 @@ class BpDetailViewModel @Inject constructor(
     init {
         // 获取传入的记录ID
         "BpDetailViewModel init with recordId: $recordId".logd(TAG)
-        
+
         if (recordId != -1L) {
             // 使用Flow响应式查询，自动监听数据变化
             observeBloodPressureRecord(recordId)
@@ -109,7 +110,7 @@ class BpDetailViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 "开始监听血压记录变化，recordId: $recordId".logd(TAG)
-                
+
                 // 使用Repository的Flow方法进行响应式查询
                 bloodPressureRepository.getBloodPressureRecordByIdFlow(recordId)
                     .stateIn(

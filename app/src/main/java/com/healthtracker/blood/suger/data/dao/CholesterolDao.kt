@@ -35,13 +35,13 @@ interface CholesterolDao {
 
     @Query(
         "SELECT * FROM cholesterol_records WHERE is_delete = 0 " +
-            "AND record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC"
+            "AND record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC, updated_at DESC"
     )
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<CholesterolRecord>>
 
     @Query(
         "SELECT * FROM cholesterol_records WHERE is_delete = 0 " +
-            "AND tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC"
+            "AND tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC, updated_at DESC"
     )
     suspend fun getRecordsByTagId(tagId: String): List<CholesterolRecord>
 

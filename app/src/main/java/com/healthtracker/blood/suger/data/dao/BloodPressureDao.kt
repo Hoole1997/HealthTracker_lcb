@@ -88,7 +88,7 @@ interface BloodPressureDao {
      * @param endTime 结束时间
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_pressure_records WHERE record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC, updated_at DESC")
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodPressureRecord>>
 
 
@@ -98,7 +98,7 @@ interface BloodPressureDao {
      * @param bpCategory 血压分类code
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE bp_category = :bpCategory ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_pressure_records WHERE bp_category = :bpCategory ORDER BY record_time DESC, updated_at DESC")
     fun getRecordsByBloodPressureCategory(bpCategory: String): Flow<List<BloodPressureRecord>>
 
     /**
@@ -106,7 +106,7 @@ interface BloodPressureDao {
      * @param pulseCategory 脉搏分类code
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE pulse_category = :pulseCategory ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_pressure_records WHERE pulse_category = :pulseCategory ORDER BY record_time DESC, updated_at DESC")
     fun getRecordsByPulseCategory(pulseCategory: String): Flow<List<BloodPressureRecord>>
 
     /**
@@ -115,7 +115,7 @@ interface BloodPressureDao {
      * @param maxSystolic 最大收缩压
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE systolic_pressure BETWEEN :minSystolic AND :maxSystolic ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_pressure_records WHERE systolic_pressure BETWEEN :minSystolic AND :maxSystolic ORDER BY record_time DESC, updated_at DESC")
     fun getRecordsBySystolicRange(minSystolic: Int, maxSystolic: Int): Flow<List<BloodPressureRecord>>
 
     /**
@@ -124,7 +124,7 @@ interface BloodPressureDao {
      * @param maxDiastolic 最大舒张压
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE diastolic_pressure BETWEEN :minDiastolic AND :maxDiastolic ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_pressure_records WHERE diastolic_pressure BETWEEN :minDiastolic AND :maxDiastolic ORDER BY record_time DESC, updated_at DESC")
     fun getRecordsByDiastolicRange(minDiastolic: Int, maxDiastolic: Int): Flow<List<BloodPressureRecord>>
 
     /**
@@ -133,7 +133,7 @@ interface BloodPressureDao {
      * @param maxPulse 最大脉搏
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE pulse_rate BETWEEN :minPulse AND :maxPulse ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_pressure_records WHERE pulse_rate BETWEEN :minPulse AND :maxPulse ORDER BY record_time DESC, updated_at DESC")
     fun getRecordsByPulseRange(minPulse: Int, maxPulse: Int): Flow<List<BloodPressureRecord>>
 
     /**
@@ -141,7 +141,7 @@ interface BloodPressureDao {
      * @param limit 记录数量限制
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records ORDER BY record_time DESC LIMIT :limit")
+    @Query("SELECT * FROM blood_pressure_records ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
     fun getRecentRecords(limit: Int): Flow<List<BloodPressureRecord>>
 
     /**
@@ -225,7 +225,7 @@ interface BloodPressureDao {
      * @param tagId 标签ID
      * @return 包含该标签的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_pressure_records WHERE tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC, updated_at DESC")
     suspend fun getRecordsByTagId(tagId: String): List<BloodPressureRecord>
 
     /**

@@ -11,19 +11,27 @@ import com.healthtracker.blood.suger.databinding.DialogStatusSelectBinding
 import com.healthtracker.blood.suger.databinding.ItemStatusBinding
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
-import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.weight.WrapLayoutLinearLayoutManager
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 
-class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private val onSelect: ((BloodSugarStatus?) -> Unit)? = null): BaseBottomSheetDialogFragment<DialogStatusSelectBinding>() {
+class StatusSelectDialog(
+    private val currentStatus: BloodSugarStatus?,
+    private val showAllOption: Boolean,
+    private val onSelect: ((BloodSugarStatus?) -> Unit)? = null
+) : BaseBottomSheetDialogFragment<DialogStatusSelectBinding>() {
 
     companion object{
-        fun show(fragmentManager: FragmentManager,currentStatus: BloodSugarStatus?,onSelect: ((BloodSugarStatus?) -> Unit)? = null){
-            StatusSelectDialog(currentStatus,onSelect).show(fragmentManager)
+        fun show(
+            fragmentManager: FragmentManager,
+            currentStatus: BloodSugarStatus?,
+            showAllOption: Boolean = false,
+            onSelect: ((BloodSugarStatus?) -> Unit)? = null
+        ){
+            StatusSelectDialog(currentStatus, showAllOption, onSelect).show(fragmentManager)
         }
     }
 
-    constructor() : this(currentStatus = null, onSelect = null)
+    constructor() : this(currentStatus = null, showAllOption = false, onSelect = null)
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -33,9 +41,11 @@ class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private va
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.let {
-            val dataSource = BloodSugarStatus.entries.map { status -> StatuItem(status.statusType,getStatusStringRes(status.statusType)) }.toMutableList()
-            if(context is HistoryRecordActivity){
-                dataSource.add(0, StatuItem(-1,-1))
+            val dataSource = BloodSugarStatus.entries
+                .map { status -> StatuItem(status.statusType, getStatusStringRes(status.statusType)) }
+                .toMutableList()
+            if (showAllOption) {
+                dataSource.add(0, StatuItem(statuType = -1, displayNameRes = R.string.all_types))
             }
             it.rvStatus.adapter = StatusAdapter(dataSource)
             it.rvStatus.layoutManager = WrapLayoutLinearLayoutManager(view.context)
@@ -47,8 +57,13 @@ class StatusSelectDialog(private val currentStatus: BloodSugarStatus?,private va
 
 
    inner class StatusAdapter(private val list: List<StatuItem>) : RecyclerView.Adapter<StatusAdapter.SatusViewHolder>() {
-        var selectIndex: Int = if(currentStatus == null) 0 else {
-            list.indexOfFirst { currentStatus.statusType == it.statuType }
+        var selectIndex: Int = when {
+            currentStatus == null && showAllOption -> 0
+            currentStatus == null -> 0
+            else -> {
+                val index = list.indexOfFirst { currentStatus.statusType == it.statuType }
+                if (index == -1 && showAllOption) 1 else index.takeIf { it >= 0 } ?: 0
+            }
         }
 
 

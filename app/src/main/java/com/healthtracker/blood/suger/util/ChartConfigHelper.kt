@@ -434,6 +434,7 @@ class ChartConfigHelper {
             series: List<List<Double>>,
             axisSteps: Int = VERTICAL_AXIS_ITEM_COUNT,
             paddingRatio: Double = 0.1, // 上下各保留 10% 留白
+            minLimit: Double? = 0.0
         ): Pair<Double, Double> {
             require(axisSteps >= 2) { "轴刻度数量至少为 2" }
 
@@ -451,8 +452,13 @@ class ChartConfigHelper {
             val targetMax = rawMax + padding
 
             val step = niceStep((targetMax - targetMin) / (axisSteps - 1))
-            val minAligned = floor(targetMin / step) * step
+            var minAligned = floor(targetMin / step) * step
             val maxAligned = ceil(targetMax / step) * step
+
+            if (minLimit != null && minAligned < minLimit) {
+                minAligned = 0.0
+            }
+
             return minAligned to maxAligned
         }
 

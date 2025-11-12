@@ -40,7 +40,8 @@ import javax.inject.Inject
 data class BloodSugarData(
     val timestamp: Long,
     val value: Float,
-    val type: Int
+    val type: Int,
+    val updatedAt: Long = 0L
 )
 
 @HiltViewModel
@@ -67,10 +68,10 @@ class BsDetailViewModel @Inject constructor(
     private val _chartUnit = MutableStateFlow(BsUnit.getPreferredUnit())
     private val chartUnit = _chartUnit.asStateFlow()
 
-    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+    private val chartLabelFormatter = SimpleDateFormat("M/d", Locale.getDefault())
 
     // Mock 数据开关（响应式）
-    private val _useMockData = MutableStateFlow(true)
+    private val _useMockData = MutableStateFlow(false)
 
     // 根据开关在仓库与模拟数据之间切换，统一输出 mg/dL 的原始值
     private val chartSourceFlow = _useMockData.flatMapLatest { useMock ->
@@ -91,7 +92,8 @@ class BsDetailViewModel @Inject constructor(
                         BloodSugarData(
                             timestamp = record.recordTime.time,
                             value = record.glucoseValue.toFloat(), // mg/dL 原始存储
-                            type = record.satus
+                            type = record.satus,
+                            updatedAt = record.updatedAt
                         )
                     }
                 }
@@ -103,14 +105,16 @@ class BsDetailViewModel @Inject constructor(
             chartSourceFlow,
             chartUnit
         ) { points, unit ->
-            val sortedPoints = points.sortedBy { it.timestamp }
+            val sortedPoints = points.sortedWith(
+                compareBy<BloodSugarData> { it.timestamp }.thenBy { it.updatedAt }
+            )
             if (sortedPoints.isEmpty()) {
                 ChartUiState()
             } else {
                 val labels = sortedPoints.map { ts -> chartLabelFormatter.format(Date(ts.timestamp)) }
                 val xValues = sortedPoints.indices.map(Int::toFloat)
                 val yValues = sortedPoints.map { p ->
-                    unit.convertFromMgdl(p.value.toDouble()).toFloat()
+                    convertToDisplayUnit(p.value.toDouble(), unit)
                 }
                 ChartUiState(
                     labels = labels,
@@ -296,14 +300,20 @@ class BsDetailViewModel @Inject constructor(
             val tsLunch = randomInWindow(dayStart, 12 * 60 + 30, 14 * 60 + 30)
             val tsDinner = randomInWindow(dayStart, 18 * 60 + 30, 20 * 60 + 30)
 
-            result.add(BloodSugarData(tsFasting, valueForType(0), 0))
-            result.add(BloodSugarData(tsBreakfast, valueForType(1), 1))
-            result.add(BloodSugarData(tsLunch, valueForType(2), 2))
-            result.add(BloodSugarData(tsDinner, valueForType(3), 3))
+            result.add(BloodSugarData(tsFasting, valueForType(0), 0, tsFasting))
+            result.add(BloodSugarData(tsBreakfast, valueForType(1), 1, tsBreakfast))
+            result.add(BloodSugarData(tsLunch, valueForType(2), 2, tsLunch))
+            result.add(BloodSugarData(tsDinner, valueForType(3), 3, tsDinner))
         }
 
         result.sortBy { it.timestamp }
         return result
+    }
+
+    private fun convertToDisplayUnit(valueMgdl: Double, target: BsUnit): Float {
+        val converted = BsUnit.convertValue(valueMgdl.toFloat(), BsUnit.MG_DL, target)
+        val formatted = BsUnit.formatValue(converted, target)
+        return formatted.toFloat()
     }
 
     private fun queryRepoData(): List<BloodSugarData> = runBlocking {
@@ -314,7 +324,8 @@ class BsDetailViewModel @Inject constructor(
             BloodSugarData(
                 timestamp = record.recordTime.time,
                 value = rounded,
-                type = record.satus
+                type = record.satus,
+                updatedAt = record.updatedAt
             )
         }
     }

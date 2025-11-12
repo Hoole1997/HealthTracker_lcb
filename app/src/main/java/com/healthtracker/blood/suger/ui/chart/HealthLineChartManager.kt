@@ -169,17 +169,23 @@ class HealthLineChartManager @AssistedInject constructor(
         return CartesianValueFormatter.decimal(DecimalFormat(pattern))
     }
 
-    private fun createBottomAxisFormatter(): CartesianValueFormatter {
-        return object : CartesianValueFormatter {
+    private fun createBottomAxisFormatter(): CartesianValueFormatter =
+        object : CartesianValueFormatter {
             override fun format(
                 context: CartesianMeasuringContext,
                 value: Double,
                 verticalAxisPosition: Axis.Position.Vertical?
             ): CharSequence {
-                return labels.getOrNull(value.toInt()) ?: ""
+                val label = labels.getOrNull(value.toInt())
+                return if (label.isNullOrEmpty()) {
+                    // Vico 不允许返回空字符串，否则会抛 IllegalStateException
+                    // 当没有可显示的数据点时，用短横线占位，避免崩溃。
+                    ZERO_DATA_PLACEHOLDER
+                } else {
+                    label
+                }
             }
         }
-    }
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
@@ -208,6 +214,7 @@ class HealthLineChartManager @AssistedInject constructor(
     companion object {
         private const val TAG = "HealthLineChartManager"
         private const val DEFAULT_AXIS_STEPS = 6
+        private const val ZERO_DATA_PLACEHOLDER = "-"
 
         private val DEFAULT_LINE_STYLES = listOf(
             LineStyle(color = ChartPalette.lineBpSystolic),

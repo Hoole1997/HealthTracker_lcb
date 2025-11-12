@@ -30,7 +30,7 @@ class CholesterolDetailViewModel @Inject constructor(
     private val cholesterolRepository: CholesterolRepository
 ) : BaseViewModel() {
 
-    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+    private val chartLabelFormatter = SimpleDateFormat("M/d", Locale.getDefault())
 
     private val _cholesterolRecord = MutableStateFlow<CholesterolRecord?>(null)
     val cholesterolRecord: StateFlow<CholesterolRecord?> = _cholesterolRecord.asStateFlow()
@@ -45,8 +45,7 @@ class CholesterolDetailViewModel @Inject constructor(
         cholesterolRepository.getAllRecords()
             .map { records ->
                 val sorted = records
-                    .filter { it.hdl != null && it.ldl != null && it.triglyceride != null }
-                    .sortedBy { it.recordTime }
+                    .sortedWith(compareBy<CholesterolRecord> { it.recordTime.time }.thenBy { it.updatedAt })
 
                 if (sorted.isEmpty()) {
                     ChartUiState()
@@ -54,9 +53,9 @@ class CholesterolDetailViewModel @Inject constructor(
                     val labels = sorted.map { chartLabelFormatter.format(it.recordTime) }
                     val xValues = sorted.indices.map(Int::toFloat)
 
-                    val tgValues = sorted.map { it.triglyceride!!.toFloat() }
-                    val ldlValues = sorted.map { it.ldl!!.toFloat() }
-                    val hdlValues = sorted.map { it.hdl!!.toFloat() }
+                    val tgValues = sorted.map { it.triglyceride.toFloat() }
+                    val ldlValues = sorted.map { it.ldl.toFloat() }
+                    val hdlValues = sorted.map { it.hdl.toFloat() }
 
                 ChartUiState(
                     labels = labels,

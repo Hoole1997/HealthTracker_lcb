@@ -26,6 +26,7 @@ import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Date
 
 @AndroidEntryPoint
 class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryRecordBinding>() {
@@ -67,7 +68,11 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
                 tvFilterStatu.clickWithDuration {
                     // 移除不必要的lifecycleScope.launch，StatusSelectDialog已经处理了协程
                     val currentStatus = mViewModel.selectedBloodSugarStatus.value
-                    StatusSelectDialog.show(supportFragmentManager, currentStatus) {
+                    StatusSelectDialog.show(
+                        fragmentManager = supportFragmentManager,
+                        currentStatus = currentStatus,
+                        showAllOption = true
+                    ) {
                         mViewModel.setBloodSugarStatusFilter(it)
                     }
                 }
@@ -310,7 +315,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
             // 设置自定义主题
             setTheme(R.style.CustomDatePickerTheme)
             // 设置默认选中的日期范围
-            setSelection(androidx.core.util.Pair(startDate, endDate))
+            setSelection(androidx.core.util.Pair(Date(startDate).toUtcPickerMillis(), Date(endDate).toUtcPickerMillis()))
             // 设置日历约束
             setCalendarConstraints(calendarConstraints)
         }.build()

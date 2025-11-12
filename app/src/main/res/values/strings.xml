@@ -1214,7 +1214,7 @@ healthcare provider or medical institution.</string>
     <string name="_7_days">7 Days</string>
     <string name="_1_month">1 Month</string>
     <string name="_3_month">3 Month</string>
-    <string name="custom">Custom</string>
+    <string name="select">Select</string>
     <string name="summary">Summary</string>
     <string name="avg">Avg</string>
     <string name="min">Min</string>

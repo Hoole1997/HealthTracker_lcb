@@ -83,6 +83,14 @@ class BloodSugarRepository @Inject constructor(
     override fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>> {
         return bloodSugarDao.getRecordsByTimeRange(startTime, endTime)
     }
+
+    fun getRecordsByRangeAndStatus(
+        startTime: Date,
+        endTime: Date,
+        status: Int?
+    ): Flow<List<BloodSugarRecord>> {
+        return if(status == null) bloodSugarDao.getRecordsByTimeRange(startTime, endTime) else bloodSugarDao.getRecordsByRangeAndStatus(startTime, endTime, status)
+    }
     
     override fun getChartRecords(): Flow<List<BloodSugarRecord>> {
         return bloodSugarDao.getChartRecords()

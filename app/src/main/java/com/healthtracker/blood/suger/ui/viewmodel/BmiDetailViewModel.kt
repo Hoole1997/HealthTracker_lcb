@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.enums.BMIEnum
 import com.healthtracker.blood.suger.data.enums.BmiUnit
@@ -55,27 +56,30 @@ class BmiDetailViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    private val chartLabelFormatter = SimpleDateFormat("M.dd", Locale.getDefault())
+    private val chartLabelFormatter = SimpleDateFormat("M/d", Locale.getDefault())
 
     val chartUiState: StateFlow<ChartUiState> =
         bmiRepository.getChartBmiRecords()
             .map { records ->
-                val sortedRecords = records.sortedBy { it.recordTime }
-                    val points = sortedRecords.mapNotNull { record ->
-                        val heightMeters = record.heightCm / 100.0
-                        if (heightMeters <= 0) {
-                            null
-                        } else {
-                            val bmiRaw = (record.weightKg / heightMeters.pow(2.0)).toFloat()
-                            val bmiValue = ((bmiRaw * 10).roundToInt() / 10f)
-                            record to bmiValue
-                        }
+                val sortedRecords = records.sortedWith(
+                    compareBy<BmiRecord> { it.recordTime.time }.thenBy { it.updatedAt }
+                )
+                val points = sortedRecords.mapNotNull { record ->
+                    val heightMeters = record.heightCm / 100.0
+                    if (heightMeters <= 0) {
+                        null
+                    } else {
+                        val bmiRaw = (record.weightKg / heightMeters.pow(2.0)).toFloat()
+                        val bmiValue = ((bmiRaw * 10).roundToInt() / 10f)
+                        record to bmiValue
                     }
+                }
 
                 if (points.isEmpty()) {
                     ChartUiState()
                 } else {
-                    val labels = points.map { (record, _) -> chartLabelFormatter.format(record.recordTime) }
+                    val labels =
+                        points.map { (record, _) -> chartLabelFormatter.format(record.recordTime) }
                     val xValues = points.indices.map(Int::toFloat)
                     val yValues = points.map { it.second }
                     ChartUiState(

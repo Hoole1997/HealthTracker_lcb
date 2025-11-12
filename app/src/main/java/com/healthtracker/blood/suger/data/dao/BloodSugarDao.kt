@@ -77,7 +77,7 @@ interface BloodSugarDao {
      * 获取可在图表中显示的血糖记录，按时间排序
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE show_in_chart = 1 ORDER BY record_time ASC")
+    @Query("SELECT * FROM blood_sugar_records WHERE show_in_chart = 1 ORDER BY record_time ASC, updated_at DESC")
     fun getChartRecords(): Flow<List<BloodSugarRecord>>
 
     /**
@@ -86,8 +86,25 @@ interface BloodSugarDao {
      * @param endTime 结束时间
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC")
+    @Query("SELECT * FROM blood_sugar_records WHERE record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC, updated_at DESC")
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>>
+
+    /**
+     * 根据时间范围与状态筛选血糖记录
+     */
+    @Query(
+        """
+        SELECT * FROM blood_sugar_records 
+        WHERE record_time BETWEEN :startTime AND :endTime
+        AND (:status IS NULL OR status = :status)
+        ORDER BY record_time DESC, updated_at DESC
+        """
+    )
+    fun getRecordsByRangeAndStatus(
+        startTime: Date,
+        endTime: Date,
+        status: Int?
+    ): Flow<List<BloodSugarRecord>>
 
     /**
      * 根据测量标签获取血糖记录

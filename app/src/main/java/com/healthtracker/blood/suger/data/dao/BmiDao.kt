@@ -33,7 +33,7 @@ interface BmiDao {
     suspend fun getLatestRecord(): BmiRecord?
 
     /** 按时间范围查询（过滤已删除） */
-    @Query("SELECT * FROM bmi_records WHERE is_delete = 0 AND record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC")
+    @Query("SELECT * FROM bmi_records WHERE is_delete = 0 AND record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC, updated_at DESC")
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BmiRecord>>
 
     /** 按标签ID模糊查询（过滤已删除） */

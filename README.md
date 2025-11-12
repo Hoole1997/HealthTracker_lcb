@@ -1,224 +1,82 @@
-# HealthTracker
+# HealthTracker 项目改动说明（血糖统计页）
 
-## 项目概述
+本次改动目标：将健康统计页适配为血糖统计视图，统一单位显示、修复统计逻辑、并改进图表与历史列表的呈现一致性。
 
-HealthTracker 是一个基于 Android 的健康追踪应用，使用现代化的 Android 开发技术栈构建。
+## 主要改动
 
-## 技术栈
+- 统计页视图（Activity）与视图模型（ViewModel）统一血糖单位：
+  - 使用 `BsUnit.getPreferredUnit()` 获取用户首选单位，并将图表与摘要统计统一转换到该单位。
+  - 图表使用 `ChartPalette.lineBloodSugar` 配色，并设置 `forceIntegerYAxis = false` 以支持 mmol/L 等小数单位。
+- 图例与布局更新：
+  - `activity_health_statistics.xml` 中将血压双折线图例替换为血糖单折线图例，颜色引用 `@color/chart_line_bs`，文案引用 `@string/blood_sugar`。
+- 历史列表单位统一：
+  - 新增 `BloodSugarPreferredHistoryItem`，在统计页历史列表统一按用户首选单位显示，避免同列表出现混合单位。
+  - `HealthStatisticsActivity` 中将历史列表映射由 `BloodSugarHistoryItem` 替换为 `BloodSugarPreferredHistoryItem`。
+- 文案资源：
+  - 在 `strings.xml` 中新增标准化资源 `blood_sugar`，避免因命名不一致导致编译或显示问题。
 
-- **语言**: Kotlin
-- **UI**: Jetpack Compose + Material3
-- **架构**: MVVM + Repository Pattern
-- **依赖注入**: Hilt
-- **数据库**: Room
-- **网络**: Retrofit + OkHttp
-- **图片加载**: Glide
-- **构建系统**: Gradle with Convention Plugins
+## 受影响文件
 
-## 项目结构
+- `app/src/main/java/com/healthtracker/blood/suger/viewmodel/HealthStatisticsViewModel.kt`
+- `app/src/main/java/com/healthtracker/blood/suger/ui/act/HealthStatisticsActivity.kt`
+- `app/src/main/java/com/healthtracker/blood/suger/ui/history/BloodSugarPreferredHistoryItem.kt`（新增）
+- `app/src/main/res/layout/activity_health_statistics.xml`
+- `app/src/main/res/values/strings.xml`
+- `app/src/main/res/values/health_tips_arrays.xml`（新增：健康Tips的标题与文案数组）
 
-```
-HealthTracker/
-├── app/                    # 主应用模块
-├── framework/              # 框架模块
-├── build-common/           # 自定义 Gradle 插件
-├── config/                 # 配置文件
-└── gradle/                 # Gradle 配置
-```
+## 编译与验证
 
-## 构建系统优化
+1. 执行 `./gradlew :app:assembleDebug` 已通过编译（含 Playstore/Internal 两个变体）。
+2. 运行应用后，在“健康统计”页验证：
+   - 图表图例为“Blood Sugar”，颜色为橙红（`chart_line_bs`）。
+   - 折线图允许小数刻度（mmol/L），数据与摘要数值保持一致。
+   - 历史列表中所有记录值统一为用户首选单位（mg/dL 或 mmol/L），不再出现同列表混合单位。
+   - 日期范围切换（7天/1月/3月/自定义）能够正确更新图表与摘要。
+   - Health tips 文案来自资源数组，标题与描述与设计稿一致。
 
-### Convention Plugins
+### 新增：历史列表截断与“全部历史”入口显示规则
 
-项目使用自定义的 Convention Plugins 来简化模块配置：
+- 显示规则（已实现，用户确认）：
+  - 统计页历史列表仅展示最近 N 条记录，当前 N = 2（根据所选时间范围过滤后再截断）。
+  - 当数据库中“存在任意记录”时，“全部历史（All history）”入口始终显示；
+    - 即使当前选择的时间范围内没有任何记录，入口也会显示；
+    - 仅当全库完全没有记录时隐藏该入口。
+- 技术实现：
+  - `HealthStatisticsActivity` 中对历史列表 `records.take(2)` 后再提交到 `HistoryAdapter`；
+  - `HealthStatisticsViewModel` 新增 `hasAnyRecord: StateFlow<Boolean>`，通过仓库的全量记录 `Flow` 判断是否存在数据；
+  - Activity 观察 `hasAnyRecord`，控制 `tv_all_history` 的可见性。
+- 验证要点：
+  1. 有全库记录，但当前日期范围内无记录：列表为空；“全部历史”入口显示；可点击进入历史页查看全部（默认一年范围）。
+  2. 当前日期范围内有 ≥ 3 条记录：列表仅显示 2 条最近记录；“全部历史”入口显示。
+  3. 全库完全无记录：列表为空；“全部历史”入口隐藏；底部“添加记录”按钮正常使用。
 
-- `android.app` - 应用模块配置
-- `android.library` - 库模块配置
-- `android.compose` - Compose UI 配置
-- `android.hilt` - Hilt 依赖注入配置
-- `android.room` - Room 数据库配置
-- `android.firebase` - Firebase 服务配置
-- `android.stringfog` - StringFog 字符串混淆配置
+## 已知问题与后续优化建议
 
-## 组件修复记录
+- 摘要（均值/最小/最大）目前仅显示数值，不含单位标识；如需更明确展示，可在布局中为摘要区域补充单位文本（例如靠右的“mg/dL”或“mmol/L”标签）。
+- 图表 Y 轴单位未显式显示；如需在 Marker 或轴标题中显示单位，可在 `HealthLineChartManager` 或 `ChartConfigHelper` 添加自定义格式化器。
+- `HistoryRecordActivity` 保持原逻辑（显示记录时的单位），符合“历史查看”场景；统计页统一单位用于“统一分析”场景，两者不同可在帮助文档中说明。
 
-### WeeklyDateSelector 导航限制修复 (2024-09-25)
+### 新增：健康Tips资源化与使用（随机化）
 
-#### 问题描述
-WeeklyDateSelector组件的周导航限制功能存在以下问题：
-1. `maxPreviousWeeks`和`maxNextWeeks`属性在XML中定义但未在代码中实现
-2. 滑动手势可以绕过所有导航限制
-3. 只有按钮导航（nextWeek/prevWeek）有部分限制检查
+- 新增 `health_tips_arrays.xml`，包含以下7类健康指标的字符串数组（每类3条标题与文案）：血压、血糖、胆固醇、心率、BMI、步数、饮水。
+- 新增 `HealthTipsProvider`（`app/src/main/java/com/healthtracker/blood/suger/tips/HealthTipsProvider.kt`）：
+  - 提供 `HealthMetric` 枚举与 `pickRandom(metric)` 方法；
+  - 按指标从对应 `string-array` 随机选取一条建议；与数值等级无关。
+- 触发规则（用户确认）：
+  - 仅在“页面进入”和“日期范围切换”时随机刷新；
+  - 不采用“黏性随机”，同一日期范围再次进入页面会重新随机。
+- `HealthStatisticsViewModel` 已接入血糖指标（`HealthMetric.BLOOD_SUGAR`），并在 `dateRangeFlow` 变化时刷新健康建议。
+- 这样做的好处：
+  - 文案统一管理、易于维护与本地化；
+  - 与设计稿标题/文案保持一致；
+  - 逻辑可复用到其它指标统计页（血压、胆固醇、心率、BMI、步数、饮水）。
 
-#### 修复内容
+## 变更原因与产品思考
 
-**1. 添加缺失的属性支持**
-- 在WeeklyDateSelector类中添加`maxPreviousWeeks`和`maxNextWeeks`属性声明
-- 在init块中从XML属性正确初始化这些属性值
+- 统计页的目标是统一分析与对比，统一单位能避免认知混淆（尤其是 mmol/L 与 mg/dL 同时出现时）。
+- 图表允许小数可避免 mmol/L 的值被强制取整，提升数据准确性与可读性。
+- 历史列表统一单位，有助于用户在同一视图下快速比较数据走势与分布。
 
-**2. 实现统一的导航限制逻辑**
-- 新增`isNavigationAllowed(position: Int)`方法，统一检查所有导航限制
-- 新增`getValidPosition(targetPosition: Int)`方法，获取最接近的有效位置
-- 支持`restrictPastWeekNavigation`、`maxPreviousWeeks`和`maxNextWeeks`的组合使用
-
-**3. 修复滑动手势限制**
-- 在`setupPager()`中添加`ViewPager2.OnPageChangeCallback`
-- 在页面选中时检查导航是否被允许
-- 不允许的导航会自动回弹到有效位置
-
-**4. 统一按钮和滑动导航行为**
-- 更新`nextWeek()`和`prevWeek()`方法使用新的`isNavigationAllowed()`检查
-- 确保按钮导航和滑动导航使用相同的限制逻辑
-
-#### 测试验证
-- 创建了包含5种不同限制配置的演示活动
-- 验证了所有导航限制场景的正确性
-- 确认滑动和按钮导航都受到相同限制
-
-### StringFog 字符串混淆优化
-
-#### 优化内容
-
-1. **多层级配置控制**
-   - 环境变量控制（最高优先级）
-   - Gradle 属性控制
-   - 配置文件控制
-   - 构建类型控制（默认）
-
-2. **智能包路径检测**
-   - 自动检测主包和框架包
-   - 支持自定义包路径配置
-   - 智能排除第三方库包
-
-3. **灵活的排除规则**
-   - 默认排除 AndroidX、Kotlin 等系统库
-   - 支持自定义排除包路径
-   - 避免混淆第三方库
-
-4. **自定义密钥支持**
-   - 支持固定密钥或随机密钥生成
-   - 密钥长度验证
-   - 安全建议
-
-5. **构建时验证**
-   - 详细的配置验证
-   - 错误提示和建议
-   - 配置冲突检测
-
-6. **详细日志输出**
-   - 构建时显示完整配置信息
-   - 便于调试和验证
-
-#### 配置方式
-
-```properties
-# config.properties
-stable_release=true
-stringfog.packages=com.healthtracker.blood.suger,com.healthtracker.framework
-stringfog.exclude=androidx.,kotlin.,kotlinx.,com.google.
-stringfog.mode=bytes
-stringfog.key=myCustomKey123
-```
-
-#### 环境变量控制
-
-```bash
-# 启用 StringFog
-export STRINGFOG_ENABLED=true
-
-# 禁用 StringFog
-export STRINGFOG_ENABLED=false
-```
-
-## 构建指南
-
-### 开发环境构建
-
-```bash
-./gradlew assembleDebug
-```
-
-### 生产环境构建
-
-```bash
-./gradlew assembleRelease
-```
-
-### 安装到设备
-
-```bash
-./gradlew installDebug
-```
-
-## 配置说明
-
-### 应用配置
-
-主要配置文件位于 `app/assets/config.properties`：
-
-- `stable_release` - 控制是否为稳定发布版本
-- `stringfog.*` - StringFog 相关配置
-
-### 签名配置
-
-签名配置位于 `config/` 目录：
-- `pdfreader.jks` - 签名文件
-- `sign.properties` - 签名属性
-- `sign.gradle` - 签名配置脚本
-
-## 性能优化
-
-项目集成了多个性能优化工具：
-
-- **WebView 预加载优化**
-- **SP 阻塞主线程处理** (spwaitkiller)
-- **隐藏 API 绕过** (hiddenapibypass)
-- **应用进程生命周期管理**
-- **StringFog 字符串混淆** (仅 release 版本)
-
-## 开发规范
-
-### 包命名
-
-- 主包: `com.healthtracker.blood.suger`
-- 框架包: `com.healthtracker.framework`
-
-### 代码约定
-
-- 使用 Kotlin 作为主要开发语言
-- 遵循 Android 官方开发指南
-- 使用 Material3 设计规范
-- 支持 Edge-to-Edge 显示
-
-## 开发工作流改进建议 (2024-12-20)
-
-在本次创建 `HealthStatisticsActivity` 的任务中，我们发现可以从以下几个方面改进现有的开发工作流，以提高效率和代码质量：
-
-*   **模块化**: 当前所有 `Activity` 和 `ViewModel` 都放在 `com.healthtracker.blood.suger` 这一个包下，随着功能增多，会导致包结构臃肿，难以维护。建议按照功能模块（如 `statistics`, `profile`, `records`）或分层架构（`ui`, `domain`, `data`）来组织代码，提高可读性和可维护性。
-*   **基类细化**: 项目中已定义了 `BaseInterActivity`，这是一个很好的实践。但可以考虑进一步细化基类，例如创建一个 `BaseChartActivity` 来处理图表相关的通用逻辑，避免在每个图表页面重复初始化 `ChartManager`。
-*   **资源命名**: `activity_health_statistics.xml` 这样的命名是清晰的。建议继续保持这种以功能为导向的资源命名规范。
-*   **依赖注入**: 项目已使用 Hilt 进行依赖注入。请确保所有 `ViewModel` 和其他需要注入的类都使用 `@HiltViewModel` 和 `@AndroidEntryPoint` 等注解，以保持一致性。
-
-## 最近更新
-
-### StringFog 插件优化 (2024-12-19)
-
-- ✅ 重构 StringFog 配置逻辑，提高灵活性和可维护性
-- ✅ 添加多层级配置控制（环境变量、Gradle属性、配置文件）
-- ✅ 实现智能包路径检测和排除规则
-- ✅ 优化密钥生成和加密模式配置
-- ✅ 添加构建时配置验证和错误处理
-- ✅ 创建详细的配置文档和使用指南
-
-### 主要改进
-
-1. **配置灵活性**: 支持多种配置方式，优先级明确
-2. **智能检测**: 自动检测包路径，减少手动配置
-3. **错误处理**: 完善的错误提示和验证机制
-4. **文档完善**: 提供详细的配置指南和示例
-5. **向后兼容**: 保持与现有配置的兼容性
-
-## 许可证
-
-本项目采用私有许可证，仅供内部使用。
+---
+如需进一步定制（例如在摘要区域显示单位、在图表 Marker 中标注单位），请提出需求，我会在不增加过度复杂性的前提下提供最简洁的改动方案。
 

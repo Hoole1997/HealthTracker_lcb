@@ -40,6 +40,15 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, HistoryAdapter.HistoryView
     }
     
     private var itemClickListener: OnItemClickListener? = null
+
+    /**
+     * 是否展示删除按钮（默认 true，血糖统计页可关闭）
+     */
+    var showDeleteButton: Boolean = true
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
     
     /**
      * 设置事件监听器
@@ -102,8 +111,14 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, HistoryAdapter.HistoryView
                 }
                 
                 // 设置删除按钮点击事件
-                ivDelete.setOnClickListener {
-                    itemClickListener?.onDeleteClick(item, adapterPosition)
+                if (showDeleteButton) {
+                    ivDelete.visible()
+                    ivDelete.setOnClickListener {
+                        itemClickListener?.onDeleteClick(item, adapterPosition)
+                    }
+                } else {
+                    ivDelete.gone()
+                    ivDelete.setOnClickListener(null)
                 }
             }
         }

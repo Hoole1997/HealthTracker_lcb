@@ -46,7 +46,7 @@ interface HeartRateDao {
     /** 按时间范围查询 */
     @Query(
         "SELECT * FROM heart_rate_records WHERE is_delete = 0 " +
-            "AND record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC"
+            "AND record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC, updated_at DESC"
     )
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<HeartRateRecord>>
 
@@ -57,7 +57,7 @@ interface HeartRateDao {
     /** 按标签查询 */
     @Query(
         "SELECT * FROM heart_rate_records WHERE is_delete = 0 " +
-            "AND tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC"
+            "AND tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC, updated_at DESC"
     )
     suspend fun getRecordsByTagId(tagId: String): List<HeartRateRecord>
 
