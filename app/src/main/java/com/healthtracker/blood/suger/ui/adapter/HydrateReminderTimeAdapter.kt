@@ -7,16 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
 
-/**
- * 用于“添加提醒”页面的时间选择列表适配器。
- * - 构造传入点击回调（返回 position）
- * - 提供 updateTimes(List<String>) 来刷新数据
- */
-class ReminderTimeAdapter(
-    private val onItemClick: (Int) -> Unit
-) : RecyclerView.Adapter<ReminderTimeAdapter.TimeViewHolder>() {
-
-    private val times = mutableListOf<String>()
+class HydrateReminderTimeAdapter(private val times: List<String>) :
+    RecyclerView.Adapter<HydrateReminderTimeAdapter.TimeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -29,16 +21,9 @@ class ReminderTimeAdapter(
         holder.tvTime.text = t
         // 最后一项不显示分割线
         holder.divider.visibility = if (position == times.lastIndex) View.GONE else View.VISIBLE
-        holder.itemView.setOnClickListener { onItemClick.invoke(position) }
     }
 
     override fun getItemCount(): Int = times.size
-
-    fun updateTimes(newTimes: List<String>) {
-        times.clear()
-        times.addAll(newTimes)
-        notifyDataSetChanged()
-    }
 
     class TimeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTime: TextView = itemView.findViewById(R.id.tv_time)

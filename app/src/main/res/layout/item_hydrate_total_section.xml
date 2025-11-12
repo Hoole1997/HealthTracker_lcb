@@ -19,7 +19,7 @@
             android:id="@+id/totalWaterIntake"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="32sp"
+            android:textSize="@dimen/sp_32"
             android:textStyle="bold"
             android:textColor="#333333"/>
 
@@ -37,26 +37,26 @@
         android:id="@+id/totalWaterDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/dp_10"
         android:textAlignment="center"
         android:maxLines="2"
         android:ellipsize="end"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
         android:textSize="14sp"
         android:textColor="#999999"/>
 
     <com.healthtracker.blood.suger.ui.widget.WaterCupView
         android:id="@+id/waterCupView"
-        android:layout_width="230dp"
-        android:layout_height="252dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="@dimen/dp_230"
+        android:layout_height="@dimen/dp_252"
+        android:layout_marginTop="@dimen/dp_12"
         app:maxCups="8"
         app:currentCups="3"
         app:waterColor="#03bc78"
         app:waveAmplitude="8dp"
         app:cupWaveSpeed="48"
-        app:cupTopInset="92dp"
+        app:cupTopInset="@dimen/dp_92"
         app:cupBottomInset="0dp"
         app:cupSideInset="1dp" />
     
@@ -69,29 +69,29 @@
         
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/drinkLess"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
             android:src="@mipmap/ic_hydrate_subtract"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="@dimen/dp_20"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/drinkBtn"
             android:layout_width="@dimen/dp_185"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/dp_48"
             tools:text="Drink 100ML"
             android:textAlignment="center"
             android:gravity="center"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:background="@drawable/bg_hydrate_drink"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/drinkMore"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
             android:src="@mipmap/ic_hydrate_add"
-            android:layout_marginStart="20dp"/>
+            android:layout_marginStart="@dimen/dp_20"/>
         
     </LinearLayout>
 

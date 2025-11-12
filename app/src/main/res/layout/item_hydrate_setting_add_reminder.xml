@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="@dimen/dp_12"
+    android:gravity="center_vertical"
+    android:background="?android:attr/selectableItemBackgroundBorderless">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_add_reminder"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:scaleType="centerCrop"
+        android:tint="@color/color_888"
+        app:srcCompat="@drawable/ic_add_hydrate_reminder" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_add_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_marginStart="@dimen/dp_10"
+        android:text="@string/add_reminder"
+        android:textColor="@color/color_888"
+        android:textSize="@dimen/sp_16" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
