@@ -35,9 +35,4 @@ class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, Activi
         mViewBind.rcySetting.adapter = HydrateSettingAdapter()
     }
 
-    // 旧版静态视图交互已移除，改为在适配器中处理单位切换与数值展示
-
-    // RulerView 的 UI 更新逻辑已迁移至 RecyclerView 的杯子容量模块 item 中
-
-    // 辅助方法已不再需要，旧视图引用移除
 }

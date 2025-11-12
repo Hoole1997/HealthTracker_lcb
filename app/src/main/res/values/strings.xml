@@ -1226,5 +1226,6 @@ healthcare provider or medical institution.</string>
     <string name="fl_oz">fl oz</string>
     <string name="ml">ML</string>
     <string name="hydration_reminder_time">Hydration Reminder Time</string>
+    <string name="hydration_reminder_edit">Edit</string>
 
 </resources>

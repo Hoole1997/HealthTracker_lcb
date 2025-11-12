@@ -19,6 +19,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_reminder_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hydration_reminder_edit"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_reminder_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="14sp"
+        android:textColor="#02BC77"
+        android:textStyle="bold"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcyReminderTimes"
         android:layout_width="0dp"
