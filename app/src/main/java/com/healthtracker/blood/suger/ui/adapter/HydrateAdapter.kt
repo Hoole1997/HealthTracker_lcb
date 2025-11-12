@@ -7,10 +7,14 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.compose.ui.text.intl.Locale
 import androidx.core.graphics.toColorInt
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -159,7 +163,7 @@ class HydrateAdapter(
         private val onDeleteClick: (HydrateRecordItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private var adapter: RecordAdapter? = null
-        private var emptyView: TextView? = null
+        private var emptyContainer: ConstraintLayout? = null
 
         fun bind(item: HydrateItem.RecordSection) {
             if (adapter == null) {
@@ -168,35 +172,71 @@ class HydrateAdapter(
                 binding.rvRecords.adapter = adapter
             }
             if (item.records.isEmpty()) {
-                if (emptyView == null) {
-                    emptyView = TextView(binding.root.context).apply {
-                        val emptyHint = binding.root.context.getString(R.string.hydrate_empty_record)
-                        text = emptyHint
-                        setTextColor("#999999".toColorInt())
-                        textSize = 14f
-                        gravity = Gravity.CENTER
-                        setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16))
+                if (emptyContainer == null) {
+                    // 容器：约束布局，图片居中于父，文字水平居中且与图片底对齐
+                    emptyContainer = ConstraintLayout(binding.root.context).apply {
+                        layoutParams = LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            dpToPx(158)
+                        ).apply {
+                            topMargin = dpToPx(12)
+                            bottomMargin = dpToPx(12)
+                        }
                         background = GradientDrawable().apply {
                             setColor(Color.TRANSPARENT)
                             setStroke(dpToPx(1), "#F5F5F5".toColorInt())
                             cornerRadius = dpToPx(8).toFloat()
                         }
-                        layoutParams = LinearLayoutCompat.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
+
+                    // 图片：居中于父
+                    val iv = ImageView(binding.root.context).apply {
+                        id = View.generateViewId()
+                        setImageResource(R.mipmap.ic_empty_hydrate_record)
+                        adjustViewBounds = true
+                        scaleType = ImageView.ScaleType.CENTER_INSIDE
+                        contentDescription = binding.root.context.getString(R.string.hydrate_empty_record)
+                        layoutParams = ConstraintLayout.LayoutParams(
+                            dpToPx(150),
+                            dpToPx(120)
                         ).apply {
-                            topMargin = dpToPx(12)
-                            bottomMargin = dpToPx(24)
+                            startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+                            endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                            topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+                            bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+                            bottomMargin = dpToPx(16)
                         }
                     }
-                    val root = binding.root
-                    root.addView(emptyView)
+
+                    val tv = TextView(binding.root.context).apply {
+                        id = View.generateViewId()
+                        val emptyHint = binding.root.context.getString(R.string.hydrate_empty_record)
+                        text = emptyHint
+                        setTextColor("#999999".toColorInt())
+                        textSize = 14f
+                        gravity = Gravity.CENTER
+                        setPadding(dpToPx(16), dpToPx(0), dpToPx(16), dpToPx(0))
+                        layoutParams = ConstraintLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+                            endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                            topToBottom = iv.id
+                            topMargin = dpToPx(-20)
+                        }
+                    }
+
+                    emptyContainer?.addView(iv)
+                    emptyContainer?.addView(tv)
+
+                    binding.root.addView(emptyContainer)
                 }
-                emptyView?.visibility = View.VISIBLE
+                emptyContainer?.visibility = View.VISIBLE
                 binding.rvRecords.visibility = View.GONE
                 adapter?.submitList(emptyList())
             } else {
-                emptyView?.visibility = View.GONE
+                emptyContainer?.visibility = View.GONE
                 binding.rvRecords.visibility = View.VISIBLE
                 adapter?.submitList(item.records)
             }

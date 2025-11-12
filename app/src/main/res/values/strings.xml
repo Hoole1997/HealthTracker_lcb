@@ -1218,7 +1218,7 @@ healthcare provider or medical institution.</string>
     <string name="hydrate_cup_count_format">You drink %d cups of water today</string>
     <string name="hydrate_complete_message">Well done! You\'ve finished your water!</string>
     <string name="done">Done</string>
-    <string name="hydrate_empty_record">No drinking water record</string>
+    <string name="hydrate_empty_record">No water intake record yet.</string>
     <string name="unit_ml" translatable="false">ML</string>
 
 </resources>
