@@ -1,7 +1,11 @@
 package com.healthtracker.blood.suger.ui.act
 
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.CalendarConstraints
@@ -11,21 +15,26 @@ import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
 import com.healthtracker.blood.suger.databinding.ActivityHealthStatisticsBinding
+import com.healthtracker.blood.suger.tips.HealthMetric
 import com.healthtracker.blood.suger.tips.HealthTips
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
-import com.healthtracker.blood.suger.ui.history.BloodSugarHistoryItem
-import com.healthtracker.blood.suger.ui.history.HistoryAdapter
-import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
+import com.healthtracker.blood.suger.ui.history.*
+import com.healthtracker.blood.suger.ui.widget.StatisticDimensionMenu
 import com.healthtracker.blood.suger.viewmodel.HealthStatisticsViewModel
+import com.healthtracker.blood.suger.viewmodel.StatisticDimension
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
+import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
 import javax.inject.Inject
+import androidx.core.graphics.drawable.toDrawable
+import com.healthtracker.framework.util.getRobotoBold
+import com.healthtracker.framework.util.getRobotoMedium
 
 /**
  * Health Statistics Activity
@@ -33,6 +42,53 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HealthStatisticsActivity :
     BaseInterActivity<HealthStatisticsViewModel, ActivityHealthStatisticsBinding>() {
+
+    companion object {
+        // Intent extra keys - must match ViewModel's SavedStateHandle keys
+        private const val EXTRA_METRIC_TYPE = "metric_type"
+        private const val EXTRA_DATE_RANGE_PRESET = "date_range_preset"
+
+        /**
+         * Launch Health Statistics Activity
+         *
+         * @param context Android context
+         * @param metricType Initial health metric to display (null = default to BLOOD_SUGAR)
+         * @param dateRangePreset Initial date range preset (null = default to DAYS_7)
+         *
+         * Usage examples:
+         * ```
+         * // Default launch (Blood Sugar, 7 days)
+         * HealthStatisticsActivity.start(context)
+         *
+         * // Show specific metric
+         * HealthStatisticsActivity.start(context, HealthMetric.BLOOD_PRESSURE)
+         *
+         * // Show specific metric with custom date range
+         * HealthStatisticsActivity.start(
+         *     context,
+         *     HealthMetric.BMI,
+         *     DateRangePreset.MONTH_3
+         * )
+         * ```
+         */
+        fun start(
+            context: Context,
+            metricType: HealthMetric? = null,
+            dateRangePreset: HealthStatisticsViewModel.DateRangePreset? = null
+        ) {
+            val extras = mutableListOf<Pair<String, Any?>>()
+
+            metricType?.let {
+                extras.add(EXTRA_METRIC_TYPE to it.ordinal)
+            }
+
+            dateRangePreset?.let {
+                extras.add(EXTRA_DATE_RANGE_PRESET to it.ordinal)
+            }
+
+            context.startActivity<HealthStatisticsActivity>(*extras.toTypedArray())
+        }
+    }
 
     @Inject
     lateinit var chartManagerFactory: HealthLineChartManager.Factory
@@ -42,6 +98,7 @@ class HealthStatisticsActivity :
     private var latestDateRange: HealthStatisticsViewModel.DateRange? = null
     private var isHistorySectionVisible: Boolean = false
     private var isHistoryListVisible: Boolean = false
+    private var dimensionMenu: StatisticDimensionMenu? = null
 
     override fun createViewBinding(): ActivityHealthStatisticsBinding {
         return ActivityHealthStatisticsBinding.inflate(layoutInflater)
@@ -91,14 +148,34 @@ class HealthStatisticsActivity :
 
     private fun setupStatusFilter() {
         with(mViewBind.tvFilterStatu) {
-            isVisible = true
+            // 动态设置点击行为
             clickWithDuration {
-                StatusSelectDialog.show(
-                    fragmentManager = supportFragmentManager,
-                    currentStatus = mViewModel.selectedStatus.value,
-                    showAllOption = true
-                ) { status ->
-                    mViewModel.updateStatusFilter(status)
+                when (mViewModel.selectedMetricType.value) {
+                    HealthMetric.BLOOD_SUGAR -> {
+                        StatusSelectDialog.show(
+                            fragmentManager = supportFragmentManager,
+                            currentStatus = mViewModel.selectedStatus.value,
+                            showAllOption = true
+                        ) { status ->
+                            mViewModel.updateStatusFilter(status)
+                        }
+                    }
+                    HealthMetric.BLOOD_PRESSURE, HealthMetric.CHOLESTEROL -> {
+                        if (dimensionMenu == null) {
+                            dimensionMenu = StatisticDimensionMenu(this@HealthStatisticsActivity) { dimension ->
+                                mViewModel.setStatisticDimension(dimension)
+                            }.apply {
+                                isFocusable = true
+                                isOutsideTouchable = true
+
+                                setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+                            }
+                        }
+                        dimensionMenu?.show(this)
+                    }
+                    else -> {
+                        // 其他指标不处理
+                    }
                 }
             }
         }
@@ -107,7 +184,13 @@ class HealthStatisticsActivity :
     private fun setupHistoryList() {
         historyAdapter.setOnItemClickListener(object : HistoryAdapter.OnItemClickListener {
             override fun onItemClick(item: HistoryRecordItem, position: Int) {
-                BsDetailActivity.start(this@HealthStatisticsActivity, item.getId())
+                when (item.getRecordType()) {
+                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> BsDetailActivity.start(this@HealthStatisticsActivity, item.getId())
+                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> BpDetailActivity.start(this@HealthStatisticsActivity, item.getId())
+                    HistoryRecordItem.RecordType.CHOLESTEROL -> CholesterolDetailActivity.start(this@HealthStatisticsActivity, item.getId())
+                    HistoryRecordItem.RecordType.HEART_RATE -> HeartRateDetailActivity.start(this@HealthStatisticsActivity, item.getId())
+                    HistoryRecordItem.RecordType.BMI_RECORD -> BmiDetailActivity.start(this@HealthStatisticsActivity, item.getId())
+                }
             }
 
             override fun onDeleteClick(item: HistoryRecordItem, position: Int) {
@@ -122,14 +205,41 @@ class HealthStatisticsActivity :
 
     private fun setupActions() {
         mViewBind.tvAllHistory.clickWithDuration {
-            HistoryRecordActivity.start(this, recordType = HistoryRecordItem.RecordType.BLOOD_SUGAR)
+            val recordType = when (mViewModel.selectedMetricType.value) {
+                HealthMetric.BLOOD_SUGAR -> HistoryRecordItem.RecordType.BLOOD_SUGAR
+                HealthMetric.BLOOD_PRESSURE -> HistoryRecordItem.RecordType.BLOOD_PRESSURE
+                HealthMetric.CHOLESTEROL -> HistoryRecordItem.RecordType.CHOLESTEROL
+                HealthMetric.HEART_RATE -> HistoryRecordItem.RecordType.HEART_RATE
+                HealthMetric.BMI -> HistoryRecordItem.RecordType.BMI_RECORD
+                else -> HistoryRecordItem.RecordType.BLOOD_SUGAR
+            }
+            HistoryRecordActivity.start(this, recordType = recordType)
         }
         mViewBind.btnAddRecord.clickWithDuration {
-            BsRecordActivity.start(this)
+            when (mViewModel.selectedMetricType.value) {
+                HealthMetric.BLOOD_SUGAR -> BsRecordActivity.start(this)
+                HealthMetric.BLOOD_PRESSURE -> BpRecordActivity.start(this)
+                HealthMetric.CHOLESTEROL -> CholesterolRecordActivity.start(this)
+                HealthMetric.HEART_RATE -> HeartRateRecordActivity.start(this)
+                HealthMetric.BMI -> BmiRecordActivity.start(this)
+                else -> BsRecordActivity.start(this)
+            }
         }
     }
 
     override fun createObserver() {
+        collectLatest(mViewModel.selectedMetricType) { metricType ->
+            updateUIForMetricType(metricType)
+        }
+        collectLatest(mViewModel.statusFilterVisible) { visible ->
+            mViewBind.tvFilterStatu.isVisible = visible
+        }
+        collectLatest(mViewModel.dimensionSelectorVisible) { visible ->
+            mViewBind.tvFilterStatu.isVisible = visible
+        }
+        collectLatest(mViewModel.statisticDimension) { dimension ->
+            updateDimensionDisplay(dimension)
+        }
         collectLatest(mViewModel.selectedPreset) { preset ->
             updatePresetSelection(preset)
         }
@@ -140,6 +250,7 @@ class HealthStatisticsActivity :
             mViewBind.tvDateRange.text = formatted
         }
         collectLatest(mViewModel.selectedStatus) { status ->
+            if(mViewModel.selectedMetricType.value == HealthMetric.BLOOD_SUGAR)
             updateStatusDisplay(status)
         }
         collectLatest(mViewModel.statsUiState) { stats ->
@@ -150,7 +261,16 @@ class HealthStatisticsActivity :
             mViewBind.chartView.isVisible = hasData
         }
         collectLatest(mViewModel.historyPreview) { records ->
-            val items = records.map { BloodSugarHistoryItem(it) }
+            val items = records.mapNotNull { record ->
+                when (mViewModel.selectedMetricType.value) {
+                    HealthMetric.BLOOD_SUGAR -> (record as? com.healthtracker.blood.suger.data.entity.BloodSugarRecord)?.let { BloodSugarHistoryItem(it) }
+                    HealthMetric.BLOOD_PRESSURE -> (record as? com.healthtracker.blood.suger.data.entity.BloodPressureRecord)?.let { BloodPressureHistoryItem(it) }
+                    HealthMetric.CHOLESTEROL -> (record as? com.healthtracker.blood.suger.data.entity.CholesterolRecord)?.let { CholesterolHistoryItem(it) }
+                    HealthMetric.HEART_RATE -> (record as? com.healthtracker.blood.suger.data.entity.HeartRateRecord)?.let { HeartRateHistoryItem(it) }
+                    HealthMetric.BMI -> (record as? com.healthtracker.blood.suger.data.entity.BmiRecord)?.let { BmiHistoryItem(it) }
+                    else -> null
+                }
+            }
             historyAdapter.submitList(items)
         }
         collectLatest(mViewModel.historySectionVisible) { visible ->
@@ -210,6 +330,61 @@ class HealthStatisticsActivity :
 
     private fun updateHistoryListVisibility() {
         mViewBind.rvHistory.isVisible = isHistorySectionVisible && isHistoryListVisible
+    }
+
+    private fun updateUIForMetricType(metricType: HealthMetric) {
+        when (metricType) {
+            HealthMetric.BLOOD_SUGAR, HealthMetric.HEART_RATE, HealthMetric.BMI -> {
+                // 显示 Avg/Min/Max，绿色
+                mViewBind.tvAvg.text = getString(R.string.avg)
+                mViewBind.tvMin.text = getString(R.string.min)
+                mViewBind.tvMax.text = getString(R.string.max)
+
+                val greenColor = ContextCompat.getColor(this,R.color.c5)
+                mViewBind.tvAvg.setTextColor(greenColor)
+                mViewBind.tvMin.setTextColor(greenColor)
+                mViewBind.tvMax.setTextColor(greenColor)
+            }
+            HealthMetric.BLOOD_PRESSURE -> {
+                mViewBind.tvFilterStatu.setTypeface(getRobotoMedium(this))
+                // 显示 Systolic/Diastolic/Pulse，灰色
+                mViewBind.tvAvg.text = getString(R.string.systolic)
+                mViewBind.tvMin.text = getString(R.string.diastolic)
+                mViewBind.tvMax.text = getString(R.string.pulse)
+
+                val grayColor = ContextCompat.getColor(this,R.color.color_999)
+                mViewBind.tvAvg.setTextColor(grayColor)
+                mViewBind.tvMin.setTextColor(grayColor)
+                mViewBind.tvMax.setTextColor(grayColor)
+            }
+            HealthMetric.CHOLESTEROL -> {
+                mViewBind.tvFilterStatu.setTypeface(getRobotoMedium(this))
+                // 显示 TG/LDL/HDL，灰色
+                mViewBind.tvAvg.text = getString(R.string.tg)
+                mViewBind.tvMin.text = getString(R.string.ldl)
+                mViewBind.tvMax.text = getString(R.string.hdl)
+
+                val grayColor = ContextCompat.getColor(this,R.color.color_999)
+                mViewBind.tvAvg.setTextColor(grayColor)
+                mViewBind.tvMin.setTextColor(grayColor)
+                mViewBind.tvMax.setTextColor(grayColor)
+            }
+            else -> {
+                // 其他指标默认显示 Avg/Min/Max
+                mViewBind.tvAvg.text = getString(R.string.avg)
+                mViewBind.tvMin.text = getString(R.string.min)
+                mViewBind.tvMax.text = getString(R.string.max)
+            }
+        }
+    }
+
+    private fun updateDimensionDisplay(dimension: StatisticDimension) {
+        val text = when (dimension) {
+            StatisticDimension.AVG -> getString(R.string.avg)
+            StatisticDimension.MIN -> getString(R.string.min)
+            StatisticDimension.MAX -> getString(R.string.max)
+        }
+        mViewBind.tvFilterStatu.text = text
     }
 
     private fun showCustomDatePicker() {

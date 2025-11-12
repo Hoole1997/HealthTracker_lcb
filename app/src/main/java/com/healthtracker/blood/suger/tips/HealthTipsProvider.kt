@@ -15,17 +15,6 @@ data class HealthTips(val title: String, val description: String)
  */
 object HealthTipsProvider {
 
-    /** 支持的健康指标枚举（可在其它页面直接复用） */
-    enum class HealthMetric {
-        BLOOD_PRESSURE,
-        BLOOD_SUGAR,
-        CHOLESTEROL,
-        HEART_RATE,
-        BMI,
-        STEPS,
-        HYDRATION
-    }
-
     /**
      * 从对应指标的 string-array 中随机选择一条健康建议。
      * - 仅依赖资源数组，不与具体数值等级绑定
