@@ -163,7 +163,12 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
-
+        <activity
+            android:name=".ui.act.HydrateSettingActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.act.HydrateCompleteActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"

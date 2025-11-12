@@ -38,7 +38,7 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
         }
 
         mViewBind.ivSetting.setOnClickListener {
-            // TODO 饮水设置页
+            HydrateSettingActivity.start(this)
         }
 
         // 配置 RecyclerView
