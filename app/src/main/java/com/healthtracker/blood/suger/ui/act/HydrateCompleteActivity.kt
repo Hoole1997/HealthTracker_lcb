@@ -33,7 +33,7 @@ class HydrateCompleteActivity : BaseInterActivity<BaseViewModel, ActivityHydrate
             btnDone.setOnClickListener { finish() }
 
             // 加载原生广告（底部卡片区域）
-            loadNative(adContainer, style = NativeAdStyle.CARD)
+            loadNative(adContainer, style = NativeAdStyle.CARD_6)
         }
     }
 }

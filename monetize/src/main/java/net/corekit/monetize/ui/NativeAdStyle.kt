@@ -50,6 +50,11 @@ data class NativeAdStyle(
             layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card5,
             description = "card5",
         )
+
+        val CARD_6 = NativeAdStyle(
+            layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card6,
+            description = "card6",
+        )
         
         /**
          * 创建自定义样式
