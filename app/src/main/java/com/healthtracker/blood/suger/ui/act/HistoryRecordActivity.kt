@@ -10,7 +10,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityHistoryRecordBinding
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
-import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
+import com.healthtracker.blood.suger.ui.dialog.DeleteHydrateReminderDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.history.BloodPressureHistoryItem
 import com.healthtracker.blood.suger.ui.history.BloodSugarHistoryItem
@@ -138,8 +138,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
         )
 
     private fun showDeleteConfirm(recordId: Long, isBs: Boolean = true) {
-        ConfirmDialog(
-            title = getString(R.string.delete_record_remind_title),
+        DeleteHydrateReminderDialog(
             message = getString(R.string.delete_record_remind),
             leftText = getString(R.string.cancel),
             rightText = getString(R.string.confirm),

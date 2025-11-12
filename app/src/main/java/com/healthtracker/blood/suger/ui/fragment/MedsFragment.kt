@@ -13,7 +13,7 @@ import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.FragmentMedsBinding
 import com.healthtracker.blood.suger.ui.act.AddReminderActivity
 import com.healthtracker.blood.suger.ui.adapter.MedsReminderAdapter
-import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
+import com.healthtracker.blood.suger.ui.dialog.DeleteHydrateReminderDialog
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.viewmodel.MedsViewModel
 import com.healthtracker.blood.suger.ui.widget.MedsRemindDropdownMenu
@@ -244,8 +244,7 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
       * @param item 要删除的提醒项
       */
      private fun showDeleteConfirmDialog(item: MedsReminderItem) {
-         ConfirmDialog(
-             title = getString(R.string.tips),
+         DeleteHydrateReminderDialog(
              message = getString(R.string.delete_tips_content),
              leftText = getString(R.string.cancel),
              rightText = getString(R.string.confirm),

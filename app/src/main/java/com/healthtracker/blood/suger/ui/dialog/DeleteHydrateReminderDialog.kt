@@ -1,27 +1,21 @@
 package com.healthtracker.blood.suger.ui.dialog
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.DialogDeleteConfirmBinding
-import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
+import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
-import kotlin.text.toInt
-import kotlin.times
 
 
-class ConfirmDialog(
-    private val title: String,
+class DeleteHydrateReminderDialog(
     private val message: String,
     private val onDialogListener: DialogListener?,
-    private val leftText: String? = null, private val rightText: String? = null,
-    private val titleColor: Int = 0
-) : BaseVbDialogFragment<DialogDeleteConfirmBinding>(){
+    private val leftText: String? = null, private val rightText: String? = null
+) : BaseBottomSheetDialogFragment<DialogDeleteConfirmBinding>(onDialogListener){
 
     companion object {
         val BUTTON_OK = R.id.btn_ok
@@ -29,7 +23,7 @@ class ConfirmDialog(
     }
 
     // 恢复用，onCreate 时dismiss()
-    constructor() : this("", "", null)
+    constructor() : this("", null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,12 +41,8 @@ class ConfirmDialog(
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {
-            tvConfirmTitle.text = title
             tvConfirmMessage.text = message
 
-            if (titleColor != 0) {
-                tvConfirmTitle.setTextColor(titleColor)
-            }
             leftText?.let {
                 btnCancel.text = it
             }
@@ -61,15 +51,17 @@ class ConfirmDialog(
             }
 
             btnOk.click {
-                onDialogListener?.onItemClick(this@ConfirmDialog, BUTTON_OK)
+                onDialogListener?.onItemClick(this@DeleteHydrateReminderDialog, BUTTON_OK)
                 dismissAllowingStateLoss()
             }
             btnCancel.click {
-                onDialogListener?.onItemClick(this@ConfirmDialog, BUTTON_CANCEL)
+                onDialogListener?.onItemClick(this@DeleteHydrateReminderDialog, BUTTON_CANCEL)
                 dismissAllowingStateLoss()
             }
         }
     }
+
+    // 使用 BaseBottomSheetDialogFragment 的底部弹出与拖拽行为，无需手动设置窗口参数
 
 
 }

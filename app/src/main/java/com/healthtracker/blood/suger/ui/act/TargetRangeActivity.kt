@@ -9,10 +9,9 @@ import com.healthtracker.blood.suger.ui.adapter.TargetRangeAdapter
 import com.healthtracker.blood.suger.ui.dialog.RangeEditDialog
 import com.healthtracker.blood.suger.ui.viewmodel.TargetRangeViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
-import android.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.healthtracker.blood.suger.data.enums.BsUnit
-import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
+import com.healthtracker.blood.suger.ui.dialog.DeleteHydrateReminderDialog
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.showToast
@@ -126,8 +125,7 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, ActivityTarge
      * 显示重置确认对话框
      */
     private fun showResetConfirmDialog() {
-        ConfirmDialog(
-            getString(R.string.reset),
+        DeleteHydrateReminderDialog(
             getString(R.string.reset_all_ranges_confirm),
             leftText = getString(R.string.cancel),
             rightText = getString(R.string.confirm),

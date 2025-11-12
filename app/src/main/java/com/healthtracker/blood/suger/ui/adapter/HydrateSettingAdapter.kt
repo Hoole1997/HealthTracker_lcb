@@ -5,15 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.ui.weight.RulerView
 
 class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var isReminderEditMode: Boolean = false
+    // 共享的提醒时间列表与内部适配器引用，用于“添加提醒”后刷新列表
+    private val reminderTimes = mutableListOf("08:00", "09:00", "10:00")
+    private var timeAdapterRef: HydrateReminderTimeAdapter? = null
 
     private val items = listOf(
         TYPE_DAILY,
@@ -34,8 +40,7 @@ class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 inflater.inflate(R.layout.item_hydrate_setting_cup_size, parent, false)
             )
             TYPE_REMINDER -> ReminderContainerViewHolder(
-                inflater.inflate(R.layout.item_hydrate_setting_reminder_container, parent, false),
-                this
+                inflater.inflate(R.layout.item_hydrate_setting_reminder_container, parent, false)
             )
             TYPE_ADD_REMINDER -> AddReminderViewHolder(
                 inflater.inflate(R.layout.item_hydrate_setting_add_reminder, parent, false)
@@ -62,6 +67,16 @@ class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind() {
             // 默认显示 8 杯水
             tvCupsOfDay.text = "8"
+
+            imgIntakeMore.setOnClickListener {
+                val cur = tvCupsOfDay.text.toString().toIntOrNull() ?: 8
+                tvCupsOfDay.text = (cur + 1).toString()
+            }
+            imgIntakeLess.setOnClickListener {
+                val cur = tvCupsOfDay.text.toString().toIntOrNull() ?: 8
+                val next = (cur - 1).coerceAtLeast(1)
+                tvCupsOfDay.text = next.toString()
+            }
         }
     }
 
@@ -91,7 +106,8 @@ class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 })
             }
 
-            // 默认显示 20 ml
+            // 默认单位与显示：ML
+            rgUnit.check(R.id.rb_ml)
             updateSelectValueText(unitIsMl = true, valueStr = "20")
 
             rgUnit.setOnCheckedChangeListener { _, checkedId ->
@@ -107,7 +123,7 @@ class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    class ReminderContainerViewHolder(itemView: View, private val parentAdapter: HydrateSettingAdapter) : RecyclerView.ViewHolder(itemView) {
+    inner class ReminderContainerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val rcyTimes: RecyclerView = itemView.findViewById(R.id.rcyReminderTimes)
         private val tvEdit: AppCompatTextView = itemView.findViewById(R.id.tv_reminder_edit)
         private var timeAdapter: HydrateReminderTimeAdapter? = null
@@ -117,24 +133,36 @@ class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 rcyTimes.layoutManager = LinearLayoutManager(itemView.context)
             }
             if (timeAdapter == null) {
-                timeAdapter = HydrateReminderTimeAdapter(listOf("08:00", "09:00", "10:00"))
+                timeAdapter = HydrateReminderTimeAdapter(reminderTimes)
                 rcyTimes.adapter = timeAdapter
+                timeAdapterRef = timeAdapter
             }
 
             // 根据编辑模式更新删除图标显示与按钮文案
-            timeAdapter?.setDeleteMode(parentAdapter.isReminderEditMode)
-            tvEdit.setText(if (parentAdapter.isReminderEditMode) R.string.cancel else R.string.hydration_reminder_edit)
+            timeAdapter?.setDeleteMode(isReminderEditMode)
+            tvEdit.setText(if (isReminderEditMode) R.string.cancel else R.string.hydration_reminder_edit)
 
             tvEdit.setOnClickListener {
-                parentAdapter.isReminderEditMode = !parentAdapter.isReminderEditMode
-                timeAdapter?.setDeleteMode(parentAdapter.isReminderEditMode)
-                tvEdit.setText(if (parentAdapter.isReminderEditMode) R.string.cancel else R.string.hydration_reminder_edit)
+                isReminderEditMode = !isReminderEditMode
+                timeAdapter?.setDeleteMode(isReminderEditMode)
+                tvEdit.setText(if (isReminderEditMode) R.string.cancel else R.string.hydration_reminder_edit)
             }
         }
     }
 
-    class AddReminderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind() { /* 仅展示，无交互 */ }
+    inner class AddReminderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind() {
+            val btnAdd: View = itemView.findViewById(R.id.btnAddReminder)
+            btnAdd.setOnClickListener {
+                val activity = itemView.context as? FragmentActivity ?: return@setOnClickListener
+                // 底部弹出时间选择器，默认当前时间
+                AlarmTimeSelectDialog.show(activity.supportFragmentManager, null) { pair ->
+                    val timeString = DateTimeUtils.formatTimeComponents(pair.first, pair.second)
+                    // 通过适配器方法新增并刷新，避免与内部状态不同步
+                    timeAdapterRef?.addTime(timeString)
+                }
+            }
+        }
     }
 
     companion object {
