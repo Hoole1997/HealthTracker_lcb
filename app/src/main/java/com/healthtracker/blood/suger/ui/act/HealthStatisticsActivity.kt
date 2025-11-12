@@ -18,6 +18,8 @@ import com.healthtracker.blood.suger.ui.history.BloodSugarHistoryItem
 import com.healthtracker.blood.suger.ui.history.HistoryAdapter
 import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.blood.suger.viewmodel.HealthStatisticsViewModel
+import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
@@ -64,25 +66,25 @@ class HealthStatisticsActivity :
     }
 
     private fun setupToolbar() {
-        mViewBind.btnBack.setOnClickListener { finish() }
+        mViewBind.btnBack.click { handleBackPress() }
     }
 
     private fun setupRangeButtons() {
         with(mViewBind) {
-            rb7Days.setOnClickListener {
-                mViewModel.selectPreset(HealthStatisticsViewModel.DateRangePreset.DAYS_7)
-            }
-            rb1Month.setOnClickListener {
-                mViewModel.selectPreset(HealthStatisticsViewModel.DateRangePreset.MONTH_1)
-            }
-            rb3Month.setOnClickListener {
-                mViewModel.selectPreset(HealthStatisticsViewModel.DateRangePreset.MONTH_3)
-            }
-            rbCustom.setOnClickListener {
-                showCustomDatePicker()
-                // RadioGroup 已经将 custom 置为选中，但 ViewModel 仍是旧 preset。
-                // 这里立即同步一次，避免 UI 状态与实际不符。
-                updatePresetSelection(mViewModel.selectedPreset.value)
+            rgDateRange.setOnCheckedChangeListener { _, id ->
+                val mode = when (id) {
+                    R.id.rb_7_days -> HealthStatisticsViewModel.DateRangePreset.DAYS_7
+                    R.id.rb_1_month -> HealthStatisticsViewModel.DateRangePreset.MONTH_1
+                    R.id.rb_3_month -> HealthStatisticsViewModel.DateRangePreset.MONTH_3
+                    else -> {
+                        showCustomDatePicker()
+                        // RadioGroup 已经将 custom 置为选中，但 ViewModel 仍是旧 preset。
+                        // 这里立即同步一次，避免 UI 状态与实际不符。
+                        HealthStatisticsViewModel.DateRangePreset.CUSTOM
+                    }
+                }
+                mViewModel.selectPreset(mode)
+
             }
         }
     }
@@ -90,7 +92,7 @@ class HealthStatisticsActivity :
     private fun setupStatusFilter() {
         with(mViewBind.tvFilterStatu) {
             isVisible = true
-            setOnClickListener {
+            clickWithDuration {
                 StatusSelectDialog.show(
                     fragmentManager = supportFragmentManager,
                     currentStatus = mViewModel.selectedStatus.value,
@@ -119,10 +121,10 @@ class HealthStatisticsActivity :
     }
 
     private fun setupActions() {
-        mViewBind.tvAllHistory.setOnClickListener {
+        mViewBind.tvAllHistory.clickWithDuration {
             HistoryRecordActivity.start(this, isBs = true)
         }
-        mViewBind.btnAddRecord.setOnClickListener {
+        mViewBind.btnAddRecord.clickWithDuration {
             BsRecordActivity.start(this)
         }
     }
