@@ -10,18 +10,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ItemHistoryRecordBinding
+import com.healthtracker.blood.suger.databinding.ItemCholHistoryRecordBinding
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 /**
  * 历史记录适配器
- * 支持血糖和血压记录的统一显示
+ * 支持多种健康记录类型的统一显示
  */
-class HistoryAdapter : ListAdapter<HistoryRecordItem, HistoryAdapter.HistoryViewHolder>(
+class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
     HistoryDiffCallback()
 ) {
-    
+
+    companion object {
+        private const val VIEW_TYPE_SIMPLE = 1      // 血糖/血压/心率/BMI
+        private const val VIEW_TYPE_CHOLESTEROL = 2 // 胆固醇
+    }
+
     // 事件回调接口
     interface OnItemClickListener {
         /**
@@ -56,60 +62,94 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, HistoryAdapter.HistoryView
     fun setOnItemClickListener(listener: OnItemClickListener) {
         this.itemClickListener = listener
     }
-    
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
-        val binding = ItemHistoryRecordBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return HistoryViewHolder(binding)
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position).getRecordType()) {
+            HistoryRecordItem.RecordType.CHOLESTEROL -> VIEW_TYPE_CHOLESTEROL
+            HistoryRecordItem.RecordType.BLOOD_SUGAR,
+            HistoryRecordItem.RecordType.BLOOD_PRESSURE,
+            HistoryRecordItem.RecordType.HEART_RATE,
+            HistoryRecordItem.RecordType.BMI_RECORD -> VIEW_TYPE_SIMPLE
+        }
     }
-    
-    override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-        holder.bind(getItem(position))
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+
+        return when (viewType) {
+            VIEW_TYPE_SIMPLE -> {
+                val binding = ItemHistoryRecordBinding.inflate(inflater, parent, false)
+                SimpleHistoryViewHolder(binding)
+            }
+            VIEW_TYPE_CHOLESTEROL -> {
+                val binding = ItemCholHistoryRecordBinding.inflate(inflater, parent, false)
+                CholesterolViewHolder(binding)
+            }
+            else -> throw IllegalArgumentException("Unknown viewType: $viewType")
+        }
     }
-    
-    inner class HistoryViewHolder(private val binding: ItemHistoryRecordBinding) :
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(position)
+        when (holder) {
+            is SimpleHistoryViewHolder -> holder.bind(item)
+            is CholesterolViewHolder -> holder.bind(item as CholesterolHistoryItem)
+        }
+    }
+
+    inner class SimpleHistoryViewHolder(private val binding: ItemHistoryRecordBinding) :
         RecyclerView.ViewHolder(binding.root) {
         
         fun bind(item: HistoryRecordItem) {
             with(binding) {
                 // 设置主要数值
                 tvValue1.text = item.getPrimaryValue()
-                
-                // 设置次要数值（血压有舒张压，血糖没有）
+
+                // 设置次要数值（血压有舒张压，其他类型没有）
                 val secondaryValue = item.getSecondaryValue()
                 if (secondaryValue != null) {
                     tvValue2.text = secondaryValue
                     tvValue2.visible()
-                    "${tvStatus.context.getString(R.string.pulse)}:${item.getStatus(tvStatus.context)}".also { tvStatus.text = it }
-
                 } else {
                     tvValue2.gone()
-                    // 设置状态描述
-                    "${tvStatus.context.getString(R.string.status)}:${item.getStatus(tvStatus.context)}".also { tvStatus.text = it }
-
                 }
-                
+
+                // 设置状态描述（血压显示心率，血糖显示状态，心率和BMI不显示）
+                val status = item.getStatus(tvStatus.context)
+                if (status != null) {
+                    if (secondaryValue != null) {
+                        // 血压：显示 "Pulse: xxx"
+                        tvStatus.text = "${tvStatus.context.getString(R.string.pulse)}:$status"
+                    } else {
+                        // 血糖：显示 "Status: xxx"
+                        tvStatus.text = "${tvStatus.context.getString(R.string.status)}:$status"
+                    }
+                    tvStatus.visible()
+                } else {
+                    // 心率和BMI：不显示状态
+                    tvStatus.gone()
+                }
+
                 // 设置单位
                 tvUnit.text = item.getUnit()
-                
+
                 // 设置等级
                 tvLeve.text = item.getLevel(tvLeve.context)
 
-                vRangeFlag.backgroundTintList =  ContextCompat.getColorStateList(vRangeFlag.context, item.getLeveColorRes())
-                
+                // 设置左侧颜色标记
+                vRangeFlag.backgroundTintList = ContextCompat.getColorStateList(
+                    vRangeFlag.context,
+                    item.getLeveColorRes()
+                )
 
-                
                 // 设置记录时间
                 tvRecordTime.text = DateTimeUtils.formatDateTime(item.getRecordTime())
-                
+
                 // 设置点击事件
                 root.setOnClickListener {
                     itemClickListener?.onItemClick(item, adapterPosition)
                 }
-                
+
                 // 设置删除按钮点击事件
                 if (showDeleteButton) {
                     ivDelete.visible()
@@ -123,7 +163,55 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, HistoryAdapter.HistoryView
             }
         }
     }
-    
+
+    /**
+     * 胆固醇记录 ViewHolder
+     * 使用 item_chol_history_record.xml 布局
+     */
+    inner class CholesterolViewHolder(
+        private val binding: ItemCholHistoryRecordBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: CholesterolHistoryItem) {
+            with(binding) {
+                // 设置三大核心指标（大字体显示）
+                tvHdlValue.text = item.getHdlValue()
+                tvLdlValue.text = item.getLdlValue()
+                tvTgValue.text = item.getTgValue()
+
+                // 设置三个计算指标（小字体显示）
+                tvNonHdlValue.text = item.getNonHdlValue()
+                tvTcHdlValue.text = item.getTcHdlRatioValue()
+                tvLdlHdlValue.text = item.getLdlHdlRatioValue()
+
+                // 设置等级显示（根据风险等级设置文字颜色）
+                tvLeve.text = item.getLevel(tvLeve.context)
+                tvLeve.setTextColor(
+                    ContextCompat.getColor(tvLeve.context, item.getLeveColorRes())
+                )
+
+                // 设置记录时间
+                tvRecordTime.text = DateTimeUtils.formatDateTime(item.getRecordTime())
+
+                // 设置点击事件
+                root.setOnClickListener {
+                    itemClickListener?.onItemClick(item, adapterPosition)
+                }
+
+                // 设置删除按钮
+                if (showDeleteButton) {
+                    ivDelete.visible()
+                    ivDelete.setOnClickListener {
+                        itemClickListener?.onDeleteClick(item, adapterPosition)
+                    }
+                } else {
+                    ivDelete.gone()
+                    ivDelete.setOnClickListener(null)
+                }
+            }
+        }
+    }
+
     /**
      * DiffUtil回调，用于高效更新列表
      */
@@ -134,12 +222,25 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, HistoryAdapter.HistoryView
         }
         
         override fun areContentsTheSame(oldItem: HistoryRecordItem, newItem: HistoryRecordItem): Boolean {
-            return oldItem.getPrimaryValue() == newItem.getPrimaryValue() &&
-                   oldItem.getSecondaryValue() == newItem.getSecondaryValue() &&
-                   oldItem.getUnit() == newItem.getUnit() &&
-                   oldItem.getLevel(App.INSTANCE) == newItem.getLevel(App.INSTANCE) &&
-                   oldItem.getStatus(App.INSTANCE) == newItem.getStatus(App.INSTANCE) &&
-                   oldItem.getRecordTime() == newItem.getRecordTime()
+            // 基础字段比较
+            val baseEquals = oldItem.getPrimaryValue() == newItem.getPrimaryValue() &&
+                             oldItem.getSecondaryValue() == newItem.getSecondaryValue() &&
+                             oldItem.getRecordTime() == newItem.getRecordTime() &&
+                             oldItem.getLeveColorRes() == newItem.getLeveColorRes()
+
+            if (!baseEquals) return false
+
+            // 胆固醇记录需要额外比较 6 个指标
+            if (oldItem is CholesterolHistoryItem && newItem is CholesterolHistoryItem) {
+                return oldItem.getHdlValue() == newItem.getHdlValue() &&
+                       oldItem.getLdlValue() == newItem.getLdlValue() &&
+                       oldItem.getTgValue() == newItem.getTgValue() &&
+                       oldItem.getNonHdlValue() == newItem.getNonHdlValue() &&
+                       oldItem.getTcHdlRatioValue() == newItem.getTcHdlRatioValue() &&
+                       oldItem.getLdlHdlRatioValue() == newItem.getLdlHdlRatioValue()
+            }
+
+            return true
         }
     }
 }

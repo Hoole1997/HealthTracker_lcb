@@ -10,10 +10,13 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivityHistoryRecordBinding
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
-import com.healthtracker.blood.suger.ui.dialog.DeleteHydrateReminderDialog
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
 import com.healthtracker.blood.suger.ui.history.BloodPressureHistoryItem
 import com.healthtracker.blood.suger.ui.history.BloodSugarHistoryItem
+import com.healthtracker.blood.suger.ui.history.BmiHistoryItem
+import com.healthtracker.blood.suger.ui.history.CholesterolHistoryItem
+import com.healthtracker.blood.suger.ui.history.HeartRateHistoryItem
 import com.healthtracker.blood.suger.ui.history.HistoryAdapter
 import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.blood.suger.ui.viewmodel.HistoryViewModel
@@ -36,9 +39,15 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
 
     companion object{
         private const val TAG = "HistoryRecordActivity"
-        private const val IS_BS = "IS_BS"
-        fun start(context: Context, isBs: Boolean = true){
-            context.startActivity<HistoryRecordActivity>(IS_BS to isBs)
+        private const val RECORD_TYPE = "RECORD_TYPE"
+
+        fun start(
+            context: Context,
+            recordType: HistoryRecordItem.RecordType = HistoryRecordItem.RecordType.BLOOD_SUGAR
+        ) {
+            context.startActivity<HistoryRecordActivity>(
+                RECORD_TYPE to recordType.ordinal
+            )
         }
     }
 
@@ -49,8 +58,12 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
 
     override fun initView(savedInstanceState: Bundle?) {
         // 设置历史记录类型
-        val isBloodSugar = intent.getBooleanExtra(IS_BS, true)
-        mViewModel.setHistoryType(isBloodSugar)
+        val recordTypeOrdinal = intent.getIntExtra(
+            RECORD_TYPE,
+            HistoryRecordItem.RecordType.BLOOD_SUGAR.ordinal
+        )
+        val recordType = HistoryRecordItem.RecordType.values()[recordTypeOrdinal]
+        mViewModel.setHistoryType(recordType)
 
         // 初始化RecyclerView和适配器
         initRecyclerView()
@@ -64,9 +77,9 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
                 showTimeRangePick()
             }
 
-            if (isBloodSugar) {
+            // 只有血糖类型才显示状态筛选
+            if (recordType == HistoryRecordItem.RecordType.BLOOD_SUGAR) {
                 tvFilterStatu.clickWithDuration {
-                    // 移除不必要的lifecycleScope.launch，StatusSelectDialog已经处理了协程
                     val currentStatus = mViewModel.selectedBloodSugarStatus.value
                     StatusSelectDialog.show(
                         fragmentManager = supportFragmentManager,
@@ -79,12 +92,25 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
             } else {
                 tvFilterStatu.gone()
             }
-            
+
+            // 根据记录类型设置添加按钮行为
             btnAddRecord.clickWithDuration {
-                if(isBloodSugar){
-                    BsRecordActivity.start(this@HistoryRecordActivity)
-                }else{
-                    BpRecordActivity.start(this@HistoryRecordActivity)
+                when (recordType) {
+                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                        BsRecordActivity.start(this@HistoryRecordActivity)
+                    }
+                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                        BpRecordActivity.start(this@HistoryRecordActivity)
+                    }
+                    HistoryRecordItem.RecordType.CHOLESTEROL -> {
+                        CholesterolRecordActivity.start(this@HistoryRecordActivity)
+                    }
+                    HistoryRecordItem.RecordType.HEART_RATE -> {
+                        HeartRateRecordActivity.start(this@HistoryRecordActivity)
+                    }
+                    HistoryRecordItem.RecordType.BMI_RECORD -> {
+                        BmiRecordActivity.start(this@HistoryRecordActivity)
+                    }
                 }
             }
         }
@@ -125,10 +151,19 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
     private fun handleItemClick(item: HistoryRecordItem) {
         when (item.getRecordType()) {
             HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                BsDetailActivity.start(this,item.getId())
+                BsDetailActivity.start(this, item.getId())
             }
             HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                BpDetailActivity.start(this,item.getId())
+                BpDetailActivity.start(this, item.getId())
+            }
+            HistoryRecordItem.RecordType.CHOLESTEROL -> {
+                CholesterolDetailActivity.start(this, item.getId())
+            }
+            HistoryRecordItem.RecordType.HEART_RATE -> {
+                HeartRateDetailActivity.start(this, item.getId())
+            }
+            HistoryRecordItem.RecordType.BMI_RECORD -> {
+                BmiDetailActivity.start(this, item.getId())
             }
         }
     }
@@ -136,14 +171,13 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
     /**
      * 处理删除按钮点击事件
      */
-    private fun handleDeleteClick(item: HistoryRecordItem) =
-        showDeleteConfirm(
-            item.getId(),
-            item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_SUGAR
-        )
+    private fun handleDeleteClick(item: HistoryRecordItem) {
+        showDeleteConfirm(item.getId(), item.getRecordType())
+    }
 
-    private fun showDeleteConfirm(recordId: Long, isBs: Boolean = true) {
-        DeleteHydrateReminderDialog(
+    private fun showDeleteConfirm(recordId: Long, recordType: HistoryRecordItem.RecordType) {
+        ConfirmDialog(
+            title = getString(R.string.delete_record_remind_title),
             message = getString(R.string.delete_record_remind),
             leftText = getString(R.string.cancel),
             rightText = getString(R.string.confirm),
@@ -151,10 +185,22 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
                 override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                     super.onItemClick(dialogFragment, which)
                     if (which == R.id.btn_ok) {
-                        if (isBs) {
-                            mViewModel.deleteBsRecord(recordId)
-                        } else {
-                            mViewModel.deleteBpRecord(recordId)
+                        when (recordType) {
+                            HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                                mViewModel.deleteBsRecord(recordId)
+                            }
+                            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                                mViewModel.deleteBpRecord(recordId)
+                            }
+                            HistoryRecordItem.RecordType.CHOLESTEROL -> {
+                                mViewModel.deleteCholesterolRecord(recordId)
+                            }
+                            HistoryRecordItem.RecordType.HEART_RATE -> {
+                                mViewModel.deleteHeartRateRecord(recordId)
+                            }
+                            HistoryRecordItem.RecordType.BMI_RECORD -> {
+                                mViewModel.deleteBmiRecord(recordId)
+                            }
                         }
                     }
                 }
@@ -188,9 +234,9 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
         }
 
         // 观察历史记录类型，只设置一次初始类型，避免重复观察
-        this.collectLatest(mViewModel.isBloodSugarHistory) { isBloodSugar ->
+        this.collectLatest(mViewModel.recordType) { recordType ->
             // 根据记录类型观察对应的数据流
-            observeRecordsBasedOnType(isBloodSugar)
+            observeRecordsBasedOnType(recordType)
         }
 
         // 设置重试按钮点击事件
@@ -241,11 +287,23 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
     /**
      * 根据记录类型观察相应数据
      */
-    private fun observeRecordsBasedOnType(isBloodSugar: Boolean) {
-        if (isBloodSugar) {
-            observeBloodSugarRecords()
-        } else {
-            observeBloodPressureRecords()
+    private fun observeRecordsBasedOnType(recordType: HistoryRecordItem.RecordType) {
+        when (recordType) {
+            HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                observeBloodSugarRecords()
+            }
+            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                observeBloodPressureRecords()
+            }
+            HistoryRecordItem.RecordType.CHOLESTEROL -> {
+                observeCholesterolRecords()
+            }
+            HistoryRecordItem.RecordType.HEART_RATE -> {
+                observeHeartRateRecords()
+            }
+            HistoryRecordItem.RecordType.BMI_RECORD -> {
+                observeBmiRecords()
+            }
         }
     }
 
@@ -267,6 +325,36 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
         this.collectLatest(mViewModel.bloodPressureRecords) { records ->
             // 转换为HistoryRecordItem并更新适配器
             val historyItems = records.map { BloodPressureHistoryItem(it) }
+            updateUIWithRecords(historyItems, records.isEmpty())
+        }
+    }
+
+    /**
+     * 观察胆固醇记录数据
+     */
+    private fun observeCholesterolRecords() {
+        this.collectLatest(mViewModel.cholesterolRecords) { records ->
+            val historyItems = records.map { CholesterolHistoryItem(it) }
+            updateUIWithRecords(historyItems, records.isEmpty())
+        }
+    }
+
+    /**
+     * 观察心率记录数据
+     */
+    private fun observeHeartRateRecords() {
+        this.collectLatest(mViewModel.heartRateRecords) { records ->
+            val historyItems = records.map { HeartRateHistoryItem(it) }
+            updateUIWithRecords(historyItems, records.isEmpty())
+        }
+    }
+
+    /**
+     * 观察BMI记录数据
+     */
+    private fun observeBmiRecords() {
+        this.collectLatest(mViewModel.bmiRecords) { records ->
+            val historyItems = records.map { BmiHistoryItem(it) }
             updateUIWithRecords(historyItems, records.isEmpty())
         }
     }

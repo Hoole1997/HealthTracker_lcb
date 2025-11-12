@@ -122,7 +122,7 @@ class HealthStatisticsActivity :
 
     private fun setupActions() {
         mViewBind.tvAllHistory.clickWithDuration {
-            HistoryRecordActivity.start(this, isBs = true)
+            HistoryRecordActivity.start(this, recordType = HistoryRecordItem.RecordType.BLOOD_SUGAR)
         }
         mViewBind.btnAddRecord.clickWithDuration {
             BsRecordActivity.start(this)

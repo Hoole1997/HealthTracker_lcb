@@ -107,6 +107,7 @@ class HeartRateRepository @Inject constructor(
     suspend fun deleteHeartRateRecord(recordId: Long): Int = deleteRecordById(recordId)
     suspend fun getHeartRateRecordById(recordId: Long): HeartRateRecord? = getRecordById(recordId)
     suspend fun insertHeartRateRecords(records: List<HeartRateRecord>): List<Long> = insertRecords(records)
+    suspend fun getHeartRateRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<HeartRateRecord>> = getRecordsByTimeRange(startTime, endTime)
     fun getAllHeartRateRecords(): Flow<List<HeartRateRecord>> = getAllRecords()
     fun getRecentHeartRateRecords(days: Int = 7): Flow<List<HeartRateRecord>> = getRecentRecords(days)
     fun getTodayHeartRateRecords(): Flow<List<HeartRateRecord>> = getTodayRecords()

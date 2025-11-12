@@ -4,10 +4,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
+import com.healthtracker.blood.suger.data.entity.BmiRecord
+import com.healthtracker.blood.suger.data.entity.CholesterolRecord
+import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
+import com.healthtracker.blood.suger.data.repository.BmiRepository
+import com.healthtracker.blood.suger.data.repository.CholesterolRepository
+import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
+import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
@@ -30,12 +37,15 @@ import javax.inject.Inject
 class HistoryViewModel @Inject constructor(
     private val bpRepository: BloodPressureRepository,
     private val bsRepository: BloodSugarRepository,
+    private val cholesterolRepository: CholesterolRepository,
+    private val heartRateRepository: HeartRateRepository,
+    private val bmiRepository: BmiRepository,
     private var savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
     companion object {
         private const val TAG = "HistoryViewModel"
-        private const val KEY_IS_BLOOD_SUGAR = "is_blood_sugar"
+        private const val KEY_RECORD_TYPE = "record_type"
         private const val KEY_SELECTED_STATUS = "selected_status"
         private const val KEY_START_DATE = "start_date"
         private const val KEY_END_DATE = "end_date"
@@ -52,11 +62,13 @@ class HistoryViewModel @Inject constructor(
     )
     val endDate: StateFlow<Long> = _endDate.asStateFlow()
 
-    // 是否为血糖历史记录（true: 血糖, false: 血压）
-    private val _isBloodSugarHistory = MutableStateFlow(
-        savedStateHandle.get<Boolean>(KEY_IS_BLOOD_SUGAR) ?: true
+    // 记录类型（默认血糖）
+    private val _recordType = MutableStateFlow(
+        savedStateHandle.get<Int>(KEY_RECORD_TYPE)?.let {
+            HistoryRecordItem.RecordType.values()[it]
+        } ?: HistoryRecordItem.RecordType.BLOOD_SUGAR
     )
-    val isBloodSugarHistory: StateFlow<Boolean> = _isBloodSugarHistory.asStateFlow()
+    val recordType: StateFlow<HistoryRecordItem.RecordType> = _recordType.asStateFlow()
 
     // 血糖状态类型筛选（null表示全部，非null表示具体状态）
     private val _selectedBloodSugarStatus = MutableStateFlow<BloodSugarStatus?>(
@@ -77,6 +89,18 @@ class HistoryViewModel @Inject constructor(
     // 血压历史记录数据
     private val _bloodPressureRecords = MutableStateFlow<List<BloodPressureRecord>>(emptyList())
     val bloodPressureRecords: StateFlow<List<BloodPressureRecord>> = _bloodPressureRecords.asStateFlow()
+
+    // 胆固醇历史记录数据
+    private val _cholesterolRecords = MutableStateFlow<List<CholesterolRecord>>(emptyList())
+    val cholesterolRecords: StateFlow<List<CholesterolRecord>> = _cholesterolRecords.asStateFlow()
+
+    // 心率历史记录数据
+    private val _heartRateRecords = MutableStateFlow<List<HeartRateRecord>>(emptyList())
+    val heartRateRecords: StateFlow<List<HeartRateRecord>> = _heartRateRecords.asStateFlow()
+
+    // BMI历史记录数据
+    private val _bmiRecords = MutableStateFlow<List<BmiRecord>>(emptyList())
+    val bmiRecords: StateFlow<List<BmiRecord>> = _bmiRecords.asStateFlow()
 
     // 加载状态
     private val _isLoading = MutableStateFlow(false)
@@ -166,10 +190,9 @@ class HistoryViewModel @Inject constructor(
     /**
      * 设置历史记录类型
      */
-    fun setHistoryType(isBloodSugar: Boolean) {
-        _isBloodSugarHistory.value = isBloodSugar
-        // 保存到savedStateHandle
-        savedStateHandle[KEY_IS_BLOOD_SUGAR] = isBloodSugar
+    fun setHistoryType(recordType: HistoryRecordItem.RecordType) {
+        _recordType.value = recordType
+        savedStateHandle[KEY_RECORD_TYPE] = recordType.ordinal
         // 数据会通过setupDataLoading()中的combine自动重新加载
     }
 
@@ -213,10 +236,10 @@ class HistoryViewModel @Inject constructor(
             combine(
                 _startDate,
                 _endDate,
-                _isBloodSugarHistory,
+                _recordType,
                 _selectedBloodSugarStatus
-            ) { startDate, endDate, isBloodSugar, selectedStatus ->
-                FilterParams(startDate, endDate, isBloodSugar, selectedStatus)
+            ) { startDate, endDate, recordType, selectedStatus ->
+                FilterParams(startDate, endDate, recordType, selectedStatus)
             }.collect { params ->
                 // 只有当日期范围有效时才加载数据
                 if (params.startDate > 0L && params.endDate > 0L) {
@@ -232,7 +255,7 @@ class HistoryViewModel @Inject constructor(
     private data class FilterParams(
         val startDate: Long,
         val endDate: Long,
-        val isBloodSugar: Boolean,
+        val recordType: HistoryRecordItem.RecordType,
         val selectedStatus: BloodSugarStatus?
     )
 
@@ -243,7 +266,7 @@ class HistoryViewModel @Inject constructor(
         val params = FilterParams(
             _startDate.value,
             _endDate.value,
-            _isBloodSugarHistory.value,
+            _recordType.value,
             _selectedBloodSugarStatus.value
         )
         loadHistoryRecordsWithParams(params)
@@ -263,10 +286,22 @@ class HistoryViewModel @Inject constructor(
                 _isLoading.value = true
                 _errorMessage.value = null
 
-                if (params.isBloodSugar) {
-                    loadBloodSugarRecordsWithFilter(params)
-                } else {
-                    loadBloodPressureRecordsWithFilter(params)
+                when (params.recordType) {
+                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                        loadBloodSugarRecordsWithFilter(params)
+                    }
+                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                        loadBloodPressureRecordsWithFilter(params)
+                    }
+                    HistoryRecordItem.RecordType.CHOLESTEROL -> {
+                        loadCholesterolRecordsWithFilter(params)
+                    }
+                    HistoryRecordItem.RecordType.HEART_RATE -> {
+                        loadHeartRateRecordsWithFilter(params)
+                    }
+                    HistoryRecordItem.RecordType.BMI_RECORD -> {
+                        loadBmiRecordsWithFilter(params)
+                    }
                 }
             } catch (e: CancellationException) {
                 "History record loading cancelled".logd(TAG)
@@ -332,7 +367,7 @@ class HistoryViewModel @Inject constructor(
         val params = FilterParams(
             _startDate.value,
             _endDate.value,
-            _isBloodSugarHistory.value,
+            _recordType.value,
             _selectedBloodSugarStatus.value
         )
         loadBloodSugarRecordsWithFilter(params)
@@ -364,10 +399,67 @@ class HistoryViewModel @Inject constructor(
         val params = FilterParams(
             _startDate.value,
             _endDate.value,
-            _isBloodSugarHistory.value,
+            _recordType.value,
             _selectedBloodSugarStatus.value
         )
         loadBloodPressureRecordsWithFilter(params)
+    }
+
+    /**
+     * 加载胆固醇记录
+     */
+    private suspend fun loadCholesterolRecordsWithFilter(params: FilterParams) {
+        val startDate = Date(params.startDate)
+        val endDate = Date(params.endDate)
+
+        var isFirstEmission = true
+        cholesterolRepository.getCholesterolRecordsByTimeRange(startDate, endDate)
+            .collect { allRecords ->
+                if (isFirstEmission) {
+                    _isLoading.value = false
+                    isFirstEmission = false
+                }
+
+                _cholesterolRecords.value = allRecords.sortedByDescending { it.recordTime }
+            }
+    }
+
+    /**
+     * 加载心率记录
+     */
+    private suspend fun loadHeartRateRecordsWithFilter(params: FilterParams) {
+        val startDate = Date(params.startDate)
+        val endDate = Date(params.endDate)
+
+        var isFirstEmission = true
+        heartRateRepository.getHeartRateRecordsByTimeRange(startDate, endDate)
+            .collect { allRecords ->
+                if (isFirstEmission) {
+                    _isLoading.value = false
+                    isFirstEmission = false
+                }
+
+                _heartRateRecords.value = allRecords.sortedByDescending { it.recordTime }
+            }
+    }
+
+    /**
+     * 加载BMI记录
+     */
+    private suspend fun loadBmiRecordsWithFilter(params: FilterParams) {
+        val startDate = Date(params.startDate)
+        val endDate = Date(params.endDate)
+
+        var isFirstEmission = true
+        bmiRepository.getBmiRecordsByTimeRange(startDate, endDate)
+            .collect { allRecords ->
+                if (isFirstEmission) {
+                    _isLoading.value = false
+                    isFirstEmission = false
+                }
+
+                _bmiRecords.value = allRecords.sortedByDescending { it.recordTime }
+            }
     }
 
     /**
@@ -407,6 +499,51 @@ class HistoryViewModel @Inject constructor(
             } catch (e: Exception) {
                 // 真正的异常情况：数据库操作失败等
                 "Blood pressure record deletion error: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                _errorMessage.value = "删除记录失败: ${e.message}"
+            }
+        }
+    }
+
+    fun deleteCholesterolRecord(recordId: Long) {
+        viewModelScope.launch {
+            try {
+                cholesterolRepository.deleteCholesterolRecord(recordId)
+                "Successfully deleted cholesterol record: ID=$recordId".logd(TAG)
+            } catch (e: CancellationException) {
+                "Cholesterol record deletion cancelled: ID=$recordId".logd(TAG)
+                throw e
+            } catch (e: Exception) {
+                "Cholesterol record deletion error: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                _errorMessage.value = "删除记录失败: ${e.message}"
+            }
+        }
+    }
+
+    fun deleteHeartRateRecord(recordId: Long) {
+        viewModelScope.launch {
+            try {
+                heartRateRepository.deleteHeartRateRecord(recordId)
+                "Successfully deleted heart rate record: ID=$recordId".logd(TAG)
+            } catch (e: CancellationException) {
+                "Heart rate record deletion cancelled: ID=$recordId".logd(TAG)
+                throw e
+            } catch (e: Exception) {
+                "Heart rate record deletion error: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+                _errorMessage.value = "删除记录失败: ${e.message}"
+            }
+        }
+    }
+
+    fun deleteBmiRecord(recordId: Long) {
+        viewModelScope.launch {
+            try {
+                bmiRepository.deleteBmiRecord(recordId)
+                "Successfully deleted BMI record: ID=$recordId".logd(TAG)
+            } catch (e: CancellationException) {
+                "BMI record deletion cancelled: ID=$recordId".logd(TAG)
+                throw e
+            } catch (e: Exception) {
+                "BMI record deletion error: ID=$recordId, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
                 _errorMessage.value = "删除记录失败: ${e.message}"
             }
         }

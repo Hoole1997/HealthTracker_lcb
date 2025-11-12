@@ -56,7 +56,10 @@ abstract class HistoryRecordItem {
      * 记录类型枚举
      */
     enum class RecordType {
-        BLOOD_SUGAR,    // 血糖记录
-        BLOOD_PRESSURE  // 血压记录
+        BLOOD_SUGAR,     // 血糖记录
+        BLOOD_PRESSURE,  // 血压记录
+        CHOLESTEROL,     // 胆固醇记录
+        HEART_RATE,      // 心率记录
+        BMI_RECORD       // BMI记录
     }
 }

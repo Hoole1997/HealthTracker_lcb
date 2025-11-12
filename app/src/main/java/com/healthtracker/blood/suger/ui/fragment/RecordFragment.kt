@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.healthtracker.blood.suger.databinding.FragmentRecordBinding
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
+import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
@@ -27,7 +28,7 @@ class RecordFragment: BaseMVVMFragment<BaseViewModel, FragmentRecordBinding>() {
            }
 
            llBpHistory.clickWithDuration {
-               HistoryRecordActivity.start(requireActivity(),false)
+               HistoryRecordActivity.start(requireActivity(),HistoryRecordItem.RecordType.BLOOD_PRESSURE)
            }
        }
 
