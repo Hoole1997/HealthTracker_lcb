@@ -39,16 +39,17 @@ class HydrateReminderTimeAdapter(private val times: MutableList<String>) :
         // 删除按钮：弹出底部确认对话框
         holder.imgDelete.setOnClickListener {
             val activity = holder.itemView.context as? FragmentActivity ?: return@setOnClickListener
+            val position = holder.bindingAdapterPosition
+            if (position == RecyclerView.NO_POSITION) return@setOnClickListener
             DeleteHydrateReminderDialog(
-                // 底部弹窗不展示标题
                 message = activity.getString(R.string.hydrate_reminder_delete_confirm_message),
                 leftText = activity.getString(R.string.cancel),
                 rightText = activity.getString(R.string.confirm),
                 onDialogListener = object : DialogListener {
                     override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
-                        super.onItemClick(dialogFragment, which)
-                        // 此处仅展示对话框，实际删除逻辑可在确认后回调中实现
-                        // if (which == R.id.btn_ok) { /* 删除对应提醒 */ }
+                        if (which == DeleteHydrateReminderDialog.BUTTON_OK) {
+                            removeAt(position)
+                        }
                     }
                 }
             ).show(activity.supportFragmentManager)
@@ -74,6 +75,21 @@ class HydrateReminderTimeAdapter(private val times: MutableList<String>) :
         notifyItemInserted(insertIndex)
         // 2) 之前的最后一项现在不再是最后一个，需要显示分割线
         if (previousLastIndex >= 0) notifyItemChanged(previousLastIndex)
+    }
+
+    fun removeAt(index: Int) {
+        if (index !in 0 until times.size) return
+        times.removeAt(index)
+        if (index < enabledStates.size) {
+            enabledStates.removeAt(index)
+        }
+        notifyItemRemoved(index)
+        // 刷新后续项的分割线与内容位置
+        if (index <= times.lastIndex) {
+            notifyItemRangeChanged(index, times.size - index)
+        }
+        // 刷新新的最后一项以更新分割线显示状态
+        if (times.isNotEmpty()) notifyItemChanged(times.lastIndex)
     }
 
     class TimeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
