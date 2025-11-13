@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.databinding.ActivityHydrateBinding
+import com.healthtracker.blood.suger.ui.dialog.ComingSoonDialog
 import com.healthtracker.blood.suger.ui.adapter.HydrateAdapter
 import com.healthtracker.blood.suger.ui.adapter.HydrateItem
 import com.healthtracker.blood.suger.ui.adapter.HydrateRecordItem
 import com.healthtracker.blood.suger.ui.viewmodel.HydrateViewModel
 import com.healthtracker.blood.suger.config.HydrateSettingManager
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,8 +44,21 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
             HydrateSettingActivity.start(this)
         }
 
-        // 周日期选择驱动按日查询
+        // 周日期选择：拦截未来日期并弹窗
         mViewBind.weeklyDateSelector.setOnDateSelectedListener { selectedDate ->
+            val now = DateTimeUtils.now()
+            val endOfToday = DateTimeUtils.getTodayRange().second
+            val isFutureDate = !DateTimeUtils.isSameDay(selectedDate, now) && selectedDate.after(endOfToday)
+
+            if (isFutureDate) {
+                ComingSoonDialog.show(supportFragmentManager) {
+                    // 返回到今天并触发回调刷新
+                    mViewBind.weeklyDateSelector.resetToToday()
+                }
+                return@setOnDateSelectedListener
+            }
+
+            // 正常选择：更新ViewModel
             mViewModel.onDateSelected(selectedDate)
         }
 

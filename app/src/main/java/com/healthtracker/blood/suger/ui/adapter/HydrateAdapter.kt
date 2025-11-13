@@ -314,7 +314,8 @@ class HydrateAdapter(
             val cupUnit = HydrateSettingManager.getCupUnit()
             val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
             val displayValue = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(value, HydrateSettingManager.CupUnit.FL_OZ) else value
-            binding.tvLabel.text = String.format(java.util.Locale.getDefault(), "%d %s", displayValue, unitText)
+            binding.tvLabel.text = displayValue.toString()
+            binding.tvUnit.text = unitText
             // 点击回传始终使用毫升值以便数据库统一存储
             binding.root.setOnClickListener { onItemClick(value) }
         }

@@ -145,6 +145,11 @@
     <string name="add_record">Add Record</string>
     <string name="alarm_management">Alarm Management</string>
 
+    <!-- Coming Soon Dialog -->
+    <string name="coming_soon_title">Coming Soon!</string>
+    <string name="coming_soon_message">You‘re a time traveler! This day hasn’t arrived yet. Please select a previous date or return to today.</string>
+    <string name="back_to_today">BACK TO TODAY</string>
+
     <string-array name="blood_sugar_labels">
         <item>Feeling excited</item>
         <item>After cardio</item>
