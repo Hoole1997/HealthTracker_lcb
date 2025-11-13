@@ -53,7 +53,7 @@ import com.healthtracker.blood.suger.data.entity.HydrateReminder
         HydrateRecord::class,
         HydrateReminder::class
     ],
-    version = 8,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -184,6 +184,45 @@ abstract class HealthDatabase : RoomDatabase() {
 //                database.execSQL("CREATE INDEX index_alarm_records_type ON alarm_records(type)")
 //                database.execSQL("CREATE INDEX index_alarm_records_time ON alarm_records(hour, minute)")
 //                database.execSQL("CREATE INDEX index_alarm_records_enable ON alarm_records(enable)")
+//            }
+//        }
+
+//        /**
+//         * 数据库迁移：从版本5升级到版本6
+//         * 新增饮水记录表（hydrate_records）与饮水提醒表（hydrate_reminders），并预置默认提醒
+//         */
+//        private val MIGRATION_5_6 = object : Migration(5, 6) {
+//            override fun migrate(database: SupportSQLiteDatabase) {
+//                // 创建饮水记录表
+//                database.execSQL(
+//                    """
+//                        CREATE TABLE IF NOT EXISTS hydrate_records (
+//                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+//                            record_time INTEGER NOT NULL,
+//                            intake_ml INTEGER NOT NULL
+//                        )
+//                    """.trimIndent()
+//                )
+//
+//                // 创建饮水提醒表
+//                database.execSQL(
+//                    """
+//                        CREATE TABLE IF NOT EXISTS hydrate_reminders (
+//                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+//                            hour INTEGER NOT NULL,
+//                            minute INTEGER NOT NULL,
+//                            enabled INTEGER NOT NULL DEFAULT 1
+//                        )
+//                    """.trimIndent()
+//                )
+//
+//                // 为饮水提醒表创建唯一索引（hour+minute）
+//                database.execSQL(
+//                    "CREATE UNIQUE INDEX IF NOT EXISTS index_hydrate_reminders_hour_minute ON hydrate_reminders(hour, minute)"
+//                )
+//
+//                // 预置默认提醒（避免升级后为空）
+//                seedHydrateReminders(database)
 //            }
 //        }
 
