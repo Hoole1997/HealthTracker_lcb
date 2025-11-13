@@ -11,6 +11,7 @@ import com.healthtracker.blood.suger.ui.adapter.HydrateAdapter
 import com.healthtracker.blood.suger.ui.adapter.HydrateItem
 import com.healthtracker.blood.suger.ui.adapter.HydrateRecordItem
 import com.healthtracker.blood.suger.ui.viewmodel.HydrateViewModel
+import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,18 +64,20 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
         val uiFlow = combine(
             mViewModel.todayTotalIntakeMl,
             mViewModel.todayRecordItems,
-            mViewModel.todayDrinkCount
-        ) { totalMl: Int, records: List<HydrateRecordItem>, count: Int ->
+            mViewModel.todayDrinkCount,
+            HydrateSettingManager.cupUnitFlow()
+        ) { totalMl: Int, records: List<HydrateRecordItem>, count: Int, cupUnit ->
             val cups = totalMl / 250
+            val unitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.fl_oz) else getString(R.string.unit_ml)
             val totalSection = HydrateItem.TotalSection(
                 totalIntake = totalMl,
-                unit = getString(R.string.unit_ml),
+                unit = unitLabel,
                 description = String.format(this@HydrateActivity.getString(R.string.hydrate_cup_count_format), count),
                 currentCups = cups,
                 maxCups = 8
             )
-            val quickAddSection = HydrateItem.QuickAddSection(values = listOf(100, 200, 250, 300, 500, 800))
-            val recordSection = HydrateItem.RecordSection(records = records)
+            val quickAddSection = HydrateItem.QuickAddSection(values = listOf(100, 200, 250, 300, 500, 800), unit = unitLabel)
+            val recordSection = HydrateItem.RecordSection(records = records, unit = unitLabel)
             listOf(totalSection, quickAddSection, recordSection)
         }
 

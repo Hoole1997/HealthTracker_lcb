@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.widget.AppCompatTextView
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
@@ -10,6 +11,8 @@ import com.healthtracker.blood.suger.ui.viewmodel.HydrateSettingViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.ui.adapter.HydrateSettingAdapter
 import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.blood.suger.config.HydrateSettingManager
+import com.healthtracker.framework.util.LogUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,7 +35,23 @@ class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, Activi
 
         // 使用 RecyclerView 渲染设置页面的模块化列表
         mViewBind.rcySetting.layoutManager = LinearLayoutManager(this)
-        mViewBind.rcySetting.adapter = HydrateSettingAdapter()
+        mViewBind.rcySetting.adapter = HydrateSettingAdapter(
+            onDailyCupsChanged = { cups ->
+                HydrateSettingManager.setDailyCups(cups)
+            },
+            onCupSettingChanged = { value, isMl ->
+                val unit = if (isMl) HydrateSettingManager.CupUnit.ML else HydrateSettingManager.CupUnit.FL_OZ
+                val ml = HydrateSettingManager.toMl(value, unit)
+                Log.d("aaaaa", "aaaaa = $ml and unit = $unit")
+                HydrateSettingManager.setCupVolume(ml)
+                HydrateSettingManager.setCupUnit(unit)
+            },
+            onCupUnitChanged = { isMl ->
+                HydrateSettingManager.setCupUnit(
+                    if (isMl) HydrateSettingManager.CupUnit.ML else HydrateSettingManager.CupUnit.FL_OZ
+                )
+            }
+        )
     }
 
 }

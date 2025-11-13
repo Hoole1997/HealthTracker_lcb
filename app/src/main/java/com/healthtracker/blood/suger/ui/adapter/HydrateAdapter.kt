@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ItemHydrateQuickAddSectionBinding
 import com.healthtracker.blood.suger.databinding.ItemHydrateRecordItemBinding
@@ -97,16 +98,21 @@ class HydrateAdapter(
         private val onDrinkClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private val drinkTextFormat: String = binding.root.context.getString(R.string.drink_btn_format)
-        private val unit: String = binding.root.context.getString(R.string.unit_ml)
 
         init {
             binding.drinkMore.setOnClickListener {
                 currentDrinkAmountMl += 10
-                binding.drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl, unit)
+                val cupUnit = HydrateSettingManager.getCupUnit()
+                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+                val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
+                binding.drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
             }
             binding.drinkLess.setOnClickListener {
                 currentDrinkAmountMl = max(10, currentDrinkAmountMl - 10)
-                binding.drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl, unit)
+                val cupUnit = HydrateSettingManager.getCupUnit()
+                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+                val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
+                binding.drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
             }
             binding.drinkBtn.setOnClickListener {
                 onDrinkClick(currentDrinkAmountMl)
@@ -114,12 +120,16 @@ class HydrateAdapter(
         }
         fun bind(item: HydrateItem.TotalSection) {
             binding.apply {
-                totalWaterIntake.text = item.totalIntake.toString()
+                val cupUnit = HydrateSettingManager.getCupUnit()
+                val displayTotal = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(item.totalIntake, HydrateSettingManager.CupUnit.FL_OZ) else item.totalIntake
+                totalWaterIntake.text = displayTotal.toString()
                 totalWaterUnit.text = item.unit
                 totalWaterDesc.text = item.description
 
                 // 根据当前选择的饮水量更新按钮文案
-                drinkBtn.text = String.format(drinkTextFormat, currentDrinkAmountMl, unit)
+                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+                val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
+                drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
 
                 // 更新水杯视图：以毫升驱动，最小单位 10ml
                 // 目标毫升按照 1杯 = 250ml 计算（保持与业务“8杯=2000ml”一致）
@@ -136,6 +146,7 @@ class HydrateAdapter(
         private val onItemClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private var adapter: QuickAddAdapter? = null
+        private var lastUnitLabel: String? = null
 
         fun bind(item: HydrateItem.QuickAddSection) {
             if (adapter == null) {
@@ -143,6 +154,11 @@ class HydrateAdapter(
                 binding.rvQuickAdd.layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
                 binding.rvQuickAdd.adapter = adapter
                 binding.rvQuickAdd.addItemDecoration(EndSpacingItemDecoration(16))
+            }
+            if (lastUnitLabel != item.unit) {
+                // 单位发生变化时，刷新子适配器以使用新的单位显示
+                adapter?.notifyDataSetChanged()
+                lastUnitLabel = item.unit
             }
             adapter?.submitList(item.values)
         }
@@ -164,12 +180,18 @@ class HydrateAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         private var adapter: RecordAdapter? = null
         private var emptyContainer: ConstraintLayout? = null
+        private var lastUnitLabel: String? = null
 
         fun bind(item: HydrateItem.RecordSection) {
             if (adapter == null) {
                 adapter = RecordAdapter(onDeleteClick)
                 binding.rvRecords.layoutManager = LinearLayoutManager(binding.root.context)
                 binding.rvRecords.adapter = adapter
+            }
+            if (lastUnitLabel != item.unit) {
+                // 单位发生变化时刷新记录列表的展示单位
+                adapter?.notifyDataSetChanged()
+                lastUnitLabel = item.unit
             }
             if (item.records.isEmpty()) {
                 if (emptyContainer == null) {
@@ -269,12 +291,11 @@ class HydrateAdapter(
         private val onItemClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(value: Int) {
-            val unit = binding.root.context.getString(R.string.unit_ml)
-            binding.tvLabel.text = String.format(
-                java.util.Locale.getDefault(), "%d %s",
-                value,
-                unit
-            )
+            val cupUnit = HydrateSettingManager.getCupUnit()
+            val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+            val displayValue = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(value, HydrateSettingManager.CupUnit.FL_OZ) else value
+            binding.tvLabel.text = String.format(java.util.Locale.getDefault(), "%d %s", displayValue, unitText)
+            // 点击回传始终使用毫升值以便数据库统一存储
             binding.root.setOnClickListener { onItemClick(value) }
         }
     }
@@ -303,8 +324,11 @@ class HydrateAdapter(
         private val onDeleteClick: (HydrateRecordItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HydrateRecordItem) {
-            binding.tvAmount.text = item.intakeMl.toString()
-            binding.tvUnit.text = binding.root.context.getString(R.string.unit_ml)
+            val cupUnit = HydrateSettingManager.getCupUnit()
+            val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+            val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(item.intakeMl, HydrateSettingManager.CupUnit.FL_OZ) else item.intakeMl
+            binding.tvAmount.text = displayAmount.toString()
+            binding.tvUnit.text = unitText
             binding.tvTime.text = DateTimeUtils.formatDateTimeWithSeconds(Date(item.date.time))
             binding.ivDelete.setOnClickListener { onDeleteClick(item) }
         }
@@ -324,11 +348,13 @@ sealed class HydrateItem {
     ) : HydrateItem()
 
     data class QuickAddSection(
-        val values: List<Int> // 预设的快捷添加毫升数，例如 [100,200,250,...]
+        val values: List<Int>, // 预设的快捷添加毫升数，例如 [100,200,250,...]
+        val unit: String       // 当前单位标签，触发子适配器刷新
     ) : HydrateItem()
 
     data class RecordSection(
-        val records: List<HydrateRecordItem>
+        val records: List<HydrateRecordItem>,
+        val unit: String       // 当前单位标签，触发子适配器刷新
     ) : HydrateItem()
 }
 

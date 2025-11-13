@@ -14,8 +14,13 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.ui.weight.RulerView
+import com.healthtracker.blood.suger.config.HydrateSettingManager
 
-class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class HydrateSettingAdapter(
+    private val onDailyCupsChanged: (Int) -> Unit = { _ -> },
+    private val onCupSettingChanged: (Int, Boolean) -> Unit = { _, _ -> },
+    private val onCupUnitChanged: (Boolean) -> Unit = { _ -> }
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var isReminderEditMode: Boolean = false
     // 共享的提醒时间列表与内部适配器引用，用于“添加提醒”后刷新列表
     private val reminderTimes = mutableListOf("08:00", "09:00", "10:00")
@@ -53,8 +58,8 @@ class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is DailyViewHolder -> holder.bind()
-            is CupViewHolder -> holder.bind()
+            is DailyViewHolder -> holder.bind(onChanged = onDailyCupsChanged)
+            is CupViewHolder -> holder.bind(onSettingChanged = onCupSettingChanged, onUnitChanged = onCupUnitChanged)
             is ReminderContainerViewHolder -> holder.bind()
             is AddReminderViewHolder -> holder.bind()
         }
@@ -64,18 +69,22 @@ class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val imgIntakeLess: AppCompatImageView = itemView.findViewById(R.id.intakeLess)
         private val imgIntakeMore: AppCompatImageView = itemView.findViewById(R.id.intakeMore)
         private val tvCupsOfDay: AppCompatTextView = itemView.findViewById(R.id.tvCupsOfDay)
-        fun bind() {
-            // 默认显示 8 杯水
-            tvCupsOfDay.text = "8"
+        fun bind(onChanged: (Int) -> Unit = {}) {
+            // 读取持久化的每日杯数，默认 8
+            val saved = HydrateSettingManager.getDailyCups()
+            tvCupsOfDay.text = saved.toString()
 
             imgIntakeMore.setOnClickListener {
-                val cur = tvCupsOfDay.text.toString().toIntOrNull() ?: 8
-                tvCupsOfDay.text = (cur + 1).toString()
+                val cur = tvCupsOfDay.text.toString().toIntOrNull() ?: saved
+                val next = cur + 1
+                tvCupsOfDay.text = next.toString()
+                onChanged(next)
             }
             imgIntakeLess.setOnClickListener {
-                val cur = tvCupsOfDay.text.toString().toIntOrNull() ?: 8
+                val cur = tvCupsOfDay.text.toString().toIntOrNull() ?: saved
                 val next = (cur - 1).coerceAtLeast(1)
                 tvCupsOfDay.text = next.toString()
+                onChanged(next)
             }
         }
     }
@@ -86,18 +95,38 @@ class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val rulerView: RulerView = itemView.findViewById(R.id.rulerView)
         private var isMlUnit: Boolean = true
 
-        fun bind() {
-            // 配置标尺：整数精度，范围 10 到 10000，步长为 1，显示整数
+        fun bind(
+            onSettingChanged: (Int, Boolean) -> Unit = { _, _ -> },
+            onUnitChanged: (Boolean) -> Unit = { _ -> }
+        ) {
+            // 先读取单位偏好，配置标尺范围再设置初始值
+            isMlUnit = HydrateSettingManager.getCupUnit() == HydrateSettingManager.CupUnit.ML
+            rgUnit.check(if (isMlUnit) R.id.rb_ml else R.id.rb_floz)
+
             rulerView.apply {
                 setRulerUnit(RulerView.RulerUnit.INTEGER_PRECISION)
                 setScaleStep(1f)
                 setDecimalPlaces(0)
-                setScaleRange(10f, 10000f)
-                setScrollableRange(10f, 10000f)
-                setScaleImmediately(20f, suppressCallback = true)
+                val min = if (isMlUnit) 10f else 1f
+                val max = if (isMlUnit) 10000f else HydrateSettingManager.fromMl(10000, HydrateSettingManager.CupUnit.FL_OZ).toFloat()
+                setScaleRange(min, max)
+                setScrollableRange(min, max)
+                // 读取持久化的杯子容积（用于展示的数值）并设置到标尺
+                val volDisplay = HydrateSettingManager.getCupDisplayVolume()
+                val clamped = volDisplay.coerceIn(min.toInt(), max.toInt()).toFloat()
+                val action = {
+                    setScaleImmediately(clamped, suppressCallback = true)
+                    updateSelectValueText(unitIsMl = isMlUnit, valueStr = volDisplay.toString())
+                }
+                if (width == 0 || height == 0) {
+                    post(action)
+                } else {
+                    action()
+                }
                 setOnChooseResultListener(object : RulerView.OnChooseResultListener {
                     override fun onEndResult(result: String) {
                         updateSelectValueText(isMlUnit, result)
+                        result.toIntOrNull()?.let { onSettingChanged(it, isMlUnit) }
                     }
 
                     override fun onScrollResult(result: String) {
@@ -106,14 +135,23 @@ class HydrateSettingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 })
             }
 
-            // 默认单位与显示：ML
-            rgUnit.check(R.id.rb_ml)
-            updateSelectValueText(unitIsMl = true, valueStr = "20")
+            updateSelectValueText(unitIsMl = isMlUnit, valueStr = HydrateSettingManager.getCupDisplayVolume().toString())
 
             rgUnit.setOnCheckedChangeListener { _, checkedId ->
                 isMlUnit = checkedId == R.id.rb_ml
-                val currentValue = rulerView.getCurrentScale().toInt().toString()
-                updateSelectValueText(unitIsMl = isMlUnit, valueStr = currentValue)
+                val unit = if (isMlUnit) HydrateSettingManager.CupUnit.ML else HydrateSettingManager.CupUnit.FL_OZ
+                val min = if (isMlUnit) 10f else 1f
+                val max = if (isMlUnit) 10000f else HydrateSettingManager.fromMl(10000, HydrateSettingManager.CupUnit.FL_OZ).toFloat()
+                rulerView.setScaleRange(min, max)
+                rulerView.setScrollableRange(min, max)
+                // 基于存储的 ml 值，计算新单位下的展示值，避免链式取整导致的漂移
+                val ml = HydrateSettingManager.getCupVolume()
+                val newDisplayValue = HydrateSettingManager.fromMl(ml, unit).coerceIn(min.toInt(), max.toInt())
+                // 更新标尺与文案（不触发选择回调）
+                rulerView.setScaleImmediately(newDisplayValue.toFloat(), suppressCallback = true)
+                updateSelectValueText(unitIsMl = isMlUnit, valueStr = newDisplayValue.toString())
+                // 仅持久化单位偏好，不改动存储的 ml
+                onUnitChanged(isMlUnit)
             }
         }
 
