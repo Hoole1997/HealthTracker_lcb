@@ -5,7 +5,7 @@
     <string name="blood_pressure">Blood Pressure</string>
     <string name="home">Home</string>
     <string name="meds">Meds</string>
-    <string name="record">Record</string>
+    <string name="tracker">Tracker</string>
     <string name="record_now">Record Now</string>
     <!-- 血糖和血压的单位不用翻译   -->
     <string name="mg_dl" translatable="false">mg/dL</string>
@@ -1225,6 +1225,7 @@ healthcare provider or medical institution.</string>
     <string name="all_history">All history</string>
     <string name="health_tips">Health tips</string>
     <string name="no_date">No date</string>
+    <string name="add_now">Add now</string>
 
     <!-- 补水 -->
     <string name="hydrate">Hydrate</string>

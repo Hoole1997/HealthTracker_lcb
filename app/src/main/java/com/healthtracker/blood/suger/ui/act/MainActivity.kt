@@ -121,7 +121,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
                 2 -> {
                     // Record页面：隐藏提醒按钮
                     ivRemind.gone()
-                    R.string.record
+                    R.string.tracker
                 }
                 else -> R.string.home
             }
@@ -157,7 +157,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
             ivSetting.clickWithDuration {
                 "setting click".logd(TAG)
                 // TODO: 添加设置页面功能
-                HealthStatisticsActivity.start(this@MainActivity,HealthMetric.BMI)
+                HealthStatisticsActivity.start(this@MainActivity,HealthMetric.BLOOD_SUGAR)
             }
 
             // Debug 专用：长按发送测试通知
@@ -197,7 +197,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
             val tabs = arrayListOf(
                 Pair(R.drawable.selector_nav_home, R.string.home),
                 Pair(R.drawable.selector_nav_meds, R.string.meds),
-                Pair(R.drawable.selector_nav_record, R.string.record),
+                Pair(R.drawable.selector_nav_record, R.string.tracker),
 
                 )
 

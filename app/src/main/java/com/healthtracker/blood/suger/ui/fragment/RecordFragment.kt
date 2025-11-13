@@ -3,19 +3,28 @@ package com.healthtracker.blood.suger.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.common.data.DataBufferUtils.hasData
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.FragmentRecordBinding
+import com.healthtracker.blood.suger.databinding.ItemHealthChartCardBinding
+import com.healthtracker.blood.suger.tips.HealthMetric
+import com.healthtracker.blood.suger.ui.act.BmiRecordActivity
+import com.healthtracker.blood.suger.ui.act.BpRecordActivity
+import com.healthtracker.blood.suger.ui.act.BsRecordActivity
+import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
+import com.healthtracker.blood.suger.ui.act.HealthStatisticsActivity
+import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.blood.suger.ui.viewmodel.TrackerViewModel
-import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.invisible
-import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,10 +32,16 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>() {
-    
+
     @Inject
     lateinit var chartManagerFactory: HealthLineChartManager.Factory
-    private lateinit var chartManager: HealthLineChartManager
+
+    // ========== 图表管理器 ==========
+    private lateinit var bsChartManager: HealthLineChartManager
+    private lateinit var bpChartManager: HealthLineChartManager
+    private lateinit var hrChartManager: HealthLineChartManager
+    private lateinit var choChartManager: HealthLineChartManager
+    private lateinit var bmiChartManager: HealthLineChartManager
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -37,47 +52,172 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
     override fun getVMModelClass() = TrackerViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        // 初始化图表管理器
-        chartManager = chartManagerFactory.create(mViewBind!!.bsChartView, viewLifecycleOwner)
+        setupHealthCards()
+        setupChartManagers()
+        setupClickListeners()
 
-        // 设置按钮点击事件
-        mViewBind?.run {
-            llBpHistory.clickWithDuration {
-                HistoryRecordActivity.start(requireActivity(),HistoryRecordItem.RecordType.BLOOD_PRESSURE)
-            }
-        }
-
-        // 启动数据观察
         mViewModel.startObservingData()
-
-        // 观察图表数据
-        observeChartData()
+        observeAllChartData()
     }
-    
-    private fun observeChartData() {
-        // 观察图表状态变化
-        collectLatest(mViewModel.chartUiState) { state ->
-            lifecycleScope.launch {
-                // 渲染图表，隐藏坐标轴标签
-                val hasData = chartManager.render(state, isShowLabel = false)
-                updateChartVisibility(hasData)
+
+    /**
+     * ✨ 新增：设置各健康指标卡片的图标和标题
+     */
+    private fun setupHealthCards() {
+        mViewBind?.run {
+            // Blood Sugar
+            includeBs.ivIcon.setImageResource(R.mipmap.ic_blood_suger)
+            includeBs.tvTitle.text = getString(R.string.blood_suger)
+
+            // Blood Pressure
+            includeBp.ivIcon.setImageResource(R.mipmap.ic_blood_pressure)
+            includeBp.tvTitle.text = getString(R.string.blood_pressure)
+
+            // Heart Rate
+            includeHr.ivIcon.setImageResource(R.mipmap.ic_heart)
+            includeHr.tvTitle.text = getString(R.string.heart_rate)
+
+            // Cholesterol
+            includeCho.ivIcon.setImageResource(R.mipmap.ic_cholesterol)
+            includeCho.tvTitle.text = getString(R.string.cholesterol)
+
+            // BMI (组合 Weight + BMI)
+            includeBmi.ivIcon.setImageResource(R.mipmap.ic_bmi)
+            "${getString(R.string.weight)} & ${getString(R.string.bmi)}".also { includeBmi.tvTitle.text = it }
+        }
+    }
+
+    /**
+     * ✨ 修改：初始化所有图表管理器
+     */
+    private fun setupChartManagers() {
+        mViewBind?.run {
+            bsChartManager = chartManagerFactory.create(includeBs.chartView.apply {
+                isEnabled = false
+            }, viewLifecycleOwner)
+            bpChartManager = chartManagerFactory.create(includeBp.chartView.apply {
+                isEnabled = false
+            }, viewLifecycleOwner)
+            hrChartManager = chartManagerFactory.create(includeHr.chartView.apply {
+                isEnabled = false
+            }, viewLifecycleOwner)
+            choChartManager = chartManagerFactory.create(includeCho.chartView.apply {
+                isEnabled = false
+            }, viewLifecycleOwner)
+            bmiChartManager = chartManagerFactory.create(includeBmi.chartView.apply {
+                isEnabled = false
+            }, viewLifecycleOwner)
+        }
+    }
+
+    /**
+     * ✨ 修改：设置所有卡片的点击事件
+     */
+    private fun setupClickListeners() {
+        mViewBind?.run {
+            // Blood Sugar - 点击卡片跳转历史记录
+            includeBs.root.clickWithDuration {
+                if(includeBs.chartView.isVisible){
+                    HealthStatisticsActivity.start(requireActivity(), HealthMetric.BLOOD_SUGAR)
+                }else{
+                    BsRecordActivity.start(requireActivity())
+                }
+            }
+
+            // Blood Pressure
+            includeBp.root.clickWithDuration {
+                if(includeBp.chartView.isVisible){
+                    HealthStatisticsActivity.start(requireActivity(), HealthMetric.BLOOD_PRESSURE)
+                }else{
+                    BpRecordActivity.start(requireActivity())
+                }
+            }
+
+            // Heart Rate
+            includeHr.root.clickWithDuration {
+                if(includeHr.chartView.isVisible){
+                    HealthStatisticsActivity.start(requireActivity(), HealthMetric.HEART_RATE)
+                }else{
+                    HeartRateRecordActivity.start(requireActivity())
+                }
+            }
+
+            // Cholesterol
+            includeCho.root.clickWithDuration {
+                if(includeCho.chartView.isVisible){
+                    HealthStatisticsActivity.start(requireActivity(), HealthMetric.CHOLESTEROL)
+                }else{
+                    CholesterolRecordActivity.start(requireActivity())
+                }
+            }
+
+            // BMI
+            includeBmi.root.clickWithDuration {
+                if(includeBmi.chartView.isVisible){
+                    HealthStatisticsActivity.start(requireActivity(), HealthMetric.BMI)
+                }else{
+                    BmiRecordActivity.start(requireActivity())
+                }
             }
         }
     }
-    
+
     /**
-     * 更新图表和空视图的可见性
+     * ✨ 修改：观察所有5个图表的数据
      */
-    private fun updateChartVisibility(hasData: Boolean) {
-        mViewBind?.run {
+    private fun observeAllChartData() {
+        // Blood Sugar
+        collectLatest(mViewModel.bloodSugarChartState) { state ->
+            lifecycleScope.launch {
+                val hasData = bsChartManager.render(state, isShowLabel = false)
+                updateChartVisibility(hasData, mViewBind?.includeBs)
+            }
+        }
+
+        // Blood Pressure
+        collectLatest(mViewModel.bloodPressureChartState) { state ->
+            lifecycleScope.launch {
+                val hasData = bpChartManager.render(state, isShowLabel = false)
+                updateChartVisibility(hasData, mViewBind?.includeBp)
+            }
+        }
+
+        // Heart Rate
+        collectLatest(mViewModel.heartRateChartState) { state ->
+            lifecycleScope.launch {
+                val hasData = hrChartManager.render(state, isShowLabel = false)
+                updateChartVisibility(hasData, mViewBind?.includeHr)
+            }
+        }
+
+        // Cholesterol
+        collectLatest(mViewModel.cholesterolChartState) { state ->
+            lifecycleScope.launch {
+                val hasData = choChartManager.render(state, isShowLabel = false)
+                updateChartVisibility(hasData, mViewBind?.includeCho)
+            }
+        }
+
+        // BMI
+        collectLatest(mViewModel.bmiChartState) { state ->
+            lifecycleScope.launch {
+                val hasData = bmiChartManager.render(state, isShowLabel = false)
+                updateChartVisibility(hasData, mViewBind?.includeBmi)
+            }
+        }
+    }
+
+    /**
+     * ✨ 简化：更新图表和空状态的可见性
+     */
+    private fun updateChartVisibility(hasData: Boolean, cardBinding: ItemHealthChartCardBinding?) {
+        cardBinding?.run {
             if (hasData) {
-                // 有数据时显示图表，隐藏空视图
-                bsChartView.visible()
-                gpBsEmpty.invisible()
+                chartView.visible()
+                gpEmpty.invisible()
             } else {
-                // 无数据时隐藏图表，显示空视图
-                bsChartView.gone()
-                gpBsEmpty.visible()
+                chartView.gone()
+                gpEmpty.visible()
             }
         }
     }

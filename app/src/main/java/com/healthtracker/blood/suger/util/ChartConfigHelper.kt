@@ -52,7 +52,7 @@ private val DEFAULT_BASELINE_COLOR = ChartPalette.grid
 private val WHITE_COLOR = ChartPalette.pointStroke
 
 // 默认尺寸
-private const val LINE_THICKNESS = 2f
+private const val LINE_THICKNESS = 1.5f
 private const val POINT_SIZE = 8f
 private const val POINT_SPACING = 24f
 private const val POINT_STROKE = 1f
