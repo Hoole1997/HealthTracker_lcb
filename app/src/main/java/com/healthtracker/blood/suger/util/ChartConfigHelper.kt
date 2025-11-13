@@ -8,6 +8,7 @@ import androidx.core.graphics.toColorInt
 import com.healthtracker.blood.suger.App
 import com.healthtracker.framework.util.getRobotoBold
 import com.patrykandpatrick.vico.core.cartesian.CartesianChart
+import com.patrykandpatrick.vico.core.cartesian.CartesianDrawingContext
 import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
 import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
@@ -50,7 +51,7 @@ private val DEFAULT_BASELINE_COLOR = ChartPalette.grid
 private val WHITE_COLOR = ChartPalette.pointStroke
 
 // 默认尺寸
-private const val LINE_THICKNESS = 1f
+private const val LINE_THICKNESS = 2f
 private const val POINT_SIZE = 8f
 private const val POINT_SPACING = 24f
 private const val POINT_STROKE = 1f
@@ -70,7 +71,7 @@ private const val LABEL_PADDING = 8f
 
 // 图层配置
 private const val LAYER_PADDING = 8f
-private const val CURVATURE = 0.7f
+private const val CURVATURE = 0.5f
 
 // 坐标轴配置
 private const val VERTICAL_AXIS_ITEM_COUNT = 6
@@ -173,6 +174,19 @@ class ChartConfigHelper {
             )
         }
 
+
+        private val tapOnlyMarkerController = object : CartesianMarkerController {
+            override fun shouldAcceptInteraction(
+                interaction: Interaction,
+                targets: List<CartesianMarker.Target>,
+            ): Boolean = interaction is Interaction.Tap || interaction is Interaction.LongPress
+
+            override fun shouldShowMarker(
+                interaction: Interaction,
+                targets: List<CartesianMarker.Target>,
+            ): Boolean = true      // 长按/点击后显示
+        }
+
         /**
          * 创建任意条折线的通用图表
          */
@@ -182,7 +196,7 @@ class ChartConfigHelper {
             baselineStyle: BaselineStyle? = BaselineStyle(axisStyle.minY ?: 0.0),
             layerPaddingDp: Float = LAYER_PADDING,
             pointSpacingDp: Float = POINT_SPACING,
-            marker: CartesianMarker? = getDefaultMark()
+            marker: CartesianMarker? = getDefaultMark(),
         ): CartesianChart {
             val styles = if (lineStyles.isEmpty()) listOf(LineStyle(color = DEFAULT_LINE1_COLOR)) else lineStyles
 
@@ -210,7 +224,7 @@ class ChartConfigHelper {
                 },
                 decorations = decorations,
                 marker = marker,
-                markerController = CartesianMarkerController.ShowOnPress
+                markerController = tapOnlyMarkerController,
             )
         }
 
@@ -352,8 +366,7 @@ class ChartConfigHelper {
             )
         }
 
-
-        private fun getDefaultMark() =
+        fun getDefaultMark() =
             DefaultCartesianMarker(
                 label = TextComponent(
                     color = Color.WHITE,
@@ -581,5 +594,19 @@ private class DeduplicatingValueFormatter(
         } else {
             currentLabel
         }
+    }
+}
+
+class DefaultMarker(
+    private val base: CartesianMarker,
+) : CartesianMarker by base {
+    var visible: Boolean = true
+
+    override fun drawUnderLayers(context: CartesianDrawingContext, targets: List<CartesianMarker.Target>) {
+        if (visible) base.drawUnderLayers(context, targets)
+    }
+
+    override fun drawOverLayers(context: CartesianDrawingContext, targets: List<CartesianMarker.Target>) {
+        if (visible) base.drawOverLayers(context, targets)
     }
 }
