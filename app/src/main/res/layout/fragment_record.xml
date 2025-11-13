@@ -1,55 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/dp_16">
 
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/ll_bs_history"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ll_bs"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_6"
         android:background="@drawable/bg_rect_white_12"
         android:foreground="?android:attr/selectableItemBackground"
-        android:orientation="vertical"
+        android:paddingVertical="@dimen/dp_16"
         app:layout_constraintEnd_toStartOf="@id/ll_bp_history"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/TextViewFont_RobotoMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_bs"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_20"
-            android:text="@string/blood_suger"
-            android:textColor="@color/t1"
-            android:textSize="@dimen/sp_16" />
+            android:scaleType="centerInside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/ic_blood_suger" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextViewFont_RobotoMedium"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_6"
-            android:drawableEnd="@drawable/ic_blood_suger_status_arrow"
-            android:drawablePadding="@dimen/dp_6"
-            android:text="@string/record"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:text="@string/blood_suger"
             android:textColor="@color/t1"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="@id/iv_bs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_bs"
+            app:layout_constraintTop_toTopOf="@id/iv_bs" />
 
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_90"
-            android:layout_height="@dimen/dp_80"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/dp_7"
-            app:srcCompat="@mipmap/ic_bs_record" />
+            android:id="@+id/iv_empty"
+            android:layout_width="@dimen/dp_46"
+            android:layout_height="@dimen/dp_46"
+            android:layout_marginTop="@dimen/dp_6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_bs"
+            app:srcCompat="@drawable/ic_chart_empty" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/no_date"
+            android:textColor="@color/color_999"
+            android:textSize="@dimen/sp_11"
+            app:layout_constraintEnd_toEndOf="@id/iv_empty"
+            app:layout_constraintStart_toStartOf="@id/iv_empty"
+            app:layout_constraintTop_toBottomOf="@id/iv_empty" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_bs"
+            style="@style/MaterialButton.b1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginHorizontal="@dimen/dp_16"
+            android:maxLines="1"
+            android:text="@string/add_record"
+            app:autoSizeMaxTextSize="@dimen/sp_14"
+            app:autoSizeMinTextSize="@dimen/sp_12"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_empty" />
+
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/gp_bs_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="btn_add_bs,iv_empty,tv_empty" />
+
+        <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
+            android:id="@+id/bs_chart_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/btn_add_bs"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_empty"
+            tools:chartStyle="@style/BloodPressureChartStyle"
+            tools:previewLineSeriesCount="1"
+            tools:previewMaxX="7"
+            tools:previewMaxY="10" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_bp_history"
@@ -60,7 +120,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ll_bs_history"
+        app:layout_constraintStart_toEndOf="@id/ll_bs"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView

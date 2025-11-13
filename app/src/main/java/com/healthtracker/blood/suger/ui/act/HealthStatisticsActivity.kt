@@ -2,10 +2,10 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.CalendarConstraints
@@ -19,7 +19,13 @@ import com.healthtracker.blood.suger.tips.HealthMetric
 import com.healthtracker.blood.suger.tips.HealthTips
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
-import com.healthtracker.blood.suger.ui.history.*
+import com.healthtracker.blood.suger.ui.history.BloodPressureHistoryItem
+import com.healthtracker.blood.suger.ui.history.BloodSugarHistoryItem
+import com.healthtracker.blood.suger.ui.history.BmiHistoryItem
+import com.healthtracker.blood.suger.ui.history.CholesterolHistoryItem
+import com.healthtracker.blood.suger.ui.history.HeartRateHistoryItem
+import com.healthtracker.blood.suger.ui.history.HistoryAdapter
+import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.blood.suger.ui.widget.StatisticDimensionMenu
 import com.healthtracker.blood.suger.viewmodel.HealthStatisticsViewModel
 import com.healthtracker.blood.suger.viewmodel.StatisticDimension
@@ -27,14 +33,12 @@ import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.framework.util.getRobotoMedium
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
 import javax.inject.Inject
-import androidx.core.graphics.drawable.toDrawable
-import com.healthtracker.framework.util.getRobotoBold
-import com.healthtracker.framework.util.getRobotoMedium
 
 /**
  * Health Statistics Activity
@@ -258,7 +262,7 @@ class HealthStatisticsActivity :
         }
         collectLatest(mViewModel.chartUiState) { state ->
             val hasData = chartManager.render(state)
-//            mViewBind.chartView.isVisible = hasData
+            mViewBind.chartView.isVisible = hasData
         }
         collectLatest(mViewModel.historyPreview) { records ->
             val items = records.mapNotNull { record ->

@@ -1224,6 +1224,7 @@ healthcare provider or medical institution.</string>
     <string name="max">Max</string>
     <string name="all_history">All history</string>
     <string name="health_tips">Health tips</string>
+    <string name="no_date">No date</string>
 
     <!-- 补水 -->
     <string name="hydrate">Hydrate</string>
