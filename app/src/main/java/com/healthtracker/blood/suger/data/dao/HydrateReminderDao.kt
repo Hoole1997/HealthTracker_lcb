@@ -19,8 +19,8 @@ interface HydrateReminderDao {
     @Query("SELECT * FROM hydrate_reminders ORDER BY hour ASC, minute ASC")
     fun getAll(): Flow<List<HydrateReminder>>
 
-    /** 插入提醒时间 */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    /** 插入提醒时间（忽略重复时间） */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(reminder: HydrateReminder): Long
 
     /** 更新提醒时间 */

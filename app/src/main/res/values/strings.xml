@@ -1231,5 +1231,7 @@ healthcare provider or medical institution.</string>
     <string name="coming_soon_title">Coming Soon!</string>
     <string name="coming_soon_message">You‘re a time traveler! This day hasn’t arrived yet. Please select a previous date or return to today.</string>
     <string name="back_to_today">BACK TO TODAY</string>
+    <string name="hydrate_reminder_exist">The reminder time has already been set.</string>
+    <string name="hydrate_reminder_empty_message">You haven‘t set any water reminders yet. Start building your hydration habit by adding your first reminder!</string>
 
 </resources>

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -25,7 +26,7 @@ class HydrateSettingAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var isReminderEditMode: Boolean = false
     // 共享的提醒时间列表与内部适配器引用，用于“添加提醒”后刷新列表
-    private val reminderTimes = mutableListOf("08:00", "09:00", "10:00")
+    private val reminderTimes = mutableListOf<String>()
     private var timeAdapterRef: HydrateReminderTimeAdapter? = null
 
     private val items = listOf(
@@ -166,6 +167,7 @@ class HydrateSettingAdapter(
     inner class ReminderContainerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val rcyTimes: RecyclerView = itemView.findViewById(R.id.rcyReminderTimes)
         private val tvEdit: AppCompatTextView = itemView.findViewById(R.id.tv_reminder_edit)
+        private val emptyView: View = itemView.findViewById(R.id.emptyReminderView)
         private var timeAdapter: HydrateReminderTimeAdapter? = null
 
         fun bind() {
@@ -175,6 +177,8 @@ class HydrateSettingAdapter(
             if (timeAdapter == null) {
                 timeAdapter = HydrateReminderTimeAdapter(reminderTimes) { h, m ->
                     onDeleteReminderTime(h, m)
+                    // 删除后刷新容器以切换空视图
+                    notifyItemChanged(items.indexOf(TYPE_REMINDER))
                 }
                 rcyTimes.adapter = timeAdapter
                 timeAdapterRef = timeAdapter
@@ -183,6 +187,17 @@ class HydrateSettingAdapter(
             // 根据编辑模式更新删除图标显示与按钮文案
             timeAdapter?.setDeleteMode(isReminderEditMode)
             tvEdit.setText(if (isReminderEditMode) R.string.cancel else R.string.hydration_reminder_edit)
+
+            // 数据为空时显示空视图，隐藏编辑按钮与列表
+            if (reminderTimes.isEmpty()) {
+                emptyView.visibility = View.VISIBLE
+                rcyTimes.visibility = View.GONE
+                tvEdit.visibility = View.GONE
+            } else {
+                emptyView.visibility = View.GONE
+                rcyTimes.visibility = View.VISIBLE
+                tvEdit.visibility = View.VISIBLE
+            }
 
             tvEdit.setOnClickListener {
                 isReminderEditMode = !isReminderEditMode
@@ -200,9 +215,16 @@ class HydrateSettingAdapter(
                 // 底部弹出时间选择器，默认当前时间
                 AlarmTimeSelectDialog.show(activity.supportFragmentManager, null) { pair ->
                     val timeString = DateTimeUtils.formatTimeComponents(pair.first, pair.second)
+                    // 防重复：若已存在相同时间，则提示并不添加
+                    if (reminderTimes.contains(timeString)) {
+                        Toast.makeText(activity, itemView.context.getString(R.string.hydrate_reminder_exist), Toast.LENGTH_SHORT).show()
+                        return@show
+                    }
                     // 持久化新增后立即更新UI（先乐观更新，再由Flow刷新）
                     onAddReminderTime(pair.first, pair.second)
                     timeAdapterRef?.addTime(timeString)
+                    // 切换空视图展示
+                    notifyItemChanged(items.indexOf(TYPE_REMINDER))
                 }
             }
         }
@@ -223,5 +245,7 @@ class HydrateSettingAdapter(
         reminderTimes.clear()
         reminderTimes.addAll(times)
         timeAdapterRef?.replaceAll(times)
+        // 让容器重新绑定以切换空视图/编辑按钮显示
+        notifyItemChanged(items.indexOf(TYPE_REMINDER))
     }
 }

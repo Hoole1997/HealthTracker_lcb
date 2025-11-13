@@ -51,7 +51,7 @@ import com.healthtracker.blood.suger.data.entity.HydrateReminder
         HydrateRecord::class,
         HydrateReminder::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)

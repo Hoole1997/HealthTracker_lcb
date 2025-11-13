@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
@@ -9,7 +10,10 @@ import androidx.room.PrimaryKey
  * 对应数据表：hydrate_reminders
  * 仅记录一天24小时内的提醒时间：小时与分钟
  */
-@Entity(tableName = "hydrate_reminders")
+@Entity(
+    tableName = "hydrate_reminders",
+    indices = [Index(value = ["hour", "minute"], unique = true)]
+)
 data class HydrateReminder(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
