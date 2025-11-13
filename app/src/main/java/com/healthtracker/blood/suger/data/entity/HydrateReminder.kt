@@ -25,5 +25,9 @@ data class HydrateReminder(
 
     /** 提醒分钟（0-59） */
     @ColumnInfo(name = "minute")
-    val minute: Int
+    val minute: Int,
+
+    /** 是否启用该提醒（默认启用） */
+    @ColumnInfo(name = "enabled")
+    val enabled: Boolean = true
 )

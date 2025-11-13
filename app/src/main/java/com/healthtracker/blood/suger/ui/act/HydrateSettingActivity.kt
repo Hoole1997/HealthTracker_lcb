@@ -57,6 +57,9 @@ class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, Activi
             },
             onDeleteReminderTime = { h, m ->
                 mViewModel.deleteReminder(h, m)
+            },
+            onToggleReminderEnabled = { h, m, enabled ->
+                mViewModel.updateReminderEnabled(h, m, enabled)
             }
         )
         mViewBind.rcySetting.adapter = adapter
@@ -64,6 +67,11 @@ class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, Activi
         // 观察提醒时间并同步到适配器显示
         collect(mViewModel.reminderTimes) { times ->
             adapter.setReminderTimes(times)
+        }
+
+        // 观察提醒实体列表（包含 enabled）并同步到适配器开关显示
+        collect(mViewModel.reminders) { reminders ->
+            adapter.setReminderStates(reminders)
         }
     }
 

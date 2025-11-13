@@ -14,7 +14,8 @@ import com.healthtracker.blood.suger.ui.dialog.DeleteHydrateReminderDialog
 
 class HydrateReminderTimeAdapter(
     private val times: MutableList<String>,
-    private val onDeleteTime: ((Int, Int) -> Unit)? = null
+    private val onDeleteTime: ((Int, Int) -> Unit)? = null,
+    private val onToggleEnabled: ((Int, Int, Boolean) -> Unit)? = null
 ) :
     RecyclerView.Adapter<HydrateReminderTimeAdapter.TimeViewHolder>() {
 
@@ -62,6 +63,11 @@ class HydrateReminderTimeAdapter(
             }
             enabledStates[pos] = newState
             holder.switchReminder.isSelected = newState
+
+            // 回调持久化，并联动调度
+            parseTimeToComponents(times[pos])?.let { (h, m) ->
+                onToggleEnabled?.invoke(h, m, newState)
+            }
         }
 
         // 删除按钮：弹出底部确认对话框
@@ -101,7 +107,7 @@ class HydrateReminderTimeAdapter(
         val previousLastIndex = times.size - 1
         val insertIndex = times.size
         times.add(time)
-        enabledStates.add(false)
+        enabledStates.add(true)
         // 新增项插入后刷新：
         // 1) 通知新增项
         notifyItemInserted(insertIndex)
@@ -131,6 +137,17 @@ class HydrateReminderTimeAdapter(
         }
         // 刷新新的最后一项以更新分割线显示状态
         if (times.isNotEmpty()) notifyItemChanged(times.lastIndex)
+    }
+
+    /**
+     * 外部传入启用状态映射（key为"HH:MM"），以当前times顺序同步开关显示。
+     */
+    fun setEnabledMap(enabledMap: Map<String, Boolean>) {
+        ensureEnabledStatesSize()
+        for (i in times.indices) {
+            enabledStates[i] = enabledMap[times[i]] ?: false
+        }
+        notifyDataSetChanged()
     }
 
     class TimeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

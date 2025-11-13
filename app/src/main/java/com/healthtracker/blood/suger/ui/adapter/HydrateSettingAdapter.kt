@@ -16,18 +16,21 @@ import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.ui.weight.RulerView
 import com.healthtracker.blood.suger.config.HydrateSettingManager
+import com.healthtracker.blood.suger.data.entity.HydrateReminder
 
 class HydrateSettingAdapter(
     private val onDailyCupsChanged: (Int) -> Unit = { _ -> },
     private val onCupSettingChanged: (Int, Boolean) -> Unit = { _, _ -> },
     private val onCupUnitChanged: (Boolean) -> Unit = { _ -> },
     private val onAddReminderTime: (Int, Int) -> Unit = { _, _ -> },
-    private val onDeleteReminderTime: (Int, Int) -> Unit = { _, _ -> }
+    private val onDeleteReminderTime: (Int, Int) -> Unit = { _, _ -> },
+    private val onToggleReminderEnabled: (Int, Int, Boolean) -> Unit = { _, _, _ -> }
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var isReminderEditMode: Boolean = false
     // 共享的提醒时间列表与内部适配器引用，用于“添加提醒”后刷新列表
     private val reminderTimes = mutableListOf<String>()
     private var timeAdapterRef: HydrateReminderTimeAdapter? = null
+    private var enabledMap: Map<String, Boolean> = emptyMap()
 
     private val items = listOf(
         TYPE_DAILY,
@@ -175,13 +178,15 @@ class HydrateSettingAdapter(
                 rcyTimes.layoutManager = LinearLayoutManager(itemView.context)
             }
             if (timeAdapter == null) {
-                timeAdapter = HydrateReminderTimeAdapter(reminderTimes) { h, m ->
+                timeAdapter = HydrateReminderTimeAdapter(reminderTimes, { h, m ->
                     onDeleteReminderTime(h, m)
                     // 删除后刷新容器以切换空视图
                     notifyItemChanged(items.indexOf(TYPE_REMINDER))
-                }
+                }, onToggleReminderEnabled)
                 rcyTimes.adapter = timeAdapter
                 timeAdapterRef = timeAdapter
+                // 初始同步开关状态
+                timeAdapterRef?.setEnabledMap(enabledMap)
             }
 
             // 根据编辑模式更新删除图标显示与按钮文案
@@ -245,7 +250,19 @@ class HydrateSettingAdapter(
         reminderTimes.clear()
         reminderTimes.addAll(times)
         timeAdapterRef?.replaceAll(times)
+        // 同步当前已知的启用状态映射
+        timeAdapterRef?.setEnabledMap(enabledMap)
         // 让容器重新绑定以切换空视图/编辑按钮显示
         notifyItemChanged(items.indexOf(TYPE_REMINDER))
+    }
+
+    /**
+     * 外部提供 HydrateReminder 列表（包含 enabled），用于同步时间项的开关显示。
+     */
+    fun setReminderStates(reminders: List<HydrateReminder>) {
+        enabledMap = reminders.associate { reminder ->
+            DateTimeUtils.formatTimeComponents(reminder.hour, reminder.minute) to reminder.enabled
+        }
+        timeAdapterRef?.setEnabledMap(enabledMap)
     }
 }

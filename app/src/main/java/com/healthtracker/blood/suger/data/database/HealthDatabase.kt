@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.healthtracker.blood.suger.data.converter.DateTimeConverter
 import com.healthtracker.blood.suger.data.dao.AlarmDao
 import com.healthtracker.blood.suger.data.dao.BloodPressureDao
@@ -51,7 +53,7 @@ import com.healthtracker.blood.suger.data.entity.HydrateReminder
         HydrateRecord::class,
         HydrateReminder::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -133,6 +135,12 @@ abstract class HealthDatabase : RoomDatabase() {
                     HealthDatabase::class.java,
                     DATABASE_NAME
                 )
+                    .addCallback(object : RoomDatabase.Callback() {
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            seedHydrateReminders(db)
+                        }
+                    })
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
@@ -228,6 +236,19 @@ abstract class HealthDatabase : RoomDatabase() {
         fun clearInstance() {
             INSTANCE?.close()
             INSTANCE = null
+        }
+
+        /**
+         * 首次创建数据库时，预置8条默认饮水提醒（均启用）
+         */
+        private fun seedHydrateReminders(db: SupportSQLiteDatabase) {
+            val hours = intArrayOf(8, 10, 12, 14, 16, 18, 20, 22)
+            for (h in hours) {
+                db.execSQL(
+                    "INSERT INTO hydrate_reminders (hour, minute, enabled) VALUES (?, ?, 1)",
+                    arrayOf<Any>(h, 0)
+                )
+            }
         }
     }
 
