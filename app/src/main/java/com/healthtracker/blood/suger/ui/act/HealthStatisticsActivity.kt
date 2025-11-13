@@ -264,7 +264,7 @@ class HealthStatisticsActivity :
         }
         collectLatest(mViewModel.chartUiState) { state ->
             val hasData = chartManager.render(state)
-            mViewBind.chartView.isVisible = hasData
+//            mViewBind.chartView.isVisible = hasData
         }
         collectLatest(mViewModel.historyPreview) { records ->
             val items = records.mapNotNull { record ->
