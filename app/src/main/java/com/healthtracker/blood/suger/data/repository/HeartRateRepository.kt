@@ -48,6 +48,10 @@ class HeartRateRepository @Inject constructor(
         return getAllRecords()
     }
 
+    override fun getLatestRecords(limit: Int): Flow<List<HeartRateRecord>> {
+        return heartRateDao.getRecentRecords(limit)
+    }
+
     fun getChartHeartRateRecords(): Flow<List<HeartRateRecord>> = getChartRecords()
 
     override suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
@@ -110,6 +114,7 @@ class HeartRateRepository @Inject constructor(
     suspend fun getHeartRateRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<HeartRateRecord>> = getRecordsByTimeRange(startTime, endTime)
     fun getAllHeartRateRecords(): Flow<List<HeartRateRecord>> = getAllRecords()
     fun getRecentHeartRateRecords(days: Int = 7): Flow<List<HeartRateRecord>> = getRecentRecords(days)
+    fun getLatestHeartRateRecords(limit: Int = 7): Flow<List<HeartRateRecord>> = getLatestRecords(limit)
     fun getTodayHeartRateRecords(): Flow<List<HeartRateRecord>> = getTodayRecords()
     fun getThisWeekHeartRateRecords(): Flow<List<HeartRateRecord>> = getThisWeekRecords()
 

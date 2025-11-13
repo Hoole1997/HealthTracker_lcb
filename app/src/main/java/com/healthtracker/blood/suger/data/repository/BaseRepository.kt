@@ -95,7 +95,14 @@ abstract class BaseRepository<T, D> {
         val (startDate, endDate) = DateTimeUtils.getDateRange(DateTimeUtils.now(), days)
         return getRecordsByTimeRange(startDate, endDate)
     }
-    
+
+    /**
+     * 获取最近N条记录（按记录数量而非天数）
+     * @param limit 记录数量限制
+     * @return Flow形式的记录列表
+     */
+    abstract fun getLatestRecords(limit: Int): Flow<List<T>>
+
     /**
      * 获取今天的记录
      * @return Flow形式的记录列表

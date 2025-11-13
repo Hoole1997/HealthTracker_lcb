@@ -128,7 +128,7 @@ interface BloodSugarDao {
      * @param limit 记录数量限制
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records ORDER BY record_time DESC LIMIT :limit")
+    @Query("SELECT * FROM blood_sugar_records ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
     fun getRecentRecords(limit: Int): Flow<List<BloodSugarRecord>>
 
     /**

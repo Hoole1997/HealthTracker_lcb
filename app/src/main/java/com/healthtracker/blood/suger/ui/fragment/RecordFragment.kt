@@ -39,14 +39,17 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
     override fun initView(savedInstanceState: Bundle?) {
         // 初始化图表管理器
         chartManager = chartManagerFactory.create(mViewBind!!.bsChartView, viewLifecycleOwner)
-        
+
         // 设置按钮点击事件
         mViewBind?.run {
             llBpHistory.clickWithDuration {
                 HistoryRecordActivity.start(requireActivity(),HistoryRecordItem.RecordType.BLOOD_PRESSURE)
             }
         }
-        
+
+        // 启动数据观察
+        mViewModel.startObservingData()
+
         // 观察图表数据
         observeChartData()
     }

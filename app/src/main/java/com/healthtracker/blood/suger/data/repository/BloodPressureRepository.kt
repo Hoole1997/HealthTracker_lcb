@@ -53,7 +53,11 @@ class BloodPressureRepository @Inject constructor(
     override fun getChartRecords(): Flow<List<BloodPressureRecord>> {
         return bloodPressureDao.getChartRecords()
     }
-    
+
+    override fun getLatestRecords(limit: Int): Flow<List<BloodPressureRecord>> {
+        return bloodPressureDao.getRecentRecords(limit)
+    }
+
     override suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
         return bloodPressureDao.updateChartVisibility(recordId, showInChart) > 0
     }
@@ -143,6 +147,7 @@ class BloodPressureRepository @Inject constructor(
 
     // 时间范围查询的公共API方法，委托给基类实现
     fun getRecentBloodPressureRecords(days: Int = 7): Flow<List<BloodPressureRecord>> = getRecentRecords(days)
+    fun getLatestBloodPressureRecords(limit: Int = 7): Flow<List<BloodPressureRecord>> = getLatestRecords(limit)
     fun getTodayBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getTodayRecords()
     fun getThisWeekBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getThisWeekRecords()
     fun getChartBloodPressureRecords(): Flow<List<BloodPressureRecord>> = getChartRecords()

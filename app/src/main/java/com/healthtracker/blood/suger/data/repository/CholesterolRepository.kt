@@ -43,6 +43,10 @@ class CholesterolRepository @Inject constructor(
         return getAllRecords()
     }
 
+    override fun getLatestRecords(limit: Int): Flow<List<CholesterolRecord>> {
+        return cholesterolDao.getRecentRecords(limit)
+    }
+
     override suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
         return true
     }
@@ -107,6 +111,8 @@ class CholesterolRepository @Inject constructor(
     suspend fun updateCholesterolRecord(record: CholesterolRecord): Int = updateRecord(record)
     suspend fun deleteCholesterolRecord(recordId: Long): Int = deleteRecordById(recordId)
     suspend fun getLatestRecord(): CholesterolRecord? = dao.getLatestRecord()
+    fun getRecentCholesterolRecords(days: Int = 7): Flow<List<CholesterolRecord>> = getRecentRecords(days)
+    fun getLatestCholesterolRecords(limit: Int = 7): Flow<List<CholesterolRecord>> = getLatestRecords(limit)
     suspend fun getCholesterolRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<CholesterolRecord>> = getRecordsByTimeRange(startTime, endTime)
 
     /**

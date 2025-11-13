@@ -95,7 +95,11 @@ class BloodSugarRepository @Inject constructor(
     override fun getChartRecords(): Flow<List<BloodSugarRecord>> {
         return bloodSugarDao.getChartRecords()
     }
-    
+
+    override fun getLatestRecords(limit: Int): Flow<List<BloodSugarRecord>> {
+        return bloodSugarDao.getRecentRecords(limit)
+    }
+
     override suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
         return bloodSugarDao.updateChartVisibility(recordId, showInChart) > 0
     }
@@ -141,6 +145,7 @@ class BloodSugarRepository @Inject constructor(
 
     // 公共API方法，委托给基类实现
     fun getRecentBloodSugarRecords(days: Int = 7): Flow<List<BloodSugarRecord>> = getRecentRecords(days)
+    fun getLatestBloodSugarRecords(limit: Int = 7): Flow<List<BloodSugarRecord>> = getLatestRecords(limit)
     fun getTodayBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getTodayRecords()
     fun getThisWeekBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getThisWeekRecords()
     fun getChartBloodSugarRecords(): Flow<List<BloodSugarRecord>> = getChartRecords()

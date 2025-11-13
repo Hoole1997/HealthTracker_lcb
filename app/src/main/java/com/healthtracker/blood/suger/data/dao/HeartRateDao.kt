@@ -50,6 +50,14 @@ interface HeartRateDao {
     )
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<HeartRateRecord>>
 
+    /**
+     * 获取最近N条心率记录
+     * @param limit 记录数量限制
+     * @return Flow形式的心率记录列表
+     */
+    @Query("SELECT * FROM heart_rate_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
+    fun getRecentRecords(limit: Int): Flow<List<HeartRateRecord>>
+
     /** 软删除 */
     @Query("UPDATE heart_rate_records SET is_delete = 1, updated_at = :updatedAt WHERE id = :id")
     suspend fun softDeleteById(id: Long, updatedAt: Long = System.currentTimeMillis()): Int

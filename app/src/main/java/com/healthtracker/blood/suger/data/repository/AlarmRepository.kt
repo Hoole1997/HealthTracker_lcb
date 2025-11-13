@@ -76,7 +76,12 @@ class AlarmRepository @Inject constructor(
         // 闹钟不需要图表显示，返回启用的记录
         return getEnabledRecords()
     }
-    
+
+    override fun getLatestRecords(limit: Int): Flow<List<AlarmRecord>> {
+        // 闹钟不需要按记录数量查询，返回所有记录
+        return getAllRecords()
+    }
+
     override suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
         // 闹钟不需要图表显示功能，直接返回true
         return true

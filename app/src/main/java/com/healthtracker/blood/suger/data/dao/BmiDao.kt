@@ -36,6 +36,14 @@ interface BmiDao {
     @Query("SELECT * FROM bmi_records WHERE is_delete = 0 AND record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC, updated_at DESC")
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BmiRecord>>
 
+    /**
+     * 获取最近N条BMI记录
+     * @param limit 记录数量限制
+     * @return Flow形式的BMI记录列表
+     */
+    @Query("SELECT * FROM bmi_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
+    fun getRecentRecords(limit: Int): Flow<List<BmiRecord>>
+
     /** 按标签ID模糊查询（过滤已删除） */
     @Query("SELECT * FROM bmi_records WHERE is_delete = 0 AND tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC")
     suspend fun getRecordsByTagId(tagId: String): List<BmiRecord>

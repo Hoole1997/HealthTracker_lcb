@@ -45,6 +45,14 @@ interface CholesterolDao {
     )
     suspend fun getRecordsByTagId(tagId: String): List<CholesterolRecord>
 
+    /**
+     * 获取最近N条胆固醇记录
+     * @param limit 记录数量限制
+     * @return Flow形式的胆固醇记录列表
+     */
+    @Query("SELECT * FROM cholesterol_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
+    fun getRecentRecords(limit: Int): Flow<List<CholesterolRecord>>
+
     @Query("UPDATE cholesterol_records SET is_delete = 1, updated_at = :updatedAt WHERE id = :id")
     suspend fun softDeleteById(id: Long, updatedAt: Long = System.currentTimeMillis()): Int
 

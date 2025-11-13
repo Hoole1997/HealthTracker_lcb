@@ -2,7 +2,6 @@ package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
-import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.ui.chart.ChartDataSet
 import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
@@ -12,78 +11,64 @@ import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class TrackerViewModel @Inject constructor(private val bsRepository: BloodSugarRepository) :
     BaseViewModel() {
 
-    // 图表数据状态
-    private val _chartUiState = MutableStateFlow(ChartUiState())
-    val chartUiState: StateFlow<ChartUiState> = _chartUiState
-
-    // 加载状态
-
-    // 日期格式化器
-    private val chartLabelFormatter = SimpleDateFormat("M/d", Locale.getDefault())
-
-    init {
-        loadBloodSugarChartData()
+    companion object {
+        /** 图表显示的记录数量 */
+        private const val CHART_RECORDS_LIMIT = 7
     }
 
+    // 私有：接收数据库变化
+    private val _records = MutableStateFlow<List<BloodSugarRecord>>(emptyList())
+
+    // 公开：转换后的图表状态
+    val chartUiState: StateFlow<ChartUiState> = _records
+        .map { records -> buildBloodSugarChart(records) }
+        .stateIn(viewModelScope, SharingStarted.Lazily, ChartUiState())
+
+    // 观察标记：防止重复订阅
+    private var isObserving = false
+
     /**
-     * 加载最近7条血糖图表数据
+     * 开始观察数据（由 Fragment 可见时调用）
      */
-    fun loadBloodSugarChartData() {
+    fun startObservingData() {
+        if (isObserving) return
+        isObserving = true
+
         viewModelScope.launch {
-            try {
-                // 获取用户选择的单位
-                val unit = BsUnit.getPreferredUnit()
-                
-                // 查询最近7条血糖记录
-                bsRepository.getRecentRecords(7)
-                    .catch { e ->
-                        _chartUiState.value = ChartUiState()
-                    }
-                    .collect { records ->
-                        _chartUiState.value = buildBloodSugarChart(records, unit)
-                    }
-            } catch (e: Exception) {
-                _chartUiState.value = ChartUiState()
-            }
+            bsRepository.getLatestBloodSugarRecords(CHART_RECORDS_LIMIT)
+                .collect { records ->
+                    _records.value = records
+                }
         }
     }
 
     /**
      * 构建血糖图表数据
      */
-    private fun buildBloodSugarChart(records: List<BloodSugarRecord>, unit: BsUnit): ChartUiState {
+    private fun buildBloodSugarChart(records: List<BloodSugarRecord>): ChartUiState {
         if (records.isEmpty()) {
             return ChartUiState()
         }
-        
-        // 按时间排序（升序）
-        val sorted = records.sortedWith(
-            compareBy<BloodSugarRecord> { it.recordTime.time }.thenBy { it.updatedAt }
-        )
-        
-        // 构建标签和数据
-        val labels = sorted.map { chartLabelFormatter.format(it.recordTime) }
+
+        // 反转顺序：数据库已按 DESC 排序，图表需要 ASC 显示
+        val sorted = records.reversed()
+
+        // 简单数字标签
+        val labels = sorted.indices.map { (it + 1).toString() }
         val xValues = sorted.indices.map { it.toFloat() }
-        val yValues = sorted.map { record ->
-            // 转换为用户选择的单位
-            unit.convertFromMgdl(record.glucoseValue).toFloat()
-        }
-        
+        val yValues = sorted.map { it.glucoseValue.toFloat() }
+
         return ChartUiState(
             labels = labels,
             dataSets = listOf(
@@ -91,7 +76,7 @@ class TrackerViewModel @Inject constructor(private val bsRepository: BloodSugarR
                     id = ChartSeriesIds.BS_GLUCOSE,
                     xValues = xValues,
                     yValues = yValues,
-                    label = unit.displayName,
+                    label = "Blood Sugar",
                     style = LineStyle(color = ChartPalette.lineBloodSugar)
                 )
             )

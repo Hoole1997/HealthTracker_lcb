@@ -51,6 +51,10 @@ class BmiRepository @Inject constructor(
         return getAllRecords()
     }
 
+    override fun getLatestRecords(limit: Int): Flow<List<BmiRecord>> {
+        return bmiDao.getRecentRecords(limit)
+    }
+
     override suspend fun updateChartVisibility(recordId: Long, showInChart: Boolean): Boolean {
         // BMI 暂不支持图表显示字段，返回true表示调用成功但不做任何更改
         return true
@@ -118,6 +122,7 @@ class BmiRepository @Inject constructor(
     suspend fun insertBmiRecord(record: BmiRecord): Long = insertRecord(record)
     fun getAllBmiRecords(): Flow<List<BmiRecord>> = getAllRecords()
     fun getRecentBmiRecords(days: Int = 7): Flow<List<BmiRecord>> = getRecentRecords(days)
+    fun getLatestBmiRecords(limit: Int = 7): Flow<List<BmiRecord>> = getLatestRecords(limit)
     fun getTodayBmiRecords(): Flow<List<BmiRecord>> = getTodayRecords()
     fun getThisWeekBmiRecords(): Flow<List<BmiRecord>> = getThisWeekRecords()
     fun getChartBmiRecords(): Flow<List<BmiRecord>> = getChartRecords()
