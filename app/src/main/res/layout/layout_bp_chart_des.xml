@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/dp_16"
+    android:gravity="end|center_vertical">
+
+    <View
+        android:layout_width="@dimen/dp_6"
+        android:layout_height="@dimen/dp_6"
+        android:background="@drawable/bg_rect_white_12"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:backgroundTint="@color/chart_line_bp_systolic"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:textSize="@dimen/sp_11"
+        android:textColor="@color/color_999"
+        style="@style/TextViewFont_RobotoRegular"
+        android:text="@string/systolic"/>
+
+    <View
+        android:layout_width="@dimen/dp_6"
+        android:layout_height="@dimen/dp_6"
+        android:background="@drawable/bg_rect_white_12"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:backgroundTint="@color/chart_line_bp_diastolic"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_11"
+        android:textColor="@color/color_999"
+        style="@style/TextViewFont_RobotoRegular"
+        android:text="@string/diastolic"/>
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -229,43 +229,10 @@
                 android:background="@drawable/bg_rect_white_12"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/ll_line_des"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/dp_16"
-                    android:gravity="end|center_vertical"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <View
-                        android:layout_width="@dimen/dp_6"
-                        android:layout_height="@dimen/dp_6"
-                        android:background="@drawable/bg_rect_white_12"
-                        android:layout_marginEnd="@dimen/dp_4"
-                        android:backgroundTint="@color/chart_line_bp_systolic"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_10"
-                        android:textSize="@dimen/sp_11"
-                        android:textColor="@color/color_999"
-                        style="@style/TextViewFont_RobotoRegular"
-                        android:text="@string/systolic"/>
-
-                    <View
-                        android:layout_width="@dimen/dp_6"
-                        android:layout_height="@dimen/dp_6"
-                        android:background="@drawable/bg_rect_white_12"
-                        android:layout_marginEnd="@dimen/dp_4"
-                        android:backgroundTint="@color/chart_line_bp_diastolic"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/sp_11"
-                        android:textColor="@color/color_999"
-                        style="@style/TextViewFont_RobotoRegular"
-                        android:text="@string/diastolic"/>
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                <include
+                    android:id="@+id/ll_bp_line_des"
+                    layout="@layout/layout_bp_chart_des"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
                     android:id="@+id/chart_view"
@@ -276,7 +243,7 @@
                     tools:previewMaxY="300"
                     tools:previewMaxX="7"
                     tools:chartStyle="@style/BloodPressureChartStyle"
-                    app:layout_constraintTop_toBottomOf="@id/ll_line_des"/>
+                    app:layout_constraintTop_toBottomOf="@id/ll_bp_line_des"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 

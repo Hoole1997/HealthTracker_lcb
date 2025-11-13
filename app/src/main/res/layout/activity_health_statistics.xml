@@ -30,6 +30,7 @@
 
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title"
             style="@style/TextViewFont_RobotoBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -262,16 +263,35 @@
                     android:visibility="gone"/>
 
 
-                <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
-                    android:id="@+id/chart_view"
+
+
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_240"
-                    app:layout_constraintTop_toBottomOf="@id/tv_max_value"
-                    tools:chartStyle="@style/BloodPressureChartStyle"
-                    tools:previewLineSeriesCount="2"
-                    tools:previewMaxX="7"
-                    tools:previewMaxY="300" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/tv_max_value">
+                    <include
+                        android:id="@+id/ll_bp_chart_des"
+                        layout="@layout/layout_bp_chart_des"
+                        android:visibility="gone"/>
+                    <include
+                        android:id="@+id/ll_cho_chart_des"
+                        layout="@layout/layout_cho_chart_des"
+                     android:visibility="gone"/>
+                    <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
+                        android:id="@+id/chart_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_240"
+                        tools:chartStyle="@style/BloodPressureChartStyle"
+                        tools:previewLineSeriesCount="2"
+                        tools:previewMaxX="7"
+                        tools:previewMaxY="300" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
             <androidx.constraintlayout.widget.ConstraintLayout

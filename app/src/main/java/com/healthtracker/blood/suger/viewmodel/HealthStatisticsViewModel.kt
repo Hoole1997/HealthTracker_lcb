@@ -2,6 +2,8 @@ package com.healthtracker.blood.suger.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.healthtracker.blood.suger.App
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.CholesterolRecord
@@ -423,8 +425,9 @@ class HealthStatisticsViewModel @Inject constructor(
     }
 
     private fun buildBpStats(records: List<BloodPressureRecord>, dimension: StatisticDimension): StatsUiState {
+        val unit = App.INSTANCE.getString(R.string.mmHg)
         if (records.isEmpty()) {
-            return StatsUiState(unitLabel = "mmHg")
+            return StatsUiState(unitLabel = unit)
         }
 
         val systolicValues = records.map { it.systolicPressure }
@@ -453,14 +456,15 @@ class HealthStatisticsViewModel @Inject constructor(
             avgValue = sys.toString(),
             minValue = dia.toString(),
             maxValue = pulse.toString(),
-            unitLabel = "mmHg",
+            unitLabel = unit,
             hasData = true
         )
     }
 
     private fun buildCholStats(records: List<CholesterolRecord>, dimension: StatisticDimension): StatsUiState {
+        val unit = App.INSTANCE.getString(R.string.mg_dl)
         if (records.isEmpty()) {
-            return StatsUiState(unitLabel = "mg/dL")
+            return StatsUiState(unitLabel = unit)
         }
 
         val tgValues = records.map { it.triglyceride }
@@ -486,17 +490,18 @@ class HealthStatisticsViewModel @Inject constructor(
         }
 
         return StatsUiState(
-            avgValue = tg.toString(),
+            avgValue = hdl.toString(),
             minValue = ldl.toString(),
-            maxValue = hdl.toString(),
-            unitLabel = "mg/dL",
+            maxValue = tg.toString(),
+            unitLabel = unit,
             hasData = true
         )
     }
 
     private fun buildHrStats(records: List<HeartRateRecord>): StatsUiState {
+        val unit = App.INSTANCE.getString(R.string.bpm)
         if (records.isEmpty()) {
-            return StatsUiState(unitLabel = "BPM")
+            return StatsUiState(unitLabel = unit)
         }
 
         val hrValues = records.map { it.heartRateBpm }
@@ -508,7 +513,7 @@ class HealthStatisticsViewModel @Inject constructor(
             avgValue = avg.toString(),
             minValue = min.toString(),
             maxValue = max.toString(),
-            unitLabel = "BPM",
+            unitLabel = unit,
             hasData = true
         )
     }
@@ -527,13 +532,15 @@ class HealthStatisticsViewModel @Inject constructor(
         val max = bmiValues.maxOrNull() ?: 0.0
 
         return StatsUiState(
-            avgValue = String.format("%.1f", avg),
-            minValue = String.format("%.1f", min),
-            maxValue = String.format("%.1f", max),
+            avgValue = formatValue(avg),
+            minValue = formatValue(min),
+            maxValue = formatValue(max),
             unitLabel = "",
             hasData = true
         )
     }
+
+    private fun formatValue(source: Double) = String.format(Locale.getDefault(),"%.1f",source)
 
     private fun buildBsChart(records: List<BloodSugarRecord>, unit: BsUnit): ChartUiState {
         if (records.isEmpty()) {
@@ -669,7 +676,8 @@ class HealthStatisticsViewModel @Inject constructor(
         val xValues = sorted.indices.map { it.toFloat() }
         val yValues = sorted.map {
             val heightM = it.heightCm / 100.0
-            (it.weightKg / (heightM * heightM)).toFloat()
+            formatValue( (it.weightKg / (heightM * heightM))).toFloat()
+
         }
 
         return ChartUiState(

@@ -32,7 +32,9 @@ import com.healthtracker.blood.suger.viewmodel.StatisticDimension
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
+import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.getRobotoMedium
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
@@ -339,6 +341,18 @@ class HealthStatisticsActivity :
     private fun updateUIForMetricType(metricType: HealthMetric) {
         when (metricType) {
             HealthMetric.BLOOD_SUGAR, HealthMetric.HEART_RATE, HealthMetric.BMI -> {
+                val titleRes = when (metricType) {
+                    HealthMetric.HEART_RATE -> {
+                        R.string.heart_rate
+                    }
+                    HealthMetric.BMI -> {
+                        R.string.weight_and_bmi
+                    }
+                    else -> {
+                        R.string.blood_suger
+                    }
+                }
+                mViewBind.tvTitle.text = getString(titleRes)
                 // 显示 Avg/Min/Max，绿色
                 mViewBind.tvAvg.text = getString(R.string.avg)
                 mViewBind.tvMin.text = getString(R.string.min)
@@ -350,28 +364,34 @@ class HealthStatisticsActivity :
                 mViewBind.tvMax.setTextColor(greenColor)
             }
             HealthMetric.BLOOD_PRESSURE -> {
+                mViewBind.tvTitle.text = getString(R.string.blood_pressure)
                 mViewBind.tvFilterStatu.setTypeface(getRobotoMedium(this))
                 // 显示 Systolic/Diastolic/Pulse，灰色
                 mViewBind.tvAvg.text = getString(R.string.systolic)
                 mViewBind.tvMin.text = getString(R.string.diastolic)
                 mViewBind.tvMax.text = getString(R.string.pulse)
 
-                val grayColor = ContextCompat.getColor(this,R.color.color_999)
-                mViewBind.tvAvg.setTextColor(grayColor)
-                mViewBind.tvMin.setTextColor(grayColor)
-                mViewBind.tvMax.setTextColor(grayColor)
-            }
-            HealthMetric.CHOLESTEROL -> {
-                mViewBind.tvFilterStatu.setTypeface(getRobotoMedium(this))
-                // 显示 TG/LDL/HDL，灰色
-                mViewBind.tvAvg.text = getString(R.string.tg)
-                mViewBind.tvMin.text = getString(R.string.ldl)
-                mViewBind.tvMax.text = getString(R.string.hdl)
 
                 val grayColor = ContextCompat.getColor(this,R.color.color_999)
                 mViewBind.tvAvg.setTextColor(grayColor)
                 mViewBind.tvMin.setTextColor(grayColor)
                 mViewBind.tvMax.setTextColor(grayColor)
+                mViewBind.llBpChartDes.root.visible()
+            }
+            HealthMetric.CHOLESTEROL -> {
+                mViewBind.tvTitle.text = getString(R.string.cholesterol)
+                mViewBind.tvFilterStatu.setTypeface(getRobotoMedium(this))
+                // 显示 TG/LDL/HDL，灰色
+                mViewBind.tvAvg.text = getString(R.string.hdl)
+                mViewBind.tvMin.text = getString(R.string.ldl)
+                mViewBind.tvMax.text = getString(R.string.tg)
+
+                val grayColor = ContextCompat.getColor(this,R.color.color_999)
+                mViewBind.tvAvg.setTextColor(grayColor)
+                mViewBind.tvMin.setTextColor(grayColor)
+                mViewBind.tvMax.setTextColor(grayColor)
+                mViewBind.llChoChartDes.root.visible()
+
             }
             else -> {
                 // 其他指标默认显示 Avg/Min/Max
