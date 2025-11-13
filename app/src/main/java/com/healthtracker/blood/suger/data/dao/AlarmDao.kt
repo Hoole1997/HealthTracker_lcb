@@ -90,6 +90,16 @@ interface AlarmDao {
     fun getRecordsByType(type: Int): Flow<List<AlarmRecord>>
 
     /**
+     * 根据类型与具体时间获取闹钟记录
+     * @param type 闹钟类型
+     * @param hour 小时
+     * @param minute 分钟
+     * @return 匹配的闹钟记录列表
+     */
+    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 AND type = :type AND hour = :hour AND minute = :minute")
+    suspend fun getRecordsByTypeAndTime(type: Int, hour: Int, minute: Int): List<AlarmRecord>
+
+    /**
      * 根据时间范围获取闹钟记录
      * @param startHour 开始小时
      * @param endHour 结束小时

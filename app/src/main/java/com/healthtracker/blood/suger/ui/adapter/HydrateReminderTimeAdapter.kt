@@ -21,6 +21,21 @@ class HydrateReminderTimeAdapter(
     private var showDelete: Boolean = false
     private val enabledStates: MutableList<Boolean> = MutableList(times.size) { false }
 
+    /**
+     * 保证 enabledStates 与 times 尺寸一致，避免绑定时越界。
+     */
+    private fun ensureEnabledStatesSize() {
+        val diff = times.size - enabledStates.size
+        if (diff > 0) {
+            repeat(diff) { enabledStates.add(false) }
+        } else if (diff < 0) {
+            // 若状态数组比数据更长，裁剪掉多余部分
+            repeat(-diff) {
+                if (enabledStates.isNotEmpty()) enabledStates.removeAt(enabledStates.lastIndex)
+            }
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_hydrate_setting_reminder_time, parent, false)
@@ -28,14 +43,24 @@ class HydrateReminderTimeAdapter(
     }
 
     override fun onBindViewHolder(holder: TimeViewHolder, position: Int) {
+        // 绑定前同步状态数组大小
+        ensureEnabledStatesSize()
         val t = times[position]
         holder.tvTime.text = t
         holder.imgDelete.visibility = if (showDelete) View.VISIBLE else View.GONE
         // 根据当前启用状态更新开关图片
-        holder.switchReminder.isSelected = enabledStates[position]
+        holder.switchReminder.isSelected = enabledStates.getOrNull(position) ?: false
         holder.switchReminder.setOnClickListener {
-            val newState = !enabledStates[position]
-            enabledStates[position] = newState
+            val pos = holder.bindingAdapterPosition
+            if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
+            ensureEnabledStatesSize()
+            val current = enabledStates.getOrNull(pos) ?: false
+            val newState = !current
+            if (pos >= enabledStates.size) {
+                // 保险：扩容到当前位置
+                repeat(pos - enabledStates.size + 1) { enabledStates.add(false) }
+            }
+            enabledStates[pos] = newState
             holder.switchReminder.isSelected = newState
         }
 

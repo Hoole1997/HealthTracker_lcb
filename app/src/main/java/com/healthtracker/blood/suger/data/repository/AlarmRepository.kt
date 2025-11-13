@@ -245,6 +245,14 @@ class AlarmRepository @Inject constructor(
     }
 
     /**
+     * 获取饮水提醒
+     * @return Flow形式的饮水提醒列表
+     */
+    fun getHydrationReminders(): Flow<List<AlarmRecord>> {
+        return alarmDao.getRecordsByType(AlarmRecord.TYPE_HYDRATION)
+    }
+
+    /**
      * 获取重复闹钟记录
      * @return Flow形式的重复闹钟记录列表
      */
@@ -337,6 +345,13 @@ class AlarmRepository @Inject constructor(
     }
 
     /**
+     * 按类型与时间获取闹钟记录
+     */
+    suspend fun getRecordsByTypeAndTime(type: Int, hour: Int, minute: Int): List<AlarmRecord> {
+        return alarmDao.getRecordsByTypeAndTime(type, hour, minute)
+    }
+
+    /**
      * 获取下一个即将触发的闹钟
      * @return 下一个闹钟记录，可能为null
      */
@@ -360,6 +375,7 @@ class AlarmRepository @Inject constructor(
         val bloodSugarCount = alarmDao.getRecordCountByType(AlarmRecord.TYPE_BLOOD_SUGAR)
         val bloodPressureCount = alarmDao.getRecordCountByType(AlarmRecord.TYPE_BLOOD_PRESSURE)
         val medicationCount = alarmDao.getRecordCountByType(AlarmRecord.TYPE_MEDICATION)
+        // 饮水提醒统计暂不用于现有UI，如后续需要可在此处扩展
         
         return AlarmStatistics(
             totalCount = totalCount,
@@ -369,6 +385,18 @@ class AlarmRepository @Inject constructor(
             bloodPressureReminderCount = bloodPressureCount,
             medicationReminderCount = medicationCount
         )
+    }
+
+    /**
+     * 添加饮水提醒
+     */
+    suspend fun addHydrationReminder(
+        hour: Int,
+        minute: Int,
+        repeatFlag: Int = AlarmRecord.REPEAT_DAILY
+    ): Long {
+        val record = AlarmRecord.createHydrationReminder(hour, minute, repeatFlag)
+        return alarmDao.insert(record)
     }
 
     /**

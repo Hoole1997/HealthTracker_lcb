@@ -292,6 +292,9 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
             HealthServiceConstants.ACTION_VALUE_HEART_RATE -> {
                 startActivity<HeartRateRecordActivity>()
             }
+            HealthServiceConstants.ACTION_VALUE_HYDRATION -> {
+                startActivity<HydrateActivity>()
+            }
             // 自定义通知的新增动作处理分支
             HealthServiceConstants.ACTION_VALUE_HOMEPAGE -> {
                 // 已在主页，无需跳转

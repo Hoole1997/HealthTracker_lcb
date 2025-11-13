@@ -962,7 +962,6 @@
     <!-- 药物提醒通知相关字符串 -->
     <string name="medication_reminder_title">🔔 Medication Reminder</string>
     <string name="medication_reminder_content">It is time for your medication, please take it on time and take good care of yourself.</string>
-    <string name="medication_notification_title_with_time">%1$s at %2$s</string>
 
     <!-- FSI权限对话框字符串 -->
     <string name="fsi_permission_title">💊 Don’t Worry, We’ve Got You Covered ❤️</string>
@@ -1233,5 +1232,9 @@ healthcare provider or medical institution.</string>
     <string name="back_to_today">BACK TO TODAY</string>
     <string name="hydrate_reminder_exist">The reminder time has already been set.</string>
     <string name="hydrate_reminder_empty_message">You haven‘t set any water reminders yet. Start building your hydration habit by adding your first reminder!</string>
+    <!-- Hydration alarm -->
+    <string name="alarm_hydration_content">It’s time to drink water!</string>
+    <string name="drink_now">View Now</string>
+    <string name="medication_notification_title_with_time">%1$s at %2$s</string>
 
 </resources>

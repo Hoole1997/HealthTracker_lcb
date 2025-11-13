@@ -274,6 +274,13 @@ class AlarmNotificationManager @Inject constructor(
                     context.getString(R.string.take_now)
                 )
             }
+            AlarmRecord.TYPE_HYDRATION -> {
+                Triple(
+                    alarmRecord.getFormattedTime(),
+                    context.getString(R.string.alarm_hydration_content),
+                    context.getString(R.string.drink_now)
+                )
+            }
             else -> {
                 // 默认使用健康提醒
                 Triple(
@@ -311,6 +318,7 @@ class AlarmNotificationManager @Inject constructor(
             AlarmRecord.TYPE_BLOOD_SUGAR -> HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR
             AlarmRecord.TYPE_BLOOD_PRESSURE -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
             AlarmRecord.TYPE_MEDICATION -> HealthServiceConstants.ACTION_VALUE_MEDICATION
+            AlarmRecord.TYPE_HYDRATION -> HealthServiceConstants.ACTION_VALUE_HYDRATION
             else -> null
         }
 
@@ -586,6 +594,13 @@ class AlarmNotificationManager @Inject constructor(
             background = R.drawable.bg_rect_white_12,
             largeIcon = R.drawable.ic_remind_notify,
             decorIcon = R.mipmap.ic_meds_notify,
+            btnTextColor = com.healthtracker.framework.R.color.white
+        )
+        AlarmRecord.TYPE_HYDRATION -> NotificationResources(
+            smallIcon = R.drawable.ic_notification_bs,
+            background = R.drawable.bg_rect_white_12,
+            largeIcon = R.drawable.ic_remind_notify,
+            decorIcon = R.mipmap.ic_hydrate_noti,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         else -> null

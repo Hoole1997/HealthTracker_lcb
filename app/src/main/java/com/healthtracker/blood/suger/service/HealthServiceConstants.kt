@@ -33,4 +33,5 @@ object HealthServiceConstants {
     const val ACTION_VALUE_BMI = "bmi"
     const val ACTION_VALUE_HISTORY = "history"
     const val ACTION_VALUE_MEDICATION = "medication"
+    const val ACTION_VALUE_HYDRATION = "hydration"
 }

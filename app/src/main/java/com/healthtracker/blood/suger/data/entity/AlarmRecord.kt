@@ -256,6 +256,7 @@ data class AlarmRecord(
         const val TYPE_BLOOD_SUGAR = 0     // 血糖测量提醒
         const val TYPE_BLOOD_PRESSURE = 1  // 血压测量提醒
         const val TYPE_MEDICATION = 2      // 服药提醒
+        const val TYPE_HYDRATION = 3       // 饮水提醒
         
         /**
          * 重复模式常量
@@ -363,6 +364,27 @@ data class AlarmRecord(
                 minute = minute,
                 repeatFlag = repeatFlag,
                 vibrateTime = 3000 // 默认振动3秒
+            )
+        }
+
+        /**
+         * 创建饮水提醒
+         * @param hour 小时
+         * @param minute 分钟
+         * @param repeatFlag 重复标志
+         * @return 饮水提醒闹钟记录
+         */
+        fun createHydrationReminder(
+            hour: Int,
+            minute: Int,
+            repeatFlag: Int = REPEAT_DAILY
+        ): AlarmRecord {
+            return create(
+                type = TYPE_HYDRATION,
+                hour = hour,
+                minute = minute,
+                repeatFlag = repeatFlag,
+                vibrateTime = 1500 // 默认振动1.5秒
             )
         }
 
