@@ -20,6 +20,7 @@ import com.patrykandpatrick.vico.core.cartesian.layer.CartesianLayerPadding
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerController
+import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibilityListener
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.cartesian.marker.Interaction
 import com.patrykandpatrick.vico.core.common.Fill
@@ -66,7 +67,6 @@ private const val BASELINE_GAP_LENGTH = 4f
 
 // 默认文本配置
 private const val LABEL_TEXT_SIZE = 12f
-private const val BOTTOM_LABEL_TEXT_SIZE = 13f
 private const val LABEL_PADDING = 8f
 
 // 图层配置
@@ -96,83 +96,7 @@ private const val HORIZONTAL_LABEL_SPACING = 1
 
 class ChartConfigHelper {
 
-    // ==================== 默认配置常量 ====================
-
     companion object {
-
-        // ==================== 线条配置数据类 ====================
-
-
-
-        // ==================== 主要配置方法 ====================
-
-        /**
-         * 创建双折线图表
-         *
-         * @param line1Color 第一条线的颜色（默认橙红色）
-         * @param line2Color 第二条线的颜色（默认青色）
-         * @param line1Style 第一条线的完整样式配置（可选）
-         * @param line2Style 第二条线的完整样式配置（可选）
-         * @param axisStyle 坐标轴样式配置
-         * @param baselineStyle 基准线样式配置（null 表示不显示基准线）
-         * @param layerPaddingDp 图层内边距
-         * @param pointSpacingDp 数据点间距
-         *
-         * @return 配置好的 CartesianChart
-         */
-        fun createDualLineChart(
-            @ColorInt line1Color: Int = DEFAULT_LINE1_COLOR,
-            @ColorInt line2Color: Int = DEFAULT_LINE2_COLOR,
-            line1Style: LineStyle? = null,
-            line2Style: LineStyle? = null,
-            axisStyle: AxisStyle = AxisStyle(),
-            baselineStyle: BaselineStyle? = BaselineStyle(axisStyle.minY ?: 0.0),
-            layerPaddingDp: Float = LAYER_PADDING,
-            pointSpacingDp: Float = POINT_SPACING,
-            marker: CartesianMarker? = getDefaultMark()
-        ): CartesianChart {
-            // 使用传入的样式或创建默认样式
-            val style1 = line1Style ?: LineStyle(color = line1Color)
-            val style2 = line2Style ?: LineStyle(color = line2Color)
-
-            return createLineChart(
-                lineStyles = listOf(style1, style2),
-                axisStyle = axisStyle,
-                baselineStyle = baselineStyle,
-                layerPaddingDp = layerPaddingDp,
-                pointSpacingDp = pointSpacingDp,
-                marker = marker
-            )
-        }
-
-        /**
-         * 创建单折线图表
-         *
-         * @param lineColor 线条颜色
-         * @param lineStyle 完整的线条样式配置
-         * @param axisStyle 坐标轴样式配置
-         * @param baselineStyle 基准线样式配置
-         * @param layerPaddingDp 图层内边距
-         *
-         * @return 配置好的 CartesianChart
-         */
-        fun createSingleLineChart(
-            @ColorInt lineColor: Int = DEFAULT_LINE1_COLOR,
-            lineStyle: LineStyle? = null,
-            axisStyle: AxisStyle = AxisStyle(),
-            baselineStyle: BaselineStyle? = null,
-            layerPaddingDp: Float = LAYER_PADDING,
-            marker: CartesianMarker? = getDefaultMark()
-        ): CartesianChart {
-            val style = lineStyle ?: LineStyle(color = lineColor)
-            return createLineChart(
-                lineStyles = listOf(style),
-                axisStyle = axisStyle,
-                baselineStyle = baselineStyle,
-                layerPaddingDp = layerPaddingDp,
-                marker = marker
-            )
-        }
 
 
         private val tapOnlyMarkerController = object : CartesianMarkerController {
@@ -187,6 +111,9 @@ class ChartConfigHelper {
             ): Boolean = true      // 长按/点击后显示
         }
 
+        val interactiveMarker = ChartConfigHelper.getDefaultMark()
+        val defaultMarker = DefaultMarker(interactiveMarker)
+
         /**
          * 创建任意条折线的通用图表
          */
@@ -196,7 +123,10 @@ class ChartConfigHelper {
             baselineStyle: BaselineStyle? = BaselineStyle(axisStyle.minY ?: 0.0),
             layerPaddingDp: Float = LAYER_PADDING,
             pointSpacingDp: Float = POINT_SPACING,
-            marker: CartesianMarker? = getDefaultMark(),
+            marker: CartesianMarker? = interactiveMarker,
+            lastX : Double? = null,
+            isShowLabel: Boolean = true,
+            onInvalidate : (() -> Unit)? = null
         ): CartesianChart {
             val styles = if (lineStyles.isEmpty()) listOf(LineStyle(color = DEFAULT_LINE1_COLOR)) else lineStyles
 
@@ -206,8 +136,8 @@ class ChartConfigHelper {
                 axisStyle = axisStyle
             )
 
-            val startAxis = createStartAxis(axisStyle)
-            val bottomAxis = createBottomAxis(axisStyle)
+            val startAxis = createStartAxis(axisStyle,isShowLabel)
+            val bottomAxis = createBottomAxis(axisStyle,isShowLabel)
 
             val decorations = mutableListOf<HorizontalLine>()
             baselineStyle?.let { decorations.add(createBaseline(it)) }
@@ -223,8 +153,40 @@ class ChartConfigHelper {
                     )
                 },
                 decorations = decorations,
-                marker = marker,
+                marker = if(isShowLabel) marker else null,
                 markerController = tapOnlyMarkerController,
+            ).copy(
+                persistentMarkers = {
+                    if(isShowLabel){
+                        lastX?.let {
+                            defaultMarker at it
+                        }
+                    }
+                },
+                markerVisibilityListener = object : CartesianMarkerVisibilityListener{
+                    override fun onShown(
+                        marker: CartesianMarker,
+                        targets: List<CartesianMarker.Target>
+                    ) {
+                        update(targets)
+                    }
+
+                    override fun onHidden(marker: CartesianMarker) {
+
+                    }
+                    override fun onUpdated(
+                        marker: CartesianMarker,
+                        targets: List<CartesianMarker.Target>
+                    ) {
+                        update(targets)
+                    }
+                    fun update(targets: List<CartesianMarker.Target>) {
+                        defaultMarker.visible = targets.any { it.x == lastX }
+                        onInvalidate?.invoke()    // 直接重绘即可，persistentMarkers 不需要再执行
+                    }
+
+
+                }
             )
         }
 
@@ -285,12 +247,12 @@ class ChartConfigHelper {
         /**
          * 创建左侧坐标轴
          */
-        private fun createStartAxis(style: AxisStyle): VerticalAxis<Axis.Position.Vertical.Start> {
+        private fun createStartAxis(style: AxisStyle, isShowLabel: Boolean = true): VerticalAxis<Axis.Position.Vertical.Start> {
             return VerticalAxis.start(
                 line = null,
                 label = TextComponent(
                     color = style.labelColor,
-                    textSizeSp = style.labelTextSize,
+                    textSizeSp = if(isShowLabel) style.labelTextSize else 0f,
                     padding = Insets(endDp = LABEL_PADDING)
                 ),
                 tick = null,
@@ -317,7 +279,7 @@ class ChartConfigHelper {
         /**
          * 创建底部坐标轴
          */
-        private fun createBottomAxis(style: AxisStyle): HorizontalAxis<Axis.Position.Horizontal.Bottom> {
+        private fun createBottomAxis(style: AxisStyle, isShowLabel: Boolean = true): HorizontalAxis<Axis.Position.Horizontal.Bottom> {
 
             // 获取基础 formatter
             val baseFormatter = style.bottomAxisValueFormatter
@@ -334,7 +296,7 @@ class ChartConfigHelper {
                 line = null,
                 label = TextComponent(
                     color = style.labelColor,
-                    textSizeSp = BOTTOM_LABEL_TEXT_SIZE,
+                    textSizeSp = if(isShowLabel) style.labelTextSize else 0f,
                     padding = Insets(topDp = LABEL_PADDING)
                 ),
                 tick = null,
@@ -394,54 +356,6 @@ class ChartConfigHelper {
                     thicknessDp = 1f
                 )
             )
-
-        // ==================== 便捷方法 ====================
-
-        /**
-         * 创建血压监测图表（预设配置）
-         *
-         * @param systolicColor Systolic（收缩压）颜色，默认橙红色
-         * @param diastolicColor Diastolic（舒张压）颜色，默认青色
-         * @param showBaseline 是否显示 0 轴基准线
-         *
-         * @return 配置好的血压监测图表
-         */
-        fun createBloodPressureChart(
-            @ColorInt systolicColor: Int = DEFAULT_LINE1_COLOR,
-            @ColorInt diastolicColor: Int = DEFAULT_LINE2_COLOR,
-            showBaseline: Boolean = true
-        ): CartesianChart {
-            return createDualLineChart(
-                line1Color = systolicColor,
-                line2Color = diastolicColor,
-                baselineStyle = if (showBaseline) BaselineStyle() else null
-            )
-        }
-
-        /**
-         * 创建血糖监测图表（预设配置）
-         *
-         * @param glucoseColor 血糖线条颜色
-         * @param showBaseline 是否显示基准线
-         * @param baselineValue 基准线 Y 轴位置（如正常血糖值）
-         *
-         * @return 配置好的血糖监测图表
-         */
-        fun createBloodGlucoseChart(
-            @ColorInt glucoseColor: Int = ChartPalette.lineBloodSugar,
-            showBaseline: Boolean = true,
-            baselineValue: Double = 5.6  // 正常血糖参考值（若数据为 mg/dL，请传入换算后的值）
-        ): CartesianChart {
-
-            return createSingleLineChart(
-                lineColor = glucoseColor,
-                baselineStyle = if (showBaseline) {
-                    BaselineStyle(yValue = baselineValue)
-                } else {
-                    null
-                }
-            )
-        }
 
         fun computeNiceRange(
             series: List<List<Double>>,

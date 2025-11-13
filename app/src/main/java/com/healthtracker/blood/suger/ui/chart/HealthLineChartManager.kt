@@ -1,6 +1,5 @@
 package com.healthtracker.blood.suger.ui.chart
 
-import ads_mobile_sdk.up
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -8,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.healthtracker.blood.suger.util.AxisStyle
 import com.healthtracker.blood.suger.util.ChartConfigHelper
 import com.healthtracker.blood.suger.util.ChartPalette
-import com.healthtracker.blood.suger.util.DefaultMarker
 import com.healthtracker.blood.suger.util.LineStyle
 import com.patrykandpatrick.vico.core.cartesian.AutoScrollCondition
 import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
@@ -18,9 +16,6 @@ import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
-import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibilityListener
-import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.views.cartesian.CartesianChartView
 import com.patrykandpatrick.vico.views.cartesian.ScrollHandler
 import com.patrykandpatrick.vico.views.cartesian.ZoomHandler
@@ -68,14 +63,13 @@ class HealthLineChartManager @AssistedInject constructor(
         }
     }
 
-    val interactiveMarker = ChartConfigHelper.getDefaultMark()
-    val defaultMarker = DefaultMarker(interactiveMarker)
+
 
     /**
      * 渲染最新的图表数据
      * @return 是否存在可绘制的数据
      */
-   suspend fun render(state: ChartUiState): Boolean {
+   suspend fun render(state: ChartUiState,isShowLabel : Boolean = true): Boolean {
         if (isReleased) {
             Log.w(TAG, "Attempted to render on released manager, ignoring")
             return false
@@ -102,42 +96,11 @@ class HealthLineChartManager @AssistedInject constructor(
         chartView.chart = ChartConfigHelper.createLineChart(
             lineStyles = lineStyles,
             axisStyle = axisStyle,
-        ).copy(
-            marker = interactiveMarker,
-            persistentMarkers = {
-                lastX?.let {
-                    defaultMarker at it
-                }
-            },
-            markerVisibilityListener = object : CartesianMarkerVisibilityListener{
-                override fun onShown(
-                    marker: CartesianMarker,
-                    targets: List<CartesianMarker.Target>
-                ) {
-                    update(targets)
-                }
-
-                override fun onHidden(marker: CartesianMarker) {
-
-                }
-                override fun onUpdated(
-                    marker: CartesianMarker,
-                    targets: List<CartesianMarker.Target>
-                ) {
-                    update(targets)
-                }
-                fun update(targets: List<CartesianMarker.Target>) {
-                    defaultMarker.visible = targets.any { it.x == lastX }
-                    chartView.invalidate()    // 直接重绘即可，persistentMarkers 不需要再执行
-                }
-
-
-            }
-
-
-
-
-        )
+            lastX = lastX,
+            isShowLabel = isShowLabel
+        ){
+            chartView.invalidate()
+        }
 
         chartView.scrollHandler = ScrollHandler(
             initialScroll = Scroll.Absolute.End,
