@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.config
 import com.healthtracker.framework.util.SpUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlin.math.roundToInt
 
 /**
  * 饮水配置管理器
@@ -29,10 +30,14 @@ object HydrateSettingManager {
 
     // 供界面观察的单位流，单位变更后立即发出新值以触发 UI 更新
     private val cupUnitStateFlow: MutableStateFlow<CupUnit> = MutableStateFlow(DEFAULT_CUP_UNIT)
+    // 供界面观察的杯子容积流，容积变更后立即发出新值以触发 UI 更新（存储基准为 ml）
+    private val cupVolumeStateFlow: MutableStateFlow<Int> = MutableStateFlow(DEFAULT_CUP_VOLUME)
 
     init {
         // 初始化时同步持久化的单位到流
         cupUnitStateFlow.value = getCupUnit()
+        // 初始化时同步持久化的容积到流
+        cupVolumeStateFlow.value = getCupVolume()
     }
 
     /**
@@ -76,6 +81,7 @@ object HydrateSettingManager {
         val safe = volume.coerceAtLeast(1)
         cacheCupVolume = safe
         SpUtils.putInt(KEY_CUP_VOLUME, safe)
+        cupVolumeStateFlow.value = safe
     }
 
     /**
@@ -121,6 +127,11 @@ object HydrateSettingManager {
     fun cupUnitFlow(): StateFlow<CupUnit> = cupUnitStateFlow
 
     /**
+     * 杯子容积变更的观察流（单位为 ml，用于驱动 UI 的饮水按钮与步进）
+     */
+    fun cupVolumeFlow(): StateFlow<Int> = cupVolumeStateFlow
+
+    /**
      * 是否已设置过任意饮水配置
      */
     fun hasAnySetting(): Boolean {
@@ -145,14 +156,14 @@ object HydrateSettingManager {
     fun toMl(value: Int, unit: CupUnit): Int {
         return when (unit) {
             CupUnit.ML -> value
-            CupUnit.FL_OZ -> (value * ML_PER_FLOZ).toInt()
+            CupUnit.FL_OZ -> (value * ML_PER_FLOZ).roundToInt()
         }.coerceAtLeast(1)
     }
 
     fun fromMl(ml: Int, unit: CupUnit): Int {
         return when (unit) {
             CupUnit.ML -> ml
-            CupUnit.FL_OZ -> (ml / ML_PER_FLOZ).toInt()
+            CupUnit.FL_OZ -> (ml / ML_PER_FLOZ).roundToInt()
         }.coerceAtLeast(1)
     }
 

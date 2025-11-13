@@ -38,7 +38,7 @@ class HydrateRepository @Inject constructor(
         return hydrateDao.getAllRecords()
     }
 
-    override fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<HydrateRecord>> {
+    public override fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<HydrateRecord>> {
         return hydrateDao.getRecordsByTimeRange(startTime, endTime)
     }
 

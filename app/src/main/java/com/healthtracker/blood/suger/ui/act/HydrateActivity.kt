@@ -42,6 +42,11 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
             HydrateSettingActivity.start(this)
         }
 
+        // 周日期选择驱动按日查询
+        mViewBind.weeklyDateSelector.setOnDateSelectedListener { selectedDate ->
+            mViewModel.onDateSelected(selectedDate)
+        }
+
         // 配置 RecyclerView
         mViewBind.rcyHydrate.layoutManager = LinearLayoutManager(this)
         val adapter = HydrateAdapter(
@@ -65,8 +70,9 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
             mViewModel.todayTotalIntakeMl,
             mViewModel.todayRecordItems,
             mViewModel.todayDrinkCount,
-            HydrateSettingManager.cupUnitFlow()
-        ) { totalMl: Int, records: List<HydrateRecordItem>, count: Int, cupUnit ->
+            HydrateSettingManager.cupUnitFlow(),
+            HydrateSettingManager.cupVolumeFlow()
+        ) { totalMl: Int, records: List<HydrateRecordItem>, count: Int, cupUnit, cupVolumeMl ->
             val cups = totalMl / 250
             val unitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.fl_oz) else getString(R.string.unit_ml)
             val totalSection = HydrateItem.TotalSection(
@@ -74,7 +80,8 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
                 unit = unitLabel,
                 description = String.format(this@HydrateActivity.getString(R.string.hydrate_cup_count_format), count),
                 currentCups = cups,
-                maxCups = 8
+                maxCups = 8,
+                cupVolumeMl = cupVolumeMl
             )
             val quickAddSection = HydrateItem.QuickAddSection(values = listOf(100, 200, 250, 300, 500, 800), unit = unitLabel)
             val recordSection = HydrateItem.RecordSection(records = records, unit = unitLabel)

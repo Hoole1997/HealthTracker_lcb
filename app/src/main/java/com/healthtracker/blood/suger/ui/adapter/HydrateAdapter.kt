@@ -101,15 +101,28 @@ class HydrateAdapter(
 
         init {
             binding.drinkMore.setOnClickListener {
-                currentDrinkAmountMl += 10
+                // 根据单位设置步进：fl oz 为 1 fl oz；ml 为 10 ml
                 val cupUnit = HydrateSettingManager.getCupUnit()
+                val stepMl = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
+                    HydrateSettingManager.toMl(1, HydrateSettingManager.CupUnit.FL_OZ)
+                } else {
+                    10
+                }
+                currentDrinkAmountMl += stepMl
                 val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
                 val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
                 binding.drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
             }
             binding.drinkLess.setOnClickListener {
-                currentDrinkAmountMl = max(10, currentDrinkAmountMl - 10)
+                // 根据单位设置步进与下限：fl oz 为 1 fl oz；ml 为 10 ml
                 val cupUnit = HydrateSettingManager.getCupUnit()
+                val stepMl = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
+                    HydrateSettingManager.toMl(1, HydrateSettingManager.CupUnit.FL_OZ)
+                } else {
+                    10
+                }
+                val minMl = stepMl
+                currentDrinkAmountMl = max(minMl, currentDrinkAmountMl - stepMl)
                 val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
                 val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
                 binding.drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
@@ -120,7 +133,14 @@ class HydrateAdapter(
         }
         fun bind(item: HydrateItem.TotalSection) {
             binding.apply {
+                // 每次饮水量同步为杯子容积（ml），同时保证不低于单位最小值
                 val cupUnit = HydrateSettingManager.getCupUnit()
+                val minMl = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
+                    HydrateSettingManager.toMl(1, HydrateSettingManager.CupUnit.FL_OZ)
+                } else {
+                    10
+                }
+                currentDrinkAmountMl = max(minMl, item.cupVolumeMl)
                 val displayTotal = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(item.totalIntake, HydrateSettingManager.CupUnit.FL_OZ) else item.totalIntake
                 totalWaterIntake.text = displayTotal.toString()
                 totalWaterUnit.text = item.unit
@@ -344,7 +364,8 @@ sealed class HydrateItem {
         val unit: String,     // 单位，例如 "ML" 或 "CUPS"
         val description: String, // 描述文案
         val currentCups: Int, // 当前已喝的杯数
-        val maxCups: Int      // 最大杯数目标
+        val maxCups: Int,     // 最大杯数目标
+        val cupVolumeMl: Int  // 杯子容积（ml），用于 Drink 按钮每次饮水量
     ) : HydrateItem()
 
     data class QuickAddSection(
