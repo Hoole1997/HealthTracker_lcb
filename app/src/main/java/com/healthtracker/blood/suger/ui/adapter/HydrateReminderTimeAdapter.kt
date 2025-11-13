@@ -12,7 +12,10 @@ import androidx.fragment.app.DialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.blood.suger.ui.dialog.DeleteHydrateReminderDialog
 
-class HydrateReminderTimeAdapter(private val times: MutableList<String>) :
+class HydrateReminderTimeAdapter(
+    private val times: MutableList<String>,
+    private val onDeleteTime: ((Int, Int) -> Unit)? = null
+) :
     RecyclerView.Adapter<HydrateReminderTimeAdapter.TimeViewHolder>() {
 
     private var showDelete: Boolean = false
@@ -48,6 +51,10 @@ class HydrateReminderTimeAdapter(private val times: MutableList<String>) :
                 onDialogListener = object : DialogListener {
                     override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                         if (which == DeleteHydrateReminderDialog.BUTTON_OK) {
+                            // 先持久化删除，再更新UI列表
+                            parseTimeToComponents(times[position])?.let { (h, m) ->
+                                onDeleteTime?.invoke(h, m)
+                            }
                             removeAt(position)
                         }
                     }
@@ -77,6 +84,15 @@ class HydrateReminderTimeAdapter(private val times: MutableList<String>) :
         if (previousLastIndex >= 0) notifyItemChanged(previousLastIndex)
     }
 
+    /** 用新列表替换全部提醒时间并刷新 */
+    fun replaceAll(newTimes: List<String>) {
+        times.clear()
+        times.addAll(newTimes)
+        enabledStates.clear()
+        enabledStates.addAll(List(times.size) { false })
+        notifyDataSetChanged()
+    }
+
     fun removeAt(index: Int) {
         if (index !in 0 until times.size) return
         times.removeAt(index)
@@ -97,5 +113,16 @@ class HydrateReminderTimeAdapter(private val times: MutableList<String>) :
         val divider: View = itemView.findViewById(R.id.divider)
         val imgDelete: AppCompatImageView = itemView.findViewById(R.id.imgDelete)
         val switchReminder: AppCompatImageView = itemView.findViewById(R.id.switch_reminder)
+    }
+
+    private fun parseTimeToComponents(time: String): Pair<Int, Int>? {
+        return try {
+            val parts = time.split(":")
+            val hour = parts.getOrNull(0)?.toInt() ?: return null
+            val minute = parts.getOrNull(1)?.toInt() ?: return null
+            hour to minute
+        } catch (_: Exception) {
+            null
+        }
     }
 }

@@ -145,11 +145,6 @@
     <string name="add_record">Add Record</string>
     <string name="alarm_management">Alarm Management</string>
 
-    <!-- Coming Soon Dialog -->
-    <string name="coming_soon_title">Coming Soon!</string>
-    <string name="coming_soon_message">You‘re a time traveler! This day hasn’t arrived yet. Please select a previous date or return to today.</string>
-    <string name="back_to_today">BACK TO TODAY</string>
-
     <string-array name="blood_sugar_labels">
         <item>Feeling excited</item>
         <item>After cardio</item>
@@ -1233,5 +1228,8 @@ healthcare provider or medical institution.</string>
     <string name="hydration_reminder_time">Hydration Reminder Time</string>
     <string name="hydration_reminder_edit">Edit</string>
     <string name="hydrate_reminder_delete_confirm_message">Are you sure you want to delete this alarm?</string>
+    <string name="coming_soon_title">Coming Soon!</string>
+    <string name="coming_soon_message">You‘re a time traveler! This day hasn’t arrived yet. Please select a previous date or return to today.</string>
+    <string name="back_to_today">BACK TO TODAY</string>
 
 </resources>

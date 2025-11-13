@@ -72,8 +72,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/action_bar"
-        app:nextWeeksCount="3"
-        app:previousWeeksCount="2"
+        app:nextWeeksCount="5001"
+        app:previousWeeksCount="5001"
         app:weekStartOnMonday="false" />
 
     <androidx.recyclerview.widget.RecyclerView

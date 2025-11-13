@@ -15,6 +15,7 @@ import com.healthtracker.blood.suger.data.dao.BmiDao
 import com.healthtracker.blood.suger.data.dao.HeartRateDao
 import com.healthtracker.blood.suger.data.dao.CholesterolDao
 import com.healthtracker.blood.suger.data.dao.HydrateDao
+import com.healthtracker.blood.suger.data.dao.HydrateReminderDao
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
@@ -24,6 +25,7 @@ import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.entity.HydrateRecord
+import com.healthtracker.blood.suger.data.entity.HydrateReminder
 
 /**
  * 健康数据Room数据库 - 极简设计
@@ -46,9 +48,10 @@ import com.healthtracker.blood.suger.data.entity.HydrateRecord
         BmiRecord::class,
         HeartRateRecord::class,
         CholesterolRecord::class,
-        HydrateRecord::class
+        HydrateRecord::class,
+        HydrateReminder::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -98,6 +101,11 @@ abstract class HealthDatabase : RoomDatabase() {
      * 获取饮水记录DAO
      */
     abstract fun hydrateDao(): HydrateDao
+
+    /**
+     * 获取饮水提醒DAO
+     */
+    abstract fun hydrateReminderDao(): HydrateReminderDao
 
     companion object {
         /**

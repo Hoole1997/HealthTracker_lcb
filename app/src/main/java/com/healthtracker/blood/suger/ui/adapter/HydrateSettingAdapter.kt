@@ -19,7 +19,9 @@ import com.healthtracker.blood.suger.config.HydrateSettingManager
 class HydrateSettingAdapter(
     private val onDailyCupsChanged: (Int) -> Unit = { _ -> },
     private val onCupSettingChanged: (Int, Boolean) -> Unit = { _, _ -> },
-    private val onCupUnitChanged: (Boolean) -> Unit = { _ -> }
+    private val onCupUnitChanged: (Boolean) -> Unit = { _ -> },
+    private val onAddReminderTime: (Int, Int) -> Unit = { _, _ -> },
+    private val onDeleteReminderTime: (Int, Int) -> Unit = { _, _ -> }
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var isReminderEditMode: Boolean = false
     // 共享的提醒时间列表与内部适配器引用，用于“添加提醒”后刷新列表
@@ -171,7 +173,9 @@ class HydrateSettingAdapter(
                 rcyTimes.layoutManager = LinearLayoutManager(itemView.context)
             }
             if (timeAdapter == null) {
-                timeAdapter = HydrateReminderTimeAdapter(reminderTimes)
+                timeAdapter = HydrateReminderTimeAdapter(reminderTimes) { h, m ->
+                    onDeleteReminderTime(h, m)
+                }
                 rcyTimes.adapter = timeAdapter
                 timeAdapterRef = timeAdapter
             }
@@ -196,7 +200,8 @@ class HydrateSettingAdapter(
                 // 底部弹出时间选择器，默认当前时间
                 AlarmTimeSelectDialog.show(activity.supportFragmentManager, null) { pair ->
                     val timeString = DateTimeUtils.formatTimeComponents(pair.first, pair.second)
-                    // 通过适配器方法新增并刷新，避免与内部状态不同步
+                    // 持久化新增后立即更新UI（先乐观更新，再由Flow刷新）
+                    onAddReminderTime(pair.first, pair.second)
                     timeAdapterRef?.addTime(timeString)
                 }
             }
@@ -208,5 +213,15 @@ class HydrateSettingAdapter(
         private const val TYPE_CUP = 2
         private const val TYPE_REMINDER = 3
         private const val TYPE_ADD_REMINDER = 4
+    }
+
+    /**
+     * 外部（例如 ViewModel 观察到数据库变更）推送新的提醒时间列表时调用。
+     * 会替换内部数据并刷新列表显示。
+     */
+    fun setReminderTimes(times: List<String>) {
+        reminderTimes.clear()
+        reminderTimes.addAll(times)
+        timeAdapterRef?.replaceAll(times)
     }
 }

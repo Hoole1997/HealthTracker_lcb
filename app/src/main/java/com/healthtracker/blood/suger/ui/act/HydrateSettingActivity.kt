@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.databinding.ActivityHydrateSettingBinding
 import com.healthtracker.blood.suger.ui.viewmodel.HydrateSettingViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.ui.adapter.HydrateSettingAdapter
+import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.framework.util.LogUtils
@@ -35,7 +36,7 @@ class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, Activi
 
         // 使用 RecyclerView 渲染设置页面的模块化列表
         mViewBind.rcySetting.layoutManager = LinearLayoutManager(this)
-        mViewBind.rcySetting.adapter = HydrateSettingAdapter(
+        val adapter = HydrateSettingAdapter(
             onDailyCupsChanged = { cups ->
                 HydrateSettingManager.setDailyCups(cups)
             },
@@ -50,8 +51,20 @@ class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, Activi
                 HydrateSettingManager.setCupUnit(
                     if (isMl) HydrateSettingManager.CupUnit.ML else HydrateSettingManager.CupUnit.FL_OZ
                 )
+            },
+            onAddReminderTime = { h, m ->
+                mViewModel.addReminder(h, m)
+            },
+            onDeleteReminderTime = { h, m ->
+                mViewModel.deleteReminder(h, m)
             }
         )
+        mViewBind.rcySetting.adapter = adapter
+
+        // 观察提醒时间并同步到适配器显示
+        collect(mViewModel.reminderTimes) { times ->
+            adapter.setReminderTimes(times)
+        }
     }
 
 }

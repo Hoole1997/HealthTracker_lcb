@@ -52,8 +52,8 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
 
             if (isFutureDate) {
                 ComingSoonDialog.show(supportFragmentManager) {
-                    // 返回到今天并触发回调刷新
-                    mViewBind.weeklyDateSelector.resetToToday()
+                    // 返回到今天并同步周视图到当前周（不改控件源码）
+                    mViewBind.weeklyDateSelector.setDefaultSelectedDate(DateTimeUtils.now())
                 }
                 return@setOnDateSelectedListener
             }
