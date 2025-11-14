@@ -89,6 +89,8 @@ class WeeklyDateSelector @JvmOverloads constructor(
     private var unselectedTextColor: Int = Color.parseColor("#666666")
     private var selectedTextColor: Int = Color.WHITE
     private var selectedWeekTextColor: Int = selectedBackgroundColor
+    private var dayNumberSelectedBackgroundResId: Int = R.drawable.bg_week_day_selected
+    private var dayNumberNormalBackgroundResId: Int = R.drawable.bg_week_day_normal
     private var weekStartOnMonday: Boolean = true
     private var horizontalPadding: Int = 0
     private var customWeekdayNames: Array<String>? = null
@@ -123,6 +125,14 @@ class WeeklyDateSelector @JvmOverloads constructor(
             selectedTextColor = typedArray.getColor(R.styleable.WeeklyDateSelector_selectedTextColor, selectedTextColor)
             unselectedTextColor = typedArray.getColor(R.styleable.WeeklyDateSelector_unselectedTextColor, unselectedTextColor)
             selectedWeekTextColor = typedArray.getColor(R.styleable.WeeklyDateSelector_selectedWeekTextColor, selectedBackgroundColor)
+            dayNumberSelectedBackgroundResId = typedArray.getResourceId(
+                R.styleable.WeeklyDateSelector_dayNumberSelectedBackground,
+                dayNumberSelectedBackgroundResId
+            )
+            dayNumberNormalBackgroundResId = typedArray.getResourceId(
+                R.styleable.WeeklyDateSelector_dayNumberNormalBackground,
+                dayNumberNormalBackgroundResId
+            )
             
             weekStartOnMonday = typedArray.getBoolean(R.styleable.WeeklyDateSelector_weekStartOnMonday, true)
             disablePastDates = typedArray.getBoolean(R.styleable.WeeklyDateSelector_disablePastDates, false)
@@ -334,20 +344,17 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 val isPastDate = disablePastDates && dayDate.before(today) && !DateTimeUtils.isSameDay(dayDate, today)
                 
                 if (isSelected) {
-                    // 背景只设置在日期数字上
-                    tvDayNumber.setBackgroundResource(R.drawable.bg_week_day_selected)
+                    tvDayNumber.setBackgroundResource(dayNumberSelectedBackgroundResId)
                     tvDayNumber.setTextColor(selectedTextColor)
                     tvWeekName.setTextColor(selectedWeekTextColor)
                 } else if (isPastDate) {
-                    // 过去日期的禁用样式
-                    tvDayNumber.setBackgroundResource(R.drawable.bg_week_day_normal)
+                    tvDayNumber.setBackgroundResource(dayNumberNormalBackgroundResId)
                     tvDayNumber.setTextColor(unselectedTextColor)
                     tvWeekName.setTextColor(unselectedTextColor)
                     tvDayNumber.alpha = 0.3f  // 设置透明度
                     tvWeekName.alpha = 0.3f
                 } else {
-                    // 背景只设置在日期数字上
-                    tvDayNumber.setBackgroundResource(R.drawable.bg_week_day_normal)
+                    tvDayNumber.setBackgroundResource(dayNumberNormalBackgroundResId)
                     tvDayNumber.setTextColor(unselectedTextColor)
                     tvWeekName.setTextColor(unselectedTextColor)
                     tvDayNumber.alpha = 1.0f  // 确保正常日期的透明度为1

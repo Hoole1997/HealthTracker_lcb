@@ -4,8 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="#f5f7fb"
     android:clipToPadding="false">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@mipmap/ic_hydrate_bg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/weeklyDateSelector"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_bar"
@@ -74,7 +81,8 @@
         app:layout_constraintTop_toBottomOf="@id/action_bar"
         app:nextWeeksCount="5001"
         app:previousWeeksCount="5001"
-        app:weekStartOnMonday="false" />
+        app:weekStartOnMonday="false"
+        app:dayNumberNormalBackground="@drawable/bg_week_day_white"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcyHydrate"

@@ -84,6 +84,9 @@
         <!-- 颜色与文字相关属性 -->
         <attr name="selectedBackgroundColor" format="color" />        <!-- 选中日期的背景颜色 -->
         <attr name="unselectedBackgroundColor" format="color" />      <!-- 未选中日期的背景颜色 -->
+        <!-- 日期数字视图背景资源，可直接替换默认 drawable -->
+        <attr name="dayNumberSelectedBackground" format="reference" /> <!-- 选中日期数字背景资源 -->
+        <attr name="dayNumberNormalBackground" format="reference" />   <!-- 未选中日期数字背景资源 -->
         <attr name="selectedTextColor" format="color" />              <!-- 选中日期的文字颜色 -->
         <attr name="unselectedTextColor" format="color" />            <!-- 未选中日期的文字颜色 -->
         <attr name="selectedWeekTextColor" format="color" />          <!-- 选中日期的周名称文字颜色，默认等于选中日期背景色 -->
