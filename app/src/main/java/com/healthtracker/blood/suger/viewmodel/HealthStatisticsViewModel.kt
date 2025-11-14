@@ -38,9 +38,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 /**
  * 统计维度（用于血压和胆固醇的统计值选择）
@@ -119,45 +120,89 @@ class HealthStatisticsViewModel @Inject constructor(
     val statisticDimension: StateFlow<StatisticDimension> = _statisticDimension.asStateFlow()
 
     // 血糖记录数据
-    private val _bsRecords = MutableStateFlow<List<BloodSugarRecord>>(emptyList())
-    val bsRecords: StateFlow<List<BloodSugarRecord>> = _bsRecords.asStateFlow()
+    val bsRecords: StateFlow<List<BloodSugarRecord>> = combine(
+        selectedMetricType,
+        _dateRange,
+        _selectedStatus
+    ) { metricType, range, status ->
+        Triple(metricType, range, status)
+    }.flatMapLatest { (metricType, range, status) ->
+        if (metricType == HealthMetric.BLOOD_SUGAR) {
+            bloodSugarRepository.getRecordsByRangeAndStatus(
+                range.start,
+                range.end,
+                status?.statusType
+            )
+        } else {
+            flowOf(emptyList())
+        }
+    }.map { records ->
+        records.sortedByDescending { it.recordTime }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     // 血压记录数据
-    private val _bpRecords = MutableStateFlow<List<BloodPressureRecord>>(emptyList())
-    val bpRecords: StateFlow<List<BloodPressureRecord>> = _bpRecords.asStateFlow()
+    val bpRecords: StateFlow<List<BloodPressureRecord>> = combine(
+        selectedMetricType,
+        _dateRange
+    ) { metricType, range ->
+        metricType to range
+    }.flatMapLatest { (metricType, range) ->
+        if (metricType == HealthMetric.BLOOD_PRESSURE) {
+            bloodPressureRepository.getBloodPressureRecordsByTimeRange(range.start, range.end)
+        } else {
+            flowOf(emptyList())
+        }
+    }.map { records ->
+        records.sortedByDescending { it.recordTime }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     // 胆固醇记录数据
-    private val _cholRecords = MutableStateFlow<List<CholesterolRecord>>(emptyList())
-    val cholRecords: StateFlow<List<CholesterolRecord>> = _cholRecords.asStateFlow()
+    val cholRecords: StateFlow<List<CholesterolRecord>> = combine(
+        selectedMetricType,
+        _dateRange
+    ) { metricType, range ->
+        metricType to range
+    }.flatMapLatest { (metricType, range) ->
+        if (metricType == HealthMetric.CHOLESTEROL) {
+            cholesterolRepository.getCholesterolRecordsByTimeRange(range.start, range.end)
+        } else {
+            flowOf(emptyList())
+        }
+    }.map { records ->
+        records.sortedByDescending { it.recordTime }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     // 心率记录数据
-    private val _hrRecords = MutableStateFlow<List<HeartRateRecord>>(emptyList())
-    val hrRecords: StateFlow<List<HeartRateRecord>> = _hrRecords.asStateFlow()
+    val hrRecords: StateFlow<List<HeartRateRecord>> = combine(
+        selectedMetricType,
+        _dateRange
+    ) { metricType, range ->
+        metricType to range
+    }.flatMapLatest { (metricType, range) ->
+        if (metricType == HealthMetric.HEART_RATE) {
+            heartRateRepository.getHeartRateRecordsByTimeRange(range.start, range.end)
+        } else {
+            flowOf(emptyList())
+        }
+    }.map { records ->
+        records.sortedByDescending { it.recordTime }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     // BMI记录数据
-    private val _bmiRecords = MutableStateFlow<List<BmiRecord>>(emptyList())
-    val bmiRecords: StateFlow<List<BmiRecord>> = _bmiRecords.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            combine(
-                _selectedMetricType,
-                _dateRange,
-                _selectedStatus
-            ) { metricType, range, status ->
-                Triple(metricType, range, status)
-            }.collect { (metricType, range, status) ->
-                when (metricType) {
-                    HealthMetric.BLOOD_SUGAR -> loadBloodSugarRecords(range, status)
-                    HealthMetric.BLOOD_PRESSURE -> loadBloodPressureRecords(range)
-                    HealthMetric.CHOLESTEROL -> loadCholesterolRecords(range)
-                    HealthMetric.HEART_RATE -> loadHeartRateRecords(range)
-                    HealthMetric.BMI -> loadBmiRecords(range)
-                    else -> {} // STEPS, HYDRATION 暂未实现
-                }
-            }
+    val bmiRecords: StateFlow<List<BmiRecord>> = combine(
+        selectedMetricType,
+        _dateRange
+    ) { metricType, range ->
+        metricType to range
+    }.flatMapLatest { (metricType, range) ->
+        if (metricType == HealthMetric.BMI) {
+            bmiRepository.getBmiRecordsByTimeRange(range.start, range.end)
+        } else {
+            flowOf(emptyList())
         }
-    }
+    }.map { records ->
+        records.sortedByDescending { it.recordTime }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val selectedPreset: StateFlow<DateRangePreset> = _selectedPreset.asStateFlow()
     val dateRange: StateFlow<DateRange> = _dateRange.asStateFlow()
@@ -178,12 +223,12 @@ class HealthStatisticsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     val historyPreview: StateFlow<List<Any>> = combine(
-        _selectedMetricType,
-        _bsRecords,
-        _bpRecords,
-        _cholRecords,
-        _hrRecords,
-        _bmiRecords
+        selectedMetricType,
+        bsRecords,
+        bpRecords,
+        cholRecords,
+        hrRecords,
+        bmiRecords
     ) { flows: Array<Any> ->
         val metricType = flows[0] as HealthMetric
         val bs = flows[1] as List<BloodSugarRecord>
@@ -206,12 +251,12 @@ class HealthStatisticsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     private val totalRecordCount: StateFlow<Int> = combine(
-        _selectedMetricType,
-        _bsRecords,
-        _bpRecords,
-        _cholRecords,
-        _hrRecords,
-        _bmiRecords
+        selectedMetricType,
+        bsRecords,
+        bpRecords,
+        cholRecords,
+        hrRecords,
+        bmiRecords
     ) { flows: Array<Any> ->
         val metricType = flows[0] as HealthMetric
         val bs = flows[1] as List<BloodSugarRecord>
@@ -238,13 +283,13 @@ class HealthStatisticsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     val statsUiState: StateFlow<StatsUiState> = combine(
-        _selectedMetricType,
+        selectedMetricType,
         _statisticDimension,
-        _bsRecords,
-        _bpRecords,
-        _cholRecords,
-        _hrRecords,
-        _bmiRecords,
+        bsRecords,
+        bpRecords,
+        cholRecords,
+        hrRecords,
+        bmiRecords,
         _preferredUnit
     ) { flows: Array<Any> ->
         val metricType = flows[0] as HealthMetric
@@ -266,12 +311,12 @@ class HealthStatisticsViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), StatsUiState())
 
     val chartUiState: StateFlow<ChartUiState> = combine(
-        _selectedMetricType,
-        _bsRecords,
-        _bpRecords,
-        _cholRecords,
-        _hrRecords,
-        _bmiRecords,
+        selectedMetricType,
+        bsRecords,
+        bpRecords,
+        cholRecords,
+        hrRecords,
+        bmiRecords,
         _preferredUnit
     ) { flows: Array<Any> ->
         val metricType = flows[0] as HealthMetric
@@ -308,12 +353,18 @@ class HealthStatisticsViewModel @Inject constructor(
 
         // 切换到非血糖指标时清空状态过滤
         if (type != HealthMetric.BLOOD_SUGAR) {
-            _selectedStatus.value = null
+            if (_selectedStatus.value != null) {
+                _selectedStatus.value = null
+            }
+            savedStateHandle.clearSavedStateProvider(KEY_SELECTED_STATUS)
         }
 
         // 切换到非血压/胆固醇时重置维度选择
         if (type != HealthMetric.BLOOD_PRESSURE && type != HealthMetric.CHOLESTEROL) {
-            _statisticDimension.value = StatisticDimension.AVG
+            if (_statisticDimension.value != StatisticDimension.AVG) {
+                _statisticDimension.value = StatisticDimension.AVG
+            }
+            savedStateHandle[StatsUiState.KEY_STATISTIC_DIMENSION] = StatisticDimension.AVG.ordinal
         }
     }
 
@@ -348,7 +399,11 @@ class HealthStatisticsViewModel @Inject constructor(
         // 只在血糖指标时有效
         if (_selectedMetricType.value == HealthMetric.BLOOD_SUGAR) {
             _selectedStatus.value = status
-            savedStateHandle[KEY_SELECTED_STATUS] = status?.statusType
+            if (status == null) {
+                savedStateHandle.remove(KEY_SELECTED_STATUS)
+            } else {
+                savedStateHandle[KEY_SELECTED_STATUS] = status.statusType
+            }
         }
     }
 
@@ -356,54 +411,6 @@ class HealthStatisticsViewModel @Inject constructor(
         val preferred = BsUnit.getPreferredUnit()
         if (_preferredUnit.value != preferred) {
             _preferredUnit.value = preferred
-        }
-    }
-
-    private fun loadBloodSugarRecords(range: DateRange, status: BloodSugarStatus?) {
-        viewModelScope.launch {
-            bloodSugarRepository.getRecordsByRangeAndStatus(
-                range.start,
-                range.end,
-                status?.statusType
-            ).collect { records ->
-                _bsRecords.value = records.sortedByDescending { it.recordTime }
-            }
-        }
-    }
-
-    private fun loadBloodPressureRecords(range: DateRange) {
-        viewModelScope.launch {
-            bloodPressureRepository.getBloodPressureRecordsByTimeRange(range.start, range.end)
-                .collect { records ->
-                    _bpRecords.value = records.sortedByDescending { it.recordTime }
-                }
-        }
-    }
-
-    private fun loadCholesterolRecords(range: DateRange) {
-        viewModelScope.launch {
-            cholesterolRepository.getCholesterolRecordsByTimeRange(range.start, range.end)
-                .collect { records ->
-                    _cholRecords.value = records.sortedByDescending { it.recordTime }
-                }
-        }
-    }
-
-    private fun loadHeartRateRecords(range: DateRange) {
-        viewModelScope.launch {
-            heartRateRepository.getHeartRateRecordsByTimeRange(range.start, range.end)
-                .collect { records ->
-                    _hrRecords.value = records.sortedByDescending { it.recordTime }
-                }
-        }
-    }
-
-    private fun loadBmiRecords(range: DateRange) {
-        viewModelScope.launch {
-            bmiRepository.getBmiRecordsByTimeRange(range.start, range.end)
-                .collect { records ->
-                    _bmiRecords.value = records.sortedByDescending { it.recordTime }
-                }
         }
     }
 
@@ -542,6 +549,10 @@ class HealthStatisticsViewModel @Inject constructor(
 
     private fun formatValue(source: Double) = String.format(Locale.getDefault(),"%.1f",source)
 
+    private fun roundToSingleDecimal(value: Double): Float {
+        return ((value * 10).roundToInt() / 10f)
+    }
+
     private fun buildBsChart(records: List<BloodSugarRecord>, unit: BsUnit): ChartUiState {
         if (records.isEmpty()) {
             return ChartUiState()
@@ -674,10 +685,13 @@ class HealthStatisticsViewModel @Inject constructor(
         )
         val labels = sorted.map { labelFormatter.format(it.recordTime) }
         val xValues = sorted.indices.map { it.toFloat() }
-        val yValues = sorted.map {
-            val heightM = it.heightCm / 100.0
-            formatValue( (it.weightKg / (heightM * heightM))).toFloat()
-
+        val yValues = sorted.map { record ->
+            val heightM = record.heightCm / 100.0
+            if (heightM <= 0) {
+                0f
+            } else {
+                roundToSingleDecimal(record.weightKg / (heightM * heightM))
+            }
         }
 
         return ChartUiState(
@@ -736,8 +750,6 @@ class HealthStatisticsViewModel @Inject constructor(
     }
 
     private fun convertToDisplayUnit(valueMgdl: Double, target: BsUnit): Float {
-        val converted = BsUnit.convertValue(valueMgdl.toFloat(), BsUnit.MG_DL, target)
-        val formatted = BsUnit.formatValue(converted, target)
-        return formatted.toFloat()
+        return BsUnit.convertValue(valueMgdl.toFloat(), BsUnit.MG_DL, target)
     }
 }
