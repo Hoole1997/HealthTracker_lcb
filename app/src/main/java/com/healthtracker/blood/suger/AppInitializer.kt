@@ -13,6 +13,8 @@ import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.blood.suger.utils.InsightAssetPreparer
 import com.healthtracker.blood.suger.utils.isAdPage
 import com.healthtracker.blood.suger.work.HealthWorkTask
+import com.healthtracker.earthquake.push.EarthquakePushConfig
+import com.healthtracker.earthquake.push.EarthquakePushInitializer
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
@@ -127,8 +129,17 @@ class AppInitializer @Inject constructor(
 
         // 4. 远程配置初始化
         initializeRemoteConfig()
+
+        // 5. 地震模块初始化
+        initEarthquakeModule()
     }
-    
+
+    private fun initEarthquakeModule() {
+        EarthquakePushInitializer.init(application)
+        // 这里传入RemoteConfig获取到的Interval
+        // EarthquakePushConfig.setIntervalHours(32)
+    }
+
     /**
      * 核心同步初始化服务
      * 对应App.kt中onCreate的同步部分

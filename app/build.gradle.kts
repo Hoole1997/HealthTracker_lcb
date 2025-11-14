@@ -136,6 +136,7 @@ dependencies {
     api(project(":monetize"))
     api(project(":core"))
     api(project(":metrics"))
+    api(project(":earthquake"))
 //    api(project(":ad-sdk"))
 
     // Core Android
