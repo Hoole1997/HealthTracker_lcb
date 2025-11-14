@@ -1,16 +1,15 @@
 package com.healthtracker.blood.suger.data.repo
 
 import android.content.Context
-import android.os.Build
-import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.data.database.HealthDatabase
 import com.healthtracker.blood.suger.data.dao.StepDao
 import com.healthtracker.blood.suger.data.entity.DailyStepStat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
-import java.time.ZoneId
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 class StepRepository private constructor(private val appContext: Context, private val dao: StepDao) {
     companion object {
@@ -25,20 +24,20 @@ class StepRepository private constructor(private val appContext: Context, privat
         }
     }
 
-    private val zoneId = ZoneId.systemDefault()
+    private fun currentEpochDay(): Long {
+        val startOfDay = DateTimeUtils.getTodayRange().first
+        return startOfDay.time / 86_400_000L
+    }
     private var lastPersistTs = 0L
     private var lastPersistSteps = 0
 
-    fun observeToday(): Flow<DailyStepStat?> {
-        val epochDay = LocalDate.now(zoneId).toEpochDay()
-        return dao.observeByDate(epochDay)
-    }
+    fun observeToday(): Flow<DailyStepStat?> = dao.observeByDate(currentEpochDay())
 
     fun range(startEpochDay: Long, endEpochDay: Long): Flow<List<DailyStepStat>> = dao.getRange(startEpochDay, endEpochDay)
 
     suspend fun handleRawStep(raw: Int) {
         withContext(Dispatchers.IO) {
-            val epochDay = LocalDate.now(zoneId).toEpochDay()
+            val epochDay = currentEpochDay()
             val now = System.currentTimeMillis()
             val existing = dao.getByDate(epochDay)
             val baseline = when {
@@ -92,4 +91,16 @@ class StepRepository private constructor(private val appContext: Context, privat
             lastPersistSteps = steps
         }
     }
+
+    fun observeTodayDynamic(): Flow<DailyStepStat?> = flow {
+        var lastEpochDay: Long? = null
+        while (true) {
+            val current = currentEpochDay()
+            if (lastEpochDay != current) {
+                emit(current)
+                lastEpochDay = current
+            }
+            kotlinx.coroutines.delay(60_000L)
+        }
+    }.flatMapLatest { day -> dao.observeByDate(day) }
 }

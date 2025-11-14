@@ -84,7 +84,7 @@ class HomeViewModel @Inject constructor(
         )
 
     private val stepRepo = StepRepository.get(App.INSTANCE)
-    val todayStepStat = stepRepo.observeToday()
+    val todayStepStat = stepRepo.observeTodayDynamic()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

@@ -5,17 +5,15 @@ import com.healthtracker.blood.suger.data.entity.DailyStepStat
 import com.healthtracker.blood.suger.data.repo.StepRepository
 import com.healthtracker.framework.base.BaseViewModel
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDate
-import java.time.ZoneId
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 class StepCountViewModel : BaseViewModel() {
     private val repo = StepRepository.get(App.INSTANCE)
-    private val zoneId = ZoneId.systemDefault()
 
-    val todayStatFlow: Flow<DailyStepStat?> = repo.observeToday()
+    val todayStatFlow: Flow<DailyStepStat?> = repo.observeTodayDynamic()
 
     fun recent7DaysFlow(): Flow<List<DailyStepStat>> {
-        val end = LocalDate.now(zoneId).toEpochDay()
+        val end = DateTimeUtils.getTodayRange().first.time / 86_400_000L
         val start = end - 6
         return repo.range(start, end)
     }
