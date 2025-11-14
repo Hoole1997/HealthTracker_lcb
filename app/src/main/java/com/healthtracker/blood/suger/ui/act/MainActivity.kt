@@ -155,9 +155,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
                 ivSetting.visible()
             }
             ivSetting.clickWithDuration {
-                "setting click".logd(TAG)
-                // TODO: 添加设置页面功能
-                HealthStatisticsActivity.start(this@MainActivity,HealthMetric.BLOOD_SUGAR)
+                HydrateActivity.start(this@MainActivity)
             }
 
             // Debug 专用：长按发送测试通知

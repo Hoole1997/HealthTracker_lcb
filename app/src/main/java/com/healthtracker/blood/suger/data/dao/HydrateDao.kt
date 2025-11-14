@@ -54,4 +54,12 @@ interface HydrateDao {
     /** 清空记录 */
     @Query("DELETE FROM hydrate_records")
     suspend fun deleteAll(): Int
+
+    /**
+     * 获取最近N条BMI记录
+     * @param limit 记录数量限制
+     * @return Flow形式的BMI记录列表
+     */
+    @Query("SELECT * FROM hydrate_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
+    fun getRecentRecords(limit: Int): Flow<List<HydrateRecord>>
 }

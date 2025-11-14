@@ -60,6 +60,10 @@ class HydrateRepository @Inject constructor(
         return hydrateDao.deleteAll()
     }
 
+    override fun getLatestRecords(limit: Int): Flow<List<HydrateRecord>> {
+       return hydrateDao.getRecentRecords(limit)
+    }
+
     // 标签相关：HydrateRecord不支持标签，提供空实现
     override suspend fun addTagsToRecord(recordId: Long, tagIds: List<Long>): Boolean = false
 
