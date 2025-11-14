@@ -3,6 +3,12 @@ package com.healthtracker.blood.suger.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.os.Build
+import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.blood.suger.helper.ResidentNotificationHelper
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
@@ -22,6 +28,7 @@ import kotlinx.coroutines.launch
 import net.corekit.core.controller.ChannelUserController
 import net.corekit.core.report.ReportDataManager
 import javax.inject.Inject
+import com.healthtracker.blood.suger.data.repo.StepRepository
 
 /**
  * 健康监测前台服务
@@ -53,6 +60,19 @@ class HealthService : Service() {
     // 刷新通知的协程任务
     private var refreshJob: Job? = null
 
+    private var sensorManager: SensorManager? = null
+    private var stepSensor: Sensor? = null
+    private val stepRepo by lazy { StepRepository.get(applicationContext) }
+    private val stepListener = object : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+            if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
+                val raw = event.values.firstOrNull()?.toInt() ?: return
+                serviceScope.launch { stepRepo.handleRawStep(raw) }
+            }
+        }
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+    }
+
     override fun onCreate() {
         super.onCreate()
         "Health service created".logd(TAG)
@@ -76,6 +96,8 @@ class HealthService : Service() {
 
             // 启动通知循环刷新任务
             startNotificationRefreshLoop()
+
+            registerStepSensor()
 
         } catch (e: Exception) {
             "Failed to start foreground service: ${e.message}".loge(TAG)
@@ -143,6 +165,24 @@ class HealthService : Service() {
         if (BuildState.debug) {
             "Notification refresh loop started (interval: $interval minutes)".logd(TAG)
         }
+    }
+
+    private fun registerStepSensor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val granted = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            if (!granted) return
+        }
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        if (stepSensor != null) {
+            sensorManager?.registerListener(stepListener, stepSensor, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+
+    private fun unregisterStepSensor() {
+        sensorManager?.unregisterListener(stepListener)
+        sensorManager = null
+        stepSensor = null
     }
 
     /**

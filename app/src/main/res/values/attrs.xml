@@ -342,4 +342,14 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <declare-styleable name="CircularProgressView">
+        <attr name="backColor" format="color" />
+        <attr name="progColor" format="color" />
+        <attr name="progFirstColor" format="color" />
+        <attr name="progStartColor" format="color" />
+        <attr format="dimension" name="backWidth" />
+        <attr format="dimension" name="progWidth" />
+        <attr name="progress" format="integer"/>
+    </declare-styleable>
+
 </resources>

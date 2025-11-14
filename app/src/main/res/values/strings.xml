@@ -1253,5 +1253,9 @@ healthcare provider or medical institution.</string>
     <string name="drink_now">View Now</string>
     <string name="medication_notification_title_with_time">%1$s at %2$s</string>
     <string name="step_count">Step Count</string>
+    <string name="today">Today</string>
+    <string name="unit_km">km</string>
+    <string name="kcal">Kcal</string>
+    <string name="today_s_goal">Today\'s goal</string>
 
 </resources>

@@ -18,6 +18,7 @@ import com.healthtracker.blood.suger.data.dao.HeartRateDao
 import com.healthtracker.blood.suger.data.dao.CholesterolDao
 import com.healthtracker.blood.suger.data.dao.HydrateDao
 import com.healthtracker.blood.suger.data.dao.HydrateReminderDao
+import com.healthtracker.blood.suger.data.dao.StepDao
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
@@ -28,6 +29,7 @@ import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.entity.HydrateRecord
 import com.healthtracker.blood.suger.data.entity.HydrateReminder
+import com.healthtracker.blood.suger.data.entity.DailyStepStat
 
 /**
  * 健康数据Room数据库 - 极简设计
@@ -51,9 +53,10 @@ import com.healthtracker.blood.suger.data.entity.HydrateReminder
         HeartRateRecord::class,
         CholesterolRecord::class,
         HydrateRecord::class,
-        HydrateReminder::class
+        HydrateReminder::class,
+        DailyStepStat::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -108,6 +111,8 @@ abstract class HealthDatabase : RoomDatabase() {
      * 获取饮水提醒DAO
      */
     abstract fun hydrateReminderDao(): HydrateReminderDao
+
+    abstract fun stepDao(): StepDao
 
     companion object {
         /**

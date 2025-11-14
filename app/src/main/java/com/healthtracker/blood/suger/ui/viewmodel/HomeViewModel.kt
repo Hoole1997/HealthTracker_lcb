@@ -9,6 +9,9 @@ import com.healthtracker.blood.suger.data.repository.CholesterolRepository
 import com.healthtracker.blood.suger.data.repository.HydrateRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.blood.suger.App
+import com.healthtracker.blood.suger.data.entity.DailyStepStat
+import com.healthtracker.blood.suger.data.repo.StepRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -74,6 +77,14 @@ class HomeViewModel @Inject constructor(
     val todyCupCount = hydrateRepository.getRecordsByTimeRange(DateTimeUtils.getTodayRange().first,
         DateTimeUtils.getTodayRange().second)
         .map { records -> records.size.toString() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
+
+    private val stepRepo = StepRepository.get(App.INSTANCE)
+    val todayStepStat = stepRepo.observeToday()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

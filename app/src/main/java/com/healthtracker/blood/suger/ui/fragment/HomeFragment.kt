@@ -1,11 +1,15 @@
 package com.healthtracker.blood.suger.ui.fragment
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
@@ -32,6 +36,7 @@ import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.act.HydrateActivity
 import com.healthtracker.blood.suger.ui.act.ProfileActivity
+import com.healthtracker.blood.suger.ui.act.StepCountActivity
 import com.healthtracker.blood.suger.ui.dialog.NativeCardDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.blood.suger.util.CholesterolCalculator
@@ -122,6 +127,9 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             clHydrate.clickWithDuration {
                 requireActivity().startActivity<HydrateActivity>()
             }
+            clStepCount.clickWithDuration {
+                checkStepPermissionAndNavigate()
+            }
 
 
         }
@@ -156,6 +164,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             mViewBind?.run {
                 tvHasDrinkCup.text = count ?: ""
             }
+        }
+
+        collectLatest(mViewModel.todayStepStat) { stat ->
+            mViewBind?.tvStepCountValue?.text = stat?.steps?.toString() ?: "0"
         }
     }
 
@@ -445,6 +457,25 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             PendingActivityType.HEART_RATE -> {
                 requireActivity().startActivity<HeartRateRecordActivity>()
             }
+        }
+    }
+
+    private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) {
+            requireActivity().startActivity<StepCountActivity>()
+        }
+    }
+
+    private fun checkStepPermissionAndNavigate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val granted = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
+            if (granted) {
+                requireActivity().startActivity<StepCountActivity>()
+            } else {
+                permissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
+            }
+        } else {
+            requireActivity().startActivity<StepCountActivity>()
         }
     }
 }

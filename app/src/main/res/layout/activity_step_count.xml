@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionBarSize"
+        android:background="@color/c1"
+        android:elevation="@dimen/dp_8"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_4"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_back" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/TextViewFont_RobotoBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:paddingStart="@dimen/dp_44"
+            android:paddingEnd="@dimen/dp_44"
+            android:text="@string/step_count"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_setting"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_setting" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:padding="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_bar">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rect_white_12"
+                android:paddingBottom="@dimen/dp_20">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_today_tag"
+                    android:paddingHorizontal="@dimen/dp_10"
+                    android:paddingVertical="@dimen/dp_6"
+                    android:text="@string/today"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.healthtracker.blood.suger.ui.widget.CircularProgressView
+                    android:id="@+id/progress_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/dp_30"
+                    app:backColor="#E5F9F2"
+                    app:backWidth="@dimen/dp_12"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.42"
+                    app:progColor="@color/c5"
+                    app:progWidth="@dimen/dp_12"
+                    tools:progress="30" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_step_count"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_32"
+                    app:layout_constraintBottom_toBottomOf="@id/progress_bar"
+                    app:layout_constraintEnd_toEndOf="@id/progress_bar"
+                    app:layout_constraintStart_toStartOf="@id/progress_bar"
+                    app:layout_constraintTop_toTopOf="@id/progress_bar"
+                    android:text="0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_step"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_999"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintEnd_toEndOf="@id/tv_step_count"
+                    app:layout_constraintStart_toStartOf="@id/tv_step_count"
+                    app:layout_constraintTop_toBottomOf="@id/tv_step_count"
+                    android:text="Steps" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    app:layout_constraintEnd_toStartOf="@id/progress_bar"
+                    app:layout_constraintTop_toBottomOf="@id/progress_bar"
+                    app:srcCompat="@drawable/ic_distance" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_kcal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24"
+                    app:layout_constraintEnd_toEndOf="@id/progress_bar"
+                    app:layout_constraintStart_toStartOf="@id/progress_bar"
+                    app:layout_constraintTop_toBottomOf="@id/progress_bar"
+                    app:srcCompat="@drawable/ic_kcal" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_24"
+                    app:layout_constraintStart_toEndOf="@id/progress_bar"
+                    app:layout_constraintTop_toBottomOf="@id/progress_bar"
+                    app:srcCompat="@drawable/ic_step_time" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_distance"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_1"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_16"
+                    app:layout_constraintEnd_toStartOf="@id/tv_distance_unit"
+                    app:layout_constraintStart_toStartOf="@id/iv_distance"
+                    app:layout_constraintTop_toBottomOf="@id/iv_distance"
+                    tools:text="0.0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_distance_unit"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_1"
+                    android:text="@string/unit_km"
+                    android:textColor="@color/color_999"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_distance"
+                    app:layout_constraintEnd_toEndOf="@id/iv_distance"
+                    app:layout_constraintStart_toEndOf="@id/tv_distance"
+                    app:layout_constraintTop_toBottomOf="@id/iv_distance" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_kcal"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_1"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_16"
+                    app:layout_constraintEnd_toStartOf="@id/tv_kcal_unit"
+                    app:layout_constraintStart_toStartOf="@id/iv_kcal"
+                    app:layout_constraintTop_toBottomOf="@id/iv_kcal"
+                    android:text="0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_kcal_unit"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_1"
+                    android:text="@string/kcal"
+                    android:textColor="@color/color_999"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_kcal"
+                    app:layout_constraintEnd_toEndOf="@id/iv_kcal"
+                    app:layout_constraintStart_toEndOf="@id/tv_kcal"
+                    app:layout_constraintTop_toBottomOf="@id/tv_kcal" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_time"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_1"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_16"
+                    app:layout_constraintStart_toStartOf="@id/iv_time"
+                    app:layout_constraintEnd_toEndOf="@id/iv_time"
+                    app:layout_constraintTop_toBottomOf="@id/iv_kcal"
+                    android:text="00:00:00" />
+
+                <View
+                    android:id="@+id/v_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@color/color_F9F9FA"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintTop_toBottomOf="@id/tv_distance"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_today_goal"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_18"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:text="@string/today_s_goal"
+                    android:textColor="@color/color_666"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/v_line"/>
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_goal"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_18"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:drawableEnd="@drawable/ic_status_arrow"
+                    android:drawablePadding="@dimen/dp_4"
+                    android:gravity="center_vertical"
+                    tools:text="1.0k"
+                    android:textColor="@color/t1"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    app:layout_constraintTop_toBottomOf="@id/v_line"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
