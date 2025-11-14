@@ -41,6 +41,7 @@
             android:checked="true"
             android:paddingHorizontal="@dimen/dp_12"
             android:text="@string/fl_oz"
+            android:gravity="center"
             android:textColor="@color/selector_unit_text_color"
             android:textSize="@dimen/sp_12" />
 
@@ -50,6 +51,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/selector_unit_tab"
             android:button="@null"
+            android:gravity="center"
             android:paddingHorizontal="@dimen/dp_12"
             android:text="@string/ml"
             android:textColor="@color/selector_unit_text_color"
@@ -57,19 +59,34 @@
 
     </RadioGroup>
 
+    <!-- 直接放置两个 TextView，基线对齐 + packed 水平链居中 -->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_select_value"
         style="@style/TextViewFont_RobotoBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
         android:includeFontPadding="false"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_42"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        tools:text="20"
         app:layout_constraintTop_toBottomOf="@id/rg_unit"
-        tools:text="20 ml" />
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_select_unit"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_select_unit"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        tools:text="ml"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_select_value"
+        app:layout_constraintStart_toEndOf="@id/tv_select_value"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.healthtracker.blood.suger.ui.weight.RulerView
         android:id="@+id/rulerView"
