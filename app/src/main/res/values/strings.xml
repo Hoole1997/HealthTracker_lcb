@@ -1252,5 +1252,6 @@ healthcare provider or medical institution.</string>
     <string name="alarm_hydration_content">It’s time to drink water!</string>
     <string name="drink_now">View Now</string>
     <string name="medication_notification_title_with_time">%1$s at %2$s</string>
+    <string name="hydrate_quick_add">Quick Add</string>
 
 </resources>

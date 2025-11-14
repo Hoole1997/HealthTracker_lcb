@@ -35,12 +35,16 @@ class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, Activi
         val adapter = HydrateSettingAdapter(
             onDailyCupsChanged = { cups ->
                 HydrateSettingManager.setDailyCups(cups)
+                // DailyCups 变更后，同步当天插入的记录字段
+                mViewModel.syncTodayHydrateRecordSettings()
             },
             onCupSettingChanged = { value, isMl ->
                 val unit = if (isMl) HydrateSettingManager.CupUnit.ML else HydrateSettingManager.CupUnit.FL_OZ
                 val ml = HydrateSettingManager.toMl(value, unit)
                 HydrateSettingManager.setCupVolume(ml)
                 HydrateSettingManager.setCupUnit(unit)
+                // CupVolume 变更后，同步当天插入的记录字段
+                mViewModel.syncTodayHydrateRecordSettings()
             },
             onCupUnitChanged = { isMl ->
                 HydrateSettingManager.setCupUnit(

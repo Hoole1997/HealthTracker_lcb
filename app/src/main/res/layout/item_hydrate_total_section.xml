@@ -74,8 +74,9 @@
             android:src="@mipmap/ic_hydrate_subtract"
             android:layout_marginEnd="@dimen/dp_20"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/drinkBtn"
+            style="@style/MaterialButton.b1"
             android:layout_width="@dimen/dp_185"
             android:layout_height="@dimen/dp_48"
             tools:text="Drink 100ML"
@@ -83,8 +84,7 @@
             android:gravity="center"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bg_hydrate_drink"/>
+            android:textColor="#FFFFFF" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/drinkMore"

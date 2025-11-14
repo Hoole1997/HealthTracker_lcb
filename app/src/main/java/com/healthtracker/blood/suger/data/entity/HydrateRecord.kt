@@ -23,6 +23,24 @@ data class HydrateRecord(
     /** 饮水量（毫升） */
     @ColumnInfo(name = "intake_ml")
     val intakeMl: Int,
+
+    /**
+     * 本次饮水时，饮水设置中一天的目标杯数
+     */
+    @ColumnInfo(name = "daily_goal_cups")
+    val dailyGoalCups: Int = 0,
+
+    /**
+     * 本次饮水时，饮水设置每杯水的容积（统一以 ml 保存）
+     */
+    @ColumnInfo(name = "cup_volume_ml")
+    val cupVolumeMl: Int = 0,
+
+    /**
+     * 本次饮水时，当天的饮水目标总量（ml） = 当天杯数 * 当天每杯容积
+     */
+    @ColumnInfo(name = "daily_goal_total_ml")
+    val dailyGoalTotalMl: Int = 0,
     /**
      * 软删除标记
      * true: 已删除, false: 正常

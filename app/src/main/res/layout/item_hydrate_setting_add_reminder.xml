@@ -6,36 +6,19 @@
     android:layout_marginTop="@dimen/dp_24"
     android:layout_marginBottom="@dimen/dp_12">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAddReminder"
-        android:layout_width="wrap_content"
+        style="@style/MaterialButton.b1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center_vertical"
-        android:background="@drawable/bg_hydrate_reminder_add"
+        android:layout_marginHorizontal="@dimen/dp_30"
         android:paddingVertical="@dimen/dp_14"
-        android:paddingHorizontal="@dimen/dp_86">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_add_reminder"
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_18"
-            android:scaleType="centerCrop"
-            android:tint="@color/color_888"
-            app:srcCompat="@drawable/ic_add_hydrate_reminder"
-            app:tint="@color/white"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_add_reminder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TextViewFont_RobotoMedium"
-            android:layout_marginStart="@dimen/dp_8"
-            android:text="@string/add_reminder"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_16" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
+        app:icon="@drawable/ic_add_hydrate_reminder"
+        app:iconTint="@color/white"
+        app:iconPadding="@dimen/dp_8"
+        app:iconGravity="textStart"
+        android:text="@string/add_reminder"/>
+    
 </FrameLayout>
 

@@ -62,4 +62,25 @@ interface HydrateDao {
      */
     @Query("SELECT * FROM hydrate_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
     fun getRecentRecords(limit: Int): Flow<List<HydrateRecord>>
+
+    /**
+     * 批量更新指定时间范围内（通常为当天）所有饮水记录的设置快照字段
+     * 仅更新未软删除的记录
+     */
+    @Query(
+        "UPDATE hydrate_records " +
+        "SET daily_goal_cups = :dailyGoalCups, " +
+        "cup_volume_ml = :cupVolumeMl, " +
+        "daily_goal_total_ml = :dailyGoalTotalMl, " +
+        "updated_at = :updatedAt " +
+        "WHERE is_delete = 0 AND record_time BETWEEN :startTime AND :endTime"
+    )
+    suspend fun updateRecordSettingsByTimeRange(
+        startTime: Date,
+        endTime: Date,
+        dailyGoalCups: Int,
+        cupVolumeMl: Int,
+        dailyGoalTotalMl: Int,
+        updatedAt: Long
+    ): Int
 }

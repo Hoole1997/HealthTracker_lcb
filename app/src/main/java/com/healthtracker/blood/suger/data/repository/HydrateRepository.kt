@@ -2,6 +2,8 @@ package com.healthtracker.blood.suger.data.repository
 
 import com.healthtracker.blood.suger.data.dao.HydrateDao
 import com.healthtracker.blood.suger.data.entity.HydrateRecord
+import com.healthtracker.blood.suger.config.HydrateSettingManager
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 import javax.inject.Inject
@@ -78,7 +80,22 @@ class HydrateRepository @Inject constructor(
         intakeMl: Int,
         recordTime: Date = Date()
     ): Long {
-        return insertRecord(HydrateRecord(recordTime = recordTime, intakeMl = intakeMl))
+        // 读取当前饮水设置，并在保存时将杯子容积统一转换为ml
+        val dailyCups = HydrateSettingManager.getDailyCups()
+        val displayVolume = HydrateSettingManager.getCupDisplayVolume()
+        val unit = HydrateSettingManager.getCupUnit()
+        val cupVolumeMl = HydrateSettingManager.toMl(displayVolume, unit)
+        val dailyTotalMl = dailyCups * cupVolumeMl
+
+        return insertRecord(
+            HydrateRecord(
+                recordTime = recordTime,
+                intakeMl = intakeMl,
+                dailyGoalCups = dailyCups,
+                cupVolumeMl = cupVolumeMl,
+                dailyGoalTotalMl = dailyTotalMl
+            )
+        )
     }
 
     /**
@@ -86,5 +103,23 @@ class HydrateRepository @Inject constructor(
      */
     suspend fun deleteHydrateRecordById(id: Long): Boolean {
         return deleteRecordById(id) > 0
+    }
+
+    /**
+     * 同步“当天内所有饮水记录”的设置快照字段（目标杯数、杯容积ml、目标总量ml）
+     * 在设置页面调整 DailyCups 或 CupVolume 时调用
+     */
+    suspend fun syncTodayHydrateRecordSettings(): Int {
+        val (start, end) = DateTimeUtils.getTodayRange()
+        val dailyCups = HydrateSettingManager.getDailyCups()
+        val displayVolume = HydrateSettingManager.getCupDisplayVolume()
+        val unit = HydrateSettingManager.getCupUnit()
+        val cupVolumeMl = HydrateSettingManager.toMl(displayVolume, unit)
+        val dailyTotalMl = dailyCups * cupVolumeMl
+        val nowTs = System.currentTimeMillis()
+
+        return hydrateDao.updateRecordSettingsByTimeRange(
+            start, end, dailyCups, cupVolumeMl, dailyTotalMl, nowTs
+        )
     }
 }
