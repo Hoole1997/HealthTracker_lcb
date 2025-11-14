@@ -6,6 +6,8 @@ import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.blood.suger.data.repository.CholesterolRepository
+import com.healthtracker.blood.suger.data.repository.HydrateRepository
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,7 +25,8 @@ class HomeViewModel @Inject constructor(
     private val bloodPressureRepository: BloodPressureRepository,
     private val bmiRepository: BmiRepository,
     private val heartRateRepository: HeartRateRepository,
-    private val cholesterolRepository: CholesterolRepository
+    private val cholesterolRepository: CholesterolRepository,
+    private val hydrateRepository: HydrateRepository,
 ) : BaseViewModel() {
 
     // 获取最近一次血糖记录
@@ -61,6 +64,16 @@ class HomeViewModel @Inject constructor(
     // 获取最近一次胆固醇记录
     val latestCholesterolRecord = cholesterolRepository.getAllRecords()
         .map { records -> records.firstOrNull() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
+
+
+    val todyCupCount = hydrateRepository.getRecordsByTimeRange(DateTimeUtils.getTodayRange().first,
+        DateTimeUtils.getTodayRange().second)
+        .map { records -> records.size.toString() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

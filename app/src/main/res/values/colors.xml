@@ -79,4 +79,5 @@
     <color name="chart_point_stroke">@color/white</color>
     <color name="chart_grid">#E5E5E5</color>
     <color name="chart_axis_label">#9E9E9E</color>
+    <color name="color_ffeae0">#FFEAE0</color>
 </resources>

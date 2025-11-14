@@ -6,17 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.graphics.toColorInt
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.ui.act.BsRecordActivity
-import com.healthtracker.blood.suger.data.entity.BmiRecord
+import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
-import com.healthtracker.blood.suger.data.entity.HeartRateRecord
+import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.entity.CholesterolRecord
+import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
@@ -30,16 +26,17 @@ import com.healthtracker.blood.suger.saveShowGuideBs
 import com.healthtracker.blood.suger.saveShowGuideHr
 import com.healthtracker.blood.suger.ui.act.BmiRecordActivity
 import com.healthtracker.blood.suger.ui.act.BpRecordActivity
+import com.healthtracker.blood.suger.ui.act.BsRecordActivity
+import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
 import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
-import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
+import com.healthtracker.blood.suger.ui.act.HydrateActivity
 import com.healthtracker.blood.suger.ui.act.ProfileActivity
 import com.healthtracker.blood.suger.ui.dialog.NativeCardDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.blood.suger.util.CholesterolCalculator
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
-import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.startActivity
 import com.hyy.highlightpro.HighlightPro
@@ -49,8 +46,8 @@ import com.hyy.highlightpro.parameter.MarginOffset
 import com.hyy.highlightpro.shape.RectShape
 import com.hyy.highlightpro.util.dp
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * 首页Fragment
@@ -122,6 +119,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 navigateToActivityWithProfileCheck(PendingActivityType.BMI)
             }
 
+            clHydrate.clickWithDuration {
+                requireActivity().startActivity<HydrateActivity>()
+            }
+
 
         }
         observeData()
@@ -150,10 +151,17 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         collectLatest(mViewModel.latestCholesterolRecord) { record ->
             updateCholesterolUI(record)
         }
+
+        collectLatest(mViewModel.todyCupCount){ count ->
+            mViewBind?.run {
+                tvHasDrinkCup.text = count ?: ""
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        mViewBind?.tvTargetCupCount?.text = "/${HydrateSettingManager.getDailyCups()}"
         if(!guidFeature() && !isHeighLightLeave){
             NativeCardDialog.showOncePerMinute(requireActivity())
         }

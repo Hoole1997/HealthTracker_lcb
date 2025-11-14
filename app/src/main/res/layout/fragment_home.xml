@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
     android:paddingHorizontal="@dimen/dp_16"
     android:paddingVertical="@dimen/dp_10">
 
@@ -400,6 +401,127 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:srcCompat="@mipmap/ic_bmi" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_14">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_step_count"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_124"
+                android:background="@drawable/bg_rect_white_8"
+                android:backgroundTint="@color/color_ffeae0"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_17"
+                android:paddingEnd="@dimen/dp_0"
+                app:layout_constraintStart_toEndOf="@id/space_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_step_count"
+                    style="@style/TextViewFont_RobotoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/step_count"
+                    android:textColor="@color/color_F0832D"
+                    android:textSize="@dimen/sp_12"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_step_count_value" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_step_count_value"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/color_F0832D"
+                    android:textSize="@dimen/sp_20"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="0" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_step_count"
+                    android:layout_width="@dimen/dp_76"
+                    android:layout_height="@dimen/dp_76"
+                    android:scaleType="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:srcCompat="@mipmap/ic_home_step" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Space
+                android:id="@+id/space_1"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_hydrate"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_124"
+                android:background="@drawable/bg_rect_white_8"
+                android:backgroundTint="@color/color_DFF5FF"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_17"
+                android:paddingEnd="@dimen/dp_0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/space_1"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_hydrate"
+                    style="@style/TextViewFont_RobotoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/hydrate"
+                    android:textColor="@color/color_30A6ED"
+                    android:textSize="@dimen/sp_12"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_has_drink_cup" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_has_drink_cup"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/color_30A6ED"
+                    android:textSize="@dimen/sp_20"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="2" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_target_cup_count"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_30A6ED"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_has_drink_cup"
+                    app:layout_constraintStart_toEndOf="@id/tv_has_drink_cup"
+                    tools:text="/8" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_hydrate"
+                    android:layout_width="@dimen/dp_76"
+                    android:layout_height="@dimen/dp_76"
+                    android:scaleType="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:srcCompat="@mipmap/ic_home_cup" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
