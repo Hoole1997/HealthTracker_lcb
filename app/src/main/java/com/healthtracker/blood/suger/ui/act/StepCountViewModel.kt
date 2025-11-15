@@ -48,9 +48,7 @@ class StepCountViewModel : BaseViewModel() {
 
         val maxSteps = yValues.maxOrNull()?.toDouble() ?: 0.0
         val divisor = (STEP_AXIS_STEPS - 1).coerceAtLeast(1)
-        val intervalBase = if (divisor == 0) maxSteps else maxSteps / divisor
-        val intervalMultiplier = ceil(intervalBase / STEP_INTERVAL).coerceAtLeast(1.0)
-        val interval = intervalMultiplier * STEP_INTERVAL
+        val interval = resolveInterval(maxSteps, divisor)
         val maxY = interval * divisor
         val minY = 0.0
         val goalValue = DEFAULT_GOAL_STEPS.toDouble()
@@ -154,6 +152,20 @@ class StepCountViewModel : BaseViewModel() {
             kiloFormatter.format(thousands)
         }
         return "${formatted}k"
+    }
+
+    private fun resolveInterval(maxSteps: Double, divisor: Int): Double {
+        if (maxSteps > 700.0) {
+            val rank = if (maxSteps <= 3500.0) {
+                1.0
+            } else {
+                1.0 + ceil((maxSteps - 3500.0) / 3500.0)
+            }
+            return rank * 500.0
+        }
+        val intervalBase = if (divisor == 0) maxSteps else maxSteps / divisor
+        val intervalMultiplier = ceil(intervalBase / STEP_INTERVAL).coerceAtLeast(1.0)
+        return intervalMultiplier * STEP_INTERVAL
     }
 }
 
