@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.ui.chart
 
 import com.healthtracker.blood.suger.util.ChartConfigHelper
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
@@ -17,7 +18,12 @@ data class ChartUiState(
     val dataSets: List<ChartDataSet> = emptyList(),
     val axisPaddingRatio: Double = DEFAULT_PADDING_RATIO,
     val emptyMessage: String? = null,
-    val forceIntegerYAxis: Boolean = false
+    val forceIntegerYAxis: Boolean = false,
+    val goalValue: Double? = null,
+    val precomputedRange: Pair<Double, Double>? = null,
+    val axisSteps: Int = DEFAULT_AXIS_STEPS,
+    val startAxisFormatter: CartesianValueFormatter? = null,
+    val baselineLabel: CharSequence? = null,
 ) {
 
     private val pointCount: Int? = dataSets.firstOrNull()?.xValues?.size
@@ -42,28 +48,31 @@ data class ChartUiState(
     /**
      * 计算当前数据所需的 y 轴范围，必要时会自动留白。
      */
-    fun computeRange(axisSteps: Int = DEFAULT_AXIS_STEPS): Pair<Double, Double> {
-        val series = dataSets
-            .map { dataSet -> dataSet.yValues.map(Float::toDouble) }
-            .filter { it.isNotEmpty() }
-        val range = if (series.isEmpty()) {
-            ChartConfigHelper.computeNiceRange(
-                series = listOf(listOf(0.0)),
-                axisSteps = axisSteps,
-                paddingRatio = axisPaddingRatio
-            )
-        } else {
-            ChartConfigHelper.computeNiceRange(
-                series = series,
-                axisSteps = axisSteps,
-                paddingRatio = axisPaddingRatio
-            )
+    fun computeRange(): Pair<Double, Double> {
+        val steps = axisSteps
+        val baseRange = precomputedRange ?: run {
+            val series = dataSets
+                .map { dataSet -> dataSet.yValues.map(Float::toDouble) }
+                .filter { it.isNotEmpty() }
+            if (series.isEmpty()) {
+                ChartConfigHelper.computeNiceRange(
+                    series = listOf(listOf(0.0)),
+                    axisSteps = steps,
+                    paddingRatio = axisPaddingRatio
+                )
+            } else {
+                ChartConfigHelper.computeNiceRange(
+                    series = series,
+                    axisSteps = steps,
+                    paddingRatio = axisPaddingRatio
+                )
+            }
         }
 
         return if (forceIntegerYAxis) {
-            enforceIntegerFriendlyRange(range, axisSteps)
+            enforceIntegerFriendlyRange(baseRange, steps)
         } else {
-            range
+            baseRange
         }
     }
 

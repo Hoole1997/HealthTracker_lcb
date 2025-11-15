@@ -7,14 +7,22 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.healthtracker.blood.suger.R
+import android.widget.Toast
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.databinding.ActivityStepCountBinding
 import com.healthtracker.blood.suger.service.HealthService
+import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.framework.ext.collect
-import android.widget.Toast
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCountBinding>() {
+
+    @Inject
+    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+
+    private lateinit var chartManager: HealthLineChartManager
 
     private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) startHealthService() else Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
@@ -25,6 +33,8 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.btnBack.setOnClickListener { onBackPress() }
+
+        chartManager = chartManagerFactory.create(mViewBind.chartView, this)
         checkPermissionAndStart()
         createObserver()
     }
@@ -41,13 +51,20 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
                 val seconds = totalSeconds % 60
                 mViewBind.tvTime.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
                 val goal = 6000
-                val p = (it.steps * 100 / goal).coerceAtMost(100)
-                mViewBind.progressBar.setProgress(p)
+                val rawProgress = (it.steps * 100 / goal).coerceAtMost(100)
+                val adjustedProgress = if (it.steps > 0) rawProgress.coerceAtLeast(1) else 0
+                mViewBind.progressBar.setProgress(adjustedProgress)
             }
         }
 
-        this.collect(mViewModel.recent7DaysFlow()) { list ->
-            // 如需扩展图表/历史预览，可在此处理 list
+        this.collect(mViewModel.chartUiStateFlow) { chartState ->
+            chartManager.renderColumn(chartState, isShowLabel = true)
+        }
+
+        this.collect(mViewModel.statsFlow) { stats ->
+            mViewBind.tvMaxValue.text = stats.max.toString()
+            mViewBind.tvMinValue.text = stats.min.toString()
+            mViewBind.tvAvgValue.text = stats.average.toString()
         }
     }
 

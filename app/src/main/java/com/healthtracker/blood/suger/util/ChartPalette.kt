@@ -24,6 +24,9 @@ object ChartPalette {
     val lineBmi: Int = color(R.color.chart_line_bmi)
 
     @ColorInt
+    val columnSteps: Int = color(R.color.c5)
+
+    @ColorInt
     val lineCholesterolTg: Int = color(R.color.chart_line_cholesterol_tg)
 
     @ColorInt

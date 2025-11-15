@@ -17,10 +17,12 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.decoration.HorizontalLine
 import com.patrykandpatrick.vico.core.cartesian.layer.CartesianLayerPadding
+import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerController
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibilityListener
+import com.patrykandpatrick.vico.core.cartesian.marker.ColumnCartesianLayerMarkerTarget
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.cartesian.marker.Interaction
 import com.patrykandpatrick.vico.core.common.Fill
@@ -52,10 +54,14 @@ private val DEFAULT_BASELINE_COLOR = ChartPalette.grid
 private val WHITE_COLOR = ChartPalette.pointStroke
 
 // 默认尺寸
-private const val LINE_THICKNESS = 1.5f
+private const val LINE_THICKNESS = 1f
 private const val POINT_SIZE = 8f
 private const val POINT_SPACING = 24f
 private const val POINT_STROKE = 1f
+private const val COLUMN_WIDTH = 18f
+private const val COLUMN_TOP_CORNER_RADIUS = 12f
+private const val COLUMN_BOTTOM_CORNER_RADIUS = 0f
+private const val COLUMN_MARKER_OFFSET_DP = 4f
 private const val GRID_THICKNESS = 1f
 private const val BASELINE_THICKNESS = 1f
 
@@ -113,6 +119,8 @@ class ChartConfigHelper {
 
         val interactiveMarker = ChartConfigHelper.getDefaultMark()
         val defaultMarker = DefaultMarker(interactiveMarker)
+        private val columnInteractiveMarker = ColumnMarker()
+        private val defaultColumnMarker = DefaultMarker(ColumnMarker())
 
         /**
          * 创建任意条折线的通用图表
@@ -120,7 +128,7 @@ class ChartConfigHelper {
         fun createLineChart(
             lineStyles: List<LineStyle>,
             axisStyle: AxisStyle = AxisStyle(),
-            baselineStyle: BaselineStyle? = BaselineStyle(axisStyle.minY ?: 0.0),
+            baselineStyle: BaselineStyle? = null,
             layerPaddingDp: Float = LAYER_PADDING,
             pointSpacingDp: Float = POINT_SPACING,
             marker: CartesianMarker? = interactiveMarker,
@@ -141,6 +149,7 @@ class ChartConfigHelper {
 
             val decorations = mutableListOf<HorizontalLine>()
             baselineStyle?.let { decorations.add(createBaseline(it)) }
+            axisStyle.zeroBaselineStyle()?.let { decorations.add(createBaseline(it)) }
 
             return CartesianChart(
                 lineLayer,
@@ -183,6 +192,74 @@ class ChartConfigHelper {
                     fun update(targets: List<CartesianMarker.Target>) {
                         defaultMarker.visible = targets.any { it.x == lastX }
                         onInvalidate?.invoke()    // 直接重绘即可，persistentMarkers 不需要再执行
+                    }
+
+
+                }
+            )
+        }
+
+        /**
+         * 创建柱状图
+         */
+        fun createColumnChart(
+            columnStyle: ColumnStyle = ColumnStyle(color = ChartPalette.columnSteps),
+            axisStyle: AxisStyle = AxisStyle(),
+            baselineStyle: BaselineStyle? = null,
+            layerPaddingDp: Float = LAYER_PADDING,
+            isShowLabel: Boolean = true,
+            marker: CartesianMarker? = columnInteractiveMarker,
+            lastX : Double? = null,
+            persistentMarker: DefaultMarker = defaultColumnMarker,
+            onInvalidate : (() -> Unit)? = null
+        ): CartesianChart {
+            val columnLayer = createColumnLayer(columnStyle, axisStyle)
+            val startAxis = createStartAxis(axisStyle, isShowLabel)
+            val bottomAxis = createBottomAxis(axisStyle, isShowLabel)
+            val decorations = mutableListOf<HorizontalLine>()
+            baselineStyle?.let { decorations.add(createBaseline(it)) }
+            axisStyle.zeroBaselineStyle()?.let { decorations.add(createBaseline(it)) }
+            return CartesianChart(
+                columnLayer,
+                startAxis = startAxis,
+                bottomAxis = bottomAxis,
+                layerPadding = {
+                    CartesianLayerPadding(
+                        scalableStartDp = layerPaddingDp,
+                        scalableEndDp = layerPaddingDp
+                    )
+                },
+                marker = if(isShowLabel) marker else null,
+                markerController = tapOnlyMarkerController,
+                decorations = decorations,
+            ).copy(
+                persistentMarkers = {
+                    if(isShowLabel){
+                        lastX?.let {
+                            persistentMarker at it
+                        }
+                    }
+                },
+                markerVisibilityListener = object : CartesianMarkerVisibilityListener{
+                    override fun onShown(
+                        marker: CartesianMarker,
+                        targets: List<CartesianMarker.Target>
+                    ) {
+                        update(targets)
+                    }
+
+                    override fun onHidden(marker: CartesianMarker) {
+
+                    }
+                    override fun onUpdated(
+                        marker: CartesianMarker,
+                        targets: List<CartesianMarker.Target>
+                    ) {
+                        update(targets)
+                    }
+                    fun update(targets: List<CartesianMarker.Target>) {
+                        persistentMarker.visible = targets.any { it.x == lastX }
+                        onInvalidate?.invoke()
                     }
 
 
@@ -313,6 +390,13 @@ class ChartConfigHelper {
          * 创建基准线
          */
         private fun createBaseline(style: BaselineStyle): HorizontalLine {
+            val labelComponent = style.labelText?.let {
+                TextComponent(
+                    color = style.labelColor,
+                    textSizeSp = style.labelTextSize,
+                    padding = Insets(endDp = LABEL_PADDING)
+                )
+            }
             return HorizontalLine(
                 y = { style.yValue },
                 line = LineComponent(
@@ -324,23 +408,43 @@ class ChartConfigHelper {
                         gapLengthDp = style.gapLength
                     )
                 ),
+                labelComponent = labelComponent,
+                label = { style.labelText ?: HorizontalLine.getLabel(style.yValue) },
+                horizontalLabelPosition = style.labelHorizontalPosition,
+                verticalLabelPosition = style.labelVerticalPosition,
                 verticalAxisPosition = Axis.Position.Vertical.Start
+            )
+        }
+
+        /**
+         * 创建柱状图层
+         */
+        private fun createColumnLayer(
+            style: ColumnStyle,
+            axisStyle: AxisStyle,
+        ): ColumnCartesianLayer {
+            val columnComponent = LineComponent(
+                fill = Fill(style.color),
+                thicknessDp = style.widthDp,
+                shape = CorneredShape.rounded(
+                    topLeftDp = style.topCornerRadiusDp,
+                    topRightDp = style.topCornerRadiusDp,
+                    bottomLeftDp = style.bottomCornerRadiusDp,
+                    bottomRightDp = style.bottomCornerRadiusDp
+                )
+            )
+            return ColumnCartesianLayer(
+                columnProvider = ColumnCartesianLayer.ColumnProvider.series(columnComponent),
+                rangeProvider = CartesianLayerRangeProvider.fixed(
+                    minY = axisStyle.minY,
+                    maxY = axisStyle.maxY
+                )
             )
         }
 
         fun getDefaultMark() =
             DefaultCartesianMarker(
-                label = TextComponent(
-                    color = Color.WHITE,
-                    typeface = getRobotoBold(App.INSTANCE) ?: Typeface.DEFAULT,
-                    textSizeSp = 12f,
-                    padding = Insets(8f, 4f),
-                    background = ShapeComponent(
-                        fill = Fill("#E6FFFFFF".toColorInt()),
-                        shape = MarkerCorneredShape(Corner.Rounded),
-                        shadow = Shadow(radiusDp = 4f, color = 0x33000000, xDp = 0f, yDp = 2f)
-                    )
-                ),
+                label = createMarkerLabelComponent(),
                 valueFormatter = DefaultCartesianMarker.ValueFormatter
                     .default(colorCode = true),   // 关键：按线条颜色渲染文字
                 indicator = { color ->
@@ -351,10 +455,7 @@ class ChartConfigHelper {
                         shape = CorneredShape.Pill
                     )
                 },
-                guideline = LineComponent(
-                    fill = Fill("#886BD3C9".toColorInt()),
-                    thicknessDp = 1f
-                )
+                guideline = createMarkerGuideline()
             )
 
         fun computeNiceRange(
@@ -470,7 +571,39 @@ data class BaselineStyle(
     @ColorInt val color: Int = DEFAULT_BASELINE_COLOR,
     val thickness: Float = BASELINE_THICKNESS,
     val dashLength: Float = BASELINE_DASH_LENGTH,
-    val gapLength: Float = BASELINE_GAP_LENGTH
+    val gapLength: Float = BASELINE_GAP_LENGTH,
+    val labelText: CharSequence? = null,
+    @ColorInt val labelColor: Int = DEFAULT_LABEL_COLOR,
+    val labelTextSize: Float = LABEL_TEXT_SIZE,
+    val labelHorizontalPosition: Position.Horizontal = Position.Horizontal.End,
+    val labelVerticalPosition: Position.Vertical = Position.Vertical.Top
+)
+
+private fun AxisStyle.zeroBaselineStyle(): BaselineStyle? {
+    val min = minY ?: return null
+    val max = maxY ?: return null
+    if (min > 0.0 || max < 0.0) return null
+    return BaselineStyle(
+        yValue = 0.0,
+        color = gridLineColor,
+        thickness = GRID_THICKNESS,
+        dashLength = DASH_LENGTH,
+        gapLength = GAP_LENGTH
+    )
+}
+
+/**
+ * 柱状图样式配置
+ *
+ * @param color 柱体颜色
+ * @param widthDp 柱体宽度
+ * @param cornerRadiusDp 圆角半径
+ */
+data class ColumnStyle(
+    @ColorInt val color: Int,
+    val widthDp: Float = COLUMN_WIDTH,
+    val topCornerRadiusDp: Float = COLUMN_TOP_CORNER_RADIUS,
+    val bottomCornerRadiusDp: Float = COLUMN_BOTTOM_CORNER_RADIUS
 )
 
 /**
@@ -524,3 +657,53 @@ class DefaultMarker(
         if (visible) base.drawOverLayers(context, targets)
     }
 }
+
+private class ColumnMarker : DefaultCartesianMarker(
+    label = createMarkerLabelComponent(),
+    valueFormatter = DefaultCartesianMarker.ValueFormatter.default(colorCode = true),
+    indicator = null,
+    guideline = createMarkerGuideline()
+) {
+    override fun drawOverLayers(
+        context: CartesianDrawingContext,
+        targets: List<CartesianMarker.Target>
+    ) {
+        context.drawColumnGuideline(targets)
+        drawLabel(context, targets)
+    }
+
+    private fun CartesianDrawingContext.drawColumnGuideline(
+        targets: List<CartesianMarker.Target>
+    ) {
+        val component = guideline ?: return
+        val offsetPx = COLUMN_MARKER_OFFSET_DP * density
+        targets.forEach { target ->
+            if (target is ColumnCartesianLayerMarkerTarget) {
+                val columnTop = target.columns.minOf { it.canvasY }
+                val bottom = (columnTop - offsetPx).coerceAtLeast(layerBounds.top)
+                component.drawVertical(this, target.canvasX, layerBounds.top, bottom)
+            } else {
+                component.drawVertical(this, target.canvasX, layerBounds.top, layerBounds.bottom)
+            }
+        }
+    }
+}
+
+private fun createMarkerLabelComponent() =
+    TextComponent(
+        color = Color.WHITE,
+        typeface = getRobotoBold(App.INSTANCE) ?: Typeface.DEFAULT,
+        textSizeSp = 12f,
+        padding = Insets(8f, 4f),
+        background = ShapeComponent(
+            fill = Fill("#E6FFFFFF".toColorInt()),
+            shape = MarkerCorneredShape(Corner.Rounded),
+            shadow = Shadow(radiusDp = 4f, color = 0x33000000, xDp = 0f, yDp = 2f)
+        )
+    )
+
+private fun createMarkerGuideline() =
+    LineComponent(
+        fill = Fill("#886BD3C9".toColorInt()),
+        thicknessDp = 1f
+    )

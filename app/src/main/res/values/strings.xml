@@ -144,6 +144,10 @@
     <string name="delete_record_remind">Cannot be recovered after deletion</string>
     <string name="add_record">Add Record</string>
     <string name="alarm_management">Alarm Management</string>
+    <string name="step_stats_max_title">Maximum</string>
+    <string name="step_stats_min_title">Minimum</string>
+    <string name="step_stats_avg_title">Average</string>
+    <string name="step_stats_steps_subtitle">steps</string>
 
     <string-array name="blood_sugar_labels">
         <item>Feeling excited</item>

@@ -5,6 +5,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.healthtracker.blood.suger.util.AxisStyle
+import com.healthtracker.blood.suger.util.BaselineStyle
 import com.healthtracker.blood.suger.util.ChartConfigHelper
 import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
@@ -15,7 +16,9 @@ import com.patrykandpatrick.vico.core.cartesian.Zoom
 import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.common.Position
 import com.patrykandpatrick.vico.views.cartesian.CartesianChartView
 import com.patrykandpatrick.vico.views.cartesian.ScrollHandler
 import com.patrykandpatrick.vico.views.cartesian.ZoomHandler
@@ -77,14 +80,17 @@ class HealthLineChartManager @AssistedInject constructor(
 
         labels = state.labels
         val (minY, maxY) = state.computeRange()
-        val yFormatter = createStartAxisFormatter(minY, maxY, state.forceIntegerYAxis)
+        val yFormatter = state.startAxisFormatter
+            ?: createStartAxisFormatter(minY, maxY, state.forceIntegerYAxis)
 
         val axisStyle = AxisStyle(
             bottomAxisValueFormatter = createBottomAxisFormatter(),
             deduplicateBottomLabels = true,
             minY = minY,
             maxY = maxY,
-            startAxisValueFormatter = yFormatter
+            startAxisValueFormatter = yFormatter,
+            labelTextSize = AXIS_LABEL_TEXT_SIZE,
+            verticalItemCount = state.axisSteps
         )
 
         val lineStyles = state.dataSets.mapIndexed { index, dataSet ->
@@ -137,6 +143,77 @@ class HealthLineChartManager @AssistedInject constructor(
         return true
     }
 
+
+    /**
+     * 渲染柱状图数据
+     * @return 是否存在可绘制的数据
+     */
+    suspend fun renderColumn(state: ChartUiState, isShowLabel: Boolean = true): Boolean {
+        if (isReleased) {
+            Log.w(TAG, "Attempted to render on released manager, ignoring")
+            return false
+        }
+
+        labels = state.labels
+        val (minY, maxY) = state.computeRange()
+        val yFormatter = state.startAxisFormatter
+            ?: createStartAxisFormatter(minY, maxY, state.forceIntegerYAxis)
+
+        val axisStyle = AxisStyle(
+            bottomAxisValueFormatter = createBottomAxisFormatter(),
+            deduplicateBottomLabels = true,
+            minY = minY,
+            maxY = maxY,
+            startAxisValueFormatter = yFormatter,
+            labelTextSize = AXIS_LABEL_TEXT_SIZE,
+            verticalItemCount = state.axisSteps
+        )
+        val baselineStyle = state.goalValue
+            ?.takeIf { it < maxY }
+            ?.let {
+                BaselineStyle(
+                    yValue = it,
+                    color = ChartPalette.columnSteps,
+                    labelText = state.baselineLabel,
+                    labelColor = ChartPalette.columnSteps,
+                    labelHorizontalPosition = Position.Horizontal.End,
+                    labelVerticalPosition = Position.Vertical.Bottom
+                )
+            }
+
+        val lastX = state.dataSets.lastOrNull()?.xValues?.lastOrNull()?.toDouble()
+
+        chartView.chart = ChartConfigHelper.createColumnChart(
+            axisStyle = axisStyle,
+            baselineStyle = baselineStyle,
+            isShowLabel = isShowLabel,
+            lastX = lastX
+        ){
+            chartView.invalidate()
+        }
+        chartView.scrollHandler = ScrollHandler(scrollEnabled = false)
+        chartView.zoomHandler = ZoomHandler(zoomEnabled = false)
+
+        if (!state.hasData) {
+            val placeholder = listOf(0f)
+            modelProducer.runTransaction {
+                columnSeries {
+                    series(x = placeholder, y = placeholder)
+                }
+            }
+            return false
+        }
+
+        modelProducer.runTransaction {
+            columnSeries {
+                state.dataSets.forEach { dataSet ->
+                    series(x = dataSet.xValues, y = dataSet.yValues)
+                }
+            }
+        }
+
+        return true
+    }
 
 
 
@@ -224,6 +301,7 @@ class HealthLineChartManager @AssistedInject constructor(
         private const val TAG = "HealthLineChartManager"
         private const val DEFAULT_AXIS_STEPS = 6
         private const val ZERO_DATA_PLACEHOLDER = "-"
+        private const val AXIS_LABEL_TEXT_SIZE = 12f
 
         private val DEFAULT_LINE_STYLES = listOf(
             LineStyle(color = ChartPalette.lineBpSystolic),

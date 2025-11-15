@@ -261,7 +261,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_goal"
-                    style="@style/TextViewFont_RobotoBold"
+                    style="@style/TextViewFont_RobotoRegular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_18"
@@ -277,6 +277,200 @@
                     app:layout_constraintTop_toBottomOf="@id/v_line"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
+                android:id="@+id/chartView"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/bg_rect_white_12"
+                android:padding="@dimen/dp_12"
+                android:clipToPadding="false"/>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/layoutStats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/itemStatMax"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_12"
+                    android:background="@drawable/bg_rect_white_12"
+                    android:padding="@dimen/dp_16">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivMax"
+                        android:layout_width="@dimen/dp_40"
+                        android:layout_height="@dimen/dp_40"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_max" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivMax"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvMaxLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextViewFont_RobotoBold"
+                            android:text="@string/step_stats_max_title"
+                            android:textColor="@color/t1"
+                            android:textSize="@dimen/sp_16" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvMaxSubLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextViewFont_RobotoRegular"
+                            android:text="@string/step_stats_steps_subtitle"
+                            android:textColor="@color/color_999"
+                            android:textSize="@dimen/sp_14" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvMaxValue"
+                        style="@style/TextViewFont_RobotoBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/t1"
+                        android:textSize="@dimen/sp_24"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/itemStatMin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginBottom="@dimen/dp_12"
+                    android:background="@drawable/bg_rect_white_12"
+                    android:padding="@dimen/dp_16">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivMin"
+                        android:layout_width="@dimen/dp_40"
+                        android:layout_height="@dimen/dp_40"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_min" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivMin"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvMinLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextViewFont_RobotoBold"
+                            android:text="@string/step_stats_min_title"
+                            android:textColor="@color/t1"
+                            android:textSize="@dimen/sp_16" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvMinSubLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextViewFont_RobotoRegular"
+                            android:text="@string/step_stats_steps_subtitle"
+                            android:textColor="@color/color_999"
+                            android:textSize="@dimen/sp_14" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvMinValue"
+                        style="@style/TextViewFont_RobotoBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/t1"
+                        android:textSize="@dimen/sp_24"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/itemStatAvg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_12"
+                    android:background="@drawable/bg_rect_white_12"
+                    android:padding="@dimen/dp_16">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivAvg"
+                        android:layout_width="@dimen/dp_40"
+                        android:layout_height="@dimen/dp_40"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_avg" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivAvg"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvAvgLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextViewFont_RobotoBold"
+                            android:text="@string/step_stats_avg_title"
+                            android:textColor="@color/t1"
+                            android:textSize="@dimen/sp_16" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvAvgSubLabel"
+                            style="@style/TextViewFont_RobotoRegular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/step_stats_steps_subtitle"
+                            android:textColor="@color/color_999"
+                            android:textSize="@dimen/sp_14" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvAvgValue"
+                        style="@style/TextViewFont_RobotoBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/t1"
+                        android:textSize="@dimen/sp_24"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
