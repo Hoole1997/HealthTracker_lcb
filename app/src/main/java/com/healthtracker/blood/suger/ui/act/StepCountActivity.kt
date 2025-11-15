@@ -59,6 +59,8 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
 
         this.collect(mViewModel.chartUiStateFlow) { chartState ->
             chartManager.renderColumn(chartState, isShowLabel = true)
+            mViewBind.chartView.setAnimationDuration(0)
+            mViewBind.chartView.animateIn = false
         }
 
         this.collect(mViewModel.statsFlow) { stats ->
