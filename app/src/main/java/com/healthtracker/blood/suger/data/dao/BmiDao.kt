@@ -29,7 +29,7 @@ interface BmiDao {
     fun getAllRecords(): Flow<List<BmiRecord>>
 
     /** 获取最近一条记录（过滤已删除） */
-    @Query("SELECT * FROM bmi_records WHERE is_delete = 0 ORDER BY record_time DESC LIMIT 1")
+    @Query("SELECT * FROM bmi_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC LIMIT 1")
     suspend fun getLatestRecord(): BmiRecord?
 
     /** 按时间范围查询（过滤已删除） */

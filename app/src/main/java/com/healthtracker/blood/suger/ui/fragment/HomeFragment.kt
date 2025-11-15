@@ -215,8 +215,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
      * 更新 BMI（体重）记录UI
      */
     private fun updateBmiUI(record: BmiRecord?) {
-        val unit = BmiUnit.getPreferredWeightUnit()
-        mViewBind?.tvLatestWeightUnit?.text = getWeightUnitLabel(unit)
+        mViewBind?.tvLatestWeightUnit?.text = BmiUnit.getWeightUnitLabel()
         if (record == null) {
             mViewBind?.tvLatestWeightValue?.text = "--"
             return

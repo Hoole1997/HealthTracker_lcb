@@ -9,10 +9,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import android.widget.Toast
 import com.healthtracker.blood.suger.ad.BaseInterActivity
+import com.healthtracker.blood.suger.constants.KEY_STEP_COUNT_GOLE
 import com.healthtracker.blood.suger.databinding.ActivityStepCountBinding
 import com.healthtracker.blood.suger.service.HealthService
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
+import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,11 +36,19 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
     override fun getVMModelClass() = StepCountViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewBind.btnBack.setOnClickListener { onBackPress() }
+        mViewBind.btnBack.clickWithDuration { handleBackPress() }
+        mViewBind.ivSetting.clickWithDuration {
+            startActivity<StepSettingActivity>()
+        }
 
         chartManager = chartManagerFactory.create(mViewBind.chartView, this)
         checkPermissionAndStart()
         createObserver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewBind.tvGoal.text = SpUtils.getInt(KEY_STEP_COUNT_GOLE,6000).toString()
     }
 
     override fun createObserver() {

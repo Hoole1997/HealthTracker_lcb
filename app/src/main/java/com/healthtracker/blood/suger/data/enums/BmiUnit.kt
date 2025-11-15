@@ -1,5 +1,7 @@
 package com.healthtracker.blood.suger.data.enums
 
+import com.healthtracker.blood.suger.App
+import com.healthtracker.blood.suger.R
 import com.healthtracker.framework.util.SpUtils
 import java.util.Locale
 import kotlin.math.pow
@@ -172,6 +174,18 @@ enum class BmiUnit(
             if (inches < 0) inches = 0
 
             return "${feet}'${inches}\""
+        }
+
+        fun getWeightUnitLabel() = if (getPreferredWeightUnit() == METRIC) {
+            App.INSTANCE.getString(R.string.unit_kg)
+        } else {
+            App.INSTANCE.getString(R.string.unit_lb)
+        }
+
+        fun getHeightUnitLabel() = if (getPreferredWeightUnit() == METRIC) {
+            App.INSTANCE.getString(R.string.unit_cm)
+        } else {
+            App.INSTANCE.getString(R.string.unit_ft_in)
         }
     }
 

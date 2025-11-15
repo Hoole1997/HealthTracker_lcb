@@ -147,8 +147,6 @@
     <string name="step_stats_max_title">Maximum</string>
     <string name="step_stats_min_title">Minimum</string>
     <string name="step_stats_avg_title">Average</string>
-    <string name="step_stats_steps_subtitle">steps</string>
-
     <string-array name="blood_sugar_labels">
         <item>Feeling excited</item>
         <item>After cardio</item>
@@ -1261,5 +1259,7 @@ healthcare provider or medical institution.</string>
     <string name="unit_km">km</string>
     <string name="kcal">Kcal</string>
     <string name="today_s_goal">Today\'s goal</string>
+    <string name="step_goal">Step Goal</string>
+    <string name="text_steps">Steps</string>
 
 </resources>
