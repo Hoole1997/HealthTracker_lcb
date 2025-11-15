@@ -81,7 +81,7 @@ class LaunchAds private constructor() {
     companion object {
         private const val TAG = "LaunchAds"
         private const val AD_TIMEOUT = 4 * 60 * 60 * 1000L // 4小时过期
-        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 2
+        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 1
         
         @Volatile
         private var INSTANCE: LaunchAds? = null

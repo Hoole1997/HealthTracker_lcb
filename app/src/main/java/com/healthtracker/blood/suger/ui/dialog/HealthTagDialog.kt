@@ -16,7 +16,6 @@ import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.DialogLabelSelectBinding
 import com.healthtracker.blood.suger.ui.adapter.HealthTagAdapter
-import com.healthtracker.blood.suger.ui.dialog.DeleteHydrateReminderDialog.Companion.BUTTON_OK
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
@@ -210,13 +209,14 @@ class HealthTagDialog(
      */
     private fun handleTagSelection(tag: HealthTag) {
         if (isDeleteMode) {
-            DeleteHydrateReminderDialog(
+            ConfirmDialog(
+                getString(R.string.confirm_delete_title),
                 getString(R.string.confirm_delete_message),
                 object : DialogListener {
                     override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                         super.onItemClick(dialogFragment, which)
                         when (which) {
-                            BUTTON_OK -> {
+                            ConfirmDialog.Companion.BUTTON_OK -> {
                                 // 删除模式：触发删除并移除本地选中列表中的该标签
                                 val index = selectLabels.indexOfFirst { it.id == tag.id }
                                 if (index >= 0) {

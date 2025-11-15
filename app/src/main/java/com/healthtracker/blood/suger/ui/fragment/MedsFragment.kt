@@ -1,10 +1,10 @@
 package com.healthtracker.blood.suger.ui.fragment
 
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
@@ -13,7 +13,7 @@ import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.FragmentMedsBinding
 import com.healthtracker.blood.suger.ui.act.AddReminderActivity
 import com.healthtracker.blood.suger.ui.adapter.MedsReminderAdapter
-import com.healthtracker.blood.suger.ui.dialog.DeleteHydrateReminderDialog
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.viewmodel.MedsViewModel
 import com.healthtracker.blood.suger.ui.widget.MedsRemindDropdownMenu
@@ -29,7 +29,6 @@ import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
-import androidx.core.graphics.drawable.toDrawable
 
 @AndroidEntryPoint
 class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
@@ -245,7 +244,8 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
       * @param item 要删除的提醒项
       */
      private fun showDeleteConfirmDialog(item: MedsReminderItem) {
-         DeleteHydrateReminderDialog(
+         ConfirmDialog(
+             title = getString(R.string.tips),
              message = getString(R.string.delete_tips_content),
              leftText = getString(R.string.cancel),
              rightText = getString(R.string.confirm),
@@ -253,7 +253,7 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
                  override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                      super.onItemClick(dialogFragment, which)
                      if (which == R.id.btn_ok) {
-                        mViewModel.deleteMedicineReminder(item.reminderId)
+                         mViewModel.deleteMedicineReminder(item.reminderId)
                      }
                  }
              }

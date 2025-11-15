@@ -1,17 +1,17 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.os.Bundle
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.ActivityTargetRangeBinding
 import com.healthtracker.blood.suger.ui.adapter.TargetRangeAdapter
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.dialog.RangeEditDialog
 import com.healthtracker.blood.suger.ui.viewmodel.TargetRangeViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
-import androidx.fragment.app.DialogFragment
-import com.healthtracker.blood.suger.data.enums.BsUnit
-import com.healthtracker.blood.suger.ui.dialog.DeleteHydrateReminderDialog
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.showToast
@@ -125,7 +125,8 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, ActivityTarge
      * 显示重置确认对话框
      */
     private fun showResetConfirmDialog() {
-        DeleteHydrateReminderDialog(
+        ConfirmDialog(
+            getString(R.string.reset),
             getString(R.string.reset_all_ranges_confirm),
             leftText = getString(R.string.cancel),
             rightText = getString(R.string.confirm),

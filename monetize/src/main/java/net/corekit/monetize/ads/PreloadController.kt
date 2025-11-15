@@ -11,6 +11,16 @@ import kotlinx.coroutines.launch
 
 object PreloadController {
     fun preload(context: Context){
+
+        MainScope().launch {
+            try {
+                AdLogger.d("开屏开始异步预加载下一个广告，广告位ID: %s", BuildConfig.ADMOB_SPLASH_ID)
+                LaunchAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_SPLASH_ID)
+            }catch (e: Exception){
+                AdLogger.e("开屏异步预加载广告失败", e)
+            }
+        }
+
         MainScope().launch {
             try {
                 AdLogger.d("插页开始异步预加载下一个广告，广告位ID: %s", BuildConfig.ADMOB_INTERSTITIAL_ID)
