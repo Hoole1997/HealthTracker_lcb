@@ -49,7 +49,8 @@ inline fun AppCompatActivity.showFreeLockConfirm(crossinline onConfirm: () -> Un
                     onCancel.invoke()
                 }
             }
-        }
+        },
+        isShowNative = true
     ).apply {
         isCancelable = false
     }.show(supportFragmentManager)

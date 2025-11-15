@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.databinding.DialogConfirmBinding
 import com.healthtracker.blood.suger.databinding.DialogDeleteConfirmBinding
+import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
+import net.corekit.monetize.ui.NativeAdStyle
 
 
 class ConfirmDialog(
@@ -16,8 +19,9 @@ class ConfirmDialog(
     private val message: String,
     private val onDialogListener: DialogListener?,
     private val leftText: String? = null, private val rightText: String? = null,
-    private val titleColor: Int = 0
-) : BaseVbDialogFragment<DialogDeleteConfirmBinding>(){
+    private val titleColor: Int = 0,
+    private val isShowNative: Boolean = false
+) : BaseVbDialogFragment<DialogConfirmBinding>(){
 
     companion object {
         val BUTTON_OK = R.id.btn_ok
@@ -39,12 +43,13 @@ class ConfirmDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DialogDeleteConfirmBinding.inflate(inflater, parent, attachToParent)
+    ) = DialogConfirmBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {
             btnOk.text = title
             tvConfirmMessage.text = message
+            tvConfirmTitle.text = title
 
             if (titleColor != 0) {
                 btnOk.setTextColor(titleColor)
@@ -63,6 +68,10 @@ class ConfirmDialog(
             btnCancel.click {
                 onDialogListener?.onItemClick(this@ConfirmDialog, BUTTON_CANCEL)
                 dismissAllowingStateLoss()
+            }
+
+            if(isShowNative){
+                requireActivity().loadNative(adContainer, style = NativeAdStyle.CARD_5)
             }
         }
     }
