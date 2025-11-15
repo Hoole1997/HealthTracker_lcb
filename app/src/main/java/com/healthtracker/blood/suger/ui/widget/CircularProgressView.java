@@ -28,6 +28,7 @@ public class CircularProgressView extends View {
     private int[] mProgressColors; // 进度颜色数组
     private int mCurrentProgress; // 当前进度
     private int mTargetProgress; // 目标进度
+    private static final int MIN_VISIBLE_PROGRESS = 1; // 非0时的最小可视进度
 
     // 动画更新监听器
     public class ProgressAnimatorUpdateListener implements ValueAnimator.AnimatorUpdateListener {
@@ -100,7 +101,27 @@ public class CircularProgressView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawArc(mArcBounds, 0.0f, 360.0f, false, mBackgroundPaint);
-        canvas.drawArc(mArcBounds, 275.0f, (mCurrentProgress * 360) / 100, false, mProgressPaint);
+        if (mCurrentProgress <= 0) {
+            return;
+        }
+        int visibleProgress = Math.max(mCurrentProgress, MIN_VISIBLE_PROGRESS);
+        float sweepAngle = (visibleProgress * 360f) / 100f;
+
+        // 当弧长不足一个笔触宽度时，用等同于圆环宽度的圆点代替
+        float circumference = (float) (Math.PI * mArcBounds.width());
+        float minSweep = (mProgressPaint.getStrokeWidth() / circumference) * 360f;
+        if (sweepAngle < minSweep) {
+            float radius = mArcBounds.width() / 2f;
+            float angleRad = (float) Math.toRadians(275.0);
+            float cx = mArcBounds.centerX() + radius * (float) Math.cos(angleRad);
+            float cy = mArcBounds.centerY() + radius * (float) Math.sin(angleRad);
+
+            Paint dotPaint = new Paint(mProgressPaint);
+            dotPaint.setStyle(Paint.Style.FILL);
+            canvas.drawCircle(cx, cy, mProgressPaint.getStrokeWidth() / 2f, dotPaint);
+        } else {
+            canvas.drawArc(mArcBounds, 275.0f, sweepAngle, false, mProgressPaint);
+        }
     }
 
     @Override
@@ -212,4 +233,3 @@ public class CircularProgressView extends View {
         invalidate();
     }
 }
-
