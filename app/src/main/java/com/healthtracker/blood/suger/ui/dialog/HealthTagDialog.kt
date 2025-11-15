@@ -16,6 +16,7 @@ import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.DialogLabelSelectBinding
 import com.healthtracker.blood.suger.ui.adapter.HealthTagAdapter
+import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog.Companion.BUTTON_OK
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
@@ -216,7 +217,7 @@ class HealthTagDialog(
                     override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                         super.onItemClick(dialogFragment, which)
                         when (which) {
-                            ConfirmDialog.Companion.BUTTON_OK -> {
+                            BUTTON_OK -> {
                                 // 删除模式：触发删除并移除本地选中列表中的该标签
                                 val index = selectLabels.indexOfFirst { it.id == tag.id }
                                 if (index >= 0) {
@@ -267,6 +268,7 @@ class HealthTagDialog(
             // 删除标签按钮：切换删除模式
             ivDelete.clickWithDuration {
                 isDeleteMode = !isDeleteMode
+                tagAdapter.switchDelectMode(isDeleteMode)
             }
 
             // 取消按钮

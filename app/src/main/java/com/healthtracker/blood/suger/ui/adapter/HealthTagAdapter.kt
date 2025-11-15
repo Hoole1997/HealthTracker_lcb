@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
 import com.healthtracker.blood.suger.databinding.ItemLabelBinding
+import com.healthtracker.blood.suger.databinding.ItemLabelFlexBinding
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
@@ -17,7 +18,7 @@ import com.healthtracker.framework.ext.visible
 /**
  * 健康标签RecyclerView适配器
  * 支持血糖和血压标签的显示和选择
- * 
+ *
  * @param tagType 标签类型（血糖或血压）
  * @param onTagClick 标签点击回调
  */
@@ -25,6 +26,13 @@ class HealthTagAdapter(
     private val tagType: TagType,
     private val onTagClick: (HealthTag) -> Unit
 ) : ListAdapter<HealthTagAdapter.TagItem, HealthTagAdapter.TagViewHolder>(TagDiffCallback()) {
+
+    private var isDelectMode = false
+
+    fun switchDelectMode(isDelete: Boolean){
+        isDelectMode = isDelete
+        notifyItemRangeChanged(0,itemCount)
+    }
 
     /**
      * 标签项数据类
@@ -42,14 +50,45 @@ class HealthTagAdapter(
      * 标签ViewHolder
      */
     inner class TagViewHolder(
-        private val binding: ItemLabelBinding
+        private val binding: ItemLabelFlexBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: TagItem) {
             binding.apply {
                 // 设置标签文本
                 tvLabel.text = item.displayText
-                
+
+                if (isDelectMode) {
+                    ivLabelDelete.visible()
+                } else {
+                    ivLabelDelete.gone()
+                }
+
+                // 设置选中状态样式
+                if (item.isSelected && !isDelectMode) {
+                    tvLabel.setTextColor(
+                        ContextCompat.getColor(
+                            tvLabel.context,
+                            com.healthtracker.framework.R.color.white
+                        )
+                    )
+                    labelItem.background = ContextCompat.getDrawable(
+                        labelItem.context,
+                        R.drawable.bg_label_select_selected
+                    )
+                } else {
+                    tvLabel.setTextColor(
+                        ContextCompat.getColor(
+                            tvLabel.context,
+                            R.color.c5
+                        )
+                    )
+                    labelItem.background = ContextCompat.getDrawable(
+                        labelItem.context,
+                        R.drawable.bg_label_select_normal
+                    )
+                }
+
                 // 设置点击事件
                 root.click {
                     onTagClick(item.tag)
@@ -59,7 +98,7 @@ class HealthTagAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
-        val binding = ItemLabelBinding.inflate(
+        val binding = ItemLabelFlexBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -96,14 +135,14 @@ class HealthTagAdapter(
                 // 自定义标签，直接使用name字段
                 tag.name
             }
-            
+
             TagItem(
                 tag = tag,
                 isSelected = selectedTags.contains(tag),
                 displayText = displayText
             )
         }
-        
+
         submitList(tagItems)
     }
 

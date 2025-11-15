@@ -64,7 +64,7 @@
         android:nestedScrollingEnabled="false"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         tools:layout_height="@dimen/dp_100"
-        tools:listitem="@layout/item_label" />
+        tools:listitem="@layout/item_label_flex" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_cancel"
