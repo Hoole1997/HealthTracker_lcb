@@ -41,6 +41,10 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
             startActivity<StepSettingActivity>()
         }
 
+        mViewBind.tvGoal.clickWithDuration {
+            startActivity<StepSettingActivity>()
+        }
+
         chartManager = chartManagerFactory.create(mViewBind.chartView, this)
         checkPermissionAndStart()
         createObserver()

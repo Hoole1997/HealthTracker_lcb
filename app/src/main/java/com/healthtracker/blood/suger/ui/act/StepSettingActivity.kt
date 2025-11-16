@@ -6,6 +6,7 @@ import com.healthtracker.blood.suger.constants.KEY_STEP_COUNT_GOLE
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.databinding.ActivityStepSettingBinding
+import com.healthtracker.blood.suger.ui.dialog.StepGoalSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.StepSettingViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
@@ -19,6 +20,10 @@ class StepSettingActivity: BaseInterActivity<StepSettingViewModel, ActivityStepS
 
     override fun getVMModelClass() = StepSettingViewModel::class.java
 
+    private val goal = SpUtils.getInt(KEY_STEP_COUNT_GOLE,6000)
+
+    private var newGoal = 0
+
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.loadRecord()
         with(mViewBind){
@@ -27,10 +32,21 @@ class StepSettingActivity: BaseInterActivity<StepSettingViewModel, ActivityStepS
             }
 
             llGoal.clickWithDuration {
+                StepGoalSelectDialog{
+                    if((newGoal > 0 && it != newGoal) || (newGoal == 0 && it != goal)){
+                        newGoal = it
+                        tvGoalValue.text = it.toString()
+                    }
+
+                }.show(supportFragmentManager)
 
             }
 
             btnSave.clickWithDuration {
+                if(newGoal != goal){
+                    SpUtils.putInt(KEY_STEP_COUNT_GOLE,newGoal)
+                    handleBackPress()
+                }
 
             }
 
@@ -48,7 +64,7 @@ class StepSettingActivity: BaseInterActivity<StepSettingViewModel, ActivityStepS
     }
 
     private fun updateGoal() {
-        mViewBind.tvGoalValue.text = SpUtils.getInt(KEY_STEP_COUNT_GOLE,6000).toString()
+        mViewBind.tvGoalValue.text = goal.toString()
     }
 
     private fun updateBmiUI() {
