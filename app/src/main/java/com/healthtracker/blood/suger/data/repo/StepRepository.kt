@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
+import com.healthtracker.blood.suger.data.utils.toLocalEpochDay
 
 class StepRepository private constructor(private val appContext: Context, private val dao: StepDao) {
     companion object {
@@ -30,7 +31,7 @@ class StepRepository private constructor(private val appContext: Context, privat
 
     private fun currentEpochDay(): Long {
         val startOfDay = DateTimeUtils.getTodayRange().first
-        return startOfDay.time / 86_400_000L
+        return startOfDay.toLocalEpochDay()
     }
     private var lastPersistTs = 0L
     private var lastPersistSteps = 0

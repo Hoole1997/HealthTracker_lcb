@@ -299,6 +299,13 @@ object DateTimeUtils {
     }
 }
 
+const val MILLIS_PER_DAY = 86_400_000L
+
+fun Date.toLocalEpochDay(): Long {
+    val offset = TimeZone.getDefault().getOffset(time)
+    return (time + offset) / MILLIS_PER_DAY
+}
+
 /**
  * 日期组件数据类
  * 用于存储从Date中提取的年月日时分信息

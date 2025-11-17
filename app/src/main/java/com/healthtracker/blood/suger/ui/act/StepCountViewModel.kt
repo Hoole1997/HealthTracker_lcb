@@ -6,6 +6,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.DailyStepStat
 import com.healthtracker.blood.suger.data.repo.StepRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
+import com.healthtracker.blood.suger.data.utils.toLocalEpochDay
 import com.healthtracker.blood.suger.ui.chart.ChartDataSet
 import com.healthtracker.blood.suger.ui.chart.ChartUiState
 import com.healthtracker.framework.base.BaseViewModel
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.shareIn
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -37,7 +39,6 @@ class StepCountViewModel : BaseViewModel() {
     companion object {
         private const val DEFAULT_GOAL_STEPS = 6000
         private const val DAYS_IN_WEEK = 7
-        private const val MILLIS_PER_DAY = 86_400_000L
         private const val STEP_AXIS_STEPS = 8
         private const val STEP_INTERVAL = 50.0
         private val DEFAULT_WEEK_LABELS = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
@@ -141,14 +142,14 @@ class StepCountViewModel : BaseViewModel() {
 
     private fun resolveCurrentWeekRange(): WeekRange {
         val todayStart = DateTimeUtils.getTodayRange().first
-        val todayEpochDay = todayStart.time / MILLIS_PER_DAY
+        val todayEpochDay = todayStart.toLocalEpochDay()
         val calendar = Calendar.getInstance().apply {
             time = todayStart
         }
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         val daysFromSunday = dayOfWeek - Calendar.SUNDAY
         calendar.add(Calendar.DAY_OF_YEAR, -daysFromSunday)
-        val startEpochDay = calendar.timeInMillis / MILLIS_PER_DAY
+        val startEpochDay = Date(calendar.timeInMillis).toLocalEpochDay()
         val endEpochDay = startEpochDay + (DAYS_IN_WEEK - 1)
         val highlightIndex = (todayEpochDay - startEpochDay).toInt().coerceIn(0, DAYS_IN_WEEK - 1)
         return WeekRange(

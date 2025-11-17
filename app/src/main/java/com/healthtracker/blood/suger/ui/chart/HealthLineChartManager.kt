@@ -149,7 +149,7 @@ class HealthLineChartManager @AssistedInject constructor(
      * 渲染柱状图数据
      * @return 是否存在可绘制的数据
      */
-    suspend fun renderColumn(state: ChartUiState, isShowLabel: Boolean = true): Boolean {
+    suspend fun renderColumn(state: ChartUiState, isShowLabel: Boolean = true, enableScroll: Boolean = false): Boolean {
         if (isReleased) {
             Log.w(TAG, "Attempted to render on released manager, ignoring")
             return false
@@ -193,8 +193,22 @@ class HealthLineChartManager @AssistedInject constructor(
                 chartView.invalidate()
             }
         )
-        chartView.scrollHandler = ScrollHandler(scrollEnabled = false)
-        chartView.zoomHandler = ZoomHandler(zoomEnabled = false)
+        if (enableScroll) {
+            chartView.scrollHandler = ScrollHandler(
+                initialScroll = Scroll.Absolute.End,
+                autoScroll = Scroll.Absolute.End,
+                autoScrollCondition = AutoScrollCondition.OnModelGrowth
+            )
+            chartView.zoomHandler = ZoomHandler(
+                zoomEnabled = true,
+                initialZoom = Zoom.x(7.0),
+                minZoom = Zoom.x(14.0),
+                maxZoom = Zoom.x(5.0)
+            )
+        } else {
+            chartView.scrollHandler = ScrollHandler(scrollEnabled = false)
+            chartView.zoomHandler = ZoomHandler(zoomEnabled = false)
+        }
 
         if (!state.hasData) {
             val placeholder = listOf(0f)

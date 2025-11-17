@@ -105,6 +105,7 @@ class HealthStatisticsActivity :
     private var isHistorySectionVisible: Boolean = false
     private var isHistoryListVisible: Boolean = false
     private var dimensionMenu: StatisticDimensionMenu? = null
+    private var currentMetricType: HealthMetric = HealthMetric.BLOOD_SUGAR
 
     override fun createViewBinding(): ActivityHealthStatisticsBinding {
         return ActivityHealthStatisticsBinding.inflate(layoutInflater)
@@ -235,7 +236,10 @@ class HealthStatisticsActivity :
 
     override fun createObserver() {
         collectLatest(mViewModel.selectedMetricType) { metricType ->
+            currentMetricType = metricType
             updateUIForMetricType(metricType)
+            updateActionButtonVisibility()
+//            applyChartPaddingForMetric(metricType)
         }
         collectLatest(mViewModel.statusFilterVisible) { visible ->
             mViewBind.tvFilterStatu.isVisible = visible
@@ -263,8 +267,13 @@ class HealthStatisticsActivity :
             renderStats(stats)
         }
         collectLatest(mViewModel.chartUiState) { state ->
-            val hasData = chartManager.render(state)
-//            mViewBind.chartView.isVisible = hasData
+            if (currentMetricType == HealthMetric.STEPS) {
+                mViewBind.chartView.setAnimationDuration(0)
+                mViewBind.chartView.animateIn = false
+                chartManager.renderColumn(state, isShowLabel = true, enableScroll = true)
+            } else {
+                chartManager.render(state)
+            }
         }
         collectLatest(mViewModel.historyPreview) { records ->
             val items = records.mapNotNull { record ->
@@ -289,7 +298,7 @@ class HealthStatisticsActivity :
             updateHistoryListVisibility()
         }
         collectLatest(mViewModel.allHistoryVisible) { show ->
-            mViewBind.tvAllHistory.isVisible = isHistorySectionVisible && show
+            mViewBind.tvAllHistory.isVisible = isHistorySectionVisible && show && isHistoryEnabled()
         }
         collectLatest(mViewModel.healthTips) { tips ->
             renderHealthTips(tips)
@@ -327,26 +336,52 @@ class HealthStatisticsActivity :
 
     private fun updateHistoryHeaderVisibility(visible: Boolean) {
         val header: View? = mViewBind.tvHistory.parent as? View
-        header?.isVisible = visible
-        if (!visible) {
+        val shouldShow = visible && isHistoryEnabled()
+        header?.isVisible = shouldShow
+        if (!shouldShow) {
             mViewBind.rvHistory.isVisible = false
             mViewBind.tvAllHistory.isVisible = false
         }
     }
 
     private fun updateHistoryListVisibility() {
-        mViewBind.rvHistory.isVisible = isHistorySectionVisible && isHistoryListVisible
+        mViewBind.rvHistory.isVisible = isHistorySectionVisible && isHistoryListVisible && isHistoryEnabled()
+    }
+
+    private fun updateActionButtonVisibility() {
+        mViewBind.btnAddRecord.isVisible = currentMetricType != HealthMetric.STEPS
+    }
+
+    private fun isHistoryEnabled(): Boolean = currentMetricType != HealthMetric.STEPS
+
+    private fun applyChartPaddingForMetric(metricType: HealthMetric) {
+        val chart = mViewBind.chartView
+        val baseStart = chart.paddingStart
+        val baseTop = chart.paddingTop
+        val baseBottom = chart.paddingBottom
+        val paddingEnd = if (metricType == HealthMetric.STEPS) {
+            resources.getDimensionPixelSize(com.healthtracker.framework.R.dimen.dp_12)
+        } else {
+            0
+        }
+        chart.setPadding(baseStart, baseTop, paddingEnd, baseBottom)
+        chart.clipToPadding = metricType != HealthMetric.STEPS
     }
 
     private fun updateUIForMetricType(metricType: HealthMetric) {
+        mViewBind.llBpChartDes.root.gone()
+        mViewBind.llChoChartDes.root.gone()
         when (metricType) {
-            HealthMetric.BLOOD_SUGAR, HealthMetric.HEART_RATE, HealthMetric.BMI -> {
+            HealthMetric.BLOOD_SUGAR, HealthMetric.HEART_RATE, HealthMetric.BMI, HealthMetric.STEPS -> {
                 val titleRes = when (metricType) {
                     HealthMetric.HEART_RATE -> {
                         R.string.heart_rate
                     }
                     HealthMetric.BMI -> {
                         R.string.weight_and_bmi
+                    }
+                    HealthMetric.STEPS -> {
+                        R.string.step_count
                     }
                     else -> {
                         R.string.blood_suger

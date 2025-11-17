@@ -6,9 +6,10 @@ import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
-import com.healthtracker.blood.suger.data.entity.CholesterolRecord
-import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.entity.BmiRecord
+import com.healthtracker.blood.suger.data.entity.CholesterolRecord
+import com.healthtracker.blood.suger.data.entity.DailyStepStat
+import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
@@ -16,6 +17,8 @@ import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.CholesterolRepository
 import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.blood.suger.data.repository.BmiRepository
+import com.healthtracker.blood.suger.data.repo.StepRepository
+import com.healthtracker.blood.suger.data.utils.toLocalEpochDay
 import com.healthtracker.blood.suger.tips.HealthTips
 import com.healthtracker.blood.suger.tips.HealthTipsProvider
 import com.healthtracker.blood.suger.tips.HealthMetric
@@ -27,6 +30,8 @@ import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.blood.suger.viewmodel.HealthStatisticsViewModel.StatsUiState.Companion.KEY_SELECTED_STATUS
 import com.healthtracker.framework.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -41,6 +46,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
@@ -91,6 +98,8 @@ class HealthStatisticsViewModel @Inject constructor(
         }
     }
 
+    private val stepRepository = StepRepository.get(App.INSTANCE)
+    private val stepKiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
     private val dateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     private val labelFormatter = SimpleDateFormat("M/d", Locale.getDefault())
 
@@ -204,6 +213,23 @@ class HealthStatisticsViewModel @Inject constructor(
         records.sortedByDescending { it.recordTime }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    private val stepRecords: StateFlow<List<DailyStepStat>> = combine(
+        selectedMetricType,
+        _dateRange
+    ) { metricType, range ->
+        metricType to range
+    }.flatMapLatest { (metricType, range) ->
+        if (metricType == HealthMetric.STEPS) {
+            val startEpochDay = range.start.toLocalEpochDay()
+            val endEpochDay = range.end.toLocalEpochDay()
+            stepRepository.range(startEpochDay, endEpochDay)
+        } else {
+            flowOf(emptyList())
+        }
+    }.map { records ->
+        records.sortedBy { it.dateEpochDay }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     val selectedPreset: StateFlow<DateRangePreset> = _selectedPreset.asStateFlow()
     val dateRange: StateFlow<DateRange> = _dateRange.asStateFlow()
     val selectedStatus: StateFlow<BloodSugarStatus?> = _selectedStatus.asStateFlow()
@@ -290,7 +316,8 @@ class HealthStatisticsViewModel @Inject constructor(
         cholRecords,
         hrRecords,
         bmiRecords,
-        _preferredUnit
+        _preferredUnit,
+        stepRecords
     ) { flows: Array<Any> ->
         val metricType = flows[0] as HealthMetric
         val dimension = flows[1] as StatisticDimension
@@ -300,12 +327,14 @@ class HealthStatisticsViewModel @Inject constructor(
         val hr = flows[5] as List<HeartRateRecord>
         val bmi = flows[6] as List<BmiRecord>
         val unit = flows[7] as BsUnit
+        val steps = flows[8] as List<DailyStepStat>
         when (metricType) {
             HealthMetric.BLOOD_SUGAR -> buildBsStats(bs, unit)
             HealthMetric.BLOOD_PRESSURE -> buildBpStats(bp, dimension)
             HealthMetric.CHOLESTEROL -> buildCholStats(chol, dimension)
             HealthMetric.HEART_RATE -> buildHrStats(hr)
             HealthMetric.BMI -> buildBmiStats(bmi)
+            HealthMetric.STEPS -> buildStepStats(steps)
             else -> StatsUiState()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), StatsUiState())
@@ -317,7 +346,9 @@ class HealthStatisticsViewModel @Inject constructor(
         cholRecords,
         hrRecords,
         bmiRecords,
-        _preferredUnit
+        _preferredUnit,
+        stepRecords,
+        _dateRange
     ) { flows: Array<Any> ->
         val metricType = flows[0] as HealthMetric
         val bs = flows[1] as List<BloodSugarRecord>
@@ -326,12 +357,15 @@ class HealthStatisticsViewModel @Inject constructor(
         val hr = flows[4] as List<HeartRateRecord>
         val bmi = flows[5] as List<BmiRecord>
         val unit = flows[6] as BsUnit
+        val steps = flows[7] as List<DailyStepStat>
+        val range = flows[8] as DateRange
         when (metricType) {
             HealthMetric.BLOOD_SUGAR -> buildBsChart(bs, unit)
             HealthMetric.BLOOD_PRESSURE -> buildBpChart(bp)
             HealthMetric.CHOLESTEROL -> buildCholChart(chol)
             HealthMetric.HEART_RATE -> buildHrChart(hr)
             HealthMetric.BMI -> buildBmiChart(bmi)
+            HealthMetric.STEPS -> buildStepChart(steps, range)
             else -> ChartUiState()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ChartUiState())
@@ -708,6 +742,121 @@ class HealthStatisticsViewModel @Inject constructor(
         )
     }
 
+    private fun buildStepStats(records: List<DailyStepStat>): StatsUiState {
+        val unit = App.INSTANCE.getString(R.string.text_steps)
+        if (records.isEmpty()) {
+            return StatsUiState(unitLabel = unit)
+        }
+        val values = records.map { it.steps }
+        val hasData = values.any { it > 0 }
+        if (!hasData) {
+            return StatsUiState(unitLabel = unit)
+        }
+        val avg = values.average().roundToInt()
+        val min = values.minOrNull() ?: 0
+        val max = values.maxOrNull() ?: 0
+        return StatsUiState(
+            avgValue = avg.toString(),
+            minValue = min.toString(),
+            maxValue = max.toString(),
+            unitLabel = unit,
+            hasData = true
+        )
+    }
+
+    private fun buildStepChart(records: List<DailyStepStat>, range: DateRange): ChartUiState {
+        val startEpoch = range.start.toLocalEpochDay()
+        val endEpoch = range.end.toLocalEpochDay()
+        val recordMap = records.associateBy { it.dateEpochDay }
+
+        val labels = mutableListOf<String>()
+        val xValues = mutableListOf<Float>()
+        val yValues = mutableListOf<Float>()
+
+        val calendar = Calendar.getInstance().apply {
+            time = millisToStartOfDay(range.start.time)
+        }
+
+        var currentEpochDay = startEpoch
+        var index = 0
+        while (currentEpochDay <= endEpoch) {
+            labels.add(labelFormatter.format(calendar.time))
+            xValues.add(index.toFloat())
+            yValues.add(recordMap[currentEpochDay]?.steps?.toFloat() ?: 0f)
+
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+            currentEpochDay++
+            index++
+        }
+
+        if (yValues.all { it <= 0f }) {
+            return ChartUiState()
+        }
+
+        val maxSteps = yValues.maxOrNull()?.toDouble() ?: 0.0
+        val divisor = (STEP_AXIS_STEPS - 1).coerceAtLeast(1)
+        val interval = resolveStepInterval(maxSteps, divisor)
+        val maxY = interval * divisor
+        val useKiloFormat = maxY >= 1000.0
+        val stepsAxisFormatter = object : com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter {
+            override fun format(
+                context: com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext,
+                value: Double,
+                verticalAxisPosition: com.patrykandpatrick.vico.core.cartesian.axis.Axis.Position.Vertical?
+            ): CharSequence = formatStepsLabel(value, useKiloFormat)
+        }
+
+        val todayEpoch = millisToStartOfDay(System.currentTimeMillis()).toLocalEpochDay()
+        val highlightIndex = if (todayEpoch in startEpoch..endEpoch) {
+            (todayEpoch - startEpoch).toInt()
+        } else {
+            null
+        }
+
+        return ChartUiState(
+            labels = labels,
+            dataSets = listOf(
+                ChartDataSet(
+                    id = ChartSeriesIds.STEP,
+                    xValues = xValues,
+                    yValues = yValues
+                )
+            ),
+            axisPaddingRatio = 0.0,
+            forceIntegerYAxis = true,
+            precomputedRange = 0.0 to maxY,
+            axisSteps = STEP_AXIS_STEPS,
+            startAxisFormatter = stepsAxisFormatter,
+            highlightX = highlightIndex?.toDouble()
+        )
+    }
+
+    private fun resolveStepInterval(maxSteps: Double, divisor: Int): Double {
+        if (maxSteps > 700.0) {
+            val rank = if (maxSteps <= 3500.0) {
+                1.0
+            } else {
+                1.0 + ceil((maxSteps - 3500.0) / 3500.0)
+            }
+            return rank * 500.0
+        }
+        val intervalBase = if (divisor == 0) maxSteps else maxSteps / divisor
+        val intervalMultiplier = ceil(intervalBase / STEP_INTERVAL).coerceAtLeast(1.0)
+        return intervalMultiplier * STEP_INTERVAL
+    }
+
+    private fun formatStepsLabel(value: Double, useKiloFormat: Boolean): String {
+        if (value <= 0.0) return "0"
+        if (!useKiloFormat) {
+            val isWhole = abs(value - value.toInt()) < 1e-4
+            return if (isWhole) value.toInt().toString() else stepKiloFormatter.format(value)
+        }
+        val thousands = value / 1000.0
+        val isWhole = abs(thousands - thousands.toInt()) < 1e-4
+        val formatted = if (isWhole) thousands.toInt().toString() else stepKiloFormatter.format(thousands)
+        return "${formatted}k"
+    }
+
     private fun createPresetRange(preset: DateRangePreset): DateRange {
         val calendar = Calendar.getInstance()
         val end = millisToEndOfDay(calendar.timeInMillis)
@@ -747,6 +896,8 @@ class HealthStatisticsViewModel @Inject constructor(
 
     companion object {
         private const val HISTORY_PREVIEW_LIMIT = 2
+        private const val STEP_AXIS_STEPS = 8
+        private const val STEP_INTERVAL = 50.0
     }
 
     private fun convertToDisplayUnit(valueMgdl: Double, target: BsUnit): Float {

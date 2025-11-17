@@ -15,6 +15,7 @@ import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.blood.suger.data.repository.CholesterolRepository
 import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.blood.suger.data.repo.StepRepository
+import com.healthtracker.blood.suger.data.utils.toLocalEpochDay
 import com.healthtracker.blood.suger.ui.chart.ChartDataSet
 import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
 import com.healthtracker.blood.suger.ui.chart.ChartUiState
@@ -28,11 +29,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 import kotlin.math.pow
 
 @HiltViewModel
@@ -47,7 +49,6 @@ class TrackerViewModel @Inject constructor(
     companion object {
         /** 图表显示的记录数量 */
         private const val CHART_RECORDS_LIMIT = 7
-        private const val MILLIS_PER_DAY = 86_400_000L
         private const val STEP_AXIS_STEPS = 8
         private const val STEP_INTERVAL = 50.0
     }
@@ -356,7 +357,7 @@ class TrackerViewModel @Inject constructor(
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         val daysFromSunday = dayOfWeek - Calendar.SUNDAY
         calendar.add(Calendar.DAY_OF_YEAR, -daysFromSunday)
-        val startEpochDay = calendar.timeInMillis / MILLIS_PER_DAY
+        val startEpochDay = Date(calendar.timeInMillis).toLocalEpochDay()
         val endEpochDay = startEpochDay + (CHART_RECORDS_LIMIT - 1)
         return WeekRange(startEpochDay, endEpochDay)
     }
