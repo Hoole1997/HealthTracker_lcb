@@ -97,16 +97,17 @@ class HealthLineChartManager @AssistedInject constructor(
             dataSet.style ?: DEFAULT_LINE_STYLES[index % DEFAULT_LINE_STYLES.size]
         }
         val lineCount = if (lineStyles.isEmpty()) 1 else lineStyles.size
-        val lastX =  if(state.dataSets.isNotEmpty()) state.dataSets.last().xValues.last().toDouble() else null
+        val highlightX = state.highlightX ?: state.dataSets.lastOrNull()?.xValues?.lastOrNull()?.toDouble()
 
         chartView.chart = ChartConfigHelper.createLineChart(
             lineStyles = lineStyles,
             axisStyle = axisStyle,
-            lastX = lastX,
-            isShowLabel = isShowLabel
-        ){
-            chartView.invalidate()
-        }
+            lastX = highlightX,
+            isShowLabel = isShowLabel,
+            onInvalidate = {
+                chartView.invalidate()
+            }
+        )
 
         chartView.scrollHandler = ScrollHandler(
             initialScroll = Scroll.Absolute.End,
@@ -181,16 +182,17 @@ class HealthLineChartManager @AssistedInject constructor(
                 )
             }
 
-        val lastX = state.dataSets.lastOrNull()?.xValues?.lastOrNull()?.toDouble()
+        val highlightX = state.highlightX ?: state.dataSets.lastOrNull()?.xValues?.lastOrNull()?.toDouble()
 
         chartView.chart = ChartConfigHelper.createColumnChart(
             axisStyle = axisStyle,
             baselineStyle = baselineStyle,
             isShowLabel = isShowLabel,
-            lastX = lastX
-        ){
-            chartView.invalidate()
-        }
+            lastX = highlightX,
+            onInvalidate = {
+                chartView.invalidate()
+            }
+        )
         chartView.scrollHandler = ScrollHandler(scrollEnabled = false)
         chartView.zoomHandler = ZoomHandler(zoomEnabled = false)
 

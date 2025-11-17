@@ -151,6 +151,9 @@ class ChartConfigHelper {
             baselineStyle?.let { decorations.add(createBaseline(it)) }
             axisStyle.zeroBaselineStyle()?.let { decorations.add(createBaseline(it)) }
 
+            val shouldShowPersistentMarker = isShowLabel && lastX != null
+            // 统一处理默认高亮逻辑：满足条件时直接展示持久化 Marker
+
             return CartesianChart(
                 lineLayer,
                 startAxis = startAxis,
@@ -166,11 +169,12 @@ class ChartConfigHelper {
                 markerController = tapOnlyMarkerController,
             ).copy(
                 persistentMarkers = {
-                    if(isShowLabel){
+                    if (isShowLabel) {
                         lastX?.let {
                             defaultMarker at it
                         }
                     }
+                    defaultMarker.visible = shouldShowPersistentMarker
                 },
                 markerVisibilityListener = object : CartesianMarkerVisibilityListener{
                     override fun onShown(
@@ -181,7 +185,7 @@ class ChartConfigHelper {
                     }
 
                     override fun onHidden(marker: CartesianMarker) {
-
+                        defaultMarker.visible = shouldShowPersistentMarker
                     }
                     override fun onUpdated(
                         marker: CartesianMarker,
@@ -190,6 +194,7 @@ class ChartConfigHelper {
                         update(targets)
                     }
                     fun update(targets: List<CartesianMarker.Target>) {
+                        if (!shouldShowPersistentMarker) return
                         defaultMarker.visible = targets.any { it.x == lastX }
                         onInvalidate?.invoke()    // 直接重绘即可，persistentMarkers 不需要再执行
                     }
@@ -219,6 +224,9 @@ class ChartConfigHelper {
             val decorations = mutableListOf<HorizontalLine>()
             baselineStyle?.let { decorations.add(createBaseline(it)) }
             axisStyle.zeroBaselineStyle()?.let { decorations.add(createBaseline(it)) }
+            val shouldShowPersistentMarker = isShowLabel && lastX != null
+            // 柱状图同样依赖该标记来控制默认高亮
+
             return CartesianChart(
                 columnLayer,
                 startAxis = startAxis,
@@ -234,11 +242,12 @@ class ChartConfigHelper {
                 decorations = decorations,
             ).copy(
                 persistentMarkers = {
-                    if(isShowLabel){
+                    if (isShowLabel) {
                         lastX?.let {
                             persistentMarker at it
                         }
                     }
+                    persistentMarker.visible = shouldShowPersistentMarker
                 },
                 markerVisibilityListener = object : CartesianMarkerVisibilityListener{
                     override fun onShown(
@@ -249,7 +258,7 @@ class ChartConfigHelper {
                     }
 
                     override fun onHidden(marker: CartesianMarker) {
-
+                        persistentMarker.visible = shouldShowPersistentMarker
                     }
                     override fun onUpdated(
                         marker: CartesianMarker,
@@ -258,6 +267,7 @@ class ChartConfigHelper {
                         update(targets)
                     }
                     fun update(targets: List<CartesianMarker.Target>) {
+                        if (!shouldShowPersistentMarker) return
                         persistentMarker.visible = targets.any { it.x == lastX }
                         onInvalidate?.invoke()
                     }

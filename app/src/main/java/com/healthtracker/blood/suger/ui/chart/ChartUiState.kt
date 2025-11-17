@@ -24,6 +24,7 @@ data class ChartUiState(
     val axisSteps: Int = DEFAULT_AXIS_STEPS,
     val startAxisFormatter: CartesianValueFormatter? = null,
     val baselineLabel: CharSequence? = null,
+    val highlightX: Double? = null,
 ) {
 
     private val pointCount: Int? = dataSets.firstOrNull()?.xValues?.size

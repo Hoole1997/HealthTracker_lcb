@@ -1262,4 +1262,15 @@ healthcare provider or medical institution.</string>
     <string name="step_goal">Step Goal</string>
     <string name="text_steps">Steps</string>
 
+
+    <string-array name="week_name">
+    <item>Sun</item><!-- sun -->
+    <item>Mon</item>
+    <item>Tue</item>
+    <item>Wed</item>
+    <item>Thu</item>
+    <item>Fri</item>
+    <item>Sat</item>
+    </string-array>
+
 </resources>

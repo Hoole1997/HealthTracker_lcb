@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.ui.act
 
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.App
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.DailyStepStat
 import com.healthtracker.blood.suger.data.repo.StepRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
@@ -17,8 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -26,15 +26,21 @@ import kotlin.math.roundToInt
 
 class StepCountViewModel : BaseViewModel() {
     private val repo = StepRepository.get(App.INSTANCE)
-    private val dateFormatter = SimpleDateFormat("M/d", Locale.getDefault())
+    private val weekLabels: List<String> = App.INSTANCE.resources
+        .getStringArray(R.array.week_name)
+        .toList()
+        .let { labels ->
+            if (labels.size >= DAYS_IN_WEEK) labels.take(DAYS_IN_WEEK) else DEFAULT_WEEK_LABELS
+        }
     private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
 
     companion object {
         private const val DEFAULT_GOAL_STEPS = 6000
-        private const val DAYS_TO_SHOW = 7
+        private const val DAYS_IN_WEEK = 7
         private const val MILLIS_PER_DAY = 86_400_000L
         private const val STEP_AXIS_STEPS = 8
         private const val STEP_INTERVAL = 50.0
+        private val DEFAULT_WEEK_LABELS = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
     }
 
     val todayStatFlow: Flow<DailyStepStat?> = repo.observeTodayDynamic()
@@ -78,24 +84,22 @@ class StepCountViewModel : BaseViewModel() {
             baselineLabel = null,
             precomputedRange = minY to maxY,
             axisSteps = STEP_AXIS_STEPS,
-            startAxisFormatter = stepsAxisFormatter
+            startAxisFormatter = stepsAxisFormatter,
+            highlightX = payload.highlightIndex.toDouble()
         )
     }
 
     val statsFlow: Flow<StepStats> = chartDataFlow.map { it.stats }
 
     fun recent7DaysFlow(): Flow<List<DailyStepStat>> {
-        val end = DateTimeUtils.getTodayRange().first.time / MILLIS_PER_DAY
-        val start = end - 6
-        return repo.range(start, end)
+        val weekRange = resolveCurrentWeekRange()
+        return repo.range(weekRange.startEpochDay, weekRange.endEpochDay)
     }
 
     private fun buildChartDataFlow(): Flow<ChartPayload> {
-        val endEpochDay = DateTimeUtils.getTodayRange().first.time / MILLIS_PER_DAY
-        val startEpochDay = endEpochDay - (DAYS_TO_SHOW - 1)
-
-        return repo.range(startEpochDay, endEpochDay)
-            .map { records -> buildChartPayload(records, startEpochDay, endEpochDay) }
+        val weekRange = resolveCurrentWeekRange()
+        return repo.range(weekRange.startEpochDay, weekRange.endEpochDay)
+            .map { records -> buildChartPayload(records, weekRange) }
             .shareIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
@@ -105,20 +109,16 @@ class StepCountViewModel : BaseViewModel() {
 
     private fun buildChartPayload(
         records: List<DailyStepStat>,
-        startEpochDay: Long,
-        endEpochDay: Long
+        weekRange: WeekRange
     ): ChartPayload {
-        val dateRange = (startEpochDay..endEpochDay).toList()
+        val dateRange = (weekRange.startEpochDay..weekRange.endEpochDay).toList()
         val recordMap = records.associateBy { it.dateEpochDay }
 
-        val labels = mutableListOf<String>()
         val xValues = mutableListOf<Float>()
         val yValues = mutableListOf<Float>()
 
         dateRange.forEachIndexed { index, epochDay ->
-            val date = Date(epochDay * MILLIS_PER_DAY)
             val stat = recordMap[epochDay]
-            labels.add(dateFormatter.format(date))
             xValues.add(index.toFloat())
             yValues.add(stat?.steps?.toFloat() ?: 0f)
         }
@@ -131,10 +131,30 @@ class StepCountViewModel : BaseViewModel() {
         )
 
         return ChartPayload(
-            labels = labels,
+            labels = weekLabels,
             xValues = xValues,
             yValues = yValues,
-            stats = stats
+            stats = stats,
+            highlightIndex = weekRange.highlightIndex
+        )
+    }
+
+    private fun resolveCurrentWeekRange(): WeekRange {
+        val todayStart = DateTimeUtils.getTodayRange().first
+        val todayEpochDay = todayStart.time / MILLIS_PER_DAY
+        val calendar = Calendar.getInstance().apply {
+            time = todayStart
+        }
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        val daysFromSunday = dayOfWeek - Calendar.SUNDAY
+        calendar.add(Calendar.DAY_OF_YEAR, -daysFromSunday)
+        val startEpochDay = calendar.timeInMillis / MILLIS_PER_DAY
+        val endEpochDay = startEpochDay + (DAYS_IN_WEEK - 1)
+        val highlightIndex = (todayEpochDay - startEpochDay).toInt().coerceIn(0, DAYS_IN_WEEK - 1)
+        return WeekRange(
+            startEpochDay = startEpochDay,
+            endEpochDay = endEpochDay,
+            highlightIndex = highlightIndex
         )
     }
 
@@ -179,5 +199,12 @@ private data class ChartPayload(
     val labels: List<String>,
     val xValues: List<Float>,
     val yValues: List<Float>,
-    val stats: StepStats
+    val stats: StepStats,
+    val highlightIndex: Int
+)
+
+private data class WeekRange(
+    val startEpochDay: Long,
+    val endEpochDay: Long,
+    val highlightIndex: Int
 )
