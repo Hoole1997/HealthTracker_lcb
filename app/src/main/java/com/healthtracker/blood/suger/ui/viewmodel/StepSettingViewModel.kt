@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.ui.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
+import com.healthtracker.blood.suger.data.preferences.BodyMetricsPreferences
 import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
@@ -49,7 +50,8 @@ class StepSettingViewModel @Inject constructor(
      * 获取格式化的显示体重（根据用户偏好单位）
      */
     fun getDisplayWeight(): String {
-        val weightKg = _bmiRecord.value?.weightKg ?: return "--"
+        val weightKg = _bmiRecord.value?.weightKg
+            ?: BodyMetricsPreferences.getWeightKg()
         val preferredUnit = BmiUnit.getPreferredWeightUnit()
         return BmiUnit.formatDisplayWeight(weightKg.toFloat(), preferredUnit)
     }
@@ -58,7 +60,8 @@ class StepSettingViewModel @Inject constructor(
      * 获取格式化的显示身高（根据用户偏好单位）
      */
     fun getDisplayHeight(): String {
-        val heightCm = _bmiRecord.value?.heightCm ?: return "--"
+        val heightCm = _bmiRecord.value?.heightCm
+            ?: BodyMetricsPreferences.getHeightCm()
         val preferredUnit = BmiUnit.getPreferredHeightUnit()
         return BmiUnit.formatDisplayHeight(heightCm.toFloat(), preferredUnit)
     }

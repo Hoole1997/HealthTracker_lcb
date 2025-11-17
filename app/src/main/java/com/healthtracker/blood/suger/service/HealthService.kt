@@ -120,6 +120,7 @@ class HealthService : Service() {
 
             // 取消协程作用域（释放所有协程资源）
             serviceScope.cancel()
+            unregisterStepSensor()
 
             stopForeground(STOP_FOREGROUND_REMOVE)
             "Health service destroyed".logd(TAG)

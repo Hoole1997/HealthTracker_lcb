@@ -12,6 +12,8 @@ const val KEY_HAS_SHOW_GUIDE_BP= "key_has_show_guide_bp"
 const val KEY_HAS_SHOW_GUIDE_BS= "key_has_show_guide_bs"
 const val KEY_HAS_SHOW_GUIDE_HR= "key_has_show_guide_hr"
 const val KEY_STEP_COUNT_GOLE= "key_step_count_gole"
+const val KEY_USER_HEIGHT_CM = "key_user_height_cm"
+const val KEY_USER_WEIGHT_KG = "key_user_weight_kg"
 
 
 const val KEY_REMOTE_FILE_L_COUNT = "key_remote_file_l_count"

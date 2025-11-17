@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
+import com.healthtracker.blood.suger.data.constants.BodyMetricsDefaults
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.TagType
@@ -32,8 +33,8 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, ActivityBmiRecor
     private val addTagIds = mutableListOf<Long>()
 
     // 基础存储：公制(cm/kg)
-    private var latestHeightCm: Float = 165f
-    private var latestWeightKg: Float = 65f
+    private var latestHeightCm: Float = BodyMetricsDefaults.DEFAULT_HEIGHT_CM.toFloat()
+    private var latestWeightKg: Float = BodyMetricsDefaults.DEFAULT_WEIGHT_KG.toFloat()
     private var currentWeightUnit: BmiUnit = BmiUnit.getPreferredWeightUnit()
     private var currentHeightUnit: BmiUnit = BmiUnit.getPreferredHeightUnit()
 

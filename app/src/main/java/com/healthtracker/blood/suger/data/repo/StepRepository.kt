@@ -4,6 +4,7 @@ import android.content.Context
 import com.healthtracker.blood.suger.data.database.HealthDatabase
 import com.healthtracker.blood.suger.data.dao.StepDao
 import com.healthtracker.blood.suger.data.entity.DailyStepStat
+import com.healthtracker.blood.suger.data.preferences.BodyMetricsPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -13,6 +14,8 @@ import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 class StepRepository private constructor(private val appContext: Context, private val dao: StepDao) {
     companion object {
+        private const val STEP_LENGTH_RATIO = 0.414  // 文档公式：身高(米) * 0.414 = 步幅(米)
+        private const val KCAL_COEFFICIENT = 0.7
         @Volatile private var INSTANCE: StepRepository? = null
         fun get(appContext: Context): StepRepository {
             return INSTANCE ?: synchronized(this) {
@@ -46,13 +49,12 @@ class StepRepository private constructor(private val appContext: Context, privat
                 else -> existing.baselineRaw
             }
             val steps = (raw - baseline).coerceAtLeast(0)
-            val stepLength = 0.7
-            val distanceKm = steps * stepLength / 1000.0
-            val stepFreq = 110.0
-            val durationSeconds = (steps / stepFreq * 60.0).toInt()
-            val weightKg = 65.0
-            val met = 3.5
-            val kcal = met * weightKg * (durationSeconds / 3600.0)
+            val heightCm = BodyMetricsPreferences.getHeightCm()
+            val stepLengthMeters = (heightCm / 100.0) * STEP_LENGTH_RATIO
+            val distanceKm = steps * stepLengthMeters / 1000.0
+            val weightKg = BodyMetricsPreferences.getWeightKg()
+            val durationSeconds = existing?.durationSeconds ?: 0  // 展示使用
+            val kcal = distanceKm * weightKg * KCAL_COEFFICIENT
 
             val shouldPersist = (now - lastPersistTs) >= 2000L || (steps - lastPersistSteps) >= 5
             if (!shouldPersist && existing != null) return@withContext

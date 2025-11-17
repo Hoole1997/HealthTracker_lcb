@@ -5,6 +5,7 @@ import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.TagType
+import com.healthtracker.blood.suger.data.preferences.BodyMetricsPreferences
 import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
@@ -201,6 +202,7 @@ class BmiRecordViewModel @Inject constructor(
                     val rows = bmiRepository.updateBmiRecord(updated)
                     if (rows > 0) {
                         _isSaved.value = true
+                        BodyMetricsPreferences.save(height.toDouble(), weight.toDouble())
                         onResult(SaveRecordResult.Updated(recordId))
                     }
                 } else {
@@ -215,6 +217,7 @@ class BmiRecordViewModel @Inject constructor(
                     val newId = bmiRepository.insertBmiRecord(newRecord)
                     if (newId > 0) {
                         _isSaved.value = true
+                        BodyMetricsPreferences.save(height.toDouble(), weight.toDouble())
                         editingRecordId = newId
                         onResult(SaveRecordResult.Created(newId))
                     }
