@@ -70,6 +70,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/include_hr" />
 
+        <!-- ✨ Step 卡片（右下）-->
+        <include
+            android:id="@+id/include_step"
+            layout="@layout/item_health_chart_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_center"
+            app:layout_constraintTop_toBottomOf="@id/include_cho" />
+
         <!-- 中线引导线（用于2列布局对齐）-->
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_center"

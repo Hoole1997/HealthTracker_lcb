@@ -1,16 +1,20 @@
 package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.healthtracker.blood.suger.App
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.entity.BmiRecord
+import com.healthtracker.blood.suger.data.entity.DailyStepStat
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.blood.suger.data.repository.CholesterolRepository
 import com.healthtracker.blood.suger.data.repository.BmiRepository
+import com.healthtracker.blood.suger.data.repo.StepRepository
 import com.healthtracker.blood.suger.ui.chart.ChartDataSet
 import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
 import com.healthtracker.blood.suger.ui.chart.ChartUiState
@@ -25,6 +29,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Calendar
+import java.util.Locale
 import kotlin.math.pow
 
 @HiltViewModel
@@ -39,6 +47,9 @@ class TrackerViewModel @Inject constructor(
     companion object {
         /** 图表显示的记录数量 */
         private const val CHART_RECORDS_LIMIT = 7
+        private const val MILLIS_PER_DAY = 86_400_000L
+        private const val STEP_AXIS_STEPS = 8
+        private const val STEP_INTERVAL = 50.0
     }
 
     // ========== 血糖 ==========
@@ -70,6 +81,17 @@ class TrackerViewModel @Inject constructor(
     val bmiChartState: StateFlow<ChartUiState> = _bmiRecords
         .map { records -> buildBmiChart(records) }
         .stateIn(viewModelScope, SharingStarted.Lazily, ChartUiState())
+
+    private val stepRepository = StepRepository.get(App.INSTANCE)
+    private val weekLabels: List<String> = App.INSTANCE.resources
+        .getStringArray(R.array.week_name)
+        .toList()
+        .let { labels ->
+            if (labels.size >= CHART_RECORDS_LIMIT) labels.take(CHART_RECORDS_LIMIT) else listOf("Sun","Mon","Tue","Wed","Thu","Fri","Sat")
+        }
+    private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
+    private val _stepChartState = MutableStateFlow(ChartUiState())
+    val stepChartState: StateFlow<ChartUiState> = _stepChartState
 
     // 观察标记：防止重复订阅
     private var isObserving = false
@@ -106,6 +128,10 @@ class TrackerViewModel @Inject constructor(
             launch {
                 bmiRepository.getLatestBmiRecords(CHART_RECORDS_LIMIT)
                     .collect { records -> _bmiRecords.value = records }
+            }
+
+            launch {
+                observeWeeklySteps()
             }
         }
     }
@@ -271,4 +297,98 @@ class TrackerViewModel @Inject constructor(
             )
         )
     }
+
+    private suspend fun observeWeeklySteps() {
+        val weekRange = resolveCurrentWeekRange()
+        stepRepository.range(weekRange.startEpochDay, weekRange.endEpochDay)
+            .collect { records ->
+                _stepChartState.value = buildStepChart(records, weekRange)
+            }
+    }
+
+    private fun buildStepChart(records: List<DailyStepStat>, weekRange: WeekRange): ChartUiState {
+        val dateRange = (weekRange.startEpochDay..weekRange.endEpochDay).toList()
+        val recordMap = records.associateBy { it.dateEpochDay }
+
+        val xValues = mutableListOf<Float>()
+        val yValues = mutableListOf<Float>()
+        dateRange.forEachIndexed { index, epochDay ->
+            xValues.add(index.toFloat())
+            yValues.add(recordMap[epochDay]?.steps?.toFloat() ?: 0f)
+        }
+
+        if (yValues.all { it <= 0f }) {
+            return ChartUiState()
+        }
+
+        val maxSteps = yValues.maxOrNull()?.toDouble() ?: 0.0
+        val divisor = (STEP_AXIS_STEPS - 1).coerceAtLeast(1)
+        val interval = resolveStepInterval(maxSteps, divisor)
+        val maxY = interval * divisor
+        val useKiloFormat = maxY >= 1000.0
+        val stepsAxisFormatter = object : com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter {
+            override fun format(
+                context: com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext,
+                value: Double,
+                verticalAxisPosition: com.patrykandpatrick.vico.core.cartesian.axis.Axis.Position.Vertical?
+            ): CharSequence = formatStepsLabel(value, useKiloFormat)
+        }
+
+        return ChartUiState(
+            labels = weekLabels,
+            dataSets = listOf(
+                ChartDataSet(
+                    id = ChartSeriesIds.STEP,
+                    xValues = xValues,
+                    yValues = yValues
+                )
+            ),
+            axisPaddingRatio = 0.0,
+            forceIntegerYAxis = true,
+            precomputedRange = 0.0 to maxY,
+            axisSteps = STEP_AXIS_STEPS,
+            startAxisFormatter = stepsAxisFormatter
+        )
+    }
+
+    private fun resolveCurrentWeekRange(): WeekRange {
+        val calendar = Calendar.getInstance()
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        val daysFromSunday = dayOfWeek - Calendar.SUNDAY
+        calendar.add(Calendar.DAY_OF_YEAR, -daysFromSunday)
+        val startEpochDay = calendar.timeInMillis / MILLIS_PER_DAY
+        val endEpochDay = startEpochDay + (CHART_RECORDS_LIMIT - 1)
+        return WeekRange(startEpochDay, endEpochDay)
+    }
+
+    private fun resolveStepInterval(maxSteps: Double, divisor: Int): Double {
+        if (maxSteps > 700.0) {
+            val rank = if (maxSteps <= 3500.0) {
+                1.0
+            } else {
+                1.0 + kotlin.math.ceil((maxSteps - 3500.0) / 3500.0)
+            }
+            return rank * 500.0
+        }
+        val intervalBase = if (divisor == 0) maxSteps else maxSteps / divisor
+        val intervalMultiplier = kotlin.math.ceil(intervalBase / STEP_INTERVAL).coerceAtLeast(1.0)
+        return intervalMultiplier * STEP_INTERVAL
+    }
+
+    private fun formatStepsLabel(value: Double, useKiloFormat: Boolean): String {
+        if (value <= 0.0) return "0"
+        if (!useKiloFormat) {
+            val isWhole = kotlin.math.abs(value - value.toInt()) < 1e-4
+            return if (isWhole) value.toInt().toString() else kiloFormatter.format(value)
+        }
+        val thousands = value / 1000.0
+        val isWhole = kotlin.math.abs(thousands - thousands.toInt()) < 1e-4
+        val formatted = if (isWhole) thousands.toInt().toString() else kiloFormatter.format(thousands)
+        return "${formatted}k"
+    }
+
+    private data class WeekRange(
+        val startEpochDay: Long,
+        val endEpochDay: Long
+    )
 }

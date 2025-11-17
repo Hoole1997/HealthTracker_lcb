@@ -16,6 +16,7 @@ class StepRepository private constructor(private val appContext: Context, privat
     companion object {
         private const val STEP_LENGTH_RATIO = 0.414  // 文档公式：身高(米) * 0.414 = 步幅(米)
         private const val KCAL_COEFFICIENT = 0.7
+        private const val STEP_FREQUENCY_PER_MINUTE = 110.0
         @Volatile private var INSTANCE: StepRepository? = null
         fun get(appContext: Context): StepRepository {
             return INSTANCE ?: synchronized(this) {
@@ -53,7 +54,7 @@ class StepRepository private constructor(private val appContext: Context, privat
             val stepLengthMeters = (heightCm / 100.0) * STEP_LENGTH_RATIO
             val distanceKm = steps * stepLengthMeters / 1000.0
             val weightKg = BodyMetricsPreferences.getWeightKg()
-            val durationSeconds = existing?.durationSeconds ?: 0  // 展示使用
+            val durationSeconds = (steps / STEP_FREQUENCY_PER_MINUTE * 60.0).toInt()
             val kcal = distanceKm * weightKg * KCAL_COEFFICIENT
 
             val shouldPersist = (now - lastPersistTs) >= 2000L || (steps - lastPersistSteps) >= 5

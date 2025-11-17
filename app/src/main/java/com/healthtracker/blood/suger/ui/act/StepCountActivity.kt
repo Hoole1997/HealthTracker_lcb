@@ -41,7 +41,7 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
             startActivity<StepSettingActivity>()
         }
 
-        mViewBind.tvGoal.clickWithDuration {
+        mViewBind.vGoalBg.clickWithDuration {
             startActivity<StepSettingActivity>()
         }
 

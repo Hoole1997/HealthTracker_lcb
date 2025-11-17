@@ -1,11 +1,12 @@
 package com.healthtracker.blood.suger.ui.fragment
 
+import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.common.data.DataBufferUtils.hasData
+import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.FragmentRecordBinding
 import com.healthtracker.blood.suger.databinding.ItemHealthChartCardBinding
@@ -17,6 +18,8 @@ import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
 import com.healthtracker.blood.suger.ui.act.HealthStatisticsActivity
 import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
+import com.healthtracker.blood.suger.ui.act.StepCountActivity
+import com.healthtracker.blood.suger.ui.act.StepSettingActivity
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.blood.suger.ui.viewmodel.TrackerViewModel
@@ -25,6 +28,7 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.invisible
+import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -42,6 +46,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
     private lateinit var hrChartManager: HealthLineChartManager
     private lateinit var choChartManager: HealthLineChartManager
     private lateinit var bmiChartManager: HealthLineChartManager
+    private lateinit var stepChartManager: HealthLineChartManager
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -84,6 +89,13 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
             // BMI (组合 Weight + BMI)
             includeBmi.ivIcon.setImageResource(R.mipmap.ic_bmi)
             "${getString(R.string.weight)} & ${getString(R.string.bmi)}".also { includeBmi.tvTitle.text = it }
+
+            // Steps
+            includeStep.ivIcon.setImageResource(R.mipmap.ic_home_step)
+            includeStep.tvTitle.text = getString(R.string.step_count)
+            includeStep.btnAdd.apply {
+                text = getString(R.string.hydrate_setting)
+            }
         }
     }
 
@@ -105,6 +117,9 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
                 isEnabled = false
             }, viewLifecycleOwner)
             bmiChartManager = chartManagerFactory.create(includeBmi.chartView.apply {
+                isEnabled = false
+            }, viewLifecycleOwner)
+            stepChartManager = chartManagerFactory.create(includeStep.chartView.apply {
                 isEnabled = false
             }, viewLifecycleOwner)
         }
@@ -159,6 +174,14 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
                     BmiRecordActivity.start(requireActivity())
                 }
             }
+
+            includeStep.root.clickWithDuration {
+                if (includeStep.chartView.isVisible) {
+                    HealthStatisticsActivity.start(requireActivity(), HealthMetric.STEPS)
+                } else {
+                    requireActivity().startActivity<StepCountActivity>()
+                }
+            }
         }
     }
 
@@ -205,6 +228,19 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
                 updateChartVisibility(hasData, mViewBind?.includeBmi)
             }
         }
+
+        // Steps (column chart)
+        collectLatest(mViewModel.stepChartState) { state ->
+            lifecycleScope.launch {
+                val hasPermission = hasActivityRecognitionPermission()
+                if (hasPermission) {
+                    val hasData = stepChartManager.renderColumn(state, isShowLabel = false)
+                    updateChartVisibility(hasData, mViewBind?.includeStep)
+                } else {
+                    updateChartVisibility(false, mViewBind?.includeStep)
+                }
+            }
+        }
     }
 
     /**
@@ -220,5 +256,13 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
                 gpEmpty.visible()
             }
         }
+    }
+
+    private fun hasActivityRecognitionPermission(): Boolean {
+        val context = requireContext()
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACTIVITY_RECOGNITION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
     }
 }

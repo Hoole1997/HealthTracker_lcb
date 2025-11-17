@@ -27,7 +27,10 @@ class StepSettingActivity: BaseInterActivity<StepSettingViewModel, ActivityStepS
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.loadRecord()
         with(mViewBind){
-            clBmi.clickWithDuration {
+            clWeight.clickWithDuration {
+                startActivity<BmiRecordActivity>()
+            }
+            clHeight.clickWithDuration {
                 startActivity<BmiRecordActivity>()
             }
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
@@ -56,10 +57,11 @@
         android:layout_marginHorizontal="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/bg_rect_white_12"
-        app:layout_constraintTop_toBottomOf="@id/action_bar"
-
         android:paddingVertical="@dimen/dp_20"
-        app:layout_constraintStart_toStartOf="parent">
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_bar">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_weight"
             android:layout_width="@dimen/dp_0"
@@ -72,6 +74,7 @@
             app:layout_constraintEnd_toStartOf="@id/space_h_center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_weight"
                 style="@style/TextViewFont_RobotoBold"
@@ -88,16 +91,18 @@
                 style="@style/TextViewFont_RobotoBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_999"
                 android:layout_marginStart="@dimen/dp_4"
+                android:textColor="@color/color_999"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toEndOf="@id/tv_weight"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="(kg)" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="@id/tv_weight"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_weight"
@@ -156,16 +161,18 @@
                 style="@style/TextViewFont_RobotoBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_999"
                 android:layout_marginStart="@dimen/dp_4"
+                android:textColor="@color/color_999"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toEndOf="@id/tv_height"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="(cm)" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:scaleType="centerInside"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 app:layout_constraintBottom_toBottomOf="@id/tv_height"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_height"
@@ -191,35 +198,34 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/cl_bmi"
         android:layout_marginHorizontal="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@drawable/bg_rect_white_12">
+        android:background="@drawable/bg_rect_white_12"
+        android:paddingBottom="@dimen/dp_32"
+        app:layout_constraintTop_toBottomOf="@id/cl_bmi">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_goal"
             style="@style/TextViewFont_RobotoBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
             android:text="@string/step_goal"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_16"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/dp_32"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_goal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_goal"
             android:layout_marginTop="@dimen/dp_20"
-            app:layout_constraintStart_toStartOf="parent"
+            android:foreground="?android:attr/selectableItemBackground"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="?android:attr/selectableItemBackgroundBorderless">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_goal">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_goal_value"
@@ -237,20 +243,20 @@
                 style="@style/TextViewFont_RobotoRegular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
                 android:layout_marginStart="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/dp_4"
-                android:layout_gravity="bottom"
+                android:text="@string/text_steps"
                 android:textColor="@color/t1"
-                android:textSize="@dimen/sp_16"
-                android:text="@string/text_steps" />
+                android:textSize="@dimen/sp_16" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
                 android:layout_marginStart="@dimen/dp_4"
                 android:padding="@dimen/dp_10"
-                android:layout_gravity="bottom"
                 app:srcCompat="@drawable/ic_edit" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
