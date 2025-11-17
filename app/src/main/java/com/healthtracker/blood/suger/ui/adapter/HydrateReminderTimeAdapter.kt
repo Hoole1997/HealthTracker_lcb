@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
 import androidx.fragment.app.FragmentActivity
@@ -49,25 +51,22 @@ class HydrateReminderTimeAdapter(
         val t = times[position]
         holder.tvTime.text = t
         holder.imgDelete.visibility = if (showDelete) View.VISIBLE else View.GONE
-        // 根据当前启用状态更新开关图片
-        holder.switchReminder.isSelected = enabledStates.getOrNull(position) ?: false
-        holder.switchReminder.setOnClickListener {
+        holder.switchReminder.setOnCheckedChangeListener(null)
+        holder.switchReminder.isChecked = enabledStates.getOrNull(position) ?: false
+        holder.switchReminder.setOnCheckedChangeListener { _, isChecked ->
             val pos = holder.bindingAdapterPosition
-            if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
+            if (pos == RecyclerView.NO_POSITION) return@setOnCheckedChangeListener
             ensureEnabledStatesSize()
-            val current = enabledStates.getOrNull(pos) ?: false
-            val newState = !current
             if (pos >= enabledStates.size) {
-                // 保险：扩容到当前位置
                 repeat(pos - enabledStates.size + 1) { enabledStates.add(false) }
             }
-            enabledStates[pos] = newState
-            holder.switchReminder.isSelected = newState
-
-            // 回调持久化，并联动调度
+            enabledStates[pos] = isChecked
             parseTimeToComponents(times[pos])?.let { (h, m) ->
-                onToggleEnabled?.invoke(h, m, newState)
+                onToggleEnabled?.invoke(h, m, isChecked)
             }
+        }
+        holder.switchReminder.setOnTouchListener { _, event ->
+            event.actionMasked == MotionEvent.ACTION_MOVE
         }
 
         // 删除按钮：弹出底部确认对话框
@@ -154,7 +153,7 @@ class HydrateReminderTimeAdapter(
         val tvTime: TextView = itemView.findViewById(R.id.tv_time)
         val divider: View = itemView.findViewById(R.id.divider)
         val imgDelete: AppCompatImageView = itemView.findViewById(R.id.imgDelete)
-        val switchReminder: AppCompatImageView = itemView.findViewById(R.id.switch_reminder)
+        val switchReminder: SwitchCompat = itemView.findViewById(R.id.st_alarm)
     }
 
     private fun parseTimeToComponents(time: String): Pair<Int, Int>? {
