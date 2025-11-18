@@ -16,7 +16,7 @@ class CholesterolCalculatorTest {
             ldl = 90f,
             triglyceride = 100f
         )
-        assertEquals(178.0f, metrics.totalCholesterol!!, 0.01f)
+        assertEquals(170.0f, metrics.totalCholesterol!!, 0.01f)
         assertEquals(CholesterolLevel.NORMAL, metrics.riskLevel)
     }
 

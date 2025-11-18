@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.HydrateSettingManager
+import com.healthtracker.blood.suger.config.HydrateSettingManager.CupUnit
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BmiRecord
@@ -1001,8 +1002,9 @@ class HealthStatisticsViewModel @Inject constructor(
             return rank * 250.0
         }
         val intervalBase = if (divisor == 0) maxIntake else maxIntake / divisor
-        val intervalMultiplier = ceil(intervalBase / HYDRATE_INTERVAL).coerceAtLeast(1.0)
-        return intervalMultiplier * HYDRATE_INTERVAL
+        val interval = if(HydrateSettingManager.getCupUnit() == CupUnit.ML) HYDRATE_INTERVAL else HYDRATE_FL_INTERVAL
+        val intervalMultiplier = ceil(intervalBase / interval).coerceAtLeast(1.0)
+        return intervalMultiplier * interval
     }
 
     private fun resolveStepInterval(maxSteps: Double, divisor: Int): Double {
@@ -1074,6 +1076,7 @@ class HealthStatisticsViewModel @Inject constructor(
         private const val STEP_INTERVAL = 50.0
         private const val HYDRATE_AXIS_STEPS = 8
         private const val HYDRATE_INTERVAL = 100.0
+        private const val HYDRATE_FL_INTERVAL = 5.0
         private const val DAY_MILLIS = 86_400_000L
     }
 
