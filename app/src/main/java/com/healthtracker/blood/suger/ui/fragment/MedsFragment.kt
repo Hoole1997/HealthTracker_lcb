@@ -58,9 +58,23 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
         observeViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (::reminderAdapter.isInitialized) {
+            reminderAdapter.setFragmentVisible(true)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::reminderAdapter.isInitialized) {
+            reminderAdapter.setFragmentVisible(false)
+        }
+    }
+
 
     private fun setupRecyclerView() {
-        reminderAdapter = MedsReminderAdapter(
+        reminderAdapter = MedsReminderAdapter(requireActivity(),
             onItemClick = { view,item ->
                 handleReminderItemClick(view,item)
             },
@@ -285,6 +299,13 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
         // 目前简化为检查是否有FSI权限需要请求的情况
         return !permissionManager.isFSIPermissionAvailable() &&
                 permissionManager.shouldRequestFSIPermission()
+    }
+
+    fun needLoadAd(){
+        if(::reminderAdapter.isInitialized && reminderAdapter.itemCount > 1 && !reminderAdapter.needLoadAd){
+            reminderAdapter.needLoadAd = true
+            reminderAdapter.notifyItemChanged(1)
+        }
     }
 
 

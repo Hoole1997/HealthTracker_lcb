@@ -122,6 +122,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                     ivRemind.gone()
                     tvMonth.visible()
                     updateMonthDisplay()
+                    medFrg?.needLoadAd()
                     R.string.meds_manager
                 }
                 2 -> {
@@ -167,6 +168,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             ivSetting.clickWithDuration {
 
             }
+            viewPagerHome.offscreenPageLimit = 0
 
             // Debug 专用：长按发送测试通知
             if (BuildConfig.DEBUG) {

@@ -1,45 +1,76 @@
 package com.healthtracker.blood.suger.ui.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.ethanhua.skeleton.ViewSkeletonScreen
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ItemMedsRemindBinding
+import com.healthtracker.blood.suger.databinding.LayoutAdItemBinding
+import com.healthtracker.blood.suger.ui.act.MainActivity
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.model.ReminderStatus
-import com.healthtracker.framework.ext.click
+import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
+import net.corekit.monetize.ui.NativeAdStyle
 
 /**
  * 药物提醒列表适配器
  */
 class MedsReminderAdapter(
+    private val activity: FragmentActivity,
     private val onItemClick: (View, MedsReminderItem) -> Unit,
-) : ListAdapter<MedsReminderItem, MedsReminderAdapter.ViewHolder>(DiffCallback()) {
+) : ListAdapter<MedsReminderItem, RecyclerView.ViewHolder>(DiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemMedsRemindBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
-        return ViewHolder(binding)
+    private var isFragmentVisible = false
+    private var adLogged = false
+
+    var needLoadAd = false
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == AD_POSITION) VIEW_TYPE_AD else VIEW_TYPE_REMINDER
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_AD) {
+            AdViewHolder(LayoutAdItemBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+        } else {
+            val binding = ItemMedsRemindBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+            ReminderViewHolder(binding)
+        }
     }
 
-    inner class ViewHolder(
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is ReminderViewHolder -> holder.bind(getItem(position))
+            is AdViewHolder -> holder.bind()
+        }
+    }
+
+    fun setFragmentVisible(visible: Boolean) {
+        val becameVisible = !isFragmentVisible && visible
+        isFragmentVisible = visible
+        if (becameVisible && !adLogged && currentList.size > AD_POSITION) {
+            notifyItemChanged(AD_POSITION)
+        }
+    }
+
+    inner class ReminderViewHolder(
         private val binding: ItemMedsRemindBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -85,6 +116,28 @@ class MedsReminderAdapter(
         }
     }
 
+    inner class AdViewHolder(private val binding: LayoutAdItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        private lateinit var skeleton: ViewSkeletonScreen
+        fun bind() {
+            if (needLoadAd) {
+                skeleton = ViewSkeletonScreen.Builder(binding.adContainer)
+                    .load(R.layout.layout_skeleton_banner_ads)
+                    .shimmer(true)
+                    .angle(30)
+                    .duration(1200)
+                    .color(net.corekit.monetize.R.color.white)
+                    .show()
+                binding.adContainer.removeAllViews()
+                activity.loadNative(binding.adContainer, style = NativeAdStyle.STANDARD){
+                    if(it){
+                        android.util.Log.d("MedsReminderAdapter", "Ad placeholder visible at position=$bindingAdapterPosition")
+                        skeleton.hide()
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * DiffUtil回调，用于高效更新列表
      */
@@ -103,5 +156,11 @@ class MedsReminderAdapter(
         ): Boolean {
             return oldItem == newItem
         }
+    }
+
+    companion object {
+        private const val VIEW_TYPE_REMINDER = 0
+        private const val VIEW_TYPE_AD = 1
+        private const val AD_POSITION = 1
     }
 }
