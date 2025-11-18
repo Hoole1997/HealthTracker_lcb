@@ -2,7 +2,9 @@ package com.healthtracker.blood.suger.ui.act
 
 import android.content.Context
 import android.os.Bundle
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.combine
 class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBinding>() {
 
     private var wasLoading: Boolean = false
+    private var actionBarBaseHeight: Int = -1
 
     companion object {
         fun start(context: Context) {
@@ -34,6 +37,37 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
         ActivityHydrateBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HydrateViewModel::class.java
+
+    // 让背景入侵状态栏：取消根视图的状态栏占位与白色状态栏
+    override fun hasStatusbarPlaceView() = true
+    override fun getStatusBarColor() = android.R.color.transparent
+
+    // 顶部 action_bar：增加高度并设置内边距，避免内容被挤压
+    override fun afterAppleyWindowInsets() {
+        ViewCompat.getRootWindowInsets(mViewBind.root)?.let { insets ->
+            val topInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            if (actionBarBaseHeight == -1) {
+                actionBarBaseHeight = mViewBind.actionBar.layoutParams.height
+                if (actionBarBaseHeight <= 0) {
+                    actionBarBaseHeight = resources.getDimensionPixelSize(R.dimen.actionBarSize)
+                }
+            }
+
+            val lp = mViewBind.actionBar.layoutParams
+            val targetHeight = actionBarBaseHeight + topInset
+            if (lp.height != targetHeight) {
+                lp.height = targetHeight
+                mViewBind.actionBar.layoutParams = lp
+            }
+
+            mViewBind.actionBar.setPadding(
+                mViewBind.actionBar.paddingLeft,
+                topInset,
+                mViewBind.actionBar.paddingRight,
+                mViewBind.actionBar.paddingBottom
+            )
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.btnBack.setOnClickListener {

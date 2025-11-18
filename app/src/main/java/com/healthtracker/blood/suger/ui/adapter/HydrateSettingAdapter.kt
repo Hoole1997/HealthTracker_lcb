@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
@@ -98,6 +100,7 @@ class HydrateSettingAdapter(
     class CupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val rgUnit: RadioGroup = itemView.findViewById(R.id.rg_unit)
         private val tvSelectValue: TextView = itemView.findViewById(R.id.tv_select_value)
+        private val tvSelectUnit: TextView = itemView.findViewById(R.id.tv_select_unit)
         private val rulerView: RulerView = itemView.findViewById(R.id.rulerView)
         private var isMlUnit: Boolean = true
 
@@ -163,7 +166,8 @@ class HydrateSettingAdapter(
 
         private fun updateSelectValueText(unitIsMl: Boolean, valueStr: String) {
             val unit = if (unitIsMl) R.string.ml else R.string.fl_oz
-            tvSelectValue.text = valueStr + " " + itemView.context.getString(unit)
+            tvSelectValue.text = valueStr
+            tvSelectUnit.text = itemView.context.getString(unit).lowercase()
         }
     }
 

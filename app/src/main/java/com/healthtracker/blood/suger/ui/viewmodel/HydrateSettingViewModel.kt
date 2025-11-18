@@ -2,6 +2,7 @@ package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.dao.HydrateReminderDao
+import com.healthtracker.blood.suger.data.repository.HydrateRepository
 import com.healthtracker.blood.suger.data.entity.HydrateReminder
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.repository.AlarmRepository
@@ -21,7 +22,8 @@ class HydrateSettingViewModel @Inject constructor(
     private val hydrateReminderDao: HydrateReminderDao,
     private val alarmRepository: AlarmRepository,
     private val alarmScheduler: AlarmScheduler,
-    private val alarmNotificationManager: AlarmNotificationManager
+    private val alarmNotificationManager: AlarmNotificationManager,
+    private val hydrateRepository: HydrateRepository
 ) : BaseViewModel() {
 
     /**
@@ -112,6 +114,16 @@ class HydrateSettingViewModel @Inject constructor(
                     alarmRepository.disableAlarm(record.id)
                 }
             }
+        }
+    }
+
+    /**
+     * 设置变更后触发：同步当天饮水记录的设置快照字段
+     * 仅在 DailyCups 或 CupVolume 变更时调用
+     */
+    fun syncTodayHydrateRecordSettings() {
+        viewModelScope.launch {
+            hydrateRepository.syncTodayHydrateRecordSettings()
         }
     }
 }

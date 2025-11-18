@@ -17,7 +17,7 @@ object HydrateSettingManager {
     private const val KEY_CUP_UNIT = KEY_PREFIX + "cup_unit"
 
     private const val DEFAULT_DAILY_CUPS = 8
-    private const val DEFAULT_CUP_VOLUME = 20 // 存储基准为 ml，此值表示 20ml
+    private const val DEFAULT_CUP_VOLUME = 100 // 存储基准为 ml，此值表示 20ml
     private val DEFAULT_CUP_UNIT = CupUnit.ML
     private const val ML_PER_FLOZ = 29.5735f
 

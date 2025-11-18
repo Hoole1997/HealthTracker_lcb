@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/divider"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginBottom="@dimen/dp_13"/>
 
@@ -30,29 +30,33 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/imgDelete"
         android:layout_marginStart="@dimen/dp_16"
+        app:layout_goneMarginStart="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginBottom="@dimen/dp_13"
         tools:text="8:00"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/switch_reminder"
-        android:layout_width="@dimen/dp_40"
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/st_alarm"
+        android:layout_width="@dimen/dp_44"
         android:layout_height="@dimen/dp_26"
-        android:src="@drawable/selector_hydrate_reminder_switch_image"
-        android:scaleType="centerInside"
-        android:layout_marginEnd="@dimen/dp_12"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/imgDelete"
+        android:checked="true"
         android:clickable="true"
         android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="@id/imgDelete"/>
+        android:textOff=""
+        android:textOn=""
+        android:thumb="@drawable/switch_thumb_style"
+        android:layout_marginEnd="@dimen/dp_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/imgDelete"
+        app:layout_constraintBottom_toBottomOf="@id/imgDelete"
+        app:track="@drawable/switch_track_style"/>
 
     <View
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="#EEEEEE"
+        android:background="#f5f5f5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

@@ -225,8 +225,7 @@ class HydrateAdapter(
                             bottomMargin = dpToPx(12)
                         }
                         background = GradientDrawable().apply {
-                            setColor(Color.TRANSPARENT)
-                            setStroke(dpToPx(1), "#F5F5F5".toColorInt())
+                            setColor(Color.WHITE)
                             cornerRadius = dpToPx(8).toFloat()
                         }
                     }
