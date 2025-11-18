@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.healthtracker.blood.suger.util.AxisStyle
 import com.healthtracker.blood.suger.util.BaselineStyle
 import com.healthtracker.blood.suger.util.ChartConfigHelper
+import com.healthtracker.blood.suger.util.ColumnStyle
 import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.patrykandpatrick.vico.core.cartesian.AutoScrollCondition
@@ -149,7 +150,13 @@ class HealthLineChartManager @AssistedInject constructor(
      * 渲染柱状图数据
      * @return 是否存在可绘制的数据
      */
-    suspend fun renderColumn(state: ChartUiState, isShowLabel: Boolean = true, enableScroll: Boolean = false): Boolean {
+    suspend fun renderColumn(
+        state: ChartUiState,
+        isShowLabel: Boolean = true,
+        enableScroll: Boolean = false,
+        showBaseline: Boolean = true,
+        columnWidthScale: Float = 1f
+    ): Boolean {
         if (isReleased) {
             Log.w(TAG, "Attempted to render on released manager, ignoring")
             return false
@@ -169,22 +176,29 @@ class HealthLineChartManager @AssistedInject constructor(
             labelTextSize = AXIS_LABEL_TEXT_SIZE,
             verticalItemCount = state.axisSteps
         )
-        val baselineStyle = state.goalValue
-            ?.takeIf { it < maxY }
-            ?.let {
-                BaselineStyle(
-                    yValue = it,
-                    color = ChartPalette.columnSteps,
-                    labelText = state.baselineLabel,
-                    labelColor = ChartPalette.columnSteps,
-                    labelHorizontalPosition = Position.Horizontal.End,
-                    labelVerticalPosition = Position.Vertical.Bottom
-                )
-            }
+        val baselineStyle = if (showBaseline) {
+            state.goalValue
+                ?.takeIf { it < maxY }
+                ?.let {
+                    BaselineStyle(
+                        yValue = it,
+                        color = ChartPalette.columnSteps,
+                        labelText = state.baselineLabel,
+                        labelColor = ChartPalette.columnSteps,
+                        labelHorizontalPosition = Position.Horizontal.End,
+                        labelVerticalPosition = Position.Vertical.Bottom
+                    )
+                }
+        } else {
+            null
+        }
 
         val highlightX = state.highlightX ?: state.dataSets.lastOrNull()?.xValues?.lastOrNull()?.toDouble()
+        val columnCount = state.dataSets.firstOrNull()?.xValues?.size ?: 0
+        val columnStyle = computeColumnStyle(columnCount, enableScroll, columnWidthScale)
 
         chartView.chart = ChartConfigHelper.createColumnChart(
+            columnStyle = columnStyle,
             axisStyle = axisStyle,
             baselineStyle = baselineStyle,
             isShowLabel = isShowLabel,
@@ -330,6 +344,10 @@ class HealthLineChartManager @AssistedInject constructor(
         private const val DEFAULT_AXIS_STEPS = 6
         private const val ZERO_DATA_PLACEHOLDER = "-"
         private const val AXIS_LABEL_TEXT_SIZE = 12f
+        private const val DEFAULT_COLUMN_WIDTH_DP = 18f
+        private const val MIN_COLUMN_WIDTH_DP = 8f
+        private const val MAX_COLUMN_WIDTH_DP = 28f
+        private const val COLUMN_GAP_FACTOR = 1.6f
 
         private val DEFAULT_LINE_STYLES = listOf(
             LineStyle(color = ChartPalette.lineBpSystolic),
@@ -337,5 +355,20 @@ class HealthLineChartManager @AssistedInject constructor(
             LineStyle(color = ChartPalette.lineBloodSugar),
             LineStyle(color = ChartPalette.lineHeartRate)
         )
+    }
+
+    private fun computeColumnStyle(pointCount: Int, enableScroll: Boolean, scale: Float): ColumnStyle {
+        val normalizedScale = if (scale > 0f) scale else 1f
+        if (enableScroll || pointCount <= 0) {
+            return ColumnStyle(color = ChartPalette.columnSteps, widthDp = DEFAULT_COLUMN_WIDTH_DP * normalizedScale)
+        }
+        val availableWidthPx = (chartView.width - chartView.paddingStart - chartView.paddingEnd).coerceAtLeast(0)
+        if (availableWidthPx <= 0) {
+            return ColumnStyle(color = ChartPalette.columnSteps, widthDp = DEFAULT_COLUMN_WIDTH_DP * normalizedScale)
+        }
+        val density = chartView.resources.displayMetrics.density.takeIf { it > 0f } ?: 1f
+        val rawWidthPx = availableWidthPx / (pointCount * COLUMN_GAP_FACTOR)
+        val boundedWidthDp = (rawWidthPx / density).coerceIn(MIN_COLUMN_WIDTH_DP, MAX_COLUMN_WIDTH_DP) * normalizedScale
+        return ColumnStyle(color = ChartPalette.columnSteps, widthDp = boundedWidthDp)
     }
 }

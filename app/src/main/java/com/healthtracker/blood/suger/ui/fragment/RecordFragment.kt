@@ -17,12 +17,10 @@ import com.healthtracker.blood.suger.ui.act.BsRecordActivity
 import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
 import com.healthtracker.blood.suger.ui.act.HealthStatisticsActivity
 import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
-import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
+import com.healthtracker.blood.suger.ui.act.HydrateActivity
+import com.healthtracker.blood.suger.ui.act.HydrateSettingActivity
 import com.healthtracker.blood.suger.ui.act.MainActivity
-import com.healthtracker.blood.suger.ui.act.StepCountActivity
-import com.healthtracker.blood.suger.ui.act.StepSettingActivity
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
-import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.blood.suger.ui.viewmodel.TrackerViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
@@ -48,6 +46,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
     private lateinit var choChartManager: HealthLineChartManager
     private lateinit var bmiChartManager: HealthLineChartManager
     private lateinit var stepChartManager: HealthLineChartManager
+    private lateinit var hydrateChartManager: HealthLineChartManager
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -97,6 +96,17 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
             includeStep.btnAdd.apply {
                 text = getString(R.string.hydrate_setting)
             }
+
+            // Hydrate
+            includeHydrate.ivIcon.setImageResource(R.mipmap.ic_home_cup)
+            includeHydrate.tvTitle.text = getString(R.string.hydrate)
+            includeHydrate.ivEmpty.setImageResource(R.mipmap.ic_home_cup)
+            includeHydrate.tvEmpty.text = getString(R.string.hydrate_empty_record)
+            includeHydrate.btnAdd.apply {
+                text = getString(R.string.hydrate_setting)
+                isClickable = true
+                isFocusable = true
+            }
         }
     }
 
@@ -121,6 +131,9 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
                 isEnabled = false
             }, viewLifecycleOwner)
             stepChartManager = chartManagerFactory.create(includeStep.chartView.apply {
+                isEnabled = false
+            }, viewLifecycleOwner)
+            hydrateChartManager = chartManagerFactory.create(includeHydrate.chartView.apply {
                 isEnabled = false
             }, viewLifecycleOwner)
         }
@@ -185,6 +198,10 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
                     }
                 }
             }
+
+            includeHydrate.root.clickWithDuration {
+                HydrateActivity.start(requireContext())
+            }
         }
     }
 
@@ -237,11 +254,29 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
             lifecycleScope.launch {
                 val hasPermission = hasActivityRecognitionPermission()
                 if (hasPermission) {
-                    val hasData = stepChartManager.renderColumn(state, isShowLabel = false)
+                    val hasData = stepChartManager.renderColumn(
+                        state,
+                        isShowLabel = false,
+                        showBaseline = false,
+                        columnWidthScale = 0.5f
+                    )
                     updateChartVisibility(hasData, mViewBind?.includeStep)
                 } else {
                     updateChartVisibility(false, mViewBind?.includeStep)
                 }
+            }
+        }
+
+        // Hydrate (column chart)
+        collectLatest(mViewModel.hydrateChartState) { state ->
+            lifecycleScope.launch {
+                val hasData = hydrateChartManager.renderColumn(
+                    state,
+                    isShowLabel = false,
+                    showBaseline = false,
+                    columnWidthScale = 0.5f
+                )
+                updateChartVisibility(hasData, mViewBind?.includeHydrate)
             }
         }
     }

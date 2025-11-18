@@ -4,21 +4,25 @@ import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
+import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.entity.DailyStepStat
+import com.healthtracker.blood.suger.data.entity.HydrateRecord
 import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.blood.suger.data.repository.CholesterolRepository
 import com.healthtracker.blood.suger.data.repository.BmiRepository
+import com.healthtracker.blood.suger.data.repository.HydrateRepository
 import com.healthtracker.blood.suger.data.repo.StepRepository
 import com.healthtracker.blood.suger.data.utils.toLocalEpochDay
 import com.healthtracker.blood.suger.ui.chart.ChartDataSet
 import com.healthtracker.blood.suger.ui.chart.ChartSeriesIds
 import com.healthtracker.blood.suger.ui.chart.ChartUiState
+import com.healthtracker.blood.suger.util.ChartConfigHelper
 import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
@@ -43,7 +47,8 @@ class TrackerViewModel @Inject constructor(
     private val bpRepository: BloodPressureRepository,
     private val hrRepository: HeartRateRepository,
     private val choRepository: CholesterolRepository,
-    private val bmiRepository: BmiRepository
+    private val bmiRepository: BmiRepository,
+    private val hydrateRepository: HydrateRepository
 ) : BaseViewModel() {
 
     companion object {
@@ -90,6 +95,8 @@ class TrackerViewModel @Inject constructor(
     private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
     private val _stepChartState = MutableStateFlow(ChartUiState())
     val stepChartState: StateFlow<ChartUiState> = _stepChartState
+    private val _hydrateChartState = MutableStateFlow(ChartUiState())
+    val hydrateChartState: StateFlow<ChartUiState> = _hydrateChartState
 
     // 观察标记：防止重复订阅
     private var isObserving = false
@@ -130,6 +137,10 @@ class TrackerViewModel @Inject constructor(
 
             launch {
                 observeWeeklySteps()
+            }
+
+            launch {
+                observeWeeklyHydrate()
             }
         }
     }
@@ -304,6 +315,14 @@ class TrackerViewModel @Inject constructor(
             }
     }
 
+    private suspend fun observeWeeklyHydrate() {
+        val weekRange = resolveCurrentWeekRange()
+        hydrateRepository.getRecordsByTimeRange(weekRange.startDate, weekRange.endDate)
+            .collect { records ->
+                _hydrateChartState.value = buildHydrateChart(records, weekRange)
+            }
+    }
+
     private fun buildStepChart(records: List<DailyStepStat>, weekRange: WeekRange): ChartUiState {
         val dateRange = (weekRange.startEpochDay..weekRange.endEpochDay).toList()
         val recordMap = records.associateBy { it.dateEpochDay }
@@ -354,9 +373,23 @@ class TrackerViewModel @Inject constructor(
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         val daysFromSunday = dayOfWeek - Calendar.SUNDAY
         calendar.add(Calendar.DAY_OF_YEAR, -daysFromSunday)
-        val startEpochDay = Date(calendar.timeInMillis).toLocalEpochDay()
-        val endEpochDay = startEpochDay + (CHART_RECORDS_LIMIT - 1)
-        return WeekRange(startEpochDay, endEpochDay)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        val startDate = calendar.time
+        val startEpochDay = startDate.toLocalEpochDay()
+
+        val endCalendar = calendar.clone() as Calendar
+        endCalendar.add(Calendar.DAY_OF_YEAR, CHART_RECORDS_LIMIT - 1)
+        endCalendar.set(Calendar.HOUR_OF_DAY, 23)
+        endCalendar.set(Calendar.MINUTE, 59)
+        endCalendar.set(Calendar.SECOND, 59)
+        endCalendar.set(Calendar.MILLISECOND, 999)
+        val endDate = endCalendar.time
+        val endEpochDay = endDate.toLocalEpochDay()
+
+        return WeekRange(startEpochDay, endEpochDay, startDate, endDate)
     }
 
     private fun resolveStepInterval(maxSteps: Double, divisor: Int): Double {
@@ -385,8 +418,74 @@ class TrackerViewModel @Inject constructor(
         return "${formatted}k"
     }
 
+    private fun buildHydrateChart(records: List<HydrateRecord>, weekRange: WeekRange): ChartUiState {
+        if (records.isEmpty()) {
+            return ChartUiState()
+        }
+
+        val dateRange = (weekRange.startEpochDay..weekRange.endEpochDay).toList()
+        val totalsByDay = mutableMapOf<Long, Int>()
+        records.forEach { record ->
+            val epochDay = record.recordTime.toLocalEpochDay()
+            if (epochDay in dateRange) {
+                val previous = totalsByDay[epochDay] ?: 0
+                totalsByDay[epochDay] = previous + record.intakeMl
+            }
+        }
+
+        val xValues = mutableListOf<Float>()
+        val yValues = mutableListOf<Float>()
+        dateRange.forEachIndexed { index, epochDay ->
+            xValues.add(index.toFloat())
+            yValues.add((totalsByDay[epochDay] ?: 0).toFloat())
+        }
+
+        if (yValues.all { it <= 0f }) {
+            return ChartUiState()
+        }
+
+        val dailyGoalMl = HydrateSettingManager.getDailyCups() * HydrateSettingManager.getCupVolume()
+        val (minY, maxY) = ChartConfigHelper.computeNiceRange(
+            series = listOf(
+                yValues.map(Float::toDouble),
+                listOf(dailyGoalMl.toDouble())
+            ),
+            axisSteps = STEP_AXIS_STEPS,
+            paddingRatio = 0.0,
+            minLimit = 0.0
+        )
+
+        val useKiloFormat = maxY >= 1000.0
+        val formatter = object : com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter {
+            override fun format(
+                context: com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext,
+                value: Double,
+                verticalAxisPosition: com.patrykandpatrick.vico.core.cartesian.axis.Axis.Position.Vertical?
+            ): CharSequence = formatStepsLabel(value, useKiloFormat = useKiloFormat)
+        }
+
+        return ChartUiState(
+            labels = weekLabels,
+            dataSets = listOf(
+                ChartDataSet(
+                    id = ChartSeriesIds.WATER,
+                    xValues = xValues,
+                    yValues = yValues
+                )
+            ),
+            axisPaddingRatio = 0.0,
+            goalValue = dailyGoalMl.toDouble(),
+            precomputedRange = minY to maxY,
+            axisSteps = STEP_AXIS_STEPS,
+            startAxisFormatter = formatter,
+            baselineLabel = App.INSTANCE.getString(R.string.daily_water_intake)
+        )
+    }
+
     private data class WeekRange(
         val startEpochDay: Long,
-        val endEpochDay: Long
+        val endEpochDay: Long,
+        val startDate: Date,
+        val endDate: Date
     )
 }
