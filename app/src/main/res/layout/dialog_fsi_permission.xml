@@ -99,7 +99,7 @@
             android:layout_height="@dimen/dp_48"
             android:layout_weight="1"
             android:layout_marginStart="@dimen/dp_8"
-            android:text="@string/allow" />
+            android:text="@string/turn_on" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

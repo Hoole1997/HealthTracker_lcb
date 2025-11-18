@@ -18,6 +18,7 @@ import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
 import com.healthtracker.blood.suger.ui.act.HealthStatisticsActivity
 import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
+import com.healthtracker.blood.suger.ui.act.MainActivity
 import com.healthtracker.blood.suger.ui.act.StepCountActivity
 import com.healthtracker.blood.suger.ui.act.StepSettingActivity
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
@@ -179,7 +180,9 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
                 if (includeStep.chartView.isVisible) {
                     HealthStatisticsActivity.start(requireActivity(), HealthMetric.STEPS)
                 } else {
-                    requireActivity().startActivity<StepCountActivity>()
+                    if(requireActivity() is MainActivity){
+                        (requireActivity() as MainActivity).checkStepPermissionAndNavigate()
+                    }
                 }
             }
         }

@@ -1,10 +1,14 @@
 package com.healthtracker.blood.suger.ui.act
 
 // 移除广播接收器相关导入，改用页面可见状态检查月份变化
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
@@ -15,10 +19,13 @@ import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
 import com.healthtracker.blood.suger.helper.CustomNotificationHelper
+import com.healthtracker.blood.suger.permission.PermissionProvider
+import com.healthtracker.blood.suger.permission.PermissionRequest
 import com.healthtracker.blood.suger.push.recordLastActiveTime
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
+import com.healthtracker.blood.suger.ui.dialog.ActivityPerRequestDialog
 import com.healthtracker.blood.suger.ui.dialog.ExitDialog
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
@@ -39,7 +46,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
+class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), PermissionProvider {
 
     companion object{
         private const val TAG = "MainActivity"
@@ -56,7 +63,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
     private var currentTabIndex = 0
     
 
-    
+    private var permissionRequest: PermissionRequest? = null
     override fun onResume() {
         super.onResume()
     }
@@ -148,6 +155,10 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
     override fun getVMModelClass() = MainViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissionRequest = permission()
+            permissionRequest?.with(this)
+        }
         mViewModel.startHealthService()
         with(mViewBind){
             if(BuildState.debug){
@@ -357,6 +368,24 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>() {
             finish()
         }
         return true
+    }
+
+    override fun permission() = PermissionRequest(Manifest.permission.ACTIVITY_RECOGNITION)
+
+    fun checkStepPermissionAndNavigate() {
+       permissionRequest?.let {
+           it.launch { isSuccess, showSettingsRedirect, hasPermission ->
+               if(isSuccess || hasPermission){
+                   startActivity<StepCountActivity>()
+               } else if( showSettingsRedirect){
+                   ActivityPerRequestDialog.show(supportFragmentManager){
+                       it.goSetting(this)
+                   }
+               }
+           }
+       }?:{
+           startActivity<StepCountActivity>()
+       }
     }
 
 }

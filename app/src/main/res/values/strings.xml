@@ -973,7 +973,7 @@
   🕒 Always visible, even on the lock screen when you need it\n
   ❤️ Just to help you stay healthy </string>
     <string name="fsi_permission_warning">We only use this to support your health.</string>
-    <string name="allow">Turn on</string>
+    <string name="turn_on">Turn on</string>
     <string name="fsi_permission_deny">Not now</string>
 
     <!-- 通知权限相关字符串 -->
@@ -1262,5 +1262,9 @@ healthcare provider or medical institution.</string>
     <string name="today_s_goal">Today\'s goal</string>
     <string name="step_goal">Step Goal</string>
     <string name="text_steps">Steps</string>
+    <string name="enable_step_count">Physical activity permission required</string>
+    <string name="allow">Allow</string>
+    <string name="without_this_authorization_step_count_will_not_work">Without this authorization, the step-count feature <font color="#02BC77">will not work</font></string>
+    <string name="go_to_set">GO TO SET</string>
 
 </resources>

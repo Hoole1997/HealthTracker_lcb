@@ -1,15 +1,11 @@
 package com.healthtracker.blood.suger.ui.fragment
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
@@ -35,8 +31,8 @@ import com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity
 import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.act.HydrateActivity
+import com.healthtracker.blood.suger.ui.act.MainActivity
 import com.healthtracker.blood.suger.ui.act.ProfileActivity
-import com.healthtracker.blood.suger.ui.act.StepCountActivity
 import com.healthtracker.blood.suger.ui.dialog.NativeCardDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.blood.suger.util.CholesterolCalculator
@@ -128,7 +124,9 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 requireActivity().startActivity<HydrateActivity>()
             }
             clStepCount.clickWithDuration {
-                checkStepPermissionAndNavigate()
+                if(requireActivity() is MainActivity){
+                    (requireActivity() as MainActivity).checkStepPermissionAndNavigate()
+                }
             }
 
 
@@ -140,15 +138,15 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
      * 观察数据变化
      */
     private fun observeData() {
-        collectLatest(mViewModel.latestBloodSugarRecord){
+        collectLatest(mViewModel.latestBloodSugarRecord) {
             updateBloodSugarUI(it)
         }
 
-        collectLatest(mViewModel.latestBloodPressureRecord){
+        collectLatest(mViewModel.latestBloodPressureRecord) {
             updateBloodPressureUI(it)
         }
 
-        collectLatest(mViewModel.latestBmiRecord){
+        collectLatest(mViewModel.latestBmiRecord) {
             updateBmiUI(it)
         }
 
@@ -160,7 +158,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             updateCholesterolUI(record)
         }
 
-        collectLatest(mViewModel.todyCupCount){ count ->
+        collectLatest(mViewModel.todyCupCount) { count ->
             mViewBind?.run {
                 tvHasDrinkCup.text = count ?: ""
             }
@@ -174,7 +172,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun onResume() {
         super.onResume()
         mViewBind?.tvTargetCupCount?.text = "/${HydrateSettingManager.getDailyCups()}"
-        if(!guidFeature() && !isHeighLightLeave){
+        if (!guidFeature() && !isHeighLightLeave) {
             NativeCardDialog.showOncePerMinute(requireActivity())
         }
         isHeighLightLeave = false
@@ -193,7 +191,8 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         latestSugerID = record.id
         // 根据用户选择的单位显示血糖值（保留一位小数）
         mViewBind?.tvLatestBsValue?.text = record.getFormattedDisplayValue()
-        mViewBind?.tvLatestBsUnit?.text = if(record.selectedUnit == BsUnit.MG_DL.value) BsUnit.MG_DL.displayName else BsUnit.MMOL_L.displayName
+        mViewBind?.tvLatestBsUnit?.text =
+            if (record.selectedUnit == BsUnit.MG_DL.value) BsUnit.MG_DL.displayName else BsUnit.MMOL_L.displayName
         // 显示相对时间
         mViewBind?.tvLatestRecordDate?.text = formatRelativeTime(record.recordTime)
     }
@@ -286,16 +285,19 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                     getString(R.string.seconds_ago, seconds.toInt())
                 }
             }
+
             seconds < 3600 -> {
                 // 不满1小时：x分钟前
                 val minutes = seconds / 60
                 getString(R.string.minutes_ago, minutes.toInt())
             }
+
             seconds < 86400 -> {
                 // 不满1天：x小时前
                 val hours = seconds / 3600
                 getString(R.string.hours_ago, hours.toInt())
             }
+
             else -> {
                 // 超过1天：x天前
                 val days = seconds / 86400
@@ -312,28 +314,28 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
 
     private var isShowHighligh = false
     private var isHeighLightLeave = false
-    private fun guidFeature(): Boolean{
-        if(hasShowAllGuide() || isShowHighligh){
+    private fun guidFeature(): Boolean {
+        if (hasShowAllGuide() || isShowHighligh) {
             return false
         }
 
-        if(guideBp()){
+        if (guideBp()) {
             return true
         }
 
-        if(guideBs()){
+        if (guideBs()) {
             return true
         }
 
-        if(guideHr()){
+        if (guideHr()) {
             return true
         }
         return false
 
     }
 
-    private fun guideBp(): Boolean{
-        if(hasShowGuideBp()){
+    private fun guideBp(): Boolean {
+        if (hasShowGuideBp()) {
             return false
         }
         HighlightPro.with(this)
@@ -364,8 +366,8 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
 
     }
 
-    private fun guideBs(): Boolean{
-        if(hasShowGuideBs()){
+    private fun guideBs(): Boolean {
+        if (hasShowGuideBs()) {
             return false
         }
         HighlightPro.with(this)
@@ -397,8 +399,8 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
 
     }
 
-    private fun guideHr(): Boolean{
-        if(hasShowGuideHr()){
+    private fun guideHr(): Boolean {
+        if (hasShowGuideHr()) {
             return false
         }
         HighlightPro.with(this)
@@ -456,25 +458,6 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             PendingActivityType.HEART_RATE -> {
                 requireActivity().startActivity<HeartRateRecordActivity>()
             }
-        }
-    }
-
-    private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) {
-            requireActivity().startActivity<StepCountActivity>()
-        }
-    }
-
-    private fun checkStepPermissionAndNavigate() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val granted = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
-            if (granted) {
-                requireActivity().startActivity<StepCountActivity>()
-            } else {
-                permissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
-            }
-        } else {
-            requireActivity().startActivity<StepCountActivity>()
         }
     }
 }
