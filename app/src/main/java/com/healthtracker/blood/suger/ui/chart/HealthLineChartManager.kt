@@ -194,17 +194,29 @@ class HealthLineChartManager @AssistedInject constructor(
             }
         )
         if (enableScroll) {
-            chartView.scrollHandler = ScrollHandler(
-                initialScroll = Scroll.Absolute.End,
-                autoScroll = Scroll.Absolute.End,
-                autoScrollCondition = AutoScrollCondition.OnModelGrowth
-            )
-            chartView.zoomHandler = ZoomHandler(
-                zoomEnabled = true,
-                initialZoom = Zoom.x(7.0),
-                minZoom = Zoom.x(14.0),
-                maxZoom = Zoom.x(5.0)
-            )
+            // 获取数据点数量
+            val dataPointCount = state.dataSets.firstOrNull()?.xValues?.size ?: 0
+
+            if (dataPointCount <= 7) {
+                // 数据点少于等于7个时，禁用滚动和缩放，让数据居中显示并平均分配空间
+                chartView.scrollHandler = ScrollHandler(scrollEnabled = false)
+                chartView.zoomHandler = ZoomHandler(zoomEnabled = false)
+            } else {
+                chartView.animateIn = false
+                chartView.setAnimationDuration(0L)
+                // 数据点多于7个时，启用滚动和缩放
+                chartView.scrollHandler = ScrollHandler(
+                    initialScroll = Scroll.Absolute.End,
+                    autoScroll = Scroll.Absolute.End,
+                    autoScrollCondition = AutoScrollCondition.OnModelGrowth
+                )
+                chartView.zoomHandler = ZoomHandler(
+                    zoomEnabled = true,
+                    initialZoom = Zoom.x(7.0),
+                    minZoom = Zoom.x(14.0),
+                    maxZoom = Zoom.x(5.0)
+                )
+            }
         } else {
             chartView.scrollHandler = ScrollHandler(scrollEnabled = false)
             chartView.zoomHandler = ZoomHandler(zoomEnabled = false)

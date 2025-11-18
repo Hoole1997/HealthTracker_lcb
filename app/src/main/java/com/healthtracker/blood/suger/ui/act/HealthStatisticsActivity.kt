@@ -141,13 +141,16 @@ class HealthStatisticsActivity :
                     R.id.rb_1_month -> HealthStatisticsViewModel.DateRangePreset.MONTH_1
                     R.id.rb_3_month -> HealthStatisticsViewModel.DateRangePreset.MONTH_3
                     else -> {
-                        showCustomDatePicker()
-                        // RadioGroup 已经将 custom 置为选中，但 ViewModel 仍是旧 preset。
-                        // 这里立即同步一次，避免 UI 状态与实际不符。
                         HealthStatisticsViewModel.DateRangePreset.CUSTOM
                     }
                 }
                 mViewModel.selectPreset(mode)
+
+            }
+            rbCustom.clickWithDuration {
+                showCustomDatePicker()
+                // RadioGroup 已经将 custom 置为选中，但 ViewModel 仍是旧 preset。
+                // 这里立即同步一次，避免 UI 状态与实际不符。
 
             }
         }
