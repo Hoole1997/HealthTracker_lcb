@@ -2,6 +2,9 @@
     package="com.healthtracker.earthquake">
 
     <application>
+        <activity
+            android:name=".EarthquakeActivity"
+            android:exported="false" />
         <receiver
             android:name=".push.EarthquakePushReceiver"
             android:exported="false" />

@@ -25,4 +25,5 @@ dependencies {
     implementation(libs.work.runtime)
     // 协程支持（CoroutineWorker 以及 IO 切换）
     implementation(libs.kotlinx.coroutines.android)
+    api(project(":monetize"))
 }

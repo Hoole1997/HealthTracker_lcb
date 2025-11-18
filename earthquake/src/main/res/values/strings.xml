@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="earthquake_title">Earthquake Quick Alert</string>
+    <string name="focal_depth">Focal Depth</string>
+    <string name="tsunami_threat">Tsunami Threat</string>
+    <string name="usgs_warning">USGS Warning</string>
+    <string name="origin_time">Origin Time</string>
+    <string name="magnitude_type">Magnitude Type</string>
+    <string name="mww">mww</string>
+    <string name="data_status">Data Status</string>
+    <string name="reviewed">Reviewed</string>
+</resources>
