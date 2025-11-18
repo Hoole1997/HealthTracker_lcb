@@ -232,6 +232,7 @@ class HealthStatisticsActivity :
                 HealthMetric.CHOLESTEROL -> CholesterolRecordActivity.start(this)
                 HealthMetric.HEART_RATE -> HeartRateRecordActivity.start(this)
                 HealthMetric.BMI -> BmiRecordActivity.start(this)
+                HealthMetric.HYDRATION -> HydrateActivity.start(this)
                 else -> BsRecordActivity.start(this)
             }
         }
@@ -270,7 +271,7 @@ class HealthStatisticsActivity :
             renderStats(stats)
         }
         collectLatest(mViewModel.chartUiState) { state ->
-            if (currentMetricType == HealthMetric.STEPS) {
+            if (currentMetricType == HealthMetric.STEPS || currentMetricType == HealthMetric.HYDRATION) {
                 mViewBind.chartView.setAnimationDuration(0)
                 mViewBind.chartView.animateIn = false
                 chartManager.renderColumn(state, isShowLabel = true, enableScroll = true)
@@ -330,6 +331,8 @@ class HealthStatisticsActivity :
         mViewBind.tvAvgValue.text = formatStatValue(stats.avgValue, stats)
         mViewBind.tvMinValue.text = formatStatValue(stats.minValue, stats)
         mViewBind.tvMaxValue.text = formatStatValue(stats.maxValue, stats)
+        "Unit:${stats.unitLabel.lowercase()}".also { mViewBind.tvUnit.text = it }
+        mViewBind.tvUnit.isVisible = stats.unitLabel.isNotEmpty()
     }
 
     private fun renderHealthTips(tips: HealthTips) {
@@ -352,10 +355,12 @@ class HealthStatisticsActivity :
     }
 
     private fun updateActionButtonVisibility() {
-        mViewBind.btnAddRecord.isVisible = currentMetricType != HealthMetric.STEPS
+        mViewBind.btnAddRecord.isVisible =
+            currentMetricType != HealthMetric.STEPS && currentMetricType != HealthMetric.HYDRATION
     }
 
-    private fun isHistoryEnabled(): Boolean = currentMetricType != HealthMetric.STEPS
+    private fun isHistoryEnabled(): Boolean =
+        currentMetricType != HealthMetric.STEPS && currentMetricType != HealthMetric.HYDRATION
 
     private fun applyChartPaddingForMetric(metricType: HealthMetric) {
         val chart = mViewBind.chartView
@@ -375,16 +380,13 @@ class HealthStatisticsActivity :
         mViewBind.llBpChartDes.root.gone()
         mViewBind.llChoChartDes.root.gone()
         when (metricType) {
-            HealthMetric.BLOOD_SUGAR, HealthMetric.HEART_RATE, HealthMetric.BMI, HealthMetric.STEPS -> {
+            HealthMetric.BLOOD_SUGAR, HealthMetric.HEART_RATE, HealthMetric.BMI -> {
                 val titleRes = when (metricType) {
                     HealthMetric.HEART_RATE -> {
                         R.string.heart_rate
                     }
                     HealthMetric.BMI -> {
                         R.string.weight_and_bmi
-                    }
-                    HealthMetric.STEPS -> {
-                        R.string.step_count
                     }
                     else -> {
                         R.string.blood_suger
@@ -397,6 +399,17 @@ class HealthStatisticsActivity :
                 mViewBind.tvMax.text = getString(R.string.max)
 
                 val greenColor = ContextCompat.getColor(this,R.color.c5)
+                mViewBind.tvAvg.setTextColor(greenColor)
+                mViewBind.tvMin.setTextColor(greenColor)
+                mViewBind.tvMax.setTextColor(greenColor)
+            }
+            HealthMetric.STEPS -> {
+                mViewBind.tvTitle.text = getString(R.string.step_count)
+                mViewBind.tvAvg.text = getString(R.string.avg)
+                mViewBind.tvMin.text = getString(R.string.min)
+                mViewBind.tvMax.text = getString(R.string.max)
+
+                val greenColor = ContextCompat.getColor(this, R.color.c5)
                 mViewBind.tvAvg.setTextColor(greenColor)
                 mViewBind.tvMin.setTextColor(greenColor)
                 mViewBind.tvMax.setTextColor(greenColor)
@@ -430,6 +443,17 @@ class HealthStatisticsActivity :
                 mViewBind.tvMax.setTextColor(grayColor)
                 mViewBind.llChoChartDes.root.visible()
 
+            }
+            HealthMetric.HYDRATION -> {
+                mViewBind.tvTitle.text = getString(R.string.hydrate)
+                mViewBind.tvAvg.text = getString(R.string.avg)
+                mViewBind.tvMin.text = getString(R.string.min)
+                mViewBind.tvMax.text = getString(R.string.max)
+
+                val greenColor = ContextCompat.getColor(this, R.color.c5)
+                mViewBind.tvAvg.setTextColor(greenColor)
+                mViewBind.tvMin.setTextColor(greenColor)
+                mViewBind.tvMax.setTextColor(greenColor)
             }
             else -> {
                 // 其他指标默认显示 Avg/Min/Max

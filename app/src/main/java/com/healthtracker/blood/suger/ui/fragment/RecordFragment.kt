@@ -100,12 +100,8 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
             // Hydrate
             includeHydrate.ivIcon.setImageResource(R.mipmap.ic_home_cup)
             includeHydrate.tvTitle.text = getString(R.string.hydrate)
-            includeHydrate.ivEmpty.setImageResource(R.mipmap.ic_home_cup)
-            includeHydrate.tvEmpty.text = getString(R.string.hydrate_empty_record)
             includeHydrate.btnAdd.apply {
                 text = getString(R.string.hydrate_setting)
-                isClickable = true
-                isFocusable = true
             }
         }
     }
@@ -200,7 +196,12 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
             }
 
             includeHydrate.root.clickWithDuration {
-                HydrateActivity.start(requireContext())
+
+                if (includeHydrate.chartView.isVisible) {
+                    HealthStatisticsActivity.start(requireActivity(), HealthMetric.HYDRATION)
+                } else {
+                    HydrateActivity.start(requireContext())
+                }
             }
         }
     }

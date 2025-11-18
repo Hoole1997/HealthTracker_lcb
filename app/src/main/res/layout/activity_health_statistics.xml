@@ -289,6 +289,18 @@
                         tools:previewMaxY="300" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_999"
+                    android:textSize="@dimen/sp_13"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_date_range"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_date_range"
+                    tools:text="Unit:ml"
+                    android:visibility="gone"/>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

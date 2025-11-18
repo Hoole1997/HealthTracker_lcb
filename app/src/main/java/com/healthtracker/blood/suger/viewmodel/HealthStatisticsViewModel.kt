@@ -4,11 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.entity.DailyStepStat
+import com.healthtracker.blood.suger.data.entity.HydrateRecord
 import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
@@ -16,6 +18,7 @@ import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.CholesterolRepository
 import com.healthtracker.blood.suger.data.repository.HeartRateRepository
+import com.healthtracker.blood.suger.data.repository.HydrateRepository
 import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.blood.suger.data.repo.StepRepository
 import com.healthtracker.blood.suger.data.utils.toLocalEpochDay
@@ -66,6 +69,7 @@ class HealthStatisticsViewModel @Inject constructor(
     private val cholesterolRepository: CholesterolRepository,
     private val heartRateRepository: HeartRateRepository,
     private val bmiRepository: BmiRepository,
+    private val hydrateRepository: HydrateRepository,
     private var savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
@@ -230,6 +234,22 @@ class HealthStatisticsViewModel @Inject constructor(
         records.sortedBy { it.dateEpochDay }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    // 饮水记录数据
+    private val hydrateRecords: StateFlow<List<HydrateRecord>> = combine(
+        selectedMetricType,
+        _dateRange
+    ) { metricType, range ->
+        metricType to range
+    }.flatMapLatest { (metricType, range) ->
+        if (metricType == HealthMetric.HYDRATION) {
+            hydrateRepository.getRecordsByTimeRange(range.start, range.end)
+        } else {
+            flowOf(emptyList())
+        }
+    }.map { records ->
+        records.sortedBy { it.recordTime }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     val selectedPreset: StateFlow<DateRangePreset> = _selectedPreset.asStateFlow()
     val dateRange: StateFlow<DateRange> = _dateRange.asStateFlow()
     val selectedStatus: StateFlow<BloodSugarStatus?> = _selectedStatus.asStateFlow()
@@ -317,7 +337,8 @@ class HealthStatisticsViewModel @Inject constructor(
         hrRecords,
         bmiRecords,
         _preferredUnit,
-        stepRecords
+        stepRecords,
+        hydrateRecords
     ) { flows: Array<Any> ->
         val metricType = flows[0] as HealthMetric
         val dimension = flows[1] as StatisticDimension
@@ -328,6 +349,7 @@ class HealthStatisticsViewModel @Inject constructor(
         val bmi = flows[6] as List<BmiRecord>
         val unit = flows[7] as BsUnit
         val steps = flows[8] as List<DailyStepStat>
+        val hydrates = flows[9] as List<HydrateRecord>
         when (metricType) {
             HealthMetric.BLOOD_SUGAR -> buildBsStats(bs, unit)
             HealthMetric.BLOOD_PRESSURE -> buildBpStats(bp, dimension)
@@ -335,6 +357,7 @@ class HealthStatisticsViewModel @Inject constructor(
             HealthMetric.HEART_RATE -> buildHrStats(hr)
             HealthMetric.BMI -> buildBmiStats(bmi)
             HealthMetric.STEPS -> buildStepStats(steps)
+            HealthMetric.HYDRATION -> buildHydrateStats(hydrates)
             else -> StatsUiState()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), StatsUiState())
@@ -348,6 +371,7 @@ class HealthStatisticsViewModel @Inject constructor(
         bmiRecords,
         _preferredUnit,
         stepRecords,
+        hydrateRecords,
         _dateRange
     ) { flows: Array<Any> ->
         val metricType = flows[0] as HealthMetric
@@ -358,7 +382,8 @@ class HealthStatisticsViewModel @Inject constructor(
         val bmi = flows[5] as List<BmiRecord>
         val unit = flows[6] as BsUnit
         val steps = flows[7] as List<DailyStepStat>
-        val range = flows[8] as DateRange
+        val hydrates = flows[8] as List<HydrateRecord>
+        val range = flows[9] as DateRange
         when (metricType) {
             HealthMetric.BLOOD_SUGAR -> buildBsChart(bs, unit)
             HealthMetric.BLOOD_PRESSURE -> buildBpChart(bp)
@@ -366,6 +391,7 @@ class HealthStatisticsViewModel @Inject constructor(
             HealthMetric.HEART_RATE -> buildHrChart(hr)
             HealthMetric.BMI -> buildBmiChart(bmi)
             HealthMetric.STEPS -> buildStepChart(steps, range)
+            HealthMetric.HYDRATION -> buildHydrateChart(hydrates, range)
             else -> ChartUiState()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ChartUiState())
@@ -764,6 +790,49 @@ class HealthStatisticsViewModel @Inject constructor(
         )
     }
 
+    /**
+     * 构建饮水统计数据
+     */
+    private fun buildHydrateStats(records: List<HydrateRecord>): StatsUiState {
+        val hydrateUnit = HydrateSettingManager.getCupUnit()
+        val unitString = when (hydrateUnit) {
+            HydrateSettingManager.CupUnit.FL_OZ -> App.INSTANCE.getString(R.string.fl_oz)
+            HydrateSettingManager.CupUnit.ML -> App.INSTANCE.getString(R.string.unit_ml)
+        }
+        val mlPerUnit = when (hydrateUnit) {
+            HydrateSettingManager.CupUnit.FL_OZ -> HydrateSettingManager.toMl(1, HydrateSettingManager.CupUnit.FL_OZ).toDouble()
+            HydrateSettingManager.CupUnit.ML -> 1.0
+        }
+        if (records.isEmpty()) {
+            return StatsUiState(unitLabel = unitString)
+        }
+
+        val dailyIntakes = records
+            .groupBy { record ->
+                val cal = Calendar.getInstance()
+                cal.time = record.recordTime
+                cal.get(Calendar.YEAR) to cal.get(Calendar.DAY_OF_YEAR)
+            }
+            .mapValues { (_, grouped) -> grouped.sumOf { it.intakeMl }.toDouble() / mlPerUnit }
+            .values
+
+        if (dailyIntakes.isEmpty()) {
+            return StatsUiState(unitLabel = unitString)
+        }
+
+        val avg = dailyIntakes.average().roundToInt()
+        val min = dailyIntakes.minOrNull()?.roundToInt() ?: 0
+        val max = dailyIntakes.maxOrNull()?.roundToInt() ?: 0
+
+        return StatsUiState(
+            avgValue = avg.toString(),
+            minValue = min.toString(),
+            maxValue = max.toString(),
+            unitLabel = unitString,
+            hasData = true
+        )
+    }
+
     private fun buildStepChart(records: List<DailyStepStat>, range: DateRange): ChartUiState {
         val startEpoch = range.start.toLocalEpochDay()
         val endEpoch = range.end.toLocalEpochDay()
@@ -778,8 +847,9 @@ class HealthStatisticsViewModel @Inject constructor(
         }
 
         var currentEpochDay = startEpoch
+        val todayEpoch = millisToStartOfDay(System.currentTimeMillis()).toLocalEpochDay()
         var index = 0
-        while (currentEpochDay <= endEpoch) {
+        while (currentEpochDay <= endEpoch && currentEpochDay <= todayEpoch) {
             labels.add(labelFormatter.format(calendar.time))
             xValues.add(index.toFloat())
             yValues.add(recordMap[currentEpochDay]?.steps?.toFloat() ?: 0f)
@@ -805,9 +875,7 @@ class HealthStatisticsViewModel @Inject constructor(
                 verticalAxisPosition: com.patrykandpatrick.vico.core.cartesian.axis.Axis.Position.Vertical?
             ): CharSequence = formatStepsLabel(value, useKiloFormat)
         }
-
-        val todayEpoch = millisToStartOfDay(System.currentTimeMillis()).toLocalEpochDay()
-        val highlightIndex = if (todayEpoch in startEpoch..endEpoch) {
+        val highlightIndex = if (todayEpoch in startEpoch..currentEpochDay - 1) {
             (todayEpoch - startEpoch).toInt()
         } else {
             null
@@ -829,6 +897,112 @@ class HealthStatisticsViewModel @Inject constructor(
             startAxisFormatter = stepsAxisFormatter,
             highlightX = highlightIndex?.toDouble()
         )
+    }
+
+    /**
+     * 构建饮水柱状图
+     */
+    private fun buildHydrateChart(records: List<HydrateRecord>, range: DateRange): ChartUiState {
+        if (records.isEmpty()) {
+            return ChartUiState()
+        }
+
+        val hydrateUnit = HydrateSettingManager.getCupUnit()
+        val mlPerUnit = when (hydrateUnit) {
+            HydrateSettingManager.CupUnit.FL_OZ -> HydrateSettingManager.toMl(1, HydrateSettingManager.CupUnit.FL_OZ).toDouble()
+            HydrateSettingManager.CupUnit.ML -> 1.0
+        }
+        val dailyIntakeMap = records
+            .groupBy { millisToStartOfDay(it.recordTime.time) }
+            .mapValues { (_, grouped) ->
+                val displayValue = grouped.sumOf { it.intakeMl }.toDouble() / mlPerUnit
+                if (hydrateUnit == HydrateSettingManager.CupUnit.FL_OZ) {
+                    displayValue.roundToInt().toFloat()
+                } else {
+                    displayValue.toFloat()
+                }
+            }
+
+        val labels = mutableListOf<String>()
+        val xValues = mutableListOf<Float>()
+        val yValues = mutableListOf<Float>()
+
+        val calendar = Calendar.getInstance().apply {
+            time = millisToStartOfDay(range.start.time)
+        }
+        val endCalendar = Calendar.getInstance().apply {
+            time = millisToEndOfDay(range.end.time)
+        }
+
+        var index = 0
+        val todayStart = millisToStartOfDay(System.currentTimeMillis())
+        while (calendar.timeInMillis <= endCalendar.timeInMillis && calendar.timeInMillis <= todayStart.time) {
+            val dayStart = millisToStartOfDay(calendar.timeInMillis)
+            labels.add(labelFormatter.format(dayStart))
+            xValues.add(index.toFloat())
+            yValues.add(dailyIntakeMap[dayStart] ?: 0f)
+
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+            index++
+        }
+
+        if (yValues.all { it <= 0f }) {
+            return ChartUiState()
+        }
+
+        val maxIntake = yValues.maxOrNull()?.toDouble() ?: 0.0
+        val divisor = (HYDRATE_AXIS_STEPS - 1).coerceAtLeast(1)
+        val interval = resolveHydrateInterval(maxIntake, divisor)
+        val maxY = interval * divisor
+
+        val hydrateAxisFormatter = object : com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter {
+            override fun format(
+                context: com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext,
+                value: Double,
+                verticalAxisPosition: com.patrykandpatrick.vico.core.cartesian.axis.Axis.Position.Vertical?
+            ): CharSequence {
+                return if (value <= 0.0) "0" else value.toInt().toString()
+            }
+        }
+
+        val startDay = millisToStartOfDay(range.start.time)
+        val endDay = millisToStartOfDay(calendar.timeInMillis - DAY_MILLIS)
+        val highlightIndex = if (todayStart.time in startDay.time..endDay.time) {
+            ((todayStart.time - startDay.time) / DAY_MILLIS).toInt()
+        } else {
+            null
+        }
+
+        return ChartUiState(
+            labels = labels,
+            dataSets = listOf(
+                ChartDataSet(
+                    id = ChartSeriesIds.WATER,
+                    xValues = xValues,
+                    yValues = yValues
+                )
+            ),
+            axisPaddingRatio = 0.0,
+            forceIntegerYAxis = true,
+            precomputedRange = 0.0 to maxY,
+            axisSteps = HYDRATE_AXIS_STEPS,
+            startAxisFormatter = hydrateAxisFormatter,
+            highlightX = highlightIndex?.toDouble()
+        )
+    }
+
+    private fun resolveHydrateInterval(maxIntake: Double, divisor: Int): Double {
+        if (maxIntake > 500.0) {
+            val rank = if (maxIntake <= 2000.0) {
+                1.0
+            } else {
+                1.0 + ceil((maxIntake - 2000.0) / 2000.0)
+            }
+            return rank * 250.0
+        }
+        val intervalBase = if (divisor == 0) maxIntake else maxIntake / divisor
+        val intervalMultiplier = ceil(intervalBase / HYDRATE_INTERVAL).coerceAtLeast(1.0)
+        return intervalMultiplier * HYDRATE_INTERVAL
     }
 
     private fun resolveStepInterval(maxSteps: Double, divisor: Int): Double {
@@ -898,6 +1072,9 @@ class HealthStatisticsViewModel @Inject constructor(
         private const val HISTORY_PREVIEW_LIMIT = 2
         private const val STEP_AXIS_STEPS = 8
         private const val STEP_INTERVAL = 50.0
+        private const val HYDRATE_AXIS_STEPS = 8
+        private const val HYDRATE_INTERVAL = 100.0
+        private const val DAY_MILLIS = 86_400_000L
     }
 
     private fun convertToDisplayUnit(valueMgdl: Double, target: BsUnit): Float {
