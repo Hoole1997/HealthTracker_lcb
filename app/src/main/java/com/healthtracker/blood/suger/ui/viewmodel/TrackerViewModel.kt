@@ -85,11 +85,8 @@ class TrackerViewModel @Inject constructor(
 
     private val stepRepository = StepRepository.get(App.INSTANCE)
     private val weekLabels: List<String> = App.INSTANCE.resources
-        .getStringArray(R.array.week_name)
+        .getStringArray(R.array.week_simple)
         .toList()
-        .let { labels ->
-            if (labels.size >= CHART_RECORDS_LIMIT) labels.take(CHART_RECORDS_LIMIT) else listOf("Sun","Mon","Tue","Wed","Thu","Fri","Sat")
-        }
     private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
     private val _stepChartState = MutableStateFlow(ChartUiState())
     val stepChartState: StateFlow<ChartUiState> = _stepChartState

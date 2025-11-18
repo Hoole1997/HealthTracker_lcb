@@ -29,11 +29,8 @@ import kotlin.math.roundToInt
 class StepCountViewModel : BaseViewModel() {
     private val repo = StepRepository.get(App.INSTANCE)
     private val weekLabels: List<String> = App.INSTANCE.resources
-        .getStringArray(R.array.week_name)
+        .getStringArray(R.array.week_simple)
         .toList()
-        .let { labels ->
-            if (labels.size >= DAYS_IN_WEEK) labels.take(DAYS_IN_WEEK) else DEFAULT_WEEK_LABELS
-        }
     private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
 
     companion object {
@@ -41,7 +38,6 @@ class StepCountViewModel : BaseViewModel() {
         private const val DAYS_IN_WEEK = 7
         private const val STEP_AXIS_STEPS = 8
         private const val STEP_INTERVAL = 50.0
-        private val DEFAULT_WEEK_LABELS = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
     }
 
     val todayStatFlow: Flow<DailyStepStat?> = repo.observeTodayDynamic()
