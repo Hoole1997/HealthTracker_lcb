@@ -2,13 +2,16 @@ package com.healthtracker.earthquake.push
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.healthtracker.earthquake.R
-import com.healthtracker.earthquake.model.EarthquakeProperties
+import com.healthtracker.earthquake.EarthquakeActivity
+import com.healthtracker.earthquake.model.EarthquakeFeature
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -33,9 +36,9 @@ class EarthquakeNotificationHelper(private val context: Context) {
         }
     }
 
-    private fun buildNotification(props: EarthquakeProperties, isHigh: Boolean): NotificationCompat.Builder {
+    private fun buildNotification(feature: EarthquakeFeature, isHigh: Boolean): NotificationCompat.Builder {
         // Title: "M" + magnitude + " EARTHQUAKE CONFIRMED"
-        val magStr = props.mag?.let { String.format(Locale.US, "%.1f", it) } ?: "?"
+        val magStr = feature.properties?.mag?.let { String.format(Locale.US, "%.1f", it) } ?: "?"
         val titleText = "M $magStr EARTHQUAKE CONFIRMED"
 
         // Content: "JST" + current time + " - See Impact Radius……"
@@ -52,6 +55,24 @@ class EarthquakeNotificationHelper(private val context: Context) {
             setTextViewText(R.id.tvContent, contentText)
         }
 
+        val intent = Intent(context, EarthquakeActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            putExtra("eq_extra_mag", feature.properties?.mag ?: -1.0)
+            putExtra("eq_extra_place", feature.properties?.place ?: "")
+            putExtra("eq_extra_time", feature.properties?.time ?: -1L)
+            putExtra("eq_extra_mag_type", feature.properties?.magType ?: "")
+            putExtra("eq_extra_status", feature.properties?.status ?: "")
+            putExtra("eq_extra_tsunami", feature.properties?.tsunami ?: 0)
+            putExtra("eq_extra_alert", feature.properties?.alert ?: "-")
+            putExtra("eq_extra_id", feature.id ?: "")
+            putExtra("eq_extra_url", feature.properties?.url ?: "")
+            putExtra("eq_extra_lon", feature.geometry?.coordinates?.getOrNull(0) ?: Double.NaN)
+            putExtra("eq_extra_lat", feature.geometry?.coordinates?.getOrNull(1) ?: Double.NaN)
+            putExtra("eq_extra_depth", feature.geometry?.coordinates?.getOrNull(2) ?: Double.NaN)
+        }
+        val flags = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0) or PendingIntent.FLAG_UPDATE_CURRENT
+        val pendingIntent = PendingIntent.getActivity(context, 1001, intent, flags)
+
         return NotificationCompat.Builder(context, EarthquakePushIds.CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_earthquack_noti_icon)
             .setCustomContentView(contentView)
@@ -64,19 +85,20 @@ class EarthquakeNotificationHelper(private val context: Context) {
             .setWhen(System.currentTimeMillis())
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setContentIntent(pendingIntent)
     }
 
-    fun notifyHighSeverity(props: EarthquakeProperties) {
+    fun notifyHighSeverity(feature: EarthquakeFeature) {
         ensureChannel()
         if (!hasPermission()) return
-        val notification = buildNotification(props, isHigh = true).build()
+        val notification = buildNotification(feature, isHigh = true).build()
         manager.notify(EarthquakePushIds.NOTIFICATION_ID_HIGH, notification)
     }
 
-    fun notifyLowSeverity(props: EarthquakeProperties) {
+    fun notifyLowSeverity(feature: EarthquakeFeature) {
         ensureChannel()
         if (!hasPermission()) return
-        val notification = buildNotification(props, isHigh = false).build()
+        val notification = buildNotification(feature, isHigh = false).build()
         manager.notify(EarthquakePushIds.NOTIFICATION_ID_LOW, notification)
     }
 

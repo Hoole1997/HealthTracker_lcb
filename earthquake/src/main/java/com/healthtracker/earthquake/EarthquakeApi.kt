@@ -1,6 +1,8 @@
 package com.healthtracker.earthquake
 
 import com.healthtracker.earthquake.model.EarthquakeProperties
+import com.healthtracker.earthquake.model.EarthquakeFeature
+import com.healthtracker.earthquake.model.EarthquakeGeometry
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.Calendar
@@ -37,6 +39,30 @@ class EarthquakeApi {
             conn.disconnect()
 
             parseFirstProperties(body)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    fun fetchYesterdayTopFeature(): EarthquakeFeature? {
+        val (start, end) = computeDateRange()
+        val url = "https://earthquake.usgs.gov/fdsnws/event/1/query" +
+                "?format=geojson&starttime=$start&endtime=$end&eventtype=earthquake&orderby=magnitude&limit=10"
+
+        return try {
+            val conn = (URL(url).openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                readTimeout = 10_000
+                connectTimeout = 10_000
+                setRequestProperty("Accept", "application/json")
+            }
+
+            val code = conn.responseCode
+            val stream = if (code in 200..299) conn.inputStream else conn.errorStream
+            val body = stream.bufferedReader().use { it.readText() }
+            conn.disconnect()
+
+            parseFirstFeature(body)
         } catch (_: Exception) {
             null
         }
@@ -132,6 +158,108 @@ class EarthquakeApi {
             magType = if (!isNull("magType")) str("magType") else null,
             type = if (!isNull("type")) str("type") else null,
             title = if (!isNull("title")) str("title") else null,
+        )
+    }
+
+    private fun parseFirstFeature(json: String): EarthquakeFeature? {
+        val featuresIdx = json.indexOf("\"features\"")
+        if (featuresIdx == -1) return null
+        val arrayStart = json.indexOf('[', featuresIdx)
+        if (arrayStart == -1) return null
+        val firstObjStart = json.indexOf('{', arrayStart)
+        if (firstObjStart == -1) return null
+        val featureObj = extractJsonObject(json, firstObjStart) ?: return null
+
+        val propsKeyIdx = featureObj.indexOf("\"properties\"")
+        val propsObjStart = if (propsKeyIdx != -1) featureObj.indexOf('{', propsKeyIdx) else -1
+        val propsObj = if (propsObjStart != -1) extractJsonObject(featureObj, propsObjStart) else null
+
+        val geomKeyIdx = featureObj.indexOf("\"geometry\"")
+        val geomObjStart = if (geomKeyIdx != -1) featureObj.indexOf('{', geomKeyIdx) else -1
+        val geomObj = if (geomObjStart != -1) extractJsonObject(featureObj, geomObjStart) else null
+
+        fun fStr(key: String): String? {
+            val r = Regex("\"$key\"\\s*:\\s*\"(.*?)\"", RegexOption.DOT_MATCHES_ALL)
+            return r.find(featureObj)?.groupValues?.get(1)
+        }
+
+        val properties = propsObj?.let { parsePropertiesObject(it) }
+        val geometry = geomObj?.let { parseGeometryObject(it) }
+        val type = fStr("type")
+        val id = fStr("id")
+
+        return EarthquakeFeature(
+            type = type,
+            properties = properties,
+            geometry = geometry,
+            id = id
+        )
+    }
+
+    private fun parsePropertiesObject(propsObj: String): EarthquakeProperties {
+        fun str(key: String): String? {
+            val r = Regex("\"$key\"\\s*:\\s*\"(.*?)\"", RegexOption.DOT_MATCHES_ALL)
+            return r.find(propsObj)?.groupValues?.get(1)
+        }
+        fun numDouble(key: String): Double? {
+            val r = Regex("\"$key\"\\s*:\\s*([-]?[0-9]+(?:\\.[0-9]+)?)")
+            return r.find(propsObj)?.groupValues?.get(1)?.toDoubleOrNull()
+        }
+        fun numInt(key: String): Int? {
+            val r = Regex("\"$key\"\\s*:\\s*([-]?[0-9]+)")
+            return r.find(propsObj)?.groupValues?.get(1)?.toIntOrNull()
+        }
+        fun numLong(key: String): Long? {
+            val r = Regex("\"$key\"\\s*:\\s*([-]?[0-9]+)")
+            return r.find(propsObj)?.groupValues?.get(1)?.toLongOrNull()
+        }
+        fun isNull(key: String): Boolean {
+            val r = Regex("\"$key\"\\s*:\\s*null")
+            return r.containsMatchIn(propsObj)
+        }
+
+        return EarthquakeProperties(
+            mag = numDouble("mag"),
+            place = if (!isNull("place")) str("place") else null,
+            time = numLong("time"),
+            updated = numLong("updated"),
+            tz = if (!isNull("tz")) numInt("tz") else null,
+            url = if (!isNull("url")) str("url") else null,
+            detail = if (!isNull("detail")) str("detail") else null,
+            felt = numInt("felt"),
+            cdi = numDouble("cdi"),
+            mmi = numDouble("mmi"),
+            alert = if (!isNull("alert")) str("alert") else null,
+            status = if (!isNull("status")) str("status") else null,
+            tsunami = numInt("tsunami"),
+            sig = numInt("sig"),
+            net = if (!isNull("net")) str("net") else null,
+            code = if (!isNull("code")) str("code") else null,
+            ids = if (!isNull("ids")) str("ids") else null,
+            sources = if (!isNull("sources")) str("sources") else null,
+            types = if (!isNull("types")) str("types") else null,
+            nst = numInt("nst"),
+            dmin = numDouble("dmin"),
+            rms = numDouble("rms"),
+            gap = numInt("gap"),
+            magType = if (!isNull("magType")) str("magType") else null,
+            type = if (!isNull("type")) str("type") else null,
+            title = if (!isNull("title")) str("title") else null,
+        )
+    }
+
+    private fun parseGeometryObject(geomObj: String): EarthquakeGeometry {
+        fun str(key: String): String? {
+            val r = Regex("\"$key\"\\s*:\\s*\"(.*?)\"", RegexOption.DOT_MATCHES_ALL)
+            return r.find(geomObj)?.groupValues?.get(1)
+        }
+        val coordsMatch = Regex("\"coordinates\"\\s*:\\s*\\[(.*?)\\]", RegexOption.DOT_MATCHES_ALL).find(geomObj)
+        val coords = coordsMatch?.groupValues?.get(1)
+            ?.split(',')
+            ?.mapNotNull { it.trim().toDoubleOrNull() }
+        return EarthquakeGeometry(
+            type = str("type"),
+            coordinates = coords
         )
     }
 

@@ -18,24 +18,24 @@ class EarthquakePushWorker(appContext: Context, params: WorkerParameters) : Coro
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         try {
             val api = EarthquakeApi()
-            val props = api.fetchYesterdayTopProperties()
-            if (props == null || props.mag == null) {
+            val feature = api.fetchYesterdayTopFeature()
+            if (feature == null || feature.properties?.mag == null) {
                 return@withContext Result.success()
             }
 
-            val mag = props.mag!!
+            val mag = feature.properties!!.mag!!
             val helper = EarthquakeNotificationHelper(applicationContext)
 
             if (mag >= 5.0) {
                 // 高震级：立即发送
-                helper.notifyHighSeverity(props)
+                helper.notifyHighSeverity(feature)
             } else {
                 // 低震级：检查间隔
                 val last = EarthquakePushStorage.getLastLowSeverityPushTime(applicationContext)
                 val now = System.currentTimeMillis()
                 val intervalOk = (now - last) >= EarthquakePushConfig.intervalMillis
                 if (intervalOk) {
-                    helper.notifyLowSeverity(props)
+                    helper.notifyLowSeverity(feature)
                     EarthquakePushStorage.updateLastLowSeverityPushTime(applicationContext, now)
                 }
             }
