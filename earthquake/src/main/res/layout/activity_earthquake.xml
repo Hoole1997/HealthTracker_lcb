@@ -58,6 +58,15 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/bg_earthquake_act_card"
             android:layout_marginHorizontal="16dp">
+            
+            <ImageView
+                android:id="@+id/imgAlert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_alert"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="ContentDescription" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/magnitudeContainer"

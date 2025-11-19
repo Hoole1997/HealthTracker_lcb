@@ -1,4 +1,5 @@
 package com.healthtracker.earthquake.model
+import java.io.Serializable
 
 /**
  * 对应 USGS GeoJSON features[0].properties。
@@ -31,4 +32,4 @@ data class EarthquakeProperties(
     val magType: String?,
     val type: String?,
     val title: String?
-)
+) : Serializable
