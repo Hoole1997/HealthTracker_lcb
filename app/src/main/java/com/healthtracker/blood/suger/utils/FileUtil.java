@@ -3,6 +3,7 @@ package com.healthtracker.blood.suger.utils;
 
 
 import android.os.Environment;
+import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
@@ -13,14 +14,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public final class FileUtil {
 
@@ -228,5 +234,45 @@ public final class FileUtil {
 
     public static boolean createOrExistsDir(final File file) {
         return file != null && (file.exists() ? file.isDirectory() : file.mkdirs());
+    }
+
+    public static void decompressFile(String target, String source) throws IOException {
+        if(TextUtils.isEmpty(target)){
+            return;
+        }
+        try {
+            File file = new File(source);
+            if(!file.exists()) {
+                return;
+            }
+            ZipFile zipFile = new ZipFile(file);
+            ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file));
+            ZipEntry zipEntry = null;
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                String fileName = zipEntry.getName();
+                File temp = new File(target + File.separator + fileName);
+                if(zipEntry.isDirectory()) {
+                    File dir = new File(target + File.separator + fileName);
+                    dir.mkdirs();
+                    continue;
+                }
+                if (temp.getParentFile() != null && !temp.getParentFile().exists()) {
+                    temp.getParentFile().mkdirs();
+                }
+                byte[] buffer = new byte[1024];
+                OutputStream os = new FileOutputStream(temp);
+                // 通过ZipFile的getInputStream方法拿到具体的ZipEntry的输入流
+                InputStream is = zipFile.getInputStream(zipEntry);
+                int len = 0;
+                while ((len = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, len);
+                }
+                os.close();
+                is.close();
+            }
+            zipInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

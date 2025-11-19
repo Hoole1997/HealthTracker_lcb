@@ -15,6 +15,9 @@ const val KEY_STEP_COUNT_GOLE= "key_step_count_gole"
 const val KEY_USER_HEIGHT_CM = "key_user_height_cm"
 const val KEY_USER_WEIGHT_KG = "key_user_weight_kg"
 
+const val KEY_INSIGHTS_DETAIL_READY = "key_insights_detail_ready"
+const val KEY_INSIGHTS_LIST_READY = "key_insights_list_ready"
+const val KEY_NEWS_READY = "key_news_ready"
 
 const val KEY_REMOTE_FILE_L_COUNT = "key_remote_file_l_count"
 const val KEY_USER_COUNTRY = "key_user_country"

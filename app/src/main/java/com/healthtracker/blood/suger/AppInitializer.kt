@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.di.IoDispatcher
 import com.healthtracker.blood.suger.helper.NotificationHelper
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.act.SplashActivity
+import com.healthtracker.blood.suger.utils.InsightAssetPreparer
 import com.healthtracker.blood.suger.utils.isAdPage
 import com.healthtracker.blood.suger.work.HealthWorkTask
 import com.healthtracker.framework.BuildState
@@ -50,6 +51,7 @@ class AppInitializer @Inject constructor(
     
     private val initScope = CoroutineScope(SupervisorJob() + ioDispatcher)
     private var isFirstLaunch = true
+
     /**
      * 配置刷新观察者
      *
@@ -140,6 +142,10 @@ class AppInitializer @Inject constructor(
 
             initScope.launch {
                 AdsManager.init(application)
+            }
+
+            initScope.launch {
+                InsightAssetPreparer.prepare(application)
             }
 
 //            initScope.launch {
@@ -303,4 +309,5 @@ class AppInitializer @Inject constructor(
             if(BuildState.debug) "Failed to register lifecycle observers: ${e.message}".loge("AppInitializer")
         }
     }
+
 }
