@@ -2,6 +2,8 @@ package com.healthtracker.blood.suger.ui.act
 
 // 移除广播接收器相关导入，改用页面可见状态检查月份变化
 import android.Manifest
+import android.R.attr.mode
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -28,6 +30,7 @@ import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.dialog.ActivityPerRequestDialog
 import com.healthtracker.blood.suger.ui.dialog.ExitDialog
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
+import com.healthtracker.blood.suger.ui.fragment.InsightsFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
 import com.healthtracker.blood.suger.ui.fragment.RecordFragment
 import com.healthtracker.blood.suger.ui.viewmodel.MainViewModel
@@ -40,28 +43,38 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.Restore
+import com.patrykandpatrick.vico.core.common.spToPx
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.lucode.hackware.magicindicator.abs.IPagerNavigator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.TriangularPagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), PermissionProvider {
 
-    companion object{
+    companion object {
         private const val TAG = "MainActivity"
     }
 
     private var homeFrg: HomeFragment? = null
     private var medFrg: MedsFragment? = null
     private var recordFrg: RecordFragment? = null
+    private var insightsFrg: InsightsFragment? = null
 
     @Inject
     lateinit var customNotificationHelper: CustomNotificationHelper
 
     @Restore
     private var currentTabIndex = 0
-    
+
 
     private var permissionRequest: PermissionRequest? = null
     override fun onResume() {
@@ -82,10 +95,11 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
     internal val homeFragmentAdapter =
         FragmentsAdapter(supportFragmentManager, 3, object : FragmentsAdapter.Callback {
-            override fun createInstance(position: Int) = when(position){
+            override fun createInstance(position: Int) = when (position) {
                 0 -> HomeFragment()
                 1 -> MedsFragment()
-                2 -> RecordFragment()
+                2 -> InsightsFragment()
+                3 -> RecordFragment()
                 else -> throw IllegalArgumentException("Invalid position: $position")
             }
 
@@ -94,12 +108,12 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                     is HomeFragment -> homeFrg = fragment
                     is RecordFragment -> recordFrg = fragment
                     is MedsFragment -> medFrg = fragment
+                    is InsightsFragment -> insightsFrg = fragment
                 }
             }
         })
-    
 
-    
+
     /**
      * 根据Tab位置更新UI状态
      * @param position Tab位置索引
@@ -109,13 +123,14 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             // 重置所有UI元素的默认状态
             ivRemind.visible()
             tvMonth.gone()
-            
+
             // 根据不同位置设置特定的UI状态和标题
             val titleRes = when (position) {
                 0 -> {
                     // Home页面：显示默认状态
                     R.string.home
                 }
+
                 1 -> {
                     // Meds页面：隐藏设置和提醒按钮，显示月份
                     ivSetting.gone()
@@ -125,17 +140,25 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                     medFrg?.needLoadAd()
                     R.string.meds_manager
                 }
+
                 2 -> {
+                    ivSetting.gone()
+                    ivRemind.gone()
+                    R.string.insights
+                }
+
+                3 -> {
                     // Record页面：隐藏提醒按钮
                     ivRemind.gone()
                     R.string.tracker
                 }
+
                 else -> R.string.home
             }
             tvTitle.text = getString(titleRes)
         }
     }
-    
+
     /**
      * 更新月份显示
      * 从MedsFragment获取日期数据并更新UI
@@ -161,8 +184,8 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             permissionRequest?.with(this)
         }
         mViewModel.startHealthService()
-        with(mViewBind){
-            if(BuildState.debug){
+        with(mViewBind) {
+            if (BuildState.debug) {
                 ivSetting.visible()
             }
             ivSetting.clickWithDuration {
@@ -193,6 +216,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         }
     }
 
+
     /**
      * 设置底部导航栏
      */
@@ -207,6 +231,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             val tabs = arrayListOf(
                 Pair(R.drawable.selector_nav_home, R.string.home),
                 Pair(R.drawable.selector_nav_meds, R.string.meds),
+                Pair(R.drawable.selector_nav_insights, R.string.insights),
                 Pair(R.drawable.selector_nav_record, R.string.tracker),
 
                 )
@@ -262,12 +287,13 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             adapter = homeFragmentAdapter
             isEnableScroll = true
             isSmoothScroll = true
-            addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrolled(
                     position: Int,
                     positionOffset: Float,
                     positionOffsetPixels: Int
-                ) {}
+                ) {
+                }
 
                 override fun onPageSelected(position: Int) {
                     mViewBind.tbNav.getTabAt(position)?.select()
@@ -298,12 +324,15 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR -> {
                 startActivity<BsRecordActivity>()
             }
+
             HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE -> {
                 startActivity<BpRecordActivity>()
             }
+
             HealthServiceConstants.ACTION_VALUE_HEART_RATE -> {
                 startActivity<HeartRateRecordActivity>()
             }
+
             HealthServiceConstants.ACTION_VALUE_HYDRATION -> {
                 startActivity<HydrateActivity>()
             }
@@ -311,18 +340,23 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             HealthServiceConstants.ACTION_VALUE_HOMEPAGE -> {
                 // 已在主页，无需跳转
             }
+
             HealthServiceConstants.ACTION_VALUE_CHOLESTEROL -> {
                 startActivity<CholesterolRecordActivity>()
             }
+
             HealthServiceConstants.ACTION_VALUE_BMI -> {
                 startActivity<BmiRecordActivity>()
             }
+
             HealthServiceConstants.ACTION_VALUE_HISTORY -> {
                 startActivity<HistoryRecordActivity>()
             }
+
             HealthServiceConstants.ACTION_VALUE_MEDICATION -> {
                 mViewBind.viewPagerHome.currentItem = 1
             }
+
             else -> {
                 "Unknown notification action: $action".logd(TAG)
             }
@@ -346,7 +380,10 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             "Starting to send ${messages.size} test notifications".logd(TAG)
 
             messages.forEachIndexed { index, message ->
-                customNotificationHelper.showCustomNotification(message, scenario = PushScenario.BACKGROUND)
+                customNotificationHelper.showCustomNotification(
+                    message,
+                    scenario = PushScenario.BACKGROUND
+                )
                 "Test notification ${index + 1}/${messages.size} sent: ${message.title}".logd(TAG)
 
                 // 添加间隔避免通知瞬间全部显示
@@ -366,7 +403,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     }
 
     override fun handleBackPress(): Boolean {
-        ExitDialog.show(supportFragmentManager){
+        ExitDialog.show(supportFragmentManager) {
             finish()
         }
         return true
@@ -375,19 +412,18 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     override fun permission() = PermissionRequest(Manifest.permission.ACTIVITY_RECOGNITION)
 
     fun checkStepPermissionAndNavigate() {
-       permissionRequest?.let {
-           it.launch { isSuccess, showSettingsRedirect, hasPermission ->
-               if(isSuccess || hasPermission){
-                   startActivity<StepCountActivity>()
-               } else if( showSettingsRedirect){
-                   ActivityPerRequestDialog.show(supportFragmentManager){
-                       it.goSetting(this)
-                   }
-               }
-           }
-       }?:{
-           startActivity<StepCountActivity>()
-       }
+        permissionRequest?.let {
+            it.launch { isSuccess, showSettingsRedirect, hasPermission ->
+                if (isSuccess || hasPermission) {
+                    startActivity<StepCountActivity>()
+                } else if (showSettingsRedirect) {
+                    ActivityPerRequestDialog.show(supportFragmentManager) {
+                        it.goSetting(this)
+                    }
+                }
+            }
+        } ?: {
+            startActivity<StepCountActivity>()
+        }
     }
-
 }
