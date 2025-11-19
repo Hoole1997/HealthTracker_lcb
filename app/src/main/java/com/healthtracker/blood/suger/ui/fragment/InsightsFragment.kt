@@ -5,14 +5,20 @@ import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager.widget.PagerAdapter
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.FragmentInsightsBinding
+import com.healthtracker.blood.suger.databinding.ItemInsightsViewpageBinding
+import com.healthtracker.blood.suger.ui.act.InsightsDetailActivity
+import com.healthtracker.blood.suger.ui.adapter.InsightsArticleAdapter
+import com.healthtracker.blood.suger.utils.InsightAssetPreparer
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
-import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.util.getRobotoBold
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
@@ -21,9 +27,12 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.Li
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 
 class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>() {
-    companion object{
-        private const val TAG = "InsightsFragment"
-    }
+
+    private data class InsightCategory(
+        val titleRes: Int,
+        val assetKey: String
+    )
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -33,16 +42,33 @@ class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>
     override fun getVMModelClass() = BaseViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        setupViewPager()
         setupMagicIndicator()
 
     }
 
-    private val insightsTabsTitle = arrayOf(R.string.blood_suger,R.string.blood_pressure,R.string.heart_rate,R.string.hydrate,R.string.walking)
+    private val insightCategories = listOf(
+        InsightCategory(R.string.blood_suger, "blood_sugar"),
+        InsightCategory(R.string.blood_pressure, "blood_pressure"),
+        InsightCategory(R.string.heart_rate, "heart_rate"),
+        InsightCategory(R.string.hydrate, "hydrate"),
+        InsightCategory(R.string.walking, "walking")
+    )
+
+    private fun setupViewPager() {
+        mViewBind?.viewpager?.apply {
+            adapter = InsightsPagerAdapter(insightCategories)
+            offscreenPageLimit = insightCategories.size
+            isEnableScroll = true
+            isSmoothScroll = true
+        }
+    }
+
     private fun setupMagicIndicator(){
         mViewBind?.let { binding ->
             binding.magicIndicator.navigator = CommonNavigator(requireContext()).apply {
                 adapter = object :CommonNavigatorAdapter(){
-                    override fun getCount() = insightsTabsTitle.size
+                    override fun getCount() = insightCategories.size
 
                     @SuppressLint("RestrictedApi")
                     override fun getTitleView(
@@ -52,11 +78,16 @@ class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>
                         normalColor = ContextCompat.getColor(requireContext(),R.color.t1)
                         selectedColor = ContextCompat.getColor(requireContext(),R.color.c5)
                         setTextSize(TypedValue.COMPLEX_UNIT_SP,16f)
-                        text = getString(insightsTabsTitle[index])
+                        text = getString(insightCategories[index].titleRes)
                         typeface = getRobotoBold(requireContext())
                         clickWithDuration {
-                            "tab click:${getString(insightsTabsTitle[index])}".logd(TAG)
                             binding.viewpager.setCurrentItem(index,true)
+                        }
+                        val paddingStart = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics).toInt()
+                        if(index == 0){
+                            setPadding(paddingStart, 0, paddingStart / 2, 0)
+                        }else if( index == insightCategories.size - 1){
+                            setPadding(paddingStart / 2,0,paddingStart,0)
                         }
                     }
 
@@ -76,5 +107,38 @@ class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>
 
             ViewPagerHelper.bind(binding.magicIndicator,binding.viewpager)
         }
+    }
+
+    private fun openArticleDetail(article: InsightAssetPreparer.InsightArticle) {
+        InsightsDetailActivity.start(requireContext(), article)
+    }
+
+    private inner class InsightsPagerAdapter(
+        private val categories: List<InsightCategory>
+    ) : PagerAdapter() {
+
+        private val inflater = LayoutInflater.from(requireContext())
+
+        override fun instantiateItem(container: ViewGroup, position: Int): Any {
+            val itemBinding = ItemInsightsViewpageBinding.inflate(inflater, container, false)
+            itemBinding.rvInsights.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = InsightsArticleAdapter(::openArticleDetail).also { adapter ->
+                    adapter.submitList(
+                        InsightAssetPreparer.getArticles(categories[position].assetKey)
+                    )
+                }
+            }
+            container.addView(itemBinding.root)
+            return itemBinding.root
+        }
+
+        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+            container.removeView(`object` as View)
+        }
+
+        override fun getCount() = categories.size
+
+        override fun isViewFromObject(view: View, `object`: Any) = view === `object`
     }
 }

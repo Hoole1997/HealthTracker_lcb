@@ -94,7 +94,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     }
 
     internal val homeFragmentAdapter =
-        FragmentsAdapter(supportFragmentManager, 3, object : FragmentsAdapter.Callback {
+        FragmentsAdapter(supportFragmentManager, 4, object : FragmentsAdapter.Callback {
             override fun createInstance(position: Int) = when (position) {
                 0 -> HomeFragment()
                 1 -> MedsFragment()

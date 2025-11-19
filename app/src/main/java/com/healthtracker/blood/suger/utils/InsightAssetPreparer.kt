@@ -168,8 +168,20 @@ object InsightAssetPreparer {
             normalized = normalized.removePrefix("insights/")
         }
         normalized = normalized.removePrefix("/")
-        val file = File(application.filesDir, normalized)
-        return file.absolutePath
+        val primary = File(application.filesDir, normalized)
+        if (primary.exists()) {
+            return primary.absolutePath
+        }
+        if (normalized.endsWith(".png", ignoreCase = true)) {
+            val webpCandidate = File(
+                application.filesDir,
+                normalized.dropLast(4) + ".webp"
+            )
+            if (webpCandidate.exists()) {
+                return webpCandidate.absolutePath
+            }
+        }
+        return primary.absolutePath
     }
 
     private fun resolveCategoryAssets(dirName: String, category: String): List<String> {

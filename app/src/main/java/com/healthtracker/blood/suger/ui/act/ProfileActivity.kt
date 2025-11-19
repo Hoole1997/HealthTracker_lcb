@@ -115,7 +115,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>(
         when (launchMode) {
             MODE_GUIDE -> {
                 setResult(RESULT_OK)
-                onBackPress()
+                finish()
             }
             else -> {
                 startActivity<MainActivity>(isFinishSelf = true)
