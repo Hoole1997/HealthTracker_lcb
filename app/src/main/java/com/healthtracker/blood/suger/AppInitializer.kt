@@ -135,8 +135,8 @@ class AppInitializer @Inject constructor(
     }
 
     private fun initEarthquakeModule() {
-        // 可以传入RemoteConfig获取的intervalHours,默认32H
-        EarthquakePushInitializer.init(application, null)
+        // 第二个参数可以传入RemoteConfig获取的intervalHours,不传默认32H
+        EarthquakePushInitializer.init(application)
     }
 
     /**
