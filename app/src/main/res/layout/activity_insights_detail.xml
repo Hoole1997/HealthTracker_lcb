@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionBarSize"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_4"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_back" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_toolbar_title"
+            style="@style/TextViewFont_RobotoBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:paddingStart="@dimen/dp_44"
+            android:paddingEnd="@dimen/dp_44"
+            android:text="@string/insights"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:padding="@dimen/dp_16"
+        app:layout_constraintBottom_toTopOf="@id/ad_Container"
+        app:layout_constraintTop_toBottomOf="@id/action_bar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_article_title"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/t1"
+                android:textSize="@dimen/sp_20"
+                tools:text="Best and Worst Foods for Managing Diabetes"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/iv_cover"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:background="@color/c1"
+                android:layout_marginTop="@dimen/dp_12"
+                app:layout_constraintDimensionRatio="343:186"
+                app:round="@dimen/dp_12"
+                android:contentDescription="@string/insights"
+                android:layout_marginBottom="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/tv_article_title"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_article_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:textColor="@color/t1"
+                android:textSize="@dimen/sp_14"
+                android:lineSpacingExtra="@dimen/dp_4"
+                tools:text="Content"
+                app:layout_constraintTop_toBottomOf="@id/iv_cover"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/ad_Container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
