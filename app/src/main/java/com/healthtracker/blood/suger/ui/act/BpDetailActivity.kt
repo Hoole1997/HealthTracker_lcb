@@ -131,4 +131,10 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, ActivityBpDetailBin
     override fun hideMask() {
         mViewBind.expertAdviceView.setMaskVisible(false)
     }
+
+    override fun handleBackPress(): Boolean {
+        // 停止倒计时，防止插页广告关闭后激励广告被重新触发
+        mViewBind.expertAdviceView.stopCountdown()
+        return super.handleBackPress()
+    }
 }

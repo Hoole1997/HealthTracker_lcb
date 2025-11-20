@@ -356,7 +356,7 @@ class HealthStatisticsActivity :
 
     private fun updateActionButtonVisibility() {
         mViewBind.btnAddRecord.isVisible =
-            currentMetricType != HealthMetric.STEPS && currentMetricType != HealthMetric.HYDRATION
+            currentMetricType != HealthMetric.STEPS
     }
 
     private fun isHistoryEnabled(): Boolean =
