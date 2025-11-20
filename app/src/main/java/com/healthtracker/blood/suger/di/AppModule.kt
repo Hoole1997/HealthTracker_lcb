@@ -7,6 +7,10 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Qualifier
+import javax.inject.Singleton
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import com.healthtracker.blood.suger.data.repo.StepRepository
 
 /**
  * 应用级依赖注入模块
@@ -59,6 +63,12 @@ object AppModule {
     @Provides
     @DefaultDispatcher
     fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+
+    @Provides
+    @Singleton
+    fun provideStepRepository(@ApplicationContext context: Context): StepRepository {
+        return StepRepository.get(context)
+    }
 }
 
 /**

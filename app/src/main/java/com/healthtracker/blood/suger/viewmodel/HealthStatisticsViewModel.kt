@@ -72,7 +72,8 @@ class HealthStatisticsViewModel @Inject constructor(
     private val heartRateRepository: HeartRateRepository,
     private val bmiRepository: BmiRepository,
     private val hydrateRepository: HydrateRepository,
-    private var savedStateHandle: SavedStateHandle
+    private val stepRepository: StepRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
 
@@ -92,7 +93,7 @@ class HealthStatisticsViewModel @Inject constructor(
         val avgValue: String = PLACEHOLDER,
         val minValue: String = PLACEHOLDER,
         val maxValue: String = PLACEHOLDER,
-        val unitLabel: String = "",
+        val unitLabelRes: Int = 0,
         val hasData: Boolean = false
     ) {
         companion object {
@@ -104,7 +105,6 @@ class HealthStatisticsViewModel @Inject constructor(
         }
     }
 
-    private val stepRepository = StepRepository.get(App.INSTANCE)
     private val stepKiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
     private val dateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     private val labelFormatter = SimpleDateFormat("M/d", Locale.getDefault())
@@ -230,7 +230,7 @@ class HealthStatisticsViewModel @Inject constructor(
             val endEpochDay = range.end.toLocalEpochDay()
             stepRepository.range(startEpochDay, endEpochDay)
         } else {
-            flowOf(emptyList())
+            flowOf(emptyList<DailyStepStat>())
         }
     }.map { records ->
         records.sortedBy { it.dateEpochDay }
@@ -246,7 +246,7 @@ class HealthStatisticsViewModel @Inject constructor(
         if (metricType == HealthMetric.HYDRATION) {
             hydrateRepository.getRecordsByTimeRange(range.start, range.end)
         } else {
-            flowOf(emptyList())
+            flowOf(emptyList<HydrateRecord>())
         }
     }.map { records ->
         records.sortedBy { it.recordTime }
@@ -446,8 +446,13 @@ class HealthStatisticsViewModel @Inject constructor(
     }
 
     private fun buildBsStats(records: List<BloodSugarRecord>, unit: BsUnit): StatsUiState {
+        val unitRes = when (unit) {
+            BsUnit.MG_DL -> R.string.mg_dl
+            BsUnit.MMOL_L -> R.string.mmol_l
+            else -> R.string.mg_dl // Default fallback
+        }
         if (records.isEmpty()) {
-            return StatsUiState(unitLabel = unit.displayName)
+            return StatsUiState(unitLabelRes = unitRes)
         }
         val converted = records.map { convertToDisplayUnit(it.glucoseValue, unit) }
         val avg = converted.average().toFloat()
@@ -457,15 +462,15 @@ class HealthStatisticsViewModel @Inject constructor(
             avgValue = BsUnit.formatValue(avg, unit),
             minValue = BsUnit.formatValue(min, unit),
             maxValue = BsUnit.formatValue(max, unit),
-            unitLabel = unit.displayName,
+            unitLabelRes = unitRes,
             hasData = true
         )
     }
 
     private fun buildBpStats(records: List<BloodPressureRecord>, dimension: StatisticDimension): StatsUiState {
-        val unit = App.INSTANCE.getString(R.string.mmHg)
+        val unitRes = R.string.mmHg
         if (records.isEmpty()) {
-            return StatsUiState(unitLabel = unit)
+            return StatsUiState(unitLabelRes = unitRes)
         }
 
         val systolicValues = records.map { it.systolicPressure }
@@ -494,15 +499,15 @@ class HealthStatisticsViewModel @Inject constructor(
             avgValue = sys.toString(),
             minValue = dia.toString(),
             maxValue = pulse.toString(),
-            unitLabel = unit,
+            unitLabelRes = unitRes,
             hasData = true
         )
     }
 
     private fun buildCholStats(records: List<CholesterolRecord>, dimension: StatisticDimension): StatsUiState {
-        val unit = App.INSTANCE.getString(R.string.mg_dl)
+        val unitRes = R.string.mg_dl
         if (records.isEmpty()) {
-            return StatsUiState(unitLabel = unit)
+            return StatsUiState(unitLabelRes = unitRes)
         }
 
         val tgValues = records.map { it.triglyceride }
@@ -531,19 +536,19 @@ class HealthStatisticsViewModel @Inject constructor(
             avgValue = hdl.toString(),
             minValue = ldl.toString(),
             maxValue = tg.toString(),
-            unitLabel = unit,
+            unitLabelRes = unitRes,
             hasData = true
         )
     }
 
     private fun <T> buildSimpleStats(
         records: List<T>,
-        unitLabel: String,
+        unitLabelRes: Int,
         valueFormatter: (Double) -> String = { formatValue(it) },
         valueSelector: (T) -> Double
     ): StatsUiState {
         if (records.isEmpty()) {
-            return StatsUiState(unitLabel = unitLabel)
+            return StatsUiState(unitLabelRes = unitLabelRes)
         }
 
         val values = records.map(valueSelector)
@@ -555,7 +560,7 @@ class HealthStatisticsViewModel @Inject constructor(
             avgValue = valueFormatter(avg),
             minValue = valueFormatter(min),
             maxValue = valueFormatter(max),
-            unitLabel = unitLabel,
+            unitLabelRes = unitLabelRes,
             hasData = true
         )
     }
@@ -563,7 +568,7 @@ class HealthStatisticsViewModel @Inject constructor(
     private fun buildHrStats(records: List<HeartRateRecord>): StatsUiState {
         return buildSimpleStats(
             records = records,
-            unitLabel = App.INSTANCE.getString(R.string.bpm),
+            unitLabelRes = R.string.bpm,
             valueFormatter = { it.toInt().toString() }
         ) { it.heartRateBpm.toDouble() }
     }
@@ -571,7 +576,7 @@ class HealthStatisticsViewModel @Inject constructor(
     private fun buildBmiStats(records: List<BmiRecord>): StatsUiState {
         return buildSimpleStats(
             records = records,
-            unitLabel = ""
+            unitLabelRes = 0
         ) {
             val heightM = it.heightCm / 100.0
             if (heightM <= 0) 0.0 else it.weightKg / (heightM * heightM)
@@ -740,14 +745,14 @@ class HealthStatisticsViewModel @Inject constructor(
     }
 
     private fun buildStepStats(records: List<DailyStepStat>): StatsUiState {
-        val unit = App.INSTANCE.getString(R.string.text_steps)
+        val unitRes = R.string.text_steps
         if (records.isEmpty()) {
-            return StatsUiState(unitLabel = unit)
+            return StatsUiState(unitLabelRes = unitRes)
         }
         val values = records.map { it.steps }
         val hasData = values.any { it > 0 }
         if (!hasData) {
-            return StatsUiState(unitLabel = unit)
+            return StatsUiState(unitLabelRes = unitRes)
         }
         val avg = values.average().roundToInt()
         val min = values.minOrNull() ?: 0
@@ -756,7 +761,7 @@ class HealthStatisticsViewModel @Inject constructor(
             avgValue = avg.toString(),
             minValue = min.toString(),
             maxValue = max.toString(),
-            unitLabel = unit,
+            unitLabelRes = unitRes,
             hasData = true
         )
     }
@@ -786,13 +791,13 @@ class HealthStatisticsViewModel @Inject constructor(
      */
     private fun buildHydrateStats(records: List<HydrateRecord>, range: DateRange): StatsUiState {
         val hydrateUnit = HydrateSettingManager.getCupUnit()
-        val unitString = when (hydrateUnit) {
-            HydrateSettingManager.CupUnit.FL_OZ -> App.INSTANCE.getString(R.string.fl_oz)
-            HydrateSettingManager.CupUnit.ML -> App.INSTANCE.getString(R.string.unit_ml)
+        val unitRes = when (hydrateUnit) {
+            HydrateSettingManager.CupUnit.FL_OZ -> R.string.fl_oz
+            HydrateSettingManager.CupUnit.ML -> R.string.unit_ml
         }
 
         if (records.isEmpty()) {
-            return StatsUiState(unitLabel = unitString)
+            return StatsUiState(unitLabelRes = unitRes)
         }
 
         val dailyIntakes = calculateDailyHydrateIntake(records, hydrateUnit)
@@ -817,7 +822,7 @@ class HealthStatisticsViewModel @Inject constructor(
             avgValue = avg.toString(),
             minValue = min.toString(),
             maxValue = max.toString(),
-            unitLabel = unitString,
+            unitLabelRes = unitRes,
             hasData = true
         )
     }

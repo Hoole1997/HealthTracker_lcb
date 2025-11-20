@@ -331,8 +331,9 @@ class HealthStatisticsActivity :
         mViewBind.tvAvgValue.text = formatStatValue(stats.avgValue, stats)
         mViewBind.tvMinValue.text = formatStatValue(stats.minValue, stats)
         mViewBind.tvMaxValue.text = formatStatValue(stats.maxValue, stats)
-        "Unit:${stats.unitLabel.lowercase()}".also { mViewBind.tvUnit.text = it }
-        mViewBind.tvUnit.isVisible = stats.unitLabel.isNotEmpty()
+        val unitLabel = if (stats.unitLabelRes != 0) getString(stats.unitLabelRes) else ""
+        "Unit:${unitLabel.lowercase()}".also { mViewBind.tvUnit.text = it }
+        mViewBind.tvUnit.isVisible = unitLabel.isNotEmpty()
     }
 
     private fun renderHealthTips(tips: HealthTips) {
