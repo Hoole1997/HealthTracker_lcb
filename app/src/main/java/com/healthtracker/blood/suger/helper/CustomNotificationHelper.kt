@@ -32,6 +32,7 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import net.corekit.core.report.ReportDataManager
 import javax.inject.Inject
@@ -105,7 +106,7 @@ class CustomNotificationHelper @Inject constructor(
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
 
-            if((scenario == PushScenario.BACKGROUND || scenario == PushScenario.FCM) && canUpgradeToFullScreen(configManager.getConfig<FsiConfig>())){
+            if(AppLifecycleManager.isScreenLock() && (scenario == PushScenario.BACKGROUND || scenario == PushScenario.FCM) && canUpgradeToFullScreen(configManager.getConfig<FsiConfig>())){
                 val fullScreenIntent = Intent(context, FsiNotificationActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     putExtra(EXTRA_PUSH_MESSAGE, pushMessage)

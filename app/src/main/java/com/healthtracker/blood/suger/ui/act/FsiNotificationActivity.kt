@@ -27,7 +27,7 @@ class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotifi
     override fun initView(savedInstanceState: Bundle?) {
         setupFullScreenMode()
         with(mViewBind){
-            tvBtn.clickWithDuration {
+            clRoot.clickWithDuration {
                 unlockAndOpen()
                 finishAndRemoveTask()
             }
