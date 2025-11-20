@@ -35,9 +35,9 @@ object InsightAssetPreparer {
     )
 
     private val assetConfigs = listOf(
-        AssetConfig("insights_detail", KEY_INSIGHTS_DETAIL_READY),
-        AssetConfig("insights_list", KEY_INSIGHTS_LIST_READY),
-        AssetConfig("news", KEY_NEWS_READY)
+        AssetConfig(DIR_INSIGHTS_DETAIL, KEY_INSIGHTS_DETAIL_READY),
+        AssetConfig(DIR_INSIGHTS_LIST, KEY_INSIGHTS_LIST_READY),
+        AssetConfig(DIR_NEWS, KEY_NEWS_READY)
     )
 
     private val articleCache = mutableMapOf<String, List<InsightArticle>>()

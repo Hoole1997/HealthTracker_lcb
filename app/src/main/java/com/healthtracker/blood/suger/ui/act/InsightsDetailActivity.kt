@@ -21,6 +21,7 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.blood.suger.utils.WebViewUtils
+import com.healthtracker.framework.ext.logd
 import net.corekit.monetize.ui.NativeAdStyle
 import java.io.File
 
@@ -61,12 +62,34 @@ class InsightsDetailActivity :
             tvArticleTitle.text = title
             
             // Set HTML content and intercept link clicks
+            // Set HTML content and intercept link clicks
             val spannedContent = HtmlCompat.fromHtml(
                 content,
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            tvArticleContent.text = spannedContent
-            setupLinkClickInterceptor(tvArticleContent, spannedContent)
+
+            // Replace default QuoteSpan with CustomQuoteSpan
+            val spannableBuilder = android.text.SpannableStringBuilder(spannedContent)
+            val quoteSpans = spannableBuilder.getSpans(0, spannableBuilder.length, android.text.style.QuoteSpan::class.java)
+            for (quoteSpan in quoteSpans) {
+                val start = spannableBuilder.getSpanStart(quoteSpan)
+                val end = spannableBuilder.getSpanEnd(quoteSpan)
+                val flags = spannableBuilder.getSpanFlags(quoteSpan)
+                spannableBuilder.removeSpan(quoteSpan)
+                spannableBuilder.setSpan(
+                    com.healthtracker.blood.suger.ui.widget.CustomQuoteSpan(
+                        ContextCompat.getColor(this@InsightsDetailActivity, R.color.color_3b82f6),
+                        stripeWidth = 10,
+                        gapWidth = 20
+                    ),
+                    start,
+                    end,
+                    flags
+                )
+            }
+
+            tvArticleContent.text = spannableBuilder
+            setupLinkClickInterceptor(tvArticleContent, spannableBuilder)
 
             if (imagePath.isNotEmpty()) {
                 Glide.with(ivCover)
@@ -178,6 +201,7 @@ class InsightsDetailActivity :
             // Reset and show progress
             progress.reset()
             progress.show()
+            "url: $url".logd("InsightsDetailActivity")
             webView.loadUrl(url)
         }
     }
