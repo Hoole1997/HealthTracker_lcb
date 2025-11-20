@@ -4,7 +4,7 @@
     <color name="colorPrimary">@color/c1</color>
     <color name="colorPrimaryDark">@color/c1</color>
 
-    <color name="bg_window">#f8f8f8</color>
+    <color name="bg_window">#F5F7FB</color>
 
     <color name="c1">@color/white</color>
     <color name="c5">#02BC77</color>
@@ -40,7 +40,7 @@
     <color name="color_f5f5f5">#F5F5F5</color>
 
     <color name="primary">@color/c5</color>
-    <color name="color_DFDFDF_25">#40DFDFDF</color>
+    <color name="color_DFDFDF">#DFDFDF</color>
 
     
     <!-- 图片中定义的颜色资源 -->
