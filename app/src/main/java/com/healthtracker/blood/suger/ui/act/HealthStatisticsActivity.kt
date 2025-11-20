@@ -332,8 +332,8 @@ class HealthStatisticsActivity :
         mViewBind.tvMinValue.text = formatStatValue(stats.minValue, stats)
         mViewBind.tvMaxValue.text = formatStatValue(stats.maxValue, stats)
         val unitLabel = if (stats.unitLabelRes != 0) getString(stats.unitLabelRes) else ""
-        "Unit:${unitLabel.lowercase()}".also { mViewBind.tvUnit.text = it }
-        mViewBind.tvUnit.isVisible = unitLabel.isNotEmpty()
+        "Unit:${if(currentMetricType == HealthMetric.HYDRATION) unitLabel.lowercase() else unitLabel}".also { mViewBind.tvUnit.text = it }
+        mViewBind.tvUnit.isVisible = unitLabel.isNotEmpty() && currentMetricType != HealthMetric.BLOOD_PRESSURE && currentMetricType != HealthMetric.CHOLESTEROL
     }
 
     private fun renderHealthTips(tips: HealthTips) {
