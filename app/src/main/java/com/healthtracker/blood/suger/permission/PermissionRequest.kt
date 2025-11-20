@@ -29,6 +29,7 @@ class PermissionRequest(private val permission:String) {
     private var cameraLauncher: ActivityResultLauncher<String>? = null
     private var permissionRunnable: ((isSuccess: Boolean, showSettingsRedirect: Boolean, hasPermission: Boolean) -> Unit)? = null
     private var activity: FragmentActivity? = null
+    private var pendingSettingsRedirect = false
 
     /**
      * 注册权限启动器。必须在 Activity 的 `onCreate` 或 Fragment 的 `onCreate` 中调用。
@@ -40,12 +41,19 @@ class PermissionRequest(private val permission:String) {
         cameraLauncher = activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
                 // 权限被授予
+                pendingSettingsRedirect = false
                 permissionRunnable?.invoke(true, false, false)
             } else {
                 // 权限被拒绝，检查是否用户选择了“不再询问”。
                 // 如果 shouldShowRequestPermissionRationale 返回 false，意味着用户已永久拒绝权限。
                 val showSettingsRedirect = !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
-                permissionRunnable?.invoke(false, showSettingsRedirect, false)
+                if (showSettingsRedirect) {
+                    // 延迟到下次主动触发时再展示自定义弹窗
+                    pendingSettingsRedirect = true
+                    permissionRunnable?.invoke(false, false, false)
+                } else {
+                    permissionRunnable?.invoke(false, false, false)
+                }
             }
         }
     }
@@ -61,13 +69,19 @@ class PermissionRequest(private val permission:String) {
      */
     fun launch(runnable: ((isSuccess: Boolean, showSettingsRedirect: Boolean, hasPermission: Boolean) -> Unit)?) {
         this.permissionRunnable = runnable
-        if (!hasPermission()) {
-            // 启动单个 CAMERA 权限的请求。
-            activity?.safeLaunch { cameraLauncher?.launch(permission) }
-        } else {
+        if (hasPermission()) {
+            pendingSettingsRedirect = false
             // 如果权限已被授予，立即调用回调。
             runnable?.invoke(true, false, true)
+            return
         }
+        if (pendingSettingsRedirect) {
+            pendingSettingsRedirect = false
+            runnable?.invoke(false, true, false)
+            return
+        }
+        // 启动单个 CAMERA 权限的请求。
+        activity?.safeLaunch { cameraLauncher?.launch(permission) }
     }
 
     fun goSetting(context: Context) = context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
