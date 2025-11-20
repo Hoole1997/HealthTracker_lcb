@@ -120,6 +120,7 @@ class MedsReminderAdapter(
         private lateinit var skeleton: ViewSkeletonScreen
         fun bind() {
             if (needLoadAd) {
+                binding.root.visible()
                 skeleton = ViewSkeletonScreen.Builder(binding.adContainer)
                     .load(R.layout.layout_skeleton_banner_ads)
                     .shimmer(true)
@@ -131,8 +132,12 @@ class MedsReminderAdapter(
                 activity.loadNative(binding.adContainer, style = NativeAdStyle.STANDARD){
                     if(it){
                         android.util.Log.d("MedsReminderAdapter", "Ad placeholder visible at position=$bindingAdapterPosition")
-                        skeleton.hide()
+
+                    }else{
+                        binding.root.gone()
                     }
+
+                    skeleton.hide()
                 }
             }
         }

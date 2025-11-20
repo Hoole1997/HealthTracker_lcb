@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     kotlin("kapt")
     // StringFog 字符串混淆插件
-//    alias(libs.plugins.android.stringfog.convention)
+    alias(libs.plugins.android.stringfog.convention)
 }
 
 val analyticsConfig = findProperty("analytics") as Map<*, *>

@@ -16,16 +16,16 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/topBar"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/dp_48"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/ivBack"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:paddingVertical="4dp"
-                android:layout_marginStart="8dp"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:paddingVertical="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_8"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_earthquake_back"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
 
             <TextView
                 android:id="@+id/tvTitle"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
@@ -44,7 +44,7 @@
                 android:text="@string/earthquake_title"
                 android:textAlignment="center"
                 android:textColor="#333333"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -55,9 +55,9 @@
             android:id="@+id/earthquake_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@drawable/bg_earthquake_act_card"
-            android:layout_marginHorizontal="16dp">
+            android:layout_marginHorizontal="@dimen/dp_16">
             
             <ImageView
                 android:id="@+id/imgAlert"
@@ -72,8 +72,8 @@
                 android:id="@+id/magnitudeContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="@dimen/dp_22"
+                android:layout_marginTop="@dimen/dp_20"
                 android:gravity="center"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#ffffff"
-                    android:textSize="36sp"
+                    android:textSize="@dimen/sp_36"
                     tools:text="7.2"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -95,8 +95,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#ffffff"
-                    android:textSize="16sp"
-                    android:layout_marginStart="4dp"
+                    android:textSize="@dimen/sp_16"
+                    android:layout_marginStart="@dimen/dp_4"
                     tools:text="m"
                     app:layout_constraintStart_toEndOf="@id/tvMagnitude"
                     app:layout_constraintBaseline_toBaselineOf="@id/tvMagnitude"/>
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="#ffffff"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp_16"
                 app:layout_constraintStart_toStartOf="@id/magnitudeContainer"
                 app:layout_constraintTop_toBottomOf="@id/magnitudeContainer"
                 tools:text="台湾花莲县海域" />
@@ -118,16 +118,16 @@
                 android:id="@+id/earthquake_info_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/dp_20"
                 android:background="@drawable/bg_earthquake_act_card_bar"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                android:paddingVertical="16dp"
+                android:paddingVertical="@dimen/dp_16"
                 android:weightSum="3"
                 app:layout_constraintTop_toBottomOf="@id/tvLocation">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -138,7 +138,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/focal_depth"
                         android:textColor="#ccffffff"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/sp_14" />
 
                     <TextView
                         android:id="@+id/tvDepth"
@@ -146,12 +146,12 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="#ffffff"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp_14"
                         tools:text="20公里" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -162,7 +162,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/tsunami_threat"
                         android:textColor="#ccffffff"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/sp_14" />
 
                     <TextView
                         android:id="@+id/tvTsunami"
@@ -170,12 +170,12 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="#ffffff"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp_14"
                         tools:text="No" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -186,7 +186,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/usgs_warning"
                         android:textColor="#ccffffff"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/sp_14" />
 
                     <TextView
                         android:id="@+id/tvWarning"
@@ -194,7 +194,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="#ffffff"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp_14"
                         tools:text="ORANGE" />
                 </LinearLayout>
 
@@ -206,29 +206,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="16dp"
-            android:layout_marginHorizontal="16dp">
+            android:paddingTop="@dimen/dp_16"
+            android:layout_marginHorizontal="@dimen/dp_16">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingVertical="6dp">
+                android:paddingVertical="@dimen/dp_6">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/origin_time"
                     android:textColor="#999999"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/tvOriginTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#333333"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/sp_14"
                     tools:text="2025/11/03 19:30:00" />
             </LinearLayout>
 
@@ -236,15 +236,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingVertical="6dp">
+                android:paddingVertical="@dimen/dp_6">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/magnitude_type"
                     android:textColor="#888888"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/tvMagType"
@@ -252,29 +252,29 @@
                     android:layout_height="wrap_content"
                     android:text="@string/mww"
                     android:textColor="#333333"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sp_14" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingVertical="6dp">
+                android:paddingVertical="@dimen/dp_6">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/data_status"
                     android:textColor="#888888"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/tvDataStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#333333"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/sp_14"
                     tools:text="@string/reviewed" />
             </LinearLayout>
 

@@ -1,6 +1,7 @@
 plugins {
     // 使用项目的约定库插件，统一 Android/Kotlin 配置
     alias(libs.plugins.android.library.convention)
+    alias(libs.plugins.android.stringfog.convention)
 }
 
 android {
