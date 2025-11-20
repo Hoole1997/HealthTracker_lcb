@@ -25,16 +25,6 @@ class EarthquakeActivity : BaseMVVMActivity<BaseViewModel, ActivityEarthquakeBin
     override fun createViewBinding() = ActivityEarthquakeBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_earthquake)
-
-        findViewById<ImageView>(R.id.ivBack).setOnClickListener { finish() }
-
-
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         with(mViewBind){
             ivBack.clickWithDuration {
