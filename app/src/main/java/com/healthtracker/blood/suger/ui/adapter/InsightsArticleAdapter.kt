@@ -54,7 +54,7 @@ class InsightsArticleAdapter(
             binding.tvTitle.text = article.title
             if(isLeast9()){
                 val shadowColor = ContextCompat.getColor(App.INSTANCE,
-                    com.healthtracker.framework.R.color.transparent30)
+                    R.color.color_DFDFDF_25)
                 binding.rootCard.outlineSpotShadowColor = shadowColor
                 binding.rootCard.outlineAmbientShadowColor = shadowColor
             }
