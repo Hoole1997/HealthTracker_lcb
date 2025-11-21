@@ -31,7 +31,7 @@ class HeartRateDetailActivity :
 
     @Inject
     lateinit var chartManagerFactory: HealthLineChartManager.Factory
-    private lateinit var chartManager: HealthLineChartManager
+    private var chartManager: HealthLineChartManager? = null
 
     companion object {
         fun start(context: Context, recordId: Long) {
@@ -129,7 +129,7 @@ class HeartRateDetailActivity :
 
         lifecycleScope.launch {
             collectLatest(mViewModel.chartUiState) { state ->
-                chartManager.render(state)
+                chartManager?.render(state)
             }
         }
     }

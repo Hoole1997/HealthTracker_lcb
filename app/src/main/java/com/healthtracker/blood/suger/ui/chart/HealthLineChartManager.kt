@@ -49,15 +49,20 @@ class HealthLineChartManager @AssistedInject constructor(
     @Assisted private val lifecycleOwner: LifecycleOwner
 ) : DefaultLifecycleObserver {
 
-    private val modelProducer = CartesianChartModelProducer()
+    // 优先使用已存在的 modelProducer，避免在配置变更时创建新实例导致崩溃
+    private val modelProducer: CartesianChartModelProducer = 
+        chartView.modelProducer ?: CartesianChartModelProducer().also {
+            chartView.modelProducer = it
+        }
+    
     private var labels: List<String> = emptyList()
 
     @Volatile
     private var isReleased = false
 
     init {
-        chartView.modelProducer = modelProducer
-
+        // modelProducer 已在属性初始化时设置，这里不需要再赋值
+        
         // 自动绑定生命周期，避免在已销毁的LifecycleOwner上注册
         if (lifecycleOwner.lifecycle.currentState != Lifecycle.State.DESTROYED) {
             lifecycleOwner.lifecycle.addObserver(this)

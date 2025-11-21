@@ -193,7 +193,7 @@ class PushFrequencyController @Inject constructor(
                 DateTimeUtils.formatDateTimeWithSeconds(
                     Date(firstInstallTime)
                 )
-            }".logd(TAG)
+            }".logd(PushOrchestrator.TAG)
             val reason = "app_inner_${type}_new_user_cooldown"
             return FrequencyCheckResult(false, reason)
         }
@@ -222,15 +222,15 @@ class PushFrequencyController @Inject constructor(
         // 检查是否在免打扰时段内
         val isInDoNotDisturbPeriod = if (startHour < endHour) {
             // 正常时段，如 02:00-08:00
-            currentHour >= startHour && currentHour < endHour
+            currentHour in startHour..<endHour
         } else {
             // 跨越午夜的时段，如 22:00-07:00
-            currentHour >= startHour || currentHour < endHour
+            currentHour !in endHour..<startHour
         }
 
         if (isInDoNotDisturbPeriod) {
              "Do-not-disturb time: $currentHour:00 (blocked between " +
-                    "$startHour:00-$endHour:00)".logd(TAG)
+                    "$startHour:00-$endHour:00)".logd(PushOrchestrator.TAG)
             val reason = "app_inner_${type}_do_not_disturb"
             return FrequencyCheckResult(false, reason)
         }
@@ -279,7 +279,7 @@ class PushFrequencyController @Inject constructor(
     private fun checkPushInterval(scenario: PushScenario,config: ChannelConfig,type:String): FrequencyCheckResult {
         // 闹钟场景无间隔限制
         if (scenario == PushScenario.FCM || scenario == PushScenario.KEEPALIVE) {
-            if (BuildState.debug) "scenario = $scenario,no interval limit".logd(TAG)
+            if (BuildState.debug) "scenario = $scenario,no interval limit".logd(PushOrchestrator.TAG)
             return FrequencyCheckResult(canTrigger = true)
         }
 
@@ -296,8 +296,7 @@ class PushFrequencyController @Inject constructor(
 
         if (elapsedMinutes < interval) {
             val remainingMinutes = interval - elapsedMinutes
-            "Push interval not met: $elapsedMinutes/$interval minutes " +
-                    "(remaining: $remainingMinutes minutes)".logd(TAG)
+            "Push interval not met: $elapsedMinutes/$interval minutes (remaining: $remainingMinutes minutes)".logd(PushOrchestrator.TAG)
             val reason = "app_inner_${type}_trigger_interval_not_met "
             return FrequencyCheckResult(false, reason)
         }

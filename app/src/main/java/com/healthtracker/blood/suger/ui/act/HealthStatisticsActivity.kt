@@ -99,7 +99,7 @@ class HealthStatisticsActivity :
     @Inject
     lateinit var chartManagerFactory: HealthLineChartManager.Factory
 
-    private lateinit var chartManager: HealthLineChartManager
+    private var chartManager: HealthLineChartManager? = null
     private val historyAdapter = HistoryAdapter().apply { showDeleteButton = false }
     private var latestDateRange: HealthStatisticsViewModel.DateRange? = null
     private var isHistorySectionVisible: Boolean = false
@@ -274,9 +274,9 @@ class HealthStatisticsActivity :
             if (currentMetricType == HealthMetric.STEPS || currentMetricType == HealthMetric.HYDRATION) {
                 mViewBind.chartView.setAnimationDuration(0)
                 mViewBind.chartView.animateIn = false
-                chartManager.renderColumn(state, isShowLabel = true, enableScroll = true)
+                chartManager?.renderColumn(state, isShowLabel = true, enableScroll = true)
             } else {
-                chartManager.render(state)
+                chartManager?.render(state)
             }
         }
         collectLatest(mViewModel.historyPreview) { records ->

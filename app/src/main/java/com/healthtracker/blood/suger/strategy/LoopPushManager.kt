@@ -7,6 +7,7 @@ import com.healthtracker.blood.suger.helper.CustomNotificationHelper
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -115,6 +116,15 @@ class LoopPushManager @Inject constructor(
                 // 注意：首条通知已经发送，这里从第 2 条开始
                 // loopCount - 1 是因为首条已发送
                 repeat(loopCount - 1){ index ->
+
+                    if(AppLifecycleManager.isScreenLock()){
+                        if(BuildState.debug){
+                            "Loop push stopped during screen lock: notificationId=$notificationId".logd(
+                                PushOrchestrator.TAG)
+                        }
+                        return@launch
+                    }
+
                     // 延迟 4 秒
                     delay(LOOP_INTERVAL_SECONDS * 1000)
 

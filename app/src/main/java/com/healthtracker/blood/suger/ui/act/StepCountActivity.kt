@@ -15,6 +15,7 @@ import com.healthtracker.blood.suger.service.HealthService
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
+import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +27,7 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
     @Inject
     lateinit var chartManagerFactory: HealthLineChartManager.Factory
 
-    private lateinit var chartManager: HealthLineChartManager
+    private var chartManager: HealthLineChartManager? = null
 
     private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) startHealthService() else Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
@@ -74,7 +75,7 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
         }
 
         this.collect(mViewModel.chartUiStateFlow) { chartState ->
-            chartManager.renderColumn(chartState, isShowLabel = true)
+            chartManager?.renderColumn(chartState, isShowLabel = true)
             mViewBind.chartView.setAnimationDuration(0)
             mViewBind.chartView.animateIn = false
         }

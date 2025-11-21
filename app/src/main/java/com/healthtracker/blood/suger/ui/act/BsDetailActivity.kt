@@ -26,7 +26,7 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBin
 
     @Inject
     lateinit var chartManagerFactory: HealthLineChartManager.Factory
-    private lateinit var chartManager: HealthLineChartManager
+    private var chartManager: HealthLineChartManager? = null
 
 
     companion object{
@@ -118,7 +118,7 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBin
         }
 
         collectLatest(mViewModel.chartUiState) { state ->
-            chartManager.render(state)
+            chartManager?.render(state)
         }
     }
 

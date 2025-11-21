@@ -26,7 +26,7 @@ class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, 
 
     @Inject
     lateinit var chartManagerFactory: HealthLineChartManager.Factory
-    private lateinit var chartManager: HealthLineChartManager
+    private var chartManager: HealthLineChartManager? = null
 
     companion object {
         private const val RECORD_ID = "record_id"
@@ -109,7 +109,7 @@ class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, 
         }
 
         collectLatest(mViewModel.chartUiState) { state ->
-            chartManager.render(state)
+            chartManager?.render(state)
         }
     }
 

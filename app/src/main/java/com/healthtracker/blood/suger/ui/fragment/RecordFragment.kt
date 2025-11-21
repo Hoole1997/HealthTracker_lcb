@@ -39,14 +39,14 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
     @Inject
     lateinit var chartManagerFactory: HealthLineChartManager.Factory
 
-    // ========== 图表管理器 ==========
-    private lateinit var bsChartManager: HealthLineChartManager
-    private lateinit var bpChartManager: HealthLineChartManager
-    private lateinit var hrChartManager: HealthLineChartManager
-    private lateinit var choChartManager: HealthLineChartManager
-    private lateinit var bmiChartManager: HealthLineChartManager
-    private lateinit var stepChartManager: HealthLineChartManager
-    private lateinit var hydrateChartManager: HealthLineChartManager
+    // ========== 图表管理器（使用可空类型，每次 View 创建时重新初始化） ==========
+    private var bsChartManager: HealthLineChartManager? = null
+    private var bpChartManager: HealthLineChartManager? = null
+    private var hrChartManager: HealthLineChartManager? = null
+    private var choChartManager: HealthLineChartManager? = null
+    private var bmiChartManager: HealthLineChartManager? = null
+    private var stepChartManager: HealthLineChartManager? = null
+    private var hydrateChartManager: HealthLineChartManager? = null
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -213,7 +213,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
         // Blood Sugar
         collectLatest(mViewModel.bloodSugarChartState) { state ->
             lifecycleScope.launch {
-                val hasData = bsChartManager.render(state, isShowLabel = false)
+                val hasData = bsChartManager?.render(state, isShowLabel = false) ?: false
                 updateChartVisibility(hasData, mViewBind?.includeBs)
             }
         }
@@ -221,7 +221,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
         // Blood Pressure
         collectLatest(mViewModel.bloodPressureChartState) { state ->
             lifecycleScope.launch {
-                val hasData = bpChartManager.render(state, isShowLabel = false)
+                val hasData = bpChartManager?.render(state, isShowLabel = false) ?: false
                 updateChartVisibility(hasData, mViewBind?.includeBp)
             }
         }
@@ -229,7 +229,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
         // Heart Rate
         collectLatest(mViewModel.heartRateChartState) { state ->
             lifecycleScope.launch {
-                val hasData = hrChartManager.render(state, isShowLabel = false)
+                val hasData = hrChartManager?.render(state, isShowLabel = false) ?: false
                 updateChartVisibility(hasData, mViewBind?.includeHr)
             }
         }
@@ -237,7 +237,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
         // Cholesterol
         collectLatest(mViewModel.cholesterolChartState) { state ->
             lifecycleScope.launch {
-                val hasData = choChartManager.render(state, isShowLabel = false)
+                val hasData = choChartManager?.render(state, isShowLabel = false) ?: false
                 updateChartVisibility(hasData, mViewBind?.includeCho)
             }
         }
@@ -245,7 +245,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
         // BMI
         collectLatest(mViewModel.bmiChartState) { state ->
             lifecycleScope.launch {
-                val hasData = bmiChartManager.render(state, isShowLabel = false)
+                val hasData = bmiChartManager?.render(state, isShowLabel = false) ?: false
                 updateChartVisibility(hasData, mViewBind?.includeBmi)
             }
         }
@@ -255,12 +255,12 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
             lifecycleScope.launch {
                 val hasPermission = hasActivityRecognitionPermission()
                 if (hasPermission) {
-                    val hasData = stepChartManager.renderColumn(
+                    val hasData = stepChartManager?.renderColumn(
                         state,
                         isShowLabel = false,
                         showBaseline = false,
                         columnWidthScale = 0.5f
-                    )
+                    ) ?: false
                     updateChartVisibility(hasData, mViewBind?.includeStep)
                 } else {
                     updateChartVisibility(false, mViewBind?.includeStep)
@@ -271,12 +271,12 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
         // Hydrate (column chart)
         collectLatest(mViewModel.hydrateChartState) { state ->
             lifecycleScope.launch {
-                val hasData = hydrateChartManager.renderColumn(
+                val hasData = hydrateChartManager?.renderColumn(
                     state,
                     isShowLabel = false,
                     showBaseline = false,
                     columnWidthScale = 0.5f
-                )
+                ) ?: false
                 updateChartVisibility(hasData, mViewBind?.includeHydrate)
             }
         }
