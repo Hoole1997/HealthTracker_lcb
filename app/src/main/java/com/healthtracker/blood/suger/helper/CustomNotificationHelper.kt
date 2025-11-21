@@ -312,6 +312,8 @@ class CustomNotificationHelper @Inject constructor(
             6 -> HealthServiceConstants.ACTION_VALUE_HEART_RATE
             7 -> HealthServiceConstants.ACTION_VALUE_HISTORY
             8 -> HealthServiceConstants.ACTION_VALUE_MEDICATION
+            9 -> HealthServiceConstants.ACTION_VALUE_HYDRATION
+            10 -> HealthServiceConstants.ACTION_VALUE_STEPS
             else -> {
                 "Unknown actionType: $actionType, defaulting to homepage".logd(PushOrchestrator.TAG)
                 HealthServiceConstants.ACTION_VALUE_HOMEPAGE

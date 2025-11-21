@@ -44,6 +44,8 @@ class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotifi
                         4 -> R.drawable.ic_fsi_cholesterol
                         5 -> R.drawable.ic_fsi_bmi
                         6 -> R.drawable.ic_fsi_hr
+                        9 -> R.drawable.ic_hydrate_notify
+                        10 -> R.drawable.ic_step_notify
                         else -> R.drawable.ic_fis_home
                     })
                 }

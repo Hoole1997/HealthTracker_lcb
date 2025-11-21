@@ -336,6 +336,10 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             HealthServiceConstants.ACTION_VALUE_HYDRATION -> {
                 startActivity<HydrateActivity>()
             }
+
+            HealthServiceConstants.ACTION_VALUE_STEPS -> {
+                checkStepPermissionAndNavigate()
+            }
             // 自定义通知的新增动作处理分支
             HealthServiceConstants.ACTION_VALUE_HOMEPAGE -> {
                 // 已在主页，无需跳转

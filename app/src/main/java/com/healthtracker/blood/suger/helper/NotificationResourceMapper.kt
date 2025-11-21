@@ -98,6 +98,20 @@ class NotificationResourceMapper @Inject constructor() {
                 decorIcon = R.mipmap.ic_meds_notify,
                 btnTextColor = com.healthtracker.framework.R.color.white
             )
+            9 -> NotificationResources(
+                smallIcon = R.drawable.ic_hydrate_notify,
+                background = R.drawable.bg_bmi_notify,
+                largeIcon = R.drawable.ic_hydrate_notify,
+                decorIcon = R.mipmap.bg_hydrate_notify_icon,
+                btnTextColor = R.color.color_30A6ED
+            )
+            10 -> NotificationResources(
+                smallIcon = R.drawable.ic_step_notify,
+                background = R.drawable.bg_cholesterol_notify,
+                largeIcon = R.drawable.ic_step_notify,
+                decorIcon = R.mipmap.bg_step_notify_icon,
+                btnTextColor = R.color.color_F0832D
+            )
             else -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
                 background = null,

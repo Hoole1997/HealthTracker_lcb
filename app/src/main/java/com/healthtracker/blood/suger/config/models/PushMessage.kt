@@ -9,8 +9,8 @@ package com.healthtracker.blood.suger.config.models
  * @property title 推送标题
  * @property desc 推送描述内容
  * @property buttonText 按钮文本
- * @property iconType 图标类型 (1-8 对应不同的健康指标图标)
- * @property actionType 点击行为类型 (1-8 对应不同的跳转页面)
+ * @property iconType 图标类型 (1-10 对应不同的健康指标图标)
+ * @property actionType 点击行为类型 (1-10 对应不同的跳转页面)
  */
 data class PushMessage(
     val id: String,
@@ -38,12 +38,12 @@ data class PushMessage(
         /**
          * 创建默认推送消息列表（完整版）
          *
-         * 包含与 RemoteConfig 一致的全部 11 条推送消息配置
+         * 包含与 RemoteConfig 一致的全部 13 条推送消息配置
          * 用于 RemoteConfig 获取失败时的降级方案
          *
          * 数据来源: Blood Pressure & Sugar Track v1.0.1 商业化需求文档
          *
-         * @return 包含 11 条完整推送消息的列表
+         * @return 包含 13 条完整推送消息的列表
          */
         fun createDefaultList(): List<PushMessage> {
             return listOf(
@@ -145,6 +145,24 @@ data class PushMessage(
                     buttonText = "View Full Report",
                     iconType = 8,
                     actionType = 8
+                ),
+                // 12. 饮水提醒
+                PushMessage(
+                    id = "push_012",
+                    title = "💧 Stay Hydrated!",
+                    desc = "Don't forget to drink water! Staying hydrated is essential for your health and well-being.",
+                    buttonText = "Drink Now",
+                    iconType = 9,
+                    actionType = 9
+                ),
+                // 13. 计步提醒
+                PushMessage(
+                    id = "push_013",
+                    title = "👟 Keep Moving!",
+                    desc = "Track your daily steps and stay active. Every step counts towards a healthier you!",
+                    buttonText = "View Steps",
+                    iconType = 10,
+                    actionType = 10
                 )
             )
         }
@@ -158,7 +176,7 @@ data class PushMessage(
                 title.isNotBlank() &&
                 desc.isNotBlank() &&
                 buttonText.isNotBlank() &&
-                iconType in 1..8 &&
-                actionType in 1..8
+                iconType in 1..10 &&
+                actionType in 1..10
     }
 }
