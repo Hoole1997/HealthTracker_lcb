@@ -57,7 +57,7 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
             val delayInstallHours = json.optIntCompat("delay_install_hours", 12)
 
             val maxPrompt = json.optIntCompat("max_prompts", 3)
-            val timeWindow = parseTimeWindow(json.optString("time_window", "00:00-23:00"))
+            val timeWindow = parseTimeWindow(json.optString("time_window", "07:00-23:00"))
 
             FsiConfig(
                 enabled = enabled,

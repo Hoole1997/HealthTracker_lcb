@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.core.os.bundleOf
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.databinding.ActivityFsiNotificationBinding

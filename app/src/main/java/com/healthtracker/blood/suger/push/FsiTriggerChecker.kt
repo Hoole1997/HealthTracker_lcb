@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.push
 
 import com.healthtracker.blood.suger.config.models.FsiConfig
+import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import java.util.Calendar
@@ -22,19 +23,19 @@ fun canUpgradeToFullScreen(
 
     // 2. 检查冷却期
     if (!checkQuietPeriod(config)) {
-        if (BuildState.debug) "Quiet period not met".logd(TAG)
+        if (BuildState.debug) "Fsi Quiet period not met".logd(TAG)
         return false
     }
 
     // 3. 检查时间窗口
     if (!checkTimeWindow(config)) {
-        if (BuildState.debug) "Outside time window".logd(TAG)
+        if (BuildState.debug) "Fsi Outside time window".logd(TAG)
         return false
     }
 
-    // 4. 检查触发次数
+    // 4. 检查当天触发次数
     if (!checkTriggerCount(config)) {
-        if (BuildState.debug) "Max trigger count reached".logd(TAG)
+        if (BuildState.debug) "Fsi Daily max trigger count reached".logd(TAG)
         return false
     }
 
@@ -53,12 +54,6 @@ private fun checkEnabled(config: FsiConfig): Boolean {
  * 条件 2: 距离安装时间 >= 24 小时（固定值）
  */
 private fun checkQuietPeriod(config: FsiConfig): Boolean {
-
-    if (hasClickNotify()) {
-        if (BuildState.debug)
-            "user has click notification".logd(TAG)
-        return false
-    }
 
     val currentTime = System.currentTimeMillis()
 
@@ -110,7 +105,13 @@ private fun checkTimeWindow(config: FsiConfig): Boolean {
     return config.isInTimeWindow(currentHour)
 }
 
+/**
+ * 检查当天触发次数是否未达上限
+ * 触发次数每天0点自动重置
+ */
 private fun checkTriggerCount(config: FsiConfig): Boolean {
     val currentCount = getTriggerCount()
-    return currentCount < config.maxTriggerCount
+    val max = config.maxTriggerCount
+    "✓ Trigger count: $currentCount/$max".logd(PushOrchestrator.TAG)
+    return currentCount < max
 }

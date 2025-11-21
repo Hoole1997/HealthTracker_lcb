@@ -20,6 +20,7 @@ import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_CONTENT
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
 import com.healthtracker.blood.suger.push.canUpgradeToFullScreen
+import com.healthtracker.blood.suger.push.recordTrigger
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
@@ -106,7 +107,7 @@ class CustomNotificationHelper @Inject constructor(
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
 
-            if(AppLifecycleManager.isScreenLock() && (scenario == PushScenario.BACKGROUND || scenario == PushScenario.FCM) && canUpgradeToFullScreen(configManager.getConfig<FsiConfig>())){
+            if((scenario == PushScenario.BACKGROUND || scenario == PushScenario.FCM) && canUpgradeToFullScreen(configManager.getConfig<FsiConfig>())){
                 val fullScreenIntent = Intent(context, FsiNotificationActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     putExtra(EXTRA_PUSH_MESSAGE, pushMessage)
@@ -120,6 +121,7 @@ class CustomNotificationHelper @Inject constructor(
                     fullScreenIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
+                recordTrigger()
                 notificationBuilder.setFullScreenIntent(fullScreenPendingIntent,true)
             }
 
