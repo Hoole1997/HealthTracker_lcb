@@ -15,6 +15,11 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.LayoutExpertAdviceBinding
+import com.healthtracker.blood.suger.ui.act.BmiDetailActivity
+import com.healthtracker.blood.suger.ui.act.BpDetailActivity
+import com.healthtracker.blood.suger.ui.act.BsDetailActivity
+import com.healthtracker.blood.suger.ui.act.CholesterolDetailActivity
+import com.healthtracker.blood.suger.ui.act.HeartRateDetailActivity
 import com.healthtracker.blood.suger.ui.act.showFreeLockConfirm
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
@@ -28,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.corekit.core.report.ReportDataManager
 
 /**
  * 专家建议自定义控件
@@ -145,6 +151,9 @@ class ExpertAdviceView @JvmOverloads constructor(
     private fun initViews() {
         // 设置按钮点击事件
         binding.btnCancel.click {
+            pageNameRes?.let {
+                ReportDataManager.reportData("Ad_auto_Cancel",mapOf("page_name" to context.getString(pageNameRes)))
+            }
             onCancelClicked()
         }
 
@@ -162,6 +171,15 @@ class ExpertAdviceView @JvmOverloads constructor(
         binding.tvAdviceContent.text = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
     }
 
+
+    private val pageNameRes = when(context){
+        is BpDetailActivity -> R.string.blood_pressure
+        is BsDetailActivity -> R.string.blood_suger
+        is CholesterolDetailActivity -> R.string.cholesterol
+        is BmiDetailActivity -> R.string.bmi
+        is HeartRateDetailActivity -> R.string.heart_rate
+        else -> null
+    }
     /**
      * 设置遮罩层可见性（自动控制模糊效果）
      *
@@ -187,11 +205,18 @@ class ExpertAdviceView @JvmOverloads constructor(
             // 显示倒计时按钮，隐藏获取提示按钮
             binding.llCountdownButtons.visible()
             binding.btnGetTip.gone()
+
             // 移除自动开始倒计时，由外部控制
             if(context is AppCompatActivity){
                 (context as AppCompatActivity).showFreeLockConfirm({
+                    pageNameRes?.let {
+                        ReportDataManager.reportData("recomm_FreeUnlock",mapOf("page_name" to context.getString(pageNameRes)))
+                    }
                     listener?.onGetTipClicked()
                 },{
+                    pageNameRes?.let {
+                        ReportDataManager.reportData("recomm_Cancel",mapOf("page_name" to context.getString(pageNameRes)))
+                    }
                     startCountdown()
                 })
             }
@@ -208,6 +233,7 @@ class ExpertAdviceView @JvmOverloads constructor(
         require(seconds > 0) { "Countdown seconds must be positive" }
         countdownSeconds = seconds
     }
+
 
     /**
      * 设置模糊半径
@@ -281,6 +307,9 @@ class ExpertAdviceView @JvmOverloads constructor(
 
             // 检查是否正常结束（非暂停导致的退出）
             if (remainingSeconds <= 0 && !isPaused) {
+                pageNameRes?.let {
+                    ReportDataManager.reportData("Ad_auto_play",mapOf("page_name" to context.getString(pageNameRes)))
+                }
                 onCountdownFinished()
             }
         }

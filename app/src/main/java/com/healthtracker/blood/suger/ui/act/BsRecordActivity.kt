@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
+import com.healthtracker.blood.suger.ad.reportAddRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
@@ -173,7 +174,8 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBin
     }
 
     private fun setupSaveButton() {
-        mViewBind.btnSave.click {
+        mViewBind.btnSave.clickWithDuration {
+            reportAddRecord(getString(R.string.blood_suger))
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 val result = mViewModel.saveRecord()

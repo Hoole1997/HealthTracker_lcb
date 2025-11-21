@@ -12,6 +12,7 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.util.hasOreo
+import net.corekit.core.report.ReportDataManager
 
 class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotificationBinding>() {
     companion object{
@@ -26,7 +27,8 @@ class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotifi
     override fun initView(savedInstanceState: Bundle?) {
         setupFullScreenMode()
         with(mViewBind){
-            clRoot.clickWithDuration {
+            root.clickWithDuration {
+                ReportDataManager.reportData("full_screen_click",mapOf())
                 unlockAndOpen()
                 finishAndRemoveTask()
             }

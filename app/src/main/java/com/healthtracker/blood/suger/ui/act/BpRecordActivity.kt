@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
+import com.healthtracker.blood.suger.ad.reportAddRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
@@ -152,7 +153,8 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, ActivityBpRecordBin
      */
     private fun setupSaveButton() {
         // 设置保存按钮点击事件
-        mViewBind.btnSave.click {
+        mViewBind.btnSave.clickWithDuration {
+            reportAddRecord(getString(R.string.blood_pressure))
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 val result = mViewModel.saveBloodPressureRecord()

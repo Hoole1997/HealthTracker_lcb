@@ -7,6 +7,7 @@ import com.healthtracker.blood.suger.utils.showInter
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import kotlinx.coroutines.launch
+import net.corekit.core.report.ReportDataManager
 
 abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVMActivity<VM,VB>() {
 
@@ -37,3 +38,5 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
 
 
 }
+
+fun reportAddRecord(type:String) = ReportDataManager.reportData("add_new_record",mapOf("page_name" to type))

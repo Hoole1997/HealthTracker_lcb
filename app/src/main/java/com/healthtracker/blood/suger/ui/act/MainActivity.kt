@@ -33,6 +33,7 @@ import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.InsightsFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
 import com.healthtracker.blood.suger.ui.fragment.RecordFragment
+import com.healthtracker.blood.suger.ui.fragment.reportEnterPage
 import com.healthtracker.blood.suger.ui.viewmodel.MainViewModel
 import com.healthtracker.blood.suger.utils.loadBanner
 import com.healthtracker.framework.BuildState
@@ -47,6 +48,7 @@ import com.patrykandpatrick.vico.core.common.spToPx
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.corekit.core.report.ReportDataManager
 import net.lucode.hackware.magicindicator.abs.IPagerNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
@@ -132,6 +134,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                 }
 
                 1 -> {
+                    ReportDataManager.reportData("Meds_tab_enter",mapOf())
                     // Meds页面：隐藏设置和提醒按钮，显示月份
                     ivSetting.gone()
                     ivRemind.gone()
@@ -142,12 +145,14 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                 }
 
                 2 -> {
+                    ReportDataManager.reportData("Insights_tab_enter",mapOf())
                     ivSetting.gone()
                     ivRemind.gone()
                     R.string.insights
                 }
 
                 3 -> {
+                    ReportDataManager.reportData("Tracker_tab_enter",mapOf())
                     // Record页面：隐藏提醒按钮
                     ivRemind.gone()
                     R.string.tracker
@@ -419,6 +424,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         permissionRequest?.let {
             it.launch { isSuccess, showSettingsRedirect, hasPermission ->
                 if (isSuccess || hasPermission) {
+                    reportEnterPage(getString(R.string.walking_steps))
                     startActivity<StepCountActivity>()
                 } else if (showSettingsRedirect) {
                     ActivityPerRequestDialog.show(supportFragmentManager) {
@@ -427,7 +433,10 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                 }
             }
         } ?: {
+            reportEnterPage(getString(R.string.walking_steps))
             startActivity<StepCountActivity>()
         }
     }
+
+
 }

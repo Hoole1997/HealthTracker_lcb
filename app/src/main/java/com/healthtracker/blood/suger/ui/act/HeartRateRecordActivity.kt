@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
+import com.healthtracker.blood.suger.ad.reportAddRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.databinding.ActivityHeartRateRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
@@ -69,6 +70,7 @@ class HeartRateRecordActivity :
     private fun setupAction() {
         mViewBind.btnBack.clickWithDuration { onBackPress() }
         mViewBind.btnSave.clickWithDuration {
+            reportAddRecord(getString(R.string.heart_rate))
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 mViewModel.saveHeartRateRecord { result: HeartRateRecordViewModel.SaveRecordResult ->

@@ -8,6 +8,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.DialogFsiPermissionBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
+import net.corekit.core.report.ReportDataManager
 
 /**
  * 全屏通知(FSI)权限重要性说明对话框
@@ -41,6 +42,8 @@ class FSIPermissionDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ReportDataManager.reportData("permission_full_screen_show",mapOf())
+
         // 恢复时直接关闭
         if (savedInstanceState != null) {
             dismissAllowingStateLoss()
@@ -57,11 +60,13 @@ class FSIPermissionDialog(
         mViewBind?.apply {
             // 设置按钮点击事件
             btnAllowPermission.click {
+                ReportDataManager.reportData("permission_full_screen_result",mapOf("result" to "allow"))
                 onAllowPermission?.invoke()
                 dismissAllowingStateLoss()
             }
 
             btnDenyPermission.click {
+                ReportDataManager.reportData("permission_full_screen_result",mapOf("result" to "deny"))
                 onDenyPermission?.invoke()
                 dismissAllowingStateLoss()
             }

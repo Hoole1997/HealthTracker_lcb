@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.ui.act
 
+import ads_mobile_sdk.el
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -37,6 +38,7 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.getRobotoMedium
 import dagger.hilt.android.AndroidEntryPoint
+import net.corekit.core.report.ReportDataManager
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
@@ -82,6 +84,17 @@ class HealthStatisticsActivity :
             metricType: HealthMetric? = null,
             dateRangePreset: HealthStatisticsViewModel.DateRangePreset? = null
         ) {
+            ReportDataManager.reportData("enter_Trackerpage_click",mapOf("page_name" to when(metricType){
+                HealthMetric.BLOOD_SUGAR -> "Blood Sugar"
+                HealthMetric.BLOOD_PRESSURE -> "Blood Pressure"
+                HealthMetric.CHOLESTEROL -> "Cholesterol"
+                HealthMetric.HEART_RATE -> "Heart Rate"
+                HealthMetric.BMI -> "BMI"
+                HealthMetric.STEPS -> "Walking Steps"
+                HealthMetric.HYDRATION -> "Hydration"
+                else -> ""
+
+            }))
             val extras = mutableListOf<Pair<String, Any?>>()
 
             metricType?.let {

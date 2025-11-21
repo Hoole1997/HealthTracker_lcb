@@ -35,6 +35,7 @@ import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.hideSoftKeyBoard
 import com.healthtracker.framework.ext.logd
 import dagger.hilt.android.AndroidEntryPoint
+import net.corekit.core.report.ReportDataManager
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -149,6 +150,7 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
 
             // 保存按钮
             btnSave.click {
+                ReportDataManager.reportData("med_click_save",mapOf())
                 mViewModel.saveReminder()
             }
 

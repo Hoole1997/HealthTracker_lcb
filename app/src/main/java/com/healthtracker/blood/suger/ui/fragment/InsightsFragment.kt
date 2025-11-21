@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.FragmentInsightsBinding
 import com.healthtracker.blood.suger.databinding.ItemInsightsViewpageBinding
@@ -19,7 +20,9 @@ import com.healthtracker.blood.suger.utils.InsightAssetPreparer
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.util.getRobotoBold
+import net.corekit.core.report.ReportDataManager
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
@@ -61,6 +64,25 @@ class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>
             offscreenPageLimit = insightCategories.size
             isEnableScroll = true
             isSmoothScroll = true
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+
+                }
+
+                override fun onPageSelected(position: Int) {
+                   "onPageSelected: $position".logd("InsightsFragment")
+                    ReportDataManager.reportData("Insights_category_click",mapOf("page_name" to getString(insightCategories[position].titleRes)))
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {
+
+                }
+
+            })
         }
     }
 

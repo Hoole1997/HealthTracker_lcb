@@ -13,6 +13,7 @@ import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.AndroidEntryPoint
+import net.corekit.core.report.ReportDataManager
 
 @AndroidEntryPoint
 class StepSettingActivity: BaseInterActivity<StepSettingViewModel, ActivityStepSettingBinding>() {
@@ -39,6 +40,7 @@ class StepSettingActivity: BaseInterActivity<StepSettingViewModel, ActivityStepS
                     if((newGoal > 0 && it != newGoal) || (newGoal == 0 && it != goal)){
                         newGoal = it
                         tvGoalValue.text = it.toString()
+                        ReportDataManager.reportData("step_targe_set",mapOf("Number" to it))
                     }
 
                 }.show(supportFragmentManager)

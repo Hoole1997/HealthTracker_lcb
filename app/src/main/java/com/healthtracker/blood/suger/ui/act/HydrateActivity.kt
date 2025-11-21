@@ -20,6 +20,7 @@ import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
+import net.corekit.core.report.ReportDataManager
 
 @AndroidEntryPoint
 class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBinding>() {
@@ -72,6 +73,7 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
         mViewBind.rcyHydrate.layoutManager = LinearLayoutManager(this)
         val adapter = HydrateAdapter(
             onQuickAddClick = { valueMl ->
+                ReportDataManager.reportData("water_quickAdd_click",mapOf("number" to valueMl))
                 // 快捷添加饮水记录
                 mViewModel.addIntake(valueMl)
             },
@@ -80,6 +82,7 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
                 mViewModel.deleteRecordById(record.id)
             },
             onDrinkClick = { valueMl ->
+                ReportDataManager.reportData("water_drink_click",mapOf())
                 // 中间饮水按钮点击：插入对应饮水记录
                 mViewModel.addIntake(valueMl)
             }

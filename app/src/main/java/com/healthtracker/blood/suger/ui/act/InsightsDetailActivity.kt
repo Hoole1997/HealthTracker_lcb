@@ -22,6 +22,7 @@ import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.blood.suger.utils.WebViewUtils
 import com.healthtracker.framework.ext.logd
+import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ui.NativeAdStyle
 import java.io.File
 
@@ -35,6 +36,7 @@ class InsightsDetailActivity :
         private const val EXTRA_ARTICLE_ID = "extra_article_id"
 
         fun start(context: Context, article: InsightAssetPreparer.InsightArticle) {
+            ReportDataManager.reportData("Insights_item_click",mapOf("article_id" to article.articleId))
             val intent = Intent(context, InsightsDetailActivity::class.java).apply {
                 putExtra(EXTRA_TITLE, article.title)
                 putExtra(EXTRA_CONTENT, article.content)

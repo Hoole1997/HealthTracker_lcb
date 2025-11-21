@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
+import com.healthtracker.blood.suger.ad.reportAddRecord
 import com.healthtracker.blood.suger.data.constants.BodyMetricsDefaults
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BmiUnit
@@ -146,6 +147,7 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, ActivityBmiRecor
 
     private fun setupSaveButton() {
         mViewBind.btnSave.clickWithDuration {
+            reportAddRecord(getString(R.string.bmi))
             lifecycleScope.launch {
                 mViewBind.dateTimeSelectionView.getSelectDate().let { date ->
                     mViewModel.updateRecordTime(date)

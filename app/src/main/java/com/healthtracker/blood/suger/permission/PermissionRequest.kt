@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentActivity
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.utils.safeLaunch
+import com.healthtracker.framework.util.SpUtils
+import net.corekit.core.report.ReportDataManager
 
 /**
  * 一个用于处理相机权限请求的帮助类。
@@ -31,6 +33,11 @@ class PermissionRequest(private val permission:String) {
     private var activity: FragmentActivity? = null
     private var pendingSettingsRedirect = false
 
+    companion object{
+        const val TAG = "PermissionRequest"
+        private val REQUEST_TIMES = "request_times"
+    }
+
     /**
      * 注册权限启动器。必须在 Activity 的 `onCreate` 或 Fragment 的 `onCreate` 中调用。
      * @param activity 用于注册启动器的 [FragmentActivity]。
@@ -39,6 +46,7 @@ class PermissionRequest(private val permission:String) {
         this.activity = activity
         // 对于单个权限请求，使用 RequestPermission 更具体、更高效。
         cameraLauncher = activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            val times = SpUtils.getInt(REQUEST_TIMES,1)
             if (isGranted) {
                 // 权限被授予
                 pendingSettingsRedirect = false
@@ -55,8 +63,16 @@ class PermissionRequest(private val permission:String) {
                     permissionRunnable?.invoke(false, false, false)
                 }
             }
+            SpUtils.putInt(REQUEST_TIMES,times + 1)
+            reportEvent(isGranted,times)
         }
     }
+
+    fun reportEvent(isGranted: Boolean,times:Int) = ReportDataManager.reportData("step_permission_request",mutableMapOf<String,Any>("result" to if(isGranted) "allow" else "deny").apply {
+        if(isGranted){
+            put("N",times)
+        }
+    })
 
     /**
      * 如果应用尚未拥有相机权限，则发起权限请求。

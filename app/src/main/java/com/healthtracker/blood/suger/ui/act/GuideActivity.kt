@@ -28,6 +28,7 @@ import com.zhpan.indicator.enums.IndicatorSlideMode
 import com.zhpan.indicator.enums.IndicatorStyle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ui.NativeAdStyle
 
 class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
@@ -64,6 +65,10 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
                     super.onPageSelected(position)
                     indicatorView.onPageSelected(position)
                     group.visible()
+                    if(position != 1){
+                        val index = if(position < 1) 1 else position
+                        reportGuide(index)
+                    }
                     if (position == frags.size - 1) {
                         btnNext.text = getString(R.string.start_health_journey)
                     } else {
@@ -125,6 +130,15 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
     companion object {
         const val IS_SHOW_GUIDE = "is_show_guide"
     }
+
+
+}
+
+
+fun reportGuide(flag:Int){
+    ReportDataManager.reportData("Guide",mutableMapOf<String,Any>().apply {
+        put("Guide",flag)
+    })
 }
 
 

@@ -30,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import androidx.core.graphics.drawable.toDrawable
+import net.corekit.core.report.ReportDataManager
 
 @AndroidEntryPoint
 class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
@@ -88,6 +89,7 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
 
     private fun setupClickListeners() {
         mViewBind?.btnAdd?.clickWithDuration {
+            ReportDataManager.reportData("med_click_add",mapOf())
             requireActivity().startActivity<AddReminderActivity>()
         }
     }

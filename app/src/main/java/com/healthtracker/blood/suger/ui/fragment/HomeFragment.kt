@@ -33,6 +33,7 @@ import com.healthtracker.blood.suger.ui.act.HistoryRecordActivity
 import com.healthtracker.blood.suger.ui.act.HydrateActivity
 import com.healthtracker.blood.suger.ui.act.MainActivity
 import com.healthtracker.blood.suger.ui.act.ProfileActivity
+import com.healthtracker.blood.suger.ui.act.reportGuide
 import com.healthtracker.blood.suger.ui.dialog.NativeCardDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.blood.suger.util.CholesterolCalculator
@@ -47,6 +48,7 @@ import com.hyy.highlightpro.parameter.MarginOffset
 import com.hyy.highlightpro.shape.RectShape
 import com.hyy.highlightpro.util.dp
 import dagger.hilt.android.AndroidEntryPoint
+import net.corekit.core.report.ReportDataManager
 import java.util.Date
 import java.util.Locale
 
@@ -97,14 +99,17 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clPsRecord.clickWithDuration {
+                reportEnterPage(getString(R.string.blood_suger))
                 BsRecordActivity.start(requireActivity())
 
             }
             btnRecordNow.clickWithDuration {
+                reportEnterPage(getString(R.string.blood_suger))
                 BsRecordActivity.start(requireActivity())
             }
 
             clBloodPressure.clickWithDuration {
+                reportEnterPage(getString(R.string.blood_pressure))
                 requireActivity().startActivity<BpRecordActivity>()
             }
 
@@ -113,14 +118,17 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clCholesterol.clickWithDuration {
+
                 navigateToActivityWithProfileCheck(PendingActivityType.CHOLESTEROL)
             }
 
             clBmi.clickWithDuration {
+
                 navigateToActivityWithProfileCheck(PendingActivityType.BMI)
             }
 
             clHydrate.clickWithDuration {
+                reportEnterPage(getString(R.string.hydrate))
                 requireActivity().startActivity<HydrateActivity>()
             }
             clStepCount.clickWithDuration {
@@ -352,6 +360,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             .setOnMaskViewClickCallback { index ->
                 //do something
                 BpRecordActivity.start(requireActivity())
+                reportGuide(5)
             }
             .setOnShowCallback {
                 isShowHighligh = true
@@ -386,6 +395,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 //do something
                 isShowHighligh = true
                 BsRecordActivity.start(requireActivity())
+                reportGuide(6)
             }
             .setOnShowCallback {
                 saveShowGuideBs()
@@ -418,6 +428,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 //do something
                 isHeighLightLeave = true
                 navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
+                reportGuide(7)
             }
             .setOnShowCallback {
                 isShowHighligh = true
@@ -450,14 +461,22 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun navigateToActivity(activityType: PendingActivityType) {
         when (activityType) {
             PendingActivityType.BMI -> {
+                reportEnterPage(getString(R.string.bmi))
                 requireActivity().startActivity<BmiRecordActivity>()
             }
             PendingActivityType.CHOLESTEROL -> {
+                reportEnterPage(getString(R.string.cholesterol))
                 CholesterolRecordActivity.start(requireActivity())
             }
             PendingActivityType.HEART_RATE -> {
+                reportEnterPage(getString(R.string.heart_rate))
                 requireActivity().startActivity<HeartRateRecordActivity>()
             }
         }
     }
+
+
+}
+fun reportEnterPage(pageName:String){
+    ReportDataManager.reportData("enter_page_click",mapOf("page_name" to pageName))
 }
