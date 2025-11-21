@@ -179,6 +179,7 @@ class PermissionManager @Inject constructor(
 
                 if (granted) {
                     if(BuildState.debug) "FSI permission granted after settings".logd(TAG)
+                    ReportDataManager.reportData("permission_full_screen_result",mapOf("result" to "allow"))
                 } else {
                     if(BuildState.debug)  "FSI permission still denied after settings".logw(TAG)
                 }

@@ -40,7 +40,7 @@ class StepSettingActivity: BaseInterActivity<StepSettingViewModel, ActivityStepS
                     if((newGoal > 0 && it != newGoal) || (newGoal == 0 && it != goal)){
                         newGoal = it
                         tvGoalValue.text = it.toString()
-                        ReportDataManager.reportData("step_targe_set",mapOf("Number" to it))
+                        ReportDataManager.reportData("step_target_set",mapOf("Number" to it))
                     }
 
                 }.show(supportFragmentManager)

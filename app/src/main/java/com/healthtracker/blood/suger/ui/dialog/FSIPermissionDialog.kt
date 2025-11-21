@@ -60,7 +60,6 @@ class FSIPermissionDialog(
         mViewBind?.apply {
             // 设置按钮点击事件
             btnAllowPermission.click {
-                ReportDataManager.reportData("permission_full_screen_result",mapOf("result" to "allow"))
                 onAllowPermission?.invoke()
                 dismissAllowingStateLoss()
             }
