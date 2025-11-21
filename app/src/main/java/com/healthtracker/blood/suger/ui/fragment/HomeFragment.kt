@@ -99,17 +99,17 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clPsRecord.clickWithDuration {
-                reportEnterPage(getString(R.string.blood_suger))
+                reportEnterPage("Blood Sugar")
                 BsRecordActivity.start(requireActivity())
 
             }
             btnRecordNow.clickWithDuration {
-                reportEnterPage(getString(R.string.blood_suger))
+                reportEnterPage("Blood Sugar")
                 BsRecordActivity.start(requireActivity())
             }
 
             clBloodPressure.clickWithDuration {
-                reportEnterPage(getString(R.string.blood_pressure))
+                reportEnterPage("Blood Pressure")
                 requireActivity().startActivity<BpRecordActivity>()
             }
 
@@ -128,7 +128,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clHydrate.clickWithDuration {
-                reportEnterPage(getString(R.string.hydrate))
+                reportEnterPage("Hydrate")
                 requireActivity().startActivity<HydrateActivity>()
             }
             clStepCount.clickWithDuration {
@@ -461,15 +461,15 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun navigateToActivity(activityType: PendingActivityType) {
         when (activityType) {
             PendingActivityType.BMI -> {
-                reportEnterPage(getString(R.string.bmi))
+                reportEnterPage("BMI")
                 requireActivity().startActivity<BmiRecordActivity>()
             }
             PendingActivityType.CHOLESTEROL -> {
-                reportEnterPage(getString(R.string.cholesterol))
+                reportEnterPage("Cholesterol")
                 CholesterolRecordActivity.start(requireActivity())
             }
             PendingActivityType.HEART_RATE -> {
-                reportEnterPage(getString(R.string.heart_rate))
+                reportEnterPage("Heart Rate")
                 requireActivity().startActivity<HeartRateRecordActivity>()
             }
         }

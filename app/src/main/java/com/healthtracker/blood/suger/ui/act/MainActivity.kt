@@ -302,7 +302,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
                 override fun onPageSelected(position: Int) {
                     mViewBind.tbNav.getTabAt(position)?.select()
-                    updateUIForTabPosition(position)
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {}
@@ -424,7 +423,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         permissionRequest?.let {
             it.launch { isSuccess, showSettingsRedirect, hasPermission ->
                 if (isSuccess || hasPermission) {
-                    reportEnterPage(getString(R.string.walking_steps))
+                    reportEnterPage("Walking Steps")
                     startActivity<StepCountActivity>()
                 } else if (showSettingsRedirect) {
                     ActivityPerRequestDialog.show(supportFragmentManager) {
@@ -433,7 +432,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                 }
             }
         } ?: {
-            reportEnterPage(getString(R.string.walking_steps))
+            reportEnterPage("Walking Steps")
             startActivity<StepCountActivity>()
         }
     }

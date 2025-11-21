@@ -151,8 +151,8 @@ class ExpertAdviceView @JvmOverloads constructor(
     private fun initViews() {
         // 设置按钮点击事件
         binding.btnCancel.click {
-            pageNameRes?.let {
-                ReportDataManager.reportData("Ad_auto_Cancel",mapOf("page_name" to context.getString(pageNameRes)))
+            pageName?.let {
+                ReportDataManager.reportData("Ad_auto_Cancel",mapOf("page_name" to pageName))
             }
             onCancelClicked()
         }
@@ -172,12 +172,12 @@ class ExpertAdviceView @JvmOverloads constructor(
     }
 
 
-    private val pageNameRes = when(context){
-        is BpDetailActivity -> R.string.blood_pressure
-        is BsDetailActivity -> R.string.blood_suger
-        is CholesterolDetailActivity -> R.string.cholesterol
-        is BmiDetailActivity -> R.string.bmi
-        is HeartRateDetailActivity -> R.string.heart_rate
+    private val pageName = when(context){
+        is BpDetailActivity -> "Blood Pressure"
+        is BsDetailActivity -> "Blood Sugar"
+        is CholesterolDetailActivity -> "Cholesterol"
+        is BmiDetailActivity -> "BMI"
+        is HeartRateDetailActivity -> "Heart Rate"
         else -> null
     }
     /**
@@ -209,13 +209,13 @@ class ExpertAdviceView @JvmOverloads constructor(
             // 移除自动开始倒计时，由外部控制
             if(context is AppCompatActivity){
                 (context as AppCompatActivity).showFreeLockConfirm({
-                    pageNameRes?.let {
-                        ReportDataManager.reportData("recomm_FreeUnlock",mapOf("page_name" to context.getString(pageNameRes)))
+                    pageName?.let {
+                        ReportDataManager.reportData("recomm_FreeUnlock",mapOf("page_name" to pageName))
                     }
                     listener?.onGetTipClicked()
                 },{
-                    pageNameRes?.let {
-                        ReportDataManager.reportData("recomm_Cancel",mapOf("page_name" to context.getString(pageNameRes)))
+                    pageName?.let {
+                        ReportDataManager.reportData("recomm_Cancel",mapOf("page_name" to pageName))
                     }
                     startCountdown()
                 })
@@ -307,8 +307,8 @@ class ExpertAdviceView @JvmOverloads constructor(
 
             // 检查是否正常结束（非暂停导致的退出）
             if (remainingSeconds <= 0 && !isPaused) {
-                pageNameRes?.let {
-                    ReportDataManager.reportData("Ad_auto_play",mapOf("page_name" to context.getString(pageNameRes)))
+                pageName?.let {
+                    ReportDataManager.reportData("Ad_auto_play",mapOf("page_name" to pageName))
                 }
                 onCountdownFinished()
             }

@@ -75,7 +75,8 @@ class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>
 
                 override fun onPageSelected(position: Int) {
                    "onPageSelected: $position".logd("InsightsFragment")
-                    ReportDataManager.reportData("Insights_category_click",mapOf("page_name" to getString(insightCategories[position].titleRes)))
+                    val categoryNames = listOf("Blood Sugar", "Blood Pressure", "Heart Rate", "Hydrate", "Walking Steps")
+                    ReportDataManager.reportData("Insights_category_click",mapOf("page_name" to categoryNames.getOrElse(position) { "Unknown" }))
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
