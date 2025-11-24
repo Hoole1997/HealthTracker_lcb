@@ -46,7 +46,6 @@ android {
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
         }
-        resConfigs("en")
 
         javaCompileOptions {
             annotationProcessorOptions {

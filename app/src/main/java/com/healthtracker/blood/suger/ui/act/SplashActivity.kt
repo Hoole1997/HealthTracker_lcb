@@ -19,7 +19,6 @@ import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
-import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.util.logEvent
 import com.healthtracker.blood.suger.util.pushRequest
 import com.healthtracker.blood.suger.util.pushResult
@@ -28,12 +27,13 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
-import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
+import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.isLeast13
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -80,18 +80,19 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                     return@SplashStateMachine
                 }
                 // 判断应该跳转到哪个页面
-                val targetActivity = if(hasNewGuide()){
-                    MainActivity::class.java
+                val targetActivity = if(LanguageUtils.getSavedLanguage().isEmpty()){
+                    LanguageActivity::class.java
                 } else {
-                    GuideActivity::class.java
+                    if(hasNewGuide()){
+                        MainActivity::class.java
+                    } else {
+                        GuideActivity::class.java
+                    }
                 }
 
                 // 创建Intent并传递通知参数
                 val targetIntent = Intent(this, targetActivity).apply {
-                    notificationAction?.let { action ->
-                        putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, action)
-                        if(BuildState.debug) "Passing notification action to ${targetActivity.simpleName}: $action".logd(TAG)
-                    }
+                    putExtras(intent)
                 }
 
                 startActivity(targetIntent)
@@ -122,7 +123,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         }
         launchTime = System.currentTimeMillis()
         logEvent("loading_pagge_show")
-        mViewBind.tvPrivacy.clickWithDuration {
+        mViewBind.tvPrivacy.click {
             openBrowser(this, BuildConfig.PRIVACY_POLICY)
         }
         lifecycleScope.launch {

@@ -52,5 +52,4 @@ dependencies {
     api(libs.firebase.messaging)
     api(libs.utilcodex)
     api(libs.xorLibrary)
-    api(libs.multilanguages)
 }

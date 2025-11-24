@@ -2,155 +2,178 @@ package com.healthtracker.framework.util
 
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.LocaleList
-import androidx.core.os.ConfigurationCompat
-import com.healthtracker.framework.ext.logd
 import java.util.Locale
 
-// http://doc.web.inter.appsinnova.com/web/#/4?page_id=32
 object LanguageUtils {
-    private const val DEFAULT_LANGUAGE = "en"
-    private const val KEY_APP_LANGUAGE = "key_app_language"
 
+    private const val KEY_APP_LANGUAGE = "key_app_language"
     class LangBean(
         val id: String,
         val displayName: String,
-        private val sysLang: String = "",
-        private val country: String = "",
+        val sysLang: String = "",
+        val country: String = ""
     ) {
-        var select: Boolean = false
-
-        fun equals(locale: Locale) =
-            locale.language == sysLang && (country.isEmpty() || locale.country == country)
-    }
-
-    fun attachBaseContext(context: Context?): Context? {
-        if (context == null) {
-            return null
+        /**
+         * 检查指定的 Locale 是否匹配此语言配置
+         * @param locale 要检查的 Locale
+         * @return 如果匹配返回 true
+         */
+        fun matches(locale: Locale): Boolean {
+            val language = locale.language
+            // 印度尼西亚语特殊处理：ISO 639-1 使用 "id"，但 Java 使用 "in"
+            val lang = if (language == "id") "in" else language
+            return lang == sysLang && (country.isEmpty() || locale.country == country)
         }
-
-        val settingsLocale = mapAppLocale() ?: LocaleList.getDefault()[0]
-        val resources = context.resources
-        val config = resources.configuration
-
-        setLocal(config, settingsLocale)
-
-        return context.createConfigurationContext(config)
     }
 
-    private val LanguageMap = listOf(
+    val LanguageMap = listOf(
         LangBean("en", "English", "en"),
-        LangBean("es", "Español", "es"),
-        LangBean("pt_BR", "Português", "pt", "BR"),
-        LangBean("de", "Deutsch", "de"),
-        LangBean("fr", "Français", "fr"),
-        LangBean("id", "Indonesian", "in", "ID"),
-        LangBean("fil", "Filipino", "fil", "PH"),
-//        LangBean("zh_CN", "简体中文", "zh", "CN"),
-//        LangBean("zh_TW", "繁體中文", "zh", "TW"),
-        LangBean("ja", "日本語", "jp"),
-        LangBean("ko", "한국어", "ko"),
-
-        LangBean("tr", "Türkçe", "tr"),
-        LangBean("hi", "हिंदी", "hi", "IN"),
-        LangBean("vi", "Việt", "vi"),
-        LangBean("th", "ภาษาไทย", "th"),
-        LangBean("ar", "العربية", "ar"),
+//        LangBean("es", "Español", "es"),
+//        LangBean("pt_BR", "Português", "pt", ""),
+//        LangBean("de", "Deutsch", "de"),
+//        LangBean("fr", "Français", "fr"),
+//        LangBean("id", "Indonesian", "in", "ID"),   // 印度尼西亚语
+//        LangBean("it", "Italiano", "it"),   // 	意大利语
+        LangBean("jp", "日本語", "ja"),
+        LangBean("kr", "한국어", "ko"),
+//        LangBean("hi", "हिंदी", "hi", "IN"),    // 印度语
+//        LangBean("tr", "Türkçe", "tr"), // 土耳其
+//        LangBean("ru", "Русский", "ru"), // 俄语
+//        LangBean("th", "ไทย", "th"), // 泰语
+//        LangBean("tl", "Filipino", "fil", "PH"), // 菲律宾语
+//        LangBean("vn", "Tiếng Việt", "vi"), // 越南语
+//        LangBean("bn", "বাংলা", "bn"), // 孟加拉语
+//        LangBean("ms", "Melayu", "ms"), // 马来语
+//        LangBean("ar", "العربية", "ar"), // 阿拉伯语
+//        LangBean("ur", "اردو", "ur"), // 乌尔都语
+//        LangBean("uk", "Українська", "uk"),
+//        LangBean("zh_TW", "繁體中文", "zh", "TW"), // 繁體中文
+//        LangBean("el", "Ελληνικά", "el"), // 希腊语
+//        LangBean("cs", "Čeština", "cs"), // 捷克语
+//        LangBean("hu", "Magyar", "hu"), // 匈牙利语
+//        LangBean("fa", "فارسی", "fa"), // 波斯语
     )
 
-    private fun setLocal(configuration: Configuration, locale: Locale) =
-        configuration.setLocale(locale)
+    const val defaultLanguage = "en"
 
-    private fun getSaveLanguage() = SpUtils.getString(KEY_APP_LANGUAGE)
 
-    private fun getSystemLocale(): Locale? {
-
-        LocaleList.getDefault()[0]?.run {
-            return this
-        }
-        try {
-            ConfigurationCompat.getLocales(Resources.getSystem().configuration).run {
-                if (size() > 0) {
-                    return this[0]
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return null
+    /**
+     * 获取 Context 的当前 Locale
+     * @param context 上下文
+     * @return 当前 Locale，对于 API 24+ 返回第一个 Locale
+     */
+    fun getContextLocale(context: Context): Locale? {
+        return context.resources.configuration.locales[0]
     }
 
-    private fun getContextLocale(context: Context) = context.resources.configuration.locales[0]
-
-    fun getAppLanguage(): String {
-        var savedLang = getSaveLanguage()
-        "getAppLanguage.savedLang1:$savedLang".logd("LanguageUtils")
-        if (savedLang.isEmpty()) {
-            savedLang = getSystemLocale()?.let { locale ->
-                "getAppLanguage.locale:${locale.language}".logd("LanguageUtils")
-                LanguageMap.find {
-                    it.equals(locale) || (it.id == "pt_BR" && locale.language.equals("pt"))
-                }?.id
-            } ?: DEFAULT_LANGUAGE
-            "getAppLanguage.savedLang2:$savedLang".logd("LanguageUtils")
-        }
-        return savedLang
+    /**
+     * 获取系统默认 Locale
+     * @return 系统 Locale
+     */
+    fun getSystemLocale(): Locale? {
+        return LocaleList.getDefault()[0]
     }
+
+    /**
+     * 获取应用当前语言设置
+     * @param context 上下文
+     * @return 语言 ID，如果未设置则返回系统语言或默认语言
+     */
+    fun getAppLanguage(context: Context): String {
+        val savedLang = getSavedLanguage()
+        return if (savedLang.isNullOrEmpty()) {
+            getContextLocale(context)?.let { locale ->
+                LanguageMap.find { it.matches(locale) }?.id
+            } ?: defaultLanguage
+        } else {
+            savedLang
+        }
+    }
+
+    fun getSavedLanguage(): String {
+        return SpUtils.getString(KEY_APP_LANGUAGE)
+    }
+
 
     fun setAppLanguage(lang: String) {
         SpUtils.putString(KEY_APP_LANGUAGE, lang)
     }
 
-    fun getLanguageLocal() = mapAppLocale() ?: Locale.ENGLISH
+    /**
+     * 为 Context 应用语言设置
+     * 在 Activity/Application 的 attachBaseContext() 中调用
+     * @param context 基础 Context
+     * @return 应用了语言设置的新 Context
+     */
+    fun attachBaseContext(context: Context?): Context? {
+        if (context == null) return null
+        
+        val settingsLocale = mapAppLocale() ?: return context
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(settingsLocale)
+        config.setLayoutDirection(settingsLocale)  // 支持 RTL 语言
+        
+        return context.createConfigurationContext(config)
+    }
 
+
+
+    /**
+     * 获取应用的 Locale 对象
+     * @param context 上下文
+     * @return Locale 对象
+     */
+    fun getAppLocale(context: Context): Locale? = mapAppLocale() ?: getContextLocale(context)
+
+    /**
+     * 将保存的语言 ID 映射为 Locale 对象
+     * @return Locale 对象，如果未设置语言则返回 null
+     */
     private fun mapAppLocale(): Locale? {
-        return when (getSaveLanguage()) {
-            "ar" -> Locale("ar")
-            "de" -> Locale.GERMANY
-            "en" -> Locale.ENGLISH
-            "es" -> Locale("es")
-            "fr" -> Locale.FRENCH
-//            "it" -> Locale("it")
-            "ja" -> Locale.JAPANESE
-            "ko" -> Locale.KOREAN
-            "vi" -> Locale("vi")
-            "th" -> Locale("th")
-            "tr" -> Locale("tr")
-            "id" -> Locale("in", "ID")
-            "fil" -> Locale("fil", "PH")
-            "hi" -> Locale("hi", "IN")
-            "pt_BR" -> Locale("pt", "BR")
-            "zh_CN" -> Locale.SIMPLIFIED_CHINESE
-            "zh_TW" -> Locale.TAIWAN
+        return when (getSavedLanguage()) {
+            "ar" -> Locale.Builder().setLanguage("ar").build()  // 阿拉伯语
+            "de" -> Locale.GERMANY  // 德语
+            "en" -> Locale.ENGLISH  // 英语
+            "es" -> Locale.Builder().setLanguage("es").build()  // 西班牙语
+            "fr" -> Locale.FRENCH  // 法语
+            "hi" -> Locale.Builder().setLanguage("hi").setRegion("IN").build()  // 印地语
+            "it" -> Locale.ITALIAN  // 意大利语
+            "id" -> Locale.Builder().setLanguage("in").setRegion("ID").build()  // 印度尼西亚语
+            "jp" -> Locale.JAPANESE  // 日语
+            "kr" -> Locale.KOREAN  // 韩语
+            "ms" -> Locale.Builder().setLanguage("ms").build()  // 马来语
+            "ru" -> Locale.Builder().setLanguage("ru").build()  // 俄语
+            "tr" -> Locale.Builder().setLanguage("tr").build()  // 土耳其语
+            "th" -> Locale.Builder().setLanguage("th").build()  // 泰语
+            "tl" -> Locale.Builder().setLanguage("fil").setRegion("PH").build()  // 菲律宾语
+            "bn" -> Locale.Builder().setLanguage("bn").build()  // 孟加拉语
+            "pt_BR" -> Locale.Builder().setLanguage("pt").setRegion("BR").build()  // 巴西葡萄牙语
+            "vn" -> Locale.Builder().setLanguage("vi").build()  // 越南语
+            "ur" -> Locale.Builder().setLanguage("ur").build()  // 乌尔都语
+            "uk" -> Locale.Builder().setLanguage("uk").build()  // 乌克兰语
+            "zh_TW" -> Locale.TAIWAN  // 繁体中文
+            "el" -> Locale.Builder().setLanguage("el").build()  // 希腊语
+            "cs" -> Locale.Builder().setLanguage("cs").build()  // 捷克语
+            "hu" -> Locale.Builder().setLanguage("hu").build()  // 匈牙利语
+            "fa" -> Locale.Builder().setLanguage("fa").build()  // 波斯语
             else -> null
         }
     }
-
-    fun getLanguageList(): MutableList<LangBean> {
-        val displayList = LanguageMap.toMutableList()
-        val language = getAppLanguage()
-        if (displayList.first().id != language) {
-            displayList.find { it.id == language }?.run {
-                displayList.remove(this)
-                displayList.add(0, this)
-            }
-        }
-        return displayList
-    }
-
     /**
-     * 语言代码是否是 右对齐语言
-     *
-     * @param context
-     * @return
+     * 获取语言列表，当前选中的语言会排在第一位
+     * @param context 上下文
+     * @return 语言列表（不可变）
      */
-    fun isRtlLanguage(context: Context): Boolean {
-        val locale =  context.resources.configuration.locales.get(0)
-        val languageCode = locale.language.lowercase(locale)
-        return when (languageCode) {
-            "ar", "fa", "iw", "ur" -> true // "he"
-            else -> false
+    fun getLanguageList(context: Context): List<LangBean> {
+        val language = getAppLanguage(context)
+        return if (LanguageMap.first().id == language) {
+            LanguageMap
+        } else {
+            LanguageMap.find { it.id == language }?.let { currentLang ->
+                listOf(currentLang) + LanguageMap.filter { it.id != language }
+            } ?: LanguageMap
         }
     }
+
 }

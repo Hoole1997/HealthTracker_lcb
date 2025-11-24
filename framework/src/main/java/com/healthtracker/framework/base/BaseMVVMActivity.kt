@@ -22,8 +22,8 @@ import com.healthtracker.framework.R
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.SysBarUtils.hideNavigationBar
 import com.healthtracker.framework.SysBarUtils.hideStateBar
+import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.RestoreUtils
-import com.hjq.language.MultiLanguages
 import kotlin.math.max
 
 
@@ -112,7 +112,7 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
     }
 
     override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(MultiLanguages.attach(newBase))
+        super.attachBaseContext(LanguageUtils.attachBaseContext(newBase))
     }
 
     override fun onResume() {

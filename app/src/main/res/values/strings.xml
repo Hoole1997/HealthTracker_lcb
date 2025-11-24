@@ -1269,5 +1269,6 @@ healthcare provider or medical institution.</string>
     <string name="allow">Allow</string>
     <string name="without_this_authorization_step_count_will_not_work">Without this authorization, the step-count feature <font color="#02BC77">will not work</font></string>
     <string name="go_to_set">GO TO SET</string>
+    <string name="choose_language">Choose Language</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger
 
 import android.content.Context
+import android.content.res.Configuration
 import android.text.TextUtils
 import androidx.multidex.MultiDexApplication
 import com.healthtracker.blood.suger.alarm.PermissionManager
@@ -8,11 +9,13 @@ import com.healthtracker.blood.suger.observer.AppForegroundObserver
 import com.healthtracker.blood.suger.utils.WebViewZygote
 import com.healthtracker.blood.suger.utils.getCurProcessName
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
-import com.hjq.language.MultiLanguages
+import com.healthtracker.framework.util.LanguageUtils
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.lang.ref.WeakReference
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -31,6 +34,15 @@ class App : MultiDexApplication() {
         private const val TAG = "App"
         lateinit var INSTANCE: App
             private set
+
+        @JvmStatic
+        var defaultLocale: WeakReference<Locale>? = null
+    }
+
+    init {
+        // 1. 设置静态实例
+        INSTANCE = this
+        defaultLocale = WeakReference(Locale.getDefault())
     }
 
     /**
@@ -43,10 +55,17 @@ class App : MultiDexApplication() {
 
 
     override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(MultiLanguages.attach(base))
 
-        // 1. 设置静态实例 (对应原App.kt中的INSTANCE = this)
-        INSTANCE = this
+
+        base?.run {
+            var context = LanguageUtils.attachBaseContext(this)
+            if (context == null) {
+                context = this
+            }
+            super.attachBaseContext(context)
+        } ?: kotlin.run {
+            super.attachBaseContext(null)
+        }
 
         // 3. WebView兼容性处理
         try {
@@ -62,7 +81,6 @@ class App : MultiDexApplication() {
         if (isMainProcess(this)) {
             // 应用初始化（包含远程配置初始化）
             appInitializer.initialize()
-            MultiLanguages.init(this)
 
             // ✅ 初始化应用生命周期管理器(替代旧的initProcessLifeCycle)
             AppLifecycleManager.initialize(this)
@@ -97,5 +115,13 @@ class App : MultiDexApplication() {
             }
         }
         return isMainProcess ?: false
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        if (newConfig.locale != defaultLocale?.get()) {
+            defaultLocale = WeakReference(newConfig.locale)
+            LanguageUtils.attachBaseContext(this)
+        }
+        super.onConfigurationChanged(newConfig)
     }
 }

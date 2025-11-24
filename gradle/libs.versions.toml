@@ -9,7 +9,7 @@ imagepicker = "2.1"
 magicindicator = "1.7.0"
 minSdk = "24"
 # @keep
-multilanguages = "10.0"
+
 okhttp = "4.12.0"
 shimmerlayout = "2.1.0"
 skeleton = "1.1.2"
@@ -90,7 +90,6 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
-multilanguages = { module = "com.github.getActivity:MultiLanguages", version.ref = "multilanguages" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 shimmerlayout = { module = "io.supercharge:shimmerlayout", version.ref = "shimmerlayout" }
 skeleton = { module = "com.ethanhua:skeleton", version.ref = "skeleton" }

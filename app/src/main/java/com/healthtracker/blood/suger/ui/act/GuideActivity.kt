@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.ui.act
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -22,7 +23,6 @@ import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
-import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.zhpan.indicator.enums.IndicatorSlideMode
 import com.zhpan.indicator.enums.IndicatorStyle
@@ -105,7 +105,10 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
 
     private fun goNext() {
         saveHasNewGuide()
-        startActivity<MainActivity>(isFinishSelf = true)
+        startActivity(Intent(this, MainActivity::class.java).apply {
+            putExtras(intent)
+        })
+        finish()
     }
 
     private class GuidePageAdapter(private val frags: List<Fragment>, activity: FragmentActivity) :
