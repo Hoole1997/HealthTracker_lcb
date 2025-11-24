@@ -6,7 +6,9 @@
     android:layout_height="@dimen/dp_98"
     android:layout_marginBottom="@dimen/dp_12"
     android:background="@drawable/bg_rect_white_12"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clipToOutline="true"
+    android:outlineProvider="background">
 
     <View
         android:id="@+id/v_range_flag"

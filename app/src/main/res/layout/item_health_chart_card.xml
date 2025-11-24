@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="0dp"
-    tools:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_rect_white_12"
+    android:clipToOutline="true"
     android:foreground="?android:attr/selectableItemBackground"
-    android:paddingVertical="@dimen/dp_16">
+    android:outlineProvider="background"
+    android:paddingVertical="@dimen/dp_16"
+    tools:layout_width="match_parent">
 
     <!-- 图标 -->
     <androidx.appcompat.widget.AppCompatImageView
@@ -19,7 +20,7 @@
         android:scaleType="centerInside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/ic_heart"/>
+        tools:src="@mipmap/ic_heart" />
 
     <!-- 标题 -->
     <androidx.appcompat.widget.AppCompatTextView
@@ -29,19 +30,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_16"
+        android:gravity="center_vertical"
         android:maxLines="1"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
         app:autoSizeMaxTextSize="@dimen/sp_16"
         app:autoSizeMinTextSize="@dimen/sp_10"
         app:autoSizeStepGranularity="1dp"
         app:autoSizeTextType="uniform"
-        android:gravity="center_vertical"
-        android:textColor="@color/t1"
-        android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_icon"
         app:layout_constraintTop_toTopOf="@id/iv_icon"
-        tools:text="@string/heart_rate"/>
+        tools:text="@string/heart_rate" />
 
     <!-- 空状态图标 -->
     <androidx.appcompat.widget.AppCompatImageView
@@ -73,8 +74,8 @@
         style="@style/MaterialButton.b1"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginHorizontal="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
         android:clickable="false"
         android:focusable="false"
         android:maxLines="1"
