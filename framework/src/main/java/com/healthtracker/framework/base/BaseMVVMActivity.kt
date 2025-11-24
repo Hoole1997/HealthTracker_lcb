@@ -1,5 +1,6 @@
 package com.healthtracker.framework.base
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.SysBarUtils.hideNavigationBar
 import com.healthtracker.framework.SysBarUtils.hideStateBar
 import com.healthtracker.framework.util.RestoreUtils
+import com.hjq.language.MultiLanguages
 import kotlin.math.max
 
 
@@ -107,6 +109,10 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
         setupBackPressedCallback()
 
         init(savedInstanceState)
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(MultiLanguages.attach(newBase))
     }
 
     override fun onResume() {

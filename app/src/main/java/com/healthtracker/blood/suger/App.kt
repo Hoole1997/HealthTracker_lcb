@@ -8,6 +8,7 @@ import com.healthtracker.blood.suger.observer.AppForegroundObserver
 import com.healthtracker.blood.suger.utils.WebViewZygote
 import com.healthtracker.blood.suger.utils.getCurProcessName
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
+import com.hjq.language.MultiLanguages
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +43,7 @@ class App : MultiDexApplication() {
 
 
     override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
+        super.attachBaseContext(MultiLanguages.attach(base))
 
         // 1. 设置静态实例 (对应原App.kt中的INSTANCE = this)
         INSTANCE = this
@@ -61,6 +62,7 @@ class App : MultiDexApplication() {
         if (isMainProcess(this)) {
             // 应用初始化（包含远程配置初始化）
             appInitializer.initialize()
+            MultiLanguages.init(this)
 
             // ✅ 初始化应用生命周期管理器(替代旧的initProcessLifeCycle)
             AppLifecycleManager.initialize(this)

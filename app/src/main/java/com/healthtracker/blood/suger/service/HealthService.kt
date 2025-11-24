@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.hardware.Sensor
@@ -29,6 +30,7 @@ import net.corekit.core.controller.ChannelUserController
 import net.corekit.core.report.ReportDataManager
 import javax.inject.Inject
 import com.healthtracker.blood.suger.data.repo.StepRepository
+import com.hjq.language.MultiLanguages
 
 /**
  * 健康监测前台服务
@@ -77,6 +79,10 @@ class HealthService : Service() {
         super.onCreate()
         "Health service created".logd(TAG)
         notificationHelper.createNotificationChannel()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(MultiLanguages.attach(newBase))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

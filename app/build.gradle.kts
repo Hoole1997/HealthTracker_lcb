@@ -174,8 +174,8 @@ dependencies {
     implementation(libs.xxpermissions)
     implementation(libs.skeleton)
     implementation(libs.shimmerlayout)
-    implementation("com.patrykandpatrick.vico:views:2.3.0")
-    implementation("com.github.hackware1993:MagicIndicator:1.7.0")
+    implementation(libs.views)
+    implementation(libs.magicindicator)
 }
 
 // BuildConfig 扩展函数
