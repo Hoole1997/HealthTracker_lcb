@@ -78,6 +78,13 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     private var currentTabIndex = 0
 
 
+    private val settingLauncher =
+        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                recreate()
+            }
+        }
+
     private var permissionRequest: PermissionRequest? = null
     override fun onResume() {
         super.onResume()
@@ -192,8 +199,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         mViewModel.startHealthService()
         with(mViewBind) {
             ivSetting.clickWithDuration {
-                startActivity<SettingActivity>()
-
+                settingLauncher.launch(Intent(this@MainActivity, SettingActivity::class.java))
             }
             viewPagerHome.offscreenPageLimit = 0
 

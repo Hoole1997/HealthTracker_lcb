@@ -24,10 +24,18 @@ import com.healthtracker.framework.ext.clickWithDuration
 class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>() {
 
     companion object {
+        private const val KEY_IS_LANGUAGE_CHANGED = "key_is_language_changed"
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, SettingActivity::class.java))
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_IS_LANGUAGE_CHANGED, isLanguageChanged)
+    }
+
+    private var isLanguageChanged = false
 
     /**
      * 语言选择页面启动器
@@ -35,7 +43,8 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
     private val languageSelectLauncher: ActivityResultLauncher<Intent> = 
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                // 语言已变更，重启设置页面以应用新语言
+                // 语言已变更，标记状态并重启设置页面以应用新语言
+                isLanguageChanged = true
                 recreate()
             }
         }
@@ -45,9 +54,15 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
     override fun getVMModelClass() = BaseViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        savedInstanceState?.let {
+            isLanguageChanged = it.getBoolean(KEY_IS_LANGUAGE_CHANGED, false)
+        }
         with(mViewBind) {
             // 设置返回按钮
             btnBack.click {
+                if(isLanguageChanged){
+                    setResult(RESULT_OK)
+                }
                 finish()
             }
 
@@ -232,4 +247,11 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
     }
 
     override fun getStatusBarColor() = R.color.color_e2ffea
+
+    override fun finish() {
+        if (isLanguageChanged) {
+            setResult(RESULT_OK)
+        }
+        super.finish()
+    }
 }

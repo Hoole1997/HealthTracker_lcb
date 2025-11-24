@@ -14,7 +14,7 @@
     <string name="mmHg" translatable="false">mmHg</string>
     <string name="loading">Loading</string>
     <string name="history">History</string>
-    <string name="click_to_record">click to record</string>
+    <string name="click_to_record">Click to record</string>
     <string name="new_record">New Record</string>
     <string name="edit_record">Edit Record</string>
     <string name="status">Status</string>
