@@ -52,4 +52,5 @@ dependencies {
     api(libs.firebase.messaging)
     api(libs.utilcodex)
     api(libs.xorLibrary)
+    api("com.github.getActivity:ShapeDrawable:3.3")
 }
