@@ -1,18 +1,235 @@
 package com.healthtracker.blood.suger.ui.act
 
+import android.content.Context
+import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivitySettingBinding
+import com.healthtracker.blood.suger.databinding.ItemSettingBinding
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
 
-class SettingActivity: BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>() {
+class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>() {
+
+    companion object {
+        fun startActivity(context: Context) {
+            context.startActivity(Intent(context, SettingActivity::class.java))
+        }
+    }
+
+    /**
+     * 语言选择页面启动器
+     */
+    private val languageSelectLauncher: ActivityResultLauncher<Intent> = 
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                // 语言已变更，重启设置页面以应用新语言
+                recreate()
+            }
+        }
+
     override fun createViewBinding() = ActivitySettingBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        with(mViewBind){
+        with(mViewBind) {
+            // 设置返回按钮
+            btnBack.click {
+                finish()
+            }
 
+            // 初始化设置列表
+            rvSetting.layoutManager = LinearLayoutManager(this@SettingActivity)
+            rvSetting.addItemDecoration(SettingItemDecoration(resources.getDimensionPixelSize(com.healthtracker.framework.R.dimen.dp_12)))
+            rvSetting.adapter = SettingAdapter(getSettingItems()) { item ->
+                handleSettingItemClick(item)
+            }
         }
     }
+
+    /**
+     * 获取设置项列表数据
+     */
+    private fun getSettingItems(): List<SettingItem> {
+        return listOf(
+            SettingItem(
+                icon = R.drawable.ic_setting_alarm,
+                title = R.string.alarm_management,
+                type = SettingType.ALARM_MANAGEMENT
+            ),
+            SettingItem(
+                icon = R.drawable.ic_setting_unit,
+                title = R.string.unit_settings,
+                type = SettingType.UNIT_SETTINGS
+            ),
+            SettingItem(
+                icon = R.drawable.ic_setting_target,
+                title = R.string.target_range_settings,
+                type = SettingType.TARGET_RANGE
+            ),
+            SettingItem(
+                icon = R.drawable.ic_setting_profile,
+                title = R.string.personal_info,
+                type = SettingType.PERSONAL_INFO
+            ),
+            SettingItem(
+                icon = R.drawable.ic_setting_language,
+                title = R.string.language,
+                type = SettingType.LANGUAGE
+            ),
+            SettingItem(
+                icon = R.drawable.ic_setting_feedback,
+                title = R.string.feedback,
+                type = SettingType.FEEDBACK
+            ),
+            SettingItem(
+                icon = R.drawable.ic_setting_disclaimers,
+                title = R.string.disclaimers,
+                type = SettingType.DISCLAIMERS
+            ),
+            SettingItem(
+                icon = R.drawable.ic_setting_privacy,
+                title = R.string.privacy_policy,
+                type = SettingType.PRIVACY_POLICY
+            ),
+            SettingItem(
+                icon = R.drawable.ic_setting_terms,
+                title = R.string.terms_of_service,
+                type = SettingType.TERMS_OF_SERVICE
+            )
+        )
+    }
+
+    /**
+     * 处理设置项点击事件
+     */
+    private fun handleSettingItemClick(item: SettingItem) {
+        when (item.type) {
+            SettingType.LANGUAGE -> {
+                // 使用 launcher 启动语言选择页面，以便接收结果
+                languageSelectLauncher.launch(Intent(this, LanguageActivity::class.java).apply {
+                    putExtra(LanguageActivity.KEY_APPLY_CHANGE, true)
+                })
+            }
+            SettingType.ALARM_MANAGEMENT -> {
+                // TODO: 闹钟管理页面
+            }
+            SettingType.UNIT_SETTINGS -> {
+                // TODO: 单位设置页面
+            }
+            SettingType.TARGET_RANGE -> {
+                // TODO: 目标范围设置页面
+            }
+            SettingType.PERSONAL_INFO -> {
+                // TODO: 个人信息页面
+            }
+            SettingType.FEEDBACK -> {
+                // TODO: 反馈页面
+            }
+            SettingType.DISCLAIMERS -> {
+                // TODO: 免责声明页面
+            }
+            SettingType.PRIVACY_POLICY -> {
+                // TODO: 隐私政策页面
+            }
+            SettingType.TERMS_OF_SERVICE -> {
+                // TODO: 服务条款页面
+            }
+        }
+    }
+
+    /**
+     * 设置项数据类
+     */
+    data class SettingItem(
+        @DrawableRes val icon: Int,
+        @StringRes val title: Int,
+        val type: SettingType
+    )
+
+    /**
+     * 设置项类型枚举
+     */
+    enum class SettingType {
+        ALARM_MANAGEMENT,
+        UNIT_SETTINGS,
+        TARGET_RANGE,
+        PERSONAL_INFO,
+        LANGUAGE,
+        FEEDBACK,
+        DISCLAIMERS,
+        PRIVACY_POLICY,
+        TERMS_OF_SERVICE
+    }
+
+    /**
+     * 设置列表适配器
+     */
+    private inner class SettingAdapter(
+        private val items: List<SettingItem>,
+        private val onItemClick: (SettingItem) -> Unit
+    ) : RecyclerView.Adapter<SettingAdapter.ViewHolder>() {
+
+        inner class ViewHolder(private val binding: ItemSettingBinding) :
+            RecyclerView.ViewHolder(binding.root) {
+
+            fun bind(item: SettingItem) {
+                binding.apply {
+                    ivIcon.setImageResource(item.icon)
+                    tvAction.setText(item.title)
+                    root.clickWithDuration {
+                        onItemClick(item)
+                    }
+                }
+            }
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val binding = ItemSettingBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            return ViewHolder(binding)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.bind(items[position])
+        }
+
+        override fun getItemCount(): Int = items.size
+
+    }
+
+    /**
+     * 设置项间距装饰器
+     */
+    private class SettingItemDecoration(private val spacing: Int) : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            // 不是第一个 item 时添加顶部间距
+            if (parent.getChildAdapterPosition(view) != 0) {
+                outRect.top = spacing
+            }
+        }
+    }
+
+    override fun getStatusBarColor() = R.color.color_e2ffea
 }

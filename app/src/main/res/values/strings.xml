@@ -1271,5 +1271,12 @@ healthcare provider or medical institution.</string>
     <string name="go_to_set">GO TO SET</string>
     <string name="choose_language">Choose Language</string>
     <string name="language">Language</string>
+    <string name="unit_settings">Unit Settings</string>
+    <string name="target_range_settings">Target Range Settings</string>
+    <string name="personal_info">Personal info</string>
+    <string name="feedback">Feedback</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="setting">Setting</string>
 
 </resources>

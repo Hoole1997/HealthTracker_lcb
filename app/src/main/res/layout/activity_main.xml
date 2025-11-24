@@ -38,7 +38,7 @@
             android:layout_marginEnd="@dimen/dp_5"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
-            android:visibility="gone"
+
             app:layout_constraintBottom_toBottomOf="@id/area_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/area_bar"

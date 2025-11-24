@@ -190,10 +190,8 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         }
         mViewModel.startHealthService()
         with(mViewBind) {
-            if (BuildState.debug) {
-                ivSetting.visible()
-            }
             ivSetting.clickWithDuration {
+                startActivity<SettingActivity>()
 
             }
             viewPagerHome.offscreenPageLimit = 0
