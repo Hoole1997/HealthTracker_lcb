@@ -55,20 +55,17 @@ class App : MultiDexApplication() {
 
 
     override fun attachBaseContext(base: Context?) {
-
-
-        base?.run {
-            var context = LanguageUtils.attachBaseContext(this)
-            if (context == null) {
-                context = this
-            }
-            super.attachBaseContext(context)
-        } ?: kotlin.run {
-            super.attachBaseContext(null)
-        }
-
-        // 3. WebView兼容性处理
         try {
+            base?.run {
+                var context = LanguageUtils.attachBaseContext(this)
+                if (context == null) {
+                    context = this
+                }
+                super.attachBaseContext(context)
+            } ?: kotlin.run {
+                super.attachBaseContext(null)
+            }
+            // 3. WebView兼容性处理
             WebViewZygote.webViewCompact(this,applicationScope )
         } catch (_: Throwable) {
 

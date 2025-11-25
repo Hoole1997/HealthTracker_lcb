@@ -110,9 +110,9 @@ object LanguageUtils {
         if (context == null) return null
         
         val settingsLocale = mapAppLocale() ?: return context
-        val config = Configuration(context.resources.configuration)
+        val resources = context.resources
+        val config = resources.configuration
         config.setLocale(settingsLocale)
-        config.setLayoutDirection(settingsLocale)  // 支持 RTL 语言
         
         return context.createConfigurationContext(config)
     }
@@ -130,7 +130,7 @@ object LanguageUtils {
      * 将保存的语言 ID 映射为 Locale 对象
      * @return Locale 对象，如果未设置语言则返回 null
      */
-    private fun mapAppLocale(): Locale? {
+    fun mapAppLocale(): Locale? {
         return when (getSavedLanguage()) {
             "ar" -> Locale.Builder().setLanguage("ar").build()  // 阿拉伯语
             "de" -> Locale.GERMANY  // 德语

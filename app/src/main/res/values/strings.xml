@@ -12,7 +12,7 @@
     <string name="mg_dl" translatable="false">mg/dL</string>
     <string name="mmol_l" translatable="false">mmol/L</string>
     <string name="mmHg" translatable="false">mmHg</string>
-    <string name="loading">Loading</string>
+    <string name="loading">Loading...</string>
     <string name="history">History</string>
     <string name="click_to_record">Click to record</string>
     <string name="new_record">New Record</string>
@@ -925,7 +925,7 @@
         </item>
     </string-array>
 
-    <array name="week_simple">
+    <string-array name="week_simple">
         <item>Sun</item>
         <item>Mon</item>
         <item>Tue</item>
@@ -933,8 +933,8 @@
         <item>Thu</item>
         <item>Fri</item>
         <item>Sat</item>
-    </array>
-    <array name="week_full">
+    </string-array>
+    <string-array name="week_full">
         <item>Sunday</item>
         <item>Monday</item>
         <item>Tuesday</item>
@@ -942,7 +942,7 @@
         <item>Thursday</item>
         <item>Friday</item>
         <item>Saturday</item>
-    </array>
+    </string-array>
 
     <string name="every_weekday">Every weekday</string>
     <string name="every_weekend">Every weekend</string>
@@ -1264,10 +1264,94 @@ healthcare provider or medical institution.</string>
     <string name="kcal">Kcal</string>
     <string name="today_s_goal">Today\'s goal</string>
     <string name="step_goal">Step Goal</string>
-    <string name="text_steps">Steps</string>
+    <string name="text_steps" translatable="false">Steps</string>
     <string name="enable_step_count">Physical activity permission required</string>
     <string name="allow">Allow</string>
     <string name="without_this_authorization_step_count_will_not_work">Without this authorization, the step-count feature <font color="#02BC77">will not work</font></string>
+
+    <!-- Blood Pressure -->
+    <string-array name="health_tips_blood_pressure_titles">
+        <item>Keep Your Pressure Perfect</item>
+        <item>Move for Your Heart</item>
+        <item>Unwind for Wellness</item>
+    </string-array>
+    <string-array name="health_tips_blood_pressure_texts">
+        <item>Stay mindful of salt intake and include potassium-rich foods like bananas to help maintain a healthy blood pressure.</item>
+        <item>Regular walks and light exercise are great ways to keep your blood vessels flexible and your pressure in check.</item>
+        <item>Managing stress through deep breathing or meditation can positively impact your blood pressure levels.</item>
+    </string-array>
+
+    <!-- Blood Sugar -->
+    <string-array name="health_tips_blood_sugar_titles">
+        <item>Balance Your Plate</item>
+        <item>Choose Smart Carbs</item>
+        <item>Stay Active Every Day</item>
+    </string-array>
+    <string-array name="health_tips_blood_sugar_texts">
+        <item>Fill half your plate with non-starchy veggies to help keep your blood sugar levels stable after meals.</item>
+        <item>Opt for whole grains like oats over refined ones to provide steady energy and avoid sugar spikes.</item>
+        <item>A short walk after meals can significantly help your body manage blood sugar more effectively.</item>
+    </string-array>
+
+    <!-- Cholesterol -->
+    <string-array name="health_tips_cholesterol_titles">
+        <item>Love Your Fats</item>
+        <item>Fill Up on Fiber</item>
+        <item>Move for Your Numbers</item>
+    </string-array>
+    <string-array name="health_tips_cholesterol_texts">
+        <item>Choose heart-healthy fats from avocados, nuts, and olive oil to help support healthy cholesterol levels.</item>
+        <item>Foods high in soluble fiber, like apples and oats, can help your body manage LDL ("bad") cholesterol.</item>
+        <item>Regular physical activity is a key factor in raising HDL ("good") cholesterol and lowering LDL.</item>
+    </string-array>
+
+    <!-- Heart Rate -->
+    <string-array name="health_tips_heart_rate_titles">
+        <item>Find Your Calm</item>
+        <item>Stay Hydrated, Steady Your Beat</item>
+        <item>Consistency is Key</item>
+    </string-array>
+    <string-array name="health_tips_heart_rate_texts">
+        <item>Practices like meditation and deep breathing can help lower your resting heart rate over time.</item>
+        <item>Dehydration can make your heart work harder. Drinking enough water helps maintain a normal heart rate.</item>
+        <item>Regular, moderate exercise strengthens your heart muscle, helping it pump more efficiently at rest.</item>
+    </string-array>
+
+    <!-- BMI -->
+    <string-array name="health_tips_bmi_titles">
+        <item>Make Every Bite Nutritious</item>
+        <item>Build a Sustainable Routine</item>
+        <item>Listen to Your Body</item>
+    </string-array>
+    <string-array name="health_tips_bmi_texts">
+        <item>Focus on a balanced diet rich in whole foods to feel full and support a healthy weight.</item>
+        <item>Find physical activities you enjoy, making it easier to stay active and manage your weight long-term.</item>
+        <item>Pay attention to hunger and fullness cues to avoid overeating and maintain a healthy balance.</item>
+    </string-array>
+
+    <!-- Steps -->
+    <string-array name="health_tips_steps_titles">
+        <item>Step It Up Daily</item>
+        <item>Break Up Your Day</item>
+        <item>Make Walking a Joy</item>
+    </string-array>
+    <string-array name="health_tips_steps_texts">
+        <item>Aim for a consistent daily step count. Even small increases contribute to better cardiovascular health.</item>
+        <item>Set a reminder to stand up and walk for a few minutes every hour to keep your metabolism active.</item>
+        <item>Walk with a friend, listen to a podcast, or explore a new park to make your steps enjoyable.</item>
+    </string-array>
+
+    <!-- Hydration -->
+    <string-array name="health_tips_hydration_titles">
+        <item>Start Your Day with Water</item>
+        <item>Always Keep a Bottle Nearby</item>
+        <item>Eat Your Water</item>
+    </string-array>
+    <string-array name="health_tips_hydration_texts">
+        <item>Drink a glass of water first thing in the morning to kickstart hydration and your metabolism.</item>
+        <item>Having water visible and within reach makes you more likely to sip throughout the day.</item>
+        <item>Enjoy fruits and vegetables with high water content, like watermelon and cucumber, to help you stay hydrated.</item>
+    </string-array>
     <string name="go_to_set">GO TO SET</string>
     <string name="choose_language">Choose Language</string>
     <string name="language">Language</string>
@@ -1278,5 +1362,6 @@ healthcare provider or medical institution.</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms_of_service">Terms of Service</string>
     <string name="setting">Setting</string>
+    <string name="bill_ad_loading">AD loading…</string>
 
 </resources>

@@ -1,7 +1,7 @@
 package com.healthtracker.blood.suger.tips
 
-import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ui.act.getText
 import kotlin.random.Random
 
 /**
@@ -50,7 +50,7 @@ object HealthTipsProvider {
     }
 
     private fun safeGetStringArray(resId: Int): Array<String> = try {
-        App.INSTANCE.resources.getStringArray(resId)
+        getText(resId)
     } catch (e: Exception) {
         // 资源丢失时返回空数组，交由调用方走兜底逻辑
         emptyArray()

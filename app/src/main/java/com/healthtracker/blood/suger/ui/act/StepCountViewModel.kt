@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.data.utils.toLocalEpochDay
 import com.healthtracker.blood.suger.ui.chart.ChartDataSet
 import com.healthtracker.blood.suger.ui.chart.ChartUiState
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.util.LanguageUtils
 import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
 import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
@@ -28,9 +29,7 @@ import kotlin.math.roundToInt
 
 class StepCountViewModel : BaseViewModel() {
     private val repo = StepRepository.get(App.INSTANCE)
-    private val weekLabels: List<String> = App.INSTANCE.resources
-        .getStringArray(R.array.week_simple)
-        .toList()
+
     private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
 
     companion object {
@@ -57,13 +56,7 @@ class StepCountViewModel : BaseViewModel() {
         val goalValue = DEFAULT_GOAL_STEPS.toDouble()
         val shouldShowGoal = maxY > goalValue
         val useKiloFormat = maxY >= 1000.0
-        val stepsAxisFormatter = object : CartesianValueFormatter {
-            override fun format(
-                context: CartesianMeasuringContext,
-                value: Double,
-                verticalAxisPosition: Axis.Position.Vertical?
-            ): CharSequence = formatStepsLabel(value, useKiloFormat)
-        }
+        val stepsAxisFormatter = CartesianValueFormatter { _, value, _ -> formatStepsLabel(value, useKiloFormat) }
 
         ChartUiState(
             labels = labels,
@@ -128,7 +121,7 @@ class StepCountViewModel : BaseViewModel() {
         )
 
         return ChartPayload(
-            labels = weekLabels,
+            labels = getText(R.array.week_simple).toList(), // Use the centralized utility method
             xValues = xValues,
             yValues = yValues,
             stats = stats,
@@ -205,3 +198,5 @@ private data class WeekRange(
     val endEpochDay: Long,
     val highlightIndex: Int
 )
+
+fun getText(stringRes:Int) = LanguageUtils.attachBaseContext(App.INSTANCE)?.resources?.getStringArray(stringRes) ?: App.INSTANCE.resources.getStringArray(stringRes)

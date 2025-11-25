@@ -1,0 +1,771 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">血圧・血糖値トラッカー</string>
+    <string name="meds_manager">服薬管理</string>
+    <string name="blood_suger">血糖値</string>
+    <string name="blood_pressure">血圧</string>
+    <string name="home">ホーム</string>
+    <string name="meds">服薬</string>
+    <string name="insights">分析</string>
+    <string name="tracker">記録</string>
+    <string name="record_now">今すぐ記録</string>
+    <string name="loading">読み込み中...</string>
+    <string name="history">履歴</string>
+    <string name="click_to_record">クリックして記録</string>
+    <string name="new_record">新規記録</string>
+    <string name="edit_record">記録を編集</string>
+    <string name="status">ステータス</string>
+    <string name="text_default">デフォルト</string>
+
+    <!-- 血糖等级 -->
+    <string name="blood_sugar_level_low">低い</string>
+    <string name="blood_sugar_level_normal">正常</string>
+    <string name="blood_sugar_level_prediabetes">糖尿病予備軍</string>
+    <string name="blood_sugar_level_diabetes">糖尿病</string>
+
+    <!-- 总胆固醇风险等级 -->
+    <string name="cholesterol_level_normal">正常</string>
+    <string name="cholesterol_level_normal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
+    <string name="cholesterol_level_near_optimal">理想に近い</string>
+    <string name="cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
+    <string name="cholesterol_level_borderline">境界域</string>
+    <string name="cholesterol_level_borderline_desc">TC 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
+    <string name="cholesterol_level_high">高い</string>
+    <string name="cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
+    <string name="cholesterol_level_very_high">非常に高い</string>
+    <string name="cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
+    <string name="cholesterol_level_unknown">不明</string>
+    <string name="cholesterol_level_unknown_desc">コレステロール値を判定するためのデータが不足しています</string>
+    <string name="cholesterol_total_label">総コレステロール</string>
+    <string name="cholesterol_hdl_label">HDL</string>
+    <string name="cholesterol_ldl_label">LDL</string>
+    <string name="cholesterol_tg_label">TG</string>
+    <string name="cholesterol_total_placeholder">--</string>
+
+    <!-- 血压等级 -->
+    <string name="blood_pressure_level_low">低血圧</string>
+    <string name="blood_pressure_level_normal">正常</string>
+    <string name="blood_pressure_level_elevated">正常高値</string>
+    <string name="blood_pressure_level_high_stage_1">高血圧 ステージ1</string>
+    <string name="blood_pressure_level_high_stage_2">高血圧 ステージ2</string>
+    <string name="blood_pressure_level_hypertensive_crisis">高血圧クリーゼ</string>
+
+    <!-- 血压范围描述 - 状态显示用（缩写） -->
+    <string name="blood_pressure_range_low_short">SYS %1$s または DIA %2$s</string>
+    <string name="blood_pressure_range_normal_short">SYS %1$s かつ DIA %2$s</string>
+    <string name="blood_pressure_range_elevated_short">SYS %1$s かつ DIA %2$s</string>
+    <string name="blood_pressure_range_high_stage_1_short">SYS %1$s または DIA %2$s</string>
+    <string name="blood_pressure_range_high_stage_2_short">SYS %1$s または DIA %2$s</string>
+    <string name="blood_pressure_range_hypertensive_crisis_short">SYS %1$s または DIA %2$s</string>
+
+    <!-- 血压范围描述 - 列表视图用（全写） -->
+    <string name="blood_pressure_range_low_full">収縮期 %1$s または 拡張期 %2$s</string>
+    <string name="blood_pressure_range_normal_full">収縮期 %1$s かつ 拡張期 %2$s</string>
+    <string name="blood_pressure_range_elevated_full">収縮期 %1$s かつ 拡張期 %2$s</string>
+    <string name="blood_pressure_range_high_stage_1_full">収縮期 %1$s または 拡張期 %2$s</string>
+    <string name="blood_pressure_range_high_stage_2_full">収縮期 %1$s または 拡張期 %2$s</string>
+    <string name="blood_pressure_range_hypertensive_crisis_full">収縮期 %1$s または 拡張期 %2$s</string>
+
+    <!-- 闹钟通知相关字符串 -->
+    <string name="notification_channel_alarm_name">健康リマインダー</string>
+    <string name="notification_channel_alarm_description">健康モニタリングのリマインダー通知</string>
+
+    <!-- 血糖提醒通知 -->
+    <string name="alarm_blood_sugar_title">血糖値リマインダー</string>
+    <string name="alarm_blood_sugar_content">血糖値を記録する時間です！</string>
+
+    <!-- 血压提醒通知 -->
+    <string name="alarm_blood_pressure_title">血圧リマインダー</string>
+    <string name="alarm_blood_pressure_content">血圧を記録する時間です！</string>
+
+    <!-- 默认健康提醒 -->
+    <string name="alarm_default_title">健康リマインダー</string>
+    <string name="alarm_default_content">時間通りに健康状態を確認してください</string>
+
+    <!-- 血压范围具体数值 -->
+    <string name="bp_range_low_sys">&lt; 90</string>
+    <string name="bp_range_low_dia">&lt; 60</string>
+    <string name="bp_range_normal_sys">90–119</string>
+    <string name="bp_range_normal_dia">60–79</string>
+    <string name="bp_range_elevated_sys">120–129</string>
+    <string name="bp_range_elevated_dia">60–79</string>
+    <string name="bp_range_high_stage_1_sys">130–139</string>
+    <string name="bp_range_high_stage_1_dia">80–89</string>
+    <string name="bp_range_high_stage_2_sys">140–180</string>
+    <string name="bp_range_high_stage_2_dia">90–120</string>
+    <string name="bp_range_hypertensive_crisis_sys">&gt; 180</string>
+    <string name="bp_range_hypertensive_crisis_dia">&gt; 120</string>
+
+    <!-- 血糖测量状态 -->
+    <string name="blood_sugar_status_default">デフォルト</string>
+    <string name="blood_sugar_status_fasting">空腹時</string>
+    <string name="blood_sugar_status_before_meal">食前</string>
+    <string name="blood_sugar_status_bedtime">就寝前</string>
+    <string name="blood_sugar_status_after_exercise">運動後</string>
+    <string name="blood_sugar_status_one_hour_after_meal">食後1時間</string>
+    <string name="blood_sugar_status_before_exercise">運動前</string>
+    <string name="blood_sugar_status_two_hours_after_meal">食後2時間</string>
+
+    <!-- 按钮和操作 -->
+    <string name="save">保存</string>
+    <string name="save_changes">変更を保存</string>
+    <string name="cancel">キャンセル</string>
+    <string name="saving">保存中...</string>
+    <string name="save_failed">保存に失敗しました。もう一度お試しください</string>
+    <string name="date_time"><![CDATA[日時]]></string>
+    <string name="label">ラベル</string>
+
+    <!-- 相对时间显示 -->
+    <string name="latest">最新</string>
+    <string name="just_now">たった今</string>
+    <string name="seconds_ago">%d秒前</string>
+    <string name="minutes_ago">%d分前</string>
+    <string name="hours_ago">%d時間前</string>
+    <string name="days_ago">%d日前</string>
+    <string name="systolic">収縮期</string>
+    <string name="diastolic">拡張期</string>
+    <string name="pulse">脈拍</string>
+    <string name="type">タイプ</string>
+    <string name="bp_range_des">AHA（米国心臓協会）の最新ガイドラインに基づく</string>
+    <string name="cholesterol_range_des">TC: 総コレステロール\nHDL: 高密度リポタンパク質\nLDL: 低密度リポタンパク質\nTG: 中性脂肪\nNon-HDL: 非高密度リポタンパク質\n\nクリーブランド・クリニックのガイドラインに基づく。</string>
+    <string name="got_it">OK</string>
+    <string name="details">詳細</string>
+    <string name="all_types">すべてのタイプ</string>
+    <string name="no_records">記録なし</string>
+    <string name="load_fail_please_try_again">読み込みに失敗しました。もう一度お試しください</string>
+    <string name="try_again">再試行</string>
+    <string name="delete_record_remind_title">この記録を削除しますか？</string>
+    <string name="tips">ヒント</string>
+    <string name="delete_tips_content">本当に削除しますか？</string>
+    <string name="confirm">確認</string>
+    <string name="delete_record_remind">削除後は元に戻せません</string>
+    <string name="add_record">記録を追加</string>
+    <string name="alarm_management">アラーム管理</string>
+    <string name="step_stats_max_title">最大</string>
+    <string name="step_stats_min_title">最小</string>
+    <string name="step_stats_avg_title">平均</string>
+    <string-array name="blood_sugar_labels">
+        <item>興奮</item>
+        <item>有酸素運動後</item>
+        <item>気分が落ち込む</item>
+        <item>落ち着いている</item>
+        <item>筋トレ後</item>
+        <item>激しい運動後</item>
+        <item>ダイエット中</item>
+        <item>飲酒後</item>
+    </string-array>
+
+    <string-array name="blood_pressure_labels">
+        <item>左腕</item>
+        <item>右腕</item>
+        <item>服薬後</item>
+        <item>歩行後</item>
+        <item>食前</item>
+        <item>食後</item>
+        <item>座位</item>
+        <item>臥位</item>
+        <item>生理中</item>
+    </string-array>
+
+    <!-- BMI classification names (8 levels) -->
+    <string-array name="bmi_level_names">
+        <item>非常に深刻な痩せすぎ</item>
+        <item>深刻な痩せすぎ</item>
+        <item>痩せすぎ</item>
+        <item>正常</item>
+        <item>前肥満</item>
+        <item>肥満(1度)</item>
+        <item>肥満(2度)</item>
+        <item>肥満(3度)</item>
+    </string-array>
+
+    <!-- BMI classification names (single items for mapping) -->
+    <string name="bmi_level_very_severely_underweight">非常に深刻な痩せすぎ</string>
+    <string name="bmi_level_severely_underweight">深刻な痩せすぎ</string>
+    <string name="bmi_level_underweight">痩せすぎ</string>
+    <string name="bmi_level_normal">正常</string>
+    <string name="bmi_level_overweight">前肥満</string>
+    <string name="bmi_level_obesity_class_1">肥満(1度)</string>
+    <string name="bmi_level_obesity_class_2">肥満(2度)</string>
+    <string name="bmi_level_obesity_class_3">肥満(3度)</string>
+
+    <!-- BMI record tag labels -->
+    <string-array name="bmi_labels">
+        <item>興奮</item>
+        <item>有酸素運動後</item>
+        <item>気分が落ち込む</item>
+        <item>落ち着いている</item>
+        <item>筋トレ後</item>
+        <item>激しい運動後</item>
+        <item>ダイエット中</item>
+        <item>飲酒後</item>
+    </string-array>
+
+    <string-array name="week_simple">
+        <item>日</item>
+        <item>月</item>
+        <item>火</item>
+        <item>水</item>
+        <item>木</item>
+        <item>金</item>
+        <item>土</item>
+    </string-array>
+    <string-array name="week_full">
+        <item>日曜日</item>
+        <item>月曜日</item>
+        <item>火曜日</item>
+        <item>水曜日</item>
+        <item>木曜日</item>
+        <item>金曜日</item>
+        <item>土曜日</item>
+    </string-array>
+
+    <string name="every_weekday">平日毎日</string>
+    <string name="every_weekend">週末毎日</string>
+    <string name="everyday">毎日</string>
+    <string name="once">一回のみ</string>
+    <string name="meds_remind_empty">下のボタンをタップして\nリマインダーを追加</string>
+    <string name="add">追加</string>
+    <string name="add_reminder">リマインダーを追加</string>
+    <string name="medication_name">薬の名前</string>
+    <string name="enter_medication_name">薬の名前を入力</string>
+    <string name="number_of_daily_doses">1日の服用回数:</string>
+    <string name="notes">メモ</string>
+    <string name="hint_meds_notes">指示: 食後、1日3回</string>
+    <string name="sync_with_calendar">カレンダーと同期</string>
+    <string name="take_now">今すぐ服用</string>
+    <string name="view_now">今すぐ確認</string>
+    <string name="edit">編集</string>
+    <string name="delete">削除</string>
+    <!-- 药物提醒通知相关字符串 -->
+    <string name="medication_reminder_title">🔔 服薬リマインダー</string>
+    <string name="medication_reminder_content">お薬の時間です。忘れずに服用して、お大事になさってください。</string>
+
+    <!-- FSI权限对话框字符串 -->
+    <string name="fsi_permission_title">💊 ご安心ください、私たちがサポートします ❤️</string>
+    <string name="fsi_permission_message">忙しい毎日でも、お薬を飲み忘れないようにサポートします。全画面リマインダーを有効にすると、画面ロック中でも通知を受け取れます。</string>
+    <string name="fsi_permission_advantages">  メリット:\n
+  💊 規則正しい服薬習慣をサポート\n
+  🕒 必要な時にロック画面でも表示\n
+  ❤️ あなたの健康のために </string>
+    <string name="fsi_permission_warning">これはあなたの健康をサポートするためだけに使用されます。</string>
+    <string name="turn_on">オンにする</string>
+    <string name="fsi_permission_deny">後で</string>
+
+    <!-- 通知权限相关字符串 -->
+    <string name="notification_permission_title">通知権限が必要です</string>
+    <string name="notification_permission_message">リマインダーを送信するには通知権限が必要です</string>
+    <string name="go_to_settings">設定へ</string>
+    <string name="close">閉じる</string>
+    <string name="medication_name_temp">💊 %1$s</string>
+    <string name="meds_notes_temp">📝 %1$s</string>
+    <string name="snooze_5_minutes">5分後</string>
+    <string name="snooze_10_minutes">10分後</string>
+    <string name="snooze_15_minutes">15分後</string>
+    <string name="snooze_30_minutes">30分後</string>
+    <string name="take_medication_now">今すぐ服用</string>
+    <string name="every_day_temp">⏰ 毎日 %1$s</string>
+    <string name="now_time_temp">📱 現在時刻 %1$s"</string>
+    <string name="have_reader_privacy"><font color="#02BC77">プライバシーポリシー</font>を読みました</string>
+    <string name="choose_your_gender">性別を選択</string>
+    <string name="please_choose_your_gender">性別を選択してください</string>
+    <string name="txt_profile_des">これはパーソナライズされたデータを作成するために使用されます</string>
+    <string name="male">男性</string>
+    <string name="female">女性</string>
+    <string name="choose_your_age">年齢を選択</string>
+    <string name="please_choose_your_age">年齢を選択してください</string>
+    <string name="text_continue">続行</string>
+    <string name="take_a_photo">写真を撮る</string>
+    <string name="choose_from_photos">写真から選択</string>
+    <string name="please_select">選択してください</string>
+    <string name="confirm_delete_title">タグを削除</string>
+    <string name="confirm_delete_message">このタグを削除してもよろしいですか？</string>
+    <string name="temp_age">年齢 : %1$s</string>
+    <string name="enter_new_label">新しいラベルを入力</string>
+    <string name="add_label">ラベルを追加</string>
+    <string name="weight">体重</string>
+    <string name="height">身長</string>
+    <string name="create_label_failed">ラベルの作成に失敗しました</string>
+    <string name="heart_rate">心拍数</string>
+    <string name="heart_rate_detail_description">心拍数は心血管の反応を反映します。長期的な傾向を追跡し、異常な数値が出た場合は医師に相談してください。</string>
+    <string name="record_time_placeholder">--</string>
+    <string name="heart_rate_no_tags">タグなし</string>
+    <string name="record_not_ready">記録を読み込み中</string>
+    <string name="delete_record_failed">記録の削除に失敗しました</string>
+    <string name="heart_rate_record_deleted">記録を削除しました</string>
+    <string name="blood_sugar_record_deleted">血糖値記録を削除しました</string>
+    <string name="cholesterol">コレステロール</string>
+    <string name="weight_and_bmi"><![CDATA[体重・BMI]]></string>
+    <string name="value_with_unit">%1$s %2$s</string>
+
+    <!-- Heart rate -->
+    <string name="heart_rate_status_slow">遅い</string>
+    <string name="heart_rate_status_normal">正常</string>
+    <string name="heart_rate_status_fast">速い</string>
+    <string name="heart_rate_desc_slow">安静時心拍数 &lt; 60 BPM</string>
+    <string name="heart_rate_desc_normal">安静時心拍数 60–100 BPM</string>
+    <string name="heart_rate_desc_fast">安静時心拍数 &gt;100 BPM</string>
+    <string name="total_cholesterol">総コレステロール %1$s</string>
+    <string name="hdl">HDL</string>
+    <string name="ldl">LDL</string>
+    <string name="tg">TG</string>
+    <string name="non_hdl">Non-HDL</string>
+    <string name="tc_hdl">TC/HDL</string>
+    <string name="ldl_hdl">LDL/HDL</string>
+    <string name="result">結果</string>
+    <string name="exclusive_advice">特別アドバイス</string>
+    <string name="bmi">BMI</string>
+    <string name="watch_ads_to_see_exclusive_advice">広告を見て特別アドバイスを確認</string>
+    <string name="get_exclusive_tips">特別なヒントを入手</string>
+    <string name="kindly_note">ご注意</string>
+    <string name="your_health_data_requires">健康データに注意が必要です。測定値に合わせた専門的な推奨事項をロック解除してください。</string>
+    <string name="free_unlock">無料でロック解除</string>
+    <string name="guide_title_1">血圧の健康</string>
+    <string name="guide_title_2">血圧の傾向を把握</string>
+    <string name="guide_1_des">いつでも血圧データを記録</string>
+    <string name="guide_2_des">データチャートで一目瞭然</string>
+    <string name="guide_3_des">本アプリは個人の日々の血圧追跡用に設計されており、専門的な医療アドバイスを提供するものではありません。\n専門的な健康指導や診断については、資格のある医療提供者や医療機関に相談することを強くお勧めします。</string>
+    <string name="disclaimers">免責事項</string>
+    <string name="skip">スキップ</string>
+    <string name="next">次へ</string>
+    <string name="start_health_journey">健康の旅を始めよう！</string>
+    <string name="guide_bp_des">クリックして最初の血圧記録を追加しましょう。</string>
+    <string name="guide_bs_des">クリックして最初の血糖値記録を追加しましょう。</string>
+    <string name="guide_hr_des">クリックして最初の心拍数記録を追加しましょう。</string>
+    <string name="target_range">目標範囲</string>
+    <string name="target_range_temp">目標範囲(%1$s)</string>
+    <string name="reset">リセット</string>
+
+    <string-array name="heart_rate_labels">
+        <item>興奮状態</item>
+        <item>憂鬱</item>
+        <item>平穏</item>
+        <item>激しい運動後</item>
+        <item>有酸素運動後</item>
+        <item>無酸素運動後</item>
+        <item>ダイエット中</item>
+        <item>飲酒後</item>
+    </string-array>
+    <string name="please_input_complete_data">完全なデータを入力してください</string>
+    <string name="range_order_error">範囲の値は昇順である必要があります</string>
+    <string name="range_bounds_error">範囲の値が許容範囲外です</string>
+    <string name="reset_all_ranges_confirm">すべての目標範囲をデフォルト値にリセットしますか？</string>
+    <string name="reset_success">リセットしました</string>
+    <string name="save_success">保存しました</string>
+
+    <!-- 健康服务通知渠道 -->
+    <string name="health_service_channel_name">健康モニタリングサービス</string>
+    <string name="health_service_channel_description">健康データを素早く記録するための常駐通知を表示します</string>
+
+    <!-- 自定义推送通知渠道 -->
+    <string name="custom_notification_channel_name">健康アラート</string>
+    <string name="custom_notification_channel_description">血糖値、血圧、心拍数などのリマインダー</string>
+    <string name="exit">終了</string>
+    <string name="are_you_sure_exit">アプリを終了してもよろしいですか？</string>
+    <string name="health_statistics">健康統計</string>
+    <string name="_7_days">7日間</string>
+    <string name="_1_month">1ヶ月</string>
+    <string name="_3_month">3ヶ月</string>
+    <string name="select">選択</string>
+    <string name="summary">概要</string>
+    <string name="avg">平均</string>
+    <string name="min">最小</string>
+    <string name="max">最大</string>
+    <string name="all_history">全履歴</string>
+    <string name="health_tips">健康のヒント</string>
+    <string name="no_date">日付なし</string>
+    <string name="add_now">今すぐ追加</string>
+
+    <!-- 补水 -->
+    <string name="hydrate">水分補給</string>
+    <string name="walking">ウォーキング</string>
+    <string name="walking_steps">歩数</string>
+    <string name="drink_btn_format">%d %s 飲む</string>
+    <string name="hydrate_cup_count_format">今日は水を%d杯飲みました</string>
+    <string name="hydrate_complete_message">よくできました！水分補給目標を達成しました！</string>
+    <string name="done">完了</string>
+    <string name="hydrate_empty_record">水分摂取記録はまだありません。</string>
+    <string name="hydrate_setting">設定</string>
+    <string name="daily_water_intake">1日の水分摂取量</string>
+    <string name="cup_size">カップサイズ</string>
+    <string name="hydration_reminder_time">水分補給リマインダー時間</string>
+    <string name="hydration_reminder_edit">編集</string>
+    <string name="hydrate_reminder_delete_confirm_message">このアラームを削除してもよろしいですか？</string>
+    <string name="coming_soon_title">近日公開！</string>
+    <string name="coming_soon_message">あなたはタイムトラベラーですね！この日はまだ来ていません。過去の日付を選択するか、今日に戻ってください。</string>
+    <string name="back_to_today">今日へ戻る</string>
+    <string name="hydrate_reminder_exist">リマインダー時間はすでに設定されています。</string>
+    <string name="hydrate_reminder_empty_message">水分補給リマインダーがまだ設定されていません。最初のリマインダーを追加して、水分補給の習慣を作りましょう！</string>
+    <!-- Hydration alarm -->
+    <string name="alarm_hydration_content">水を飲む時間です！</string>
+    <string name="drink_now">今すぐ確認</string>
+    <string name="medication_notification_title_with_time">%2$s に %1$s</string>
+    <string name="hydrate_quick_add">クイック追加</string>
+    <string name="step_count">歩数</string>
+    <string name="today">今日</string>
+    <string name="today_s_goal">今日の目標</string>
+    <string name="step_goal">歩数目標</string>
+    <string name="text_steps">歩</string>
+    <string name="enable_step_count">身体活動の権限が必要です</string>
+    <string name="allow">許可</string>
+    <string name="without_this_authorization_step_count_will_not_work">この権限がないと、歩数カウント機能は<font color="#02BC77">動作しません</font></string>
+    <string name="go_to_set">設定へ</string>
+    <string name="choose_language">言語を選択</string>
+    <string name="language">言語</string>
+    <string name="unit_settings">単位設定</string>
+    <string name="target_range_settings">目標範囲設定</string>
+    <string name="personal_info">個人情報</string>
+    <string name="feedback">フィードバック</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="terms_of_service">利用規約</string>
+    <string name="setting">設定</string>
+    <!-- 血糖等级专家建议文案数组 -->
+    <string-array name="bs_level_expert_advice">
+        <!-- 低血糖建议 -->
+        <item>血糖値が&lt;font color="#3489FE"&gt;&lt;b&gt;低い&lt;/b&gt;&lt;/font&gt;です（低血糖）。すぐに血糖値を上げるための対処が必要です。簡単な提案をいくつか紹介します：&lt;br&gt;&lt;b&gt;即効性のある糖分を摂取する：&lt;/b&gt;&lt;br&gt;ブドウ糖タブレット、ジュース、通常のソーダ、または少量のレーズンなど、15〜20gの即効性のある炭水化物を摂取して、血糖値を素早く上げましょう。&lt;br&gt;&lt;b&gt;15分後に血糖値を測定する：&lt;/b&gt;&lt;br&gt;まだ低い場合は、同じ手順を繰り返してください。&lt;br&gt;&lt;b&gt;バランスの取れた軽食や食事をとる：&lt;/b&gt;&lt;br&gt;血糖値が上がったら、タンパク質、複合炭水化物、健康的な脂肪を含むバランスの取れた軽食や食事をとって安定させましょう。これにより、血糖値を正常に保ち、再度の低下を防ぐことができます。全粒粉クラッカーとピーナッツバター、小さなサンドイッチ、またはフルーツとナッツなどが良い選択肢です。&lt;br&gt;&lt;b&gt;医療提供者に相談する：&lt;/b&gt;&lt;br&gt;頻繁に低血糖になる場合は、医療提供者に相談することが重要です。根本的な原因を評価し、治療計画を調整してくれます。血糖値をより良く管理するために、薬の変更、食事、運動習慣の改善を勧められることがあります。</item>
+
+        <!-- 正常血糖建议 -->
+        <item>血糖値を管理し、&lt;font color="#02BC77"&gt;&lt;b&gt;正常&lt;/b&gt;&lt;/font&gt;な範囲内に保つために、いくつかの簡単な提案があります：&lt;br&gt;&lt;b&gt;バランスの取れた健康的な食事：&lt;/b&gt;&lt;br&gt;果物、野菜、全粒穀物、低脂肪タンパク質、健康的な脂肪を含むバランスの取れた食事を選びましょう。砂糖や加工食品の摂取を控えましょう。食事量をコントロールし、管理栄養士と協力して、個々のニーズに合った食事プランを作成することを検討してください。&lt;br&gt;&lt;b&gt;定期的な運動：&lt;/b&gt;&lt;br&gt;定期的な運動は、インスリン感受性を高め、血糖値を調整するのに役立ちます。早歩きやサイクリングなど、中強度の有酸素運動を週に少なくとも150分行うことを目指しましょう。さらに、筋力トレーニングを取り入れて筋肉量を増やし、血糖値管理をさらにサポートしましょう。&lt;br&gt;&lt;b&gt;血糖値のモニタリング：&lt;/b&gt;&lt;br&gt;医療提供者の指示に従って定期的に血糖値を測定しましょう。これにより、さまざまな食品、活動、薬に対する体の反応を理解することができます。継続的にモニタリングすることで、食事、運動、または薬の調整を行い、血糖値を目標範囲内に保つことができます。</item>
+
+        <!-- 糖尿病前期建议 -->
+        <item>&lt;font color="#FFB901"&gt;&lt;b&gt;糖尿病予備軍&lt;/b&gt;&lt;/font&gt;の管理は、糖尿病の発症を防ぐ、または遅らせるために不可欠です。いくつかの簡単な提案があります：&lt;br&gt;&lt;b&gt;食生活の改善：&lt;/b&gt;&lt;br&gt;バランスの取れた栄養価の高い食事を取り入れ、血糖値をコントロールしましょう。果物、野菜、全粒穀物、低脂肪タンパク質、健康的な脂肪などの自然食品を中心に摂取しましょう。加工食品、甘い飲み物、精製炭水化物の摂取を制限してください。管理栄養士と協力して、個々のニーズに合った食事プランを作成することを検討してください。&lt;br&gt;&lt;b&gt;食物繊維の摂取を増やす：&lt;/b&gt;&lt;br&gt;全粒穀物、豆類、野菜、果物など、食物繊維が豊富な食品を食事に取り入れましょう。食物繊維は血糖値を調整し、満腹感を高め、消化器系の健康をサポートします。&lt;br&gt;&lt;b&gt;ストレス管理：&lt;/b&gt;&lt;br&gt;慢性的なストレスは血糖値や全体的な健康に影響を与える可能性があります。リラクゼーション法の実践、趣味への没頭、運動、友人や家族、メンタルヘルスの専門家への相談など、健康的なストレス解消法を見つけましょう。</item>
+
+        <!-- 糖尿病建议 -->
+        <item>&lt;font color="#FA0202"&gt;&lt;b&gt;糖尿病&lt;/b&gt;&lt;/font&gt;の場合、血糖値を安定させ、合併症を防ぐために、病状を効果的に管理することが重要です。&lt;br&gt;&lt;b&gt;定期的な受診：&lt;/b&gt;&lt;br&gt;定期的に医療機関を受診し、糖尿病のモニタリングと必要な治療を受けましょう。これには、定期検診、血液検査、眼科検診、足の検査などが含まれます。医療提供者は、薬の見直し、教育の提供、効果的な管理のための指導も行います。&lt;br&gt;&lt;b&gt;糖尿病管理日誌をつける：&lt;/b&gt;&lt;br&gt;日々の活動、食事、血糖値、服薬量、および顕著な症状やパターンを記録する日誌をつけましょう。これにより、傾向を特定し、さまざまな要因が血糖値にどのように影響するかを理解し、糖尿病管理計画に情報に基づいた調整を加えることができます。&lt;br&gt;&lt;b&gt;病気の時の計画を立てる：&lt;/b&gt;&lt;br&gt;病気や感染症は血糖値に影響を与え、糖尿病管理計画の調整が必要になる場合があります。医療提供者と協力して、血糖値のモニタリング、必要に応じた薬の調整、水分補給、症状が悪化した場合の受診の目安などを含む、病気の時の計画を作成しておきましょう。</item>
+    </string-array>
+
+    <string-array name="bp_level_expert_advice">
+        <!-- Low Blood Pressure -->
+        <item>
+            <![CDATA[
+            血圧値 <font color="#3487FC"><b>%1$d/%2$d</b></font> は<font color="#3487FC"><b>低い</b></font>です。いくつかの提案があります：
+
+            <br><b>水分補給：</b><br>
+            一日を通して十分な水分を摂取し、血液量を維持して脱水を防ぎましょう。脱水は低血圧の原因となります。
+
+            <br><b>塩分摂取量を増やす：</b><br>
+            推奨範囲内で塩分摂取量を少し増やしましょう。塩分は水分を保持し、血圧を上げるのに役立ちます。適切な摂取量については医療専門家に相談してください。
+
+            <br><b>着圧ソックスを着用する：</b><br>
+            着圧ソックスは血行を改善し、足に血液が溜まるのを防ぎ、血圧を上げるのに役立ちます。
+
+            <br><b>少量頻回の食事：</b><br>
+            一度に大量の食事をするのではなく、少量の食事を頻繁にとるようにしましょう。これにより、食後の血圧低下を防ぐことができます。
+
+            <br><b>急な体位変換を避ける：</b><br>
+            座ったり寝たりしている状態から急に立ち上がらないようにしましょう。急激な血圧低下を引き起こす可能性があります。時間をかけてゆっくりと体を動かしてください。
+            ]]>
+        </item>
+
+        <!-- Normal Blood Pressure -->
+        <item>
+            <![CDATA[
+            血圧値 <font color="#05BA7B"><b>%1$d/%2$d</b></font> は<font color="#05BA7B"><b>正常範囲内</b></font>です。心臓と全体的な健康にとって素晴らしい状態です。維持するための提案をいくつか紹介します：
+
+            <br><b>健康的な食事：</b><br>
+            果物、野菜、低脂肪タンパク質、全粒穀物を豊富に含むバランスの取れた食事を維持しましょう。
+
+            <br><b>活動的に過ごす：</b><br>
+            定期的に運動しましょう（週に少なくとも150分の中強度の活動）。
+
+            <br><b>塩分を控える：</b><br>
+            将来的な血圧上昇を防ぐために、塩分や加工食品の摂取を制限しましょう。
+
+            <br><b>ストレス管理：</b><br>
+            瞑想、ヨガ、深呼吸などのリラクゼーション法を実践しましょう。
+
+            <br><b>定期検診：</b><br>
+            定期的な健康診断を受け、血圧を把握しておきましょう。
+            ]]>
+        </item>
+
+        <!-- Elevated Blood Pressure -->
+        <item>
+            <![CDATA[
+            血圧値 <font color="#FFE902"><b>%1$d/%2$d</b></font> は<font color="#FFE902"><b>正常高値</b></font>です。生活習慣を改善しないと、高血圧になるリスクがあります。いくつかの提案があります：
+
+            <br><b>減塩：</b><br>
+            塩辛い食品やナトリウムの多い食品を控えましょう。
+
+            <br><b>運動量を増やす：</b><br>
+            ウォーキング、サイクリング、水泳などの身体活動を増やしましょう。
+
+            <br><b>体重維持：</b><br>
+            健康的な体重を維持しましょう。わずかな変化でも効果があります。
+
+            <br><b>刺激物を控える：</b><br>
+            血圧の急上昇を防ぐために、アルコールやカフェインの摂取を減らしましょう。
+
+            <br><b>定期的なモニタリング：</b><br>
+            頻繁に血圧を測定し、変化を早期に発見しましょう。
+            ]]>
+        </item>
+
+        <!-- Stage 1 Hypertension -->
+        <item>
+            <![CDATA[
+            血圧値 <font color="#FFB909"><b>%1$d/%2$d</b></font> は<font color="#FFB909"><b>高血圧 ステージ1</b></font>に該当します。進行を防ぐために生活習慣の改善が不可欠です。いくつかの提案があります：
+
+            <br><b>DASH食を取り入れる：</b><br>
+            新鮮で低ナトリウムの食品を中心にし、加工食品を避けましょう。
+
+            <br><b>毎日活動的に：</b><br>
+            定期的に運動し、座っている時間を減らしましょう。
+
+            <br><b>禁煙：</b><br>
+            タバコは血圧を上げ、血管を傷つけるため、避けましょう。
+
+            <br><b>睡眠改善：</b><br>
+            毎晩7〜9時間の質の高い睡眠を目指しましょう。
+
+            <br><b>医師に相談：</b><br>
+            薬が必要かどうか、医師のアドバイスを求めましょう。
+            ]]>
+        </item>
+
+        <!-- Stage 2 Hypertension -->
+        <item>
+            <![CDATA[
+            血圧値 <font color="#FF8000"><b>%1$d/%2$d</b></font> は<font color="#FF8000"><b>高血圧 ステージ2</b></font>にあり、心臓発作や脳卒中のリスクが大幅に高まります。いくつかの提案があります：
+
+            <br><b>治療に従う：</b><br>
+            薬物療法を含め、医師と協力して治療に取り組みましょう。
+
+            <br><b>厳格な食事管理：</b><br>
+            塩分、揚げ物、甘い飲み物を制限しましょう。
+
+            <br><b>安全な運動：</b><br>
+            活動的に過ごすことは大切ですが、医師の許可なく激しい運動は避けましょう。
+
+            <br><b>ストレス管理：</b><br>
+            リラクゼーション法を取り入れ、十分な睡眠を確保しましょう。
+
+            <br><b>家庭でのモニタリング：</b><br>
+            毎日血圧を測定し、急上昇した場合は医師に報告しましょう。
+            ]]>
+        </item>
+
+        <!-- Hypertensive Crisis -->
+        <item>
+            <![CDATA[
+            血圧値 <font color="#FB0301"><b>%1$d/%2$d</b></font> は<font color="#FB0301"><b>高血圧クリーゼ</b></font>を示しており、緊急事態です。直ちに行動してください：
+
+            <br><b>緊急支援を求める：</b><br>
+            すぐに救急車を呼ぶか、救急外来を受診してください。
+
+            <br><b>服薬：</b><br>
+            処方された薬を指示通りに服用してください。
+
+            <br><b>落ち着く：</b><br>
+            助けを待つ間、静かに座り、身体活動を避けてください。
+
+            <br><b>自己判断での治療を避ける：</b><br>
+            市販薬を使用しないでください。
+
+            <br><b>記録を保管する：</b><br>
+            最近の測定値と服薬情報を医療チームに提示してください。
+            ]]>
+        </item>
+    </string-array>
+    <!-- 心率等级专家建议文案数组 -->
+    <string-array name="hr_level_expert_advice">
+        <!-- 低心率建议 -->
+        <item>
+            <![CDATA[
+            心拍数が<font color="#FFB901"><b>正常範囲より低い</b></font>です。疲れやめまい、立ちくらみを感じることがあります。5つの提案があります：
+
+            <br><b>症状を観察する：</b><br>
+            めまい、失神、異常な疲労感に注意してください。頻繁に起こる場合は、医師の診察を受けてください。
+
+            <br><b>特定の薬を制限する：</b><br>
+            一部の薬（ベータ遮断薬など）は心拍数を下げる可能性があります。処方薬が影響していると思われる場合は、医師に相談してください。
+
+            <br><b>安全に活動する：</b><br>
+            ウォーキングやヨガなどの軽い運動は、心臓に負担をかけずに血行を維持するのに役立ちます。過度な運動は避けましょう。
+
+            <br><b>バランスの取れた食事：</b><br>
+            心拍リズムの調整に役立つカリウムやマグネシウムなどの栄養素を十分に摂取しましょう。
+
+            <br><b>医師に相談する：</b><br>
+            特に症状を伴う場合、持続的な低心拍数は専門的な評価が必要になることがあります。
+            ]]>
+        </item>
+
+        <!-- 正常心率建议 -->
+        <item>
+            <![CDATA[
+            心拍数は<font color="#02BC77"><b>正常範囲内</b></font>です。心血管系にとって良い兆候です。心臓の健康を維持するための5つの提案があります：
+
+            <br><b>水分補給：</b><br>
+            血行と全体的な心機能をサポートするために、毎日十分な水を飲みましょう。
+
+            <br><b>定期的な運動：</b><br>
+            早歩きや水泳など、中強度の有酸素運動を週に少なくとも150分行いましょう。
+
+            <br><b>心臓に良い食事：</b><br>
+            果物、野菜、全粒穀物、低脂肪タンパク質、オリーブオイルなどの健康的な脂肪を多く摂りましょう。
+
+            <br><b>ストレス管理：</b><br>
+            瞑想、深呼吸、軽いストレッチなどのリラクゼーション法を実践し、ストレスホルモンを抑制しましょう。
+
+            <br><b>定期検診：</b><br>
+            心拍数が正常であっても、定期的な健康診断は潜在的な問題を早期に発見するのに役立ちます。
+            ]]>
+        </item>
+
+        <!-- 高心率建议 -->
+        <item>
+            <![CDATA[
+            心拍数が<font color="#FA0202"><b>正常範囲より高い</b></font>です。これが続くと、心臓の問題のリスクが高まる可能性があります。5つの提案があります：
+
+            <br><b>刺激物を避ける：</b><br>
+            心拍数を上げる可能性のあるカフェイン、アルコール、ニコチンを制限しましょう。
+
+            <br><b>ストレス管理を実践する：</b><br>
+            強いストレスや不安は頻脈を引き起こす可能性があります。マインドフルネス、瞑想、呼吸法を取り入れましょう。
+
+            <br><b>身体活動を続ける：</b><br>
+            適度で継続的な運動は、心臓を強くし、リズムを整えるのに役立ちます。急激な過度な運動は避けましょう。
+
+            <br><b>健康的な体重を維持する：</b><br>
+            体重が増えると心臓の負担が増えます。バランスの取れた食事と定期的な活動で、健康的な範囲を維持しましょう。
+
+            <br><b>医師の評価を受ける：</b><br>
+            特に安静時に心拍数が高い状態が続く場合は、根本的な疾患を除外するために医療専門家の診察を受ける必要があります。
+            ]]>
+        </item>
+    </string-array>
+
+    <!-- BMI 等级专家建议文案数组 -->
+    <string-array name="bmi_level_expert_advice">
+        <!-- 严重体重过轻 -->
+        <item>体重が非常に低く、健康に深刻なリスクをもたらします。健康的な体重に戻すために、すぐに行動を起こす必要があります。&lt;br&gt;&lt;b&gt;緊急の医療相談：&lt;/b&gt;&lt;br&gt;医師や管理栄養士の指導を直ちに受け、根本的な疾患がないか確認してください。&lt;br&gt;&lt;b&gt;計画的な栄養摂取：&lt;/b&gt;&lt;br&gt;専門家の監督の下、高カロリーで栄養価の高い食事を摂ってください。&lt;br&gt;&lt;b&gt;経過のモニタリング：&lt;/b&gt;&lt;br&gt;毎週体重の増加を記録し、健康的な範囲に向かっているか確認してください。&lt;br&gt;&lt;b&gt;筋力トレーニング：&lt;/b&gt;&lt;br&gt;軽いレジスタンス運動を取り入れ、安全に筋肉量を増やしましょう。</item>
+
+        <!-- 中度体重过轻 -->
+        <item>中程度の低体重です。体の基本的な機能と免疫システムをサポートするために、これに対処することが重要です。&lt;br&gt;&lt;b&gt;専門家に相談：&lt;/b&gt;&lt;br&gt;医療提供者に相談し、個別の体重増加計画を立ててもらいましょう。&lt;br&gt;&lt;b&gt;カロリー摂取量を増やす：&lt;/b&gt;&lt;br&gt;タンパク質、健康的な脂肪、複合炭水化物をバランスよく含む、カロリー豊富な食事を頻繁に摂りましょう。&lt;br&gt;&lt;b&gt;栄養密度を重視：&lt;/b&gt;&lt;br&gt;ナッツ、アボカド、全乳、赤身の肉などの食品を選びましょう。&lt;br&gt;&lt;b&gt;健康的な間食：&lt;/b&gt;&lt;br&gt;主食の間に2〜3回の栄養価の高い間食を追加しましょう。</item>
+
+        <!-- 轻度体重过轻 -->
+        <item>軽度の低体重です。数キロ増量することで、エネルギーレベルと長期的な健康状態が改善されます。&lt;br&gt;&lt;b&gt;バランスの取れた食事を重視：&lt;/b&gt;&lt;br&gt;加工食品よりも、エネルギー密度の高い自然食品を優先しましょう。&lt;br&gt;&lt;b&gt;筋力増強運動：&lt;/b&gt;&lt;br&gt;脂肪だけでなく筋肉をつけるために、ウェイトトレーニングを行いましょう。&lt;br&gt;&lt;b&gt;規則正しい食事：&lt;/b&gt;&lt;br&gt;食事を抜かないようにし、朝食をしっかりと摂りましょう。&lt;br&gt;&lt;b&gt;健康診断：&lt;/b&gt;&lt;br&gt;簡単な検査で、低体重の原因となる医学的な問題がないか確認できます。</item>
+
+        <!-- 正常范围 -->
+        <item>おめでとうございます！体重は健康的な範囲内です。生涯の健康のために、素晴らしい習慣を維持しましょう。&lt;br&gt;&lt;b&gt;継続が鍵：&lt;/b&gt;&lt;br&gt;バランスの取れた食事と定期的な身体活動を続けましょう。&lt;br&gt;&lt;b&gt;多様なワークアウト：&lt;/b&gt;&lt;br&gt;有酸素運動、筋力トレーニング、柔軟体操を組み合わせましょう。&lt;br&gt;&lt;b&gt;マインドフル・イーティング：&lt;/b&gt;&lt;br&gt;空腹感と満腹感に注意を払い、自然に体重を維持しましょう。&lt;br&gt;&lt;b&gt;定期検診：&lt;/b&gt;&lt;br&gt;毎年の健康診断を続け、全体的な健康状態をモニタリングしましょう。</item>
+
+        <!-- 超重 -->
+        <item>過体重の範囲にあります。今、適度な対策を講じることで、健康リスクを防ぎ、よりエネルギッシュに感じることができます。&lt;br&gt;&lt;b&gt;食事量のコントロール：&lt;/b&gt;&lt;br&gt;特に高カロリー食品の食事量を少し減らすことから始めましょう。&lt;br&gt;&lt;b&gt;日常の活動量を増やす：&lt;/b&gt;&lt;br&gt;早歩きなどの中強度の運動を、ほとんどの日に30分行うことを目指しましょう。&lt;br&gt;&lt;b&gt;甘い飲み物を控える：&lt;/b&gt;&lt;br&gt;ソーダや甘いジュースを水やハーブティーに置き換えましょう。&lt;br&gt;&lt;b&gt;小さな目標を設定：&lt;/b&gt;&lt;br&gt;現在の体重の5〜10%を減らすことを目指すと、大きな健康効果が得られます。</item>
+
+        <!-- 肥胖一级 -->
+        <item>BMIは肥満（1度）を示しており、健康リスクが高まっています。健康のために計画的な対策をお勧めします。&lt;br&gt;&lt;b&gt;医師の指導：&lt;/b&gt;&lt;br&gt;医師に相談し、安全で効果的な減量計画を作成しましょう。&lt;br&gt;&lt;b&gt;食生活の見直し：&lt;/b&gt;&lt;br&gt;管理栄養士と協力して、持続可能なカロリー制限を行いましょう。&lt;br&gt;&lt;b&gt;定期的な運動習慣：&lt;/b&gt;&lt;br&gt;週に150分以上の中強度の運動を行う習慣をつけましょう。&lt;br&gt;&lt;b&gt;行動変容：&lt;/b&gt;&lt;br&gt;過食の引き金となる要因を特定し、対処しましょう。</item>
+
+        <!-- 肥胖二级 -->
+        <item>BMIは肥満（2度）を示しており、深刻な健康状態です。積極的かつ管理された介入が不可欠です。&lt;br&gt;&lt;b&gt;包括的な医療サポート：&lt;/b&gt;&lt;br&gt;体重管理クリニックや内分泌専門医の助けを求めましょう。&lt;br&gt;&lt;b&gt;あらゆる選択肢を検討：&lt;/b&gt;&lt;br&gt;処方薬や減量手術などの医学的治療について医師と話し合いましょう。&lt;br&gt;&lt;b&gt;厳格な遵守：&lt;/b&gt;&lt;br&gt;医療チームが設定した食事および運動計画に忠実に従ってください。&lt;br&gt;&lt;b&gt;合併症のモニタリング：&lt;/b&gt;&lt;br&gt;高血圧や糖尿病などの状態について定期的な検査を受けましょう。</item>
+
+        <!-- 肥胖三级 -->
+        <item>BMIは肥満（3度・高度肥満）を示しており、深刻かつ差し迫った健康リスクがあります。緊急の医学的治療が必要です。&lt;br&gt;&lt;b&gt;直ちに専門医のケアを：&lt;/b&gt;&lt;br&gt;これは医学的な緊急事態です。肥満治療専門医のケアを受ける必要があります。&lt;br&gt;&lt;b&gt;体系的な治療プログラム：&lt;/b&gt;&lt;br&gt;集中的で医学的管理下にある減量プログラムに参加しましょう。&lt;br&gt;&lt;b&gt;外科的評価：&lt;/b&gt;&lt;br&gt;命を救う可能性のある治療選択肢として、減量手術について話し合いましょう。&lt;br&gt;&lt;b&gt;可動性を優先：&lt;/b&gt;&lt;br&gt;指導の下、可動性を維持し治療をサポートするために、安全で優しい運動に焦点を当てましょう。</item>
+    </string-array>
+
+    <!-- 胆固醇等级专家建议文案数组 -->
+    <string-array name="cholesterol_level_expert_advice">
+        <!-- UNKNOWN - 数据不足 -->
+        <item>コレステロール値を評価するためのデータが不足しています。HDL、LDL、総コレステロール、中性脂肪を含む完全なコレステロール測定を行ってください。&lt;br&gt;&lt;b&gt;完全な検査：&lt;/b&gt;&lt;br&gt;医療提供者による包括的な脂質パネル検査を受けてください。&lt;br&gt;&lt;b&gt;データの記録：&lt;/b&gt;&lt;br&gt;すべてのコレステロール測定値を定期的に記録してください。&lt;br&gt;&lt;b&gt;専門家に相談：&lt;/b&gt;&lt;br&gt;コレステロールの健康について医師や管理栄養士に相談してください。</item>
+
+        <!-- NORMAL - 正常 -->
+        <item>コレステロール値は正常範囲内です。心臓と血管にとって良い兆候です。心血管の健康を維持するための5つの提案があります：&lt;br&gt;&lt;b&gt;バランスの取れた食事：&lt;/b&gt;&lt;br&gt;全粒穀物、新鮮な野菜、果物、低脂肪タンパク質、健康的な脂肪を中心に摂取しましょう。&lt;br&gt;&lt;b&gt;身体活動を続ける：&lt;/b&gt;&lt;br&gt;週に少なくとも150分の中強度の有酸素運動を目指しましょう。&lt;br&gt;&lt;b&gt;健康的な体重の維持：&lt;/b&gt;&lt;br&gt;BMIを健康的な範囲に保ちましょう。&lt;br&gt;&lt;b&gt;喫煙と過度の飲酒を避ける：&lt;/b&gt;&lt;br&gt;どちらもコレステロールと心臓の健康に悪影響を与える可能性があります。&lt;br&gt;&lt;b&gt;定期検診：&lt;/b&gt;&lt;br&gt;定期的な健康診断を続け、コレステロール値が安定していることを確認しましょう。</item>
+
+        <!-- NEAR_OPTIMAL - 接近理想 -->
+        <item>コレステロール値は理想に近いですが、管理すべき軽微なリスクがあります。これ以上の上昇を防ぐための5つの提案があります：&lt;br&gt;&lt;b&gt;心臓に良い食事を取り入れる：&lt;/b&gt;&lt;br&gt;野菜、果物、ナッツ、全粒穀物を増やし、飽和脂肪酸を制限しましょう。&lt;br&gt;&lt;b&gt;活動的に過ごす：&lt;/b&gt;&lt;br&gt;早歩き、サイクリング、水泳などの定期的な身体活動はバランスを保つのに役立ちます。&lt;br&gt;&lt;b&gt;コレステロールのモニタリング：&lt;/b&gt;&lt;br&gt;定期的な検査でコレステロール値を追跡し、早期の変化を検知しましょう。&lt;br&gt;&lt;b&gt;ストレス管理：&lt;/b&gt;&lt;br&gt;ストレスはコレステロール値に影響を与える可能性があるため、リラクゼーション法を実践してストレスを軽減しましょう。&lt;br&gt;&lt;b&gt;加工食品を控える：&lt;/b&gt;&lt;br&gt;ファストフード、揚げ物、甘いスナックの摂取を減らしましょう。</item>
+
+        <!-- BORDERLINE - 临界偏高 -->
+        <item>コレステロール値は境界域（やや高め）です。対策を講じないとリスクが高まる可能性があります。5つの提案があります：&lt;br&gt;&lt;b&gt;高脂肪食品を減らす：&lt;/b&gt;&lt;br&gt;赤身の肉、揚げ物、全脂肪乳製品を制限しましょう。&lt;br&gt;&lt;b&gt;食物繊維の摂取を増やす：&lt;/b&gt;&lt;br&gt;オート麦、豆類、果物を選び、LDLコレステロールを下げるのを助けましょう。&lt;br&gt;&lt;b&gt;禁煙：&lt;/b&gt;&lt;br&gt;喫煙はHDL（善玉）コレステロールを下げ、血管を傷つけます。&lt;br&gt;&lt;b&gt;定期的な運動：&lt;/b&gt;&lt;br&gt;週のほとんどの日に少なくとも30分の活動を目指しましょう。&lt;br&gt;&lt;b&gt;追跡検査の予約：&lt;/b&gt;&lt;br&gt;定期的なモニタリングでコレステロールの変化を追跡しましょう。</item>
+
+        <!-- HIGH - 高风险 -->
+        <item>コレステロール値が高く、心臓病や脳卒中のリスクが高まっています。5つの重要な提案があります：&lt;br&gt;&lt;b&gt;医師に相談する：&lt;/b&gt;&lt;br&gt;薬が必要かどうか、専門家の指導を受けましょう。&lt;br&gt;&lt;b&gt;心臓に賢い食事を採用する：&lt;/b&gt;&lt;br&gt;野菜、果物、全粒穀物、魚、オリーブオイルなどの健康的な脂肪を優先しましょう。&lt;br&gt;&lt;b&gt;日常の活動量を増やす：&lt;/b&gt;&lt;br&gt;ウォーキング、ランニング、サイクリングなどの運動をルーチンに取り入れましょう。&lt;br&gt;&lt;b&gt;不健康な習慣を制限する：&lt;/b&gt;&lt;br&gt;アルコールを控え、喫煙を避け、加工食品を最小限に抑えましょう。&lt;br&gt;&lt;b&gt;定期的なモニタリング：&lt;/b&gt;&lt;br&gt;コレステロール値をチェックし続け、生活習慣の改善後の効果を追跡しましょう。</item>
+
+        <!-- VERY_HIGH - 极高风险 -->
+        <item>コレステロール値が非常に高く、心臓と全体的な健康に深刻なリスクをもたらします。即時の行動が必要です。5つの緊急の提案があります：&lt;br&gt;&lt;b&gt;医療機関を受診する：&lt;/b&gt;&lt;br&gt;評価と治療のために、速やかに医師に相談してください。&lt;br&gt;&lt;b&gt;処方された治療に従う：&lt;/b&gt;&lt;br&gt;処方された場合は、指示通りにコレステロール低下薬を服用してください。&lt;br&gt;&lt;b&gt;厳格な食事療法を採用する：&lt;/b&gt;&lt;br&gt;高脂肪、揚げ物、加工食品を避け、心臓に良い食事を優先しましょう。&lt;br&gt;&lt;b&gt;生活習慣の調整：&lt;/b&gt;&lt;br&gt;禁煙し、アルコールを避け、ストレスを慎重に管理しましょう。&lt;br&gt;&lt;b&gt;頻繁なモニタリング：&lt;/b&gt;&lt;br&gt;治療が効果的であることを確認するために、コレステロール検査をより頻繁に行ってください。</item>
+    </string-array>
+
+    <!-- Blood Pressure -->
+    <string-array name="health_tips_blood_pressure_titles">
+        <item>血圧を最適に保つ</item>
+        <item>心臓のために動く</item>
+        <item>健康のためにリラックス</item>
+    </string-array>
+    <string-array name="health_tips_blood_pressure_texts">
+        <item>塩分摂取に注意し、バナナなどのカリウムを多く含む食品を摂取して、健康的な血圧を維持しましょう。</item>
+        <item>定期的なウォーキングや軽い運動は、血管を柔軟に保ち、血圧を管理するのに最適です。</item>
+        <item>深呼吸や瞑想でストレスを管理することは、血圧レベルに良い影響を与えます。</item>
+    </string-array>
+
+    <!-- Blood Sugar -->
+    <string-array name="health_tips_blood_sugar_titles">
+        <item>食事のバランスを整える</item>
+        <item>賢く炭水化物を選ぶ</item>
+        <item>毎日アクティブに</item>
+    </string-array>
+    <string-array name="health_tips_blood_sugar_texts">
+        <item>食後の血糖値を安定させるために、お皿の半分を非デンプン質の野菜で満たしましょう。</item>
+        <item>安定したエネルギーを供給し、急激な血糖値上昇を避けるために、精製されたものよりもオート麦のような全粒穀物を選びましょう。</item>
+        <item>食後の短い散歩は、体が血糖値をより効果的に管理するのに大いに役立ちます。</item>
+    </string-array>
+
+    <!-- Cholesterol -->
+    <string-array name="health_tips_cholesterol_titles">
+        <item>良質な脂質を摂る</item>
+        <item>食物繊維をたっぷり摂る</item>
+        <item>数値を改善するために動く</item>
+    </string-array>
+    <string-array name="health_tips_cholesterol_texts">
+        <item>アボカド、ナッツ、オリーブオイルなどの心臓に良い脂質を選び、健康的なコレステロール値をサポートしましょう。</item>
+        <item>リンゴやオート麦など、水溶性食物繊維を多く含む食品は、LDL（悪玉）コレステロールの管理に役立ちます。</item>
+        <item>定期的な身体活動は、HDL（善玉）コレステロールを増やし、LDLを減らすための重要な要素です。</item>
+    </string-array>
+
+    <!-- Heart Rate -->
+    <string-array name="health_tips_heart_rate_titles">
+        <item>心を落ち着ける</item>
+        <item>水分補給で心拍を安定</item>
+        <item>継続が鍵</item>
+    </string-array>
+    <string-array name="health_tips_heart_rate_texts">
+        <item>瞑想や深呼吸などの習慣は、時間の経過とともに安静時心拍数を下げるのに役立ちます。</item>
+        <item>脱水症状は心臓に負担をかけます。十分な水を飲むことは、正常な心拍数を維持するのに役立ちます。</item>
+        <item>定期的な適度な運動は心筋を強化し、安静時により効率的に血液を送り出せるようにします。</item>
+    </string-array>
+
+    <!-- BMI -->
+    <string-array name="health_tips_bmi_titles">
+        <item>栄養のある一口を</item>
+        <item>持続可能な習慣を作る</item>
+        <item>体の声を聞く</item>
+    </string-array>
+    <string-array name="health_tips_bmi_texts">
+        <item>満腹感を得て健康的な体重を維持するために、自然食品を豊富に含むバランスの取れた食事に焦点を当てましょう。</item>
+        <item>楽しめる身体活動を見つけることで、アクティブな状態を維持し、長期的に体重を管理することが容易になります。</item>
+        <item>食べ過ぎを防ぎ、健康的なバランスを保つために、空腹感と満腹感の合図に注意を払いましょう。</item>
+    </string-array>
+
+    <!-- Steps -->
+    <string-array name="health_tips_steps_titles">
+        <item>毎日ステップアップ</item>
+        <item>一日を分割する</item>
+        <item>ウォーキングを楽しむ</item>
+    </string-array>
+    <string-array name="health_tips_steps_texts">
+        <item>一貫した毎日の歩数を目指しましょう。わずかな増加でも心血管の健康状態の改善に寄与します。</item>
+        <item>代謝を活発に保つために、1時間ごとに立ち上がって数分間歩くようにリマインダーを設定しましょう。</item>
+        <item>友人と歩いたり、ポッドキャストを聴いたり、新しい公園を探索したりして、歩くことを楽しみましょう。</item>
+    </string-array>
+
+    <!-- Hydration -->
+    <string-array name="health_tips_hydration_titles">
+        <item>水で一日を始める</item>
+        <item>常にボトルを近くに</item>
+        <item>水分を食べる</item>
+    </string-array>
+    <string-array name="health_tips_hydration_texts">
+        <item>水分補給と代謝を活性化させるために、朝一番にコップ一杯の水を飲みましょう。</item>
+        <item>水を目に見える場所に置き、手の届くところに置いておくと、一日中こまめに飲むようになります。</item>
+        <item>スイカやキュウリなど、水分含有量の高い果物や野菜を楽しんで、水分補給に役立てましょう。</item>
+    </string-array>
+    <string name="bill_ad_loading">広告を読み込み中…</string>
+</resources>

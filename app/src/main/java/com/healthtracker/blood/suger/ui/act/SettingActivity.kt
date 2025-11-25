@@ -53,16 +53,13 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
+
     override fun initView(savedInstanceState: Bundle?) {
-        savedInstanceState?.let {
-            isLanguageChanged = it.getBoolean(KEY_IS_LANGUAGE_CHANGED, false)
-        }
+        isLanguageChanged = savedInstanceState?.getBoolean(KEY_IS_LANGUAGE_CHANGED, false)
+            ?: intent.getBooleanExtra(KEY_IS_LANGUAGE_CHANGED, false)
         with(mViewBind) {
             // 设置返回按钮
             btnBack.click {
-                if(isLanguageChanged){
-                    setResult(RESULT_OK)
-                }
                 finish()
             }
 
@@ -73,6 +70,14 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
                 handleSettingItemClick(item)
             }
         }
+    }
+
+
+    override fun finish() {
+        if (isLanguageChanged) {
+            setResult(RESULT_OK)
+        }
+        super.finish()
     }
 
     /**
@@ -170,8 +175,8 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
      * 设置项数据类
      */
     data class SettingItem(
-        @DrawableRes val icon: Int,
-        @StringRes val title: Int,
+        @param:DrawableRes val icon: Int,
+        @param:StringRes val title: Int,
         val type: SettingType
     )
 
@@ -248,10 +253,5 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
 
     override fun getStatusBarColor() = R.color.color_e2ffea
 
-    override fun finish() {
-        if (isLanguageChanged) {
-            setResult(RESULT_OK)
-        }
-        super.finish()
-    }
+
 }
