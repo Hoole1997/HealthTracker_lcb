@@ -1,6 +1,5 @@
 package com.healthtracker.blood.suger.ui.act
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -14,17 +13,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
-import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityAddReminderBinding
-import com.healthtracker.blood.suger.permission.CameraPermission
-import com.healthtracker.blood.suger.permission.CameraPermissionProvider
-import com.healthtracker.blood.suger.permission.PhotoPermission
-import com.healthtracker.blood.suger.permission.PhotoPermissionProvider
 import com.healthtracker.blood.suger.ui.adapter.ReminderTimeAdapter
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.dialog.DosesTimesDialog
-import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
 import com.healthtracker.blood.suger.ui.dialog.ImgGetTypeDialog
 import com.healthtracker.blood.suger.ui.viewmodel.AddReminderUiState
 import com.healthtracker.blood.suger.ui.viewmodel.AddReminderViewModel
@@ -33,20 +26,11 @@ import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.hideSoftKeyBoard
-import com.healthtracker.framework.ext.logd
 import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.core.report.ReportDataManager
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddReminderBinding>(),
-    PhotoPermissionProvider, CameraPermissionProvider {
-
-    @Inject
-    lateinit var permissionManager: PermissionManager
-
-    private val photoPermission = PhotoPermission()
-    private val cameraPermission = CameraPermission()
+class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddReminderBinding>(){
 
 
     private val startForProfileImageResult =
@@ -83,18 +67,12 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
         val remindId = intent.getLongExtra("remindId", -1L).takeIf { it != -1L }
         val startDate = intent.getStringExtra("startDate")
 
-        cameraPermission.with(this)
-        photoPermission.with(this)
-
         // 初始化ViewModel
         mViewModel.initPage(remindId, startDate)
 
         setupViews()
         setupRecyclerView()
         observeViewModel()
-
-        // 检查FSI权限
-        checkFullScreenIntentPermission()
     }
 
     companion object {
@@ -274,64 +252,4 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
 
         }
     }
-
-    // ==================== FSI权限管理 ====================
-
-    /**
-     * 检查全屏通知权限
-     */
-    private fun checkFullScreenIntentPermission() {
-        if (permissionManager.shouldRequestFSIPermission()) {
-            "Should request FSI permission for medication reminders".logd(TAG)
-            showFSIPermissionExplanationDialog()
-        } else {
-            "FSI permission check: no need to request".logd(TAG)
-        }
-    }
-
-    /**
-     * 显示FSI权限说明对话框
-     */
-    private fun showFSIPermissionExplanationDialog() {
-        FSIPermissionDialog.show(
-            supportFragmentManager,
-            onAllowPermission = {
-                "User agreed to FSI permission".logd(TAG)
-                permissionManager.requestFSIPermission(this)
-            },
-            onDenyPermission = {
-                "User declined FSI permission".logd(TAG)
-                permissionManager.recordFSIPermissionRequest(false)
-            }
-        )
-    }
-
-    /**
-     * 处理Activity返回结果
-     */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (permissionManager.handleActivityResult(requestCode, resultCode)) {
-            // FSI权限请求处理完成
-            "FSI permission activity result handled".logd(TAG)
-        }
-    }
-
-    /**
-     * 处理权限申请结果
-     */
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        permissionManager.handlePermissionResult(requestCode, permissions, grantResults)
-    }
-
-    override fun photoPermission() = photoPermission
-
-    override fun permission() = cameraPermission
 }
