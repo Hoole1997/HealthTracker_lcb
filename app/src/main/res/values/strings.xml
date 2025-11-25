@@ -967,12 +967,14 @@
     <string name="medication_reminder_content">It is time for your medication, please take it on time and take good care of yourself.</string>
 
     <!-- FSI权限对话框字符串 -->
-    <string name="fsi_permission_title">💊 Don’t Worry, We’ve Got You Covered ❤️</string>
+    <string name="fsi_permission_title">Don’t Worry\nWe’ve Got You Covered</string>
     <string name="fsi_permission_message">Life gets busy — we\'ll make sure you never miss a medication. Enable full-screen reminders so we can gently alert you even when your phone is locked.</string>
-    <string name="fsi_permission_advantages">  Why it helps you:\n
+
+    <string name="fsi_permission_advantages">
   💊Keeps your medication routine on time\n
-  🕒 Always visible, even on the lock screen when you need it\n
-  ❤️ Just to help you stay healthy </string>
+  🕒Always visible, even on the lock screen when you need it\n
+  ❤️Just to help you stay healthy </string>
+    <string name="fsi_permission_advantages_title">Why it helps you:</string>
     <string name="fsi_permission_warning">We only use this to support your health.</string>
     <string name="turn_on">Turn on</string>
     <string name="fsi_permission_deny">Not now</string>
