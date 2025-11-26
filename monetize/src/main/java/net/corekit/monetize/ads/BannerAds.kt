@@ -1,5 +1,6 @@
 package net.corekit.monetize.ads
 
+import android.R.attr.onClick
 import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
@@ -253,78 +254,6 @@ class BannerAds private constructor() {
                     // 重置开始时间，为下次刷新做准备
                     loadStartTime = System.currentTimeMillis()
                     FpuController.onAdFill("BA")
-                    ad.adEventCallback = object : BannerAdEventCallback{
-                        override fun onAdPaid(value: AdValue) {
-                            AdLogger.d("Banner广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
-
-                            // 存储当前广告的收益信息
-                            currentAdValue = value
-
-                            reportAdData(
-                                eventName = "ad_impression",
-                                params = mapOf(
-                                    "ad_unit_name" to adUnitId,
-                                    "position" to PositionGet.get(),
-                                    "number" to totalShowCount,
-                                    "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
-                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
-                                    "currency" to (currentAdValue?.currencyCode ?: "")
-                                )
-                            )
-
-                            // 上报真实的广告收益数据
-                            reportAdRevenueWithValue(ad, adUnitId,value)
-
-                            IpuController.onAdImpression("BA", value.valueMicros)
-                            RpuController.onAdRevenue("BA", value.valueMicros)
-                        }
-
-                        override fun onAdClicked() {
-                            super.onAdClicked()
-                            AdLogger.d("Banner广告被点击")
-                            // 累积点击统计
-                            totalClickCount++
-                            AdLogger.d("Banner广告累积点击次数: $totalClickCount")
-
-                            AdConfigManager.getBannerConfig().recordClick()
-
-                            reportAdData(
-                                eventName = "ad_click",
-                                params = mapOf(
-                                    "ad_unit_name" to adUnitId,
-                                    "position" to PositionGet.get(),
-                                    "number" to totalClickCount,
-                                    "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
-                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
-                                    "currency" to (currentAdValue?.currencyCode ?: "")
-                                )
-                            )
-                        }
-
-                        override fun onAdImpression() {
-                            AdLogger.d("Banner广告展示完成")
-
-                            // 累积展示统计
-                            totalShowCount++
-                            AdLogger.d("Banner广告累积展示次数: $totalShowCount")
-                        }
-
-                        override fun onAdDismissedFullScreenContent() {
-                            AdLogger.d("Banner广告关闭")
-                            totalCloseCount++
-                            reportAdData(
-                                eventName = "ad_close",
-                                params = mapOf(
-                                    "ad_unit_name" to adUnitId,
-                                    "position" to PositionGet.get(),
-                                    "number" to totalCloseCount,
-                                    "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
-                                    "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
-                                    "currency" to (currentAdValue?.currencyCode ?: "")
-                                )
-                            )
-                        }
-                    }
                     continuation.resume(ad)
                 }
             })
@@ -381,7 +310,7 @@ class BannerAds private constructor() {
      * @param container 目标容器
      * @param adUnitId 广告位ID，如果为空则使用默认ID
      */
-    suspend fun displayAd(context: Context, container: ViewGroup, adUnitId: String? = null): AdResult<Unit> {
+    suspend fun displayAd(context: Context, container: ViewGroup, adUnitId: String? = null,onClick:(() -> Unit)? = null,onClose:(() -> Unit)? = null): AdResult<Boolean> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_BANNER_ID
         
         // 累积触发统计
@@ -431,6 +360,82 @@ class BannerAds private constructor() {
             
             if (cachedAd != null) {
                 AdLogger.d("使用缓存中的Banner广告，广告位ID: %s", finalAdUnitId)
+                val ad = cachedAd.ad
+
+                ad.adEventCallback = object : BannerAdEventCallback{
+                    override fun onAdPaid(value: AdValue) {
+                        AdLogger.d("Banner广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
+
+                        // 存储当前广告的收益信息
+                        currentAdValue = value
+
+                        reportAdData(
+                            eventName = "ad_impression",
+                            params = mapOf(
+                                "ad_unit_name" to finalAdUnitId,
+                                "position" to PositionGet.get(),
+                                "number" to totalShowCount,
+                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                "currency" to (currentAdValue?.currencyCode ?: "")
+                            )
+                        )
+
+                        // 上报真实的广告收益数据
+                        reportAdRevenueWithValue(ad, finalAdUnitId,value)
+
+                        IpuController.onAdImpression("BA", value.valueMicros)
+                        RpuController.onAdRevenue("BA", value.valueMicros)
+                    }
+
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                        AdLogger.d("Banner广告被点击")
+                        onClick?.invoke()
+                        // 累积点击统计
+                        totalClickCount++
+                        AdLogger.d("Banner广告累积点击次数: $totalClickCount")
+
+                        AdConfigManager.getBannerConfig().recordClick()
+
+                        reportAdData(
+                            eventName = "ad_click",
+                            params = mapOf(
+                                "ad_unit_name" to finalAdUnitId,
+                                "position" to PositionGet.get(),
+                                "number" to totalClickCount,
+                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                "currency" to (currentAdValue?.currencyCode ?: "")
+                            )
+                        )
+                    }
+
+                    override fun onAdImpression() {
+                        AdLogger.d("Banner广告展示完成")
+
+                        // 累积展示统计
+                        totalShowCount++
+                        AdLogger.d("Banner广告累积展示次数: $totalShowCount")
+                    }
+
+                    override fun onAdDismissedFullScreenContent() {
+                        onClose?.invoke()
+                        AdLogger.d("Banner广告关闭")
+                        totalCloseCount++
+                        reportAdData(
+                            eventName = "ad_close",
+                            params = mapOf(
+                                "ad_unit_name" to finalAdUnitId,
+                                "position" to PositionGet.get(),
+                                "number" to totalCloseCount,
+                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
+                                "currency" to (currentAdValue?.currencyCode ?: "")
+                            )
+                        )
+                    }
+                }
                 
                 // 显示加载视图
                 container.removeAllViews()
@@ -445,7 +450,7 @@ class BannerAds private constructor() {
                     if (!isCacheFull(finalAdUnitId)) {
                         PreloadController.preload(context)
                     }
-                    AdResult.Success(Unit)
+                    AdResult.Success(ad.isCollapsible())
                 } else {
                     AdResult.Failure(createAdException("广告绑定失败"))
                 }

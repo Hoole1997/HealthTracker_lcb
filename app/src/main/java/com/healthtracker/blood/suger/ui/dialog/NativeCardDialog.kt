@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.ui.dialog
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,10 +9,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.databinding.DialogCardNativeAdBinding
 import com.healthtracker.blood.suger.utils.loadNative
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.visible
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -23,19 +27,23 @@ import net.corekit.monetize.ads.NativeAds
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
 
-class NativeCardDialog : BaseVbDialogFragment<DialogCardNativeAdBinding>() {
+class NativeCardDialog(private val onClose: (() -> Unit)? = null) : BaseVbDialogFragment<DialogCardNativeAdBinding>() {
 
     private var createTime = 0L
+
+    constructor():this(null)
 
     companion object{
         private const val MIN_DISPLAY_TIME = 300L // 最少显示300毫秒
         private var lastShowTime = 0L
-        private val SHOW_INTERVAL = AdConfigManager.getHomeNativeTimeInterval() * 1000L // 一分钟间隔
-        fun showOncePerMinute(activity: FragmentActivity) {
+        private val SHOW_INTERVAL = AdConfigManager.getHomeNativeTimeInterval() * 1000L
+        fun showOncePerMinute(activity: FragmentActivity,onClose:(() -> Unit)? = null){
             val currentTime = System.currentTimeMillis()
 
             // 检查是否在一分钟内已经触发过
             if (currentTime - lastShowTime < SHOW_INTERVAL || SHOW_INTERVAL <= 0) {
+                if(BuildState.debug) "间隔时间内触发过原生弹窗，跳过，interval:$SHOW_INTERVAL s".logd(PermissionManager.TAG)
+                onClose?.invoke()
                 return
             }
 
@@ -44,14 +52,14 @@ class NativeCardDialog : BaseVbDialogFragment<DialogCardNativeAdBinding>() {
                 GlobalScope.launch {
                     NativeAds.getInstance().loadInAdvance(activity, BuildConfig.ADMOB_NATIVE_ID)
                 }
+                if(BuildState.debug) "没有原生广告缓存，跳过原生弹窗".logd(PermissionManager.TAG)
+                onClose?.invoke()
                 return
             }
-
+            if(BuildState.debug) "弹出原生弹窗".logd(PermissionManager.TAG)
             // 更新最后显示时间
             lastShowTime = currentTime
-            NativeCardDialog().show(activity.supportFragmentManager)
-
-
+            NativeCardDialog(onClose).show(activity.supportFragmentManager)
         }
     }
 
@@ -118,5 +126,11 @@ class NativeCardDialog : BaseVbDialogFragment<DialogCardNativeAdBinding>() {
                 super.dismiss()
             }
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onClose?.invoke()
+
     }
 }

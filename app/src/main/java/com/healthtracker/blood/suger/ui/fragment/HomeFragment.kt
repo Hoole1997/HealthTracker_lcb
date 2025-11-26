@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.entity.BloodPressureRecord
 import com.healthtracker.blood.suger.data.entity.BloodSugarRecord
@@ -34,12 +35,13 @@ import com.healthtracker.blood.suger.ui.act.HydrateActivity
 import com.healthtracker.blood.suger.ui.act.MainActivity
 import com.healthtracker.blood.suger.ui.act.ProfileActivity
 import com.healthtracker.blood.suger.ui.act.reportGuide
-import com.healthtracker.blood.suger.ui.dialog.NativeCardDialog
 import com.healthtracker.blood.suger.ui.viewmodel.HomeViewModel
 import com.healthtracker.blood.suger.util.CholesterolCalculator
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.hyy.highlightpro.HighlightPro
 import com.hyy.highlightpro.parameter.Constraints
@@ -48,6 +50,7 @@ import com.hyy.highlightpro.parameter.MarginOffset
 import com.hyy.highlightpro.shape.RectShape
 import com.hyy.highlightpro.util.dp
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CompletableDeferred
 import net.corekit.core.report.ReportDataManager
 import java.util.Date
 import java.util.Locale
@@ -81,6 +84,8 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         CHOLESTEROL,
         HEART_RATE
     }
+
+    var highLightComplete = CompletableDeferred<Boolean>()
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -180,10 +185,9 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun onResume() {
         super.onResume()
         mViewBind?.tvTargetCupCount?.text = "/${HydrateSettingManager.getDailyCups()}"
-        if (!guidFeature() && !isHeighLightLeave) {
-            NativeCardDialog.showOncePerMinute(requireActivity())
+        if (!guidFeature()) {
+
         }
-        isHeighLightLeave = false
     }
 
     /**
@@ -323,7 +327,13 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     private var isShowHighligh = false
     private var isHeighLightLeave = false
     private fun guidFeature(): Boolean {
-        if (hasShowAllGuide() || isShowHighligh) {
+        if (hasShowAllGuide()) {
+            if(BuildState.debug) "已经展示全部高亮引导".logd(PermissionManager.TAG)
+            highLightComplete.complete(true)
+            return false
+        }
+
+        if(isShowHighligh){
             return false
         }
 

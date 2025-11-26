@@ -139,9 +139,7 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
 
 
 fun reportGuide(flag:Int){
-    ReportDataManager.reportData("Guide",mutableMapOf<String,Any>().apply {
-        put("Guide",flag)
-    })
+    ReportDataManager.reportData("Guide",mapOf("guide" to flag))
 }
 
 

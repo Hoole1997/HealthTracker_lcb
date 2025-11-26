@@ -6,6 +6,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import com.healthtracker.blood.suger.App
+import com.healthtracker.blood.suger.alarm.PermissionManager
+import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.ext.logd
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.BannerAds
@@ -13,6 +17,7 @@ import net.corekit.monetize.ads.InterstitialAds
 import net.corekit.monetize.ads.NativeAds
 import net.corekit.monetize.ads.RewardedAds
 import net.corekit.monetize.ui.NativeAdStyle
+import okio.AsyncTimeout.Companion.condition
 
 
 fun FragmentActivity.safeLaunch(afterInvoke: () -> Unit) {
@@ -24,7 +29,10 @@ fun FragmentActivity.safeLaunch(afterInvoke: () -> Unit) {
 fun FragmentActivity.loadBanner(
     container: ViewGroup,
     condition: () -> Boolean = { true },
-    call: (Boolean) -> Unit = {}) {
+    onClose: (() -> Unit)? = null,
+    call: (Boolean) -> Unit = {},
+
+) {
     lifecycleScope.launch {
         try {
             // 检查条件是否满足
@@ -33,10 +41,20 @@ fun FragmentActivity.loadBanner(
                 return@launch
             }
 
-            when (val result = BannerAds.getInstance().displayAd(this@loadBanner,container)) {
+            when (val result =
+                BannerAds.getInstance().displayAd(this@loadBanner, container, onClick = {
+                    App.INSTANCE.isClickAdLeave = true
+
+                }, onClose = onClose)) {
                 is AdResult.Success -> {
                     container.isVisible = true
-                    call.invoke(true)
+                    if(result.data){
+                        if(BuildState.debug) "折叠式广告，先不回调成功".logd(PermissionManager.TAG)
+                    }else{
+                        if(BuildState.debug) "非折叠式广告，回调成功".logd(PermissionManager.TAG)
+                        call.invoke(true)
+                    }
+
                 }
 
                 is AdResult.Failure -> {
@@ -56,11 +74,12 @@ fun FragmentActivity.loadBanner(
     }
 }
 
-fun FragmentActivity.loadNative(container: ViewGroup,
-                                style: NativeAdStyle = NativeAdStyle.STANDARD,
-                                condition: () -> Boolean = { true },
-                                onClick:() -> Unit = {},
-                                call: (Boolean) -> Unit = {}
+fun FragmentActivity.loadNative(
+    container: ViewGroup,
+    style: NativeAdStyle = NativeAdStyle.STANDARD,
+    condition: () -> Boolean = { true },
+    onClick: () -> Unit = {App.INSTANCE.isClickAdLeave = true},
+    call: (Boolean) -> Unit = {}
 
 ) {
     lifecycleScope.launch {
@@ -94,7 +113,10 @@ fun FragmentActivity.loadNative(container: ViewGroup,
 }
 
 
-fun FragmentActivity.loadInterstitial(condition: () -> Boolean = { true }, call: (Boolean) -> Unit) {
+fun FragmentActivity.loadInterstitial(
+    condition: () -> Boolean = { true },
+    call: (Boolean) -> Unit
+) {
     lifecycleScope.launch {
         try {
             // 检查条件是否满足
@@ -136,6 +158,7 @@ fun FragmentActivity.loadReword(condition: () -> Boolean = { true }, call: (Bool
                 is AdResult.Success -> {
                     call.invoke(true)
                 }
+
                 is AdResult.Failure -> {
                     // result.error.message 可用于提示或上报
                     call.invoke(false)
@@ -152,7 +175,7 @@ fun FragmentActivity.loadReword(condition: () -> Boolean = { true }, call: (Bool
     }
 }
 
-fun FragmentActivity.showInter(onComplete:() -> Unit){
+fun FragmentActivity.showInter(onComplete: () -> Unit) {
     loadInterstitial {
         onComplete.invoke()
     }

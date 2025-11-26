@@ -1,23 +1,24 @@
 package com.healthtracker.blood.suger.alarm
 
-import android.Manifest
+import ads_mobile_sdk.f71
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import com.healthtracker.blood.suger.App
+import com.healthtracker.blood.suger.constants.FSI_PERMISSION_POSITION
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
+import com.healthtracker.framework.util.PermissionUtils
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.hjq.permissions.permission.PermissionLists
 import net.corekit.core.report.ReportDataManager
+import net.corekit.core.utils.ConfigRemoteManager
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,11 +35,12 @@ import javax.inject.Singleton
  */
 @Singleton
 class PermissionManager @Inject constructor(
-    @ApplicationContext private val context: Context
+
 ) {
-    
+
+    private val context = App.INSTANCE
     companion object {
-        private const val TAG = "PermissionManager"
+        const val TAG = "PermissionManager"
 
         // 权限请求码
         const val REQUEST_CODE_NOTIFICATION = 1001
@@ -47,10 +49,8 @@ class PermissionManager @Inject constructor(
         // FSI权限状态存储键
         private const val PREF_FSI_TOTAL_REQUESTS = "fsi_total_requests"
         private const val PREF_FSI_SESSION_REQUESTS = "fsi_session_requests"
-        private const val PREF_FSI_LAST_REQUEST_TIME = "fsi_last_request_time"
-        private const val PREF_FSI_USER_DENIED = "fsi_user_permanently_denied"
         private const val PREF_APP_SESSION_ID = "app_session_id"
-        private const val HAS_NOTIFICATION_PERMISSION = "has_notification_permission"
+
 
         // FSI权限请求限制
         private const val FSI_MAX_TOTAL_REQUESTS = 3
@@ -69,99 +69,18 @@ class PermissionManager @Inject constructor(
      */
     data class FSIPermissionState(
         val totalRequestCount: Int = 0,
-        val sessionRequestCount: Int = 0,
-        val lastRequestTime: Long = 0,
-        val userPermanentlyDenied: Boolean = false
+        val sessionRequestCount: Int = 0
     )
-    
-    
-    /**
-     * 检查通知权限
-     * Android 13+ 需要POST_NOTIFICATIONS权限
-     * 
-     * @return 权限状态
-     */
-    fun checkNotificationPermission(): PermissionStatus {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val granted = ContextCompat.checkSelfPermission(
-                context, 
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-            
-            if (granted) {
-                if(BuildState.debug){
-                    "Notification permission granted".logd(TAG)
-                }
-                SpUtils.putBoolean(HAS_NOTIFICATION_PERMISSION,true)
-                PermissionStatus.GRANTED
-            } else {
-                if(BuildState.debug) "Notification permission denied".logw(TAG)
-                if(SpUtils.getBoolean(HAS_NOTIFICATION_PERMISSION,false)){
-                    if(BuildState.debug) "notification permission is revoked"
-                    ReportDataManager.reportData("notify_permission_revoked", mapOf())
-                }
-                PermissionStatus.DENIED
-            }
-        } else {
-            if(BuildState.debug) "Notification permission not required for this Android version".logd(TAG)
-            PermissionStatus.NOT_REQUIRED
-        }
-    }
-    
-    /**
-     * 申请通知权限
-     * 
-     * @param activity 当前Activity
-     */
-    fun requestNotificationPermission(activity: Activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                REQUEST_CODE_NOTIFICATION
-            )
-            if(BuildState.debug) "Requesting notification permission".logd(TAG)
-        }
-    }
-    
-    
+
     /**
      * 检查通知权限是否已授权（简化版本）
      *
      * @return 是否已授权通知权限
      */
-    fun isNotificationPermissionGranted(): Boolean {
-        val status = checkNotificationPermission()
-        return status == PermissionStatus.GRANTED || status == PermissionStatus.NOT_REQUIRED
-    }
+    fun isNotificationPermissionGranted() = PermissionUtils.hasPermission(App.INSTANCE,
+        PermissionLists.getPostNotificationsPermission())
     
-    /**
-     * 处理权限申请结果
-     *
-     * @param requestCode 请求码
-     * @param permissions 权限数组
-     * @param grantResults 授权结果
-     * @return 是否处理了该请求
-     */
-    fun handlePermissionResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ): Boolean {
-        return when (requestCode) {
-            REQUEST_CODE_NOTIFICATION -> {
-                val granted = grantResults.isNotEmpty() &&
-                             grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if (granted) {
-                    if(BuildState.debug)  "Notification permission granted by user".logd(TAG)
-                } else {
-                    if(BuildState.debug)  "Notification permission denied by user".logw(TAG)
-                }
-                true
-            }
-            else -> false
-        }
-    }
+
 
     /**
      * 处理Activity返回结果（用于FSI权限）
@@ -175,7 +94,6 @@ class PermissionManager @Inject constructor(
             REQUEST_CODE_FSI -> {
                 // 检查FSI权限状态
                 val granted = isFSIPermissionGranted()
-                recordFSIPermissionRequest(granted)
 
                 if (granted) {
                     if(BuildState.debug) "FSI permission granted after settings".logd(TAG)
@@ -195,25 +113,17 @@ class PermissionManager @Inject constructor(
      *
      * @param activity 当前Activity
      */
-    fun openAppSettings(activity: Activity) {
+    fun openAppSettings(activity: Activity): Boolean {
         try {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                 data = Uri.parse("package:${context.packageName}")
             }
             activity.startActivity(intent)
             if(BuildState.debug) "Opening app settings".logd(TAG)
+            return true
         } catch (e: Exception) {
             if(BuildState.debug) "Failed to open app settings: ${e.message}".loge(TAG)
-        }
-    }
-
-
-    fun goToNotifySetting(context: Context){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            context.startActivity(Intent().apply {
-                action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                putExtra(Settings.EXTRA_APP_PACKAGE,context.packageName)
-            })
+            return false
         }
     }
 
@@ -228,15 +138,19 @@ class PermissionManager @Inject constructor(
     fun checkFSIPermission(): PermissionStatus {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                // Android 14+ 需要检查运行时权限
-                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                val canUseFullScreenIntent = notificationManager.canUseFullScreenIntent()
+                try {
+                    // Android 14+ 需要检查运行时权限
+                    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    val canUseFullScreenIntent = notificationManager.canUseFullScreenIntent()
 
-                if (canUseFullScreenIntent) {
-                    if(BuildState.debug) "FSI permission granted".logd(TAG)
-                    PermissionStatus.GRANTED
-                } else {
-                    if(BuildState.debug) "FSI permission denied".logw(TAG)
+                    if (canUseFullScreenIntent) {
+                        if(BuildState.debug) "FSI permission granted".logd(TAG)
+                        PermissionStatus.GRANTED
+                    } else {
+                        if(BuildState.debug) "FSI permission denied".logw(TAG)
+                        PermissionStatus.DENIED
+                    }
+                }catch (_: Throwable){
                     PermissionStatus.DENIED
                 }
             } else {
@@ -256,21 +170,24 @@ class PermissionManager @Inject constructor(
      *
      * @param activity 当前Activity
      */
-    fun requestFSIPermission(activity: Activity) {
+    fun requestFSIPermission(activity: Activity): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             try {
                 val intent = Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
                     data = Uri.fromParts("package",context.packageName,null)
                 }
                 activity.startActivityForResult(intent, REQUEST_CODE_FSI)
+                App.INSTANCE.isGoSetting = true
                 if(BuildState.debug) "Requesting FSI permission via settings".logd(TAG)
+                return true
             } catch (e: Exception) {
                 if(BuildState.debug) "Failed to open FSI settings: ${e.message}".loge(TAG)
                 // 降级到通用应用设置
-                openAppSettings(activity)
+               return openAppSettings(activity)
             }
         } else {
             if(BuildState.debug) "FSI permission request not needed for this Android version".logd(TAG)
+            return false
         }
     }
 
@@ -287,30 +204,13 @@ class PermissionManager @Inject constructor(
     // ==================== FSI权限智能请求策略 ====================
 
     /**
-     * 获取当前应用Session ID
-     */
-    private fun getCurrentSessionId(): String {
-        val existingSessionId = SpUtils.getString(PREF_APP_SESSION_ID, "")
-        return existingSessionId.ifEmpty {
-            val newSessionId = UUID.randomUUID().toString()
-            SpUtils.putString(PREF_APP_SESSION_ID, newSessionId)
-            newSessionId
-        }
-    }
-
-    /**
-     * 初始化新Session（应用启动时调用）
+     * 初始化新Session（应用启动时调用），确保一次冷启动只会执行一次
      */
     fun initializeSession() {
-        val currentSessionId = getCurrentSessionId()
-        val lastSessionId = SpUtils.getString("last_session_id", "")
-
-        if (currentSessionId != lastSessionId) {
-            // 新Session，重置session计数
-            SpUtils.putString("last_session_id", currentSessionId)
-            SpUtils.putInt(PREF_FSI_SESSION_REQUESTS, 0)
-            if(BuildState.debug) "New session initialized: $currentSessionId".logd(TAG)
-        }
+        val newSessionId = UUID.randomUUID().toString()
+        if(BuildState.debug) "New session initialized: $newSessionId".logd(TAG)
+        SpUtils.putString(PREF_APP_SESSION_ID, newSessionId)
+        SpUtils.putInt(PREF_FSI_SESSION_REQUESTS, 0)
     }
 
     /**
@@ -319,9 +219,7 @@ class PermissionManager @Inject constructor(
     fun getFSIPermissionState(): FSIPermissionState {
         return FSIPermissionState(
             totalRequestCount = SpUtils.getInt(PREF_FSI_TOTAL_REQUESTS, 0),
-            sessionRequestCount = SpUtils.getInt(PREF_FSI_SESSION_REQUESTS, 0),
-            lastRequestTime = SpUtils.getLong(PREF_FSI_LAST_REQUEST_TIME, 0),
-            userPermanentlyDenied = SpUtils.getBoolean(PREF_FSI_USER_DENIED, false)
+            sessionRequestCount = SpUtils.getInt(PREF_FSI_SESSION_REQUESTS, 0)
         )
     }
 
@@ -330,7 +228,7 @@ class PermissionManager @Inject constructor(
      *
      * @return true if should request, false otherwise
      */
-    fun shouldRequestFSIPermission(): Boolean {
+    suspend fun shouldRequestFSIPermission(): Boolean {
         // 如果已经有权限，不需要请求
         if (isFSIPermissionGranted()) {
             return false
@@ -338,16 +236,19 @@ class PermissionManager @Inject constructor(
 
         val state = getFSIPermissionState()
 
+        val sessionLimit = when{
+            isSplashCheckFsi() -> FSI_MAX_SESSION_REQUESTS + 1
+            else -> FSI_MAX_SESSION_REQUESTS
+        }
         // 检查各种限制条件
         val withinTotalLimit = state.totalRequestCount < FSI_MAX_TOTAL_REQUESTS
-        val withinSessionLimit = state.sessionRequestCount < FSI_MAX_SESSION_REQUESTS
-        val notPermanentlyDenied = !state.userPermanentlyDenied
+        val withinSessionLimit = state.sessionRequestCount < sessionLimit
 
-        val shouldRequest = withinTotalLimit && withinSessionLimit && notPermanentlyDenied
+        val shouldRequest = withinTotalLimit && withinSessionLimit
 
-        if(BuildState.debug) "FSI permission request check: total=${state.totalRequestCount}/$FSI_MAX_TOTAL_REQUESTS, " +
-                "session=${state.sessionRequestCount}/$FSI_MAX_SESSION_REQUESTS, " +
-                "denied=${state.userPermanentlyDenied}, shouldRequest=$shouldRequest".logd(TAG)
+        if (BuildState.debug) ("FSI permission request check: total=${state.totalRequestCount}/$FSI_MAX_TOTAL_REQUESTS, " +
+                "session=${state.sessionRequestCount}/$sessionLimit, " +
+                "shouldRequest=$shouldRequest").logd(TAG)
 
         return shouldRequest
     }
@@ -355,49 +256,26 @@ class PermissionManager @Inject constructor(
     /**
      * 记录FSI权限请求结果
      *
-     * @param granted 用户是否授权
      */
-    fun recordFSIPermissionRequest(granted: Boolean) {
+    fun recordFSIPermissionRequest() {
         val state = getFSIPermissionState()
-        val currentTime = System.currentTimeMillis()
 
         // 更新计数
         SpUtils.putInt(PREF_FSI_TOTAL_REQUESTS, state.totalRequestCount + 1)
         SpUtils.putInt(PREF_FSI_SESSION_REQUESTS, state.sessionRequestCount + 1)
-        SpUtils.putLong(PREF_FSI_LAST_REQUEST_TIME, currentTime)
 
-        if (!granted) {
-            // 如果用户拒绝，检查是否应该标记为永久拒绝
-            val newTotalCount = state.totalRequestCount + 1
-            if (newTotalCount >= FSI_MAX_TOTAL_REQUESTS) {
-                SpUtils.putBoolean(PREF_FSI_USER_DENIED, true)
-                if(BuildState.debug) "User permanently denied FSI permission after $newTotalCount attempts".logw(TAG)
-            }
-        } else {
-            // 用户授权了，清除拒绝标记
-            SpUtils.putBoolean(PREF_FSI_USER_DENIED, false)
-            if(BuildState.debug) "User granted FSI permission".logd(TAG)
-        }
+        if(BuildState.debug) "FSI permission request recorded: total=${state.totalRequestCount + 1}, session=${state.sessionRequestCount + 1}".logd(TAG)
 
-        if(BuildState.debug) "FSI permission request recorded: granted=$granted, " +
-                "total=${state.totalRequestCount + 1}, session=${state.sessionRequestCount + 1}".logd(TAG)
     }
 
     /**
-     * 检查FSI权限是否可用（权限已授权且不在限制中）
+     * 检查FSI权限是否可用（权限已授权）
      */
     fun isFSIPermissionAvailable(): Boolean {
-        val granted = isFSIPermissionGranted()
-        if (granted) {
-            val state = getFSIPermissionState()
-            if (state.userPermanentlyDenied) {
-                SpUtils.putBoolean(PREF_FSI_USER_DENIED, false)
-                if(BuildState.debug) "FSI permission restored via system settings".logd(TAG)
-            }
-            return true
-        }
-        return false
+        return isFSIPermissionGranted()
     }
+
+    suspend fun isSplashCheckFsi() = ConfigRemoteManager.getInt(FSI_PERMISSION_POSITION,0) == 0
 
     /**
      * 重置FSI权限状态（用于测试或重置用户选择）
@@ -405,8 +283,6 @@ class PermissionManager @Inject constructor(
     fun resetFSIPermissionState() {
         SpUtils.remove(PREF_FSI_TOTAL_REQUESTS)
         SpUtils.remove(PREF_FSI_SESSION_REQUESTS)
-        SpUtils.remove(PREF_FSI_LAST_REQUEST_TIME)
-        SpUtils.remove(PREF_FSI_USER_DENIED)
         if(BuildState.debug) "FSI permission state reset".logd(TAG)
     }
 }

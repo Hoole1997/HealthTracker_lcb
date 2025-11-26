@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
@@ -141,6 +142,7 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
                         .cameraOnly()
                         .createIntent {
                             startForProfileImageResult.launch(it)
+                            App.INSTANCE.isFeatureLeave = true
                         }
                 }) {
                     ImagePicker.with(this@AddReminderActivity)
@@ -150,6 +152,7 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
                         .galleryOnly()
                         .createIntent {
                             startForProfileImageResult.launch(it)
+                            App.INSTANCE.isFeatureLeave = true
                         }
 
                 }

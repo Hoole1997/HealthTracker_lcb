@@ -292,17 +292,6 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
         return mViewModel.formattedMonth
     }
 
-    /**
-     * 检查是否有服药提醒触发
-     * @return true if there are pending medication reminders
-     */
-    private fun checkIfMedicationReminderTriggered(): Boolean {
-        // 这里应该检查是否有当前时间需要服药的提醒
-        // 目前简化为检查是否有FSI权限需要请求的情况
-        return !permissionManager.isFSIPermissionAvailable() &&
-                permissionManager.shouldRequestFSIPermission()
-    }
-
     fun needLoadAd(){
         if(::reminderAdapter.isInitialized && reminderAdapter.itemCount > 1 && !reminderAdapter.needLoadAd){
             reminderAdapter.needLoadAd = true

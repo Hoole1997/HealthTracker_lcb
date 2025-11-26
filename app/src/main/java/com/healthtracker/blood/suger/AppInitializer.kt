@@ -53,6 +53,9 @@ class AppInitializer @Inject constructor(
     
     private val initScope = CoroutineScope(SupervisorJob() + ioDispatcher)
     private var isFirstLaunch = true
+    companion object{
+        private const val TAG = "App"
+    }
 
     /**
      * 配置刷新观察者
@@ -61,27 +64,52 @@ class AppInitializer @Inject constructor(
      */
     private val configRefreshObserver = object : AppForegroundObserver {
         override fun onAppForeground() {
-            if (BuildState.debug) "App entered foreground, refreshing config...".logd("AppInitializer")
+            if (BuildState.debug) "App entered foreground, refreshing config...".logd(TAG)
             initScope.launch {
                 remoteConfigManager.refreshConfig()
             }
 
             initScope.launch(Dispatchers.Main) {
                 try {
+
+                    if(App.INSTANCE.isLongLeaveApp()){
+                        if(BuildState.debug) "长时间离开应用，不检查离开原因，都尝试走开屏".logd(TAG)
+                    }else{
+                        if(BuildState.debug) "短时间离开应用，检查离开原因".logd(TAG)
+                        if(App.INSTANCE.isGoSetting){
+                            if(BuildState.debug) "去授权离开的应用，返回不走开屏".logd(TAG)
+                            App.INSTANCE.isGoSetting = false
+                            return@launch
+                        }
+                        if(App.INSTANCE.isFeatureLeave){
+                            if(BuildState.debug) "功能需要离开应用，返回不走开屏".logd(TAG)
+                            App.INSTANCE.isFeatureLeave = false
+                            return@launch
+                        }
+
+                        if(App.INSTANCE.isClickAdLeave){
+                            if(BuildState.debug) "点击广告离开应用，返回不走开屏".logd(TAG)
+                            App.INSTANCE.isClickAdLeave = false
+                            return@launch
+                        }
+                    }
+
+
+
                     //检查是否满足展示开屏广告条件
                     val topActivity = ActivityUtils.getTopActivity()
-                    "回到前台,尝试重走启动页 topActivity:${topActivity::class.java.simpleName}".logd("AppInitializer")
+                    "回到前台,尝试重走启动页 topActivity:${topActivity::class.java.simpleName}".logd(TAG)
                     if (!ActivityUtils.isActivityExistsInStack(SplashActivity::class.java) && !isAdPage(topActivity
                         )) {
                         val result = LaunchAds.getInstance().checkInterceptor(application)
                         if(result is AdResult.Success){
                             startSplashActivity()
                         }else{
-                            "当前不满足启动页开屏广告条件，不走启动页".logd("AppInitializer")
+                            "当前不满足启动页开屏广告条件，不走启动页".logd(TAG)
                         }
 
                     }else{
-                        "当前前台页面是启动页或广告页面，或引导页面，不重新走启动页面".logd("AppInitializer")
+                        "当前前台页面是启动页或广告页面，或引导页面，不重新走启动页面".logd(TAG)
                     }
                 }catch (e: Throwable){
                     e.printStackTrace()
@@ -99,6 +127,11 @@ class AppInitializer @Inject constructor(
                     NotificationHelper.show(PushScenario.BACKGROUND)
                 }
             }
+        }
+
+        override fun onAppBackground() {
+            super.onAppBackground()
+            App.INSTANCE.setLeaveTime()
         }
     }
 
@@ -284,17 +317,17 @@ class AppInitializer @Inject constructor(
             try {
                 // 1. 注册所有配置解析器
                 appConfigRegistry.registerAllParsers()
-                if(BuildState.debug) "Config parsers registered: ${appConfigRegistry.getRegisteredCount()}".logd("AppInitializer")
+                if(BuildState.debug) "Config parsers registered: ${appConfigRegistry.getRegisteredCount()}".logd(TAG)
 
                 // 2. 初始化 RemoteConfigManager
                 val result = remoteConfigManager.initialize()
                 result.onSuccess {
-                    if(BuildState.debug)  "RemoteConfigManager initialized successfully".logd("AppInitializer")
+                    if(BuildState.debug)  "RemoteConfigManager initialized successfully".logd(TAG)
                 }.onFailure { e ->
-                    if(BuildState.debug) "Failed to initialize RemoteConfigManager: ${e.message}".loge("AppInitializer")
+                    if(BuildState.debug) "Failed to initialize RemoteConfigManager: ${e.message}".loge(TAG)
                 }
             } catch (e: Exception) {
-                if(BuildState.debug)  "Failed to initialize remote config: ${e.message}".loge("AppInitializer")
+                if(BuildState.debug)  "Failed to initialize remote config: ${e.message}".loge(TAG)
             }
         }
     }
@@ -308,15 +341,15 @@ class AppInitializer @Inject constructor(
         try {
             // 注册配置刷新观察器
             AppLifecycleManager.addObserver(configRefreshObserver)
-            if(BuildState.debug)  "Config refresh observer registered".logd("AppInitializer")
+            if(BuildState.debug)  "Config refresh observer registered".logd(TAG)
 
             // ✅ 注册健康服务前台观察器
             // 监听应用前后台切换，自动启动/管理健康服务
             AppLifecycleManager.addObserver(healthServiceForegroundObserver)
-            if(BuildState.debug) "HealthServiceForegroundObserver registered".logd("AppInitializer")
+            if(BuildState.debug) "HealthServiceForegroundObserver registered".logd(TAG)
 
         } catch (e: Exception) {
-            if(BuildState.debug) "Failed to register lifecycle observers: ${e.message}".loge("AppInitializer")
+            if(BuildState.debug) "Failed to register lifecycle observers: ${e.message}".loge(TAG)
         }
     }
 

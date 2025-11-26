@@ -16,8 +16,11 @@ import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.AdValue
 import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
 import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
+import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.ext.logd
 import com.remax.bill.ads.report.IpuController
 import com.remax.bill.ads.report.RpuController
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -72,6 +75,8 @@ class LaunchAds private constructor() {
     // 累积展示统计（持久化）
     private var totalShowCount by DataStoreIntDelegate("pdf_k2m5x3n6", 0)
     private val controllerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    private val needInterceptor = CompletableDeferred<Boolean>()
     /**
      * 当前待恢复的展示请求
      * 只保存一个请求，新请求会覆盖旧请求
@@ -118,6 +123,10 @@ class LaunchAds private constructor() {
         fun isExpired(): Boolean {
             return System.currentTimeMillis() - loadTime > AD_TIMEOUT
         }
+    }
+
+    fun cancelInterceptor(){
+        needInterceptor.complete(true)
     }
     
     /**
@@ -238,6 +247,7 @@ class LaunchAds private constructor() {
      * @param adUnitId 广告位ID，如果为空则使用默认ID
      */
     suspend fun displayAd(activity: Activity, adUnitId: String = BuildConfig.ADMOB_SPLASH_ID, onLoaded:((isSuc: Boolean)->Unit) ?= null): AdResult<Unit> {
+
         AdsManager.awaitInitialized()
         // 累积触发广告展示次数统计
         totalShowTriggerCount++
@@ -293,8 +303,10 @@ class LaunchAds private constructor() {
             if (cachedAd != null) {
                 AdLogger.d("使用缓存中的开屏广告，广告位ID: %s", finalAdUnitId)
                 onLoaded?.invoke(true)
-
-                if(activity.isFinishing || activity.isDestroyed){
+                if(BuildState.debug) "准备执行开屏拦截等待".logd("PermissionManager")
+                needInterceptor.await()
+                if(BuildState.debug) "开屏拦截等待结束".logd("PermissionManager")
+                if(activity.isFinishing || activity.isDestroyed ){
                     AdLogger.d("页面${activity.javaClass.simpleName}，已关闭")
                    return AdResult.Failure(createAdException("activity is finish"))
                 }

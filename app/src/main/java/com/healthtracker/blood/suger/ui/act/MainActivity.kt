@@ -1,6 +1,7 @@
 package com.healthtracker.blood.suger.ui.act
 
 // 移除广播接收器相关导入，改用页面可见状态检查月份变化
+import ads_mobile_sdk.jo
 import android.Manifest
 import android.content.Intent
 import android.os.Build
@@ -10,8 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
@@ -24,6 +27,8 @@ import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.dialog.ActivityPerRequestDialog
 import com.healthtracker.blood.suger.ui.dialog.ExitDialog
+import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
+import com.healthtracker.blood.suger.ui.dialog.NativeCardDialog
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.InsightsFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
@@ -31,6 +36,7 @@ import com.healthtracker.blood.suger.ui.fragment.RecordFragment
 import com.healthtracker.blood.suger.ui.fragment.reportEnterPage
 import com.healthtracker.blood.suger.ui.viewmodel.MainViewModel
 import com.healthtracker.blood.suger.utils.loadBanner
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
@@ -39,7 +45,10 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.Restore
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import net.corekit.core.report.ReportDataManager
 import javax.inject.Inject
@@ -58,10 +67,13 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
     @Inject
     lateinit var customNotificationHelper: CustomNotificationHelper
-
+    @Inject
+    lateinit var permissionManager: PermissionManager
     @Restore
     private var currentTabIndex = 0
 
+    private val onceNativeCardComplete = CompletableDeferred<Boolean>()
+    private val bannerShowComplete = CompletableDeferred<Boolean>()
 
     private val settingLauncher =
         registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { result ->
@@ -71,16 +83,34 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         }
 
     private var permissionRequest: PermissionRequest? = null
+    private var job : Job? = null
     override fun onResume() {
         super.onResume()
+        job = lifecycleScope.launch {
+            delay(200)
+            if(BuildState.debug) "等待高亮完成".logd(PermissionManager.TAG)
+            homeFrg?.highLightComplete?.await()
+            if(isActive){
+                if(BuildState.debug) "高亮完成".logd(PermissionManager.TAG)
+                NativeCardDialog.showOncePerMinute(this@MainActivity){
+                    onceNativeCardComplete.complete(true)
+                    if(BuildState.debug) "首页原生弹窗完成".logd(PermissionManager.TAG)
+                }
+            }else{
+                if(BuildState.debug) "原生弹窗协程已经取消".logd(PermissionManager.TAG)
+            }
+
+        }
     }
 
     override fun onStop() {
         super.onStop()
-
         // 记录用户最后活跃时间（首页关闭时）
         recordLastActiveTime()
-        "Recorded last active time when MainActivity stopped".logd(TAG)
+        if(BuildState.debug) "Recorded last active time when MainActivity stopped".logd(TAG)
+        if(BuildState.debug) "取消原生弹窗协程".logd(PermissionManager.TAG)
+        job?.cancel()
+
     }
 
     override fun onDestroy() {
@@ -202,22 +232,39 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
             setupBottomNavBar()
             setupViewPager()
-            loadBanner(adViewContainer)
+
 
             // 延迟处理通知点击参数，确保UI完全初始化
             mViewBind.root.postDelayed({
                 handleNotificationAction(intent)
             }, 500)
         }
+        lifecycleScope.launch {
+            delay(500)
+            if(BuildState.debug) "等待首页原生弹窗".logd(PermissionManager.TAG)
+            onceNativeCardComplete.await()
+            if(BuildState.debug) "等待首页原生结束，继续流程".logd(PermissionManager.TAG)
+            loadBanner(mViewBind.adViewContainer, onClose = {
+                bannerShowComplete.complete(true)
+                if(BuildState.debug) "首页折叠banner收起".logd(PermissionManager.TAG)
+            }){
+               bannerShowComplete.complete(it)
+                if(BuildState.debug) "非折叠banner或未展示成功".logd(PermissionManager.TAG)
+            }
+            if(BuildState.debug) "等待首页banner完成".logd(PermissionManager.TAG)
+            bannerShowComplete.await()
+            if(BuildState.debug) "首页banner完成，继续流程".logd(PermissionManager.TAG)
+            checkFSIPermission()
+        }
     }
+
+
 
 
     /**
      * 设置底部导航栏
      */
     private fun setupBottomNavBar() {
-
-
         mViewBind.tbNav.apply {
             tabMode = TabLayout.MODE_FIXED
             tabGravity = TabLayout.GRAVITY_FILL
@@ -418,12 +465,55 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                 } else if (showSettingsRedirect) {
                     ActivityPerRequestDialog.show(supportFragmentManager) {
                         it.goSetting(this)
+                        App.INSTANCE.isGoSetting = true
                     }
                 }
             }
         } ?: {
             reportEnterPage("Walking Steps")
             startActivity<StepCountActivity>()
+        }
+    }
+
+
+    private suspend fun checkFSIPermission(){
+        if (permissionManager.shouldRequestFSIPermission()) {
+            if (BuildState.debug) "满足全屏通知权限弹出条件".logd(PermissionManager.TAG)
+            showFSIPermissionExplanationDialog()
+        } else {
+            if (BuildState.debug) "不满足全屏通知权限弹出条件".logd(PermissionManager.TAG)
+        }
+    }
+
+    /**
+     * 显示FSI权限说明对话框
+     */
+    private fun showFSIPermissionExplanationDialog() {
+        if(BuildState.debug) "显示FSI权限说明对话框".logd(PermissionManager.TAG)
+        permissionManager.recordFSIPermissionRequest()
+        FSIPermissionDialog.show(
+            supportFragmentManager,
+            onAllowPermission = {
+                "User agreed to FSI permission setting".logd(PermissionManager.TAG)
+                permissionManager.requestFSIPermission(this)
+            },
+            onDenyPermission = {
+                "User declined FSI permission".logd(PermissionManager.TAG)
+
+
+            }
+        )
+    }
+
+    /**
+     * 处理Activity返回结果
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (permissionManager.handleActivityResult(requestCode, resultCode)) {
+            // FSI权限请求处理完成
+           if(BuildState.debug) "FSI permission activity result handled".logd(PermissionManager.TAG)
         }
     }
 

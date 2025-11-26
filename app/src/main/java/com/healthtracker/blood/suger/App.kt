@@ -8,12 +8,16 @@ import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.observer.AppForegroundObserver
 import com.healthtracker.blood.suger.utils.WebViewZygote
 import com.healthtracker.blood.suger.utils.getCurProcessName
+import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import net.corekit.core.utils.ConfigRemoteManager
 import java.lang.ref.WeakReference
 import java.util.Locale
 import javax.inject.Inject
@@ -37,6 +41,8 @@ class App : MultiDexApplication() {
 
         @JvmStatic
         var defaultLocale: WeakReference<Locale>? = null
+
+        private const val CONFIG_LONG_LEAVE_APP = "long_leave_app"
     }
 
     init {
@@ -44,6 +50,12 @@ class App : MultiDexApplication() {
         INSTANCE = this
         defaultLocale = WeakReference(Locale.getDefault())
     }
+
+    var isGoSetting = false
+
+    var isFeatureLeave = false
+
+    var isClickAdLeave = false
 
     /**
      * 主进程检查缓存
@@ -120,5 +132,18 @@ class App : MultiDexApplication() {
             LanguageUtils.attachBaseContext(this)
         }
         super.onConfigurationChanged(newConfig)
+    }
+
+    private var leaveAppTime = 0L
+    fun setLeaveTime(){
+        leaveAppTime = System.currentTimeMillis()
+    }
+
+    suspend fun isLongLeaveApp(): Boolean{
+        val leaveTime = System.currentTimeMillis() - leaveAppTime
+        val configLongLeaveTime = ConfigRemoteManager.getInt(CONFIG_LONG_LEAVE_APP,10) * 1000L
+        if(BuildState.debug) "leaveTime = $leaveTime ms configLongLeaveTime = $configLongLeaveTime ms".logd(TAG)
+
+        return leaveTime > configLongLeaveTime
     }
 }

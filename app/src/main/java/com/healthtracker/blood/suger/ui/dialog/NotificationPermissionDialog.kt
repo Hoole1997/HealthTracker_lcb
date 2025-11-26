@@ -1,16 +1,13 @@
 package com.healthtracker.blood.suger.ui.dialog
 
-import android.content.Intent
-import android.net.Uri
+import android.content.DialogInterface
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.DialogNotificationPermissionBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
-import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.ext.click
 
 /**
@@ -71,6 +68,11 @@ class NotificationPermissionDialog(
                 dismissAllowingStateLoss()
             }
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onCancel?.invoke()
     }
 
 

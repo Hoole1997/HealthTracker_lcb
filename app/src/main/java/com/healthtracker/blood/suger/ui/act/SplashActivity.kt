@@ -1,6 +1,5 @@
 package com.healthtracker.blood.suger.ui.act
 
-import android.Manifest
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
@@ -8,17 +7,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.animation.addListener
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.alarm.PermissionManager
+import com.healthtracker.blood.suger.constants.HAS_NOTIFICATION_PERMISSION
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_CONTENT
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
+import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
 import com.healthtracker.blood.suger.util.logEvent
 import com.healthtracker.blood.suger.util.pushRequest
 import com.healthtracker.blood.suger.util.pushResult
@@ -34,7 +35,10 @@ import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.PermissionUtils
+import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.isLeast13
+import com.hjq.permissions.permission.PermissionLists
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -57,17 +61,15 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 
     companion object {
         private const val TAG = "SplashActivity"
+        private const val HAS_SHOW_FSI_REQUEST = "has_show_fsi_request"
     }
 
     private var isAdLoaded = false
-    private val hasFullNativeShowing : Boolean
+    private val hasFullNativeShowing: Boolean
         get() = FullNativeAds.getInstance().checkAdShowing()
-    private val hasInterstitialShowing : Boolean
+    private val hasInterstitialShowing: Boolean
         get() = InterstitialAds.getInstance().checkAdShowing()
-    // 从通知传递过来的动作参数
-    private val notificationAction: String? by lazy {
-        intent.getStringExtra(com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION)
-    }
+
 
     // 状态机负责协调动画、权限、前后台状态与跳转
     private val stateMachine by lazy {
@@ -75,15 +77,15 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             scope = lifecycleScope,
             onNavigate = {
 
-                if(ActivityUtils.isActivityExistsInStack(MainActivity::class.java)){
+                if (ActivityUtils.isActivityExistsInStack(MainActivity::class.java)) {
                     finish()
                     return@SplashStateMachine
                 }
                 // 判断应该跳转到哪个页面
-                val targetActivity = if(LanguageUtils.getSavedLanguage().isEmpty()){
+                val targetActivity = if (LanguageUtils.getSavedLanguage().isEmpty()) {
                     LanguageActivity::class.java
                 } else {
-                    if(hasNewGuide()){
+                    if (hasNewGuide()) {
                         MainActivity::class.java
                     } else {
                         GuideActivity::class.java
@@ -109,24 +111,36 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     override fun getVMModelClass() = BaseViewModel::class.java
     private var launchTime = 0L
     override fun initView(savedInstanceState: Bundle?) {
-        try {
-            if(!isTaskRoot){
-                val activityList = ActivityUtils.getActivityList()
-                if(isAdPage(activityList[1])){
-                    "当前是广告页面或引导页面，直接关闭启动页".logd(TAG)
-                    finish()
-                    return
-                }
-            }
-        }catch (e: Throwable){
-            e.printStackTrace()
-        }
-        launchTime = System.currentTimeMillis()
-        logEvent("loading_pagge_show")
-        mViewBind.tvPrivacy.click {
-            openBrowser(this, BuildConfig.PRIVACY_POLICY)
-        }
         lifecycleScope.launch {
+            try {
+                if (!isTaskRoot) {
+                    val activityList = ActivityUtils.getActivityList()
+                    if (isAdPage(activityList[1])) {
+                        "当前是广告页面或引导页面，直接关闭启动页".logd(TAG)
+                        finish()
+                        return@launch
+                    }
+
+                    if(!App.INSTANCE.isLongLeaveApp() && (App.INSTANCE.isClickAdLeave || App.INSTANCE.isFeatureLeave || App.INSTANCE.isGoSetting)){
+                        "用户点击广告，业务操作，请求权限短时间离开应用，直接关闭启动页".logd(TAG)
+                        finish()
+                        return@launch
+                    }
+                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+
+            launchTime = System.currentTimeMillis()
+            logEvent("loading_page_show")
+            mViewBind.tvPrivacy.click {
+                openBrowser(this@SplashActivity, BuildConfig.PRIVACY_POLICY)
+            }
+
+            playAnimations()
+            checkNotificationPermission()
+            checkNotificationOpen()
+
             try {
                 val adJob = async {
                     initializeAndShowAd()
@@ -146,58 +160,62 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                     }
                 }
 
-                if(timeoutTriggered){
+                if (timeoutTriggered) {
                     "触发超时".logd(TAG)
                     val hasAdLoaded = isAdLoaded
                     if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
                         // 没有任何广告，执行继续流程
-                        if(BuildState.debug)  Log.d(TAG, "${timeout}秒超时兜底：无广告，执行继续流程")
+                        if (BuildState.debug) Log.d(TAG, "${timeout}秒超时兜底：无广告，执行继续流程")
                     } else {
                         // 有广告加载或显示，继续等待广告完成
-                        if(BuildState.debug)  Log.d(TAG, "${timeout}秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成")
+                        if (BuildState.debug) Log.d(
+                            TAG,
+                            "${timeout}秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成"
+                        )
                         adJob.await()
                     }
-                }else{
+                } else {
                     "非超时触发".logd(TAG)
                 }
-            }catch (e: Throwable){
+            } catch (e: Throwable) {
 
-            }finally {
+            } finally {
                 stateMachine.onAdCompleted()
             }
 
 
+
+
         }
-        playAnimations()
-        checkNotificationPermission()
-        checkNotificationOpen()
+
     }
 
     private fun checkNotificationOpen() {
-       try {
-           val notificationId = intent.getIntExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,-1)
-           reportOpen()
+        try {
+            val notificationId =
+                intent.getIntExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, -1)
+            reportOpen()
 
-           if (notificationId == -1) {
-               if(BuildState.debug) "Invalid notification ID: $notificationId".logw(TAG)
-               return
-           }
-           reportNotificationParam()
-           val actionType = intent.getStringExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE)
-           if(BuildState.debug) "checkNotificationOpen actionType = $actionType".logd(TAG)
-           sendBroadcast(Intent(this, NotificationActionReceiver::class.java).apply {
-               action = NotificationActionReceiver.ACTION_NOTIFICATION_CLICKED
-               putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,notificationId)
-           })
-       }catch (e: Throwable){
+            if (notificationId == -1) {
+                if (BuildState.debug) "Invalid notification ID: $notificationId".logw(TAG)
+                return
+            }
+            reportNotificationParam()
+            val actionType = intent.getStringExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE)
+            if (BuildState.debug) "checkNotificationOpen actionType = $actionType".logd(TAG)
+            sendBroadcast(Intent(this, NotificationActionReceiver::class.java).apply {
+                action = NotificationActionReceiver.ACTION_NOTIFICATION_CLICKED
+                putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+            })
+        } catch (e: Throwable) {
 
-       }
+        }
 
 
     }
 
 
-    private fun reportOpen(){
+    private fun reportOpen() {
         ReportDataManager.reportData(
             "app_open", mapOf(
                 "type" to if (isTaskRoot) "cold_open" else "hot_open",
@@ -207,8 +225,8 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             ))
     }
 
-    private fun reportNotificationParam(){
-        val params = mutableMapOf<String,Any>(
+    private fun reportNotificationParam() {
+        val params = mutableMapOf<String, Any>(
             "Notific_Type" to when (intent.getStringExtra(LANDING_NOTIFICATION_FROM)
                 .orEmpty()) {
                 "firebase_push" -> 2
@@ -232,10 +250,11 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             },
             "title" to intent.getStringExtra(LANDING_NOTIFICATION_TITLE).orEmpty(),
             "text" to intent.getStringExtra(LANDING_NOTIFICATION_CONTENT).orEmpty()
-            )
+        )
 
         ReportDataManager.reportData(
-            "Notific_Enter", params)
+            "Notific_Enter", params
+        )
 
         ReportDataManager.reportData(
             "Notific_Click", params.apply {
@@ -254,7 +273,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 
 //            // 初始化 AdMob SDK
 
-            if(BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
+            if (BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
 
             // 显示开屏广告
             val adResult = LaunchAds.getInstance().displayAd(
@@ -265,14 +284,16 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             )
 
             if (adResult is AdResult.Success) {
-                if(BuildState.debug) "开屏广告关闭".logd(TAG)
+                if (BuildState.debug) "开屏广告关闭".logd(TAG)
                 return true
             } else {
-                if(BuildState.debug)  "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(TAG)
+                if (BuildState.debug) "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(
+                    TAG
+                )
                 return false
             }
         } catch (e: Exception) {
-            if(BuildState.debug) "广告初始化或显示异常 e:$e".loge(TAG)
+            if (BuildState.debug) "广告初始化或显示异常 e:$e".loge(TAG)
             return false
         }
     }
@@ -347,33 +368,87 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     /**
      * 检查通知权限
      */
-    private  fun checkNotificationPermission() {
-        "Checking notification permission...".logd(TAG)
-        if(!isLeast13()){
-            pushResult("allow1","Appstart")
-        }
-        pushRequest("Appstart")
+    private fun checkNotificationPermission() {
+        val permissions = PermissionLists.getPostNotificationsPermission()
+        if(!PermissionUtils.hasPermission(this, permissions)){
+            pushRequest("Appstart")
+            if(SpUtils.getBoolean(HAS_NOTIFICATION_PERMISSION,false)){
+                if(BuildState.debug) "notification permission is revoked".logd(PermissionManager.TAG)
+                ReportDataManager.reportData("notify_permission_revoked", mapOf())
+            }
+            PermissionUtils.requestNotificationPermission(this){ isGrand,isDoNotAsk ->
+                if(isGrand){
+                    if(BuildState.debug) "Notification permission granted by user".logd(PermissionManager.TAG)
+                    SpUtils.putBoolean(HAS_NOTIFICATION_PERMISSION,true)
+                    pushResult("allow","Appstart")
 
-        val notificationStatus = permissionManager.checkNotificationPermission()
-
-      when (notificationStatus) {
-            PermissionManager.Companion.PermissionStatus.GRANTED,
-            PermissionManager.Companion.PermissionStatus.NOT_REQUIRED -> {
-                if(BuildState.debug) "Notification permission already granted or not required".logd(TAG)
+                }else{
+                    if (BuildState.debug) "Notification permission denied by user, but continue to main activity".logd(
+                        PermissionManager.TAG
+                    )
+                    pushResult(if (isDoNotAsk) "denied_forever" else "denied", "Appstart")
+                }
                 onPermissionCheckCompleted()
-            }
 
-            PermissionManager.Companion.PermissionStatus.DENIED -> {
-                if(BuildState.debug) "Notification permission denied, requesting...".logd(TAG)
-                permissionManager.requestNotificationPermission(this)
             }
+        }else{
+            val keyFlag = "has_send_def_allow"
+            if (!isLeast13() && !SpUtils.getBoolean(keyFlag,false)) {
+                SpUtils.putBoolean(keyFlag,true)
+                pushResult("allow1", "Appstart")
+            }
+            onPermissionCheckCompleted()
         }
+
+
     }
 
     /**
      * 权限检查完成回调
      */
     private fun onPermissionCheckCompleted() {
+        lifecycleScope.launch {
+            if(BuildState.debug) "普通通知授权流程完成".logd(PermissionManager.TAG)
+            if(!permissionManager.isNotificationPermissionGranted()){
+                if(BuildState.debug) "没有获取到通知权限，不再检查全屏通知".logd(PermissionManager.TAG)
+                stateMachine.onPermissionCheckCompleted()
+                return@launch
+            }
+
+            if(SpUtils.getBoolean(HAS_SHOW_FSI_REQUEST,false)){
+                if(BuildState.debug) "启动页页已请求过FSI权限，不再请求".logd(PermissionManager.TAG)
+                stateMachine.onPermissionCheckCompleted()
+                return@launch
+
+            }
+            if(permissionManager.isSplashCheckFsi()){
+                if(BuildState.debug) "FSI_PERMISSION_POSITION value = 0".logd(PermissionManager.TAG)
+                if(permissionManager.shouldRequestFSIPermission()){
+                    showFSIPermissionExplanationDialog()
+                    SpUtils.putBoolean(HAS_SHOW_FSI_REQUEST,true)
+                }else{
+                    if(BuildState.debug) "有全屏通知权限或系统版本不支持全屏通知".logd(PermissionManager.TAG)
+                    stateMachine.onPermissionCheckCompleted()
+
+                }
+            }else{
+                if(BuildState.debug) "FSI_PERMISSION_POSITION value != 0".logd(PermissionManager.TAG)
+                stateMachine.onPermissionCheckCompleted()
+            }
+        }
+
+    }
+
+    /**
+     * 处理Activity返回结果
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (permissionManager.handleActivityResult(requestCode, resultCode)) {
+            // FSI权限请求处理完成
+            if(BuildState.debug)  "FSI permission activity result handled".logd(PermissionManager.TAG)
+        }
         stateMachine.onPermissionCheckCompleted()
     }
 
@@ -381,41 +456,14 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
      * 动画完成回调
      */
     private fun onAnimationCompleted() {
-        if(BuildState.debug)  "动画执行完成".logd(TAG)
+        if (BuildState.debug) "动画执行完成".logd(TAG)
         stateMachine.onAnimationCompleted()
-    }
-
-    /**
-     * 处理权限请求结果
-     */
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        val handled =
-            permissionManager.handlePermissionResult(requestCode, permissions, grantResults)
-        if (handled && requestCode == PermissionManager.REQUEST_CODE_NOTIFICATION) {
-            // 无论用户是否授权，都完成权限检查流程
-            val currentStatus = permissionManager.checkNotificationPermission()
-            if (currentStatus == PermissionManager.Companion.PermissionStatus.GRANTED) {
-                if(BuildState.debug) "Notification permission granted by user".logd(TAG)
-                pushResult("allow","Appstart")
-            } else {
-                if(BuildState.debug) "Notification permission denied by user, but continue to main activity".logd(TAG)
-                val result = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)
-                pushResult(if(result) "denied" else "denied_forever","Appstart")
-            }
-            onPermissionCheckCompleted()
-        }
     }
 
     /**
      * 启动页状态机，统一管理动画、权限与导航状态
      */
-    private inner class SplashStateMachine(
+    private  class SplashStateMachine(
         private val scope: CoroutineScope,
         private val onNavigate: suspend () -> Unit
     ) {
@@ -433,7 +481,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 return
             }
             animationDone = true
-            if(BuildState.debug) "Animation completed".logd(TAG)
+            if (BuildState.debug) "Animation completed".logd(TAG)
             tryNavigate()
 
         }
@@ -443,7 +491,9 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 return
             }
             permissionDone = true
-            if(BuildState.debug) "Permission check completed".logd(TAG)
+            if (BuildState.debug) "Permission check completed".logd(TAG)
+            if(BuildState.debug) "设置开屏拦截等待结束".logd(PermissionManager.TAG)
+            LaunchAds.getInstance().cancelInterceptor()
             tryNavigate()
 
         }
@@ -453,7 +503,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 return
             }
             adDone = true
-            if(BuildState.debug) "Ad completed".logd(TAG)
+            if (BuildState.debug) "Ad completed".logd(TAG)
             tryNavigate()
         }
 
@@ -473,21 +523,21 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             navigationJob = null
         }
 
-      private  fun tryNavigate() {
+        private fun tryNavigate() {
             if (hasNavigated) {
-                if(BuildState.debug)  "Already navigated, ignore further requests".logd(TAG)
+                if (BuildState.debug) "Already navigated, ignore further requests".logd(TAG)
                 return
             }
 
-            if (!(animationDone && permissionDone && adDone )) {
-                if(BuildState.debug)  "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(
+            if (!(animationDone && permissionDone && adDone)) {
+                if (BuildState.debug) "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(
                     TAG
                 )
                 return
             }
 
             if (navigationJob?.isActive == true) {
-                if(BuildState.debug)  "Navigation coroutine is already running".logd(TAG)
+                if (BuildState.debug) "Navigation coroutine is already running".logd(TAG)
                 return
             }
 
@@ -515,5 +565,27 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 }
             }
         }
+    }
+
+
+    /**
+     * 显示FSI权限说明对话框
+     */
+    private fun showFSIPermissionExplanationDialog() {
+        if(BuildState.debug) "显示FSI权限说明对话框".logd(TAG)
+        permissionManager.recordFSIPermissionRequest()
+        FSIPermissionDialog.show(
+            supportFragmentManager,
+            onAllowPermission = {
+                "User agreed to FSI permission".logd(PermissionManager.TAG)
+                if(!permissionManager.requestFSIPermission(this)){
+                    stateMachine.onPermissionCheckCompleted()
+                }
+            },
+            onDenyPermission = {
+                "User declined FSI permission".logd(PermissionManager.TAG)
+                stateMachine.onPermissionCheckCompleted()
+            }
+        )
     }
 }
