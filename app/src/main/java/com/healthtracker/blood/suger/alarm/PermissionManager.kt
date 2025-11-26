@@ -1,6 +1,5 @@
 package com.healthtracker.blood.suger.alarm
 
-import ads_mobile_sdk.f71
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
@@ -8,15 +7,27 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.constants.FSI_PERMISSION_POSITION
+import com.healthtracker.blood.suger.constants.HAS_NOTIFICATION_PERMISSION
+import com.healthtracker.blood.suger.constants.HAS_REPORT_NOTIFICATION_REVOKED
+import com.healthtracker.blood.suger.ui.act.AlarmManageActivity
+import com.healthtracker.blood.suger.ui.act.MainActivity
+import com.healthtracker.blood.suger.ui.act.SplashActivity
+import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
+import com.healthtracker.blood.suger.util.pushRequest
+import com.healthtracker.blood.suger.util.pushResult
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.util.PermissionUtils
 import com.healthtracker.framework.util.SpUtils
+import com.healthtracker.framework.util.isLeast13
 import com.hjq.permissions.permission.PermissionLists
+import kotlinx.coroutines.launch
 import net.corekit.core.report.ReportDataManager
 import net.corekit.core.utils.ConfigRemoteManager
 import java.util.UUID
@@ -45,7 +56,7 @@ class PermissionManager @Inject constructor(
         // 权限请求码
         const val REQUEST_CODE_NOTIFICATION = 1001
         const val REQUEST_CODE_FSI = 1002
-
+        private const val SPLASH_HAS_SHOW_FSI_REQUEST = "splash_has_show_fsi_request"
         // FSI权限状态存储键
         private const val PREF_FSI_TOTAL_REQUESTS = "fsi_total_requests"
         private const val PREF_FSI_SESSION_REQUESTS = "fsi_session_requests"
@@ -231,13 +242,13 @@ class PermissionManager @Inject constructor(
     suspend fun shouldRequestFSIPermission(): Boolean {
         // 如果已经有权限，不需要请求
         if (isFSIPermissionGranted()) {
-            return false
+            return true
         }
 
         val state = getFSIPermissionState()
 
         val sessionLimit = when{
-            isSplashCheckFsi() -> FSI_MAX_SESSION_REQUESTS + 1
+            isSplashCheckFsi() && !SpUtils.getBoolean(SPLASH_HAS_SHOW_FSI_REQUEST,false) -> FSI_MAX_SESSION_REQUESTS + 1
             else -> FSI_MAX_SESSION_REQUESTS
         }
         // 检查各种限制条件
@@ -246,9 +257,7 @@ class PermissionManager @Inject constructor(
 
         val shouldRequest = withinTotalLimit && withinSessionLimit
 
-        if (BuildState.debug) ("FSI permission request check: total=${state.totalRequestCount}/$FSI_MAX_TOTAL_REQUESTS, " +
-                "session=${state.sessionRequestCount}/$sessionLimit, " +
-                "shouldRequest=$shouldRequest").logd(TAG)
+        if (BuildState.debug) ("FSI permission request check: total=${state.totalRequestCount}/$FSI_MAX_TOTAL_REQUESTS, session=${state.sessionRequestCount}/$sessionLimit, shouldRequest=$shouldRequest").logd(TAG)
 
         return shouldRequest
     }
@@ -275,7 +284,7 @@ class PermissionManager @Inject constructor(
         return isFSIPermissionGranted()
     }
 
-    suspend fun isSplashCheckFsi() = ConfigRemoteManager.getInt(FSI_PERMISSION_POSITION,0) == 0
+    private suspend fun isSplashCheckFsi() = ConfigRemoteManager.getInt(FSI_PERMISSION_POSITION,0) == 0
 
     /**
      * 重置FSI权限状态（用于测试或重置用户选择）
@@ -284,5 +293,136 @@ class PermissionManager @Inject constructor(
         SpUtils.remove(PREF_FSI_TOTAL_REQUESTS)
         SpUtils.remove(PREF_FSI_SESSION_REQUESTS)
         if(BuildState.debug) "FSI permission state reset".logd(TAG)
+    }
+
+    /**
+     * 检查通知权限是否被撤销
+     */
+   private fun checkRevoked(){
+        if(SpUtils.getBoolean(HAS_NOTIFICATION_PERMISSION,false) && SpUtils.getBoolean(
+                HAS_REPORT_NOTIFICATION_REVOKED,false
+            )){
+            if(BuildState.debug) "notification permission is revoked".logd(TAG)
+            SpUtils.putBoolean(HAS_REPORT_NOTIFICATION_REVOKED,true)
+            ReportDataManager.reportData("notify_permission_revoked", mapOf())
+        }
+    }
+
+    /**
+     * 检查通知权限
+     */
+   fun checkNotificationPermission(activity: FragmentActivity, onComplete:(Boolean) -> Unit) {
+
+        val position = when (activity) {
+            is SplashActivity -> "AppStart"
+            is MainActivity -> "Home"
+            is AlarmManageActivity -> "alarm_manager"
+            else -> "other"
+        }
+
+        val permissions = PermissionLists.getPostNotificationsPermission()
+        if(!PermissionUtils.hasPermission(activity, permissions)){
+            if(BuildState.debug) "没有通知权限".logd(TAG)
+            checkRevoked()
+            if(isLeast13()){
+                if(BuildState.debug) "13及以上设备，尝试请求通知权限".logd(TAG)
+                pushRequest("Appstart")
+                PermissionUtils.requestNotificationPermission(activity){ isGrand, isDoNotAsk ->
+                    if(isGrand){
+                        if(BuildState.debug) "Notification permission granted by user".logd(TAG)
+                        SpUtils.putBoolean(HAS_NOTIFICATION_PERMISSION,true)
+                        pushResult("allow",position)
+                        activity.lifecycleScope.launch {
+                            checkFSIPermission(activity,onComplete)
+                        }
+
+                    }else{
+                        if (BuildState.debug) "Notification permission denied by user, is forever:$isDoNotAsk".logd(
+                            TAG
+                        )
+                        pushResult(if (isDoNotAsk) "denied_forever" else "denied", position)
+                        onComplete.invoke(false)
+                    }
+
+                }
+            }else{
+                if(BuildState.debug) "13以下设备，直接完成通知权限流程".logd(TAG)
+                onComplete.invoke(false)
+            }
+
+        }else{
+            if(BuildState.debug) "有通知权限".logd(TAG)
+            val keyFlag = "has_send_def_allow"
+            if (!isLeast13()) {
+                if (BuildState.debug) "13以下设备".logd(TAG)
+                if(!SpUtils.getBoolean(keyFlag, false)){
+                    if (BuildState.debug) "上报默认授权通知权限".logd(TAG)
+                    SpUtils.putBoolean(keyFlag, true)
+                    pushResult("allow1", position)
+                    SpUtils.putBoolean(HAS_NOTIFICATION_PERMISSION,true)
+                }else{
+                    if (BuildState.debug) "已经上报默认授权通知权限".logd(TAG)
+                }
+                onComplete.invoke(true)
+            } else {
+                if (BuildState.debug) "13及以上设备".logd(TAG)
+                activity.lifecycleScope.launch {
+                    checkFSIPermission(activity,onComplete)
+                }
+            }
+
+        }
+    }
+
+
+    private suspend fun checkFSIPermission(activity: FragmentActivity,onComplete:(Boolean) -> Unit){
+        val isSplash = activity is SplashActivity
+
+        if(isSplash){
+            if(!isSplashCheckFsi()){
+                if(BuildState.debug) "FSI_permission_position = 1,启动页不需要检查FSI权限".logd(TAG)
+                onComplete.invoke(true)
+                return
+            }else{
+                if(BuildState.debug) "FSI_permission_position = 0,启动页需要检查FSI权限".logd(TAG)
+            }
+            if(SpUtils.getBoolean(SPLASH_HAS_SHOW_FSI_REQUEST,false)){
+                if(BuildState.debug) "启动页页已请求过FSI权限，不再请求".logd(TAG)
+                onComplete.invoke(true)
+                return
+            }
+        }else{
+            if(BuildState.debug) "非启动页页检查FSI权限".logd(TAG)
+        }
+        if(shouldRequestFSIPermission()){
+            showFSIPermissionExplanationDialog(activity,onComplete)
+            SpUtils.putBoolean(SPLASH_HAS_SHOW_FSI_REQUEST,true)
+        }else{
+            if(BuildState.debug) "有全屏通知权限或系统版本不支持全屏通知".logd(TAG)
+            onComplete.invoke(true)
+
+        }
+    }
+
+    /**
+     * 显示FSI权限说明对话框
+     */
+    private fun showFSIPermissionExplanationDialog(activity: FragmentActivity,onComplete:(Boolean) -> Unit) {
+        if(BuildState.debug) "显示FSI权限说明对话框".logd(TAG)
+        recordFSIPermissionRequest()
+        FSIPermissionDialog.show(
+            activity.supportFragmentManager,
+            onAllowPermission = {
+                if (BuildState.debug) "前往FSI授权页面".logd(TAG)
+                if (!requestFSIPermission(activity)) {
+                    if (BuildState.debug) "跳转FSI授权页面识别".logd(TAG)
+                    onComplete.invoke(true)
+                }
+            },
+            onDenyPermission = {
+                if (BuildState.debug) "用户拒绝授权FSI权限".logd(TAG)
+                onComplete.invoke(true)
+            }
+        )
     }
 }

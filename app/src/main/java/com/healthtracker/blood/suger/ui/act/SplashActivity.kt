@@ -12,17 +12,13 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.alarm.PermissionManager
-import com.healthtracker.blood.suger.constants.HAS_NOTIFICATION_PERMISSION
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_CONTENT
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
-import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
 import com.healthtracker.blood.suger.util.logEvent
-import com.healthtracker.blood.suger.util.pushRequest
-import com.healthtracker.blood.suger.util.pushResult
 import com.healthtracker.blood.suger.utils.isAdPage
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
@@ -35,10 +31,6 @@ import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
-import com.healthtracker.framework.util.PermissionUtils
-import com.healthtracker.framework.util.SpUtils
-import com.healthtracker.framework.util.isLeast13
-import com.hjq.permissions.permission.PermissionLists
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -61,7 +53,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 
     companion object {
         private const val TAG = "SplashActivity"
-        private const val HAS_SHOW_FSI_REQUEST = "has_show_fsi_request"
+
     }
 
     private var isAdLoaded = false
@@ -138,7 +130,9 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
             }
 
             playAnimations()
-            checkNotificationPermission()
+            permissionManager.checkNotificationPermission(this@SplashActivity){
+                onPermissionCheckCompleted()
+            }
             checkNotificationOpen()
 
             try {
@@ -365,77 +359,14 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         return ObjectAnimator.ofFloat(view, "alpha", 0f, 1.0f)
     }
 
-    /**
-     * 检查通知权限
-     */
-    private fun checkNotificationPermission() {
-        val permissions = PermissionLists.getPostNotificationsPermission()
-        if(!PermissionUtils.hasPermission(this, permissions)){
-            pushRequest("Appstart")
-            if(SpUtils.getBoolean(HAS_NOTIFICATION_PERMISSION,false)){
-                if(BuildState.debug) "notification permission is revoked".logd(PermissionManager.TAG)
-                ReportDataManager.reportData("notify_permission_revoked", mapOf())
-            }
-            PermissionUtils.requestNotificationPermission(this){ isGrand,isDoNotAsk ->
-                if(isGrand){
-                    if(BuildState.debug) "Notification permission granted by user".logd(PermissionManager.TAG)
-                    SpUtils.putBoolean(HAS_NOTIFICATION_PERMISSION,true)
-                    pushResult("allow","Appstart")
 
-                }else{
-                    if (BuildState.debug) "Notification permission denied by user, but continue to main activity".logd(
-                        PermissionManager.TAG
-                    )
-                    pushResult(if (isDoNotAsk) "denied_forever" else "denied", "Appstart")
-                }
-                onPermissionCheckCompleted()
-
-            }
-        }else{
-            val keyFlag = "has_send_def_allow"
-            if (!isLeast13() && !SpUtils.getBoolean(keyFlag,false)) {
-                SpUtils.putBoolean(keyFlag,true)
-                pushResult("allow1", "Appstart")
-            }
-            onPermissionCheckCompleted()
-        }
-
-
-    }
 
     /**
      * 权限检查完成回调
      */
     private fun onPermissionCheckCompleted() {
-        lifecycleScope.launch {
-            if(BuildState.debug) "普通通知授权流程完成".logd(PermissionManager.TAG)
-            if(!permissionManager.isNotificationPermissionGranted()){
-                if(BuildState.debug) "没有获取到通知权限，不再检查全屏通知".logd(PermissionManager.TAG)
-                stateMachine.onPermissionCheckCompleted()
-                return@launch
-            }
-
-            if(SpUtils.getBoolean(HAS_SHOW_FSI_REQUEST,false)){
-                if(BuildState.debug) "启动页页已请求过FSI权限，不再请求".logd(PermissionManager.TAG)
-                stateMachine.onPermissionCheckCompleted()
-                return@launch
-
-            }
-            if(permissionManager.isSplashCheckFsi()){
-                if(BuildState.debug) "FSI_PERMISSION_POSITION value = 0".logd(PermissionManager.TAG)
-                if(permissionManager.shouldRequestFSIPermission()){
-                    showFSIPermissionExplanationDialog()
-                    SpUtils.putBoolean(HAS_SHOW_FSI_REQUEST,true)
-                }else{
-                    if(BuildState.debug) "有全屏通知权限或系统版本不支持全屏通知".logd(PermissionManager.TAG)
-                    stateMachine.onPermissionCheckCompleted()
-
-                }
-            }else{
-                if(BuildState.debug) "FSI_PERMISSION_POSITION value != 0".logd(PermissionManager.TAG)
-                stateMachine.onPermissionCheckCompleted()
-            }
-        }
+        if(BuildState.debug) "启动页通知授权流程完成".logd(PermissionManager.TAG)
+        stateMachine.onPermissionCheckCompleted()
 
     }
 
@@ -565,27 +496,5 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 }
             }
         }
-    }
-
-
-    /**
-     * 显示FSI权限说明对话框
-     */
-    private fun showFSIPermissionExplanationDialog() {
-        if(BuildState.debug) "显示FSI权限说明对话框".logd(TAG)
-        permissionManager.recordFSIPermissionRequest()
-        FSIPermissionDialog.show(
-            supportFragmentManager,
-            onAllowPermission = {
-                "User agreed to FSI permission".logd(PermissionManager.TAG)
-                if(!permissionManager.requestFSIPermission(this)){
-                    stateMachine.onPermissionCheckCompleted()
-                }
-            },
-            onDenyPermission = {
-                "User declined FSI permission".logd(PermissionManager.TAG)
-                stateMachine.onPermissionCheckCompleted()
-            }
-        )
     }
 }
