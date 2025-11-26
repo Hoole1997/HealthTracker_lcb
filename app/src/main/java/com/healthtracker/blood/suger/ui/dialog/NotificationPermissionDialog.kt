@@ -42,6 +42,7 @@ class NotificationPermissionDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isCancelable = false
         // 恢复时直接关闭
         if (savedInstanceState != null) {
             dismissAllowingStateLoss()
@@ -58,13 +59,16 @@ class NotificationPermissionDialog(
         mViewBind?.apply {
             // 设置对话框内容
             tvTitle.text = getString(R.string.notification_permission_title)
-            tvMessage.text = getString(R.string.notification_permission_message)
+            tvContent.text = getString(R.string.notification_permission_des)
 
             // 设置按钮文本
-            btnGoToSet.text = getString(R.string.go_to_settings)
+            btnAllow.text = getString(R.string.turn_on)
             // 设置按钮点击事件
-            btnGoToSet.click {
+            btnAllow.click {
                 onGoToSettings?.invoke()
+                dismissAllowingStateLoss()
+            }
+            ivClose.click {
                 dismissAllowingStateLoss()
             }
         }
@@ -75,6 +79,4 @@ class NotificationPermissionDialog(
         onCancel?.invoke()
     }
 
-
-    override fun isCancelable(): Boolean = true
 }

@@ -248,14 +248,14 @@
   💊 규칙적인 복약 습관 유지\n
   🕒 필요할 때 잠금 화면에서도 확인 가능\n
   ❤️ 당신의 건강을 위하여 </string>
+    <string name="fsi_permission_advantages_title">도움이 되는 이유:</string>
     <string name="fsi_permission_warning">이는 오직 귀하의 건강을 지원하기 위해서만 사용됩니다.</string>
     <string name="turn_on">켜기</string>
     <string name="fsi_permission_deny">나중에</string>
 
     <!-- 通知权限相关字符串 -->
-    <string name="notification_permission_title">알림 권한 필요</string>
-    <string name="notification_permission_message">알림을 보내려면 알림 권한이 필요합니다</string>
-    <string name="go_to_settings">설정하기</string>
+    <string name="notification_permission_title">건강 목표를 달성하세요</string>
+    <string name="notification_permission_des">알림을 활성화하여 수분 섭취, 복약, 활동에 대한 시기적절한 알림을 받으세요. 건강한 습관을 놓치지 마세요!</string>
     <string name="close">닫기</string>
     <string name="medication_name_temp">💊 %1$s</string>
     <string name="meds_notes_temp">📝 %1$s</string>

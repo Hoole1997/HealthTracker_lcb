@@ -980,9 +980,8 @@
     <string name="fsi_permission_deny">Not now</string>
 
     <!-- 通知权限相关字符串 -->
-    <string name="notification_permission_title">Notification permission required</string>
-    <string name="notification_permission_message">Notification permission is required to send you reminds</string>
-    <string name="go_to_settings">Turn on</string>
+    <string name="notification_permission_title">Stay on track with your health goals</string>
+    <string name="notification_permission_des">Enable notifications to receive timely reminders for water intake, medication, and activities. Never miss a healthy habit again!</string>
     <string name="close">Close</string>
     <string name="medication_name_temp">💊 %1$s</string>
     <string name="meds_notes_temp">📝 %1$s</string>
