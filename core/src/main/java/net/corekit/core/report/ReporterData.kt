@@ -84,7 +84,7 @@ object ReportDataManager {
      * @param eventName 事件名称
      * @param data 数据Map
      */
-    fun reportData(eventName: String, data: Map<String, Any>) {
+    fun reportData(eventName: String, data: Map<String, Any> = mapOf()) {
         try {
             // 遍历所有上报器进行上报
             reporters.forEach { reporter ->

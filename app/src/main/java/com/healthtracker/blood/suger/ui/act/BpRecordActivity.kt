@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
-import com.healthtracker.blood.suger.ad.reportAddRecord
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
@@ -14,12 +13,13 @@ import com.healthtracker.blood.suger.ui.viewmodel.BpRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.blood.suger.utils.showInter
-import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.showToast
+import com.healthtracker.blood.suger.ui.tracker.HealthType
+import com.healthtracker.blood.suger.ui.tracker.trackAddNewRecord
 import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoRegular
 import dagger.hilt.android.AndroidEntryPoint
@@ -154,7 +154,7 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, ActivityBpRecordBin
     private fun setupSaveButton() {
         // 设置保存按钮点击事件
         mViewBind.btnSave.clickWithDuration {
-            reportAddRecord(getString(R.string.blood_pressure))
+            trackAddNewRecord(HealthType.BLOOD_PRESSURE)
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 val result = mViewModel.saveBloodPressureRecord()

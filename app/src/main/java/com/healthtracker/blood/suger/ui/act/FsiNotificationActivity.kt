@@ -25,10 +25,11 @@ class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotifi
     override fun isFullscreenWithNavigationBar() = true
     override fun isFullscreen() = true
     override fun initView(savedInstanceState: Bundle?) {
+        ReportDataManager.reportData("full_screen_show")
         setupFullScreenMode()
         with(mViewBind){
             root.clickWithDuration {
-                ReportDataManager.reportData("full_screen_click",mapOf())
+                ReportDataManager.reportData("full_screen_click")
                 unlockAndOpen()
                 finishAndRemoveTask()
             }

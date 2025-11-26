@@ -1,7 +1,6 @@
 package com.healthtracker.blood.suger.ui.act
 
 // 移除广播接收器相关导入，改用页面可见状态检查月份变化
-import ads_mobile_sdk.jo
 import android.Manifest
 import android.content.Intent
 import android.os.Build
@@ -27,13 +26,11 @@ import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.dialog.ActivityPerRequestDialog
 import com.healthtracker.blood.suger.ui.dialog.ExitDialog
-import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
 import com.healthtracker.blood.suger.ui.dialog.NativeCardDialog
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.InsightsFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
 import com.healthtracker.blood.suger.ui.fragment.RecordFragment
-import com.healthtracker.blood.suger.ui.fragment.reportEnterPage
 import com.healthtracker.blood.suger.ui.viewmodel.MainViewModel
 import com.healthtracker.blood.suger.utils.loadBanner
 import com.healthtracker.framework.BuildState
@@ -43,6 +40,8 @@ import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
+import com.healthtracker.blood.suger.ui.tracker.HealthType
+import com.healthtracker.blood.suger.ui.tracker.trackEnterPageClick
 import com.healthtracker.framework.util.Restore
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CompletableDeferred
@@ -213,6 +212,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     override fun getVMModelClass() = MainViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        ReportDataManager.reportData("Home_Show",mapOf())
         // 初始化 FSI 权限 Launcher（必须在 onCreate/initView 中同步调用）
         permissionManager.initFSILauncher(this) { granted ->
             if (BuildState.debug) "FSI permission result from settings: $granted".logd(
@@ -474,7 +474,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         permissionRequest?.let {
             it.launch { isSuccess, showSettingsRedirect, hasPermission ->
                 if (isSuccess || hasPermission) {
-                    reportEnterPage("Walking Steps")
+                    trackEnterPageClick(HealthType.WALKING_STEPS)
                     startActivity<StepCountActivity>()
                 } else if (showSettingsRedirect) {
                     ActivityPerRequestDialog.show(supportFragmentManager) {
@@ -484,7 +484,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                 }
             }
         } ?: {
-            reportEnterPage("Walking Steps")
+            trackEnterPageClick(HealthType.WALKING_STEPS)
             startActivity<StepCountActivity>()
         }
     }

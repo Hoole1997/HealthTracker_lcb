@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
-import com.healthtracker.blood.suger.ad.reportAddRecord
 import com.healthtracker.blood.suger.data.enums.CholesterolLevel
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityCholesterolRecordBinding
@@ -22,6 +21,8 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
+import com.healthtracker.blood.suger.ui.tracker.HealthType
+import com.healthtracker.blood.suger.ui.tracker.trackAddNewRecord
 import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoRegular
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,7 +76,7 @@ class CholesterolRecordActivity :
     private fun setupActionBar() {
         mViewBind.btnBack.clickWithDuration { onBackPress() }
         mViewBind.btnSave.clickWithDuration {
-            reportAddRecord(getString(R.string.cholesterol))
+            trackAddNewRecord(HealthType.CHOLESTEROL)
             lifecycleScope.launch {
                 mViewModel.updateRecordTime(mViewBind.dateTimeSelectionView.getSelectDate())
                 when (val result = mViewModel.saveRecord()) {

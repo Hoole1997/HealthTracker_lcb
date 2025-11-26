@@ -1,6 +1,5 @@
 package com.healthtracker.blood.suger.ui.act
 
-import ads_mobile_sdk.el
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -36,9 +35,9 @@ import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
+import com.healthtracker.blood.suger.ui.tracker.HealthType
 import com.healthtracker.framework.util.getRobotoMedium
 import dagger.hilt.android.AndroidEntryPoint
-import net.corekit.core.report.ReportDataManager
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
@@ -84,17 +83,7 @@ class HealthStatisticsActivity :
             metricType: HealthMetric? = null,
             dateRangePreset: HealthStatisticsViewModel.DateRangePreset? = null
         ) {
-            ReportDataManager.reportData("enter_Trackerpage_click",mapOf("page_name" to when(metricType){
-                HealthMetric.BLOOD_SUGAR -> "Blood Sugar"
-                HealthMetric.BLOOD_PRESSURE -> "Blood Pressure"
-                HealthMetric.CHOLESTEROL -> "Cholesterol"
-                HealthMetric.HEART_RATE -> "Heart Rate"
-                HealthMetric.BMI -> "BMI"
-                HealthMetric.STEPS -> "Walking Steps"
-                HealthMetric.HYDRATION -> "Hydration"
-                else -> ""
 
-            }))
             val extras = mutableListOf<Pair<String, Any?>>()
 
             metricType?.let {
@@ -131,6 +120,21 @@ class HealthStatisticsActivity :
     override fun onResume() {
         super.onResume()
         mViewModel.refreshPreferredUnit()
+    }
+    
+    /**
+     * 获取当前显示的健康类型用于返回事件追踪
+     */
+    override fun getCurrentHealthType(): HealthType {
+        return when (currentMetricType) {
+            HealthMetric.BLOOD_SUGAR -> HealthType.BLOOD_SUGAR
+            HealthMetric.BLOOD_PRESSURE -> HealthType.BLOOD_PRESSURE
+            HealthMetric.CHOLESTEROL -> HealthType.CHOLESTEROL
+            HealthMetric.HEART_RATE -> HealthType.HEART_RATE
+            HealthMetric.BMI -> HealthType.BMI
+            HealthMetric.STEPS -> HealthType.WALKING_STEPS
+            HealthMetric.HYDRATION -> HealthType.HYDRATE
+        }
     }
 
     override fun initView(savedInstanceState: Bundle?) {

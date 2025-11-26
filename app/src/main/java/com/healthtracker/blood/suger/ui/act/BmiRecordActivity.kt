@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
-import com.healthtracker.blood.suger.ad.reportAddRecord
 import com.healthtracker.blood.suger.data.constants.BodyMetricsDefaults
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BmiUnit
@@ -22,6 +21,8 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
+import com.healthtracker.blood.suger.ui.tracker.HealthType
+import com.healthtracker.blood.suger.ui.tracker.trackAddNewRecord
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
@@ -147,7 +148,7 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, ActivityBmiRecor
 
     private fun setupSaveButton() {
         mViewBind.btnSave.clickWithDuration {
-            reportAddRecord(getString(R.string.bmi))
+            trackAddNewRecord(HealthType.BMI)
             lifecycleScope.launch {
                 mViewBind.dateTimeSelectionView.getSelectDate().let { date ->
                     mViewModel.updateRecordTime(date)

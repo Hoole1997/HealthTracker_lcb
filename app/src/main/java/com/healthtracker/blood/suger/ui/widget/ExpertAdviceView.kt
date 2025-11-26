@@ -1,7 +1,6 @@
 package com.healthtracker.blood.suger.ui.widget
 
 import android.content.Context
-import android.graphics.Color
 import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -24,16 +23,18 @@ import com.healthtracker.blood.suger.ui.act.showFreeLockConfirm
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
-import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.visible
-import com.healthtracker.framework.R as FrameworkR
-import eightbitlab.com.blurview.RenderScriptBlur
+import com.healthtracker.blood.suger.ui.tracker.HealthType
+import com.healthtracker.blood.suger.ui.tracker.trackAdAutoCancel
+import com.healthtracker.blood.suger.ui.tracker.trackAdAutoPlay
+import com.healthtracker.blood.suger.ui.tracker.trackRecommCancel
+import com.healthtracker.blood.suger.ui.tracker.trackRecommFreeUnlock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.corekit.core.report.ReportDataManager
+import com.healthtracker.framework.R as FrameworkR
 
 /**
  * 专家建议自定义控件
@@ -151,9 +152,7 @@ class ExpertAdviceView @JvmOverloads constructor(
     private fun initViews() {
         // 设置按钮点击事件
         binding.btnCancel.click {
-            pageName?.let {
-                ReportDataManager.reportData("Ad_auto_Cancel",mapOf("page_name" to pageName))
-            }
+            context.trackAdAutoCancel(getHealthType(context))
             onCancelClicked()
         }
 
@@ -171,7 +170,6 @@ class ExpertAdviceView @JvmOverloads constructor(
         binding.tvAdviceContent.text = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
     }
 
-
     private val pageName = when(context){
         is BpDetailActivity -> "Blood Pressure"
         is BsDetailActivity -> "Blood Sugar"
@@ -180,6 +178,7 @@ class ExpertAdviceView @JvmOverloads constructor(
         is HeartRateDetailActivity -> "Heart Rate"
         else -> null
     }
+    
     /**
      * 设置遮罩层可见性（自动控制模糊效果）
      *
@@ -209,14 +208,10 @@ class ExpertAdviceView @JvmOverloads constructor(
             // 移除自动开始倒计时，由外部控制
             if(context is AppCompatActivity){
                 (context as AppCompatActivity).showFreeLockConfirm({
-                    pageName?.let {
-                        ReportDataManager.reportData("recomm_FreeUnlock",mapOf("page_name" to pageName))
-                    }
+                    context.trackRecommFreeUnlock(getHealthType(context))
                     listener?.onGetTipClicked()
                 },{
-                    pageName?.let {
-                        ReportDataManager.reportData("recomm_Cancel",mapOf("page_name" to pageName))
-                    }
+                    context.trackRecommCancel(getHealthType(context))
                     startCountdown()
                 })
             }
@@ -307,9 +302,7 @@ class ExpertAdviceView @JvmOverloads constructor(
 
             // 检查是否正常结束（非暂停导致的退出）
             if (remainingSeconds <= 0 && !isPaused) {
-                pageName?.let {
-                    ReportDataManager.reportData("Ad_auto_play",mapOf("page_name" to pageName))
-                }
+                context.trackAdAutoPlay(getHealthType(context))
                 onCountdownFinished()
             }
         }
@@ -446,5 +439,16 @@ class ExpertAdviceView @JvmOverloads constructor(
 
         // 移除生命周期观察者
         lifecycleOwner?.lifecycle?.removeObserver(lifecycleObserver)
+    }
+
+    private fun getHealthType(activity: Context): HealthType {
+        return when (activity) {
+            is BsDetailActivity -> HealthType.BLOOD_SUGAR
+            is BpDetailActivity -> HealthType.BLOOD_PRESSURE
+            is CholesterolDetailActivity -> HealthType.CHOLESTEROL
+            is BmiDetailActivity -> HealthType.BMI
+            is HeartRateDetailActivity -> HealthType.HEART_RATE
+            else -> HealthType.OTHER
+        }
     }
 }

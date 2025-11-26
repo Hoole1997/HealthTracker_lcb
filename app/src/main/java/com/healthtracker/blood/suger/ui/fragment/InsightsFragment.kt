@@ -22,7 +22,8 @@ import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.util.getRobotoBold
-import net.corekit.core.report.ReportDataManager
+import com.healthtracker.blood.suger.ui.tracker.HealthType
+import com.healthtracker.blood.suger.ui.tracker.trackInsightsCategoryClick
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
@@ -75,8 +76,15 @@ class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>
 
                 override fun onPageSelected(position: Int) {
                    "onPageSelected: $position".logd("InsightsFragment")
-                    val categoryNames = listOf("Blood Sugar", "Blood Pressure", "Heart Rate", "Hydrate", "Walking Steps")
-                    ReportDataManager.reportData("Insights_category_click",mapOf("page_name" to categoryNames.getOrElse(position) { "Unknown" }))
+                    val healthType = when(position) {
+                        0 -> HealthType.BLOOD_SUGAR
+                        1 -> HealthType.BLOOD_PRESSURE
+                        2 -> HealthType.HEART_RATE
+                        3 -> HealthType.HYDRATE
+                        4 -> HealthType.WALKING_STEPS
+                        else -> HealthType.BLOOD_SUGAR // Default fallback
+                    }
+                    requireContext().trackInsightsCategoryClick(healthType)
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {

@@ -49,9 +49,10 @@ import com.hyy.highlightpro.parameter.HighlightParameter
 import com.hyy.highlightpro.parameter.MarginOffset
 import com.hyy.highlightpro.shape.RectShape
 import com.hyy.highlightpro.util.dp
+import com.healthtracker.blood.suger.ui.tracker.HealthType
+import com.healthtracker.blood.suger.ui.tracker.trackEnterPageClick
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CompletableDeferred
-import net.corekit.core.report.ReportDataManager
 import java.util.Date
 import java.util.Locale
 
@@ -104,17 +105,17 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clPsRecord.clickWithDuration {
-                reportEnterPage("Blood Sugar")
+                requireContext().trackEnterPageClick(HealthType.BLOOD_SUGAR)
                 BsRecordActivity.start(requireActivity())
 
             }
             btnRecordNow.clickWithDuration {
-                reportEnterPage("Blood Sugar")
+                requireContext().trackEnterPageClick(HealthType.BLOOD_SUGAR)
                 BsRecordActivity.start(requireActivity())
             }
 
             clBloodPressure.clickWithDuration {
-                reportEnterPage("Blood Pressure")
+                requireContext().trackEnterPageClick(HealthType.BLOOD_PRESSURE)
                 requireActivity().startActivity<BpRecordActivity>()
             }
 
@@ -133,7 +134,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             }
 
             clHydrate.clickWithDuration {
-                reportEnterPage("Hydrate")
+                requireContext().trackEnterPageClick(HealthType.HYDRATE)
                 requireActivity().startActivity<HydrateActivity>()
             }
             clStepCount.clickWithDuration {
@@ -471,22 +472,19 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun navigateToActivity(activityType: PendingActivityType) {
         when (activityType) {
             PendingActivityType.BMI -> {
-                reportEnterPage("BMI")
+                requireContext().trackEnterPageClick(HealthType.BMI)
                 requireActivity().startActivity<BmiRecordActivity>()
             }
             PendingActivityType.CHOLESTEROL -> {
-                reportEnterPage("Cholesterol")
+                requireContext().trackEnterPageClick(HealthType.CHOLESTEROL)
                 CholesterolRecordActivity.start(requireActivity())
             }
             PendingActivityType.HEART_RATE -> {
-                reportEnterPage("Heart Rate")
+                requireContext().trackEnterPageClick(HealthType.HEART_RATE)
                 requireActivity().startActivity<HeartRateRecordActivity>()
             }
         }
     }
 
 
-}
-fun reportEnterPage(pageName:String){
-    ReportDataManager.reportData("enter_page_click",mapOf("page_name" to pageName))
 }

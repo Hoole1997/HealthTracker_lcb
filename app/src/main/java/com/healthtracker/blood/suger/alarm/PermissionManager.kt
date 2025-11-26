@@ -131,9 +131,9 @@ class PermissionManager @Inject constructor(
 
                     if (granted) {
                         if(BuildState.debug) "FSI permission granted after settings".logd(TAG)
-                        // TODO: 暂不上报 FSI 权限埋点
-                        // ReportDataManager.reportData("permission_full_screen_result", mapOf("result" to "allow"))
+                        ReportDataManager.reportData("permission_full_screen_allow",mapOf("position" to getFSIRequestPosition(activity)))
                     } else {
+                        ReportDataManager.reportData("permission_full_screen_denied",mapOf("position" to getFSIRequestPosition(activity)))
                         if(BuildState.debug) "FSI permission still denied after settings".logw(TAG)
                     }
 
@@ -481,6 +481,7 @@ class PermissionManager @Inject constructor(
                 if (BuildState.debug) "用户拒绝授权FSI权限".logd(TAG)
                 cleanFSILauncher()
                 onComplete.invoke(true)
+                 ReportDataManager.reportData("permission_full_screen_denied",mapOf("position" to getFSIRequestPosition(activity)))
             }
         )
     }
@@ -513,6 +514,13 @@ class PermissionManager @Inject constructor(
         }) {
             onComplete.invoke(false)
         }
+    }
+
+    private fun getFSIRequestPosition(activity: FragmentActivity) = when(activity){
+        is SplashActivity -> "loading"
+        is MainActivity -> "home"
+        is AlarmManageActivity -> "alarm"
+        else -> "other"
     }
 
 }
