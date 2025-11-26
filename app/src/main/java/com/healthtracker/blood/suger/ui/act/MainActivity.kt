@@ -84,23 +84,28 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
     private var permissionRequest: PermissionRequest? = null
     private var job : Job? = null
+    private var hasShowNative = false
     override fun onResume() {
         super.onResume()
-        job = lifecycleScope.launch {
-            delay(200)
-            if(BuildState.debug) "等待高亮完成".logd(PermissionManager.TAG)
-            homeFrg?.highLightComplete?.await()
-            if(isActive){
-                if(BuildState.debug) "高亮完成".logd(PermissionManager.TAG)
-                NativeCardDialog.showOncePerMinute(this@MainActivity){
-                    onceNativeCardComplete.complete(true)
-                    if(BuildState.debug) "首页原生弹窗完成".logd(PermissionManager.TAG)
+        if(!hasShowNative){
+            job = lifecycleScope.launch {
+                delay(200)
+                if(BuildState.debug) "等待高亮完成".logd(PermissionManager.TAG)
+                homeFrg?.highLightComplete?.await()
+                if(isActive){
+                    if(BuildState.debug) "高亮完成".logd(PermissionManager.TAG)
+                    hasShowNative = true
+                    NativeCardDialog.showOncePerMinute(this@MainActivity){
+                        onceNativeCardComplete.complete(true)
+                        if(BuildState.debug) "首页原生弹窗完成".logd(PermissionManager.TAG)
+                    }
+                }else{
+                    if(BuildState.debug) "原生弹窗协程已经取消".logd(PermissionManager.TAG)
                 }
-            }else{
-                if(BuildState.debug) "原生弹窗协程已经取消".logd(PermissionManager.TAG)
-            }
 
+            }
         }
+
     }
 
     override fun onStop() {
@@ -109,6 +114,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         recordLastActiveTime()
         if(BuildState.debug) "Recorded last active time when MainActivity stopped".logd(TAG)
         if(BuildState.debug) "取消原生弹窗协程".logd(PermissionManager.TAG)
+        hasShowNative = false
         job?.cancel()
 
     }
@@ -477,11 +483,8 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
 
     private suspend fun checkFSIPermission(){
-        if (permissionManager.shouldRequestFSIPermission()) {
-            if (BuildState.debug) "满足全屏通知权限弹出条件".logd(PermissionManager.TAG)
-            showFSIPermissionExplanationDialog()
-        } else {
-            if (BuildState.debug) "不满足全屏通知权限弹出条件".logd(PermissionManager.TAG)
+        permissionManager.checkNotificationPermission(this){
+
         }
     }
 

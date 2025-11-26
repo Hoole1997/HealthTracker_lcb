@@ -1,5 +1,7 @@
 package com.healthtracker.blood.suger.alarm
 
+import ads_mobile_sdk.ac
+import android.R.attr.data
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
@@ -17,6 +19,7 @@ import com.healthtracker.blood.suger.ui.act.AlarmManageActivity
 import com.healthtracker.blood.suger.ui.act.MainActivity
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.blood.suger.ui.dialog.FSIPermissionDialog
+import com.healthtracker.blood.suger.ui.dialog.NotificationPermissionDialog
 import com.healthtracker.blood.suger.util.pushRequest
 import com.healthtracker.blood.suger.util.pushResult
 import com.healthtracker.framework.BuildState
@@ -57,6 +60,7 @@ class PermissionManager @Inject constructor(
         const val REQUEST_CODE_NOTIFICATION = 1001
         const val REQUEST_CODE_FSI = 1002
         private const val SPLASH_HAS_SHOW_FSI_REQUEST = "splash_has_show_fsi_request"
+        private const val CUSTOM_NOTIFICATION_PERMISSION_REQUEST_TIMES = "custom_notification_permission_request_times"
         // FSI权限状态存储键
         private const val PREF_FSI_TOTAL_REQUESTS = "fsi_total_requests"
         private const val PREF_FSI_SESSION_REQUESTS = "fsi_session_requests"
@@ -66,6 +70,7 @@ class PermissionManager @Inject constructor(
         // FSI权限请求限制
         private const val FSI_MAX_TOTAL_REQUESTS = 3
         private const val FSI_MAX_SESSION_REQUESTS = 1
+        private const val MAX_CUSTOM_NOTIFICATION_PERMISSION_REQUEST = 2
 
         // 权限检查结果
         enum class PermissionStatus {
@@ -75,6 +80,7 @@ class PermissionManager @Inject constructor(
         }
     }
 
+    private var hasShowCustomNotificationRequest = false
     /**
      * FSI权限状态数据类
      */
@@ -341,7 +347,13 @@ class PermissionManager @Inject constructor(
                             TAG
                         )
                         pushResult(if (isDoNotAsk) "denied_forever" else "denied", position)
-                        onComplete.invoke(false)
+                        if (isDoNotAsk && activity !is SplashActivity) {
+                            if(BuildState.debug) "非启动页，永久拒绝，尝试自定义弹窗请求通知权限".logd(TAG)
+                            showCustomNotificationRequest(activity,onComplete)
+                        } else {
+                            onComplete.invoke(false)
+                        }
+
                     }
 
                 }
@@ -425,4 +437,31 @@ class PermissionManager @Inject constructor(
             }
         )
     }
+
+    private fun showCustomNotificationRequest(activity: FragmentActivity,onComplete: (Boolean) -> Unit){
+        if (activity is MainActivity) {
+            if (hasShowCustomNotificationRequest) {
+                if (BuildState.debug) "本次启动，用户已请求过通知权限，不再请求".logd(
+                    TAG
+                )
+                onComplete.invoke(false)
+                return
+            }
+            val count = SpUtils.getInt(CUSTOM_NOTIFICATION_PERMISSION_REQUEST_TIMES, 0)
+            if (count >= MAX_CUSTOM_NOTIFICATION_PERMISSION_REQUEST) {
+                if (BuildState.debug) "首页，自定义通知权限请求弹窗，达到最大请求次数($count/$MAX_CUSTOM_NOTIFICATION_PERMISSION_REQUEST)，不再请求".logd(
+                    TAG
+                )
+                return
+            }
+            SpUtils.putInt(CUSTOM_NOTIFICATION_PERMISSION_REQUEST_TIMES, count + 1)
+            hasShowCustomNotificationRequest = true
+        } else {
+            if (BuildState.debug) "非首页(闹钟设置页面)，自定义通知权限请求弹窗，不受限制".logd(TAG)
+        }
+        NotificationPermissionDialog.show(activity.supportFragmentManager, onGoToSettings = {}) {
+            onComplete.invoke(false)
+        }
+    }
+
 }
