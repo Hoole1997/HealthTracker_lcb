@@ -17,29 +17,36 @@ import com.healthtracker.blood.suger.databinding.FragmentGuide1Binding
 import com.healthtracker.blood.suger.databinding.FragmentGuide2Binding
 import com.healthtracker.blood.suger.databinding.FragmentGuide3Binding
 import com.healthtracker.blood.suger.saveHasNewGuide
-import com.healthtracker.blood.suger.utils.loadNative
+import com.healthtracker.blood.suger.utils.loadFullNative
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.visible
 import com.zhpan.indicator.enums.IndicatorSlideMode
 import com.zhpan.indicator.enums.IndicatorStyle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.corekit.core.report.ReportDataManager
+import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
 
 class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
     override fun createViewBinding() = ActivityGuideBinding.inflate(layoutInflater)
 
+    private val isShowNative = AdConfigManager.shouldShowGuideFullNative()
     override fun getVMModelClass() = BaseViewModel::class.java
     private val hasPassStep = mutableListOf<Int>()
     override fun initView(savedInstanceState: Bundle?) {
         with(mViewBind) {
 
-            val frags = arrayListOf(GuideFrag1(), GuideFragAd(), GuideFrag2(), GuideFrag3())
+            val frags = mutableListOf(GuideFrag1(), GuideFrag2(), GuideFrag3())
+            if(isShowNative){
+                frags.add(1,GuideFragAd())
+            }
             viewpager.adapter = GuidePageAdapter(frags, this@GuideActivity)
 
             tvSkip.clickWithDuration {
@@ -65,15 +72,16 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
                     super.onPageSelected(position)
                     indicatorView.onPageSelected(position)
                     group.visible()
-                    if(position != 1){
-                        val index = if(position < 1) 1 else position
-                        reportGuide(index)
+                    if (isShowNative && position > 1) {
+                        reportGuide(position + 1)
+                    } else {
+                        reportGuide(position + 2)
                     }
                     if (position == frags.size - 1) {
                         btnNext.text = getString(R.string.start_health_journey)
                     } else {
                         btnNext.text = getString(R.string.next)
-                        if(position == 1){
+                        if(isShowNative && position == 1){
                             group.gone()
                         }
                     }
@@ -139,7 +147,9 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
 
 
 fun reportGuide(flag:Int){
-    ReportDataManager.reportData("Guide",mapOf("guide" to flag))
+    ReportDataManager.reportData("Guide",mapOf("guide" to flag).also {
+        if(BuildState.debug) "上报：Guide,data:$it".logd("GuideActivity")
+    })
 }
 
 
@@ -181,7 +191,7 @@ class GuideFragAd : BaseMVVMFragment<BaseViewModel, FragmentGuide2Binding>() {
 
             if (context is GuideActivity) {
                 val activity = context as GuideActivity
-                activity.loadNative(
+                activity.loadFullNative(
                     adContainer,
                     style = NativeAdStyle.createCustom(
                         net.corekit.monetize.R.layout.layout_fullscreen_native_ad,

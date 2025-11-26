@@ -53,6 +53,8 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
                 btnBack.click {
                     finish()
                 }
+            }else{
+                reportGuide(1)
             }
             tvConfirm.clickWithDuration {
                 onChoiceLangDone()

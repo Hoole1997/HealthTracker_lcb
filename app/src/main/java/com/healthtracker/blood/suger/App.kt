@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import net.corekit.core.utils.ConfigRemoteManager
+import net.corekit.monetize.ads.config.AdConfigManager
 import java.lang.ref.WeakReference
 import java.util.Locale
 import javax.inject.Inject
@@ -42,7 +43,6 @@ class App : MultiDexApplication() {
         @JvmStatic
         var defaultLocale: WeakReference<Locale>? = null
 
-        private const val CONFIG_LONG_LEAVE_APP = "long_leave_app"
     }
 
     init {
@@ -141,7 +141,7 @@ class App : MultiDexApplication() {
 
     suspend fun isLongLeaveApp(): Boolean{
         val leaveTime = System.currentTimeMillis() - leaveAppTime
-        val configLongLeaveTime = ConfigRemoteManager.getInt(CONFIG_LONG_LEAVE_APP,10) * 1000L
+        val configLongLeaveTime = AdConfigManager.getLongLeaveTime() * 1000L
         if(BuildState.debug) "leaveTime = $leaveTime ms configLongLeaveTime = $configLongLeaveTime ms".logd(TAG)
 
         return leaveTime > configLongLeaveTime

@@ -46,17 +46,17 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>(
     override fun getVMModelClass() = BaseViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        reportGuide(8)
+        reportGuide(9)
         launchMode = resolveLaunchMode(intent)
 
         with(mViewBind){
             btnContinue.clickWithDuration {
-                reportGuide(9)
+                reportGuide(10)
                 handleSaveAndFinish()
             }
 
             tvSkip.clickWithDuration {
-                reportGuide(9)
+                reportGuide(10)
                 handleSaveAndFinish()
             }
 

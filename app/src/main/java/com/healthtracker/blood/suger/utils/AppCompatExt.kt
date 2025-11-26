@@ -13,6 +13,7 @@ import com.healthtracker.framework.ext.logd
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.BannerAds
+import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.InterstitialAds
 import net.corekit.monetize.ads.NativeAds
 import net.corekit.monetize.ads.RewardedAds
@@ -104,6 +105,50 @@ fun FragmentActivity.loadNative(
             } else {
                 container.visibility = View.GONE
                 call.invoke(false)
+            }
+        } catch (e: Exception) {
+            container.visibility = View.GONE
+            call.invoke(false)
+        }
+    }
+}
+
+fun FragmentActivity.loadFullNative(
+    container: ViewGroup,
+    style: NativeAdStyle = NativeAdStyle.STANDARD,
+    condition: () -> Boolean = { true },
+    onClick: () -> Unit = {App.INSTANCE.isClickAdLeave = true},
+    call: (Boolean) -> Unit = {}
+
+) {
+    lifecycleScope.launch {
+        try {
+            // 检查条件是否满足
+            if (!condition.invoke()) {
+                container.visibility = View.GONE
+                call.invoke(false)
+                return@launch
+            }
+
+            val success = FullNativeAds.getInstance().displayAdInView(
+                context = container.context,
+                container = container,
+                this@loadFullNative,
+            )
+
+            when(success){
+                is AdResult.Success -> {
+                    container.visibility = View.VISIBLE
+                    call.invoke(true)
+                }
+                is AdResult.Failure -> {
+                    container.visibility = View.GONE
+                    call.invoke(false)
+                }
+                AdResult.Loading -> {
+
+                }
+
             }
         } catch (e: Exception) {
             container.visibility = View.GONE

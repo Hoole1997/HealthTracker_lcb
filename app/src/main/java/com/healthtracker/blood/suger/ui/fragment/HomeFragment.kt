@@ -371,7 +371,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             .setOnMaskViewClickCallback { index ->
                 //do something
                 BpRecordActivity.start(requireActivity())
-                reportGuide(5)
+                reportGuide(6)
             }
             .setOnShowCallback {
                 isShowHighligh = true
@@ -406,7 +406,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 //do something
                 isShowHighligh = true
                 BsRecordActivity.start(requireActivity())
-                reportGuide(6)
+                reportGuide(7)
             }
             .setOnShowCallback {
                 saveShowGuideBs()
@@ -439,7 +439,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 //do something
                 isHeighLightLeave = true
                 navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
-                reportGuide(7)
+                reportGuide(8)
             }
             .setOnShowCallback {
                 isShowHighligh = true

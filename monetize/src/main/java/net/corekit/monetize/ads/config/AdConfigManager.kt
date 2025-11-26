@@ -240,13 +240,13 @@ object AdConfigManager {
     /**
      * 获取返回主页时是否展示插屏
      */
-    fun shouldShowInterstitialOnHomeReturn(): Boolean {
+    fun shouldShowGuideFullNative(): Boolean {
         return configData?.let { config ->
             when (ChannelUserController.getCurrentChannel()) {
-                ChannelUserController.UserChannelType.NATURAL -> config.natural.showInterstitialOnHomeReturn == 1
-                ChannelUserController.UserChannelType.PAID -> config.paid.showInterstitialOnHomeReturn == 1
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.showGuideFullNative == 1
+                ChannelUserController.UserChannelType.PAID -> config.paid.showGuideFullNative == 1
             }
-        } ?: false
+        } ?: true
     }
 
     /**
@@ -264,13 +264,13 @@ object AdConfigManager {
     /**
      * 获取随机插屏页间隔（秒）
      */
-    fun getRandomInterstitialInterval(): Int {
+    fun getLongLeaveTime(): Int {
         return configData?.let { config ->
             when (ChannelUserController.getCurrentChannel()) {
-                ChannelUserController.UserChannelType.NATURAL -> config.natural.randomInterstitialInterval
-                ChannelUserController.UserChannelType.PAID -> config.paid.randomInterstitialInterval
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.longLeaveTime
+                ChannelUserController.UserChannelType.PAID -> config.paid.longLeaveTime
             }
-        }?.takeIf { it > 0 } ?: 60
+        } ?: 20
     }
 
     /**

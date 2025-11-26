@@ -22,8 +22,8 @@ data class AdConfigData(
         val fullscreenNativeAfterInterstitial: Int,
         @SerializedName("fallback_fullpage_on_launch_fail")
         val showInterstitialAfterAppOpenFailure: Int,
-        @SerializedName("trigger_fullpage_on_home")
-        val showInterstitialOnHomeReturn: Int,
+        @SerializedName("Guide_Full_Native")
+        val showGuideFullNative: Int,
         @SerializedName("enable_launch_ad_on_locale")
         val showAppOpenOnLanguageSelection: Int,
         @SerializedName("enable_bottom_ad_on_locale")
@@ -37,7 +37,9 @@ data class AdConfigData(
         @SerializedName(value = "native_time_interval")
         val homeNativeTimeInterval: Int,
         @SerializedName(value = "splash_time_out")
-        val splashTimeout:Int
+        val splashTimeout:Int,
+        @SerializedName(value = "long_leave_app")
+        val longLeaveTime: Int,
     )
     
     data class AdTypeConfig(
