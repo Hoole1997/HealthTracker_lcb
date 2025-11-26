@@ -103,6 +103,13 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
     override fun getVMModelClass() = BaseViewModel::class.java
     private var launchTime = 0L
     override fun initView(savedInstanceState: Bundle?) {
+        // 初始化 FSI 权限 Launcher（必须在 onCreate/initView 中同步调用）
+        permissionManager.initFSILauncher(this@SplashActivity) { granted ->
+            if (BuildState.debug) "FSI permission result: $granted".logd(PermissionManager.TAG)
+            // 从设置页面返回后继续权限检查流程
+            stateMachine.onPermissionCheckCompleted()
+        }
+        
         lifecycleScope.launch {
             try {
                 if (!isTaskRoot) {
@@ -368,19 +375,6 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         if(BuildState.debug) "启动页通知授权流程完成".logd(PermissionManager.TAG)
         stateMachine.onPermissionCheckCompleted()
 
-    }
-
-    /**
-     * 处理Activity返回结果
-     */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (permissionManager.handleActivityResult(requestCode, resultCode)) {
-            // FSI权限请求处理完成
-            if(BuildState.debug)  "FSI permission activity result handled".logd(PermissionManager.TAG)
-        }
-        stateMachine.onPermissionCheckCompleted()
     }
 
     /**

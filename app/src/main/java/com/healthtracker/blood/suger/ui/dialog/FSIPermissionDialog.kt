@@ -42,7 +42,8 @@ class FSIPermissionDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ReportDataManager.reportData("permission_full_screen_show",mapOf())
+        // TODO: 暂不上报 FSI 权限埋点
+        // ReportDataManager.reportData("permission_full_screen_show",mapOf())
 
         // 恢复时直接关闭
         if (savedInstanceState != null) {
@@ -65,7 +66,8 @@ class FSIPermissionDialog(
             }
 
             btnDenyPermission.click {
-                ReportDataManager.reportData("permission_full_screen_result",mapOf("result" to "deny"))
+                // TODO: 暂不上报 FSI 权限埋点
+                // ReportDataManager.reportData("permission_full_screen_result",mapOf("result" to "deny"))
                 onDenyPermission?.invoke()
                 dismissAllowingStateLoss()
             }

@@ -213,6 +213,12 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     override fun getVMModelClass() = MainViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        // 初始化 FSI 权限 Launcher（必须在 onCreate/initView 中同步调用）
+        permissionManager.initFSILauncher(this) { granted ->
+            if (BuildState.debug) "FSI permission result from settings: $granted".logd(
+                PermissionManager.TAG)
+        }
+        
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissionRequest = permission()
             permissionRequest?.with(this)
@@ -260,7 +266,9 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             if(BuildState.debug) "等待首页banner完成".logd(PermissionManager.TAG)
             bannerShowComplete.await()
             if(BuildState.debug) "首页banner完成，继续流程".logd(PermissionManager.TAG)
-            checkFSIPermission()
+            permissionManager.checkNotificationPermission(this@MainActivity){
+                if(BuildState.debug) "通知权限检查完成".logd(PermissionManager.TAG)
+            }
         }
     }
 
@@ -478,45 +486,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         } ?: {
             reportEnterPage("Walking Steps")
             startActivity<StepCountActivity>()
-        }
-    }
-
-
-    private suspend fun checkFSIPermission(){
-        permissionManager.checkNotificationPermission(this){
-
-        }
-    }
-
-    /**
-     * 显示FSI权限说明对话框
-     */
-    private fun showFSIPermissionExplanationDialog() {
-        if(BuildState.debug) "显示FSI权限说明对话框".logd(PermissionManager.TAG)
-        permissionManager.recordFSIPermissionRequest()
-        FSIPermissionDialog.show(
-            supportFragmentManager,
-            onAllowPermission = {
-                "User agreed to FSI permission setting".logd(PermissionManager.TAG)
-                permissionManager.requestFSIPermission(this)
-            },
-            onDenyPermission = {
-                "User declined FSI permission".logd(PermissionManager.TAG)
-
-
-            }
-        )
-    }
-
-    /**
-     * 处理Activity返回结果
-     */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (permissionManager.handleActivityResult(requestCode, resultCode)) {
-            // FSI权限请求处理完成
-           if(BuildState.debug) "FSI permission activity result handled".logd(PermissionManager.TAG)
         }
     }
 

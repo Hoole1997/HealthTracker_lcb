@@ -8,7 +8,6 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.FragmentMedsBinding
 import com.healthtracker.blood.suger.ui.act.AddReminderActivity
@@ -28,15 +27,11 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
-import androidx.core.graphics.drawable.toDrawable
 import net.corekit.core.report.ReportDataManager
 
 @AndroidEntryPoint
 class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
 
-    @Inject
-    lateinit var permissionManager: PermissionManager
 
     private lateinit var reminderAdapter: MedsReminderAdapter
 

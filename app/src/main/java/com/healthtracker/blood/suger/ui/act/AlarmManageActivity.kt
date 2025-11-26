@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.App
+import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.constants.HAS_NOTIFICATION_PERMISSION
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.databinding.ActivityAlarmManagerBinding
@@ -25,9 +26,13 @@ import com.healthtracker.framework.util.SpUtils
 import com.hjq.permissions.permission.PermissionLists
 import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.core.report.ReportDataManager
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManagerBinding>() {
+
+    @Inject
+    lateinit var permissionManager: PermissionManager
 
     // 血糖闹钟适配器
     private lateinit var bloodSugarAdapter: AlarmAdapter
@@ -41,6 +46,11 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
     override fun getVMModelClass() = AlarmViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
+        // 初始化 FSI 权限 Launcher（必须在 onCreate/initView 中同步调用）
+        permissionManager.initFSILauncher(this) { granted ->
+            if (BuildState.debug) "FSI permission result from settings: $granted".logd(
+                PermissionManager.TAG)
+        }
         // 检查通知权限
         checkNotificationPermission()
         setupActionBar()
@@ -126,36 +136,9 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
      */
     private fun checkNotificationPermission() {
         var isTurnOn = false
-        val permissions = PermissionLists.getPostNotificationsPermission()
-        if(!PermissionUtils.hasPermission(this, permissions)){
-            if(SpUtils.getBoolean(HAS_NOTIFICATION_PERMISSION,false)){
-                if(BuildState.debug) "notification permission is revoked".logd(TAG)
-                ReportDataManager.reportData("notify_permission_revoked", mapOf())
-            }
-            pushRequest("alarm_manager")
-            PermissionUtils.requestNotificationPermission(this){ isGrand,isDoNotAsk ->
-                if(isGrand){
-                    pushResult("allow","alarm_manager")
-                    "Notification permission granted".logd(TAG)
-                    SpUtils.putBoolean(HAS_NOTIFICATION_PERMISSION,true)
-                }else{
-                    pushResult("denied","alarm_manager")
-                    "Notification permission denied".logw(TAG)
-                    if(isDoNotAsk){
-                        NotificationPermissionDialog.show(supportFragmentManager, onGoToSettings = {
-                            if(BuildState.debug) "go to permission setting page".logd(TAG)
-                            isTurnOn = true
-                            PermissionUtils.openPermissionSettings(this,arrayOf(permissions))
-                            App.INSTANCE.isGoSetting = true
-                        }){
-                            if(!isTurnOn){
-                                finish()
-                            }
-
-                        }
-                    }
-                }
-
+        permissionManager.checkNotificationPermission(this, onGoSetting = { isTurnOn = true}){
+            if(!it){
+                finish()
             }
         }
 

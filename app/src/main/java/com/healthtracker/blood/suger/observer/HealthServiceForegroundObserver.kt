@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.observer
 
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.helper.NotificationHelper
 import com.healthtracker.blood.suger.manager.HealthServiceManager
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
@@ -82,6 +83,12 @@ class HealthServiceForegroundObserver @Inject constructor(
             "click ad leave app,block all push".logd(PushOrchestrator.TAG)
             return
         }
+
+        if(App.INSTANCE.isFeatureLeave || App.INSTANCE.isClickAdLeave || App.INSTANCE.isGoSetting){
+            "feature or click ad leave app,block all push".logd(PushOrchestrator.TAG)
+            return
+        }
+
         NotificationHelper.show(PushScenario.BACKGROUND)
     }
 }
