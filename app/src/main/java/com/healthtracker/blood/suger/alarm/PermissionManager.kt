@@ -108,10 +108,12 @@ class PermissionManager @Inject constructor(
     /**
      * 初始化 FSI 权限 Launcher
      * 必须在 Activity.onCreate() 中调用
-     * 智能判断：基于完整的业务规则判断是否需要注册（版本、权限状态、请求次数等）
      * 
-     * 注意：因为 registerForActivityResult() 必须同步调用，所以先注册 Launcher，
-     * 然后在协程中异步检查业务规则，如果不需要则清空
+     * 修复说明：
+     * - registerForActivityResult() 必须在 Activity CREATED 状态前同步调用
+     * - 业务逻辑检查（shouldRequestFSIPermission）在协程中异步执行
+     * - 采用"先注册，后决策"模式，符合 Android 官方最佳实践
+     * - 添加异常捕获，避免意外崩溃
      * 
      * @param activity FragmentActivity 实例
      * @param onResult 权限结果回调，参数为是否授予权限
@@ -120,12 +122,12 @@ class PermissionManager @Inject constructor(
         activity: FragmentActivity, 
         onResult: (Boolean) -> Unit
     ) {
-        activity.lifecycleScope.launch {
-            if (shouldRequestFSIPermission(activity)) {
-                // 先注册 Launcher（必须同步进行）
-                val launcher = activity.registerForActivityResult(
-                    ActivityResultContracts.StartActivityForResult()
-                ) {
+        try {
+            // 1. 同步注册 Launcher（必须在协程外直接调用，避免生命周期违规）
+            val launcher = activity.registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) {
+                try {
                     // 检查FSI权限状态
                     val granted = isFSIPermissionGranted()
 
@@ -138,23 +140,46 @@ class PermissionManager @Inject constructor(
                     }
 
                     onResult(granted)
+                } catch (e: Exception) {
+                    if(BuildState.debug) "Error in FSI launcher callback: ${e.message}".loge(TAG)
+                    e.printStackTrace()
+                    onResult(false)
+                } finally {
                     // 使用后立即清空引用，帮助 GC 回收
                     cleanFSILauncher()
                 }
-
-                // 存储 Launcher 用于后续调用
-                if(BuildState.debug) "注册,FSI授权回调".logw(TAG)
-                fsiLauncher = launcher
-                if(BuildState.debug) "FSI launcher initialized and ready".logd(TAG)
-
-            } else {
-                if(BuildState.debug) "不需要请求FSI权限，注销授权结果回调".logd(TAG)
-                onResult.invoke(true)
             }
+
+            // 2. 存储 Launcher 引用
+            fsiLauncher = launcher
+            if(BuildState.debug) "注册,FSI授权回调".logw(TAG)
+
+            // 3. 异步检查业务规则，决定是否实际使用 launcher
+            activity.lifecycleScope.launch {
+                try {
+                    if (shouldRequestFSIPermission(activity)) {
+                        if(BuildState.debug) "FSI launcher initialized and ready".logd(TAG)
+                    } else {
+                        // 不需要请求FSI权限时，清理 launcher 并回调成功
+                        if(BuildState.debug) "不需要请求FSI权限，清理授权回调".logd(TAG)
+                        cleanFSILauncher()
+                        onResult.invoke(true)
+                    }
+                } catch (e: Exception) {
+                    if(BuildState.debug) "Error checking FSI permission requirement: ${e.message}".loge(TAG)
+                    e.printStackTrace()
+                    // 出错时清理资源并回调失败
+                    cleanFSILauncher()
+                    onResult.invoke(false)
+                }
+            }
+        } catch (e: Exception) {
+            // 捕获注册过程中的异常（如生命周期状态错误）
+            if(BuildState.debug) "Failed to initialize FSI launcher: ${e.message}".loge(TAG)
+            e.printStackTrace()
+            // 即使初始化失败也要调用回调，避免流程卡住
+            onResult.invoke(false)
         }
-
-        
-
     }
 
 
@@ -218,7 +243,7 @@ class PermissionManager @Inject constructor(
                 // 获取 Launcher
                 val launcher = fsiLauncher
                 if (launcher == null) {
-                    if(BuildState.debug) "FSI launcher not initialized".loge(TAG)
+                    if(BuildState.debug) "FSI launcher not initialized, cannot request permission".loge(TAG)
                     return false
                 }
                 
@@ -228,6 +253,7 @@ class PermissionManager @Inject constructor(
                 return true
             } catch (e: Exception) {
                 if(BuildState.debug) "Failed to open FSI settings: ${e.message}".loge(TAG)
+                e.printStackTrace()
                 return false
             }
         } else {
