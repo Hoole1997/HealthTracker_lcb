@@ -1,7 +1,9 @@
 package com.healthtracker.framework.util
 
 import android.content.Context
+import android.text.format.DateFormat
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 /**
@@ -92,5 +94,58 @@ object DateFormatUtils {
             else -> "MMM d" // 默认 en
         }
         return SimpleDateFormat(format, locale)
+    }
+
+    /**
+     * 获取12小时制时间格式（带 AM/PM）
+     * 例如：1:36 PM (en), 下午1:36 (zh)
+     *
+     * @param locale 目标语言环境
+     * @param fallbackToEnglish 是否在语言资源缺失时降级到英文格式（默认 true）
+     */
+    fun getLocaleTimeFormat12H(
+        locale: Locale,
+        fallbackToEnglish: Boolean = true
+    ): SimpleDateFormat {
+        val lang = locale.language
+        val format = when (lang) {
+            "zh" -> "ahh:mm"  // 下午1:36
+            "ja" -> "ahh:mm"  // 午後1:36
+            "ko" -> "a h:mm"  // 오후 1:36
+            else -> "h:mm a"  // 1:36 PM
+        }
+
+        return try {
+            SimpleDateFormat(format, locale).apply {
+                // 验证 locale 是否可用
+                this.format(Date())
+            }
+        } catch (e: Exception) {
+            // 降级到英文格式
+            if (fallbackToEnglish) {
+                SimpleDateFormat("h:mm a", Locale.US)
+            } else {
+                throw e
+            }
+        }
+    }
+
+    /**
+     * 获取24小时制时间格式（不带 AM/PM）
+     * 例如：13:36
+     */
+    fun getLocaleTimeFormat24H(locale: Locale): SimpleDateFormat {
+        return SimpleDateFormat("HH:mm", locale)
+    }
+
+    /**
+     * 根据系统设置自动选择12/24小时制
+     */
+    fun getLocaleTimeFormatAuto(context: Context, locale: Locale): SimpleDateFormat {
+        return if (DateFormat.is24HourFormat(context)) {
+            getLocaleTimeFormat24H(locale)
+        } else {
+            getLocaleTimeFormat12H(locale)
+        }
     }
 }

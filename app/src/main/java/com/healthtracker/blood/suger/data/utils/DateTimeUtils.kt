@@ -70,7 +70,18 @@ object DateTimeUtils {
      * @return 格式化字符串，如 "14:30"
      */
     fun formatTime(date: Date): String {
-        val format = DateFormatUtils.getLocaleDateFormatMD(LanguageUtils.getAppLocale(App.INSTANCE))
+        val format = DateFormatUtils.getLocaleTimeFormat12H(LanguageUtils.getAppLocale(App.INSTANCE))
+        return format.format(date)
+    }
+
+
+    /**
+     * 格式化显示时间
+     * @param date Date对象
+     * @return 格式化字符串，如 "14:30"
+     */
+    fun formatTimeAuto(date: Date): String {
+        val format = DateFormatUtils.getLocaleTimeFormatAuto(App.INSTANCE,LanguageUtils.getAppLocale(App.INSTANCE))
         return format.format(date)
     }
 

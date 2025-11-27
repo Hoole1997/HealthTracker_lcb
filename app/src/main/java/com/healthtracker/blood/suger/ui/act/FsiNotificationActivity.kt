@@ -1,22 +1,31 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.app.KeyguardManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.models.PushMessage
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityFsiNotificationBinding
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.util.hasOreo
 import net.corekit.core.report.ReportDataManager
+import java.sql.Date
 
 class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotificationBinding>() {
     companion object{
         const val EXTRA_PUSH_MESSAGE = "extra_push_message"
+        private const val TAG = "FsiNotificationActivity"
     }
     override fun createViewBinding() = ActivityFsiNotificationBinding.inflate(layoutInflater)
 
@@ -26,7 +35,9 @@ class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotifi
     override fun isFullscreen() = true
     override fun initView(savedInstanceState: Bundle?) {
         ReportDataManager.reportData("full_screen_show")
+        registerTimeChangeReceiver()  // 注册时间变更监听
         setupFullScreenMode()
+        onTimeChanged()
         with(mViewBind){
             root.clickWithDuration {
                 ReportDataManager.reportData("full_screen_click")
@@ -99,4 +110,73 @@ class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotifi
     }
 
     override fun getStatusBarColor() = com.healthtracker.framework.R.color.transparent
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            unregisterReceiver(timeChangeReceiver)
+        } catch (e: IllegalArgumentException) {
+            // 防止重复取消注册
+            "取消注册时间广播失败: ${e.message}".logd(TAG)
+        }
+    }
+
+    /**
+     * 系统时间被手动更改
+     */
+    private fun onTimeChanged() {
+        with(mViewBind){
+            val current = DateTimeUtils.now()
+            val formatDate = DateTimeUtils.formatDate(current)
+            if(BuildState.debug) "当前日期：$formatDate".logd(TAG)
+            tvDate.text = formatDate
+            val formatTime = DateTimeUtils.formatTime(current)
+            if(BuildState.debug) "当前时间：$formatTime".logd(TAG)
+            tvTime.text = formatTime
+        }
+    }
+
+    /**
+     * 注册时间变更广播接收器
+     */
+    private fun registerTimeChangeReceiver() {
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_TIME_CHANGED)
+            addAction(Intent.ACTION_DATE_CHANGED)
+            addAction(Intent.ACTION_TIMEZONE_CHANGED)
+            addAction(Intent.ACTION_TIME_TICK)  // 可选：每分钟触发
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13+ 需要指定 RECEIVER_NOT_EXPORTED
+            registerReceiver(timeChangeReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(timeChangeReceiver, filter)
+        }
+    }
+
+    // 时间变更广播接收器
+    private val timeChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                Intent.ACTION_TIME_CHANGED -> {
+                    if(BuildState.debug) "系统时间被手动更改".logd(TAG)
+                    onTimeChanged()
+                }
+                Intent.ACTION_DATE_CHANGED -> {
+                    if(BuildState.debug) "日期变更（跨天）".logd(TAG)
+                    onTimeChanged()
+                }
+                Intent.ACTION_TIMEZONE_CHANGED -> {
+                    if(BuildState.debug) "时区变更".logd(TAG)
+                    onTimeChanged()
+                }
+                Intent.ACTION_TIME_TICK -> {
+                    if(BuildState.debug) "每分钟触发".logd(TAG)
+                    onTimeChanged()
+                }
+            }
+        }
+    }
+
 }

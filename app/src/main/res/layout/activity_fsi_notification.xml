@@ -4,10 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:gravity="center"
     android:keepScreenOn="true"
-
     android:minWidth="@dimen/dp_370"
     tools:context=".ui.act.MedicationReminderFullScreenActivity">
 
@@ -22,7 +20,7 @@
         android:layout_marginBottom="@dimen/dp_8"
         android:textColor="@color/white"
         android:textSize="@dimen/dp_56"
-        android:text="13:36 PM" />
+        tools:text="13:36 PM" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_date"
@@ -35,7 +33,7 @@
         app:layout_constraintBottom_toTopOf="@id/ll_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="05 Nov 25" />
+        tools:text="05 Nov 25" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_content"
@@ -150,7 +148,7 @@
                 android:backgroundTint="@color/c5"
                 android:gravity="center"
                 android:paddingHorizontal="10dp"
-                android:text="View Now"
+                android:text="@string/view_now"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
