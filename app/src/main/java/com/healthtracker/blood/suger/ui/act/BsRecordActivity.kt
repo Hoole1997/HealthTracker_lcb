@@ -133,7 +133,7 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBin
     private fun setupRulerView() {
         with(mViewBind) {
             rulerView.setOnChooseResultListener(object : RulerView.OnChooseResultListener {
-                override fun onEndResult(result: String) {
+                override fun onEndResult(result: Float) {
                     try {
                         "onEndResult result = $result".logd(TAG)
                         mViewModel.updateValue(result.toFloat())
@@ -143,12 +143,11 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBin
                     }
                 }
 
-                override fun onScrollResult(result: String) {
+                override fun onScrollResult(result: Float) {
                     try {
                         "onScrollResult result = $result".logd(TAG)
-                        val value = result.toFloat()
                         val currentUnit = mViewModel.currentUnit.value
-                        tvSelectValue.text = BsUnit.formatValue(value, currentUnit)
+                        tvSelectValue.text = BsUnit.formatValue(result, currentUnit)
 
                     } catch (e: NumberFormatException) {
                         // 处理转换异常

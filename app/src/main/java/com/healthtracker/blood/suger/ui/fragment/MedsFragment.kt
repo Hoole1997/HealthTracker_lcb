@@ -28,6 +28,7 @@ import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
 import net.corekit.core.report.ReportDataManager
+import java.util.Date
 
 @AndroidEntryPoint
 class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
@@ -120,31 +121,26 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
     private fun observeViewModel() {
         // 观察选中日期的变化
         collectLatest(mViewModel.selectedDate) { date ->
-            "Selected date changed: ${DateTimeUtils.formatDate(date)}".logd(TAG)
             onDateChanged(date)
         }
 
         // 观察周状态的变化
         collectLatest(mViewModel.isCurrentWeek) { isCurrentWeek ->
-            "Week status changed: isCurrentWeek=$isCurrentWeek".logd(TAG)
             onWeekStatusChanged(isCurrentWeek)
         }
 
         // 观察格式化月份的变化
-        collectLatest(mViewModel.formattedMonth) { formattedMonth ->
-            "Formatted month changed: $formattedMonth".logd(TAG)
-            onFormattedMonthChanged(formattedMonth)
+        collectLatest(mViewModel.formattedMonth) { date ->
+            onFormattedMonthChanged(DateTimeUtils.formatMonthYear(date))
         }
 
         // 观察药物提醒列表数据变化 - 使用collectLatest确保只处理最新的列表状态
         collectLatest(mViewModel.reminderItems) { reminderItems ->
-            "Reminder list data changed: ${reminderItems.size} items".logd(TAG)
             updateReminderList(reminderItems)
         }
 
         // 观察是否可以添加提醒的状态变化
         collectLatest(mViewModel.canAddReminder) { canAdd ->
-            "Add button state changed: canAdd=$canAdd".logd(TAG)
             updateAddButtonState(canAdd)
         }
 
@@ -283,7 +279,7 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
      * 获取格式化的月份Flow
      * @return StateFlow<String> 格式化的月份字符串Flow
      */
-    fun getFormattedMonthFlow(): StateFlow<String> {
+    fun getDateFlow(): StateFlow<Date> {
         return mViewModel.formattedMonth
     }
 

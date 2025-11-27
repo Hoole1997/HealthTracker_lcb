@@ -1,5 +1,8 @@
 package com.healthtracker.blood.suger.data.utils
 
+import com.healthtracker.blood.suger.App
+import com.healthtracker.framework.util.DateFormatUtils
+import com.healthtracker.framework.util.LanguageUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,7 +40,7 @@ object DateTimeUtils {
      * @return 格式化字符串，如 "2024-01-15 14:30"
      */
     fun formatDateTime(date: Date): String {
-        val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH)
         return format.format(date)
     }
 
@@ -47,7 +50,7 @@ object DateTimeUtils {
      * @return 格式化字符串，如 "2024-01-15 14:30:25"
      */
     fun formatDateTimeWithSeconds(date: Date): String {
-        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.ENGLISH)
         return format.format(date)
     }
 
@@ -57,7 +60,7 @@ object DateTimeUtils {
      * @return 格式化字符串，如 "2024-01-15"
      */
     fun formatDate(date: Date): String {
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val format = DateFormatUtils.getLocaleDateFormatYMD(LanguageUtils.getAppLocale(App.INSTANCE))
         return format.format(date)
     }
 
@@ -67,19 +70,10 @@ object DateTimeUtils {
      * @return 格式化字符串，如 "14:30"
      */
     fun formatTime(date: Date): String {
-        val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val format = DateFormatUtils.getLocaleDateFormatMD(LanguageUtils.getAppLocale(App.INSTANCE))
         return format.format(date)
     }
 
-    /**
-     * 格式化显示中文日期时间
-     * @param date Date对象
-     * @return 格式化字符串，如 "2024年1月15日 14:30"
-     */
-    fun formatChineseDateTime(date: Date): String {
-        val format = SimpleDateFormat("yyyy年M月d日 HH:mm", Locale.getDefault())
-        return format.format(date)
-    }
 
     /**
      * 格式化显示月份年份（简写）
@@ -87,7 +81,7 @@ object DateTimeUtils {
      * @return 格式化字符串，如 "Sep.2025"
      */
     fun formatMonthYear(date: Date): String {
-        val format = SimpleDateFormat("MMM.yyyy", Locale.getDefault())
+        val format = DateFormatUtils.getLocaleDateFormatYM(LanguageUtils.getAppLocale(App.INSTANCE))
         return format.format(date)
     }
 
@@ -265,7 +259,7 @@ object DateTimeUtils {
      * @return 两位数字符串，如 "09", "15"
      */
     fun formatTwoDigit(number: Int): String {
-        return String.format(Locale.getDefault(), "%02d", number)
+        return String.format(LanguageUtils.getAppLocale(App.INSTANCE), "%02d", number)
     }
 
     /**
@@ -275,7 +269,7 @@ object DateTimeUtils {
      * @return 时间字符串，如 "09:30", "15:45"
      */
     fun formatTimeComponents(hour: Int, minute: Int): String {
-        return String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
+        return String.format(LanguageUtils.getAppLocale(App.INSTANCE), "%02d:%02d", hour, minute)
     }
 
     /**

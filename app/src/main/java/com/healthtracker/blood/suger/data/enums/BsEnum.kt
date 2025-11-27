@@ -1,9 +1,12 @@
 package com.healthtracker.blood.suger.data.enums
 
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.BloodSugarRangeManager
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.blood.suger.ui.weight.LevelCategory
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import kotlin.math.roundToInt
 
 /**
@@ -318,7 +321,7 @@ enum class BsUnit(
         fun formatValue(value: Float, unit: BsUnit): String {
             return when (unit.decimalPlaces) {
                 0 -> value.roundToInt().toString()
-                else -> String.format("%.${unit.decimalPlaces}f", value)
+                else -> NumberFormatter.formatNumber(value.toDouble(), LanguageUtils.getAppLocale(App.INSTANCE),unit.decimalPlaces)
             }
         }
 

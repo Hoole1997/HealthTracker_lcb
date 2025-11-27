@@ -31,6 +31,11 @@ class RulerView @JvmOverloads constructor(
         private const val DEFAULT_SCALE_GAP = 20f
         private const val ANIMATION_DURATION = 300L
         private const val MIN_VELOCITY_THRESHOLD = 50
+        
+        // 精度阈值常量
+        private const val FLOAT_COMPARISON_EPSILON = 0.01f
+        private const val POSITION_SNAP_THRESHOLD = 0.1f
+        private const val MIN_ANIMATION_DELTA = 1
     }
 
     /**
@@ -121,6 +126,9 @@ class RulerView @JvmOverloads constructor(
     private var lastMoveX = 0f
     private var isUp = false
     private var isFirstScale = true
+    
+    // 回调节流：记录上次报告的值，避免过度触发回调
+    private var lastReportedScale = Float.NaN
 
     init {
         setAttr(attrs, defStyleAttr)
@@ -327,6 +335,7 @@ class RulerView @JvmOverloads constructor(
     }
 
     private fun drawScalesAndNumbers(canvas: Canvas) {
+        // 外层 save: 保存整体状态用于 padding 偏移
         canvas.save()
         canvas.translate(rulerPaddingHorizontal, rulerPaddingVertical)
 
@@ -344,6 +353,7 @@ class RulerView @JvmOverloads constructor(
         val scaleIndex = -(moveX / scaleGap).toInt()
         val offset = moveX % scaleGap
 
+        // 内层 save: 保存滚动偏移状态
         canvas.save()
         canvas.translate(offset, 0f)
 
@@ -384,6 +394,7 @@ class RulerView @JvmOverloads constructor(
             canvas.translate(scaleGap, 0f)
         }
 
+        // 内层 restore: 恢复到 padding 偏移后的状态
         canvas.restore()
 
         updateCurrentScale()
@@ -393,6 +404,7 @@ class RulerView @JvmOverloads constructor(
             isUp = false
         }
 
+        // 外层 restore: 恢复到初始状态
         canvas.restore()
     }
 
@@ -414,7 +426,8 @@ class RulerView @JvmOverloads constructor(
     }
 
     private fun formatScaleValue(value: Float): String {
-        return String.format("%.${decimalPlaces}f", value)
+        // 强制使用英文格式，避免本地化导致的解析错误（如德语 "4,2"）
+        return String.format(java.util.Locale.US, "%.${decimalPlaces}f", value)
     }
 
     /**
@@ -429,7 +442,7 @@ class RulerView @JvmOverloads constructor(
             RulerUnit.INTEGER_PRECISION -> {
                 // 整数精度：每50个小刻度绘制大刻度 (5单位间隔)
                 val intValue = value.roundToInt()
-                intValue % 5 == 0 && abs(value - intValue) < 0.01f
+                intValue % 5 == 0 && abs(value - intValue) < FLOAT_COMPARISON_EPSILON
             }
         }
     }
@@ -463,7 +476,7 @@ class RulerView @JvmOverloads constructor(
             RulerUnit.INTEGER_PRECISION -> {
                 // 整数精度：只在5的倍数整数位置显示文字
                 val intValue = value.roundToInt()
-                intValue % 5 == 0 && abs(value - intValue) < 0.01f
+                intValue % 5 == 0 && abs(value - intValue) < FLOAT_COMPARISON_EPSILON
             }
         }
     }
@@ -500,7 +513,12 @@ class RulerView @JvmOverloads constructor(
             }
         }
 
-        onChooseResultListener?.onScrollResult(formatScaleValue(currentScale))
+        // 性能优化：只在值真正变化时才触发回调
+        // 避免滑动过程中每帧都触发（60fps -> 仅在值变化时触发）
+        if (currentScale.isNaN().not() && abs(currentScale - lastReportedScale) > FLOAT_COMPARISON_EPSILON) {
+            onChooseResultListener?.onScrollResult(currentScale)
+            lastReportedScale = currentScale
+        }
     }
 
     /**
@@ -547,11 +565,11 @@ class RulerView @JvmOverloads constructor(
         // 计算对应的目标位置
         val targetPosition = getScalePosition(roundedValue)
 
-        if (abs(moveX - targetPosition) > 0.1f) {
+        if (abs(moveX - targetPosition) > POSITION_SNAP_THRESHOLD) {
             animateToPosition(targetPosition)
         } else {
             updateCurrentScale()
-            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+            onChooseResultListener?.onEndResult(currentScale)
         }
     }
 
@@ -560,10 +578,10 @@ class RulerView @JvmOverloads constructor(
         val targetScale = (minScale + targetIndex * scaleStep).coerceIn(scrollableMinScale, scrollableMaxScale)
         val targetPosition = getScalePosition(targetScale)
 
-        if (abs(moveX - targetPosition) > 0.1f) {
+        if (abs(moveX - targetPosition) > POSITION_SNAP_THRESHOLD) {
             animateToPosition(targetPosition)
         } else {
-            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+            onChooseResultListener?.onEndResult(currentScale)
         }
     }
 
@@ -572,9 +590,9 @@ class RulerView @JvmOverloads constructor(
         val targetX = targetPosition.toInt()
         val deltaX = targetX - startX
 
-        if (abs(deltaX) < 1) {
+        if (abs(deltaX) < MIN_ANIMATION_DELTA) {
             updateCurrentScale()
-            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+            onChooseResultListener?.onEndResult(currentScale)
             return
         }
 
@@ -590,9 +608,9 @@ class RulerView @JvmOverloads constructor(
         val targetX = targetPosition.toInt()
         val deltaX = targetX - startX
 
-        if (abs(deltaX) < 1) {
+        if (abs(deltaX) < MIN_ANIMATION_DELTA) {
             updateCurrentScale()
-            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+            onChooseResultListener?.onEndResult(currentScale)
             return
         }
 
@@ -653,6 +671,13 @@ class RulerView @JvmOverloads constructor(
 
         invalidate()
         return true
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        // 确保释放 VelocityTracker 资源，防止内存泄漏
+        velocityTracker?.recycle()
+        velocityTracker = null
     }
 
     private fun autoVelocityScroll(xVelocity: Int) {
@@ -716,19 +741,21 @@ class RulerView @JvmOverloads constructor(
         
         // 只在不抑制回调时通知监听器
         if (!suppressCallback) {
-            onChooseResultListener?.onEndResult(formatScaleValue(currentScale))
+            onChooseResultListener?.onEndResult(currentScale)
         }
     }
 
     fun getCurrentScale(): Float = currentScale
 
     fun setScaleRange(min: Float, max: Float) {
+        require(min < max) { "minScale ($min) must be less than maxScale ($max)" }
         this.minScale = min
         this.maxScale = max
         invalidate()
     }
 
     fun setScrollableRange(min: Float, max: Float) {
+        require(min < max) { "scrollableMinScale ($min) must be less than scrollableMaxScale ($max)" }
         this.scrollableMinScale = min.coerceAtLeast(minScale)
         this.scrollableMaxScale = max.coerceAtMost(maxScale)
 
@@ -737,21 +764,25 @@ class RulerView @JvmOverloads constructor(
     }
 
     fun setScaleStep(step: Float) {
+        require(step > 0) { "scaleStep must be positive, got: $step" }
         this.scaleStep = step
         invalidate()
     }
 
     fun setDecimalPlaces(places: Int) {
+        require(places >= 0) { "decimalPlaces must be non-negative, got: $places" }
         this.decimalPlaces = places
         invalidate()
     }
 
     fun setScaleCount(count: Int) {
+        require(count > 0) { "scaleCount must be positive, got: $count" }
         this.scaleCount = count
         invalidate()
     }
 
     fun setScaleGap(gap: Float) {
+        require(gap > 0) { "scaleGap must be positive, got: $gap" }
         this.scaleGap = gap
         invalidate()
     }
@@ -796,8 +827,20 @@ class RulerView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * 标尺数值选择结果监听器
+     */
     interface OnChooseResultListener {
-        fun onEndResult(result: String)
-        fun onScrollResult(result: String)
+        /**
+         * 滑动结束时回调
+         * @param result 选中的数值（格式化后的字符串）
+         */
+        fun onEndResult(result: Float)
+        
+        /**
+         * 滑动过程中回调
+         * @param result 当前的数值（格式化后的字符串）
+         */
+        fun onScrollResult(result: Float)
     }
 }

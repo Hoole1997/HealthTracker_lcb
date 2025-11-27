@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.databinding.DialogBmiPickerBinding
@@ -13,6 +14,8 @@ import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.blood.suger.util.BmiScaleHelper
 import com.healthtracker.blood.suger.util.BmiScaleHelper.ScaleType
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -137,12 +140,20 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<DialogBmiPickerBinding>() 
         currentValue = clampedValue
         applyScaleToRuler(ruler, clampedValue)
         ruler.setOnChooseResultListener(object : RulerView.OnChooseResultListener {
-            override fun onEndResult(result: String) {
-                updateCurrentValue(result)
+            override fun onEndResult(result: Float) {
+                val valueStr = NumberFormatter.formatNumber(
+                    result.toDouble(),
+                    LanguageUtils.getAppLocale(App.INSTANCE), 1
+                )
+                updateCurrentValue(valueStr)
             }
 
-            override fun onScrollResult(result: String) {
-                updateCurrentValue(result)
+            override fun onScrollResult(result: Float) {
+                val valueStr = NumberFormatter.formatNumber(
+                    result.toDouble(),
+                    LanguageUtils.getAppLocale(App.INSTANCE), 1
+                )
+                updateCurrentValue(valueStr)
             }
         })
     }

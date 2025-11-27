@@ -124,7 +124,7 @@ object LanguageUtils {
      * @param context 上下文
      * @return Locale 对象
      */
-    fun getAppLocale(context: Context): Locale? = mapAppLocale() ?: getContextLocale(context)
+    fun getAppLocale(context: Context): Locale = mapAppLocale() ?: getContextLocale(context) ?: Locale.ENGLISH
 
     /**
      * 将保存的语言 ID 映射为 Locale 对象

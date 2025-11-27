@@ -53,12 +53,12 @@ class MedsViewModel @Inject constructor(
     )
 
     // 格式化月份的Flow，基于selectedDate动态计算
-    val formattedMonth: StateFlow<String> = selectedDate.map { date ->
-        DateTimeUtils.formatMonthYear(date)
+    val formattedMonth: StateFlow<Date> = selectedDate.map { date ->
+        date
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = DateTimeUtils.formatMonthYear(_selectedDate.value)
+        initialValue = _selectedDate.value
     )
 
     // 药物提醒列表数据

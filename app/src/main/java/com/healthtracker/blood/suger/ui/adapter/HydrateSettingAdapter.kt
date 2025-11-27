@@ -13,12 +13,15 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.ui.weight.RulerView
 import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.entity.HydrateReminder
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 
 class HydrateSettingAdapter(
     private val onDailyCupsChanged: (Int) -> Unit = { _ -> },
@@ -133,13 +136,21 @@ class HydrateSettingAdapter(
                     action()
                 }
                 setOnChooseResultListener(object : RulerView.OnChooseResultListener {
-                    override fun onEndResult(result: String) {
-                        updateSelectValueText(isMlUnit, result)
-                        result.toIntOrNull()?.let { onSettingChanged(it, isMlUnit) }
+                    override fun onEndResult(result: Float) {
+                        val valueStr = NumberFormatter.formatNumber(
+                            result.toDouble(),
+                            LanguageUtils.getAppLocale(App.INSTANCE), 1
+                        )
+                        updateSelectValueText(isMlUnit, valueStr)
+                        onSettingChanged(result.toInt(), isMlUnit)
                     }
 
-                    override fun onScrollResult(result: String) {
-                        updateSelectValueText(isMlUnit, result)
+                    override fun onScrollResult(result: Float) {
+                        val valueStr = NumberFormatter.formatNumber(
+                            result.toDouble(),
+                            LanguageUtils.getAppLocale(App.INSTANCE), 1
+                        )
+                        updateSelectValueText(isMlUnit, valueStr)
                     }
                 })
             }

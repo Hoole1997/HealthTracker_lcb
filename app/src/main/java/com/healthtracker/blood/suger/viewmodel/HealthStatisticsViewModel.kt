@@ -22,6 +22,7 @@ import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.blood.suger.data.repository.HydrateRepository
 import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.blood.suger.data.repo.StepRepository
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.toLocalEpochDay
 import com.healthtracker.blood.suger.tips.HealthTips
 import com.healthtracker.blood.suger.tips.HealthTipsProvider
@@ -34,6 +35,7 @@ import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.blood.suger.viewmodel.HealthStatisticsViewModel.StatsUiState.Companion.KEY_SELECTED_STATUS
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.util.LanguageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -106,8 +108,8 @@ class HealthStatisticsViewModel @Inject constructor(
     }
 
     private val stepKiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
-    private val dateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-    private val labelFormatter = SimpleDateFormat("M/d", Locale.getDefault())
+    private val dateFormatter = SimpleDateFormat("MMM dd, yyyy", LanguageUtils.getAppLocale(App.INSTANCE))
+    private val labelFormatter = SimpleDateFormat("M/d", LanguageUtils.getAppLocale(App.INSTANCE))
 
     private val _selectedPreset = MutableStateFlow(DateRangePreset.DAYS_7)
     private val _dateRange = MutableStateFlow(createPresetRange(DateRangePreset.DAYS_7))
@@ -1056,7 +1058,7 @@ class HealthStatisticsViewModel @Inject constructor(
     }
 
     private fun formatRange(range: DateRange): String {
-        return "${dateFormatter.format(range.start)} - ${dateFormatter.format(range.end)}"
+        return "${DateTimeUtils.formatDate(range.start)} - ${DateTimeUtils.formatDate(range.end)}"
     }
 
     companion object {

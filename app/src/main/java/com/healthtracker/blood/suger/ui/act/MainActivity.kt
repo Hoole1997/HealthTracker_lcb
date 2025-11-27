@@ -17,6 +17,7 @@ import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.config.models.PushMessage
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityMainBinding
 import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
 import com.healthtracker.blood.suger.helper.CustomNotificationHelper
@@ -179,9 +180,8 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     private fun updateMonthDisplay() {
         medFrg?.let { fragment ->
             lifecycleScope.launch {
-                fragment.getFormattedMonthFlow().collect { monthText ->
-                    mViewBind.tvMonth.text = monthText
-                    "Month display updated: $monthText".logd(TAG)
+                fragment.getDateFlow().collect { date ->
+                    mViewBind.tvMonth.text = DateTimeUtils.formatMonthYear(date)
                 }
             }
         }
