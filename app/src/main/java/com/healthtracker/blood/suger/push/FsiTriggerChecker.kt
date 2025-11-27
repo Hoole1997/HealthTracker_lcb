@@ -92,7 +92,7 @@ private fun checkQuietPeriod(config: FsiConfig): Boolean {
     }
 
     if (BuildState.debug)
-        "✓ Install cooldown met: ${timeSinceInstall / 3600000}h >= ${INSTALL_COOLDOWN_HOURS}h".logd(
+        "✓ Install cooldown met: ${timeSinceInstall / 3600000}h >= ${config.delayInstallHour}h".logd(
             TAG
         )
 

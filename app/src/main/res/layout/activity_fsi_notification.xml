@@ -4,95 +4,313 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:gravity="center"
-    android:minWidth="@dimen/dp_370"
     android:keepScreenOn="true"
-    android:orientation="vertical"
+
+    android:minWidth="@dimen/dp_370"
     tools:context=".ui.act.MedicationReminderFullScreenActivity">
 
-   <androidx.constraintlayout.widget.ConstraintLayout
-       android:id="@+id/cl_root"
-       android:layout_width="0dp"
-       android:layout_height="wrap_content"
-       android:layout_gravity="center"
-       android:padding="@dimen/dp_16"
-       android:layout_marginHorizontal="@dimen/dp_30"
-       android:background="@drawable/bg_rect_white_12"
-       app:layout_constraintTop_toTopOf="parent"
-       app:layout_constraintBottom_toBottomOf="parent"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintEnd_toEndOf="parent">
-       <androidx.appcompat.widget.AppCompatTextView
-           android:id="@+id/tv_name_and_time"
-           style="@style/TextViewFont_RobotoMedium"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="@string/app_name"
-           android:textColor="@color/color_666"
-           android:textSize="@dimen/sp_11"
-           app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toTopOf="parent" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_time"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_date"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dp_56"
+        android:text="13:36 PM" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_date"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_48"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dp_20"
+        app:layout_constraintBottom_toTopOf="@id/ll_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="05 Nov 25" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:minHeight="@dimen/dp_400"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/dp_16"
+            android:background="@drawable/bg_rect_white_16"
+            android:backgroundTint="@color/transparent40"
+            android:paddingBottom="@dimen/dp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_fsi_header"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_8">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_logo"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
+                    app:srcCompat="@mipmap/ic_logo_sq" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_name_and_time"
+                    style="@style/TextViewFont_RobotoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:text="@string/app_name"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_12"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-       <androidx.appcompat.widget.AppCompatImageView
-           android:id="@+id/iv_icon"
-           android:layout_width="@dimen/dp_60"
-           android:layout_height="@dimen/dp_60"
-           android:layout_marginTop="@dimen/dp_12"
-           app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toBottomOf="@id/tv_name_and_time"
-           app:srcCompat="@drawable/ic_fsi_hr" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="@dimen/dp_64"
+                android:layout_height="@dimen/dp_64"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_header"
+                app:srcCompat="@mipmap/ic_blood_pressure" />
 
-       <androidx.appcompat.widget.LinearLayoutCompat
-           android:id="@+id/ll_content"
-           android:layout_width="0dp"
-           android:layout_height="wrap_content"
-           android:layout_marginStart="@dimen/dp_12"
-           android:orientation="vertical"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_12"
 
-           app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintStart_toEndOf="@id/iv_icon"
-           app:layout_constraintTop_toTopOf="@id/iv_icon"
-           android:layout_marginTop="@dimen/dp_10">
+                android:layout_marginTop="@dimen/dp_18"
+                android:layout_marginEnd="@dimen/dp_16"
 
-           <androidx.appcompat.widget.AppCompatTextView
-               android:id="@+id/tv_title"
-               style="@style/TextViewFont_RobotoBold"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:textColor="@color/t1"
-               android:textSize="@dimen/sp_16"
-               android:text="Here is the title" />
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_icon"
+                app:layout_constraintTop_toBottomOf="@id/ll_header">
 
-           <androidx.appcompat.widget.AppCompatTextView
-               android:id="@+id/tv_des"
-               style="@style/TextViewFont_RobotoRegular"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:textColor="@color/color_999"
-               android:textSize="@dimen/sp_14"
-               android:text="Here is the title" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_title"
+                    style="@style/TextViewFont_RobotoBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Here is the title"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_15" />
 
-       </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_des"
+                    style="@style/TextViewFont_RobotoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:text="Here is the title"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_13" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-       <androidx.appcompat.widget.AppCompatTextView
-           android:id="@+id/tv_btn"
-           style="@style/TextViewFont_RobotoBold"
-           android:layout_width="match_parent"
-           android:layout_height="@dimen/dp_42"
-           android:layout_marginHorizontal="@dimen/dp_24"
-           android:layout_marginTop="24dp"
-           android:background="@drawable/bg_rect_white_40"
-           android:backgroundTint="@color/c5"
-           android:gravity="center"
-           android:paddingHorizontal="10dp"
-           android:textColor="@color/white"
-           android:textSize="16sp"
-           android:textStyle="bold"
-           app:layout_constraintTop_toBottomOf="@id/ll_content"
-           android:text="View Now" />
-   </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_btn"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_42"
+                android:layout_marginHorizontal="@dimen/dp_24"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_rect_white_40"
+                android:backgroundTint="@color/c5"
+                android:gravity="center"
+                android:paddingHorizontal="10dp"
+                android:text="View Now"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/iv_icon" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/dp_64"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/bg_rect_white_40"
+            android:backgroundTint="@color/transparent40"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dp_16">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_drink_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_fsi_hydrate_not_full" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_drink_value"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_6"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16"
+                tools:text="200" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_drink_goal"
+                style="@style/TextViewFont_RobotoRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12"
+                tools:text="/2000ml" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_reach_goal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_6"
+                app:srcCompat="@drawable/ic_fsi_not_reach_goal" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_hydrate"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/hydrate"
+                android:textColor="@color/color_30A6ED"
+                android:textSize="@dimen/sp_16" />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/dp_64"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/bg_rect_white_40"
+            android:backgroundTint="@color/transparent40"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dp_16">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_step"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_fsi_step" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_step_count"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_6"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16"
+                tools:text="4000" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_kcal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                app:srcCompat="@drawable/ic_fsi_kcal" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_kcal"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16"
+                tools:text="200" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_kcal_unit"
+                style="@style/TextViewFont_RobotoRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/kcal"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_step"
+                style="@style/TextViewFont_RobotoBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/text_steps"
+                android:textColor="#F0832D"
+                android:textSize="@dimen/sp_16" />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/dp_64"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:background="@drawable/bg_rect_white_40"
+        android:backgroundTint="@color/transparent40"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_slid_unlock"
+            style="@style/TextViewFont_RobotoMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableEnd="@drawable/ic_fsi_slide"
+            android:drawablePadding="@dimen/dp_16"
+            android:gravity="center"
+            android:padding="@dimen/dp_16"
+            android:text="Slide to unlock"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
