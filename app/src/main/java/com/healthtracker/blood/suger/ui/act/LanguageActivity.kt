@@ -21,6 +21,7 @@ import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.LanguageUtils.getLanguageList
 import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoMedium
+import net.corekit.monetize.ads.config.AdConfigManager
 
 
 class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBinding>() {
@@ -79,9 +80,11 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
             // 通知设置页面需要重建以应用语言变更
             setResult(RESULT_OK)
         } else {
-            this.startActivity(Intent(this, GuideActivity::class.java).apply {
+            val targetPage = if(AdConfigManager.showNewGuide()) GuideActivity::class.java else MainActivity::class.java
+            this.startActivity(Intent(this, targetPage).apply {
                 putExtras(intent)
             })
+
         }
         finish()
     }

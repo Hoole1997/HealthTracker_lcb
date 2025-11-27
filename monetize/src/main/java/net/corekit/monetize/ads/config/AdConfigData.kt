@@ -24,8 +24,8 @@ data class AdConfigData(
         val showInterstitialAfterAppOpenFailure: Int,
         @SerializedName("Guide_Full_Native")
         val showGuideFullNative: Int,
-        @SerializedName("enable_launch_ad_on_locale")
-        val showAppOpenOnLanguageSelection: Int,
+        @SerializedName("Guide_Page")
+        val showNewGuide: Int,
         @SerializedName("enable_bottom_ad_on_locale")
         val showBottomNativeOnLanguageSelection: Int,
         @SerializedName("random_fullpage_cooldown")

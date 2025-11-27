@@ -250,13 +250,13 @@ object AdConfigManager {
     }
 
     /**
-     * 获取语言选择时是否展示开屏广告
+     * 获取是否开启新手引导流程
      */
-    fun shouldShowAppOpenOnLanguageSelection(): Boolean {
+    fun showNewGuide(): Boolean {
         return configData?.let { config ->
             when (ChannelUserController.getCurrentChannel()) {
-                ChannelUserController.UserChannelType.NATURAL -> config.natural.showAppOpenOnLanguageSelection == 1
-                ChannelUserController.UserChannelType.PAID -> config.paid.showAppOpenOnLanguageSelection == 1
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.showNewGuide == 1
+                ChannelUserController.UserChannelType.PAID -> config.paid.showNewGuide == 1
             }
         } ?: false
     }

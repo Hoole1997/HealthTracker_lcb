@@ -25,7 +25,8 @@
     "onboarding_dialog_ad_enabled": 0,
     "native_time_interval": 120,
     "splash_time_out": 10,
-    "Guide_Full_Native": 1
+    "Guide_Full_Native": 1,
+    "Guide_Page": 0
   },
   "premium_user": {
     "launch_ad": {
@@ -53,6 +54,7 @@
     "onboarding_dialog_ad_enabled": 1,
     "native_time_interval": 120,
     "splash_time_out": 12,
-    "Guide_Full_Native": 1
+    "Guide_Full_Native": 1,
+    "Guide_Page": 0
   }
 } 

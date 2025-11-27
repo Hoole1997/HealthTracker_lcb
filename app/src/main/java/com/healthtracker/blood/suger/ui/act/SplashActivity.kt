@@ -77,7 +77,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 val targetActivity = if (LanguageUtils.getSavedLanguage().isEmpty()) {
                     LanguageActivity::class.java
                 } else {
-                    if (hasNewGuide()) {
+                    if (hasNewGuide() || !AdConfigManager.showNewGuide()) {
                         MainActivity::class.java
                     } else {
                         GuideActivity::class.java
