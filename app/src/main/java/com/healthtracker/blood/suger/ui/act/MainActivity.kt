@@ -7,7 +7,9 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.healthtracker.blood.suger.App
@@ -82,29 +84,10 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         }
 
     private var permissionRequest: PermissionRequest? = null
-    private var job : Job? = null
-    private var hasShowNative = false
+    
     override fun onResume() {
         super.onResume()
-        if(!hasShowNative){
-            job = lifecycleScope.launch {
-                delay(200)
-                if(BuildState.debug) "等待高亮完成".logd(PermissionManager.TAG)
-                homeFrg?.highLightComplete?.await()
-                if(isActive){
-                    if(BuildState.debug) "高亮完成".logd(PermissionManager.TAG)
-                    hasShowNative = true
-                    NativeCardDialog.showOncePerMinute(this@MainActivity){
-                        onceNativeCardComplete.complete(true)
-                        if(BuildState.debug) "首页原生弹窗完成".logd(PermissionManager.TAG)
-                    }
-                }else{
-                    if(BuildState.debug) "原生弹窗协程已经取消".logd(PermissionManager.TAG)
-                }
-
-            }
-        }
-
+        // 原生弹窗流程已迁移到 initView 中使用 repeatOnLifecycle 自动管理
     }
 
     override fun onStop() {
@@ -112,10 +95,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         // 记录用户最后活跃时间（首页关闭时）
         recordLastActiveTime()
         if(BuildState.debug) "Recorded last active time when MainActivity stopped".logd(TAG)
-        if(BuildState.debug) "取消原生弹窗协程".logd(PermissionManager.TAG)
-        hasShowNative = false
-        job?.cancel()
-
+        // 协程会被 repeatOnLifecycle 自动取消，无需手动管理
     }
 
     override fun onDestroy() {
@@ -251,6 +231,26 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                 handleNotificationAction(intent)
             }, 500)
         }
+        
+        // 协程链A: 使用 repeatOnLifecycle 自动处理生命周期
+        // 每次进入 RESUMED 状态时自动执行，离开时自动取消
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                delay(200)
+                if(BuildState.debug) "等待高亮完成".logd(PermissionManager.TAG)
+                
+                homeFrg?.highLightComplete?.await()
+                
+                if(BuildState.debug) "高亮完成".logd(PermissionManager.TAG)
+
+                NativeCardDialog.showOncePerMinute(this@MainActivity) {
+                    onceNativeCardComplete.complete(true)
+                    if(BuildState.debug) "首页原生弹窗完成".logd(PermissionManager.TAG)
+                }
+            }
+        }
+        
+        // 协程链B: Banner 和权限流程
         lifecycleScope.launch {
             delay(500)
             if(BuildState.debug) "等待首页原生弹窗".logd(PermissionManager.TAG)

@@ -38,10 +38,18 @@ class NativeCardDialog(private val onClose: (() -> Unit)? = null) : BaseVbDialog
         private var lastShowTime = 0L
         private val SHOW_INTERVAL = AdConfigManager.getHomeNativeTimeInterval() * 1000L
         fun showOncePerMinute(activity: FragmentActivity,onClose:(() -> Unit)? = null){
+
+            if(SHOW_INTERVAL <= 0){
+                if(BuildState.debug) "远程配置 interval:$SHOW_INTERVAL s，不展示原生弹窗广告".logd(PermissionManager.TAG)
+                onClose?.invoke()
+                return
+            }
+
             val currentTime = System.currentTimeMillis()
 
             // 检查是否在一分钟内已经触发过
-            if (currentTime - lastShowTime < SHOW_INTERVAL || SHOW_INTERVAL <= 0) {
+            val distanceLastShow = currentTime - lastShowTime
+            if (distanceLastShow < SHOW_INTERVAL) {
                 if(BuildState.debug) "间隔时间内触发过原生弹窗，跳过，interval:$SHOW_INTERVAL s".logd(PermissionManager.TAG)
                 onClose?.invoke()
                 return

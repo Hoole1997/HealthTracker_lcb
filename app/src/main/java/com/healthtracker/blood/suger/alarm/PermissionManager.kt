@@ -57,8 +57,8 @@ class PermissionManager @Inject constructor(
 
     private val context = App.INSTANCE
     
-    // FSI 权限 Launcher（使用弱引用避免内存泄漏）
-    private var fsiLauncher: SoftReference<ActivityResultLauncher<Intent>>? = null
+    // FSI 权限 Launcher（使用后立即清理避免内存泄漏）
+    private var fsiLauncher: ActivityResultLauncher<Intent>? = null
     
     companion object {
         const val TAG = "PermissionManager"
@@ -142,9 +142,9 @@ class PermissionManager @Inject constructor(
                     cleanFSILauncher()
                 }
 
-                // 使用弱引用存储
+                // 存储 Launcher 用于后续调用
                 if(BuildState.debug) "注册,FSI授权回调".logw(TAG)
-                fsiLauncher = SoftReference(launcher)
+                fsiLauncher = launcher
                 if(BuildState.debug) "FSI launcher initialized and ready".logd(TAG)
 
             } else {
@@ -161,10 +161,8 @@ class PermissionManager @Inject constructor(
     private fun cleanFSILauncher(){
         if(fsiLauncher != null){
             if(BuildState.debug) "注销,FSI授权回调".logw(TAG)
-            fsiLauncher?.clear()
             fsiLauncher = null
         }
-
     }
 
 
@@ -217,10 +215,10 @@ class PermissionManager @Inject constructor(
                     data = Uri.fromParts("package", context.packageName, null)
                 }
                 
-                // 从弱引用中获取 Launcher
-                val launcher = fsiLauncher?.get()
+                // 获取 Launcher
+                val launcher = fsiLauncher
                 if (launcher == null) {
-                    if(BuildState.debug) "FSI launcher not initialized or has been garbage collected".loge(TAG)
+                    if(BuildState.debug) "FSI launcher not initialized".loge(TAG)
                     return false
                 }
                 
