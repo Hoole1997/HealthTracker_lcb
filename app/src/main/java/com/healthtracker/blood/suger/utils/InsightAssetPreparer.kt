@@ -1,14 +1,17 @@
 package com.healthtracker.blood.suger.utils
 
 import android.app.Application
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.constants.KEY_INSIGHTS_DETAIL_READY
 import com.healthtracker.blood.suger.constants.KEY_INSIGHTS_LIST_READY
 import com.healthtracker.blood.suger.constants.KEY_NEWS_READY
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.SpUtils
 import java.io.File
 import java.io.FileOutputStream
+import java.util.Locale
 import org.json.JSONArray
 
 /**
@@ -17,9 +20,8 @@ import org.json.JSONArray
 object InsightAssetPreparer {
 
     private const val TAG = "InsightAssetPreparer"
-    private const val DIR_INSIGHTS_DETAIL = "insights_detail"
     private const val DIR_INSIGHTS_LIST = "insights_list"
-    private const val DIR_NEWS = "news"
+    private const val DIR_NEWS = "insights_content"
 
     private data class AssetConfig(
         val assetName: String,
@@ -31,20 +33,17 @@ object InsightAssetPreparer {
         val content: String,
         val articleId: String,
         val listImagePath: String,
-        val detailImagePath: String
     )
 
     private val assetConfigs = listOf(
-        AssetConfig(DIR_INSIGHTS_DETAIL, KEY_INSIGHTS_DETAIL_READY),
         AssetConfig(DIR_INSIGHTS_LIST, KEY_INSIGHTS_LIST_READY),
         AssetConfig(DIR_NEWS, KEY_NEWS_READY)
     )
 
     private val articleCache = mutableMapOf<String, List<InsightArticle>>()
-    private var applicationContext: Application? = null
+    private var applicationContext  = App.INSTANCE
 
     fun prepare(application: Application) {
-        applicationContext = application
         assetConfigs.forEach { config ->
             runCatching {
                 if (shouldExtract(application, config)) {
@@ -62,16 +61,24 @@ object InsightAssetPreparer {
      * 获取指定分类的图文配置
      */
     fun getArticles(category: String): List<InsightArticle> {
-        applicationContext ?: return emptyList()
-        articleCache[category]?.let { return it }
-        val file = File(applicationContext!!.filesDir, "$DIR_NEWS/insights_${category}_data.json")
+        val savedLang = LanguageUtils.getSavedLanguage()
+        val appLocale = LanguageUtils.getAppLocale(applicationContext)
+        val language = appLocale?.language ?: "en"
+        
+        if (BuildState.debug) {
+            "getArticles: category=$category, savedLang=$savedLang, appLocale=$appLocale, language=$language".loge(TAG)
+        }
+
+        val cacheKey = "${category}_$language"
+        articleCache[cacheKey]?.let { return it }
+        val file = File(applicationContext.filesDir, "$DIR_NEWS/insights_${category}_data.json")
         if (!file.exists()) {
             return emptyList()
         }
         return runCatching {
-            parseArticles(file)
+            parseArticles(file, language)
         }.onSuccess {
-            articleCache[category] = it
+            articleCache[cacheKey] = it
         }.getOrElse {
             if (BuildState.debug) {
                 "Parse ${file.name} failed: ${it.message}".loge(TAG)
@@ -80,21 +87,6 @@ object InsightAssetPreparer {
         }
     }
 
-    /**
-     * 获取指定分类的 detail 图资源绝对路径
-     */
-    fun getDetailImages(category: String): List<String> {
-        applicationContext ?: return emptyList()
-        return resolveCategoryAssets(DIR_INSIGHTS_DETAIL, category)
-    }
-
-    /**
-     * 获取指定分类的 list 图资源绝对路径
-     */
-    fun getListImages(category: String): List<String> {
-        applicationContext ?: return emptyList()
-        return resolveCategoryAssets(DIR_INSIGHTS_LIST, category)
-    }
 
     private fun shouldExtract(
         application: Application,
@@ -142,18 +134,18 @@ object InsightAssetPreparer {
         }
     }
 
-    private fun parseArticles(file: File): List<InsightArticle> {
+    private fun parseArticles(file: File, language: String): List<InsightArticle> {
         val jsonArray = JSONArray(file.readText())
         val result = mutableListOf<InsightArticle>()
         for (index in 0 until jsonArray.length()) {
             val obj = jsonArray.optJSONObject(index) ?: continue
+            val contentObj = obj.optJSONObject(language) ?: obj.optJSONObject("en")
             result.add(
                 InsightArticle(
-                    title = obj.optString("title"),
-                    content = obj.optString("content"),
+                    title = contentObj?.optString("title") ?: "",
+                    content = contentObj?.optString("content") ?: "",
                     articleId = obj.optString("article_id"),
                     listImagePath = resolveAssetPath(obj.optString("list_image")),
-                    detailImagePath = resolveAssetPath(obj.optString("detail_image"))
                 )
             )
         }
