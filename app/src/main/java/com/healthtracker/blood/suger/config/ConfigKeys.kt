@@ -7,10 +7,22 @@ object ConfigKeys {
     // ========== 推送配置 ==========
 
     /**
-     * 推送消息内容数组
-     * 格式: JSON 数组，包含所有推送消息模板
+     * 推送消息内容数组（多语言支持）
+     * 格式: JSON 数组，包含所有推送消息模板（支持 en/ja/ko 三种语言）
+     * 
+     * JSON 示例:
+     * [
+     *   {
+     *     "id": "push_001",
+     *     "iconType": 1,
+     *     "actionType": 1,
+     *     "en": { "title": "...", "content": "...", "buttonText": "..." },
+     *     "ja": { "title": "...", "content": "...", "buttonText": "..." },
+     *     "ko": { "title": "...", "content": "...", "buttonText": "..." }
+     *   }
+     * ]
      */
-    const val PUSH_CONTENT_ARRAY = "push_content_array"
+    const val PUSH_ARRAY = "push_array"
 
     /**
      * 推送策略配置

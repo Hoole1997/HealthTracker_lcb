@@ -143,7 +143,7 @@ class RemoteConfigManager @Inject constructor(
 
         // 3. 从 Remote Config 获取原始值
         val rawValue = remoteConfig.getString(parser.configKey)
-
+        "原始参数：$rawValue".logd("PushMessageParser")
         // 4. 解析配置
         val config = try {
             if (rawValue.isNotEmpty()) {

@@ -8,11 +8,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.blood.suger.databinding.ActivityLanguageSelectBinding
 import com.healthtracker.blood.suger.databinding.ItemAppLanguageBinding
 import com.healthtracker.blood.suger.ui.weight.WrapLayoutLinearLayoutManager
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
@@ -21,9 +23,12 @@ import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.LanguageUtils.getLanguageList
 import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoMedium
+import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.monetize.ads.config.AdConfigManager
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBinding>() {
 
 
@@ -31,7 +36,8 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
-
+    @Inject
+    lateinit var remoteConfigManager: RemoteConfigManager
 
     private var applyChange = false
     private var languageAdapter: LanguageAdapter? = null
@@ -75,6 +81,8 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
     private fun onChoiceLangDone() {
         languageAdapter?.let {
             LanguageUtils.setAppLanguage(it.getSelectedLang().id)
+            // 语言改变后，清除 PushConfig 缓存，以便下次获取时使用新语言重新解析
+            remoteConfigManager.clearCache<PushConfig>()
         }
         if (applyChange) {
             // 通知设置页面需要重建以应用语言变更

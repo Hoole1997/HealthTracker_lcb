@@ -1,5 +1,6 @@
 package com.healthtracker.blood.suger.config.parsers
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
@@ -32,7 +33,8 @@ import javax.inject.Inject
  */
 class PushConfigParser @Inject constructor(
     private val gson: Gson,
-    private val pushMessageParser: PushMessageParser
+    private val pushMessageParser: PushMessageParser,
+    private val remoteConfig: FirebaseRemoteConfig
 ) : ConfigParser<PushConfig> {
 
     override val configKey: String = ConfigKeys.PUSH_CONFIG_JSON
@@ -50,10 +52,20 @@ class PushConfigParser @Inject constructor(
             val organicChannel = parseChannelConfig(jsonObject.getAsJsonObject("organic_channel"))
                 ?: return null
 
-            // 获取推送消息列表（从另一个配置键）
-            // 注意：这里为了完整性，我们依赖 pushMessageParser 的默认值
-            // 实际使用时，应该先获取推送消息配置，再组合成 PushConfig
-            val pushMessages = pushMessageParser.getDefault()
+            // 从 Remote Config 获取并解析推送消息列表
+            val pushMessages = try {
+                val pushArrayRaw = remoteConfig.getString(ConfigKeys.PUSH_ARRAY)
+                if (pushArrayRaw.isNotEmpty()) {
+                    // 解析 push_array 配置
+                    pushMessageParser.parse(pushArrayRaw) ?: pushMessageParser.getDefault()
+                } else {
+                    // 如果没有配置，使用默认值
+                    pushMessageParser.getDefault()
+                }
+            } catch (e: Exception) {
+                // 解析失败，使用默认值
+                pushMessageParser.getDefault()
+            }
 
             PushConfig(
                 paidChannel = paidChannel,

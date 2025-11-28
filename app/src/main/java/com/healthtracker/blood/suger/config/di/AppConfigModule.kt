@@ -21,14 +21,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppConfigModule {
 
-    /**
-     * 提供推送消息解析器
-     */
-    @Provides
-    @Singleton
-    fun providePushMessageParser(gson: Gson): PushMessageParser {
-        return PushMessageParser(gson)
-    }
+    // PushMessageParser 通过 @Inject 构造函数自动注入（包括 Context）
+    // 无需手动提供
 
     /**
      * 提供推送配置解析器
@@ -37,9 +31,10 @@ object AppConfigModule {
     @Singleton
     fun providePushConfigParser(
         gson: Gson,
-        pushMessageParser: PushMessageParser
+        pushMessageParser: PushMessageParser,
+        remoteConfig: com.google.firebase.remoteconfig.FirebaseRemoteConfig
     ): PushConfigParser {
-        return PushConfigParser(gson, pushMessageParser)
+        return PushConfigParser(gson, pushMessageParser, remoteConfig)
     }
 
     /**
