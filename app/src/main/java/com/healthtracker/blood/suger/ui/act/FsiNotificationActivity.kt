@@ -16,6 +16,8 @@ import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.constants.KEY_STEP_COUNT_GOLE
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityFsiNotificationBinding
+import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
 import com.healthtracker.blood.suger.ui.viewmodel.FsiViewModel
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -52,8 +54,7 @@ class FsiNotificationActivity: BaseMVVMActivity<FsiViewModel, ActivityFsiNotific
         with(mViewBind){
             root.clickWithDuration {
                 ReportDataManager.reportData("full_screen_click")
-                unlockAndOpen()
-                finishAndRemoveTask()
+                handleClick()
             }
             val pushMessage = intent.getSerializableExtra(EXTRA_PUSH_MESSAGE)
             pushMessage?.let {
@@ -82,15 +83,31 @@ class FsiNotificationActivity: BaseMVVMActivity<FsiViewModel, ActivityFsiNotific
             slideView.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener{
                 override fun onSlideComplete(view: SlideToActView) {
                     ReportDataManager.reportData("full_screen_click",mapOf("type" to "slide"))
-                    unlockAndOpen()
-                    finishAndRemoveTask()
+                    handleClick()
                 }
 
+            }
+
+            llHydrate.clickWithDuration {
+                intent.putExtra(EXTRA_NOTIFICATION_ACTION,HealthServiceConstants.ACTION_VALUE_HYDRATION)
+                ReportDataManager.reportData("full_screen_click",mapOf("type" to "hydrate"))
+                handleClick()
+            }
+
+            llStep.clickWithDuration {
+                intent.putExtra(EXTRA_NOTIFICATION_ACTION,HealthServiceConstants.ACTION_VALUE_STEPS)
+                ReportDataManager.reportData("full_screen_click",mapOf("type" to "step"))
+                handleClick()
             }
 
 
 
         }
+    }
+
+    private fun handleClick(){
+        unlockAndOpen()
+        finishAndRemoveTask()
     }
 
     override fun createObserver() {

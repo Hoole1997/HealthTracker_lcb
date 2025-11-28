@@ -243,7 +243,7 @@
                    android:layout_marginStart="@dimen/dp_6"
                    android:textColor="@color/white"
                    android:textSize="@dimen/sp_16"
-                   tools:text="4000" />
+                   android:text="0" />
 
 
                <androidx.appcompat.widget.AppCompatImageView
@@ -261,7 +261,7 @@
                    android:layout_marginStart="@dimen/dp_6"
                    android:textColor="@color/white"
                    android:textSize="@dimen/sp_16"
-                   tools:text="200" />
+                   android:text="0" />
 
                <androidx.appcompat.widget.AppCompatTextView
                    android:id="@+id/tv_kcal_unit"

@@ -31,6 +31,7 @@ import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -39,6 +40,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import net.corekit.core.report.ReportDataManager
+import net.corekit.core.utils.ConfigRemoteManager
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.InterstitialAds
@@ -68,7 +70,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
         SplashStateMachine(
             scope = lifecycleScope,
             onNavigate = {
-
+                reportGroup()
                 if (ActivityUtils.isActivityExistsInStack(MainActivity::class.java)) {
                     finish()
                     return@SplashStateMachine
@@ -489,6 +491,23 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                     navigationJob = null
                 }
             }
+        }
+    }
+
+    private fun reportGroup(){
+        lifecycleScope.launch {
+           val group =  ConfigRemoteManager.getString("Grouping","")
+            if(group.isNullOrEmpty()){
+                if(BuildState.debug) "没有配置Group,不上报".logd(TAG)
+                return@launch
+            }
+            if(SpUtils.getBoolean("has_report_group_$group",false)){
+                if(BuildState.debug) "已经上报过$group,不再上报".logd(TAG)
+                return@launch
+            }
+            SpUtils.putBoolean("has_report_group_$group",true)
+            if(BuildState.debug) "上报Group,value:$group".logd(TAG)
+            ReportDataManager.reportData("Grouping_$group")
         }
     }
 }
