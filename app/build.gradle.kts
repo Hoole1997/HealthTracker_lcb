@@ -175,6 +175,7 @@ dependencies {
     implementation(libs.shimmerlayout)
     implementation(libs.views)
     implementation(libs.magicindicator)
+    implementation("com.ncorti:slidetoact:0.11.0")
 }
 
 // BuildConfig 扩展函数

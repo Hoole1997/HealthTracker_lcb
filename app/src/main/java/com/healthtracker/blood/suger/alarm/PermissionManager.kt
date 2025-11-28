@@ -154,25 +154,25 @@ class PermissionManager @Inject constructor(
             fsiLauncher = launcher
             if(BuildState.debug) "注册,FSI授权回调".logw(TAG)
 
-            // 3. 异步检查业务规则，决定是否实际使用 launcher
-            activity.lifecycleScope.launch {
-                try {
-                    if (shouldRequestFSIPermission(activity)) {
-                        if(BuildState.debug) "FSI launcher initialized and ready".logd(TAG)
-                    } else {
-                        // 不需要请求FSI权限时，清理 launcher 并回调成功
-                        if(BuildState.debug) "不需要请求FSI权限，清理授权回调".logd(TAG)
-                        cleanFSILauncher()
-                        onResult.invoke(true)
-                    }
-                } catch (e: Exception) {
-                    if(BuildState.debug) "Error checking FSI permission requirement: ${e.message}".loge(TAG)
-                    e.printStackTrace()
-                    // 出错时清理资源并回调失败
-                    cleanFSILauncher()
-                    onResult.invoke(false)
-                }
-            }
+//            // 3. 异步检查业务规则，决定是否实际使用 launcher
+//            activity.lifecycleScope.launch {
+//                try {
+//                    if (shouldRequestFSIPermission(activity)) {
+//                        if(BuildState.debug) "FSI launcher initialized and ready".logd(TAG)
+//                    } else {
+//                        // 不需要请求FSI权限时，清理 launcher 并回调成功
+//                        if(BuildState.debug) "不需要请求FSI权限，清理授权回调".logd(TAG)
+//                        cleanFSILauncher()
+//                        onResult.invoke(true)
+//                    }
+//                } catch (e: Exception) {
+//                    if(BuildState.debug) "Error checking FSI permission requirement: ${e.message}".loge(TAG)
+//                    e.printStackTrace()
+//                    // 出错时清理资源并回调失败
+//                    cleanFSILauncher()
+//                    onResult.invoke(false)
+//                }
+//            }
         } catch (e: Exception) {
             // 捕获注册过程中的异常（如生命周期状态错误）
             if(BuildState.debug) "Failed to initialize FSI launcher: ${e.message}".loge(TAG)

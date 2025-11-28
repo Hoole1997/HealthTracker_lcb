@@ -83,6 +83,45 @@ class FsiNotificationActivity: BaseMVVMActivity<FsiViewModel, ActivityFsiNotific
                 mViewBind.tvKcal.text =  NumberFormatter.formatNumber(it.kcal, LanguageUtils.getAppLocale(App.INSTANCE),1)
             }
         }
+        
+        // 观察饮水数据状态
+        this.collect(mViewModel.hydrateDisplayState) { state ->
+            with(mViewBind) {
+                // 根据单位换算显示值
+                val currentValue = when (state.cupUnit) {
+                    com.healthtracker.blood.suger.config.HydrateSettingManager.CupUnit.ML -> state.currentIntakeMl
+                    com.healthtracker.blood.suger.config.HydrateSettingManager.CupUnit.FL_OZ -> 
+                        com.healthtracker.blood.suger.config.HydrateSettingManager.fromMl(state.currentIntakeMl, state.cupUnit)
+                }
+                
+                val targetValue = when (state.cupUnit) {
+                    com.healthtracker.blood.suger.config.HydrateSettingManager.CupUnit.ML -> state.targetIntakeMl
+                    com.healthtracker.blood.suger.config.HydrateSettingManager.CupUnit.FL_OZ -> 
+                        com.healthtracker.blood.suger.config.HydrateSettingManager.fromMl(state.targetIntakeMl, state.cupUnit)
+                }
+                
+                val unitLabel = if (state.cupUnit == com.healthtracker.blood.suger.config.HydrateSettingManager.CupUnit.FL_OZ) {
+                    getString(R.string.fl_oz)
+                } else {
+                    getString(R.string.unit_ml)
+                }
+                
+                // 更新 UI
+                tvDrinkValue.text = currentValue.toString()
+                tvDrinkGoal.text = "/$targetValue$unitLabel"
+                
+                // 根据达标状态切换图标
+                ivDrinkProgress.setImageResource(
+                    if (state.isGoalReached) R.drawable.ic_fsi_hydrate_full 
+                    else R.drawable.ic_fsi_hydrate_not_full
+                )
+                
+                ivReachGoal.setImageResource(
+                    if (state.isGoalReached) R.drawable.ic_fsi_reach_goal 
+                    else R.drawable.ic_fsi_not_reach_goal
+                )
+            }
+        }
     }
 
     /**

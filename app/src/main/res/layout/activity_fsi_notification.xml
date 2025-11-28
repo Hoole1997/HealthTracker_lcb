@@ -155,164 +155,190 @@
                 app:layout_constraintTop_toBottomOf="@id/iv_icon" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginHorizontal="@dimen/dp_64"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/bg_rect_white_40"
-            android:backgroundTint="@color/transparent40"
-            android:gravity="center_vertical"
-            android:padding="@dimen/dp_16">
+       <androidx.appcompat.widget.LinearLayoutCompat
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:orientation="vertical">
+           <androidx.appcompat.widget.LinearLayoutCompat
+               android:id="@+id/ll_hydrate"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               android:layout_marginTop="@dimen/dp_20"
+               android:background="@drawable/bg_rect_white_40"
+               android:backgroundTint="@color/transparent40"
+               android:gravity="center_vertical"
+               android:padding="@dimen/dp_16">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_drink_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_fsi_hydrate_not_full" />
+               <androidx.appcompat.widget.AppCompatImageView
+                   android:id="@+id/iv_drink_progress"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   app:srcCompat="@drawable/ic_fsi_hydrate_not_full" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_drink_value"
-                style="@style/TextViewFont_RobotoBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_16"
-                tools:text="200" />
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/tv_drink_value"
+                   style="@style/TextViewFont_RobotoBold"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="@dimen/dp_6"
+                   android:textColor="@color/white"
+                   android:textSize="@dimen/sp_16"
+                   tools:text="200" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_drink_goal"
-                style="@style/TextViewFont_RobotoRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12"
-                tools:text="/2000ml" />
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/tv_drink_goal"
+                   style="@style/TextViewFont_RobotoRegular"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:textColor="@color/white"
+                   android:textSize="@dimen/sp_12"
+                   tools:text="/2000ml" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_reach_goal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
-                app:srcCompat="@drawable/ic_fsi_not_reach_goal" />
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_hydrate"
-                style="@style/TextViewFont_RobotoBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="@string/hydrate"
-                android:textColor="@color/color_30A6ED"
-                android:textSize="@dimen/sp_16" />
+               <androidx.appcompat.widget.AppCompatImageView
+                   android:id="@+id/iv_reach_goal"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="@dimen/dp_6"
+                   app:srcCompat="@drawable/ic_fsi_not_reach_goal" />
 
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginHorizontal="@dimen/dp_64"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/bg_rect_white_40"
-            android:backgroundTint="@color/transparent40"
-            android:gravity="center_vertical"
-            android:padding="@dimen/dp_16">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_step"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_fsi_step" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_step_count"
-                style="@style/TextViewFont_RobotoBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_16"
-                tools:text="4000" />
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/tv_hydrate"
+                   style="@style/TextViewFont_RobotoBold"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="@dimen/dp_20"
+                   android:layout_weight="1"
+                   android:gravity="end"
+                   android:text="@string/hydrate"
+                   android:textColor="@color/color_30A6ED"
+                   android:textSize="@dimen/sp_16" />
 
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_kcal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                app:srcCompat="@drawable/ic_fsi_kcal" />
+           </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_kcal"
-                style="@style/TextViewFont_RobotoBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_16"
-                tools:text="200" />
+           <androidx.appcompat.widget.LinearLayoutCompat
+               android:id="@+id/ll_step"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               android:layout_marginTop="@dimen/dp_20"
+               android:background="@drawable/bg_rect_white_40"
+               android:backgroundTint="@color/transparent40"
+               android:gravity="center_vertical"
+               android:padding="@dimen/dp_16">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_kcal_unit"
-                style="@style/TextViewFont_RobotoRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_2"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="@dimen/dp_1"
-                android:text="@string/kcal"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12" />
+               <androidx.appcompat.widget.AppCompatImageView
+                   android:id="@+id/iv_step"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   app:srcCompat="@drawable/ic_fsi_step" />
 
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_step"
-                style="@style/TextViewFont_RobotoBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="@string/text_steps"
-                android:textColor="#F0832D"
-                android:textSize="@dimen/sp_16" />
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/tv_step_count"
+                   style="@style/TextViewFont_RobotoBold"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="@dimen/dp_6"
+                   android:textColor="@color/white"
+                   android:textSize="@dimen/sp_16"
+                   tools:text="4000" />
 
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+               <androidx.appcompat.widget.AppCompatImageView
+                   android:id="@+id/iv_kcal"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="@dimen/dp_16"
+                   app:srcCompat="@drawable/ic_fsi_kcal" />
+
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/tv_kcal"
+                   style="@style/TextViewFont_RobotoBold"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="@dimen/dp_6"
+                   android:textColor="@color/white"
+                   android:textSize="@dimen/sp_16"
+                   tools:text="200" />
+
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/tv_kcal_unit"
+                   style="@style/TextViewFont_RobotoRegular"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="@dimen/dp_2"
+                   android:layout_gravity="bottom"
+                   android:layout_marginBottom="@dimen/dp_1"
+                   android:text="@string/kcal"
+                   android:textColor="@color/white"
+                   android:textSize="@dimen/sp_12" />
+
+
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/tv_step"
+                   style="@style/TextViewFont_RobotoBold"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="@dimen/dp_16"
+                   android:layout_weight="1"
+                   android:gravity="end"
+                   android:text="@string/text_steps"
+                   android:textColor="#F0832D"
+                   android:textSize="@dimen/sp_16" />
+
+
+           </androidx.appcompat.widget.LinearLayoutCompat>
+       </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <FrameLayout
+<!--    <FrameLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginHorizontal="@dimen/dp_64"-->
+<!--        android:layout_marginBottom="@dimen/dp_20"-->
+<!--        android:background="@drawable/bg_rect_white_40"-->
+<!--        android:backgroundTint="@color/transparent40"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent">-->
+
+<!--        <androidx.appcompat.widget.AppCompatTextView-->
+<!--            android:id="@+id/tv_slid_unlock"-->
+<!--            style="@style/TextViewFont_RobotoMedium"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:drawableEnd="@drawable/ic_fsi_slide"-->
+<!--            android:drawablePadding="@dimen/dp_16"-->
+<!--            android:gravity="center"-->
+<!--            android:padding="@dimen/dp_16"-->
+<!--            android:text="Slide to unlock"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="@dimen/sp_16" />-->
+<!--    </FrameLayout>-->
+
+    <com.ncorti.slidetoact.SlideToActView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginHorizontal="@dimen/dp_60"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="@dimen/dp_64"
         android:layout_marginBottom="@dimen/dp_20"
-        android:background="@drawable/bg_rect_white_40"
-        android:backgroundTint="@color/transparent40"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:complete_icon="@drawable/ic_fsi_reach_goal"
+        app:rotate_icon="false"
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_slid_unlock"
-            style="@style/TextViewFont_RobotoMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawableEnd="@drawable/ic_fsi_slide"
-            android:drawablePadding="@dimen/dp_16"
-            android:gravity="center"
-            android:padding="@dimen/dp_16"
-            android:text="Slide to unlock"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_16" />
-    </FrameLayout>
+        app:outer_color="@color/transparent40"
+        app:inner_color="@color/c5"
+        app:slider_icon="@drawable/ic_fsi_slide"
+        app:text_color="@color/white"
+        app:area_margin="@dimen/dp_4"
+        app:slider_icon_color="@color/white"
+        app:text_style="bold"
+        app:text_size="@dimen/sp_16"
+        app:text="@string/slide_to_unlock"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
