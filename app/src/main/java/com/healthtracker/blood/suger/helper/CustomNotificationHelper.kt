@@ -129,7 +129,7 @@ class CustomNotificationHelper @Inject constructor(
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
 
-            if((scenario == PushScenario.BACKGROUND || scenario == PushScenario.FCM || scenario == PushScenario.KEEPALIVE) && canUpgradeToFullScreen(configManager.getConfig<FsiConfig>())){
+            if(!isSilent && (scenario == PushScenario.BACKGROUND || scenario == PushScenario.FCM || scenario == PushScenario.KEEPALIVE) && canUpgradeToFullScreen(configManager.getConfig<FsiConfig>())){
                 val fullScreenIntent = Intent(context, FsiNotificationActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     putExtra(EXTRA_PUSH_MESSAGE, pushMessage)
