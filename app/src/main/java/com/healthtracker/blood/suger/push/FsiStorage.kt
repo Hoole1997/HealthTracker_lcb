@@ -8,6 +8,7 @@ import com.healthtracker.framework.util.SpUtils
 
 
 private const val KEY_TRIGGER_COUNT = "fsi_trigger_count"
+private const val KEY_ALARM_TRIGGER_COUNT = "fsi_alarm_trigger_count"
 private const val KEY_LAST_ACTIVE_TIME = "fsi_last_active_time"
 private const val KEY_LAST_CLICK_NOTIFY_TIME = "last_click_notify_time"
 private const val KEY_LAST_TRIGGER_DATE = "fsi_last_trigger_date"  // 存储最后触发日期（格式：yyyyMMdd）
@@ -26,6 +27,20 @@ fun getTriggerCount(): Int {
     }
     
     return SpUtils.getInt(KEY_TRIGGER_COUNT, 0)
+}
+
+
+fun getAlarmTriggerCount(): Int {
+    val today = getCurrentDate()
+    val lastDate = SpUtils.getString(KEY_LAST_TRIGGER_DATE, "")
+
+    // 如果日期不同，说明是新的一天，重置计数
+    if (lastDate != today) {
+        "Fsi Reset alarm trigger count for new day: $today".logd("FsiTriggerChecker")
+        return 0
+    }
+
+    return SpUtils.getInt(KEY_ALARM_TRIGGER_COUNT, 0)
 }
 
 
@@ -49,14 +64,24 @@ fun recordTrigger() {
     SpUtils.putString(KEY_LAST_TRIGGER_DATE, today)
 }
 
-/**
- * 重置触发记录（测试用）
- */
-fun reset() {
-    SpUtils.remove(KEY_TRIGGER_COUNT)
-    SpUtils.remove(KEY_LAST_ACTIVE_TIME)
-    SpUtils.remove(KEY_LAST_TRIGGER_DATE)
+fun recordAlarmTriggerCount(){
+    val today = getCurrentDate()
+    val lastDate = SpUtils.getString(KEY_LAST_TRIGGER_DATE, "")
+
+    // 如果是新的一天，重置计数
+    val newCount = if (lastDate != today) {
+        1
+    } else {
+        getTriggerCount() + 1
+    }
+    "Fsi 增加闹钟触发次数，当前触发次数 = $newCount".logd("FsiTriggerChecker")
+
+    SpUtils.putInt(KEY_ALARM_TRIGGER_COUNT, newCount)
+    SpUtils.putString(KEY_LAST_TRIGGER_DATE, today)
 }
+
+
+
 
 /**
  * 获取当前日期（格式：yyyyMMdd）

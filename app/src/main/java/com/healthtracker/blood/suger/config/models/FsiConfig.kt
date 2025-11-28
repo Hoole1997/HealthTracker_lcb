@@ -18,7 +18,8 @@ data class FsiConfig(
     val quietPeriodHours: Int,
     val timeWindow: Int,
     val maxTriggerCount: Int,
-    val delayInstallHour:Int
+    val delayInstallHour:Int,
+    val alarmMaxPrompts:Int
 ) {
     companion object {
         /**
@@ -37,7 +38,8 @@ data class FsiConfig(
                 quietPeriodHours = 12,
                 timeWindow = 23,
                 maxTriggerCount = 3,
-                delayInstallHour = 12
+                delayInstallHour = 12,
+                alarmMaxPrompts = 50
             )
         }
     }

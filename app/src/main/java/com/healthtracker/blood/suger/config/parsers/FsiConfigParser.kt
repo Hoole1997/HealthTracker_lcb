@@ -57,6 +57,7 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
             val delayInstallHours = json.optIntCompat("delay_install_hours", 12)
 
             val maxPrompt = json.optIntCompat("max_prompts", 3)
+            val alarmMaxPrompt = json.optIntCompat("alarm_max_prompts", 50)
             val timeWindow = parseTimeWindow(json.optString("time_window", "07:00-23:00"))
 
             FsiConfig(
@@ -64,7 +65,8 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
                 quietPeriodHours = quietPeriodHours,
                 timeWindow = timeWindow,
                 maxTriggerCount = maxPrompt,
-                delayInstallHour = delayInstallHours
+                delayInstallHour = delayInstallHours,
+                alarmMaxPrompts = alarmMaxPrompt
             )
         }.getOrNull()
     }
@@ -101,8 +103,7 @@ class FsiConfigParser @Inject constructor() : ConfigParser<FsiConfig> {
 
     private fun JSONObject.optBooleanCompat(key: String, default: Boolean): Boolean {
         if (!has(key)) return default
-        val value = opt(key)
-        return when (value) {
+        return when (val value = opt(key)) {
             is Boolean -> value
             is Number -> value.toInt() != 0
             else -> value?.toString().equals("true", ignoreCase = true)

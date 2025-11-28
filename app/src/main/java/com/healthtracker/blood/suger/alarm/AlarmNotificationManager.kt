@@ -19,15 +19,24 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.config.models.FsiConfig
 import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.helper.CustomNotificationHelper
 import com.healthtracker.blood.suger.helper.NotificationResourceMapper
 import com.healthtracker.blood.suger.helper.NotificationResourceMapper.NotificationResources
+import com.healthtracker.blood.suger.push.canUpgradeToFullScreen
+import com.healthtracker.blood.suger.push.recordAlarmTriggerCount
+import com.healthtracker.blood.suger.push.recordTrigger
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
+import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
+import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity
+import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity.Companion.EXTRA_ALARM_RECORD
+import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity.Companion.EXTRA_PUSH_MESSAGE
 import com.healthtracker.blood.suger.ui.act.MedicationReminderFullScreenActivity
 import com.healthtracker.blood.suger.ui.act.SplashActivity
+import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -52,7 +61,8 @@ import javax.inject.Singleton
 @Singleton
 class AlarmNotificationManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val permissionManager: PermissionManager
+    private val permissionManager: PermissionManager,
+    private val configManager: RemoteConfigManager
 ) {
     
     companion object {
@@ -64,6 +74,7 @@ class AlarmNotificationManager @Inject constructor(
         // 通知ID基础值
         private const val NOTIFICATION_ID_BASE = 10000
         private const val SNOOZE_REQUEST_OFFSET = 50000
+        const val PUSH_ALARM = "push_alarm"
     }
     
     private val notificationManager: NotificationManagerCompat by lazy {
@@ -137,6 +148,25 @@ class AlarmNotificationManager @Inject constructor(
                 .setWhen(System.currentTimeMillis())
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
+            if(canUpgradeToFullScreen(configManager.getConfig<FsiConfig>(),true)){
+                val (time,des,btnText) = getNotificationContent(alarmRecord)
+                val fullScreenIntent = Intent(context, FsiNotificationActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    putExtra(EXTRA_PUSH_MESSAGE, PushMessage(PUSH_ALARM,time,des,btnText,0,0))
+                    putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,notificationId)
+                    putExtra(EXTRA_NOTIFICATION_ACTION,getNotificationAction(alarmRecord.type))
+                }
+
+                val fullScreenPendingIntent = PendingIntent.getActivity(
+                    context,
+                    notificationId,
+                    fullScreenIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                recordAlarmTriggerCount()
+                notificationBuilder.setFullScreenIntent(fullScreenPendingIntent,true)
+            }
+
             val notification = notificationBuilder.build()
             
             // 显示通知
@@ -314,18 +344,12 @@ class AlarmNotificationManager @Inject constructor(
      */
     private fun createClickPendingIntent(alarmType: Int): PendingIntent {
         // 将内部 action 映射到对应的参数值
-        val actionValue = when(alarmType) {
-            AlarmRecord.TYPE_BLOOD_SUGAR -> HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR
-            AlarmRecord.TYPE_BLOOD_PRESSURE -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
-            AlarmRecord.TYPE_MEDICATION -> HealthServiceConstants.ACTION_VALUE_MEDICATION
-            AlarmRecord.TYPE_HYDRATION -> HealthServiceConstants.ACTION_VALUE_HYDRATION
-            else -> null
-        }
+        val actionValue = getNotificationAction(alarmType)
 
         // 直接创建启动 SplashActivity 的 Intent
         val intent = Intent(context, SplashActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, actionValue)
+            putExtra(EXTRA_NOTIFICATION_ACTION, actionValue)
         }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -337,6 +361,15 @@ class AlarmNotificationManager @Inject constructor(
             intent,
             flags
         )
+    }
+
+
+    private fun getNotificationAction(alarmType:Int) =  when(alarmType) {
+        AlarmRecord.TYPE_BLOOD_SUGAR -> HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR
+        AlarmRecord.TYPE_BLOOD_PRESSURE -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
+        AlarmRecord.TYPE_MEDICATION -> HealthServiceConstants.ACTION_VALUE_MEDICATION
+        AlarmRecord.TYPE_HYDRATION -> HealthServiceConstants.ACTION_VALUE_HYDRATION
+        else -> null
     }
     
     /**

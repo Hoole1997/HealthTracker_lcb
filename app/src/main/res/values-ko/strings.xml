@@ -768,4 +768,6 @@
         <item>수박과 오이처럼 수분 함량이 높은 과일과 채소를 즐겨 수분을 유지하세요.</item>
     </string-array>
     <string name="bill_ad_loading">광고 로드 중…</string>
+    <string name="slide_to_unlock">슬라이드하여 잠금 해제</string>
 </resources>
+

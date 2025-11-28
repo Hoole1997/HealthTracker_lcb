@@ -13,7 +13,8 @@ private const val INSTALL_COOLDOWN_HOURS = 24  // 安装后固定冷却期（小
  * 检查是否可以升级为全屏通知
  */
 fun canUpgradeToFullScreen(
-    config: FsiConfig
+    config: FsiConfig,
+    isAlarm: Boolean = false
 ): Boolean {
     // 1. 检查开关
     if (!checkEnabled(config)) {
@@ -33,12 +34,20 @@ fun canUpgradeToFullScreen(
         return false
     }
 
-    // 4. 检查当天触发次数
-    if (!checkTriggerCount(config)) {
-        if (BuildState.debug) "Fsi Daily max trigger count reached".logd(TAG)
-        return false
+    if(isAlarm){
+        if(BuildState.debug) "Fsi 闹钟通知，检查闹出触发次数".logd(TAG)
+        if(!checkAlarmTriggerCount(config)){
+            if(BuildState.debug) "Fsi Alarm max trigger count reached".logd(TAG)
+            return false
+        }
+    }else{
+        if(BuildState.debug) "Fsi 普通通知，检查触发次数".logd(TAG)
+        // 4. 检查当天触发次数
+        if (!checkTriggerCount(config)) {
+            if (BuildState.debug) "Fsi Daily max trigger count reached".logd(TAG)
+            return false
+        }
     }
-
     if (BuildState.debug) "All FSI conditions met".logd(TAG)
     return true
 }
@@ -112,6 +121,19 @@ private fun checkTimeWindow(config: FsiConfig): Boolean {
 private fun checkTriggerCount(config: FsiConfig): Boolean {
     val currentCount = getTriggerCount()
     val max = config.maxTriggerCount
+    "✓ Trigger count: $currentCount/$max".logd(PushOrchestrator.TAG)
+    return currentCount < max
+}
+
+
+
+/**
+ * 检查当天触发次数是否未达上限
+ * 触发次数每天0点自动重置
+ */
+private fun checkAlarmTriggerCount(config: FsiConfig): Boolean {
+    val currentCount = getAlarmTriggerCount()
+    val max = config.alarmMaxPrompts
     "✓ Trigger count: $currentCount/$max".logd(PushOrchestrator.TAG)
     return currentCount < max
 }

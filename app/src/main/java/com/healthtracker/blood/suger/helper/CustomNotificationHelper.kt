@@ -54,6 +54,28 @@ class CustomNotificationHelper @Inject constructor(
         private const val TAG = "CustomNotificationHelper"
         private const val NOTIFICATION_ID_BASE = 20000
 
+        /**
+         * 将 PushMessage.actionType 映射到 ACTION_VALUE 常量
+         */
+        fun mapActionType(actionType: Int): String {
+            return when (actionType) {
+                1 -> HealthServiceConstants.ACTION_VALUE_HOMEPAGE
+                2 -> HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR
+                3 -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
+                4 -> HealthServiceConstants.ACTION_VALUE_CHOLESTEROL
+                5 -> HealthServiceConstants.ACTION_VALUE_BMI
+                6 -> HealthServiceConstants.ACTION_VALUE_HEART_RATE
+                7 -> HealthServiceConstants.ACTION_VALUE_HISTORY
+                8 -> HealthServiceConstants.ACTION_VALUE_MEDICATION
+                9 -> HealthServiceConstants.ACTION_VALUE_HYDRATION
+                10 -> HealthServiceConstants.ACTION_VALUE_STEPS
+                else -> {
+                    "Unknown actionType: $actionType, defaulting to homepage".logd(PushOrchestrator.TAG)
+                    HealthServiceConstants.ACTION_VALUE_HOMEPAGE
+                }
+            }
+        }
+
     }
 
 
@@ -301,25 +323,5 @@ class CustomNotificationHelper @Inject constructor(
         )
     }
 
-    /**
-     * 将 PushMessage.actionType 映射到 ACTION_VALUE 常量
-     */
-    private fun mapActionType(actionType: Int): String {
-        return when (actionType) {
-            1 -> HealthServiceConstants.ACTION_VALUE_HOMEPAGE
-            2 -> HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR
-            3 -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
-            4 -> HealthServiceConstants.ACTION_VALUE_CHOLESTEROL
-            5 -> HealthServiceConstants.ACTION_VALUE_BMI
-            6 -> HealthServiceConstants.ACTION_VALUE_HEART_RATE
-            7 -> HealthServiceConstants.ACTION_VALUE_HISTORY
-            8 -> HealthServiceConstants.ACTION_VALUE_MEDICATION
-            9 -> HealthServiceConstants.ACTION_VALUE_HYDRATION
-            10 -> HealthServiceConstants.ACTION_VALUE_STEPS
-            else -> {
-                "Unknown actionType: $actionType, defaulting to homepage".logd(PushOrchestrator.TAG)
-                HealthServiceConstants.ACTION_VALUE_HOMEPAGE
-            }
-        }
-    }
+
 }

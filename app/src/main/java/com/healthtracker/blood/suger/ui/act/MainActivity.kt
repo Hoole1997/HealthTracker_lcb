@@ -34,6 +34,8 @@ import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.InsightsFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
 import com.healthtracker.blood.suger.ui.fragment.RecordFragment
+import com.healthtracker.blood.suger.ui.tracker.HealthType
+import com.healthtracker.blood.suger.ui.tracker.trackEnterPageClick
 import com.healthtracker.blood.suger.ui.viewmodel.MainViewModel
 import com.healthtracker.blood.suger.utils.loadBanner
 import com.healthtracker.framework.BuildState
@@ -43,14 +45,10 @@ import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
-import com.healthtracker.blood.suger.ui.tracker.HealthType
-import com.healthtracker.blood.suger.ui.tracker.trackEnterPageClick
 import com.healthtracker.framework.util.Restore
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import net.corekit.core.report.ReportDataManager
 import javax.inject.Inject
