@@ -1,5 +1,7 @@
 package net.corekit.metrics.report
 
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.ext.DataStoreStringDelegate
 
 /**
@@ -15,7 +17,9 @@ object SharedParamsManager {
     private const val KEY_LOGIN_DAY = "pdf_r1n7s4p8"
     private const val KEY_IS_NEW = "pdf_s9w2q6t3"
     private const val KEY_FIRST_INSTALL_DATE = "pdf_t5k1h8m4"
-    
+    const val KEY_USER_GENDER = "key_user_gender"
+    const val KEY_USER_AGE = "key_user_age"
+
     // 使用DataStoreStringDelegate进行持久化存储，默认值为空字符串
     var adNetwork by DataStoreStringDelegate(KEY_AD_NETWORK, "")
     var campaign by DataStoreStringDelegate(KEY_CAMPAIGN, "")
@@ -23,6 +27,11 @@ object SharedParamsManager {
     var creative by DataStoreStringDelegate(KEY_CREATIVE, "")
     var loginDay by DataStoreStringDelegate(KEY_LOGIN_DAY, "")
     var isNew by DataStoreStringDelegate(KEY_IS_NEW, "")
+    var age = SpUtils.getInt(KEY_USER_AGE,-1)
+    var gender = SpUtils.getInt(KEY_USER_GENDER,-1)
+
+
+
     private var firstInstallDate by DataStoreStringDelegate(KEY_FIRST_INSTALL_DATE, "")
     
     
@@ -45,6 +54,8 @@ object SharedParamsManager {
             loginDay = daysDiff.toString()
             isNew = if (daysDiff == 0) "Y" else "N"
         }
+
+        "性别:$gender,年龄:$age".logd("SharedParamsManager")
     }
     
     /**
@@ -120,6 +131,7 @@ object SharedParamsManager {
      * @return 公共参数Map
      */
     fun retrieveAllCommonParams(): Map<String, String> {
+
         return mapOf(
             "ad_network" to (adNetwork ?: ""),
             "campaign" to (campaign ?: ""),
@@ -131,13 +143,17 @@ object SharedParamsManager {
     }
 
     fun retrieveUserCommonParams(): Map<String, String> {
+        val userGender = if(gender == -1) "" else if(gender == 0) "Male" else "Female"
+        val userAge = if(age == -1) "" else "$age"
         return mapOf(
             "user_ad_network" to (adNetwork ?: ""),
             "user_campaign" to (campaign ?: ""),
             "user_adgroup" to (adgroup ?: ""),
             "user_creative" to (creative ?: ""),
             "user_login_day" to (loginDay ?: ""),
-            "user_is_new" to (isNew ?: "")
+            "user_is_new" to (isNew ?: ""),
+            "gender" to userGender,
+            "age" to userAge
         )
     }
 }
