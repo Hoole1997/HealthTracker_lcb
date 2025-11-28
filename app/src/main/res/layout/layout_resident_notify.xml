@@ -20,6 +20,7 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_bs_primery"/>
         <TextView
+            android:id="@+id/tv_bs_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextViewFont_RobotoMedium"
@@ -41,6 +42,7 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_bp_resident"/>
         <TextView
+            android:id="@+id/tv_bp_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextViewFont_RobotoMedium"
@@ -62,6 +64,7 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_hr_resident"/>
         <TextView
+            android:id="@+id/tv_hr_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextViewFont_RobotoMedium"

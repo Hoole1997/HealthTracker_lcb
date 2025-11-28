@@ -68,6 +68,18 @@ class ResidentNotificationHelper @Inject constructor(
             R.layout.layout_resident_notify
         )
 
+        // 获取本地化 Context 以正确加载多语言资源
+        val locale = com.healthtracker.framework.util.LanguageUtils.getAppLocale(context)
+        val config = android.content.res.Configuration(context.resources.configuration)
+        config.setLocale(locale)
+        val localizedContext = context.createConfigurationContext(config)
+
+        // 显式设置本地化文本
+        // 注意：RemoteViews 默认使用系统语言，必须手动设置才能支持应用内语言切换
+        remoteViews.setTextViewText(R.id.tv_bs_text, localizedContext.getString(R.string.blood_suger))
+        remoteViews.setTextViewText(R.id.tv_bp_text, localizedContext.getString(R.string.blood_pressure))
+        remoteViews.setTextViewText(R.id.tv_hr_text, localizedContext.getString(R.string.heart_rate))
+
         // 设置三个区域的点击事件
         remoteViews.setOnClickPendingIntent(
             R.id.ll_bs,
