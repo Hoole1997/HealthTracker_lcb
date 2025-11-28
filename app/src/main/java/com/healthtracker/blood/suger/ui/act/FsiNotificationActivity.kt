@@ -9,27 +9,35 @@ import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.models.PushMessage
+import com.healthtracker.blood.suger.constants.KEY_STEP_COUNT_GOLE
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivityFsiNotificationBinding
+import com.healthtracker.blood.suger.ui.viewmodel.FsiViewModel
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
+import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.hasOreo
+import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.core.report.ReportDataManager
 import java.sql.Date
-
-class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotificationBinding>() {
+@AndroidEntryPoint
+class FsiNotificationActivity: BaseMVVMActivity<FsiViewModel, ActivityFsiNotificationBinding>() {
     companion object{
         const val EXTRA_PUSH_MESSAGE = "extra_push_message"
         private const val TAG = "FsiNotificationActivity"
     }
     override fun createViewBinding() = ActivityFsiNotificationBinding.inflate(layoutInflater)
 
-    override fun getVMModelClass() = BaseViewModel::class.java
+    override fun getVMModelClass() = FsiViewModel::class.java
 
     override fun isFullscreenWithNavigationBar() = true
     override fun isFullscreen() = true
@@ -52,20 +60,29 @@ class FsiNotificationActivity: BaseMVVMActivity<BaseViewModel, ActivityFsiNotifi
                     tvDes.text = it.desc
                     ivIcon.setImageResource(when(it.iconType){
                         1 -> R.drawable.ic_fis_home
-                        2 -> R.drawable.ic_fsi_bs
-                        3 -> R.drawable.ic_fsi_bp
-                        4 -> R.drawable.ic_fsi_cholesterol
-                        5 -> R.drawable.ic_fsi_bmi
-                        6 -> R.drawable.ic_fsi_hr
-                        9 -> R.drawable.ic_hydrate_notify
-                        10 -> R.drawable.ic_step_notify
+                        2 -> R.mipmap.ic_blood_suger
+                        3 -> R.mipmap.ic_blood_pressure
+                        4 -> R.mipmap.ic_cholesterol
+                        5 -> R.mipmap.ic_bmi
+                        6 -> R.mipmap.ic_heart
+                        9 -> R.mipmap.ic_home_cup
+                        10 -> R.mipmap.ic_home_step
                         else -> R.drawable.ic_fis_home
                     })
                 }
             }
 
         }
+    }
 
+    override fun createObserver() {
+        super.createObserver()
+        this.collect(mViewModel.todayStatFlow) { stat ->
+            stat?.let {
+                mViewBind.tvStepCount.text = it.steps.toString()
+                mViewBind.tvKcal.text =  NumberFormatter.formatNumber(it.kcal, LanguageUtils.getAppLocale(App.INSTANCE),1)
+            }
+        }
     }
 
     /**

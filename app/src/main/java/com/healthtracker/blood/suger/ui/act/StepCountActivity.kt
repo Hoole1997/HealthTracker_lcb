@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import android.widget.Toast
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.constants.KEY_STEP_COUNT_GOLE
 import com.healthtracker.blood.suger.databinding.ActivityStepCountBinding
@@ -17,6 +18,8 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.startActivity
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -48,7 +51,6 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
 
         chartManager = chartManagerFactory.create(mViewBind.chartView, this)
         checkPermissionAndStart()
-        createObserver()
     }
 
     override fun onResume() {
@@ -60,8 +62,8 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
         this.collect(mViewModel.todayStatFlow) { stat ->
             stat?.let {
                 mViewBind.tvStepCount.text = it.steps.toString()
-                mViewBind.tvDistance.text = String.format("%.2f", it.distanceKm)
-                mViewBind.tvKcal.text = String.format("%.1f", it.kcal)
+                mViewBind.tvDistance.text =  NumberFormatter.formatNumber(it.distanceKm,LanguageUtils.getAppLocale(App.INSTANCE))
+                mViewBind.tvKcal.text =  NumberFormatter.formatNumber(it.kcal, LanguageUtils.getAppLocale(App.INSTANCE),1)
                 val totalSeconds = it.durationSeconds
                 val hours = totalSeconds / 3600
                 val minutes = (totalSeconds % 3600) / 60
