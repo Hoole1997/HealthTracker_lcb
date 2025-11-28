@@ -57,6 +57,8 @@ class App : MultiDexApplication() {
 
     var isClickAdLeave = false
 
+    var isCloseFsi = false
+
     /**
      * 主进程检查缓存
      * 对应原App.kt中的isMainProcess逻辑

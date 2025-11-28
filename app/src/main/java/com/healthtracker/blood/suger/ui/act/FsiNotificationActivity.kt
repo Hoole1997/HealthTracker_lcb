@@ -184,6 +184,7 @@ class FsiNotificationActivity: BaseMVVMActivity<FsiViewModel, ActivityFsiNotific
     }
 
     private fun unlockAndOpen(vararg params: Pair<String, Any?>) {
+        App.INSTANCE.isCloseFsi = true
         // 1. 解锁屏幕
         if (hasOreo()) {
             val keyguardManager = getSystemService(KeyguardManager::class.java)
