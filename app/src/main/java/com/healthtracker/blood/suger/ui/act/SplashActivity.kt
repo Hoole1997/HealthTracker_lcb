@@ -25,6 +25,7 @@ import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.click
+import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
@@ -127,8 +128,8 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 
             launchTime = System.currentTimeMillis()
             logEvent("loading_page_show")
-            mViewBind.tvPrivacy.click {
-                openBrowser(this@SplashActivity, BuildConfig.PRIVACY_POLICY)
+            mViewBind.tvPrivacy.clickWithDuration {
+                InnerWebActivity.start(this@SplashActivity, BuildConfig.PRIVACY_POLICY)
             }
 
             playAnimations()

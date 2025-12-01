@@ -5,23 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Spanned
 import android.text.style.URLSpan
-import android.view.View
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.databinding.ActivityInsightsDetailBinding
 import com.healthtracker.blood.suger.utils.InsightAssetPreparer
+import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
-import com.healthtracker.blood.suger.ad.BaseInterActivity
-import com.healthtracker.blood.suger.utils.loadNative
-import com.healthtracker.blood.suger.utils.WebViewUtils
-import com.healthtracker.framework.ext.logd
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ui.NativeAdStyle
 import java.io.File
@@ -104,7 +98,7 @@ class InsightsDetailActivity :
             }
             
             // Initialize WebView
-            setupWebView()
+
             
             loadNative(adContainer, style = NativeAdStyle.STANDARD)
         }
@@ -138,7 +132,7 @@ class InsightsDetailActivity :
                     if (links.isNotEmpty()) {
                         val url = links[0].url
                         // Load URL in WebView instead of opening in browser
-                        loadUrlInWebView(url)
+                        InnerWebActivity.start(this@InsightsDetailActivity,url)
                         return true
                     }
                 }
@@ -147,98 +141,8 @@ class InsightsDetailActivity :
         }
     }
 
-    private fun setupWebView() {
-        with(mViewBind) {
-            // Initialize WebView with WebViewUtils
-            WebViewUtils.initWebViewSetting(webView, true, true)
-            progress.setColor(ContextCompat.getColor(this@InsightsDetailActivity, R.color.c5))
-            // Setup WebViewClient for page load events
-            webView.webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                    view.loadUrl(url)
-                    return true
-                }
 
-                override fun onPageFinished(view: WebView, url: String) {
-                    super.onPageFinished(view, url)
-                    // Hide progress bar when page finishes loading
-//                    progress.hide()
-                }
 
-                override fun onReceivedError(
-                    view: WebView,
-                    errorCode: Int,
-                    description: String,
-                    failingUrl: String
-                ) {
-                    super.onReceivedError(view, errorCode, description, failingUrl)
-                    // Hide progress bar on error
-                    progress.hide()
-                }
-            }
 
-            // Setup WebChromeClient for progress tracking
-            webView.webChromeClient = object : WebChromeClient() {
-                override fun onProgressChanged(view: WebView, newProgress: Int) {
-                    super.onProgressChanged(view, newProgress)
-                    // Only update progress if WebView is visible
 
-                    if (isWebViewMode) {
-                        progress.setWebProgress(newProgress)
-                    }
-
-                    if(newProgress == 100){
-                        progress.hide()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun loadUrlInWebView(url: String) {
-        with(mViewBind) {
-            // Show WebView mode
-            showWebViewMode()
-            
-            // Reset and show progress
-            progress.reset()
-            progress.show()
-            "url: $url".logd("InsightsDetailActivity")
-            webView.loadUrl(url)
-        }
-    }
-
-    private fun showWebViewMode() {
-        isWebViewMode = true
-        with(mViewBind) {
-            scrollContainer.visibility = View.GONE
-            webView.visibility = View.VISIBLE
-        }
-    }
-
-    private fun showArticleMode() {
-        isWebViewMode = false
-        with(mViewBind) {
-            webView.visibility = View.GONE
-            scrollContainer.visibility = View.VISIBLE
-            progress.hide()
-        }
-    }
-
-    override fun handleBackPress(): Boolean {
-        if (isWebViewMode) {
-            // If WebView can go back, navigate back in WebView
-            if (mViewBind.webView.canGoBack()) {
-                mViewBind.webView.goBack()
-                return true
-            } else {
-                // Otherwise, return to article mode
-                showArticleMode()
-                return true
-            }
-        } else {
-            // In article mode, finish activity
-            return super.handleBackPress()
-        }
-    }
 }
