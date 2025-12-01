@@ -165,7 +165,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>(
         saveUserAge(age)
         saveUserGender(gender)
         SpUtils.putBoolean(KEY_HAS_ADD_PROFILE, true)
-        Toaster.show(R.string.save_success)
+        Toaster.show(getString(R.string.save_success))
 
         when (launchMode) {
             MODE_GUIDE -> {
