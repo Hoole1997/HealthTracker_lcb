@@ -12,6 +12,7 @@ import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.blood.suger.databinding.ActivityLanguageSelectBinding
 import com.healthtracker.blood.suger.databinding.ItemAppLanguageBinding
 import com.healthtracker.blood.suger.ui.weight.WrapLayoutLinearLayoutManager
+import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.config.core.RemoteConfigManager
@@ -25,6 +26,7 @@ import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoMedium
 import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ui.NativeAdStyle
 import javax.inject.Inject
 
 
@@ -66,6 +68,7 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
             tvConfirm.clickWithDuration {
                 onChoiceLangDone()
             }
+            loadNative(adContainer, NativeAdStyle.CARD_3)
         }
     }
 
