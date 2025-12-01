@@ -1366,4 +1366,12 @@ healthcare provider or medical institution.</string>
     <string name="bill_ad_loading">AD loading…</string>
     <string name="slide_to_unlock">Slide to unlock</string>
 
+    <string name="please_tell_more">Please tell us more details so that we can locate and solve your problem faster</string>
+    <string name="upload_screenshots">Upload Screenshots</string>
+    <string name="btn_submit">Submit</string>
+    <string name="feedback_email_title">%s Feedback</string>
+    <string name="feedback_sending_failed">Sending failed, please check your email app.</string>
+    <string name="max_upload_photos">You can upload up to %d photos</string>
+    <string name="feedback_submitted">Submit successfully</string>
+
 </resources>

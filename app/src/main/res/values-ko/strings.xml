@@ -769,5 +769,6 @@
     </string-array>
     <string name="bill_ad_loading">광고 로드 중…</string>
     <string name="slide_to_unlock">슬라이드하여 잠금 해제</string>
+    <string name="btn_submit">제출</string>
 </resources>
 

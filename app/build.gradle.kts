@@ -41,6 +41,7 @@ android {
         buildConfigField("String", "PRIVACY_POLICY", "\"${url["privacyUrl"]}\"")
         buildConfigField("String", "FCM_URL", "\"${url["fcmUrl"]}\"")
         buildConfigField("String", "FCM_PKG", "\"${url["fcmPkg"]}\"")
+        buildConfigField("String", "FEEDBACK_EMAIL", "\"${url["email"]}\"")
         buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${adMobConfig["applicationId"]}\"")
         buildConfigField("String", "ADMOB_SPLASH_ID", "\"${adMobUnitConfig["splash"]}\"")
         ndk {

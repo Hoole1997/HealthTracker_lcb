@@ -769,5 +769,6 @@
     </string-array>
     <string name="bill_ad_loading">広告を読み込み中…</string>
     <string name="slide_to_unlock">スライドして解除</string>
+    <string name="btn_submit">送信する</string>
 </resources>
 

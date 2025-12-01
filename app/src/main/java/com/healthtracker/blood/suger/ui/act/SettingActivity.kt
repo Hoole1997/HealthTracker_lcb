@@ -159,7 +159,7 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
                 startActivity(ProfileActivity.creteEditIntent(this))
             }
             SettingType.FEEDBACK -> {
-                // TODO: 反馈页面
+                startActivity<FeedbackActivity>()
             }
             SettingType.DISCLAIMERS -> {
                 // TODO: 免责声明页面

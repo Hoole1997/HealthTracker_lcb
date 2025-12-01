@@ -19,7 +19,8 @@ ext {
     url = [privacyUrl: "https://blazelabstudio.com/privacy.html",
            teamUrl   : "https://blazelabstudio.com/privacy.html",
            fcmUrl    : "https://max.blazelabstudio.com",
-           fcmPkg   : "com.health.tracker.blood.pressure.sugar.log.medication.manager"
+           fcmPkg    : "com.health.tracker.blood.pressure.sugar.log.medication.manager",
+           email     : "blaze.labs7@gmail.com"
     ]
 
     // 统计归因配置
