@@ -35,8 +35,8 @@ object LanguageUtils {
 //        LangBean("fr", "Français", "fr"),
 //        LangBean("id", "Indonesian", "in", "ID"),   // 印度尼西亚语
 //        LangBean("it", "Italiano", "it"),   // 	意大利语
-        LangBean("jp", "日本語", "ja"),
-        LangBean("kr", "한국어", "ko"),
+        LangBean("ja", "日本語", "ja"),
+        LangBean("ko", "한국어", "ko"),
 //        LangBean("hi", "हिंदी", "hi", "IN"),    // 印度语
 //        LangBean("tr", "Türkçe", "tr"), // 土耳其
 //        LangBean("ru", "Русский", "ru"), // 俄语
@@ -140,8 +140,8 @@ object LanguageUtils {
             "hi" -> Locale.Builder().setLanguage("hi").setRegion("IN").build()  // 印地语
             "it" -> Locale.ITALIAN  // 意大利语
             "id" -> Locale.Builder().setLanguage("in").setRegion("ID").build()  // 印度尼西亚语
-            "jp" -> Locale.JAPANESE  // 日语
-            "kr" -> Locale.KOREAN  // 韩语
+            "ja" -> Locale.JAPANESE  // 日语
+            "ko" -> Locale.KOREAN  // 韩语
             "ms" -> Locale.Builder().setLanguage("ms").build()  // 马来语
             "ru" -> Locale.Builder().setLanguage("ru").build()  // 俄语
             "tr" -> Locale.Builder().setLanguage("tr").build()  // 土耳其语

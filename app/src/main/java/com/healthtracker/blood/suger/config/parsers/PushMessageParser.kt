@@ -13,9 +13,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 /**
- * 推送消息内容解析器（多语言支持）
+ * 推送消息内容解析器（动态多语言支持）
  *
- * 负责解析 Remote Config 中的推送消息数组 JSON，支持多语言配置
+ * 负责解析 Remote Config 中的推送消息数组 JSON，支持动态多语言配置
  *
  * JSON 格式示例:
  * ```json
@@ -24,26 +24,37 @@ import javax.inject.Inject
  *     "id": "push_001",
  *     "iconType": 1,
  *     "actionType": 1,
- *     "en": {
- *       "title": "💖 Your Daily Health Check-in!",
- *       "content": "Tracking your blood sugar...",
- *       "buttonText": "RECOVER NOW"
- *     },
- *     "ja": {
- *       "title": "💖 デイリー健康チェック！",
- *       "content": "血糖値、血圧、体重の記録は...",
- *       "buttonText": "今すぐ記録"
- *     },
- *     "ko": {
- *       "title": "💖 デイリー健康チェックイン!",
- *       "content": "혈당, 혈압, 체중 추적은...",
- *       "buttonText": "지금 기록하기"
+ *     "localizations": {
+ *       "en": {
+ *         "title": "💖 Your Daily Health Check-in!",
+ *         "content": "Tracking your blood sugar...",
+ *         "buttonText": "RECOVER NOW"
+ *       },
+ *       "ja": {
+ *         "title": "💖 デイリー健康チェック！",
+ *         "content": "血糖値、血圧、体重の記録は...",
+ *         "buttonText": "今すぐ記録"
+ *       },
+ *       "ko": {
+ *         "title": "💖 데일리 건강 체크인!",
+ *         "content": "혈당, 혈압, 체중 추적은...",
+ *         "buttonText": "지금 기록하기"
+ *       },
+ *       "es": {
+ *         "title": "💖 ¡Tu chequeo diario de salud!",
+ *         "content": "Seguimiento de glucosa...",
+ *         "buttonText": "REGISTRAR AHORA"
+ *       }
  *     }
  *   }
  * ]
  * ```
  *
- * 解析后会根据应用当前设置的语言自动选择对应的本地化内容
+ * **动态语言支持**：
+ * - 可在 Firebase Remote Config 中添加任意语言代码（如 "es", "fr", "de"）
+ * - 无需修改应用代码即可支持新语言
+ * - 应用会自动根据当前语言设置选择对应内容
+ * - 如果目标语言不存在，自动降级到英语
  */
 class PushMessageParser @Inject constructor(
     private val gson: Gson,
