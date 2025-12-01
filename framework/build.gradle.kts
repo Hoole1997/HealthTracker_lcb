@@ -54,4 +54,5 @@ dependencies {
     api(libs.xorLibrary)
     implementation(libs.xxpermissions)
     api("com.github.getActivity:ShapeDrawable:3.3")
+    api("com.github.getActivity:Toaster:13.8")
 }

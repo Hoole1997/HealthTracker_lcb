@@ -13,6 +13,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivitySettingBinding
 import com.healthtracker.blood.suger.databinding.ItemSettingBinding
@@ -20,6 +21,7 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.startActivity
 
 class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>() {
 
@@ -145,7 +147,7 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
                 })
             }
             SettingType.ALARM_MANAGEMENT -> {
-                // TODO: 闹钟管理页面
+                startActivity<AlarmManageActivity>()
             }
             SettingType.UNIT_SETTINGS -> {
                 // TODO: 单位设置页面
@@ -154,7 +156,7 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
                 // TODO: 目标范围设置页面
             }
             SettingType.PERSONAL_INFO -> {
-                // TODO: 个人信息页面
+                startActivity(ProfileActivity.creteEditIntent(this))
             }
             SettingType.FEEDBACK -> {
                 // TODO: 反馈页面
@@ -163,7 +165,7 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
                 // TODO: 免责声明页面
             }
             SettingType.PRIVACY_POLICY -> {
-                // TODO: 隐私政策页面
+                InnerWebActivity.start(this@SettingActivity, BuildConfig.PRIVACY_POLICY)
             }
             SettingType.TERMS_OF_SERVICE -> {
                 // TODO: 服务条款页面

@@ -43,8 +43,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/area_bar"
             app:layout_goneMarginEnd="@dimen/dp_6"
-            app:srcCompat="@drawable/ic_setting"
-            android:visibility="gone"/>
+            app:srcCompat="@drawable/ic_setting"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_remind"

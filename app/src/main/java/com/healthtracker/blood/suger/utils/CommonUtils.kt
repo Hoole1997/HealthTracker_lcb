@@ -4,10 +4,13 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
 import android.os.PowerManager
 import android.os.Process
+import android.view.Gravity
+import com.blankj.utilcode.util.ToastUtils
 import com.bytedance.sdk.openadsdk.activity.TTAdActivity
 import com.bytedance.sdk.openadsdk.activity.TTAppOpenAdActivity
 import com.facebook.ads.AudienceNetworkActivity
@@ -22,7 +25,6 @@ import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils
 import net.corekit.monetize.ui.FullScreenNativeAdActivity
 import java.util.Calendar
-import kotlin.jvm.java
 
 
 // 第一次启动时间
@@ -113,3 +115,13 @@ val adClasses = arrayOf(
     TTAdActivity::class.java,
     GuideActivity::class.java
 )
+
+val Activity.mToastUtils by lazy {
+    ToastUtils.getDefaultMaker().apply {
+        setGravity(Gravity.BOTTOM, 0, 0)
+        setBgResource(com.healthtracker.blood.suger.R.drawable.bg_toast)
+        setTextColor(Color.WHITE)
+        setLeftIcon(com.healthtracker.blood.suger.R.drawable.ic_fsi_reach_goal)
+        setDurationIsLong(false)
+    }
+}

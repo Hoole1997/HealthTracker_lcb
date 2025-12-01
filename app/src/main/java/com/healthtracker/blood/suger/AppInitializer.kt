@@ -3,17 +3,18 @@ package com.healthtracker.blood.suger
 import android.app.Application
 import android.content.Intent
 import android.os.Looper
+import android.view.Gravity
 import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.config.registry.AppConfigRegistry
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
 import com.healthtracker.blood.suger.di.IoDispatcher
 import com.healthtracker.blood.suger.helper.NotificationHelper
 import com.healthtracker.blood.suger.strategy.PushScenario
+import com.healthtracker.blood.suger.toast.CustomToastStyle
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.blood.suger.utils.InsightAssetPreparer
 import com.healthtracker.blood.suger.utils.isAdPage
 import com.healthtracker.blood.suger.work.HealthWorkTask
-import com.healthtracker.earthquake.push.EarthquakePushConfig
 import com.healthtracker.earthquake.push.EarthquakePushInitializer
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
@@ -25,6 +26,7 @@ import com.healthtracker.framework.util.LogUtils
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.logException
 import com.healthtracker.framework.util.postRunnable
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -215,6 +217,7 @@ class AppInitializer @Inject constructor(
     private fun initializeDelayedServices() {
         postRunnable {
             try {
+                Toaster.init(application, CustomToastStyle(R.layout.toast_success, Gravity.BOTTOM))
                 // 1. ScanWorkTask.registerReceiver(this) - 屏幕解锁广播
                 HealthWorkTask.registerReceiver(application)
 

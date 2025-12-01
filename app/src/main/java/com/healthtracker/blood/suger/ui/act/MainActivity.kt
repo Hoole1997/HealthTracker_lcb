@@ -130,7 +130,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         with(mViewBind) {
             // 重置所有UI元素的默认状态
             ivRemind.visible()
-            ivSetting.gone()
+            ivSetting.visible()
             tvMonth.gone()
 
             // 根据不同位置设置特定的UI状态和标题
