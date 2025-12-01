@@ -37,7 +37,6 @@ include(":framework")
 include(":monetize")
 include(":core")
 include(":metrics")
-include(":ad-sdk")
 include(":earthquake")
 
  
