@@ -27,7 +27,3 @@ const val LANDING_NOTIFICATION_TITLE = "landing_notification_title"
 const val LANDING_NOTIFICATION_CONTENT = "landing_notification_content"
 const val HAS_NOTIFICATION_PERMISSION = "has_notification_permission"
 const val HAS_REPORT_NOTIFICATION_REVOKED = "has_report_notification_revoked"
-
-
-const val FSI_PERMISSION_POSITION = "FSI_permission_position"
-

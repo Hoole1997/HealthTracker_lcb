@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.text.TextUtils
 import androidx.multidex.MultiDexApplication
-import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.observer.AppForegroundObserver
 import com.healthtracker.blood.suger.utils.WebViewZygote
 import com.healthtracker.blood.suger.utils.getCurProcessName
@@ -28,9 +27,6 @@ class App : MultiDexApplication() {
 
     @Inject
     lateinit var appInitializer: AppInitializer
-
-    @Inject
-    lateinit var permissionManager: PermissionManager
 
     @Inject
     lateinit var appForegroundObserver: AppForegroundObserver
@@ -57,7 +53,6 @@ class App : MultiDexApplication() {
 
     var isClickAdLeave = false
 
-    var isCloseFsi = false
 
     /**
      * 主进程检查缓存
@@ -104,9 +99,6 @@ class App : MultiDexApplication() {
 
             // 注册生命周期观察者（包含配置刷新观察者）
             appInitializer.registerLifecycleObservers()
-
-            // 初始化权限管理器session
-            permissionManager.initializeSession()
 
             // 初始化前后台状态观察器（用于 Loop 推送）
             appForegroundObserver.initialize()

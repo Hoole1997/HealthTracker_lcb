@@ -1,8 +1,6 @@
 package com.healthtracker.blood.suger.config.registry
 
-import com.healthtracker.blood.suger.config.models.FsiConfig
 import com.healthtracker.blood.suger.config.models.PushConfig
-import com.healthtracker.blood.suger.config.parsers.FsiConfigParser
 import com.healthtracker.blood.suger.config.parsers.PushConfigParser
 import com.healthtracker.blood.suger.config.parsers.PushMessageParser
 import com.healthtracker.framework.config.core.ConfigRegistry
@@ -29,14 +27,12 @@ import javax.inject.Singleton
  * @property registry 核心配置注册表
  * @property pushConfigParser 推送配置解析器
  * @property pushMessageParser 推送消息解析器
- * @property fsiConfigParser FSI锁屏推送配置解析器
  */
 @Singleton
 class AppConfigRegistry @Inject constructor(
     private val registry: ConfigRegistry,
     private val pushConfigParser: PushConfigParser,
-    private val pushMessageParser: PushMessageParser,
-    private val fsiConfigParser: FsiConfigParser
+    private val pushMessageParser: PushMessageParser
     // 未来添加更多解析器注入
     // private val adConfigParser: AdConfigParser,
     // private val featureConfigParser: FeatureConfigParser,
@@ -56,9 +52,6 @@ class AppConfigRegistry @Inject constructor(
         // 注册推送相关配置
         registerPushParsers()
 
-        // 注册FSI锁屏推送配置
-        registerFsiParsers()
-
         // 未来在此添加其他配置注册
         // registerAdParsers()
         // registerFeatureParsers()
@@ -73,13 +66,6 @@ class AppConfigRegistry @Inject constructor(
         // 注意：PushMessageParser 返回 List<PushMessage>
         // 由于泛型类型擦除，我们不能直接注册 List::class
         // PushMessage 列表已经包含在 PushConfig 中，所以这里不需要单独注册
-    }
-
-    /**
-     * 注册FSI锁屏推送相关解析器
-     */
-    private fun registerFsiParsers() {
-        registry.register(FsiConfig::class, fsiConfigParser)
     }
 
     // 未来添加其他配置注册方法示例:

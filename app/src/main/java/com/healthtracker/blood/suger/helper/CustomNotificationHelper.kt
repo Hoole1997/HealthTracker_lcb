@@ -14,20 +14,15 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.config.models.FsiConfig
 import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_CONTENT
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
-import com.healthtracker.blood.suger.push.canUpgradeToFullScreen
-import com.healthtracker.blood.suger.push.recordTrigger
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.strategy.PushScenario
-import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity
-import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity.Companion.EXTRA_PUSH_MESSAGE
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
@@ -128,24 +123,6 @@ class CustomNotificationHelper @Inject constructor(
                 .setWhen(System.currentTimeMillis())
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-
-            if(!isSilent && (scenario == PushScenario.BACKGROUND || scenario == PushScenario.FCM || scenario == PushScenario.KEEPALIVE) && canUpgradeToFullScreen(configManager.getConfig<FsiConfig>())){
-                val fullScreenIntent = Intent(context, FsiNotificationActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    putExtra(EXTRA_PUSH_MESSAGE, pushMessage)
-                    putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,finalNotificationId)
-                    putExtra(EXTRA_NOTIFICATION_ACTION,mapActionType(pushMessage.actionType))
-                }
-
-                val fullScreenPendingIntent = PendingIntent.getActivity(
-                    context,
-                    finalNotificationId,
-                    fullScreenIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-                recordTrigger()
-                notificationBuilder.setFullScreenIntent(fullScreenPendingIntent,true)
-            }
 
             val notification = notificationBuilder.build()
 
