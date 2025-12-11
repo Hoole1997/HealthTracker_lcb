@@ -72,7 +72,7 @@ android {
         // Play 市场版本
         create("playstore") {
             dimension = "distribution"
-            applicationId = "com.health.tracker.blood.pressure.sugar.log.medication.manager"
+            applicationId = "com.health.sugar.log.medication.manage.track.blood.pressure"
             versionNameSuffix = ""
         }
     }
