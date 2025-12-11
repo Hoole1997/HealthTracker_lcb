@@ -241,19 +241,8 @@
     <string name="medication_reminder_title">🔔 服薬リマインダー</string>
     <string name="medication_reminder_content">お薬の時間です。忘れずに服用して、お大事になさってください。</string>
 
-    <!-- FSI权限对话框字符串 -->
-    <string name="fsi_permission_title">💊 ご安心ください、私たちがサポートします ❤️</string>
-    <string name="fsi_permission_message">忙しい毎日でも、お薬を飲み忘れないようにサポートします。全画面リマインダーを有効にすると、画面ロック中でも通知を受け取れます。</string>
-    <string name="fsi_permission_advantages">  メリット:\n
-  💊 規則正しい服薬習慣をサポート\n
-  🕒 必要な時にロック画面でも表示\n
-  ❤️ あなたの健康のために </string>
-    <string name="fsi_permission_advantages_title">なぜ役立つのか：</string>
-    <string name="fsi_permission_warning">これはあなたの健康をサポートするためだけに使用されます。</string>
-    <string name="turn_on">オンにする</string>
-    <string name="fsi_permission_deny">後で</string>
-
     <!-- 通知权限相关字符串 -->
+    <string name="turn_on">オンにする</string>
     <string name="notification_permission_title">健康目標の達成をサポート</string>
     <string name="notification_permission_des">通知を有効にして、水分補給、服薬、運動のタイムリーなリマインダーを受け取りましょう。健康的な習慣を見逃しません！</string>
     <string name="close">閉じる</string>

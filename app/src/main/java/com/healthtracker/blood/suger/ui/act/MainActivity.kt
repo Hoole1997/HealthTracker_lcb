@@ -191,11 +191,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
     override fun initView(savedInstanceState: Bundle?) {
         ReportDataManager.reportData("Home_Show",mapOf())
-        // 初始化 FSI 权限 Launcher（必须在 onCreate/initView 中同步调用）
-        permissionManager.initFSILauncher(this) { granted ->
-            if (BuildState.debug) "FSI permission result from settings: $granted".logd(
-                PermissionManager.TAG)
-        }
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissionRequest = permission()

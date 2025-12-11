@@ -10,31 +10,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.view.View
 import android.widget.RemoteViews
-import androidx.compose.foundation.layout.Row
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.config.models.FsiConfig
-import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
-import com.healthtracker.blood.suger.helper.CustomNotificationHelper
-import com.healthtracker.blood.suger.helper.NotificationResourceMapper
 import com.healthtracker.blood.suger.helper.NotificationResourceMapper.NotificationResources
-import com.healthtracker.blood.suger.push.canUpgradeToFullScreen
-import com.healthtracker.blood.suger.push.recordAlarmTriggerCount
-import com.healthtracker.blood.suger.push.recordTrigger
-import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
-import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity
-import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity.Companion.EXTRA_ALARM_RECORD
-import com.healthtracker.blood.suger.ui.act.FsiNotificationActivity.Companion.EXTRA_PUSH_MESSAGE
-import com.healthtracker.blood.suger.ui.act.MedicationReminderFullScreenActivity
 import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
@@ -148,25 +133,6 @@ class AlarmNotificationManager @Inject constructor(
                 .setWhen(System.currentTimeMillis())
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-            if(canUpgradeToFullScreen(configManager.getConfig<FsiConfig>(),true)){
-                val (time,des,btnText) = getNotificationContent(alarmRecord)
-                val fullScreenIntent = Intent(context, FsiNotificationActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    putExtra(EXTRA_PUSH_MESSAGE, PushMessage(PUSH_ALARM,time,des,btnText,0,0))
-                    putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID,notificationId)
-                    putExtra(EXTRA_NOTIFICATION_ACTION,getNotificationAction(alarmRecord.type))
-                }
-
-                val fullScreenPendingIntent = PendingIntent.getActivity(
-                    context,
-                    notificationId,
-                    fullScreenIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-                recordAlarmTriggerCount()
-                notificationBuilder.setFullScreenIntent(fullScreenPendingIntent,true)
-            }
-
             val notification = notificationBuilder.build()
             
             // 显示通知
@@ -397,11 +363,8 @@ class AlarmNotificationManager @Inject constructor(
         }
     }
 
-    // ==================== FSI通知管理 ====================
-
     /**
      * 创建服药提醒通知
-     * 优先使用FSI，权限不可用时降级到增强标准通知
      */
     fun createMedicationNotification(
         medicationName: String,
@@ -410,71 +373,11 @@ class AlarmNotificationManager @Inject constructor(
         reminderTime: String = "",
         reminderId: Long = -1L
     ) {
-        if (permissionManager.isFSIPermissionAvailable()) {
-            createFSINotification(medicationName, dosage, notes, reminderTime, reminderId)
-        } else {
-            createEnhancedStandardNotification(medicationName, dosage, notes, reminderTime, reminderId)
-        }
+        createEnhancedStandardNotification(medicationName, dosage, notes, reminderTime, reminderId)
     }
 
     /**
-     * 创建FSI通知
-     */
-    private fun createFSINotification(
-        medicationName: String,
-        dosage: String,
-        notes: String,
-        reminderTime: String,
-        reminderId: Long
-    ) {
-        try {
-            // 创建FSI Activity的Intent
-            val fullScreenIntent = Intent(context, MedicationReminderFullScreenActivity::class.java).apply {
-                putExtra(MedicationReminderFullScreenActivity.EXTRA_MEDICATION_NAME, medicationName)
-                putExtra(MedicationReminderFullScreenActivity.EXTRA_DOSAGE, dosage)
-                putExtra(MedicationReminderFullScreenActivity.EXTRA_NOTES, notes)
-                putExtra(MedicationReminderFullScreenActivity.EXTRA_REMINDER_TIME, reminderTime)
-                putExtra(MedicationReminderFullScreenActivity.EXTRA_REMINDER_ID, reminderId)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }
-
-            val fullScreenPendingIntent = PendingIntent.getActivity(
-                context,
-                (NOTIFICATION_ID_BASE + reminderId).toInt(),
-                fullScreenIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            // 使用公共方法创建普通点击Intent（作为fallback）
-            val clickPendingIntent = createMedicationClickIntent(reminderId)
-
-            // 使用公共方法生成统一的标题和内容
-            val (notificationTitle, contentText) = generateMedicationNotificationContent(medicationName, reminderTime)
-
-            // 使用公共方法创建基础通知构建器，然后添加FSI特定配置
-            val notification = createBaseMedicationNotificationBuilder(notificationTitle, contentText, clickPendingIntent)
-                .setFullScreenIntent(fullScreenPendingIntent, true)  // FSI关键配置
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setOngoing(false)
-                .build()
-
-            // 使用公共方法显示通知
-            showNotificationWithPermissionCheck(
-                notification,
-                reminderId,
-                "FSI medication notification shown: $medicationName"
-            )
-
-        } catch (e: Exception) {
-            "Failed to create FSI notification: ${e.message}".loge(TAG)
-            // 降级到标准通知
-            createEnhancedStandardNotification(medicationName, dosage, notes, reminderTime, reminderId)
-        }
-    }
-
-    /**
-     * 创建增强标准通知（FSI权限不可用时的降级方案）
+     * 创建增强标准通知
      */
     private fun createEnhancedStandardNotification(
         medicationName: String,

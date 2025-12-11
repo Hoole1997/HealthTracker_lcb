@@ -80,11 +80,6 @@ class HealthServiceForegroundObserver @Inject constructor(
             "App entered background, HealthService will continue if running".logd(TAG)
         }
 
-        if(App.INSTANCE.isCloseFsi){
-            "解锁全屏通知".logd(PushOrchestrator.TAG)
-            App.INSTANCE.isCloseFsi = false
-            return
-        }
 
 
         if(System.currentTimeMillis() - AppLifecycleManager.clickAdTime < 2000L){
