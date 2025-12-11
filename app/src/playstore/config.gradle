@@ -1,17 +1,17 @@
 ext {
     // AdMob配置
-    admob = [applicationId: "ca-app-pub-1350364678590045~1263198552", // 测试应用ID，请替换为实际的AdMob应用ID
-             adUnitIds    : [banner      : "ca-app-pub-1350364678590045/1207358231",        // 横幅广告测试ID
-                             interstitial: "ca-app-pub-1350364678590045/4252323973", // 插页广告测试ID
-                             splash      : "ca-app-pub-1350364678590045/6355565527",       // 开屏广告测试ID
-                             native      : "ca-app-pub-1350364678590045/2520439900",        // 原生广告测试ID
-                             full_native : "ca-app-pub-1350364678590045/2416498129",        // 全屏原生广告测试ID
-                             rewarded    : "ca-app-pub-1350364678590045/8640239089"         // 激励广告测试ID
+    admob = [applicationId: "ca-app-pub-1350364678590045~4521462185", // 测试应用ID，请替换为实际的AdMob应用ID
+             adUnitIds    : [banner      : "ca-app-pub-1350364678590045/3771293773",        // 横幅广告测试ID
+                             interstitial: "ca-app-pub-1350364678590045/6888411701", // 插页广告测试ID
+                             splash      : "ca-app-pub-1350364678590045/9271225987",       // 开屏广告测试ID
+                             native      : "ca-app-pub-1350364678590045/6464087484",        // 原生广告测试ID
+                             full_native : "ca-app-pub-1350364678590045/7463126772",        // 全屏原生广告测试ID
+                             rewarded    : "ca-app-pub-1350364678590045/1612227818"         // 激励广告测试ID
              ]
 
     ]
     // 应用版本配置
-    app = [applicationId    : "com.health.tracker.blood.pressure.sugar.log.medication.manager",
+    app = [applicationId    : "com.health.sugar.log.medication.manage.track.blood.pressure",
            show_log   : false,
            string_fog   : true,
     ]
@@ -19,12 +19,12 @@ ext {
     url = [privacyUrl: "https://blazelabstudio.com/privacy.html",
            teamUrl   : "https://blazelabstudio.com/privacy.html",
            fcmUrl    : "https://max.blazelabstudio.com",
-           fcmPkg   : "com.health.tracker.blood.pressure.sugar.log.medication.manager"
+           fcmPkg   : "com.health.sugar.log.medication.manage.track.blood.pressure"
     ]
 
     // 统计归因配置
-    analytics = [adjustAppToken: "hvcpqjnvcm4g",           // Adjust App Token
-                 thinkingDataAppId: "7299dcd9a5564f5db2f6be555057dd15",   // 数数 SDK APP ID
+    analytics = [adjustAppToken: "9zc5ybfkhurk",           // Adjust App Token
+                 thinkingDataAppId: "d0299fbdb71b49fba65e700bbc413a08",   // 数数 SDK APP ID
                  thinkingDataServerUrl: "https://app.blazelabstudio.com",     // 数数上报域名
                  defaultUserChannel: "paid"]
 }
