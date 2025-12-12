@@ -24,14 +24,11 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
-import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
-import com.healthtracker.framework.ext.openBrowser
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
-import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -77,16 +74,11 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                     return@SplashStateMachine
                 }
                 // 判断应该跳转到哪个页面
-                val targetActivity = if (LanguageUtils.getSavedLanguage().isEmpty()) {
-                    LanguageActivity::class.java
+                val targetActivity = if (hasNewGuide() || !AdConfigManager.showNewGuide()) {
+                    MainActivity::class.java
                 } else {
-                    if (hasNewGuide() || !AdConfigManager.showNewGuide()) {
-                        MainActivity::class.java
-                    } else {
-                        GuideActivity::class.java
-                    }
+                    GuideActivity::class.java
                 }
-
                 // 创建Intent并传递通知参数
                 val targetIntent = Intent(this, targetActivity).apply {
                     putExtras(intent)
