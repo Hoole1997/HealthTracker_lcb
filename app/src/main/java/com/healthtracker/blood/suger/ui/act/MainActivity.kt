@@ -7,9 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.healthtracker.blood.suger.App
@@ -29,7 +27,6 @@ import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
 import com.healthtracker.blood.suger.ui.dialog.ActivityPerRequestDialog
 import com.healthtracker.blood.suger.ui.dialog.ExitDialog
-import com.healthtracker.blood.suger.ui.dialog.NativeCardDialog
 import com.healthtracker.blood.suger.ui.fragment.HomeFragment
 import com.healthtracker.blood.suger.ui.fragment.InsightsFragment
 import com.healthtracker.blood.suger.ui.fragment.MedsFragment
@@ -72,7 +69,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     @Restore
     private var currentTabIndex = 0
 
-    private val onceNativeCardComplete = CompletableDeferred<Boolean>()
     private val bannerShowComplete = CompletableDeferred<Boolean>()
 
     private val settingLauncher =
@@ -84,11 +80,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
     private var permissionRequest: PermissionRequest? = null
     
-    override fun onResume() {
-        super.onResume()
-        // 原生弹窗流程已迁移到 initView 中使用 repeatOnLifecycle 自动管理
-    }
-
     override fun onStop() {
         super.onStop()
         // 记录用户最后活跃时间（首页关闭时）
@@ -225,30 +216,11 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             }, 500)
         }
         
-        // 协程链A: 使用 repeatOnLifecycle 自动处理生命周期
-        // 每次进入 RESUMED 状态时自动执行，离开时自动取消
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                delay(200)
-                if(BuildState.debug) "等待高亮完成".logd(PermissionManager.TAG)
-                
-                homeFrg?.highLightComplete?.await()
-                
-                if(BuildState.debug) "高亮完成".logd(PermissionManager.TAG)
-
-                NativeCardDialog.showOncePerMinute(this@MainActivity) {
-                    onceNativeCardComplete.complete(true)
-                    if(BuildState.debug) "首页原生弹窗完成".logd(PermissionManager.TAG)
-                }
-            }
-        }
-        
-        // 协程链B: Banner 和权限流程
+        // Banner 和权限流程
         lifecycleScope.launch {
             delay(500)
-            if(BuildState.debug) "等待首页原生弹窗".logd(PermissionManager.TAG)
-            onceNativeCardComplete.await()
-            if(BuildState.debug) "等待首页原生结束，继续流程".logd(PermissionManager.TAG)
+            homeFrg?.highLightComplete?.await()
+            if(BuildState.debug) "高亮完成，继续流程".logd(PermissionManager.TAG)
             loadBanner(mViewBind.adViewContainer, onClose = {
                 bannerShowComplete.complete(true)
                 if(BuildState.debug) "首页折叠banner收起".logd(PermissionManager.TAG)
@@ -413,6 +385,8 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                 "Unknown notification action: $action".logd(TAG)
             }
         }
+
+        intent.removeExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION)
     }
 
     /**

@@ -204,15 +204,6 @@ object AdConfigManager {
         } ?: 0
     }
 
-    fun getHomeNativeTimeInterval():Int{
-        return configData?.let { config ->
-            when (ChannelUserController.getCurrentChannel()) {
-                ChannelUserController.UserChannelType.NATURAL -> config.natural.homeNativeTimeInterval
-                ChannelUserController.UserChannelType.PAID -> config.paid.homeNativeTimeInterval
-            }
-        } ?: 60
-    }
-
     /**
      * 获取开屏失败后是否展示插屏
      */

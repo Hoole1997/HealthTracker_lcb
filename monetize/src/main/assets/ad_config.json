@@ -23,7 +23,6 @@
     "random_fullpage_cooldown": 60,
     "onboarding_bottom_ad_enabled": 0,
     "onboarding_dialog_ad_enabled": 0,
-    "native_time_interval": 120,
     "splash_time_out": 10,
     "Guide_Full_Native": 1,
     "Guide_Page": 0
@@ -52,7 +51,6 @@
     "random_fullpage_cooldown": 60,
     "onboarding_bottom_ad_enabled": 1,
     "onboarding_dialog_ad_enabled": 1,
-    "native_time_interval": 120,
     "splash_time_out": 12,
     "Guide_Full_Native": 1,
     "Guide_Page": 0
