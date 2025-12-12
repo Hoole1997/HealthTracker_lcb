@@ -408,6 +408,16 @@
     <string name="privacy_policy">プライバシーポリシー</string>
     <string name="terms_of_service">利用規約</string>
     <string name="setting">設定</string>
+
+    <!-- 反馈相关字符串 -->
+    <string name="please_tell_more">問題をより早く特定し解決できるよう、詳細をお聞かせください</string>
+    <string name="upload_screenshots">スクリーンショットをアップロード</string>
+    <string name="btn_submit">送信</string>
+    <string name="feedback_email_title">%s フィードバック</string>
+    <string name="feedback_sending_failed">送信に失敗しました。メールアプリを確認してください。</string>
+    <string name="max_upload_photos">最大%d枚の写真をアップロードできます</string>
+    <string name="feedback_submitted">送信完了</string>
+
     <!-- 血糖等级专家建议文案数组 -->
     <string-array name="bs_level_expert_advice">
         <!-- 低血糖建议 -->
@@ -757,7 +767,6 @@
         <item>スイカやキュウリなど、水分含有量の高い果物や野菜を楽しんで、水分補給に役立てましょう。</item>
     </string-array>
     <string name="bill_ad_loading">広告を読み込み中…</string>
-    <string name="slide_to_unlock">スライドして解除</string>
-    <string name="btn_submit">送信する</string>
+
 </resources>
 

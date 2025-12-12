@@ -408,6 +408,16 @@
     <string name="privacy_policy">개인정보 처리방침</string>
     <string name="terms_of_service">이용 약관</string>
     <string name="setting">설정</string>
+
+    <!-- 反馈相关字符串 -->
+    <string name="please_tell_more">문제를 더 빠르게 파악하고 해결할 수 있도록 자세한 내용을 알려주세요</string>
+    <string name="upload_screenshots">스크린샷 업로드</string>
+    <string name="btn_submit">제출</string>
+    <string name="feedback_email_title">%s 피드백</string>
+    <string name="feedback_sending_failed">전송 실패, 이메일 앱을 확인해 주세요.</string>
+    <string name="max_upload_photos">최대 %d장의 사진을 업로드할 수 있습니다</string>
+    <string name="feedback_submitted">제출 완료</string>
+
     <!-- 血糖等级专家建议文案数组 -->
     <string-array name="bs_level_expert_advice">
         <!-- 低血糖建议 -->
@@ -757,7 +767,6 @@
         <item>수박과 오이처럼 수분 함량이 높은 과일과 채소를 즐겨 수분을 유지하세요.</item>
     </string-array>
     <string name="bill_ad_loading">광고 로드 중…</string>
-    <string name="slide_to_unlock">슬라이드하여 잠금 해제</string>
-    <string name="btn_submit">제출</string>
+
 </resources>
 
