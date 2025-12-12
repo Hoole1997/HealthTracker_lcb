@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">血圧・血糖値トラッカー</string>
+    <string name="app_name">血糖値＆ヘルストラッカー</string>
     <string name="meds_manager">服薬管理</string>
     <string name="blood_suger">血糖値</string>
     <string name="blood_pressure">血圧</string>
