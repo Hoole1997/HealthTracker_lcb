@@ -186,9 +186,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun onResume() {
         super.onResume()
         mViewBind?.tvTargetCupCount?.text = "/${HydrateSettingManager.getDailyCups()}"
-        if (!guidFeature()) {
-
-        }
+        guidFeature()
     }
 
     /**
@@ -317,12 +315,6 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
                 getString(R.string.days_ago, days.toInt())
             }
         }
-    }
-
-    private fun getWeightUnitLabel(unit: BmiUnit) = if (unit == BmiUnit.METRIC) {
-        getString(R.string.unit_kg)
-    } else {
-        getString(R.string.unit_lb)
     }
 
     private var isShowHighligh = false
