@@ -87,26 +87,26 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
      */
     private fun getSettingItems(): List<SettingItem> {
         return listOf(
-            SettingItem(
-                icon = R.drawable.ic_setting_alarm,
-                title = R.string.alarm_management,
-                type = SettingType.ALARM_MANAGEMENT
-            ),
-            SettingItem(
-                icon = R.drawable.ic_setting_unit,
-                title = R.string.unit_settings,
-                type = SettingType.UNIT_SETTINGS
-            ),
-            SettingItem(
-                icon = R.drawable.ic_setting_target,
-                title = R.string.target_range_settings,
-                type = SettingType.TARGET_RANGE
-            ),
-            SettingItem(
-                icon = R.drawable.ic_setting_profile,
-                title = R.string.personal_info,
-                type = SettingType.PERSONAL_INFO
-            ),
+//            SettingItem(
+//                icon = R.drawable.ic_setting_alarm,
+//                title = R.string.alarm_management,
+//                type = SettingType.ALARM_MANAGEMENT
+//            ),
+//            SettingItem(
+//                icon = R.drawable.ic_setting_unit,
+//                title = R.string.unit_settings,
+//                type = SettingType.UNIT_SETTINGS
+//            ),
+//            SettingItem(
+//                icon = R.drawable.ic_setting_target,
+//                title = R.string.target_range_settings,
+//                type = SettingType.TARGET_RANGE
+//            ),
+//            SettingItem(
+//                icon = R.drawable.ic_setting_profile,
+//                title = R.string.personal_info,
+//                type = SettingType.PERSONAL_INFO
+//            ),
             SettingItem(
                 icon = R.drawable.ic_setting_language,
                 title = R.string.language,
@@ -117,21 +117,21 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
                 title = R.string.feedback,
                 type = SettingType.FEEDBACK
             ),
-            SettingItem(
-                icon = R.drawable.ic_setting_disclaimers,
-                title = R.string.disclaimers,
-                type = SettingType.DISCLAIMERS
-            ),
+//            SettingItem(
+//                icon = R.drawable.ic_setting_disclaimers,
+//                title = R.string.disclaimers,
+//                type = SettingType.DISCLAIMERS
+//            ),
             SettingItem(
                 icon = R.drawable.ic_setting_privacy,
                 title = R.string.privacy_policy,
                 type = SettingType.PRIVACY_POLICY
             ),
-            SettingItem(
-                icon = R.drawable.ic_setting_terms,
-                title = R.string.terms_of_service,
-                type = SettingType.TERMS_OF_SERVICE
-            )
+//            SettingItem(
+//                icon = R.drawable.ic_setting_terms,
+//                title = R.string.terms_of_service,
+//                type = SettingType.TERMS_OF_SERVICE
+//            )
         )
     }
 

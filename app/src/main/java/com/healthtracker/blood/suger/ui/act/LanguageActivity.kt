@@ -68,7 +68,7 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
             tvConfirm.clickWithDuration {
                 onChoiceLangDone()
             }
-            loadNative(adContainer, NativeAdStyle.CARD_3)
+//            loadNative(adContainer, NativeAdStyle.CARD_3)
         }
     }
 
