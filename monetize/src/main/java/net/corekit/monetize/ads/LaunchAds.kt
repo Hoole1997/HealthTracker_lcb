@@ -65,7 +65,8 @@ class LaunchAds private constructor() {
 
     // 累积加载成功次数统计（持久化）
     private var totalLoadSucCount by DataStoreIntDelegate("pdf_h7p2k9s1", 0)
-    
+    private var totalLoadFailCount by DataStoreIntDelegate("splash_load_fail_count", 0)
+
     // 累积展示失败次数统计（持久化）
     private var totalShowFailCount by DataStoreIntDelegate("pdf_i4q6y8z3", 0)
     
@@ -186,13 +187,14 @@ class LaunchAds private constructor() {
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    totalLoadFailCount++
                     val loadTime = System.currentTimeMillis() - startTime
                     AdLogger.e("开屏广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, loadAdError.message)
                     reportAdData(
                         eventName = "ad_load_fail",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "number" to totalLoadSucCount,
+                            "number" to totalLoadFailCount,
                             "ad_source" to (loadAdError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt(),
                             "reason" to loadAdError.message

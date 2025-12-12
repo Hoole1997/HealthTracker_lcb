@@ -75,6 +75,15 @@ class HealthService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        
+        // 安全检查：确保 Application 是 Hilt 初始化的 App 类
+        // 防止系统通过 START_STICKY 重启 Service 时 Hilt 未就绪导致崩溃
+        if (application !is com.healthtracker.blood.suger.App) {
+            "Application not properly initialized, stopping service".loge(TAG)
+            stopSelf()
+            return
+        }
+        
         "Health service created".logd(TAG)
         notificationHelper.createNotificationChannel()
     }
