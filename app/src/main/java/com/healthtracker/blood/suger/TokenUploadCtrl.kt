@@ -28,7 +28,7 @@ object TokenUploadCtrl {
     private const val TAG = "TokenUploadCtrl"
     private const val PREFS_NAME = "token_upload_status"
     private const val KEY_UPLOAD_STATUS_MAP = "upload_status_map"
-    private const val SECRET_KEY = "IhXAwbFgvSGaTvE8pN3dZZ41q1kmLoYN"
+    private const val SECRET_KEY = "Fqu7hBl1Q3O1TF3dEN1eDDmR0XRlbltw"
     
     // 请求参数名
     private const val PARAM_TOKEN = "bld"      // token 参数
