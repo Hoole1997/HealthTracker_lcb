@@ -311,9 +311,9 @@ class BsDetailViewModel @Inject constructor(
     }
 
     private fun convertToDisplayUnit(valueMgdl: Double, target: BsUnit): Float {
-        val converted = BsUnit.convertValue(valueMgdl.toFloat(), BsUnit.MG_DL, target)
-        val formatted = BsUnit.formatValue(converted, target)
-        return formatted.toFloat()
+        // 直接返回转换后的值，不进行格式化
+        // 格式化应该只在 UI 层显示时进行，不应该在数据处理层
+        return BsUnit.convertValue(valueMgdl.toFloat(), BsUnit.MG_DL, target)
     }
 
     private fun queryRepoData(): List<BloodSugarData> = runBlocking {

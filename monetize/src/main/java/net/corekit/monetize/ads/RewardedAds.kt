@@ -80,10 +80,13 @@ class RewardedAds private constructor() {
     private var totalTriggerCount by DataStoreIntDelegate("reward_trigger_count", 0)
     private var totalShowCount by DataStoreIntDelegate("reward_show_count", 0)
     private var totalLoadFailCount by DataStoreIntDelegate("reward_load_fail_count", 0)
+    private var totalLoadSucCount by DataStoreIntDelegate("reward_load_suc_count", 0)
     private var totalShowFailCount by DataStoreIntDelegate("reward_show_fail_count", 0)
     private var totalRewardCount by DataStoreIntDelegate("reward_reward_count", 0)
     private var totalClickCount by DataStoreIntDelegate("reward_click_count", 0)
-
+    // 累积加载次数统计（持久化）
+    private var totalLoadCount by DataStoreIntDelegate("reward_load_count", 0)
+    private var totalCloseCount by DataStoreIntDelegate("reward_close_count", 0)
     private var currentAdValue: AdValue? = null
 
     /**
@@ -97,7 +100,6 @@ class RewardedAds private constructor() {
      */
     suspend fun load(context: Context, adUnitId: String? = null): AdResult<Unit> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_REWARDED_ID
-
         if (isCacheFull(finalAdUnitId)) {
             AdLogger.d(
                 "激励广告缓存已满，广告位ID: %s，当前缓存: %d/%d",
@@ -110,6 +112,13 @@ class RewardedAds private constructor() {
 
         return try {
             val rewardedAd = withContext(Dispatchers.Main) {
+                reportAdData(
+                    eventName = "ad_start_load",
+                    params = mapOf(
+                        "ad_unit_name" to finalAdUnitId,
+                        "number" to totalLoadCount
+                    )
+                )
                 loadInternal(context.applicationContext, finalAdUnitId)
             }
             if (rewardedAd != null) {
@@ -144,7 +153,7 @@ class RewardedAds private constructor() {
 
         totalTriggerCount++
         reportAdData(
-            "ad_reward_trigger",
+            "ad_position",
             mapOf(
                 "ad_unit_name" to finalAdUnitId,
                 "position" to PositionGet.get(),
@@ -267,16 +276,18 @@ class RewardedAds private constructor() {
                 }
 
                 override fun onAdDismissedFullScreenContent() {
+                    totalCloseCount++
                     val outcome = RewardOutcome(
                         rewarded = rewardItem != null,
                         rewardType = rewardItem?.type,
                         rewardAmount = rewardItem?.amount
                     )
                     reportAdData(
-                        "ad_reward_close",
+                        "ad_close",
                         mapOf(
                             "ad_unit_name" to finalAdUnitId,
                             "position" to PositionGet.get(),
+                            "number" to totalCloseCount,
                             "reward_granted" to outcome.rewarded,
                             "ad_source" to (rewardAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -297,11 +308,12 @@ class RewardedAds private constructor() {
                     AdLogger.e("激励广告展示失败: %s", fullScreenContentError.message)
                     val error = createAdException("show failed: ${fullScreenContentError.message}")
                     reportAdData(
-                        "ad_reward_show_fail",
+                        "ad_show_fail",
                         mapOf(
                             "ad_unit_name" to finalAdUnitId,
                             "reason" to fullScreenContentError.message,
-                            "code" to fullScreenContentError.code
+                            "code" to fullScreenContentError.code,
+                            "number" to totalShowFailCount
                         )
                     )
                     val result = AdResult.Failure(error)
@@ -314,6 +326,7 @@ class RewardedAds private constructor() {
                 override fun onAdImpression() {
                     super.onAdImpression()
                     AdLogger.d("激励广告曝光完成")
+                    totalShowCount++
                     // 异步预加载下一个广告到缓存（如果缓存未满）
                     if (!isCacheFull(finalAdUnitId)) {
                         AdLogger.d("开屏开始异步预加载下一个广告，广告位ID: %s", finalAdUnitId)
@@ -390,13 +403,17 @@ class RewardedAds private constructor() {
 
 
                     override fun onAdLoaded(ad: RewardedAd) {
+                        totalLoadSucCount++
                         val loadTime = System.currentTimeMillis() - startTime
                         AdLogger.d("激励广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
                         reportAdData(
-                            "ad_reward_loaded",
+                            "ad_loaded",
                             mapOf(
                                 "ad_unit_name" to adUnitId,
+                                "number" to totalLoadSucCount,
+                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                 "pass_time" to ceil(loadTime / 1000.0).toInt()
+
                             )
                         )
                         FpuController.onAdFill("RV")
@@ -404,11 +421,16 @@ class RewardedAds private constructor() {
                     }
 
                     override fun onAdFailedToLoad(adError: LoadAdError) {
+                        totalLoadFailCount++
+                        val loadTime = System.currentTimeMillis() - startTime
                         AdLogger.w("激励广告加载失败: %s", adError.message)
                         reportAdData(
-                            "ad_reward_load_fail",
+                            "ad_load_fail",
                             mapOf(
                                 "ad_unit_name" to adUnitId,
+                                "number" to totalLoadFailCount,
+                                "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
                                 "reason" to adError.message,
                                 "code" to adError.code
                             )

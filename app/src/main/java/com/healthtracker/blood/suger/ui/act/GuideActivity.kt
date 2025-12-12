@@ -72,9 +72,13 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
                     super.onPageSelected(position)
                     indicatorView.onPageSelected(position)
                     group.visible()
-                    if (isShowNative && position > 1) {
-                        reportGuide(position + 1)
-                    } else {
+                    if(isShowNative){
+                        if(position < 1){
+                            reportGuide(position + 2)
+                        } else if(position > 1){
+                            reportGuide(position + 1)
+                        }
+                    }else{
                         reportGuide(position + 2)
                     }
                     if (position == frags.size - 1) {
