@@ -39,7 +39,7 @@
         app:layout_constraintTop_toTopOf="@id/v_center_guide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@mipmap/ic_logo_sq"
+        app:srcCompat="@drawable/ic_logo_sq"
         tools:alpha="1" />
 
     <androidx.appcompat.widget.AppCompatTextView
