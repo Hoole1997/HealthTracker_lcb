@@ -1361,5 +1361,6 @@ healthcare provider or medical institution.</string>
     <string name="feedback_sending_failed">Sending failed, please check your email app.</string>
     <string name="max_upload_photos">You can upload up to %d photos</string>
     <string name="feedback_submitted">Submit successfully</string>
+    <string name="last_measurement">Last Measurement : %1$s</string>
 
 </resources>

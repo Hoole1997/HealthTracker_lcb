@@ -39,7 +39,7 @@
         app:layout_constraintTop_toTopOf="@id/v_center_guide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_logo_sq"
+        app:srcCompat="@mipmap/ic_logo_sq"
         tools:alpha="1" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -107,5 +107,30 @@
         android:drawablePadding="@dimen/dp_6"
         android:drawableStart="@drawable/ic_checked"
         android:text="@string/have_reader_privacy"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_recent_record"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@drawable/bg_rect_white_12"
+        android:backgroundTint="@color/color_F1F8F6"
+        android:layout_marginBottom="@dimen/dp_26"
+        app:layout_constraintStart_toStartOf="@id/ad_loading_view"
+        app:layout_constraintEnd_toEndOf="@id/ad_loading_view"
+        android:paddingVertical="@dimen/dp_8"
+        android:paddingHorizontal="@dimen/dp_16"
+        app:layout_constraintBottom_toTopOf="@id/ad_loading_view">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_record_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_14"
+            style="@style/TextViewFont_RobotoBlack"
+            tools:text="Last Measurement : Blood pressure"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

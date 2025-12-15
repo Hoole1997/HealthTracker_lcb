@@ -11,19 +11,22 @@ import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.BuildConfig
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_CONTENT
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
+import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
+import com.healthtracker.blood.suger.ui.viewmodel.SplashViewModel
 import com.healthtracker.blood.suger.util.logEvent
 import com.healthtracker.blood.suger.utils.isAdPage
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
@@ -49,7 +52,7 @@ import javax.inject.Inject
 import kotlin.math.ceil
 
 @AndroidEntryPoint
-class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() {
+class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>() {
 
     companion object {
         private const val TAG = "SplashActivity"
@@ -95,7 +98,7 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
 
     override fun createViewBinding() = ActivitySplashBinding.inflate(layoutInflater)
 
-    override fun getVMModelClass() = BaseViewModel::class.java
+    override fun getVMModelClass() = SplashViewModel::class.java
     private var launchTime = 0L
     override fun initView(savedInstanceState: Bundle?) {
         lifecycleScope.launch {
@@ -129,6 +132,96 @@ class SplashActivity : BaseMVVMActivity<BaseViewModel, ActivitySplashBinding>() 
                 onPermissionCheckCompleted()
             }
             checkNotificationOpen()
+
+            // 监听最近记录并显示
+            lifecycleScope.launch {
+                mViewModel.recentRecord.collect { item ->
+                    if (item == null) {
+                        mViewBind.clRecentRecord.visibility = View.GONE
+                        return@collect
+                    }
+
+                    mViewBind.clRecentRecord.visibility = View.VISIBLE
+                    mViewBind.tvRecordTitle.text = getString(
+                        R.string.last_measurement, when (item.getRecordType()) {
+                            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> getString(R.string.blood_pressure)
+                            HistoryRecordItem.RecordType.BLOOD_SUGAR -> getString(R.string.blood_suger)
+                            HistoryRecordItem.RecordType.HEART_RATE -> getString(R.string.heart_rate)
+                            HistoryRecordItem.RecordType.BMI_RECORD -> getString(R.string.bmi)
+                            else -> ""
+                        }
+                    )
+
+                    // 清除旧的动态视图（除了标题）
+                    val childCount = mViewBind.clRecentRecord.childCount
+                    if (childCount > 1) {
+                         mViewBind.clRecentRecord.removeViews(1, childCount - 1)
+                    }
+
+                    val layoutId = if (item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_PRESSURE) {
+                        R.layout.layout_recent_bp
+                    } else {
+                        R.layout.layout_recent_bs
+                    }
+
+                    val contentView = layoutInflater.inflate(layoutId, mViewBind.clRecentRecord, false)
+                    val params = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
+                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT,
+                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    params.topToBottom = mViewBind.tvRecordTitle.id
+                    contentView.layoutParams = params
+                    mViewBind.clRecentRecord.addView(contentView)
+
+                    // 绑定数据
+                    val tvValue1 = contentView.findViewById<android.widget.TextView>(R.id.tv_value_1)
+                    val tvValue2 = contentView.findViewById<android.widget.TextView>(R.id.tv_value_2)
+                    val tvUnit = contentView.findViewById<android.widget.TextView>(R.id.tv_unit)
+                    val tvLevel = contentView.findViewById<android.widget.TextView>(R.id.tv_leve)
+                    val tvStatus = contentView.findViewById<android.widget.TextView>(R.id.tv_status)
+                    val tvTime = contentView.findViewById<android.widget.TextView>(R.id.tv_record_time)
+                    val vRangeFlag = contentView.findViewById<View>(R.id.v_range_flag)
+
+                    tvValue1.text = item.getPrimaryValue()
+                    tvUnit.text = item.getUnit()
+                    tvLevel.text = item.getLevel(this@SplashActivity)
+                    tvTime.text = DateTimeUtils.formatDateTime(item.getRecordTime())
+
+                    if(layoutId == R.layout.layout_recent_bp){
+                        val secondaryValue = item.getSecondaryValue()
+                        if (secondaryValue != null) {
+                            tvValue2.text = secondaryValue
+                            tvValue2.visibility = View.VISIBLE
+                        } else {
+                            tvValue2.visibility = View.GONE
+                        }
+                    }
+
+                    val status = item.getStatus(this@SplashActivity)
+                    if (status != null) {
+                        tvStatus.visibility = View.VISIBLE
+                        when (item.getRecordType()) {
+                            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                                tvStatus.text = "${getString(R.string.pulse)}:$status"
+                            }
+                            HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                                tvStatus.text = "${getString(R.string.status)}:$status"
+                            }
+                            else -> {
+                                tvStatus.text = status
+                                tvStatus.setTextColor(getColor(R.color.t1))
+                            }
+                        }
+                    } else {
+                        tvStatus.visibility = View.GONE
+                    }
+
+                    vRangeFlag.backgroundTintList = androidx.core.content.ContextCompat.getColorStateList(
+                        this@SplashActivity,
+                        item.getLeveColorRes()
+                    )
+                }
+            }
 
             try {
                 val adJob = async {
