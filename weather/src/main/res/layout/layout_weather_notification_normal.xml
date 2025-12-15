@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="60dp"
+    android:paddingHorizontal="8dp"
+    android:background="@drawable/bg_weather_notification"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/iv_weather"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_dreary"/>
+
+    <TextView
+        android:id="@+id/tv_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textFontWeight="700"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:text="0°"/>
+
+
+    <TextView
+        android:id="@+id/tv_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="4dp"
+        android:textFontWeight="400"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:text="--"/>
+
+    <TextView
+        android:id="@+id/tv_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:drawablePadding="4dp"
+        android:drawableStart="@drawable/ic_location"
+        android:layout_marginStart="4dp"
+        android:textFontWeight="700"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:text="--"/>
+
+
+
+
+
+
+
+</LinearLayout>

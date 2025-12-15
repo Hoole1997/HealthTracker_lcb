@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_8">
+    
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        style="@style/TextViewFont_RobotoRegular"
+        tools:text="Thu"/>
+    
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_weather"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:src="@drawable/ic_rain"
+        app:layout_constraintTop_toBottomOf="@id/tv_date"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_temperature_range"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:maxLines="1"
+        app:autoSizeMaxTextSize="@dimen/sp_15"
+        app:autoSizeMinTextSize="@dimen/sp_12"
+        app:autoSizeStepGranularity="1dp"
+        app:autoSizeTextType="uniform"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_15"
+        style="@style/TextViewFont_RobotoMedium"
+        app:layout_constraintTop_toBottomOf="@id/iv_weather"
+        android:layout_marginTop="@dimen/dp_16"
+        tools:text="14/20"/>
+    
+    
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_rain"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        app:srcCompat="@drawable/svg_rain"
+        app:layout_constraintBottom_toBottomOf="@id/tv_rain_percent"
+        app:layout_constraintTop_toTopOf="@id/tv_rain_percent"
+        app:layout_constraintStart_toStartOf="@id/tv_temperature_range"
+        app:layout_constraintEnd_toStartOf="@id/tv_rain_percent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_rain_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginStart="@dimen/dp_2"
+        app:layout_constraintTop_toBottomOf="@id/tv_temperature_range"
+        app:layout_constraintEnd_toEndOf="@id/tv_temperature_range"
+        app:layout_constraintStart_toEndOf="@id/iv_rain"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        style="@style/TextViewFont_RobotoRegular"
+        tools:text="54%"/>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

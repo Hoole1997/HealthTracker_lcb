@@ -38,5 +38,4 @@ include(":monetize")
 include(":core")
 include(":metrics")
 include(":earthquake")
-
- 
+include(":weather")

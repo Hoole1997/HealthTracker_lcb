@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wind_speed">風速</string>
+
+    <string name="hum">湿度</string>
+    <string name="daily_5_days">5日間の予報</string>
+    <string name="more_details">詳細情報</string>
+    <string name="humidity">湿度</string>
+    <string name="uv_index">UV指数</string>
+    <string name="pressure">気圧</string>
+    <string name="visibility">視程</string>
+    <string name="sunrise">日の出</string>
+    <string name="sunset">日の入</string>
+    <string name="precip">降水</string>
+    <string name="temperature_high">最高: %d°</string>
+    <string name="temperature_low">最低: %d°</string>
+
+    <!-- Weather Descriptions -->
+    <string name="weather_sunny">快晴</string>
+    <string name="weather_mostly_sunny">晴れ</string>
+    <string name="weather_partly_sunny">晴れ時々曇り</string>
+    <string name="weather_intermittent_clouds">所により曇り</string>
+    <string name="weather_hazy_sunshine">薄曇り</string>
+    <string name="weather_mostly_cloudy">曇り時々晴れ</string>
+    <string name="weather_cloudy">曇り</string>
+    <string name="weather_overcast">どんよりした曇り</string>
+    <string name="weather_fog">霧</string>
+    <string name="weather_showers">にわか雨</string>
+    <string name="weather_mostly_cloudy_w_showers">曇り時々にわか雨</string>
+    <string name="weather_partly_sunny_w_showers">晴れ時々にわか雨</string>
+    <string name="weather_t_storms">雷雨</string>
+    <string name="weather_mostly_cloudy_w_t_storms">曇り時々雷雨</string>
+    <string name="weather_partly_sunny_w_t_storms">晴れ時々雷雨</string>
+    <string name="weather_rain">雨</string>
+    <string name="weather_flurries">小雪</string>
+    <string name="weather_mostly_cloudy_w_flurries">曇り時々小雪</string>
+    <string name="weather_partly_sunny_w_flurries">晴れ時々小雪</string>
+    <string name="weather_snow">雪</string>
+    <string name="weather_mostly_cloudy_w_snow">曇り時々雪</string>
+    <string name="weather_ice">氷</string>
+    <string name="weather_sleet">みぞれ</string>
+    <string name="weather_freezing_rain">着氷性の雨</string>
+    <string name="weather_rain_and_snow">雨と雪</string>
+    <string name="weather_hot">暑い</string>
+    <string name="weather_cold">寒い</string>
+    <string name="weather_windy">風が強い</string>
+    <string name="weather_clear">快晴</string>
+    <string name="weather_mostly_clear">晴れ</string>
+    <string name="weather_partly_cloudy">晴れ時々曇り</string>
+    <string name="weather_hazy_moonlight">薄曇り</string>
+    <string name="weather_partly_cloudy_w_showers">晴れ時々にわか雨</string>
+    <string name="weather_partly_cloudy_w_t_storms">晴れ時々雷雨</string>
+    <string name="weather_unknown">不明</string>
+</resources>

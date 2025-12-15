@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="hum">Hum</string>
+    <string name="daily_5_days">5-Day Forecast</string>
+    <string name="more_details">More Details</string>
+    <string name="humidity">Humidity</string>
+    <string name="uv_index">UV Index</string>
+    <string name="pressure">Pressure</string>
+    <string name="visibility">Visibility</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="precip">Precipitation</string>
+    <string name="temperature_high">High: %d°</string>
+    <string name="temperature_low">Low: %d°</string>
+
+    <!-- Weather Descriptions -->
+    <string name="weather_sunny">Sunny</string>
+    <string name="weather_mostly_sunny">Mostly Sunny</string>
+    <string name="weather_partly_sunny">Partly Sunny</string>
+    <string name="weather_intermittent_clouds">Intermittent Clouds</string>
+    <string name="weather_hazy_sunshine">Hazy Sunshine</string>
+    <string name="weather_mostly_cloudy">Mostly Cloudy</string>
+    <string name="weather_cloudy">Cloudy</string>
+    <string name="weather_overcast">Overcast</string>
+    <string name="weather_fog">Fog</string>
+    <string name="weather_showers">Showers</string>
+    <string name="weather_mostly_cloudy_w_showers">Mostly Cloudy w/ Showers</string>
+    <string name="weather_partly_sunny_w_showers">Partly Sunny w/ Showers</string>
+    <string name="weather_t_storms">T-Storms</string>
+    <string name="weather_mostly_cloudy_w_t_storms">Mostly Cloudy w/ T-Storms</string>
+    <string name="weather_partly_sunny_w_t_storms">Partly Sunny w/ T-Storms</string>
+    <string name="weather_rain">Rain</string>
+    <string name="weather_flurries">Flurries</string>
+    <string name="weather_mostly_cloudy_w_flurries">Mostly Cloudy w/ Flurries</string>
+    <string name="weather_partly_sunny_w_flurries">Partly Sunny w/ Flurries</string>
+    <string name="weather_snow">Snow</string>
+    <string name="weather_mostly_cloudy_w_snow">Mostly Cloudy w/ Snow</string>
+    <string name="weather_ice">Ice</string>
+    <string name="weather_sleet">Sleet</string>
+    <string name="weather_freezing_rain">Freezing Rain</string>
+    <string name="weather_rain_and_snow">Rain and Snow</string>
+    <string name="weather_hot">Hot</string>
+    <string name="weather_cold">Cold</string>
+    <string name="weather_windy">Windy</string>
+    <string name="weather_clear">Clear</string>
+    <string name="weather_mostly_clear">Mostly Clear</string>
+    <string name="weather_partly_cloudy">Partly Cloudy</string>
+    <string name="weather_hazy_moonlight">Hazy Moonlight</string>
+    <string name="weather_partly_cloudy_w_showers">Partly Cloudy w/ Showers</string>
+    <string name="weather_partly_cloudy_w_t_storms">Partly Cloudy w/ T-Storms</string>
+    <string name="weather_unknown">Unknown</string>
+    <string name="search">Search</string>
+    <string name="current_location">Current Location</string>
+</resources>

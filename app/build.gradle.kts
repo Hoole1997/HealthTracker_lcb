@@ -136,6 +136,7 @@ dependencies {
     api(project(":core"))
     api(project(":metrics"))
     api(project(":earthquake"))
+    api(project(":weather"))
 //    api(project(":ad-sdk"))
 
     // Core Android
