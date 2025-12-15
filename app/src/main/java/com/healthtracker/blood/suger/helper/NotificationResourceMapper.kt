@@ -112,6 +112,13 @@ class NotificationResourceMapper @Inject constructor() {
                 decorIcon = R.mipmap.bg_step_notify_icon,
                 btnTextColor = R.color.color_F0832D
             )
+            11 -> NotificationResources(
+                smallIcon = com.android.common.weather.R.drawable.ic_cloudy,
+                background = null,
+                largeIcon = null,
+                decorIcon = null,
+                btnTextColor = null
+            )
             else -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
                 background = null,
@@ -130,6 +137,12 @@ class NotificationResourceMapper @Inject constructor() {
             LayoutResources(
                 collapsedLayout = R.layout.layout_meds_notify,
                 expandedLayout = R.layout.layout_meds_notify_big
+            )
+        } else if (iconType == 11) {
+            // 天气通知使用天气模块布局
+            LayoutResources(
+                collapsedLayout = com.android.common.weather.R.layout.layout_weather_notification_normal,
+                expandedLayout = com.android.common.weather.R.layout.layout_weather_notification_big
             )
         } else {
             // 其他类型使用通用布局
