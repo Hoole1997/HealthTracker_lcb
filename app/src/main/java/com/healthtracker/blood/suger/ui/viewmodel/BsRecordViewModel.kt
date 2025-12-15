@@ -8,7 +8,10 @@ import com.healthtracker.blood.suger.data.repository.BloodSugarRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
+import com.healthtracker.blood.suger.constants.KEY_LAST_RECORD_TYPE
+import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -146,10 +149,12 @@ class BsRecordViewModel @Inject constructor(
             if (editingRecordId != null) {
                 // 更新现有记录
                 updateExistingRecord()
+                SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BLOOD_SUGAR.ordinal)
                 SaveRecordResult.Updated(editingRecordId!!)
             } else {
                 // 创建新记录
                 val newRecordId = createNewRecord()
+                SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BLOOD_SUGAR.ordinal)
                 SaveRecordResult.Created(newRecordId)
             }
         } catch (e: Exception) {

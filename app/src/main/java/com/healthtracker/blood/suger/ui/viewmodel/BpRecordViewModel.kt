@@ -7,8 +7,11 @@ import com.healthtracker.blood.suger.data.repository.BloodPressureRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.TagUtils
+import com.healthtracker.blood.suger.constants.KEY_LAST_RECORD_TYPE
+import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
+import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -118,6 +121,7 @@ class BpRecordViewModel @Inject constructor(
                     bloodPressureRepository.addTagsToBloodPressureRecord(editingRecordId!!, _selectedTagIds.value)
 
                     _isSaved.value = true
+                    SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BLOOD_PRESSURE.ordinal)
                     SaveRecordResult.Updated(editingRecordId!!)
                 } ?: SaveRecordResult.Failed("Record not found")
             } else {
@@ -131,6 +135,10 @@ class BpRecordViewModel @Inject constructor(
                 )
 
                 _isSaved.value = true
+                com.healthtracker.framework.util.SpUtils.putInt(
+                    com.healthtracker.blood.suger.constants.KEY_LAST_RECORD_TYPE,
+                    com.healthtracker.blood.suger.ui.history.HistoryRecordItem.RecordType.BLOOD_PRESSURE.ordinal
+                )
                 SaveRecordResult.Created(newRecordId)
             }
         } catch (e: CancellationException) {

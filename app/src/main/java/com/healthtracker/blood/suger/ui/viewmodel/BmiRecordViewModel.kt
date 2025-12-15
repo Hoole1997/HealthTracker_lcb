@@ -10,8 +10,11 @@ import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.TagUtils
+import com.healthtracker.blood.suger.constants.KEY_LAST_RECORD_TYPE
+import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
+import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -203,6 +206,7 @@ class BmiRecordViewModel @Inject constructor(
                     if (rows > 0) {
                         _isSaved.value = true
                         BodyMetricsPreferences.save(height.toDouble(), weight.toDouble())
+                        SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BMI_RECORD.ordinal)
                         onResult(SaveRecordResult.Updated(recordId))
                     }
                 } else {
@@ -219,6 +223,7 @@ class BmiRecordViewModel @Inject constructor(
                         _isSaved.value = true
                         BodyMetricsPreferences.save(height.toDouble(), weight.toDouble())
                         editingRecordId = newId
+                        SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BMI_RECORD.ordinal)
                         onResult(SaveRecordResult.Created(newId))
                     }
                 }

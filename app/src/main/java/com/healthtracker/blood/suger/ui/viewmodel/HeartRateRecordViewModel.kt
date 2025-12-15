@@ -9,8 +9,11 @@ import com.healthtracker.blood.suger.data.repository.HeartRateRepository
 import com.healthtracker.blood.suger.data.repository.HealthTagRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.data.utils.TagUtils
+import com.healthtracker.blood.suger.constants.KEY_LAST_RECORD_TYPE
+import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.ext.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
@@ -152,6 +155,7 @@ class HeartRateRecordViewModel @Inject constructor(
                     )
                     if (newId > 0) {
                         editingRecordId = newId
+                        SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.HEART_RATE.ordinal)
                         onResult(SaveRecordResult.Created(newId))
                     } else {
                         onResult(SaveRecordResult.Failed("创建失败"))
@@ -168,6 +172,10 @@ class HeartRateRecordViewModel @Inject constructor(
                         )
                         val rows = heartRateRepository.updateHeartRateRecord(updated)
                         if (rows > 0) {
+                            com.healthtracker.framework.util.SpUtils.putInt(
+                                com.healthtracker.blood.suger.constants.KEY_LAST_RECORD_TYPE,
+                                com.healthtracker.blood.suger.ui.history.HistoryRecordItem.RecordType.HEART_RATE.ordinal
+                            )
                             onResult(SaveRecordResult.Updated(updated.id))
                         } else {
                             onResult(SaveRecordResult.Failed("更新失败"))
