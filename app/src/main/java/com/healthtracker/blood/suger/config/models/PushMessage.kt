@@ -163,6 +163,15 @@ data class PushMessage(
                     buttonText = "View Steps",
                     iconType = 10,
                     actionType = 10
+                ),
+                // 14. 天气通知
+                PushMessage(
+                    id = "push_021",
+                    title = "",
+                    desc = "",
+                    buttonText = "",
+                    iconType = 11,
+                    actionType = 11
                 )
             )
         }
@@ -176,7 +185,7 @@ data class PushMessage(
                 title.isNotBlank() &&
                 desc.isNotBlank() &&
                 buttonText.isNotBlank() &&
-                iconType in 1..10 &&
-                actionType in 1..10
+                iconType in 1..11 &&
+                actionType in 1..11
     }
 }
