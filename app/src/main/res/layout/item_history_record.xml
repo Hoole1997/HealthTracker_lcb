@@ -109,15 +109,22 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_status"
         style="@style/TextViewFont_RobotoRegular"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_goneMarginEnd="@dimen/dp_16"
+        android:maxLines="1"
+        app:autoSizeMaxTextSize="@dimen/sp_16"
+        app:autoSizeMinTextSize="@dimen/sp_10"
+        android:autoSizeTextType="uniform"
+        app:autoSizeStepGranularity="1dp"
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="#3FC0F6"
         android:textSize="@dimen/sp_16"
         app:layout_constraintTop_toBottomOf="@id/tv_leve"
         app:layout_constraintStart_toEndOf="@id/div_line"
+        app:layout_constraintEnd_toStartOf="@id/iv_delete"
         tools:text="Pulse: 86 BPM" />
 
 

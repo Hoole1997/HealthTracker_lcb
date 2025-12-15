@@ -121,12 +121,18 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
                         // 血压：显示 "Pulse: xxx"
                         tvStatus.text = "${tvStatus.context.getString(R.string.pulse)}:$status"
                     } else {
-                        // 血糖：显示 "Status: xxx"
-                        tvStatus.text = "${tvStatus.context.getString(R.string.status)}:$status"
+                        if(item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_SUGAR){
+                            // 血糖：显示 "Status: xxx"
+                            tvStatus.text = "${tvStatus.context.getString(R.string.status)}:$status"
+                        }else{
+                            // BMI：直接显示身高体重
+                            tvStatus.text = status
+                        }
+
                     }
                     tvStatus.visible()
                 } else {
-                    // 心率和BMI：不显示状态
+                    // 心率：不显示状态
                     tvStatus.gone()
                 }
 
