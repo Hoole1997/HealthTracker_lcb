@@ -8,10 +8,12 @@ import com.healthtracker.blood.suger.databinding.ActivityAlarmManagerBinding
 import com.healthtracker.blood.suger.ui.adapter.AlarmAdapter
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.AlarmViewModel
+import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import dagger.hilt.android.AndroidEntryPoint
+import net.corekit.monetize.ui.NativeAdStyle
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,6 +40,7 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
         setupRecyclerViews()
         setupClickListeners()
         observeData()
+        loadNative(mViewBind.adContainer, style = NativeAdStyle.CARD_3)
     }
 
     /**

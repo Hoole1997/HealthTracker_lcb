@@ -22,22 +22,33 @@ import com.healthtracker.blood.suger.ui.act.HydrateSettingActivity
 import com.healthtracker.blood.suger.ui.act.MainActivity
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.viewmodel.TrackerViewModel
+import com.healthtracker.blood.suger.utils.loadNative
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.invisible
+import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ui.NativeAdStyle
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>() {
 
+    companion object{
+        private const val TAG = "RecordFragment"
+    }
+
     @Inject
     lateinit var chartManagerFactory: HealthLineChartManager.Factory
+
+    // ========== 广告加载标志 ==========
+    private var isAdLoaded = false
 
     // ========== 图表管理器（使用可空类型，每次 View 创建时重新初始化） ==========
     private var bsChartManager: HealthLineChartManager? = null
@@ -63,6 +74,68 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
 
         mViewModel.startObservingData()
         observeAllChartData()
+        setupAdLazyLoading()
+    }
+
+    /**
+     * 设置广告懒加载：当 adContainer 可见时才触发加载
+     */
+    private fun setupAdLazyLoading() {
+        val scrollView = mViewBind?.root?.findViewById(
+            mViewBind?.root?.getChildAt(0)?.id ?: return
+        ) ?: (mViewBind?.root?.getChildAt(0) as? androidx.core.widget.NestedScrollView) ?: return
+        val adContainer = mViewBind?.adContainer ?: return
+
+        val visibilityChecker = { source: String ->
+            val isVisible = isAdContainerVisible(adContainer, scrollView)
+            if(BuildState.debug) "[$source] isAdLoaded=$isAdLoaded, isVisible=$isVisible".logd(TAG)
+            if (!isAdLoaded && isVisible) {
+                isAdLoaded = true
+                if(BuildState.debug) "✅ Triggering ad load from: $source".logd(TAG)
+                activity?.loadNative(adContainer, style = NativeAdStyle.CARD)
+            }
+        }
+
+        // 初始布局完成后检测（处理不需要滚动就能看到的情况）
+        adContainer.viewTreeObserver.addOnGlobalLayoutListener(object : android.view.ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                visibilityChecker("GlobalLayout")
+                if (isAdLoaded) {
+                    adContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            }
+        })
+
+        // 监听滚动事件
+        scrollView.viewTreeObserver.addOnScrollChangedListener {
+            visibilityChecker("Scroll")
+        }
+    }
+
+    /**
+     * 检测 adContainer 是否部分进入可视区域
+     */
+    private fun isAdContainerVisible(
+        adContainer: android.view.View,
+        scrollView: androidx.core.widget.NestedScrollView
+    ): Boolean {
+        if (!adContainer.isShown) return false
+
+        val scrollBounds = android.graphics.Rect()
+        scrollView.getHitRect(scrollBounds)
+
+        val adLocation = IntArray(2)
+        adContainer.getLocationOnScreen(adLocation)
+
+        val scrollLocation = IntArray(2)
+        scrollView.getLocationOnScreen(scrollLocation)
+
+        val adTop = adLocation[1] - scrollLocation[1]
+        val adBottom = adTop + adContainer.height
+        val scrollHeight = scrollView.height
+
+        // 部分可见即触发：adContainer 的顶部在 scrollView 可视区域内，或底部在可视区域内
+        return adTop < scrollHeight && adBottom > 0
     }
 
     /**

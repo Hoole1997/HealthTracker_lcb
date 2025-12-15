@@ -11,6 +11,7 @@ import com.healthtracker.blood.suger.getUserAge
 import com.healthtracker.blood.suger.isMale
 import com.healthtracker.blood.suger.saveUserAge
 import com.healthtracker.blood.suger.saveUserGender
+import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
@@ -19,6 +20,7 @@ import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoRegular
 import com.hjq.toast.Toaster
+import net.corekit.monetize.ui.NativeAdStyle
 
 class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>() {
     companion object{
@@ -131,6 +133,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>(
                 // 年龄变化时更新按钮状态
                 updateSaveButtonState()
             }
+            loadNative(adContainer, style = NativeAdStyle.CARD_5)
         }
     }
 
