@@ -7,7 +7,6 @@ import android.os.PowerManager
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.repository.AlarmRepository
 import com.healthtracker.blood.suger.data.repository.MedicineReminderRepository
-import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
@@ -161,59 +160,6 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
-    /**
-     * 显示服药提醒全屏通知
-     * 通过药物ID查询数据库获取最新的药物信息
-     *
-     * @param alarmRecord 闹钟记录
-     */
-    private fun showMedicationNotification(alarmRecord: AlarmRecord) {
-        try {
-            if (!alarmRecord.isMedicationReminder()) {
-                "Invalid medication alarm record: ID=${alarmRecord.id}".logw(TAG)
-                return
-            }
-
-            val medicineId = alarmRecord.getMedicineId()
-            if (medicineId == null) {
-                "Invalid medicine ID in alarm record: ID=${alarmRecord.id}".logw(TAG)
-                return
-            }
-
-            // 异步查询药物信息并创建通知
-            coroutineScope.launch {
-                try {
-                    // 从数据库查询最新的药物信息
-                    val medicineReminder = medicineReminderRepository.getMedicineById(medicineId)
-
-                    if (medicineReminder == null) {
-                        "Medicine not found: ID=$medicineId".logw(TAG)
-                        return@launch
-                    }
-
-                    // 创建服药提醒全屏通知
-                    notificationManager.createMedicationNotification(
-                        medicationName = medicineReminder.medicineName,
-                        dosage = "", // 简化版不显示剂量
-                        notes = "", // 简化版不显示备注
-                        reminderTime = alarmRecord.getFormattedTime(),
-                        reminderId = medicineId
-                    )
-
-                    // 记录真实提醒时间到药物提醒记录
-                    medicineReminderRepository.recordRealRemind(medicineId)
-
-                    "Medication FSI notification created: MedicineID=$medicineId, Name=${medicineReminder.medicineName}".logd(TAG)
-
-                } catch (e: Exception) {
-                    "Failed to query medicine and show notification: MedicineID=$medicineId, Error=${e.message}".loge(TAG)
-                }
-            }
-
-        } catch (e: Exception) {
-            "Failed to show medication notification: ID=${alarmRecord.id}, Error=${e.message}".loge(TAG)
-        }
-    }
     
     /**
      * 更新最后触发时间
@@ -270,75 +216,5 @@ class AlarmReceiver : BroadcastReceiver() {
             "Error scheduling next repeat: ID=${alarmRecord.id}, Error=${e.message}".loge(TAG)
         }
     }
-    
-    /**
-     * 验证闹钟触发的有效性
-     * 检查时间是否匹配、是否在有效的重复日期等
-     * 
-     * @param alarmRecord 闹钟记录
-     * @return 是否有效
-     */
-    private fun validateAlarmTrigger(alarmRecord: AlarmRecord): Boolean {
-        try {
-            val calendar = java.util.Calendar.getInstance()
-            val currentHour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
-            val currentMinute = calendar.get(java.util.Calendar.MINUTE)
-            
-            // 检查时间是否匹配（允许1分钟误差）
-            val timeDiff = Math.abs((currentHour * 60 + currentMinute) - (alarmRecord.hour * 60 + alarmRecord.minute))
-            if (timeDiff > 1) {
-                "Alarm time mismatch: Expected=${alarmRecord.getFormattedTime()}, Current=$currentHour:$currentMinute".logw(TAG)
-                return false
-            }
-            
-            // 检查重复规则
-            if (alarmRecord.isRepeating()) {
-                val dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK)
-                val alarmDayOfWeek = convertCalendarDayToAlarmDay(dayOfWeek)
-                
-                if (!alarmRecord.shouldRingOnDay(alarmDayOfWeek)) {
-                    "Alarm should not ring today: ID=${alarmRecord.id}, DayOfWeek=$alarmDayOfWeek".logw(TAG)
-                    return false
-                }
-            }
-            
-            return true
-        } catch (e: Exception) {
-            "Error validating alarm trigger: ID=${alarmRecord.id}, Error=${e.message}".loge(TAG)
-            return false
-        }
-    }
-    
-    /**
-     * 转换Calendar的星期表示为AlarmRecord的星期表示
-     * 
-     * @param calendarDay Calendar的星期值
-     * @return AlarmRecord的星期值
-     */
-    private fun convertCalendarDayToAlarmDay(calendarDay: Int): Int {
-        return when (calendarDay) {
-            java.util.Calendar.SUNDAY -> 7
-            java.util.Calendar.MONDAY -> 1
-            java.util.Calendar.TUESDAY -> 2
-            java.util.Calendar.WEDNESDAY -> 3
-            java.util.Calendar.THURSDAY -> 4
-            java.util.Calendar.FRIDAY -> 5
-            java.util.Calendar.SATURDAY -> 6
-            else -> 1
-        }
-    }
-    
-    /**
-     * 处理闹钟触发异常
-     * 记录错误信息并尝试恢复
-     * 
-     * @param alarmId 闹钟ID
-     * @param error 异常信息
-     */
-    private fun handleAlarmError(alarmId: Long, error: Throwable) {
-        "Alarm trigger error: ID=$alarmId, Error=${error.message}".loge(TAG)
-        
-        // 可以在这里添加错误恢复逻辑
-        // 例如：重新调度闹钟、发送错误报告等
-    }
+
 }

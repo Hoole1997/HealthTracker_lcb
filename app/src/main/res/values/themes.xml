@@ -34,21 +34,4 @@
         <item name="android:minWidth">56dp</item>
     </style>
 
-    <!-- 全屏服药提醒主题 -->
-    <style name="FullScreenTheme" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowShowWallpaper">false</item>
-        <item name="android:windowIsTranslucent">false</item>
-        <item name="android:windowAnimationStyle">@null</item>
-        <!-- 锁屏和息屏相关属性 -->
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <!-- 保持屏幕常亮 -->
-        <item name="android:keepScreenOn">true</item>
-    </style>
 </resources>

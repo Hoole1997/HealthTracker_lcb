@@ -233,19 +233,6 @@
 
 
 
-        <!-- 全屏服药提醒Activity -->
-        <activity
-            android:name=".ui.act.MedicationReminderFullScreenActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:showOnLockScreen="true"
-            android:showWhenLocked="true"
-            android:taskAffinity="${applicationId}.fullscreen.activity"
-            android:theme="@style/FullScreenTheme"
-            android:turnScreenOn="true"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity,UnusedAttribute"/>
-
-
 
         <!--适配Android 7.0 及以上兼容文件管理-->
         <provider

@@ -47,10 +47,6 @@ fun onAppStart() {
  */
 fun getOpenTimes() = SpUtils.getInt(KEY_APP_OPEN_TIMES,0)
 
-fun isFirstOpen() = getOpenTimes() == 1
-
-//判断是否无损音乐
-fun isLossless(format:String) = format == "flac" || format == "ape" || format == "wav"
 
 
 fun getCurProcessName(context: Context): String? {
@@ -115,13 +111,3 @@ val adClasses = arrayOf(
     TTAdActivity::class.java,
     GuideActivity::class.java
 )
-
-val Activity.mToastUtils by lazy {
-    ToastUtils.getDefaultMaker().apply {
-        setGravity(Gravity.BOTTOM, 0, 0)
-        setBgResource(com.healthtracker.blood.suger.R.drawable.bg_toast)
-        setTextColor(Color.WHITE)
-        setLeftIcon(com.healthtracker.blood.suger.R.drawable.ic_fsi_reach_goal)
-        setDurationIsLong(false)
-    }
-}

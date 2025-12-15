@@ -15,7 +15,6 @@ import com.android.common.weather.WeatherActivity
 import com.android.common.weather.util.WeatherIconMapper
 import com.google.android.material.tabs.TabLayout
 import com.healthtracker.blood.suger.App
-import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.config.models.PushMessage
@@ -25,7 +24,6 @@ import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
 import com.healthtracker.blood.suger.helper.CustomNotificationHelper
 import com.healthtracker.blood.suger.permission.PermissionProvider
 import com.healthtracker.blood.suger.permission.PermissionRequest
-import com.healthtracker.blood.suger.push.recordLastActiveTime
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.ui.adapter.FragmentsAdapter
@@ -44,7 +42,6 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.logd
-import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.Restore
@@ -93,9 +90,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
     override fun onStop() {
         super.onStop()
-        // 记录用户最后活跃时间（首页关闭时）
-        recordLastActiveTime()
-        if(BuildState.debug) "Recorded last active time when MainActivity stopped".logd(TAG)
         // 协程会被 repeatOnLifecycle 自动取消，无需手动管理
     }
 
