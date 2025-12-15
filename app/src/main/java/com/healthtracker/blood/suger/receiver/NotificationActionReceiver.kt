@@ -3,11 +3,10 @@ package com.healthtracker.blood.suger.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.healthtracker.blood.suger.push.recordLastClickNotifyTime
-import com.healthtracker.blood.suger.service.HealthServiceConstants
+import androidx.core.app.NotificationManagerCompat
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.strategy.LoopPushManager
 import com.healthtracker.blood.suger.strategy.PushOrchestrator
-import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
@@ -79,7 +78,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
         if (BuildState.debug) {
             "Notification clicked: notificationId=$notificationId".logd(PushOrchestrator.TAG)
         }
-        recordLastClickNotifyTime()
         // 1. 停止 Loop 推送
         loopPushManager.stopLoopPush(notificationId, "clicked")
     }
@@ -97,5 +95,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
         // 停止 Loop 推送
         loopPushManager.stopLoopPush(notificationId, "dismissed")
+
+        // 显式取消通知（应对点击 Close 按钮的情况）
+        NotificationManagerCompat.from(App.INSTANCE).cancel(notificationId)
     }
 }
