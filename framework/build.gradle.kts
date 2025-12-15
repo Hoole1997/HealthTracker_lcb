@@ -24,24 +24,25 @@ android {
 
 dependencies {
     // Core Android
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    api(libs.androidx.core.ktx)
+    api(libs.androidx.appcompat)
+    api(libs.material)
 
     // Kotlin Coroutines
-    implementation(libs.kotlinx.coroutines.android)
+    api(libs.kotlinx.coroutines.android)
 
     // Lifecycle
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.lifecycle.process)
+    api(libs.androidx.lifecycle.viewmodel.ktx)
+    api(libs.androidx.lifecycle.runtime.ktx)
+    api(libs.lifecycle.process)
 
+    api(libs.androidx.constraintlayout)
     // Activity
     api(libs.androidx.activity.ktx)
 
     // 数据存储
-    implementation(libs.mmkv)
-    implementation(libs.gson)
+    api(libs.mmkv)
+    api(libs.gson)
 
     // Firebase - API 导出给其他模块使用
     api(platform(libs.firebase.bom))

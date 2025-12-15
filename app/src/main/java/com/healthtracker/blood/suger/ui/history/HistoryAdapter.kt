@@ -1,19 +1,17 @@
 package com.healthtracker.blood.suger.ui.history
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ItemHistoryRecordBinding
+import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.databinding.ItemCholHistoryRecordBinding
+import com.healthtracker.blood.suger.databinding.ItemHistoryRecordBinding
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
-import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 /**
  * 历史记录适配器

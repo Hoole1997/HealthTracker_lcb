@@ -27,3 +27,6 @@ const val LANDING_NOTIFICATION_TITLE = "landing_notification_title"
 const val LANDING_NOTIFICATION_CONTENT = "landing_notification_content"
 const val HAS_NOTIFICATION_PERMISSION = "has_notification_permission"
 const val HAS_REPORT_NOTIFICATION_REVOKED = "has_report_notification_revoked"
+const val PUSH_CLOSE_ACTION = "push_close_action"
+
+const val KEY_LAST_RECORD_TYPE = "key_last_record_type"

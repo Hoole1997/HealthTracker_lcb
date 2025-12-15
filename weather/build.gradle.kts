@@ -26,13 +26,6 @@ android {
 
 dependencies{
     api(project(":framework"))
-    
-    // Android UI
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
-    
     // 网络请求
     api(libs.retrofit)
     api(libs.retrofit.converter.gson)

@@ -22,6 +22,7 @@ import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_CONTENT
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
+import com.healthtracker.blood.suger.constants.PUSH_CLOSE_ACTION
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
@@ -32,9 +33,9 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
-import com.healthtracker.framework.lifecycle.AppLifecycleManager
-import dagger.hilt.android.qualifiers.ApplicationContext
 import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.SpUtils
+import dagger.hilt.android.qualifiers.ApplicationContext
 import net.corekit.core.report.ReportDataManager
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -74,6 +75,7 @@ class CustomNotificationHelper @Inject constructor(
                 8 -> HealthServiceConstants.ACTION_VALUE_MEDICATION
                 9 -> HealthServiceConstants.ACTION_VALUE_HYDRATION
                 10 -> HealthServiceConstants.ACTION_VALUE_STEPS
+                11 -> HealthServiceConstants.ACTION_VALUE_WEATHER
                 else -> {
                     "Unknown actionType: $actionType, defaulting to homepage".logd(PushOrchestrator.TAG)
                     HealthServiceConstants.ACTION_VALUE_HOMEPAGE
@@ -238,6 +240,13 @@ class CustomNotificationHelper @Inject constructor(
             notifResources.btnTextColor?.let {
                 setTextColor(R.id.tv_btn, ContextCompat.getColor(context,it))
             }
+            if(canClose()){
+                if(BuildState.debug) "添加关闭按钮响应,${SpUtils.getString(PUSH_CLOSE_ACTION)}".logd(TAG)
+                // Bind close button click to delete intent
+                setOnClickPendingIntent(R.id.iv_close, createDeletePendingIntent(notificationId))
+            }
+
+
         }
     }
 
@@ -316,12 +325,15 @@ class CustomNotificationHelper @Inject constructor(
         )
     }
 
+    private  fun canClose() = SpUtils.getString(PUSH_CLOSE_ACTION) != "0"
+
     /**
      * 绑定天气数据到 RemoteViews
      */
     private fun bindWeatherData(collapsedView: RemoteViews, expandedView: RemoteViews?) {
         val weatherData = WeatherCacheManager.getCachedResponse() ?: return
 
+        val context = context
         val isCelsius = TemperaturePreferences.isCelsius()
 
         // 1. 绑定当前天气 (Collapsed & Expanded)
@@ -355,8 +367,35 @@ class CustomNotificationHelper @Inject constructor(
             val dateFormat = SimpleDateFormat("EEE, MMM dd", LanguageUtils.getAppLocale(context))
             view.setTextViewText(WeatherR.id.tv_date, dateFormat.format(Date()))
 
-            // 获取预报数据
+            // 过滤过期数据 (同 WeatherActivity 逻辑)
             val forecasts = weatherData.dailyForecasts?.dailyForecasts ?: emptyList()
+            val todayCalendar = java.util.Calendar.getInstance().apply {
+                set(java.util.Calendar.HOUR_OF_DAY, 0)
+                set(java.util.Calendar.MINUTE, 0)
+                set(java.util.Calendar.SECOND, 0)
+                set(java.util.Calendar.MILLISECOND, 0)
+            }
+
+//            val validForecasts = forecasts.filter { forecast ->
+//                val forecastDateStr = forecast.date
+//                if (forecastDateStr != null) {
+//                    try {
+//                        val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US)
+//                        val date = isoFormat.parse(forecastDateStr)
+//                        if (date != null) {
+//                            val forecastCalendar = java.util.Calendar.getInstance()
+//                            forecastCalendar.time = date
+//                            forecastCalendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
+//                            forecastCalendar.set(java.util.Calendar.MINUTE, 0)
+//                            forecastCalendar.set(java.util.Calendar.SECOND, 0)
+//                            forecastCalendar.set(java.util.Calendar.MILLISECOND, 0)
+//                            !forecastCalendar.before(todayCalendar)
+//                        } else true
+//                    } catch (e: Exception) { true }
+//                } else true
+//            }
+
+//            val finalForecasts = forecasts.ifEmpty { forecasts }
 
             // 今日的高低温 (High:21° Low:15°)
             val todayForecast = forecasts.firstOrNull()
@@ -390,6 +429,7 @@ class CustomNotificationHelper @Inject constructor(
                 }
                 
                 // 温度范围 (Low/High)
+                // 注意：DailyForecastAdapter 使用 $low/$high
                 val high = if (isCelsius) forecast.temperature?.maximum?.value?.fahrenheitToCelsius() else forecast.temperature?.maximum?.value?.roundToInt()
                 val low = if (isCelsius) forecast.temperature?.minimum?.value?.fahrenheitToCelsius() else forecast.temperature?.minimum?.value?.roundToInt()
                 itemRemoteView.setTextViewText(WeatherR.id.tv_temperature_range, "$low°/$high°")

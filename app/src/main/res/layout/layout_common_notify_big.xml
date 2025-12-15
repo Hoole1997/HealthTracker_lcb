@@ -80,4 +80,13 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:tint="@color/white"
+        android:scaleType="center"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_dialog_close"/>
+
 </FrameLayout>
