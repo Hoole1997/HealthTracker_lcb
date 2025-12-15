@@ -1,8 +1,10 @@
 package com.healthtracker.blood.suger.ui.history
 
 import android.content.Context
+import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.enums.BMIEnum
+import com.healthtracker.blood.suger.data.enums.BmiUnit
 import java.util.Date
 
 /**
@@ -37,8 +39,21 @@ class BmiHistoryItem(private val record: BmiRecord) : HistoryRecordItem() {
     }
 
     override fun getStatus(context: Context): String? {
-        // BMI 不显示状态
-        return null
+        val heightStr = context.getString(R.string.height)
+        val weightStr = context.getString(R.string.weight)
+
+        val heightUnit = BmiUnit.getPreferredHeightUnit()
+        val weightUnit = BmiUnit.getPreferredWeightUnit()
+
+        val displayHeight = BmiUnit.formatDisplayHeight(record.heightCm.toFloat(), heightUnit)
+        val displayWeight = BmiUnit.formatDisplayWeight(record.weightKg.toFloat(), weightUnit)
+
+        val heightUnitLabel = if (heightUnit == BmiUnit.METRIC) context.getString(
+            R.string.unit_cm) else context.getString(R.string.unit_ft_in)
+        val weightUnitLabel = if (weightUnit == BmiUnit.METRIC) context.getString(
+            R.string.unit_kg) else context.getString(R.string.unit_lb)
+
+        return "$heightStr : $displayHeight$heightUnitLabel  $weightStr : $displayWeight$weightUnitLabel"
     }
 
     override fun getLeveColorRes(): Int {
