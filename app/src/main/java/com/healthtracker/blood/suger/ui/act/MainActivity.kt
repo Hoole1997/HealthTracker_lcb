@@ -7,8 +7,12 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager.widget.ViewPager
+import com.android.common.weather.WeatherActivity
+import com.android.common.weather.util.WeatherIconMapper
 import com.google.android.material.tabs.TabLayout
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.BuildConfig
@@ -40,6 +44,7 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.Restore
@@ -80,6 +85,12 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
     private var permissionRequest: PermissionRequest? = null
     
+    override fun onResume() {
+        super.onResume()
+        // 刷新天气显示（温度单位可能已切换）
+        mViewModel.refreshWeatherDisplay()
+    }
+
     override fun onStop() {
         super.onStop()
         // 记录用户最后活跃时间（首页关闭时）
@@ -195,7 +206,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             viewPagerHome.offscreenPageLimit = 0
 
             // Debug 专用：长按发送测试通知
-            if (BuildConfig.DEBUG) {
+            if (BuildState.debug) {
                 ivSetting.setOnLongClickListener {
                     sendTestNotifications()
                     true
@@ -209,9 +220,14 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             setupBottomNavBar()
             setupViewPager()
 
+            // 天气数据点击事件（从 tvTitle 迁移到 llWeather）
+            llWeather.clickWithDuration {
+                ReportDataManager.reportData("weather_page_click")
+                startActivity<WeatherActivity>()
+            }
 
             // 延迟处理通知点击参数，确保UI完全初始化
-            mViewBind.root.postDelayed({
+            root.postDelayed({
                 handleNotificationAction(intent)
             }, 500)
         }
@@ -233,6 +249,28 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             if(BuildState.debug) "首页banner完成，继续流程".logd(PermissionManager.TAG)
             permissionManager.checkNotificationPermission(this@MainActivity){
                 if(BuildState.debug) "通知权限检查完成".logd(PermissionManager.TAG)
+            }
+        }
+        
+        // 观察天气数据
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.weatherData.collect { weatherData ->
+                    weatherData?.let { data ->
+                        with(mViewBind) {
+                            // 更新天气图标
+                            val iconRes = WeatherIconMapper.getIconResource(data.weatherIconId)
+                            ivWeather.setImageResource(iconRes)
+                            
+                            // 更新温度
+                            tvTemperature.text = data.getDisplayTemperature().toString()
+                            
+                            // 显示天气控件，隐藏标题
+                            llWeather.visible()
+                            tvTitle.gone()
+                        }
+                    }
+                }
             }
         }
     }
@@ -379,6 +417,10 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
 
             HealthServiceConstants.ACTION_VALUE_MEDICATION -> {
                 mViewBind.viewPagerHome.currentItem = 1
+            }
+
+            HealthServiceConstants.ACTION_VALUE_WEATHER -> {
+                startActivity<WeatherActivity>()
             }
 
             else -> {
