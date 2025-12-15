@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager.widget.ViewPager
 import com.android.common.weather.WeatherActivity
+import com.android.common.weather.util.TemperaturePreferences
 import com.android.common.weather.util.WeatherIconMapper
 import com.google.android.material.tabs.TabLayout
 import com.healthtracker.blood.suger.App
@@ -258,6 +259,9 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                             
                             // 更新温度
                             tvTemperature.text = data.getDisplayTemperature().toString()
+                            
+                            // 更新温度单位
+                            tvTemperatureUnit.text = if (TemperaturePreferences.isCelsius()) "°C" else "°F"
                             
                             // 显示天气控件，隐藏标题
                             llWeather.visible()
