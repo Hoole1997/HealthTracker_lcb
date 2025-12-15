@@ -1,8 +1,6 @@
 package com.healthtracker.blood.suger.alarm
 
 import android.Manifest
-import android.R.attr.action
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -16,14 +14,16 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
+import com.healthtracker.blood.suger.constants.PUSH_CLOSE_ACTION
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.helper.NotificationResourceMapper.NotificationResources
+import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.service.HealthServiceConstants
 import com.healthtracker.blood.suger.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
 import com.healthtracker.blood.suger.ui.act.SplashActivity
-import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -45,9 +45,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class AlarmNotificationManager @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val permissionManager: PermissionManager,
-    private val configManager: RemoteConfigManager
+    @ApplicationContext private val context: Context
 ) {
     
     companion object {
@@ -58,7 +56,6 @@ class AlarmNotificationManager @Inject constructor(
         
         // 通知ID基础值
         private const val NOTIFICATION_ID_BASE = 10000
-        private const val SNOOZE_REQUEST_OFFSET = 50000
         const val PUSH_ALARM = "push_alarm"
     }
     
@@ -117,7 +114,7 @@ class AlarmNotificationManager @Inject constructor(
             val clickIntent = createClickPendingIntent(alarmRecord.type)
 
             val collapsedView = createCollapsedView(alarmRecord)
-            val expandedView = createExpandedView(alarmRecord)
+            val expandedView = createExpandedView(alarmRecord, notificationId)
 
             // 构建通知（根据 isSilent 参数决定是否静音）
             val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID_ALARM)
@@ -177,10 +174,12 @@ class AlarmNotificationManager @Inject constructor(
         }
     }
 
+    private fun canClose() = SpUtils.getString(PUSH_CLOSE_ACTION) != "0"
+
     /**
      * 创建展开状态的 RemoteViews
      */
-    private fun createExpandedView(alarmRecord: AlarmRecord
+    private fun createExpandedView(alarmRecord: AlarmRecord, notificationId: Int
     ): RemoteViews {
         val (time,des,btnText) = getNotificationContent(alarmRecord)
         val notifResources = getAlarmNotificationRes(alarmRecord.type)
@@ -198,7 +197,31 @@ class AlarmNotificationManager @Inject constructor(
             notifResources?.decorIcon?.let { icon ->
                 setImageViewResource(R.id.iv_type, icon)
             }
+            if(canClose()){
+                // Bind close button click to delete intent
+                setOnClickPendingIntent(R.id.iv_close, createDeletePendingIntent(notificationId))
+            }
         }
+    }
+
+    /**
+     * 创建删除事件的 PendingIntent
+     * 用于处理用户点击关闭按钮的情况
+     */
+    private fun createDeletePendingIntent(notificationId: Int): PendingIntent {
+        val intent = Intent(context, NotificationActionReceiver::class.java).apply {
+            action = NotificationActionReceiver.ACTION_NOTIFICATION_DISMISSED
+            putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+        }
+
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+
+        return PendingIntent.getBroadcast(
+            context,
+            notificationId + 10000,  // 使用不同的 requestCode 避免冲突
+            intent,
+            flags
+        )
     }
     
     /**
@@ -215,28 +238,7 @@ class AlarmNotificationManager @Inject constructor(
             "Failed to cancel alarm notification: ${e.message}".loge(TAG)
         }
     }
-    
-    /**
-     * 取消所有闹钟通知
-     */
-    fun cancelAllAlarmNotifications() {
-        try {
-            notificationManager.cancelAll()
-            "All alarm notifications cancelled".logd(TAG)
-        } catch (e: Exception) {
-            "Failed to cancel all alarm notifications: ${e.message}".loge(TAG)
-        }
-    }
-    
-    /**
-     * 检查通知权限是否已授权
-     * 
-     * @return 是否已授权
-     */
-    fun areNotificationsEnabled(): Boolean {
-        return notificationManager.areNotificationsEnabled()
-    }
-    
+
     /**
      * 获取通知内容
      * 
@@ -323,7 +325,7 @@ class AlarmNotificationManager @Inject constructor(
         // 使用 getActivity 而不是 getBroadcast，符合 Android 10+ 要求
         return PendingIntent.getActivity(
             context,
-            action.hashCode(),  // 使用action的hashCode作为requestCode确保唯一性
+            alarmType,  // 使用alarmType作为requestCode确保唯一性
             intent,
             flags
         )
@@ -338,178 +340,6 @@ class AlarmNotificationManager @Inject constructor(
         else -> null
     }
     
-    /**
-     * 获取通知渠道状态
-     * 
-     * @return 通知渠道信息
-     */
-    fun getNotificationChannelStatus(): NotificationChannelStatus {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val systemNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            
-            val alarmChannel = systemNotificationManager.getNotificationChannel(CHANNEL_ID_ALARM)
-            val isChannelEnabled = alarmChannel?.importance != NotificationManager.IMPORTANCE_NONE
-            
-            NotificationChannelStatus(
-                alarmChannelEnabled = isChannelEnabled,
-                notificationsEnabled = areNotificationsEnabled()
-            )
-        } else {
-            // Android 8.0以下版本没有通知渠道概念，默认启用
-            NotificationChannelStatus(
-                alarmChannelEnabled = true,
-                notificationsEnabled = areNotificationsEnabled()
-            )
-        }
-    }
-
-    /**
-     * 创建服药提醒通知
-     */
-    fun createMedicationNotification(
-        medicationName: String,
-        dosage: String = "",
-        notes: String = "",
-        reminderTime: String = "",
-        reminderId: Long = -1L
-    ) {
-        createEnhancedStandardNotification(medicationName, dosage, notes, reminderTime, reminderId)
-    }
-
-    /**
-     * 创建增强标准通知
-     */
-    private fun createEnhancedStandardNotification(
-        medicationName: String,
-        dosage: String,
-        notes: String,
-        reminderTime: String,
-        reminderId: Long
-    ) {
-        try {
-            // 使用公共方法创建点击Intent
-            val clickPendingIntent = createMedicationClickIntent(reminderId)
-
-            // 使用公共方法生成统一的标题和内容
-            val (notificationTitle, contentText) = generateMedicationNotificationContent(medicationName, reminderTime)
-
-            // 使用公共方法创建基础通知构建器，然后添加增强标准通知特定配置
-            val notification = createBaseMedicationNotificationBuilder(notificationTitle, contentText, clickPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setAutoCancel(false)  // 不可滑动删除
-                .setOngoing(true)      // 持续显示
-                .setShowWhen(true)
-                .setWhen(System.currentTimeMillis())
-                // 增强音效和震动
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .build()
-
-            // 使用公共方法显示通知
-            showNotificationWithPermissionCheck(
-                notification,
-                reminderId,
-                "Enhanced standard medication notification shown: $medicationName"
-            )
-
-        } catch (e: Exception) {
-            "Failed to create enhanced standard notification: ${e.message}".loge(TAG)
-        }
-    }
-
-    /**
-     * 生成药物提醒通知的标题和内容
-     * @param medicationName 药物名称
-     * @param reminderTime 提醒时间
-     * @return Pair<标题, 内容>
-     */
-    private fun generateMedicationNotificationContent(
-        medicationName: String,
-        reminderTime: String
-    ): Pair<String, String> {
-        val title = if (reminderTime.isNotEmpty()) {
-            context.getString(R.string.medication_notification_title_with_time, medicationName, reminderTime)
-        } else {
-            medicationName
-        }
-        val content = context.getString(R.string.medication_reminder_content)
-        return Pair(title, content)
-    }
-
-    /**
-     * 创建通用的点击Intent
-     * @param reminderId 提醒ID
-     * @return PendingIntent
-     */
-    private fun createMedicationClickIntent(reminderId: Long): PendingIntent {
-        val clickIntent = Intent(context, SplashActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            putExtra("medication_reminder", true)
-            putExtra("reminder_id", reminderId)
-        }
-        return PendingIntent.getActivity(
-            context,
-            (NOTIFICATION_ID_BASE + reminderId).toInt(),
-            clickIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-    }
-
-    /**
-     * 构建药物提醒通知的基础Builder
-     * @param title 通知标题
-     * @param content 通知内容
-     * @param clickIntent 点击Intent
-     * @return NotificationCompat.Builder
-     */
-    private fun createBaseMedicationNotificationBuilder(
-        title: String,
-        content: String,
-        clickIntent: PendingIntent
-    ): NotificationCompat.Builder {
-        return NotificationCompat.Builder(context, CHANNEL_ID_ALARM)
-            .setSmallIcon(R.drawable.ic_meds)
-            .setContentTitle(title)
-            .setContentText(content)
-            .setContentIntent(clickIntent)
-            .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-    }
-
-    /**
-     * 显示通知（统一的权限检查和显示逻辑）
-     * @param notification 通知对象
-     * @param reminderId 提醒ID
-     * @param logMessage 日志消息
-     */
-    private fun showNotificationWithPermissionCheck(
-        notification: Notification,
-        reminderId: Long,
-        logMessage: String
-    ) {
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            notificationManager.notify((NOTIFICATION_ID_BASE + reminderId).toInt(), notification)
-            logMessage.logd(TAG)
-        }
-    }
-
-    /**
-     * 取消服药提醒通知
-     */
-    fun cancelMedicationNotification(reminderId: Long) {
-        try {
-            notificationManager.cancel((NOTIFICATION_ID_BASE + reminderId).toInt())
-            "Medication notification cancelled: ID=$reminderId".logd(TAG)
-        } catch (e: Exception) {
-            "Failed to cancel medication notification: ${e.message}".loge(TAG)
-        }
-    }
-
     private fun getAlarmNotificationRes(recordType:Int) = when(recordType){
         AlarmRecord.TYPE_BLOOD_SUGAR -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
@@ -541,22 +371,4 @@ class AlarmNotificationManager @Inject constructor(
         )
         else -> null
     }
-}
-
-/**
- * 通知渠道状态
- * 
- * @property alarmChannelEnabled 健康提醒通知渠道是否启用
- * @property notificationsEnabled 应用通知权限是否启用
- */
-data class NotificationChannelStatus(
-    val alarmChannelEnabled: Boolean,
-    val notificationsEnabled: Boolean
-) {
-    /**
-     * 所有通知是否都已启用
-     */
-    val allEnabled: Boolean
-        get() = alarmChannelEnabled && notificationsEnabled
-
 }

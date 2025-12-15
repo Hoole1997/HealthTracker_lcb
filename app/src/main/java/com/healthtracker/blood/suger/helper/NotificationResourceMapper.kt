@@ -91,13 +91,6 @@ class NotificationResourceMapper @Inject constructor() {
                 decorIcon = R.drawable.bg_statistical_notify_icon,
                 btnTextColor = R.color.color_02BC77
             )
-            8 -> NotificationResources(
-                smallIcon = R.drawable.ic_notification_bs,
-                background = R.drawable.bg_rect_white_12,
-                largeIcon = R.drawable.ic_remind_notify,
-                decorIcon = R.mipmap.ic_meds_notify,
-                btnTextColor = com.healthtracker.framework.R.color.white
-            )
             9 -> NotificationResources(
                 smallIcon = R.drawable.ic_hydrate_notify,
                 background = R.drawable.bg_bmi_notify,
@@ -132,13 +125,7 @@ class NotificationResourceMapper @Inject constructor() {
      * 根据 iconType 获取布局资源
      */
     fun getLayoutResources(iconType: Int): LayoutResources {
-        return if (iconType == 8) {
-            // 药品通知使用专用布局
-            LayoutResources(
-                collapsedLayout = R.layout.layout_meds_notify,
-                expandedLayout = R.layout.layout_meds_notify_big
-            )
-        } else if (iconType == 11) {
+        return  if (iconType == 11) {
             // 天气通知使用天气模块布局
             LayoutResources(
                 collapsedLayout = com.android.common.weather.R.layout.layout_weather_notification_normal,

@@ -64,11 +64,25 @@
                 tools:text="It's time to take\nmedicine." />
         </LinearLayout>
 
-        <ImageView
-            android:id="@id/ic_bg_icon"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@mipmap/ic_meds_notify_big"/>
+       <LinearLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:orientation="vertical">
+           <ImageView
+               android:id="@+id/iv_close"
+               android:layout_width="@dimen/dp_24"
+               android:layout_height="@dimen/dp_24"
+               android:tint="@color/color_999"
+               android:scaleType="center"
+               android:layout_gravity="end"
+               android:src="@drawable/ic_dialog_close"/>
+           <ImageView
+               android:id="@id/ic_bg_icon"
+               android:layout_width="80dp"
+               android:layout_height="80dp"
+               android:src="@mipmap/ic_meds_notify_big"/>
+
+       </LinearLayout>
     </LinearLayout>
 
     <TextView
