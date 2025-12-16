@@ -252,6 +252,14 @@ object AdConfigManager {
         } ?: false
     }
 
+    fun autoPlayReward() = configData?.let { config ->
+        when(ChannelUserController.getCurrentChannel()){
+            ChannelUserController.UserChannelType.NATURAL -> config.natural.autoPlayReward == 1
+            ChannelUserController.UserChannelType.PAID -> config.paid.autoPlayReward == 1
+        }
+
+    } ?: true
+
     /**
      * 获取随机插屏页间隔（秒）
      */

@@ -38,6 +38,9 @@ data class AdConfigData(
         val splashTimeout:Int,
         @SerializedName(value = "long_leave_app")
         val longLeaveTime: Int,
+        @SerializedName(value = "auto_play_reward")
+        val autoPlayReward: Int,
+
     )
     
     data class AdTypeConfig(

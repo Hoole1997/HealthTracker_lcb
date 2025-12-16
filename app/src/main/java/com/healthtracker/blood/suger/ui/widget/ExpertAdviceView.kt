@@ -34,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ads.config.AdConfigManager
 import com.healthtracker.framework.R as FrameworkR
 
 /**
@@ -366,7 +367,10 @@ class ExpertAdviceView @JvmOverloads constructor(
      */
     private fun onCountdownFinished() {
         onCancelClicked()
-        listener?.onCountdownFinished()
+        if(AdConfigManager.autoPlayReward()){
+            listener?.onCountdownFinished()
+        }
+
     }
 
     /**
