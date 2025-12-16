@@ -2,8 +2,11 @@ package net.corekit.monetize.ads
 
 import android.app.Activity
 import android.content.Context
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withTimeoutOrNull
 import net.corekit.monetize.BuildConfig
 import net.corekit.core.report.ReportDataManager
@@ -68,9 +71,12 @@ object SplashBiddingManager {
             try {
                 AdLogger.d("[%s] 开始加载开屏广告...", TAG)
                 val result = LaunchAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_SPLASH_ID)
+                currentCoroutineContext().ensureActive()
                 val success = result is AdResult.Success
                 AdLogger.d("[%s] 开屏广告加载%s", TAG, if (success) "成功" else "失败")
                 success
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 AdLogger.e("[%s] 开屏广告加载异常: %s", TAG, e.message)
                 false
@@ -81,9 +87,12 @@ object SplashBiddingManager {
             try {
                 AdLogger.d("[%s] 开始加载插屏广告...", TAG)
                 val result = InterstitialAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_INTERSTITIAL_ID)
+                currentCoroutineContext().ensureActive()
                 val success = result is AdResult.Success
                 AdLogger.d("[%s] 插屏广告加载%s", TAG, if (success) "成功" else "失败")
                 success
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 AdLogger.e("[%s] 插屏广告加载异常: %s", TAG, e.message)
                 false
@@ -104,6 +113,8 @@ object SplashBiddingManager {
             results
         } else {
             AdLogger.w("[%s] 竞价加载超时（%d ms），检查当前缓存状态", TAG, loadTimeMs)
+            splashDeferred.cancel()
+            interstitialDeferred.cancel()
             // 超时后检查是否有任何广告已经加载完成
             val hasSplash = LaunchAds.getInstance().hasCachedAd()
             val hasInterstitial = InterstitialAds.getInstance().hasCachedAd()

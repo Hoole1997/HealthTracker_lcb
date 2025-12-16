@@ -11,7 +11,9 @@ import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAd
 import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAdEventCallback
 import com.remax.bill.ads.report.IpuController
 import com.remax.bill.ads.report.RpuController
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import net.corekit.core.ads.RevenueAdData
 import net.corekit.core.ads.RevenueAdManager
 import net.corekit.core.ads.RevenueInfo
@@ -126,6 +128,10 @@ class InterstitialAds private constructor() {
      */
     suspend fun displayAd(activity: Activity, adUnitId: String? = null,ignoreFullNative: Boolean  = false): AdResult<Unit> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
+
+        // 每次开始展示前清理状态，避免收益/展示状态污染
+        currentAdValue = null
+        isShowing = false
         
         // 累积触发统计
         totalShowTriggerCount++
@@ -229,6 +235,9 @@ class InterstitialAds private constructor() {
 
             InterstitialAd.load(adRequest, object : AdLoadCallback<InterstitialAd> {
                 override fun onAdLoaded(ad: InterstitialAd) {
+                    if (!continuation.isActive) {
+                        return
+                    }
                     val loadTime = System.currentTimeMillis() - startTime
                     AdLogger.d("插页广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
                     totalLoadSucCount++
@@ -247,6 +256,9 @@ class InterstitialAds private constructor() {
                 }
 
                 override fun onAdFailedToLoad(adError: LoadAdError) {
+                    if (!continuation.isActive) {
+                        return
+                    }
                     totalLoadFailCount++
                     val loadTime = System.currentTimeMillis() - startTime
                     AdLogger.e("插页广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
@@ -353,22 +365,17 @@ class InterstitialAds private constructor() {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
 
         // 尝试从缓存获取广告（不移除）
-        var cachedAd = peekCachedAd(finalAdUnitId)
-
-        // 如果缓存为空，立即加载
-        if (cachedAd == null) {
-            AdLogger.d("[竞价] 获取插屏价格时缓存为空，立即加载，广告位ID: %s", finalAdUnitId)
-            loadAdToCache(context, finalAdUnitId)
-            cachedAd = peekCachedAd(finalAdUnitId)
-        }
+        val cachedAd = peekCachedAd(finalAdUnitId)
 
         if (cachedAd == null) {
             AdLogger.w("[竞价] 获取插屏广告价格失败：缓存为空")
             return null
         }
 
-        // 使用反射获取价格
-        val adValue = AdmobNextGenReflectionUtil.getRevenueByPath(cachedAd)
+        // 使用反射获取价格（避免主线程执行反射）
+        val adValue = withContext(Dispatchers.Default) {
+            AdmobNextGenReflectionUtil.getRevenueByPath(cachedAd)
+        }
 
         return if (adValue != null) {
             val price = adValue.valueMicros / 1_000_000.0
@@ -400,6 +407,7 @@ class InterstitialAds private constructor() {
                     
                     // 设置广告不再显示标识
                     isShowing = false
+                    currentAdValue = null
                     
                     totalCloseCount++
                     
@@ -425,6 +433,10 @@ class InterstitialAds private constructor() {
                 override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
                     super.onAdFailedToShowFullScreenContent(fullScreenContentError)
                     AdLogger.w("插页广告显示失败: %s", fullScreenContentError.message)
+
+                    // 失败路径兜底复位状态，避免影响后续展示/竞价
+                    isShowing = false
+                    currentAdValue = null
 
                     // 累积展示失败次数统计
                     totalShowFailCount++

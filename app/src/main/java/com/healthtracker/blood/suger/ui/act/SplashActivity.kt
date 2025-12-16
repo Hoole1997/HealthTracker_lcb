@@ -138,6 +138,13 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
             permissionManager.checkNotificationPermission(this@SplashActivity){
                 onPermissionCheckCompleted()
             }
+            lifecycleScope.launch {
+                delay(180_000L)
+                if (!permissionCompleteDeferred.isCompleted) {
+                    if (BuildState.debug) "启动页通知授权流程超时兜底，强制完成权限流程".logw(PermissionManager.TAG)
+                    onPermissionCheckCompleted()
+                }
+            }
             checkNotificationOpen()
 
             // 监听最近记录并显示
@@ -415,6 +422,9 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
     }
 
     override fun onDestroy() {
+        if (!permissionCompleteDeferred.isCompleted) {
+            permissionCompleteDeferred.complete(Unit)
+        }
         stateMachine.onDestroy()
         super.onDestroy()
         logEvent(
@@ -478,7 +488,9 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
     private fun onPermissionCheckCompleted() {
         if(BuildState.debug) "启动页通知授权流程完成".logd(PermissionManager.TAG)
         // 通知权限检查完成，可以开始广告超时计时
-        permissionCompleteDeferred.complete(Unit)
+        if (!permissionCompleteDeferred.isCompleted) {
+            permissionCompleteDeferred.complete(Unit)
+        }
         stateMachine.onPermissionCheckCompleted()
 
     }

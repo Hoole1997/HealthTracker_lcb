@@ -133,12 +133,14 @@ class LaunchAds private constructor() {
      * 每次 SplashActivity 启动时调用，确保权限等待逻辑正确工作
      */
     fun resetInterceptor() {
-        if (needInterceptor.isCompleted) {
-            AdLogger.d("[权限] 重置权限拦截器（上次已完成，创建新实例）")
-            needInterceptor = CompletableDeferred()
+        val old = needInterceptor
+        if (!old.isCompleted) {
+            AdLogger.d("[权限] 重置权限拦截器（上次未完成，先兜底解除等待）")
+            old.complete(true)
         } else {
-            AdLogger.d("[权限] 权限拦截器未完成，无需重置")
+            AdLogger.d("[权限] 重置权限拦截器（上次已完成）")
         }
+        needInterceptor = CompletableDeferred()
     }
 
     fun cancelInterceptor(){
@@ -200,6 +202,7 @@ class LaunchAds private constructor() {
 
             val loadCallback = object : AdLoadCallback<AppOpenAd> {
                 override fun onAdLoaded(ad: AppOpenAd) {
+                    if (!continuation.isActive) return
                     val loadTime = System.currentTimeMillis() - startTime
                     AdLogger.d("开屏广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
                     totalLoadSucCount++
@@ -217,6 +220,7 @@ class LaunchAds private constructor() {
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    if (!continuation.isActive) return
                     totalLoadFailCount++
                     val loadTime = System.currentTimeMillis() - startTime
                     AdLogger.e("开屏广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, loadAdError.message)
@@ -431,22 +435,17 @@ class LaunchAds private constructor() {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_SPLASH_ID
 
         // 尝试从缓存获取广告（不移除）
-        var cachedAd = peekCachedAd(finalAdUnitId)
-
-        // 如果缓存为空，立即加载
-        if (cachedAd == null) {
-            AdLogger.d("[竞价] 获取开屏价格时缓存为空，立即加载，广告位ID: %s", finalAdUnitId)
-            loadAdToCache(context, finalAdUnitId)
-            cachedAd = peekCachedAd(finalAdUnitId)
-        }
+        val cachedAd = peekCachedAd(finalAdUnitId)
 
         if (cachedAd == null) {
             AdLogger.w("[竞价] 获取开屏广告价格失败：缓存为空")
             return null
         }
 
-        // 使用反射获取价格
-        val adValue = AdmobNextGenReflectionUtil.getRevenueByPath(cachedAd)
+        // 使用反射获取价格（避免主线程执行反射）
+        val adValue = withContext(Dispatchers.Default) {
+            AdmobNextGenReflectionUtil.getRevenueByPath(cachedAd)
+        }
 
         return if (adValue != null) {
             val price = adValue.valueMicros / 1_000_000.0

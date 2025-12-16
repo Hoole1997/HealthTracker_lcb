@@ -117,10 +117,7 @@ object AdmobNextGenReflectionUtil {
     private fun traverse(target: Any, stack: Array<String>, adType: String): Any? {
         var current: Any? = target
         stack.forEach { fieldName ->
-            val fieldValue = current?.getValue(fieldName)
-            if (fieldValue == null) {
-                return null
-            }
+            val fieldValue = current?.getValue(fieldName) ?: return null
             current = fieldValue
         }
         return current
