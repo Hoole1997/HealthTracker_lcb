@@ -10,6 +10,7 @@ import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.AlarmViewModel
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,14 +41,14 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
         setupRecyclerViews()
         setupClickListeners()
         observeData()
-        loadNative(mViewBind.adContainer, style = NativeAdStyle.CARD_3)
+        loadNative(mViewBind.adContainer, style = NativeAdStyle.CARD_7)
     }
 
     /**
      * 设置ActionBar
      */
     private fun setupActionBar() {
-        mViewBind.btnBack.setOnClickListener {
+        mViewBind.btnBack.click {
             finish()
         }
     }

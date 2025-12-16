@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_14"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card_7">
+
+
+        <View
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_32"
+            android:background="@drawable/bg_ad_tag"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ads_tv_label"
+            style="@style/TextViewFont_RobotoRegular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_2"
+            android:gravity="center"
+            android:rotation="-45"
+            android:text="AD"
+
+
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_11"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 顶部区域：图标和标题 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_ad_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_16"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- 应用图标 -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ads_icon_cv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_10"
+                app:cardCornerRadius="@dimen/dp_8"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toStartOf="@id/ads_content_ll"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ads_iv_icon"
+                    android:layout_width="@dimen/dp_52"
+                    android:layout_height="@dimen/dp_52"
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_info_details" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- 标题和评分区域 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+
+                    android:id="@+id/ads_tv_title"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold"
+                    tools:text="广告标题广告标题广告标题广告标题广告标题asasa" />
+
+                <!-- 广告描述 -->
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/ads_tv_description"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="#666"
+                    android:textSize="@dimen/sp_12"
+                    tools:text="广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述广告描述" />
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <!-- CTA按钮 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ads_btn_cta"
+            style="@style/TextViewFont_RobotoBold"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintWidth_percent="0.8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            android:background="@drawable/bg_ad_cta_button"
+            android:backgroundTint="#06E0CE"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintTop_toBottomOf="@id/ll_ad_content"
+            tools:text="INSTALL" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView>

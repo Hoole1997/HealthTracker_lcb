@@ -81,10 +81,7 @@
         android:id="@+id/ad_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_14"
-        android:paddingEnd="@dimen/dp_14"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/bg_rect_white_12"
         app:maxHeight="350dp" />
 
 
