@@ -16,7 +16,7 @@ import com.healthtracker.blood.suger.ui.act.HeartRateDetailActivity
 import com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity
 import com.healthtracker.blood.suger.ui.act.HydrateActivity
 import com.healthtracker.blood.suger.ui.act.StepCountActivity
-import com.healthtracker.blood.suger.utils.loadReword
+import com.healthtracker.blood.suger.utils.loadRewardBidding
 import com.healthtracker.blood.suger.utils.showInter
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
@@ -114,7 +114,7 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
 
     protected fun showReword(){
        lifecycleScope.launch {
-           loadReword {
+           loadRewardBidding {
                if(it){
                    hideMask()
                }

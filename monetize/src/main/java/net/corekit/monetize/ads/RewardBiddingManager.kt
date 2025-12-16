@@ -1,0 +1,300 @@
+package net.corekit.monetize.ads
+
+import android.app.Activity
+import android.content.Context
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withTimeoutOrNull
+import net.corekit.core.report.ReportDataManager
+import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.log.AdLogger
+import java.util.Locale
+
+object RewardBiddingManager {
+
+    private const val TAG = "RewardBidding"
+
+    sealed class BidResult {
+        data class ShowRewarded(val ecpm: Double?) : BidResult()
+        data class ShowRewardedInterstitial(val ecpm: Double?) : BidResult()
+        data class ShowInterstitial(val ecpm: Double?) : BidResult()
+        object EnterNext : BidResult()
+    }
+
+    data class BidLoadResult(
+        val rewardedLoaded: Boolean,
+        val rewardedEcpm: Double?,
+        val rewardedInterstitialLoaded: Boolean,
+        val rewardedInterstitialEcpm: Double?,
+        val interstitialLoaded: Boolean,
+        val interstitialEcpm: Double?,
+        val winner: BidResult,
+        val loadTimeMs: Long
+    )
+
+    suspend fun loadWithBidding(context: Context): BidLoadResult = coroutineScope {
+        val startTime = System.currentTimeMillis()
+        val timeoutMs = AdConfigManager.getRewardBiddingTimeoutMs()
+
+        AdLogger.d("[%s] ========== 开始激励三方竞价加载 ==========", TAG)
+        AdLogger.d("[%s] 超时时间: %d ms", TAG, timeoutMs)
+
+        val rewardedDeferred = async {
+            try {
+                if (RewardedAds.getInstance().hasCachedAd()) {
+                    AdLogger.d("[%s] 激励广告已存在缓存，跳过加载", TAG)
+                    return@async true
+                }
+                AdLogger.d("[%s] 开始加载激励广告...", TAG)
+                val result = RewardedAds.getInstance().load(context, BuildConfig.ADMOB_REWARDED_ID)
+                currentCoroutineContext().ensureActive()
+                val success = result is AdResult.Success
+                AdLogger.d("[%s] 激励广告加载%s", TAG, if (success) "成功" else "失败")
+                success
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AdLogger.e("[%s] 激励广告加载异常: %s", TAG, e.message)
+                false
+            }
+        }
+
+        val rewardedInterstitialDeferred = async {
+            try {
+                if (RewardedInterstitialAds.getInstance().hasCachedAd()) {
+                    AdLogger.d("[%s] 插页激励广告已存在缓存，跳过加载", TAG)
+                    return@async true
+                }
+                AdLogger.d("[%s] 开始加载插页激励广告...", TAG)
+                val result = RewardedInterstitialAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)
+                currentCoroutineContext().ensureActive()
+                val success = result is AdResult.Success
+                AdLogger.d("[%s] 插页激励广告加载%s", TAG, if (success) "成功" else "失败")
+                success
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AdLogger.e("[%s] 插页激励广告加载异常: %s", TAG, e.message)
+                false
+            }
+        }
+
+        val interstitialDeferred = async {
+            try {
+                if (InterstitialAds.getInstance().hasCachedAd()) {
+                    AdLogger.d("[%s] 插屏广告已存在缓存，跳过加载", TAG)
+                    return@async true
+                }
+                AdLogger.d("[%s] 开始加载插屏广告...", TAG)
+                val result = InterstitialAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_INTERSTITIAL_ID)
+                currentCoroutineContext().ensureActive()
+                val success = result is AdResult.Success
+                AdLogger.d("[%s] 插屏广告加载%s", TAG, if (success) "成功" else "失败")
+                success
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AdLogger.e("[%s] 插屏广告加载异常: %s", TAG, e.message)
+                false
+            }
+        }
+
+        val results = withTimeoutOrNull(timeoutMs) {
+            val r = rewardedDeferred.await()
+            val ri = rewardedInterstitialDeferred.await()
+            val i = interstitialDeferred.await()
+            Triple(r, ri, i)
+        }
+
+        val loadTimeMs = System.currentTimeMillis() - startTime
+
+        val (rewardedLoaded, rewardedInterstitialLoaded, interstitialLoaded) = if (results != null) {
+            results
+        } else {
+            AdLogger.w("[%s] 竞价加载超时（%d ms），检查当前缓存状态", TAG, loadTimeMs)
+            rewardedDeferred.cancel()
+            rewardedInterstitialDeferred.cancel()
+            interstitialDeferred.cancel()
+
+            Triple(
+                RewardedAds.getInstance().hasCachedAd(),
+                RewardedInterstitialAds.getInstance().hasCachedAd(),
+                InterstitialAds.getInstance().hasCachedAd()
+            )
+        }
+
+        val rewardedEcpm = if (rewardedLoaded) RewardedAds.getInstance().getCachedAdPrice(context) else null
+        val rewardedInterstitialEcpm = if (rewardedInterstitialLoaded) RewardedInterstitialAds.getInstance().getCachedAdPrice(context) else null
+        val interstitialEcpm = if (interstitialLoaded) InterstitialAds.getInstance().getCachedAdPrice(context) else null
+
+        val winner = decideBidWinner(
+            rewardedLoaded,
+            rewardedEcpm,
+            rewardedInterstitialLoaded,
+            rewardedInterstitialEcpm,
+            interstitialLoaded,
+            interstitialEcpm
+        )
+
+        try {
+            logBidResult(
+                rewardedLoaded,
+                rewardedEcpm,
+                rewardedInterstitialLoaded,
+                rewardedInterstitialEcpm,
+                interstitialLoaded,
+                interstitialEcpm,
+                winner,
+                loadTimeMs
+            )
+        } catch (_: Throwable) {
+        }
+
+        BidLoadResult(
+            rewardedLoaded = rewardedLoaded,
+            rewardedEcpm = rewardedEcpm,
+            rewardedInterstitialLoaded = rewardedInterstitialLoaded,
+            rewardedInterstitialEcpm = rewardedInterstitialEcpm,
+            interstitialLoaded = interstitialLoaded,
+            interstitialEcpm = interstitialEcpm,
+            winner = winner,
+            loadTimeMs = loadTimeMs
+        )
+    }
+
+    private fun decideBidWinner(
+        rewardedLoaded: Boolean,
+        rewardedEcpm: Double?,
+        rewardedInterstitialLoaded: Boolean,
+        rewardedInterstitialEcpm: Double?,
+        interstitialLoaded: Boolean,
+        interstitialEcpm: Double?
+    ): BidResult {
+        if (!rewardedLoaded && !rewardedInterstitialLoaded && !interstitialLoaded) {
+            AdLogger.d("[%s] 竞价结果：三个广告都加载失败，进入下一页面", TAG)
+            return BidResult.EnterNext
+        }
+
+        val candidates = listOf(
+            Triple("rewarded", rewardedLoaded, rewardedEcpm ?: 0.0),
+            Triple("rewarded_interstitial", rewardedInterstitialLoaded, rewardedInterstitialEcpm ?: 0.0),
+            Triple("interstitial", interstitialLoaded, interstitialEcpm ?: 0.0)
+        ).filter { it.second }
+
+        val max = candidates.maxWithOrNull(compareBy<Triple<String, Boolean, Double>> { it.third }
+            .thenBy { when (it.first) {
+                "rewarded" -> 0
+                "rewarded_interstitial" -> 1
+                else -> 2
+            } })
+
+        return when (max?.first) {
+            "rewarded" -> {
+                AdLogger.d("[%s] 竞价结果：激励胜出", TAG)
+                BidResult.ShowRewarded(rewardedEcpm)
+            }
+            "rewarded_interstitial" -> {
+                AdLogger.d("[%s] 竞价结果：插页激励胜出", TAG)
+                BidResult.ShowRewardedInterstitial(rewardedInterstitialEcpm)
+            }
+            else -> {
+                AdLogger.d("[%s] 竞价结果：插屏胜出", TAG)
+                BidResult.ShowInterstitial(interstitialEcpm)
+            }
+        }
+    }
+
+    private fun logBidResult(
+        rewardedLoaded: Boolean,
+        rewardedEcpm: Double?,
+        rewardedInterstitialLoaded: Boolean,
+        rewardedInterstitialEcpm: Double?,
+        interstitialLoaded: Boolean,
+        interstitialEcpm: Double?,
+        winner: BidResult,
+        loadTimeMs: Long
+    ) {
+        AdLogger.d("[%s] ========== 激励三方竞价结果汇总 ==========", TAG)
+        AdLogger.d("[%s] 加载耗时: %d ms", TAG, loadTimeMs)
+        AdLogger.d(
+            "[%s] 激励广告: %s, eCPM: %s",
+            TAG,
+            if (rewardedLoaded) "已加载" else "加载失败",
+            rewardedEcpm?.let { String.format(Locale.US, "%.6f", it) } ?: "N/A"
+        )
+        AdLogger.d(
+            "[%s] 插页激励: %s, eCPM: %s",
+            TAG,
+            if (rewardedInterstitialLoaded) "已加载" else "加载失败",
+            rewardedInterstitialEcpm?.let { String.format(Locale.US, "%.6f", it) } ?: "N/A"
+        )
+        AdLogger.d(
+            "[%s] 插屏广告: %s, eCPM: %s",
+            TAG,
+            if (interstitialLoaded) "已加载" else "加载失败",
+            interstitialEcpm?.let { String.format(Locale.US, "%.6f", it) } ?: "N/A"
+        )
+        AdLogger.d(
+            "[%s] 胜出者: %s",
+            TAG,
+            when (winner) {
+                is BidResult.ShowRewarded -> "激励广告"
+                is BidResult.ShowRewardedInterstitial -> "插页激励"
+                is BidResult.ShowInterstitial -> "插屏广告"
+                is BidResult.EnterNext -> "无（进入下一页面）"
+            }
+        )
+        AdLogger.d("[%s] ========================================", TAG)
+
+        val biddingLog = String.format(
+            Locale.US,
+            format = "激励竞价结果 -> 激励: %.8f, 插页激励: %.8f, 插屏: %.8f",
+            rewardedEcpm ?: 0.0,
+            rewardedInterstitialEcpm ?: 0.0,
+            interstitialEcpm ?: 0.0
+        )
+        AdLogger.d(biddingLog)
+        ReportDataManager.reportDataByName(
+            reporterName = "ThinkingData",
+            eventName = "reward_bidding",
+            data = mapOf("log" to biddingLog)
+        )
+    }
+
+    suspend fun showWithBidding(activity: Activity): AdResult<Unit> {
+        val bid = loadWithBidding(activity)
+        return when (val winner = bid.winner) {
+            is BidResult.ShowRewarded -> {
+                AdLogger.d("[%s] 根据竞价结果展示激励广告", TAG)
+                when (val r = RewardedAds.getInstance().show(activity, BuildConfig.ADMOB_REWARDED_ID)) {
+                    is AdResult.Success -> AdResult.Success(Unit)
+                    is AdResult.Failure -> r
+                    AdResult.Loading -> AdResult.Loading
+                }
+            }
+
+            is BidResult.ShowRewardedInterstitial -> {
+                AdLogger.d("[%s] 根据竞价结果展示插页激励广告", TAG)
+                when (val r = RewardedInterstitialAds.getInstance().displayAd(activity, BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)) {
+                    is AdResult.Success -> AdResult.Success(Unit)
+                    is AdResult.Failure -> AdResult.Failure(r.error)
+                    AdResult.Loading -> AdResult.Loading
+                }
+            }
+
+            is BidResult.ShowInterstitial -> {
+                AdLogger.d("[%s] 根据竞价结果展示插屏广告", TAG)
+                InterstitialAds.getInstance().displayAd(activity, BuildConfig.ADMOB_INTERSTITIAL_ID, ignoreFullNative = true)
+            }
+
+            is BidResult.EnterNext -> {
+                AdLogger.d("[%s] 竞价失败，进入下一页面", TAG)
+                AdResult.Failure(AdException(0, "竞价失败：三个广告都加载失败"))
+            }
+        }
+    }
+}

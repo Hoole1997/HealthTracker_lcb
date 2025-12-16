@@ -16,7 +16,9 @@ import net.corekit.monetize.ads.BannerAds
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.InterstitialAds
 import net.corekit.monetize.ads.NativeAds
+import net.corekit.monetize.ads.RewardBiddingManager
 import net.corekit.monetize.ads.RewardedAds
+import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
 import okio.AsyncTimeout.Companion.condition
 
@@ -184,6 +186,38 @@ fun FragmentActivity.loadInterstitial(
                 }
             }
 
+        } catch (e: Exception) {
+            call.invoke(false)
+        }
+    }
+}
+
+fun FragmentActivity.loadRewardBidding(call: (Boolean) -> Unit) {
+    lifecycleScope.launch {
+        try {
+            // 检查竞价开关，关闭时回退到普通激励广告
+            if (!AdConfigManager.isRewardBiddingEnabled()) {
+                when (RewardedAds.getInstance().show(this@loadRewardBidding)) {
+                    is AdResult.Success -> call.invoke(true)
+                    is AdResult.Failure -> call.invoke(false)
+                    AdResult.Loading -> {}
+                }
+                return@launch
+            }
+
+            when (val result = RewardBiddingManager.showWithBidding(this@loadRewardBidding)) {
+                is AdResult.Success -> {
+                    call.invoke(true)
+                }
+
+                is AdResult.Failure -> {
+                    call.invoke(false)
+                }
+
+                AdResult.Loading -> {
+
+                }
+            }
         } catch (e: Exception) {
             call.invoke(false)
         }

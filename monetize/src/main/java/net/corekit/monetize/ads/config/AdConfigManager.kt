@@ -228,6 +228,28 @@ object AdConfigManager {
         } ?: 10
     }
 
+    fun getRewardBiddingTimeoutMs(): Long {
+        return configData?.let { config ->
+            when (ChannelUserController.getCurrentChannel()) {
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.rewardBiddingTimeoutMs * 1000L
+                ChannelUserController.UserChannelType.PAID -> config.paid.rewardBiddingTimeoutMs * 1000L
+            }
+        } ?: 5000L
+    }
+
+    /**
+     * 获取是否启用激励竞价
+     * 激励竞价：同时请求激励广告、插页激励广告和插屏广告，展示eCPM更高的广告
+     */
+    fun isRewardBiddingEnabled(): Boolean {
+        return configData?.let { config ->
+            when (ChannelUserController.getCurrentChannel()) {
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.rewardBiddingEnabled == 1
+                ChannelUserController.UserChannelType.PAID -> config.paid.rewardBiddingEnabled == 1
+            }
+        } ?: true
+    }
+
     /**
      * 获取返回主页时是否展示插屏
      */

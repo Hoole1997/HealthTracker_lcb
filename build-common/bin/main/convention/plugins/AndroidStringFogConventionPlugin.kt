@@ -11,15 +11,19 @@ import org.gradle.api.Project
 class AndroidStringFogConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            // 应用 StringFog 插件
-            pluginManager.apply("stringfog")
-
             // 从 gradle.properties 读取 release 标志
             val isRelease = findProperty("app")?.let {
                 (it as Map<*, *>)["string_fog"] as Boolean
             } ?: false
 
             logger.lifecycle("StringFog enabled: $isRelease")
+
+            if (!isRelease) {
+                return
+            }
+
+            // 应用 StringFog 插件
+            pluginManager.apply("stringfog")
 
             // 配置 StringFog - 必须在插件应用后立即配置
             val stringfogExtension = extensions.getByName("stringfog")

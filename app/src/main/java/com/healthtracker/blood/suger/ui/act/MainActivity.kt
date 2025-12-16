@@ -38,6 +38,7 @@ import com.healthtracker.blood.suger.ui.tracker.HealthType
 import com.healthtracker.blood.suger.ui.tracker.trackEnterPageClick
 import com.healthtracker.blood.suger.ui.viewmodel.MainViewModel
 import com.healthtracker.blood.suger.utils.loadBanner
+import com.healthtracker.blood.suger.utils.loadRewardBidding
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
@@ -209,7 +210,8 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             }
 
             ivRemind.clickWithDuration {
-                startActivity<AlarmManageActivity>()
+//                startActivity<AlarmManageActivity>()
+                loadRewardBidding { it }
             }
 
             setupBottomNavBar()

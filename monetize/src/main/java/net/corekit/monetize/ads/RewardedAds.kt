@@ -42,6 +42,7 @@ import net.corekit.monetize.ads.model.PendingShowRequest
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import net.corekit.monetize.util.PositionGet
+import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -403,6 +404,9 @@ class RewardedAds private constructor() {
 
 
                     override fun onAdLoaded(ad: RewardedAd) {
+                        if (!continuation.isActive) {
+                            return
+                        }
                         totalLoadSucCount++
                         val loadTime = System.currentTimeMillis() - startTime
                         AdLogger.d("激励广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
@@ -421,6 +425,9 @@ class RewardedAds private constructor() {
                     }
 
                     override fun onAdFailedToLoad(adError: LoadAdError) {
+                        if (!continuation.isActive) {
+                            return
+                        }
                         totalLoadFailCount++
                         val loadTime = System.currentTimeMillis() - startTime
                         AdLogger.w("激励广告加载失败: %s", adError.message)
@@ -440,6 +447,40 @@ class RewardedAds private constructor() {
                 }
             )
         }
+
+    fun peekCachedAd(adUnitId: String? = null): RewardedAd? {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_REWARDED_ID
+        synchronized(cacheLock) {
+            adCachePool.removeAll { it.adUnitId == finalAdUnitId && it.isExpired() }
+            return adCachePool.firstOrNull { it.adUnitId == finalAdUnitId && !it.isExpired() }?.ad
+        }
+    }
+
+    fun hasCachedAd(adUnitId: String? = null): Boolean {
+        return peekCachedAd(adUnitId) != null
+    }
+
+    suspend fun getCachedAdPrice(context: Context, adUnitId: String? = null): Double? {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_REWARDED_ID
+        val cachedAd = peekCachedAd(finalAdUnitId)
+        if (cachedAd == null) {
+            AdLogger.w("[竞价] 获取激励广告价格失败：缓存为空")
+            return null
+        }
+
+        val adValue = withContext(Dispatchers.Default) {
+            AdmobNextGenReflectionUtil.getRevenueByPath(cachedAd)
+        }
+
+        return if (adValue != null) {
+            val price = adValue.valueMicros / 1_000_000.0
+            AdLogger.d("[竞价] 获取激励广告价格成功: %.6f %s (精度: %s)", price, adValue.currencyCode, adValue.precisionType)
+            price
+        } else {
+            AdLogger.w("[竞价] 获取激励广告价格失败：反射获取AdValue为空")
+            null
+        }
+    }
 
     private fun getCachedAd(adUnitId: String): CachedRewardedAd? {
         synchronized(cacheLock) {

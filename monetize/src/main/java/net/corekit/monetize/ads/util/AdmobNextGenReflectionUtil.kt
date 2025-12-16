@@ -6,6 +6,7 @@ import com.google.android.libraries.ads.mobile.sdk.common.PrecisionType
 import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAd
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
 import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAd
+import com.google.android.libraries.ads.mobile.sdk.rewardedinterstitial.RewardedInterstitialAd
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
 import net.corekit.monetize.ads.log.AdLogger
 import java.lang.reflect.Field
@@ -51,6 +52,7 @@ object AdmobNextGenReflectionUtil {
             is InterstitialAd -> findAdValueRecursively(ad, "插页")
             is AppOpenAd -> findAdValueRecursively(ad, "开屏")
             is RewardedAd -> findAdValueRecursively(ad, "激励")
+            is RewardedInterstitialAd -> findAdValueRecursively(ad, "插页激励")
             is NativeAd -> findAdValueRecursively(ad, "原生")
             is BannerAd -> findAdValueRecursively(ad, "Banner")
             else -> null
@@ -72,6 +74,7 @@ object AdmobNextGenReflectionUtil {
             is InterstitialAd -> findAdValueByPath(ad, "插页", listOf(ivStackV1, ivStackV2))
             is AppOpenAd -> findAdValueByPath(ad, "开屏", listOf(spStack))
             is RewardedAd -> findAdValueByPath(ad, "激励", listOf(rvStack))
+            is RewardedInterstitialAd -> findAdValueRecursively(ad, "插页激励")
             is NativeAd -> findAdValueByPath(ad, "原生", listOf(nativeStackV1, nativeStackV2))
             is BannerAd -> findAdValueByPath(ad, "Banner", listOf(bannerStack))
             else -> null
@@ -252,6 +255,7 @@ object AdmobNextGenReflectionUtil {
      * 判断是否为基础类型
      */
     private fun isPrimitiveOrBasicType(type: Class<*>): Boolean {
+        val componentType = type.componentType
         return when {
             type.isPrimitive -> true
             type == Boolean::class.javaObjectType || type == Boolean::class.javaPrimitiveType -> true
@@ -263,7 +267,7 @@ object AdmobNextGenReflectionUtil {
             type == Float::class.javaObjectType || type == Float::class.javaPrimitiveType -> true
             type == Double::class.javaObjectType || type == Double::class.javaPrimitiveType -> true
             type == String::class.java -> true
-            type.isArray && isPrimitiveOrBasicType(type.componentType) -> true
+            type.isArray && componentType != null && isPrimitiveOrBasicType(componentType) -> true
             type.name.startsWith("java.lang.") -> true
             else -> false
         }
