@@ -74,7 +74,7 @@
         android:id="@+id/rg_gender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -163,7 +163,7 @@
         android:id="@+id/numberPicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_choose_age"
@@ -268,13 +268,7 @@
         android:id="@+id/ad_Container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:layout_marginVertical="@dimen/dp_12"
-        android:layout_marginHorizontal="@dimen/dp_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-
-        android:background="@drawable/bg_rect_white_12"
-        android:backgroundTint="#EEF5FF"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

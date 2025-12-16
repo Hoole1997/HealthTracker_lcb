@@ -92,7 +92,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
             if (!isAdLoaded && isVisible) {
                 isAdLoaded = true
                 if(BuildState.debug) "✅ Triggering ad load from: $source".logd(TAG)
-                activity?.loadNative(adContainer, style = NativeAdStyle.CARD)
+                activity?.loadNative(adContainer, style = NativeAdStyle.CARD_8)
             }
         }
 

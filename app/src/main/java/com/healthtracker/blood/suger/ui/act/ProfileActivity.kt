@@ -133,7 +133,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>(
                 // 年龄变化时更新按钮状态
                 updateSaveButtonState()
             }
-            loadNative(adContainer, style = NativeAdStyle.CARD_5)
+            loadNative(adContainer, style = NativeAdStyle.CARD_7)
         }
     }
 

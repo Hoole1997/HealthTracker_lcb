@@ -47,7 +47,7 @@
                 android:layout_marginEnd="@dimen/dp_6"
                 app:layout_constraintEnd_toStartOf="@id/include_cho"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/include_bs" />
+                app:layout_constraintTop_toBottomOf="@id/ad_Container" />
 
             <!-- ✨ Cholesterol 卡片（右中）-->
             <include
@@ -59,7 +59,7 @@
                 android:layout_marginStart="@dimen/dp_6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/include_hr"
-                app:layout_constraintTop_toBottomOf="@id/include_bp" />
+                app:layout_constraintTop_toBottomOf="@id/ad_Container" />
 
             <!-- ✨ BMI 卡片（左下）-->
             <include
@@ -96,8 +96,7 @@
                 app:layout_constraintEnd_toStartOf="@id/guideline_center"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginBottom="@dimen/dp_12"
-                app:layout_constraintTop_toBottomOf="@id/include_bmi"
-                app:layout_constraintBottom_toTopOf="@id/ad_Container"/>
+                app:layout_constraintTop_toBottomOf="@id/include_bmi"/>
 
             <!-- 中线引导线（用于2列布局对齐）-->
             <androidx.constraintlayout.widget.Guideline
@@ -109,11 +108,12 @@
 
             <FrameLayout
                 android:id="@+id/ad_Container"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_rect_white_12"
-                android:layout_gravity="bottom"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/dp_12"
+                app:layout_constraintTop_toBottomOf="@id/include_bs" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
