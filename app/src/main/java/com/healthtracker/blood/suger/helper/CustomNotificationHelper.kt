@@ -103,6 +103,9 @@ class CustomNotificationHelper @Inject constructor(
         scenario: PushScenario
     ): Int {
         try {
+            if(pushMessage.actionType == 8){
+                return 0
+            }
             // 首次调用时创建渠道并缓存
             ensureChannelCreated()
 

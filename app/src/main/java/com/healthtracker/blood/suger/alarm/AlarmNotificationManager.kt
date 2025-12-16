@@ -167,7 +167,7 @@ class AlarmNotificationManager @Inject constructor(
 
             // 设置标题和按钮文字
             setTextViewText(R.id.tv_title, des)
-            setTextViewText(R.id.tv_btn,btnText)
+            setTextViewText(R.id.tv_time, time)
             notifResources?.decorIcon?.let { icon ->
                 setImageViewResource(R.id.iv_type, icon)
             }

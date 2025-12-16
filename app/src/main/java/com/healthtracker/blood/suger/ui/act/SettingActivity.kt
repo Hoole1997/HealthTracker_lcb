@@ -13,6 +13,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.libraries.ads.mobile.sdk.MobileAds
+import com.google.android.libraries.ads.mobile.sdk.common.AdInspectorError
+import com.google.android.libraries.ads.mobile.sdk.common.OnAdInspectorClosedListener
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.databinding.ActivitySettingBinding
@@ -127,11 +130,11 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
                 title = R.string.privacy_policy,
                 type = SettingType.PRIVACY_POLICY
             ),
-//            SettingItem(
-//                icon = R.drawable.ic_setting_terms,
-//                title = R.string.terms_of_service,
-//                type = SettingType.TERMS_OF_SERVICE
-//            )
+            SettingItem(
+                icon = R.drawable.ic_setting_terms,
+                title = R.string.terms_of_service,
+                type = SettingType.TERMS_OF_SERVICE
+            )
         )
     }
 
@@ -168,7 +171,7 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
                 InnerWebActivity.start(this@SettingActivity, BuildConfig.PRIVACY_POLICY)
             }
             SettingType.TERMS_OF_SERVICE -> {
-                // TODO: 服务条款页面
+                MobileAds.openAdInspector { }
             }
         }
     }
