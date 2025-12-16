@@ -210,8 +210,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             }
 
             ivRemind.clickWithDuration {
-//                startActivity<AlarmManageActivity>()
-                loadRewardBidding { it }
+                startActivity<AlarmManageActivity>()
             }
 
             setupBottomNavBar()

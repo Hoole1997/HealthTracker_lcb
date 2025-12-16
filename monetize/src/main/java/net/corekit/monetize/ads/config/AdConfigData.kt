@@ -42,8 +42,8 @@ data class AdConfigData(
         val autoPlayReward: Int,
         @SerializedName(value = "splash_bidding_enabled")
         val splashBiddingEnabled: Int = 0,
-        @SerializedName(value = "reward_bidding_time_out_ms")
-        val rewardBiddingTimeoutMs: Int = 5000,
+        @SerializedName(value = "reward_bidding_time_out")
+        val rewardBiddingTimeout: Int = 5,
         @SerializedName(value = "reward_bidding_enabled")
         val rewardBiddingEnabled: Int = 1
 

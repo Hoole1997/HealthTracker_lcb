@@ -231,8 +231,8 @@ object AdConfigManager {
     fun getRewardBiddingTimeoutMs(): Long {
         return configData?.let { config ->
             when (ChannelUserController.getCurrentChannel()) {
-                ChannelUserController.UserChannelType.NATURAL -> config.natural.rewardBiddingTimeoutMs * 1000L
-                ChannelUserController.UserChannelType.PAID -> config.paid.rewardBiddingTimeoutMs * 1000L
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.rewardBiddingTimeout * 1000L
+                ChannelUserController.UserChannelType.PAID -> config.paid.rewardBiddingTimeout * 1000L
             }
         } ?: 5000L
     }

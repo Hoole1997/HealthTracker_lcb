@@ -13,10 +13,12 @@ import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicBoolean
 
 object RewardBiddingManager {
 
     private const val TAG = "RewardBidding"
+    private val isBidding = AtomicBoolean(false)
 
     sealed class BidResult {
         data class ShowRewarded(val ecpm: Double?) : BidResult()
@@ -266,35 +268,44 @@ object RewardBiddingManager {
     }
 
     suspend fun showWithBidding(activity: Activity): AdResult<Unit> {
-        val bid = loadWithBidding(activity)
-        return when (val winner = bid.winner) {
-            is BidResult.ShowRewarded -> {
-                AdLogger.d("[%s] 根据竞价结果展示激励广告", TAG)
-                when (val r = RewardedAds.getInstance().show(activity, BuildConfig.ADMOB_REWARDED_ID)) {
-                    is AdResult.Success -> AdResult.Success(Unit)
-                    is AdResult.Failure -> r
-                    AdResult.Loading -> AdResult.Loading
+        if (!isBidding.compareAndSet(false, true)) {
+            AdLogger.w("[%s] 竞价正在进行中，忽略本次请求", TAG)
+            return AdResult.Failure(AdException(-1, "Bidding is in progress"))
+        }
+
+        try {
+            val bid = loadWithBidding(activity)
+            return when (val winner = bid.winner) {
+                is BidResult.ShowRewarded -> {
+                    AdLogger.d("[%s] 根据竞价结果展示激励广告", TAG)
+                    when (val r = RewardedAds.getInstance().show(activity, BuildConfig.ADMOB_REWARDED_ID)) {
+                        is AdResult.Success -> AdResult.Success(Unit)
+                        is AdResult.Failure -> r
+                        AdResult.Loading -> AdResult.Loading
+                    }
+                }
+
+                is BidResult.ShowRewardedInterstitial -> {
+                    AdLogger.d("[%s] 根据竞价结果展示插页激励广告", TAG)
+                    when (val r = RewardedInterstitialAds.getInstance().displayAd(activity, BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)) {
+                        is AdResult.Success -> AdResult.Success(Unit)
+                        is AdResult.Failure -> AdResult.Failure(r.error)
+                        AdResult.Loading -> AdResult.Loading
+                    }
+                }
+
+                is BidResult.ShowInterstitial -> {
+                    AdLogger.d("[%s] 根据竞价结果展示插屏广告", TAG)
+                    InterstitialAds.getInstance().displayAd(activity, BuildConfig.ADMOB_INTERSTITIAL_ID, ignoreFullNative = true)
+                }
+
+                is BidResult.EnterNext -> {
+                    AdLogger.d("[%s] 竞价失败，进入下一页面", TAG)
+                    AdResult.Failure(AdException(0, "竞价失败：三个广告都加载失败"))
                 }
             }
-
-            is BidResult.ShowRewardedInterstitial -> {
-                AdLogger.d("[%s] 根据竞价结果展示插页激励广告", TAG)
-                when (val r = RewardedInterstitialAds.getInstance().displayAd(activity, BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)) {
-                    is AdResult.Success -> AdResult.Success(Unit)
-                    is AdResult.Failure -> AdResult.Failure(r.error)
-                    AdResult.Loading -> AdResult.Loading
-                }
-            }
-
-            is BidResult.ShowInterstitial -> {
-                AdLogger.d("[%s] 根据竞价结果展示插屏广告", TAG)
-                InterstitialAds.getInstance().displayAd(activity, BuildConfig.ADMOB_INTERSTITIAL_ID, ignoreFullNative = true)
-            }
-
-            is BidResult.EnterNext -> {
-                AdLogger.d("[%s] 竞价失败，进入下一页面", TAG)
-                AdResult.Failure(AdException(0, "竞价失败：三个广告都加载失败"))
-            }
+        } finally {
+            isBidding.set(false)
         }
     }
 }

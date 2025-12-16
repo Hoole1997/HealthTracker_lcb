@@ -27,7 +27,7 @@
     "Guide_Full_Native": 1,
     "Guide_Page": 0,
     "auto_play_reward": 1,
-    "reward_bidding_time_out_ms": 5,
+    "reward_bidding_time_out": 5,
     "reward_bidding_enabled": 1,
     "splash_bidding_enabled": 1
   },
@@ -59,7 +59,7 @@
     "Guide_Full_Native": 1,
     "Guide_Page": 0,
     "auto_play_reward": 1,
-    "reward_bidding_time_out_ms": 5,
+    "reward_bidding_time_out": 5,
     "reward_bidding_enabled": 1,
     "splash_bidding_enabled": 1
   }
