@@ -36,6 +36,7 @@ import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -46,6 +47,7 @@ import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.InterstitialAds
 import net.corekit.monetize.ads.LaunchAds
+import net.corekit.monetize.ads.SplashBiddingManager
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import javax.inject.Inject
@@ -64,6 +66,9 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
         get() = FullNativeAds.getInstance().checkAdShowing()
     private val hasInterstitialShowing: Boolean
         get() = InterstitialAds.getInstance().checkAdShowing()
+    
+    // 用于等待权限授权完成的信号
+    private val permissionCompleteDeferred = CompletableDeferred<Unit>()
 
 
     // 状态机负责协调动画、权限、前后台状态与跳转
@@ -128,6 +133,8 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
             }
 
             playAnimations()
+            // 重置权限拦截器，确保每次启动都能正确等待权限
+            LaunchAds.getInstance().resetInterceptor()
             permissionManager.checkNotificationPermission(this@SplashActivity){
                 onPermissionCheckCompleted()
             }
@@ -231,6 +238,10 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
                 val timeout = AdConfigManager.getSplashTimeout()
                 AdLogger.d("启动页面，超时时长：$timeout s")
                 val timeoutJob = async {
+                    // 等待权限授权完成后才开始计时
+                    AdLogger.d("等待权限授权完成后开始超时计时...")
+                    permissionCompleteDeferred.await()
+                    AdLogger.d("权限授权完成，开始超时计时 $timeout s")
                     delay(timeout * 1000L)
                 }
                 val timeoutTriggered = select<Boolean> {
@@ -348,30 +359,42 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
 
     /**
      * 初始化 AdMob 并显示开屏广告
+     * 根据配置决定是使用竞价模式还是传统模式
      * @return 广告是否加载成功
      */
     private suspend fun initializeAndShowAd(): Boolean {
         try {
-
-//            // 初始化 AdMob SDK
-
             if (BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
 
-            // 显示开屏广告
-            val adResult = LaunchAds.getInstance().displayAd(
-                activity = this,
-                onLoaded = { isSuccess ->
-                    isAdLoaded = isSuccess
-                }
-            )
+            // 检查是否启用竞价模式
+            val useBidding = SplashBiddingManager.shouldUseBidding()
+            AdLogger.d("[SplashActivity] 竞价模式: %s", if (useBidding) "启用" else "禁用")
+
+            val adResult = if (useBidding) {
+                // 竞价模式：同时请求开屏和插屏，展示eCPM更高的
+                if (BuildState.debug) "使用竞价模式加载广告".logd(TAG)
+                SplashBiddingManager.bidAndShow(
+                    activity = this,
+                    onAdLoaded = { isSuccess ->
+                        isAdLoaded = isSuccess
+                    }
+                )
+            } else {
+                // 传统模式：只请求开屏广告
+                if (BuildState.debug) "使用传统模式加载开屏广告".logd(TAG)
+                LaunchAds.getInstance().displayAd(
+                    activity = this,
+                    onLoaded = { isSuccess ->
+                        isAdLoaded = isSuccess
+                    }
+                )
+            }
 
             if (adResult is AdResult.Success) {
-                if (BuildState.debug) "开屏广告关闭".logd(TAG)
+                if (BuildState.debug) "广告展示完成并关闭".logd(TAG)
                 return true
             } else {
-                if (BuildState.debug) "开屏广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(
-                    TAG
-                )
+                if (BuildState.debug) "广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(TAG)
                 return false
             }
         } catch (e: Exception) {
@@ -454,6 +477,8 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
      */
     private fun onPermissionCheckCompleted() {
         if(BuildState.debug) "启动页通知授权流程完成".logd(PermissionManager.TAG)
+        // 通知权限检查完成，可以开始广告超时计时
+        permissionCompleteDeferred.complete(Unit)
         stateMachine.onPermissionCheckCompleted()
 
     }

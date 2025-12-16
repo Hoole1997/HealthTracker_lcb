@@ -63,5 +63,5 @@ dependencies {
     api("com.google.ads.mediation:pangle:7.5.0.4.0")
     // ump
     api("com.google.android.ump:user-messaging-platform:3.1.0")
-    api("com.google.android.libraries.ads.mobile.sdk:ads-mobile-sdk:0.22.0-beta01")
+    api("com.google.android.libraries.ads.mobile.sdk:ads-mobile-sdk:0.22.0-beta04")
 }

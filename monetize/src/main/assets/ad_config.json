@@ -26,7 +26,8 @@
     "splash_time_out": 10,
     "Guide_Full_Native": 1,
     "Guide_Page": 0,
-    "auto_play_reward": 1
+    "auto_play_reward": 1,
+    "splash_bidding_enabled": 1
   },
   "premium_user": {
     "launch_ad": {
@@ -55,6 +56,7 @@
     "splash_time_out": 12,
     "Guide_Full_Native": 1,
     "Guide_Page": 0,
-    "auto_play_reward": 1
+    "auto_play_reward": 1,
+    "splash_bidding_enabled": 1
   }
 } 

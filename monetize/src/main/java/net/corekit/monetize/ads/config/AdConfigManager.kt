@@ -261,6 +261,19 @@ object AdConfigManager {
     } ?: true
 
     /**
+     * 获取是否启用开屏竞价
+     * 开屏竞价：同时请求开屏和插屏广告，展示eCPM更高的广告
+     */
+    fun isSplashBiddingEnabled(): Boolean {
+        return configData?.let { config ->
+            when (ChannelUserController.getCurrentChannel()) {
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.splashBiddingEnabled == 1
+                ChannelUserController.UserChannelType.PAID -> config.paid.splashBiddingEnabled == 1
+            }
+        } ?: false
+    }
+
+    /**
      * 获取随机插屏页间隔（秒）
      */
     fun getLongLeaveTime(): Int {

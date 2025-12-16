@@ -40,6 +40,8 @@ data class AdConfigData(
         val longLeaveTime: Int,
         @SerializedName(value = "auto_play_reward")
         val autoPlayReward: Int,
+        @SerializedName(value = "splash_bidding_enabled")
+        val splashBiddingEnabled: Int = 0
 
     )
     

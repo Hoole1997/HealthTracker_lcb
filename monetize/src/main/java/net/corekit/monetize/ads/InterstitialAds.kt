@@ -26,6 +26,7 @@ import net.corekit.monetize.ads.interceptor.ShowCountLimitInterceptor
 import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
+import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
 import net.corekit.monetize.ui.FullScreenNativeAdActivity
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import net.corekit.monetize.util.PositionGet
@@ -326,6 +327,66 @@ class InterstitialAds private constructor() {
      */
     private fun isCacheFull(adUnitId: String): Boolean {
         return getCachedAdCount(adUnitId) >= maxCacheSizePerAdUnit
+    }
+
+    /**
+     * 查看缓存中的广告（不移除）
+     * 用于获取价格进行竞价
+     * @param adUnitId 广告位ID
+     * @return 缓存的广告对象，如果不存在或已过期返回null
+     */
+    fun peekCachedAd(adUnitId: String? = null): InterstitialAd? {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
+        synchronized(adCachePool) {
+            return adCachePool.firstOrNull { it.adUnitId == finalAdUnitId && !it.isExpired() }?.ad
+        }
+    }
+
+    /**
+     * 获取当前缓存广告的价格（用于竞价）
+     * 如果缓存不存在则调用加载，使用反射获取价格后返回
+     * @param context 上下文
+     * @param adUnitId 广告位ID，如果为空则使用默认ID
+     * @return 广告价格（已除以1000000转换为美元），如果获取失败返回null
+     */
+    suspend fun getCachedAdPrice(context: Context, adUnitId: String? = null): Double? {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
+
+        // 尝试从缓存获取广告（不移除）
+        var cachedAd = peekCachedAd(finalAdUnitId)
+
+        // 如果缓存为空，立即加载
+        if (cachedAd == null) {
+            AdLogger.d("[竞价] 获取插屏价格时缓存为空，立即加载，广告位ID: %s", finalAdUnitId)
+            loadAdToCache(context, finalAdUnitId)
+            cachedAd = peekCachedAd(finalAdUnitId)
+        }
+
+        if (cachedAd == null) {
+            AdLogger.w("[竞价] 获取插屏广告价格失败：缓存为空")
+            return null
+        }
+
+        // 使用反射获取价格
+        val adValue = AdmobNextGenReflectionUtil.getRevenueByPath(cachedAd)
+
+        return if (adValue != null) {
+            val price = adValue.valueMicros / 1_000_000.0
+            AdLogger.d("[竞价] 获取插屏广告价格成功: %.6f %s (精度: %s)", price, adValue.currencyCode, adValue.precisionType)
+            price
+        } else {
+            AdLogger.w("[竞价] 获取插屏广告价格失败：反射获取AdValue为空")
+            null
+        }
+    }
+
+    /**
+     * 检查是否有可用的缓存广告
+     * @param adUnitId 广告位ID
+     * @return true 如果有可用的缓存广告
+     */
+    fun hasCachedAd(adUnitId: String? = null): Boolean {
+        return peekCachedAd(adUnitId) != null
     }
 
     /**
