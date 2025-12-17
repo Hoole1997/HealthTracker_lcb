@@ -95,6 +95,14 @@ class InterstitialAds private constructor() {
         )
     )
 
+    private val biddingInterceptorChain = InterceptorChain(
+        interceptors = listOf(
+            GlobalAdSwitchInterceptor(),
+            ShowCountLimitInterceptor(),
+            ClickLimitInterceptor()
+        )
+    )
+
     /**
      * 缓存的插页广告数据类
      */
@@ -128,15 +136,46 @@ class InterstitialAds private constructor() {
      */
     suspend fun displayAd(activity: Activity, adUnitId: String? = null,ignoreFullNative: Boolean  = false): AdResult<Unit> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
+        return displayAdInternal(
+            activity = activity,
+            finalAdUnitId = finalAdUnitId,
+            ignoreFullNative = ignoreFullNative,
+            chain = interceptorChain,
+            recordConfigShow = true
+        )
+    }
 
+    suspend fun displayAdForRewardBidding(activity: Activity, adUnitId: String? = null): AdResult<Unit> {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
+
+        val lastInterval = AdConfigManager.getInterstitialConfig().getLastShowInterval()
+        val minInterval = AdConfigManager.getInterstitialConfig().getMinInterval()
+        AdLogger.d("[RewardBidding] 竞价插屏入口: 跳过cooldown校验且不记录lastShow/dailyShow, lastInterval=%ds, minInterval=%ds, adUnit=%s", lastInterval, minInterval, finalAdUnitId)
+
+        return displayAdInternal(
+            activity = activity,
+            finalAdUnitId = finalAdUnitId,
+            ignoreFullNative = true,
+            chain = biddingInterceptorChain,
+            recordConfigShow = false
+        )
+    }
+
+    private suspend fun displayAdInternal(
+        activity: Activity,
+        finalAdUnitId: String,
+        ignoreFullNative: Boolean,
+        chain: InterceptorChain,
+        recordConfigShow: Boolean
+    ): AdResult<Unit> {
         // 每次开始展示前清理状态，避免收益/展示状态污染
         currentAdValue = null
         isShowing = false
-        
+
         // 累积触发统计
         totalShowTriggerCount++
         AdLogger.d("插页广告累积触发展示次数: $totalShowTriggerCount")
-        
+
         reportAdData(
             eventName = "ad_position",
             params = mapOf(
@@ -145,14 +184,14 @@ class InterstitialAds private constructor() {
                 "number" to totalShowTriggerCount
             )
         )
-        
+
         // 拦截器检查
-        when (val interceptResult = interceptorChain.intercept(activity, AdConfigManager.getInterstitialConfig())) {
+        when (val interceptResult = chain.intercept(activity, AdConfigManager.getInterstitialConfig())) {
             is AdResult.Failure -> {
                 // 累积展示失败次数统计
                 totalShowFailCount++
                 AdLogger.d("插页广告累积展示失败次数: $totalShowFailCount")
-                
+
                 reportAdData(
                     eventName = "ad_show_fail",
                     params = mapOf(
@@ -162,7 +201,7 @@ class InterstitialAds private constructor() {
                         "reason" to interceptResult.error.message
                     )
                 )
-                
+
                 return interceptResult
             }
             else -> { /* continue */ }
@@ -196,7 +235,7 @@ class InterstitialAds private constructor() {
                 AdLogger.d("使用缓存中的插页广告，广告位ID: %s", finalAdUnitId)
 
                 // 3. 显示广告
-                val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId)
+                val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId, recordConfigShow)
 
                 result
             } else {
@@ -399,7 +438,7 @@ class InterstitialAds private constructor() {
     /**
      * 显示广告的内部实现
      */
-    private suspend fun showAdInternal(activity: Activity, interstitialAd: InterstitialAd, adUnitId: String): AdResult<Unit> {
+    private suspend fun showAdInternal(activity: Activity, interstitialAd: InterstitialAd, adUnitId: String, recordConfigShow: Boolean): AdResult<Unit> {
         return suspendCancellableCoroutine { continuation ->
             interstitialAd.adEventCallback = object : InterstitialAdEventCallback{
                 override fun onAdDismissedFullScreenContent() {
@@ -464,8 +503,13 @@ class InterstitialAds private constructor() {
 
                 override fun onAdShowedFullScreenContent() {
                     AdLogger.d("插页广告开始显示")
-                    
-                    AdConfigManager.getInterstitialConfig().recordShow()
+
+                    if (recordConfigShow) {
+                        AdConfigManager.getInterstitialConfig().recordShow()
+                        AdLogger.d("插页广告recordShow: 已更新dailyShow与lastShow")
+                    } else {
+                        AdLogger.d("[RewardBidding] 竞价插屏recordShow: 已跳过（不更新dailyShow与lastShow）")
+                    }
                 }
 
                 override fun onAdClicked() {

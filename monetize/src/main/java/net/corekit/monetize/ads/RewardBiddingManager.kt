@@ -189,9 +189,9 @@ object RewardBiddingManager {
 
         val max = candidates.maxWithOrNull(compareBy<Triple<String, Boolean, Double>> { it.third }
             .thenBy { when (it.first) {
-                "rewarded" -> 0
-                "rewarded_interstitial" -> 1
-                else -> 2
+                "rewarded_interstitial" -> 2
+                "rewarded" -> 1
+                else -> 0
             } })
 
         return when (max?.first) {
@@ -296,7 +296,8 @@ object RewardBiddingManager {
 
                 is BidResult.ShowInterstitial -> {
                     AdLogger.d("[%s] 根据竞价结果展示插屏广告", TAG)
-                    InterstitialAds.getInstance().displayAd(activity, BuildConfig.ADMOB_INTERSTITIAL_ID, ignoreFullNative = true)
+                    AdLogger.d("[%s] 插屏胜出 -> 走竞价插屏入口（跳过cooldown，不更新lastShow/dailyShow）", TAG)
+                    InterstitialAds.getInstance().displayAdForRewardBidding(activity, BuildConfig.ADMOB_INTERSTITIAL_ID)
                 }
 
                 is BidResult.EnterNext -> {
