@@ -251,7 +251,7 @@ class RewardedInterstitialAds private constructor() {
                             "ad_load_fail",
                             mapOf(
                                 "ad_unit_name" to adUnitId,
-                                "number" to totalLoadFailCount,
+                                "number" to totalLoadSucCount,
                                 "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
                                 "pass_time" to ceil(loadTime / 1000.0).toInt(),
                                 "reason" to adError.message,

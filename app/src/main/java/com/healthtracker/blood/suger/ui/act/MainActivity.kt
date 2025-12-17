@@ -234,10 +234,14 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             homeFrg?.highLightComplete?.await()
             if(BuildState.debug) "高亮完成，继续流程".logd(PermissionManager.TAG)
             loadBanner(mViewBind.adViewContainer, onClose = {
-                bannerShowComplete.complete(true)
+                if (!bannerShowComplete.isCompleted) {
+                    bannerShowComplete.complete(true)
+                }
                 if(BuildState.debug) "首页折叠banner收起".logd(PermissionManager.TAG)
             }){
-               bannerShowComplete.complete(it)
+                if (!bannerShowComplete.isCompleted) {
+                    bannerShowComplete.complete(it)
+                }
                 if(BuildState.debug) "非折叠banner或未展示成功".logd(PermissionManager.TAG)
             }
             if(BuildState.debug) "等待首页banner完成".logd(PermissionManager.TAG)
@@ -303,6 +307,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.let {
+                        currentTabIndex = it.position
                         mViewBind.viewPagerHome.currentItem = it.position
                         updateUIForTabPosition(it.position)
                     }

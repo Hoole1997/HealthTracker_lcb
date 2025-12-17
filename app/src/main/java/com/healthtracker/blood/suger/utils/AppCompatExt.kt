@@ -50,7 +50,12 @@ fun FragmentActivity.loadBanner(
 
                 }, onClose = onClose)) {
                 is AdResult.Success -> {
-                    container.isVisible = true
+                    val canShow = condition.invoke()
+                    container.isVisible = canShow
+                    if (!canShow) {
+                        call.invoke(false)
+                        return@launch
+                    }
                     if(result.data){
                         if(BuildState.debug) "折叠式广告，先不回调成功".logd(PermissionManager.TAG)
                     }else{

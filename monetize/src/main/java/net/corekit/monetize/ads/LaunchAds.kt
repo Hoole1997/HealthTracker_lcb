@@ -228,7 +228,7 @@ class LaunchAds private constructor() {
                         eventName = "ad_load_fail",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "number" to totalLoadFailCount,
+                            "number" to totalLoadSucCount,
                             "ad_source" to (loadAdError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt(),
                             "reason" to loadAdError.message
