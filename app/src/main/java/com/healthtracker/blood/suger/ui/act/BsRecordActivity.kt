@@ -1,13 +1,23 @@
 package com.healthtracker.blood.suger.ui.act
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
+import com.app.raise.AppraiseManager
+import com.app.raise.listeners.EvaluateListener
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
+import com.healthtracker.blood.suger.constants.APPRAISE_SHOW_TIME
+import com.healthtracker.blood.suger.constants.IN_APP_REVIEW_STATE
+import com.healthtracker.blood.suger.constants.IN_APP_REVIEW_TIMES
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
@@ -15,9 +25,12 @@ import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
+import com.healthtracker.blood.suger.ui.tracker.HealthType
+import com.healthtracker.blood.suger.ui.tracker.trackAddNewRecord
 import com.healthtracker.blood.suger.ui.viewmodel.BsRecordViewModel
 import com.healthtracker.blood.suger.ui.weight.RulerView
 import com.healthtracker.blood.suger.util.BloodSugarScaleHelper
+import com.healthtracker.blood.suger.utils.getTodayStart
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.blood.suger.utils.showInter
 import com.healthtracker.framework.ext.click
@@ -27,8 +40,7 @@ import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
-import com.healthtracker.blood.suger.ui.tracker.HealthType
-import com.healthtracker.blood.suger.ui.tracker.trackAddNewRecord
+import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -48,7 +60,7 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBin
             updateBloodSugarRangeView()
         }
     }
-
+    private var manager: ReviewManager? = null
     private val healthTags = mutableListOf<HealthTag>()
     private val addTagIds = mutableListOf<Long>()
 
@@ -78,6 +90,8 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBin
             btnBack.clickWithDuration {
                 onBackPress()
             }
+
+            showAppraiseDialog()
 
             editRecordId?.let {
                 tvTitle.text = getString(R.string.edit_record)
@@ -330,6 +344,89 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBin
      */
     private fun updateBloodSugarRangeView() {
         mViewBind.rangeView.updateStatus(mViewModel.currentStatus.value)
+    }
+
+
+    private fun showAppraiseDialog() {
+        val appraiseShowtime = SpUtils.getLong(APPRAISE_SHOW_TIME, 0)
+        val reviewShowTimes = SpUtils.getInt(IN_APP_REVIEW_TIMES, 0)
+        val reviewShowState = SpUtils.getBoolean(IN_APP_REVIEW_STATE, false)
+//        if (reviewShowTimes == 3 || reviewShowState || getTodayStart().time <= appraiseShowtime) {
+//            "showAppraiseDialog.reviewShowTimes:$reviewShowTimes".logd(TAG)
+//            "showAppraiseDialog.reviewShowState:$reviewShowState".logd(TAG)
+//            "showAppraiseDialog.appraiseShowtime:$appraiseShowtime,getTodayStart${getTodayStart().time}".logd(
+//                TAG
+//            )
+//            return
+//        }
+
+        if (reviewShowTimes > 0) {
+            return
+        }
+        AppraiseManager(this@BsRecordActivity).showAppraiseDialog(object : EvaluateListener {
+            override fun evaluateUs(evaluateScore: Int) {
+                SpUtils.putBoolean(IN_APP_REVIEW_STATE, true)
+                initInnerReview()
+                "showAppraiseDialog.evaluateUs".logd(TAG)
+            }
+
+            override fun feedback(evaluateScore: Int) {
+                startActivity<FeedbackActivity>()
+                SpUtils.putBoolean(IN_APP_REVIEW_STATE, true)
+                "showAppraiseDialog.feedback".logd(TAG)
+            }
+
+            override fun cancelDialog(dialog: Dialog) {
+                "showAppraiseDialog.cancelDialog".logd(TAG)
+            }
+
+            override fun dismissDialog(dialog: Dialog) {
+                "showAppraiseDialog.dismissDialog".logd(TAG)
+            }
+
+            override fun sendEvent(var1: String?, var2: String?, var3: String?) {
+            }
+
+            override fun sendException(throwable: Throwable?) {
+            }
+        })
+        SpUtils.putLong(APPRAISE_SHOW_TIME, getTodayStart().time)
+        SpUtils.putInt(IN_APP_REVIEW_TIMES, reviewShowTimes + 1)
+    }
+
+
+   private fun initInnerReview() {
+        //1、经过 ReviewManagerFactory 创立 ReviewManager 目标，用于发动运用内点评的流程
+        manager = ReviewManagerFactory.create(App.INSTANCE)
+        //2、获取ReviewInfo目标。当咱们判别能够让用户进行点评时，运用ReviewManager创立一个使命，
+        //用于真实发动运用内点评流程。这儿谷歌文档中建议提前一点缓存好 ReviewInfo 目标。
+        val request = manager?.requestReviewFlow()
+        request?.addOnCompleteListener {
+            "init: get reviewInfo sucess".logd(TAG)
+            if (it.isSuccessful) {
+                innerReview(it.result)
+            } else {
+                "init: get reviewInfo failed:${it.exception}".logd(TAG)
+            }
+        }
+    }
+
+    /**
+     * 应用内点评
+     */
+    private fun innerReview(reviewInfo: ReviewInfo) {
+        //调用 launchReviewFlow 来发动点评流程，剩余的工作就交给 Google 了
+        reviewInfo.apply {
+            val flow = manager?.launchReviewFlow(this@BsRecordActivity, this)
+            flow?.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    "innerReview: launchReviewFlow success".logd(TAG)
+                    SpUtils.putBoolean(IN_APP_REVIEW_STATE, true)
+                } else {
+                    "innerReview: launchReviewFlow failed".logd(TAG)
+                }
+            }
+        }
     }
 
 

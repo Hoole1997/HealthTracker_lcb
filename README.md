@@ -64,6 +64,17 @@
 - 图表 Y 轴单位未显式显示；如需在 Marker 或轴标题中显示单位，可在 `HealthLineChartManager` 或 `ChartConfigHelper` 添加自定义格式化器。
 - `HistoryRecordActivity` 保持原逻辑（显示记录时的单位），符合“历史查看”场景；统计页统一单位用于“统一分析”场景，两者不同可在帮助文档中说明。
 
+## 补充：自定义 View 渲染 Vector/SVG 的注意事项
+
+- 自定义 View 如果使用 `Canvas.drawBitmap()` 绘制图片，不要用 `BitmapFactory.decodeResource()` 去读取 `drawable/*.xml`（VectorDrawable）。该方式会解码失败导致运行时不显示。
+- 推荐做法是使用 `AppCompatResources.getDrawable()` 获取 `Drawable`，再绘制到 `Bitmap`（或直接 `Drawable.draw(canvas)`）。
+
+## 补充：appraise 模块 Gradle 约定与维护说明
+
+- `:appraise` 使用约定插件 `android.library`（见 `build-common`），`compileSdk/minSdk/viewBinding/测试依赖` 等由约定插件统一配置，模块内尽量只保留必要的差异化配置（例如 `namespace`、特殊的 consumer 混淆规则）。
+- 依赖版本统一从 `gradle/libs.versions.toml`（Version Catalog）管理，模块内避免硬编码版本号，减少升级成本与版本漂移。
+- 约定插件会为 Library 默认配置 `consumerProguardFiles("consumer-rules.pro")`，因此每个 Library 模块需要存在该文件；本次在 `appraise/consumer-rules.pro` 中通过 `-include proguard-rules.pro` 复用已有规则，保证构建稳定。
+
 ### 新增：健康Tips资源化与使用（随机化）
 
 - 新增 `health_tips_arrays.xml`，包含以下7类健康指标的字符串数组（每类3条标题与文案）：血压、血糖、胆固醇、心率、BMI、步数、饮水。

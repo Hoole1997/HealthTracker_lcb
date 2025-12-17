@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--300-->
+    <style name="TextViewFont_RobotoLight">
+        <item name="fontWeight">300</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    <!--400-->
+    <style name="TextViewFont_RobotoRegular">
+        <item name="fontWeight">400</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    <!--500-->
+    <style name="TextViewFont_RobotoMedium">
+        <item name="fontWeight">500</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <!--600-->
+    <style name="TextViewFont_RobotoSignificant">
+        <item name="fontWeight">600</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <!--700-->
+    <style name="TextViewFont_RobotoBold">
+        <item name="fontWeight">700</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!--900-->
+    <style name="TextViewFont_RobotoBlack">
+        <item name="fontWeight">900</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

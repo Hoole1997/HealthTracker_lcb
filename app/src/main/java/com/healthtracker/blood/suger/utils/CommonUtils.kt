@@ -25,6 +25,7 @@ import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils
 import net.corekit.monetize.ui.FullScreenNativeAdActivity
 import java.util.Calendar
+import java.util.Date
 
 
 // 第一次启动时间
@@ -111,3 +112,12 @@ val adClasses = arrayOf(
     TTAdActivity::class.java,
     GuideActivity::class.java
 )
+
+fun getTodayStart(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+    return calendar.time
+}

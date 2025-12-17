@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lib_rate_button_text_color">#FFFFFFFF</color>
+    <color name="lib_rate_dialog_five_star_tip_color">@color/c5</color>
+
+    <color name="c1">#FFFFFF</color>
+    <!--c4 20%-->
+    <color name="c4">#331B1254</color>
+    <!--C5 -->
+    <color name="c5">#02BC77</color>
+
+    <color name="c8">#AF158D</color>
+
+    <color name="t1">#16161B</color>
+    <color name="t2">#B22A2D34</color>
+
+</resources>

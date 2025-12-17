@@ -30,3 +30,7 @@ const val HAS_REPORT_NOTIFICATION_REVOKED = "has_report_notification_revoked"
 const val PUSH_CLOSE_ACTION = "push_close_action"
 
 const val KEY_LAST_RECORD_TYPE = "key_last_record_type"
+
+const val APPRAISE_SHOW_TIME = "app_raise_show_time"
+const val IN_APP_REVIEW_STATE = "in_app_review_state"
+const val IN_APP_REVIEW_TIMES = "in_app_review_state_times"

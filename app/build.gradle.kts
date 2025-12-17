@@ -137,7 +137,7 @@ dependencies {
     api(project(":metrics"))
     api(project(":earthquake"))
     api(project(":weather"))
-//    api(project(":ad-sdk"))
+    api(project(":appraise"))
 
     // Core Android
     implementation(libs.androidx.core.ktx)
@@ -176,6 +176,9 @@ dependencies {
     implementation(libs.shimmerlayout)
     implementation(libs.views)
     implementation(libs.magicindicator)
+
+    implementation(libs.play.review)
+    implementation(libs.play.review.ktx)
 }
 
 // BuildConfig 扩展函数

@@ -767,7 +767,6 @@
         <item>スイカやキュウリなど、水分含有量の高い果物や野菜を楽しんで、水分補給に役立てましょう。</item>
     </string-array>
     <string name="bill_ad_loading">広告を読み込み中…</string>
-    <string name="btn_submit">送信する</string>
     <string name="last_measurement">最新の測定 : %1$s</string>
 </resources>
 

@@ -58,6 +58,7 @@ hilt_version = "2.57.1"
 blur_view_version = "version-2.0.5"
 playServicesAds = "24.5.0"
 xxpermissions = "26.0"
+inapp_review ="2.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -140,6 +141,10 @@ work-runtime = {module =  "androidx.work:work-runtime-ktx", version = "2.10.4"}
 app-update = {module = "com.google.android.play:app-update-ktx",version = "2.1.0"}
 
 lifecycle-process = {module = "androidx.lifecycle:lifecycle-process",version = "2.9.3"}
+
+#In-App Reviews
+play-review ={ group = "com.google.android.play", name = "review", version.ref = "inapp_review" }
+play-review-ktx ={ group = "com.google.android.play", name = "review-ktx", version.ref = "inapp_review" }
 
 #监控ANR
 anr-watchdog = {module = "com.github.anrwatchdog:anrwatchdog",version = "1.4.0"}

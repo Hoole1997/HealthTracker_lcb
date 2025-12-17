@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="dialog_theme" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:navigationBarColor">@color/c1</item>
+    </style>
+
+    <style name="BottomStyle" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/appraise_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/appraise_bottom_out</item>
+    </style>
+
+</resources>
