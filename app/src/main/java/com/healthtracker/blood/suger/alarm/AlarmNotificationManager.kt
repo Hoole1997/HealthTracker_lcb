@@ -113,7 +113,7 @@ class AlarmNotificationManager @Inject constructor(
             // 创建点击意图
             val clickIntent = createClickPendingIntent(alarmRecord.type)
 
-            val collapsedView = createCollapsedView(alarmRecord)
+            val collapsedView = createCollapsedView(alarmRecord,notificationId)
             val expandedView = createExpandedView(alarmRecord, notificationId)
 
             // 构建通知（根据 isSilent 参数决定是否静音）
@@ -159,7 +159,7 @@ class AlarmNotificationManager @Inject constructor(
      * 创建折叠状态的 RemoteViews
      */
     private fun createCollapsedView(
-        alarmRecord: AlarmRecord,
+        alarmRecord: AlarmRecord, notificationId: Int
     ): RemoteViews {
         val (time,des,btnText) = getNotificationContent(alarmRecord)
         val notifResources = getAlarmNotificationRes(alarmRecord.type)
@@ -170,6 +170,10 @@ class AlarmNotificationManager @Inject constructor(
             setTextViewText(R.id.tv_time, time)
             notifResources?.decorIcon?.let { icon ->
                 setImageViewResource(R.id.iv_type, icon)
+            }
+            if(canClose()){
+                // Bind close button click to delete intent
+                setOnClickPendingIntent(R.id.iv_close, createDeletePendingIntent(notificationId))
             }
         }
     }
