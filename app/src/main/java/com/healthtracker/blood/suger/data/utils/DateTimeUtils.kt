@@ -86,6 +86,12 @@ object DateTimeUtils {
     }
 
 
+    fun formatTime24H(date: Date): String {
+        val format = DateFormatUtils.getLocaleTimeFormat24H(LanguageUtils.getAppLocale(App.INSTANCE))
+        return format.format(date)
+    }
+
+
     /**
      * 格式化显示月份年份（简写）
      * @param date Date对象
@@ -290,13 +296,28 @@ object DateTimeUtils {
      */
     fun parseTimeString(timeStr: String): Pair<Int, Int>? {
         return try {
-            val parts = timeStr.split(":")
-            if (parts.size == 2) {
-                val hour = parts[0].toInt()
-                val minute = parts[1].toInt()
-                if (hour in 0..23 && minute in 0..59) {
-                    Pair(hour, minute)
-                } else null
+            val raw = timeStr.trim()
+            val parts = raw.split(":")
+            if (parts.size != 2) return null
+
+            val hourDigits = Regex("\\d{1,2}").find(parts[0])?.value ?: return null
+            val minuteDigits = Regex("\\d{1,2}").find(parts[1])?.value ?: return null
+
+            var hour = hourDigits.toIntOrNull() ?: return null
+            val minute = minuteDigits.toIntOrNull() ?: return null
+
+            val lower = raw.lowercase(Locale.US)
+            val isPm = lower.contains("pm") || raw.contains("下午") || raw.contains("午後") || raw.contains("오후")
+            val isAm = lower.contains("am") || raw.contains("上午") || raw.contains("午前") || raw.contains("오전")
+
+            if (isPm) {
+                if (hour in 1..11) hour += 12
+            } else if (isAm) {
+                if (hour == 12) hour = 0
+            }
+
+            if (hour in 0..23 && minute in 0..59) {
+                Pair(hour, minute)
             } else null
         } catch (e: Exception) {
             null

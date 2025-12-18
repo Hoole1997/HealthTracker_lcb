@@ -99,7 +99,7 @@ data class MedicineReminder(
      * 获取开始提醒时间字符串列表（HH:mm格式）
      */
     fun getStartRemindTimeStrings(): List<String> {
-        return getStartRemindTimeList().map { DateTimeUtils.formatTime(it) }
+        return getStartRemindTimeList().map { DateTimeUtils.formatTime24H(it) }
     }
 
     /**
@@ -211,15 +211,7 @@ data class MedicineReminder(
 
             val dates = timeStrings.mapNotNull { timeStr ->
                 try {
-                    // 解析时间字符串 "HH:mm"
-                    val timeParts = timeStr.split(":")
-                    if (timeParts.size != 2) return@mapNotNull null
-                    
-                    val hour = timeParts[0].toIntOrNull() ?: return@mapNotNull null
-                    val minute = timeParts[1].toIntOrNull() ?: return@mapNotNull null
-                    
-                    // 验证时间范围
-                    if (hour !in 0..23 || minute !in 0..59) return@mapNotNull null
+                    val (hour, minute) = DateTimeUtils.parseTimeString(timeStr) ?: return@mapNotNull null
                     
                     // 使用DateTimeUtils创建今天的指定时间
                     DateTimeUtils.createDate(

@@ -246,10 +246,11 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
     private fun showTimePickerDialog(position: Int) {
         hideSoftKeyBoard()
         val currentTime = mViewModel.uiState.value.reminderTimes[position]
-        val timeParts = currentTime.split(":")
-        val hour = timeParts[0].toInt()
-        val minute = timeParts[1].toInt()
-        AlarmTimeSelectDialog.show(supportFragmentManager, hour to minute) {
+        val timePair = DateTimeUtils.parseTimeString(currentTime) ?: run {
+            val nowComponents = DateTimeUtils.extractDateComponents(DateTimeUtils.now())
+            nowComponents.hour to nowComponents.minute
+        }
+        AlarmTimeSelectDialog.show(supportFragmentManager, timePair) {
             val timeString = DateTimeUtils.formatTimeComponents(it.first, it.second)
             mViewModel.updateReminderTime(position, timeString)
 
