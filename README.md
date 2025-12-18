@@ -63,7 +63,6 @@
 - 摘要（均值/最小/最大）目前仅显示数值，不含单位标识；如需更明确展示，可在布局中为摘要区域补充单位文本（例如靠右的“mg/dL”或“mmol/L”标签）。
 - 图表 Y 轴单位未显式显示；如需在 Marker 或轴标题中显示单位，可在 `HealthLineChartManager` 或 `ChartConfigHelper` 添加自定义格式化器。
 - `HistoryRecordActivity` 保持原逻辑（显示记录时的单位），符合“历史查看”场景；统计页统一单位用于“统一分析”场景，两者不同可在帮助文档中说明。
-
 ## 补充：自定义 View 渲染 Vector/SVG 的注意事项
 
 - 自定义 View 如果使用 `Canvas.drawBitmap()` 绘制图片，不要用 `BitmapFactory.decodeResource()` 去读取 `drawable/*.xml`（VectorDrawable）。该方式会解码失败导致运行时不显示。
@@ -73,7 +72,15 @@
 
 - `:appraise` 使用约定插件 `android.library`（见 `build-common`），`compileSdk/minSdk/viewBinding/测试依赖` 等由约定插件统一配置，模块内尽量只保留必要的差异化配置（例如 `namespace`、特殊的 consumer 混淆规则）。
 - 依赖版本统一从 `gradle/libs.versions.toml`（Version Catalog）管理，模块内避免硬编码版本号，减少升级成本与版本漂移。
-- 约定插件会为 Library 默认配置 `consumerProguardFiles("consumer-rules.pro")`，因此每个 Library 模块需要存在该文件；本次在 `appraise/consumer-rules.pro` 中通过 `-include proguard-rules.pro` 复用已有规则，保证构建稳定。
+
+- 背景：为降低法务/版权风险、以及渠道审核对“同素材指纹命中”的风险，对 `appraise/src/main/res/raw` 下的 Lottie 动画资源做差异化处理。
+- 约束：不改资源名与调用方式（保持 `R.raw.json_emoji_*` 不变），仅做内容层差异化。
+ - 处理方式：
+   - 调整 Lottie JSON 内部元信息（例如 `nm` 字段、帧率 `fr` 的极小偏移），允许轻微视觉差异。
+   - 对 JSON 内内嵌的 `data:image/png;base64,...` PNG 数据插入 PNG `tEXt` 元数据块，确保图片字节级指纹变化且不影响显示效果。
+   - 每个原始文件均生成 `.bak` 备份，并移动到 `appraise/raw_backups/`，避免参与 Android 资源打包。
+ - 回滚方式：将 `appraise/raw_backups/*.json.bak` 覆盖回 `appraise/src/main/res/raw/` 下对应的 `.json` 文件即可。
+ - 验证方式：执行 `./gradlew :appraise:assembleDebug`，并在相关弹窗/页面触发 Lottie 动画加载确认无崩溃、显示正常。
 
 ### 新增：健康Tips资源化与使用（随机化）
 
