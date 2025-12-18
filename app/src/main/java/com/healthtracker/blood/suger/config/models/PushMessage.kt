@@ -172,6 +172,15 @@ data class PushMessage(
                     buttonText = "",
                     iconType = 11,
                     actionType = 11
+                ),
+                // 14. 助手来电
+                PushMessage(
+                    id = "push_022",
+                    title = "Your Health Assistant",
+                    desc = "I'm here to remind you to add your [type] record!",//[type]用来占位的，需要替换具体的血糖，血压，心率
+                    buttonText = "",
+                    iconType = 12,
+                    actionType = 12
                 )
             )
         }
@@ -181,11 +190,25 @@ data class PushMessage(
      * 验证消息数据有效性
      */
     fun isValid(): Boolean {
-        return id.isNotBlank() &&
-                title.isNotBlank() &&
+        if (id.isBlank()) return false
+
+        // 天气通知：文案由业务动态填充，允许空字符串
+        if (iconType == 11 || actionType == 11) {
+            return iconType == 11 && actionType == 11
+        }
+
+        // 助手来电：允许 buttonText 为空
+        if (iconType == 12 || actionType == 12) {
+            return title.isNotBlank() &&
+                    desc.isNotBlank() &&
+                    iconType == 12 &&
+                    actionType == 12
+        }
+
+        return title.isNotBlank() &&
                 desc.isNotBlank() &&
                 buttonText.isNotBlank() &&
-                iconType in 1..11 &&
-                actionType in 1..11
+                iconType in 1..10 &&
+                actionType in 1..10
     }
 }

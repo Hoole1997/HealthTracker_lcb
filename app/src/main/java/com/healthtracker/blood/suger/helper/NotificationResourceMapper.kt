@@ -112,6 +112,13 @@ class NotificationResourceMapper @Inject constructor() {
                 decorIcon = null,
                 btnTextColor = null
             )
+            12 -> NotificationResources(
+                smallIcon = R.drawable.ic_notification_bs,
+                background = null,
+                largeIcon = null,
+                decorIcon = null,
+                btnTextColor = null
+            )
             else -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
                 background = null,
@@ -130,6 +137,11 @@ class NotificationResourceMapper @Inject constructor() {
             LayoutResources(
                 collapsedLayout = com.android.common.weather.R.layout.layout_weather_notification_normal,
                 expandedLayout = com.android.common.weather.R.layout.layout_weather_notification_big
+            )
+        } else if (iconType == 12) {
+            LayoutResources(
+                collapsedLayout = R.layout.layout_assistant_notify,
+                expandedLayout = R.layout.layout_assistant_notify_big
             )
         } else {
             // 其他类型使用通用布局

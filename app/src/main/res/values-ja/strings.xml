@@ -12,6 +12,9 @@
     <string name="loading">読み込み中...</string>
     <string name="history">履歴</string>
     <string name="click_to_record">クリックして記録</string>
+
+    <string name="assistant_answer">応答</string>
+    <string name="assistant_neglect">拒否</string>
     <string name="new_record">新規記録</string>
     <string name="edit_record">記録を編集</string>
     <string name="status">ステータス</string>

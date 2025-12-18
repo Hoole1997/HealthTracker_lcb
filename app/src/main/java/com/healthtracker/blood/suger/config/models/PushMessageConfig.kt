@@ -100,10 +100,16 @@ data class PushMessageConfig(
      * 验证配置有效性
      */
     fun isValid(): Boolean {
-        return id.isNotBlank() &&
-                iconType in 1..10 &&
-                actionType in 1..10 &&
-                localizations.isNotEmpty() &&  // 至少有一种语言
-                localizations.values.all { it.isValid() }  // 所有语言内容都有效
+        if (id.isBlank()) return false
+        if (iconType !in 1..12) return false
+        if (actionType !in 1..12) return false
+        if (localizations.isEmpty()) return false
+
+        // 天气通知：文案由业务动态填充，允许远端下发空文案
+        if (iconType == 11 && actionType == 11) {
+            return true
+        }
+
+        return localizations.values.all { it.isValid() }
     }
 }

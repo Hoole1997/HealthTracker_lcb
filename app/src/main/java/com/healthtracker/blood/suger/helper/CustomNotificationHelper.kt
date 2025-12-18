@@ -60,6 +60,9 @@ class CustomNotificationHelper @Inject constructor(
         private const val TAG = "CustomNotificationHelper"
         private const val NOTIFICATION_ID_BASE = 20000
 
+        private const val KEY_ASSISTANT_CALL_INDEX = "assistant_call_index"
+        private const val ASSISTANT_TYPE_PLACEHOLDER = "[type]"
+
         /**
          * 将 PushMessage.actionType 映射到 ACTION_VALUE 常量
          */
@@ -114,18 +117,21 @@ class CustomNotificationHelper @Inject constructor(
             val layoutResources = resourceMapper.getLayoutResources(pushMessage.iconType)
 
             val finalNotificationId = notificationId ?: (NOTIFICATION_ID_BASE + pushMessage.id.hashCode())
+
+            val (displayMessage, clickMessage) = prepareAssistantCallIfNeeded(pushMessage)
+
+            // 创建点击和删除 PendingIntent（避免重复创建导致重复上报）
+            val clickIntent = createClickPendingIntent(clickMessage, finalNotificationId, scenario, isSilent)
+            val deleteIntent = createDeletePendingIntent(finalNotificationId)
+
             // 创建 RemoteViews
-            val collapsedView = createCollapsedView(pushMessage, notifResources, layoutResources)
-            val expandedView = createExpandedView(pushMessage, notifResources, layoutResources, finalNotificationId)
+            val collapsedView = createCollapsedView(displayMessage, notifResources, layoutResources, clickIntent, deleteIntent)
+            val expandedView = createExpandedView(displayMessage, notifResources, layoutResources, finalNotificationId, clickIntent, deleteIntent)
 
             // 如果是天气通知布局，则绑定天气数据
             if (layoutResources.collapsedLayout == WeatherR.layout.layout_weather_notification_normal) {
                 bindWeatherData(collapsedView, expandedView)
             }
-
-            // 创建点击和删除 PendingIntent
-            val clickIntent = createClickPendingIntent(pushMessage,finalNotificationId,scenario,isSilent)
-            val deleteIntent = createDeletePendingIntent(finalNotificationId)
 
             val channelId = if(isSilent) CHANNEL_ID_GENERAL_SILENT else CHANNEL_ID_GENERAL
             // 构建通知（根据 isSilent 参数决定是否静音）
@@ -175,7 +181,9 @@ class CustomNotificationHelper @Inject constructor(
     private fun createCollapsedView(
         pushMessage: PushMessage,
         notifResources: NotificationResourceMapper.NotificationResources,
-        layoutResources: NotificationResourceMapper.LayoutResources
+        layoutResources: NotificationResourceMapper.LayoutResources,
+        clickIntent: PendingIntent,
+        deleteIntent: PendingIntent
     ): RemoteViews {
         val isWeatherLayout =
             layoutResources.collapsedLayout == WeatherR.layout.layout_weather_notification_normal
@@ -183,6 +191,13 @@ class CustomNotificationHelper @Inject constructor(
         return RemoteViews(context.packageName, layoutResources.collapsedLayout).apply {
             if (isWeatherLayout) {
                 // 天气通知使用独立布局，后续由 bindWeatherData 绑定数据，这里不触碰通用 id
+                return@apply
+            }
+
+            if (layoutResources.collapsedLayout == R.layout.layout_assistant_notify) {
+                setTextViewText(R.id.tv_time, pushMessage.title)
+                setOnClickPendingIntent(R.id.iv_confirm, clickIntent)
+                setOnClickPendingIntent(R.id.iv_close, deleteIntent)
                 return@apply
             }
 
@@ -212,7 +227,9 @@ class CustomNotificationHelper @Inject constructor(
         pushMessage: PushMessage,
         notifResources: NotificationResourceMapper.NotificationResources,
         layoutResources: NotificationResourceMapper.LayoutResources,
-        notificationId: Int
+        notificationId: Int,
+        clickIntent: PendingIntent,
+        deleteIntent: PendingIntent
     ): RemoteViews {
         val isWeatherLayout =
             layoutResources.expandedLayout == WeatherR.layout.layout_weather_notification_big
@@ -220,6 +237,15 @@ class CustomNotificationHelper @Inject constructor(
         return RemoteViews(context.packageName, layoutResources.expandedLayout).apply {
             if (isWeatherLayout) {
                 // 天气通知使用独立布局，后续由 bindWeatherData 绑定数据，这里不触碰通用 id
+                return@apply
+            }
+
+            if (layoutResources.expandedLayout == R.layout.layout_assistant_notify_big) {
+                setTextViewText(R.id.tv_title, pushMessage.title)
+                setTextViewText(R.id.tv_content, pushMessage.desc)
+                setOnClickPendingIntent(R.id.ll_answer, clickIntent)
+                setOnClickPendingIntent(R.id.ll_neglect, deleteIntent)
+                setOnClickPendingIntent(R.id.iv_close, deleteIntent)
                 return@apply
             }
 
@@ -255,10 +281,39 @@ class CustomNotificationHelper @Inject constructor(
             if (canClose()) {
                 if (BuildState.debug) "添加关闭按钮响应,${SpUtils.getString(PUSH_CLOSE_ACTION)}".logd(TAG)
                 // Bind close button click to delete intent
-                setOnClickPendingIntent(R.id.iv_close, createDeletePendingIntent(notificationId))
+                setOnClickPendingIntent(R.id.iv_close, deleteIntent)
             }
 
         }
+    }
+
+    private fun prepareAssistantCallIfNeeded(pushMessage: PushMessage): Pair<PushMessage, PushMessage> {
+        // 仅当 iconType 和 actionType 同时为 12 时才进入助手来电轮播逻辑
+        if (pushMessage.iconType != 12 || pushMessage.actionType != 12) {
+            return pushMessage to pushMessage
+        }
+
+        val lastIndex = SpUtils.getInt(KEY_ASSISTANT_CALL_INDEX, -1)
+        val nextIndex = (lastIndex + 1) % 3
+        SpUtils.putInt(KEY_ASSISTANT_CALL_INDEX, nextIndex)
+
+        val typeNameRes = when (nextIndex) {
+            0 -> R.string.blood_suger
+            1 -> R.string.blood_pressure
+            else -> R.string.heart_rate
+        }
+        val typeName = context.getString(typeNameRes)
+        val displayDesc = pushMessage.desc.replace(ASSISTANT_TYPE_PLACEHOLDER, typeName)
+
+        val convertedActionType = when (nextIndex) {
+            0 -> 2
+            1 -> 3
+            else -> 6
+        }
+
+        val displayMessage = pushMessage.copy(desc = displayDesc)
+        val clickMessage = displayMessage.copy(actionType = convertedActionType)
+        return displayMessage to clickMessage
     }
 
     /**

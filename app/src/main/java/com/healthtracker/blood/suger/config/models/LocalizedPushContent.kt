@@ -19,7 +19,6 @@ data class LocalizedPushContent(
      */
     fun isValid(): Boolean {
         return title.isNotBlank() &&
-                content.isNotBlank() &&
-                buttonText.isNotBlank()
+                content.isNotBlank()
     }
 }

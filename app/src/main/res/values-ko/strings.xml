@@ -12,6 +12,9 @@
     <string name="loading">로딩 중...</string>
     <string name="history">기록</string>
     <string name="click_to_record">기록하려면 클릭</string>
+
+    <string name="assistant_answer">응답</string>
+    <string name="assistant_neglect">거절</string>
     <string name="new_record">새 기록</string>
     <string name="edit_record">기록 편집</string>
     <string name="status">상태</string>
