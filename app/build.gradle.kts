@@ -32,8 +32,8 @@ android {
     namespace = "com.healthtracker.blood.suger"
 
     defaultConfig {
-        versionCode = 7
-        versionName = "1.0.3.1"
+        versionCode = 8
+        versionName = "1.0.4"
         buildConfig {
             boolean("showLog", showLog)
         }

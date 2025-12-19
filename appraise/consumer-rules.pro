@@ -1,1 +1,1 @@
--include proguard-rules.pro
+# consumer 规则为空

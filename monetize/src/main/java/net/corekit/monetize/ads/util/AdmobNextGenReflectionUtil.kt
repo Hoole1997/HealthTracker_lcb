@@ -160,21 +160,25 @@ object AdmobNextGenReflectionUtil {
 
             var clazz: Class<*>? = obj::class.java
             while (clazz != null) {
-                val fields = clazz.declaredFields
+                val fields = try {
+                    clazz.declaredFields
+                } catch (_: Throwable) {
+                    emptyArray<Field>()
+                }
                 for (field in fields) {
                     try {
                         field.isAccessible = true
                         val fieldValue = field.get(obj) ?: continue
                         if (isPrimitiveOrBasicType(field.type)) continue
                         findAdValueRecursively(fieldValue, adType, visited, depth + 1)?.let { return it }
-                    } catch (e: Exception) {
+                    } catch (_: Throwable) {
                         continue
                     }
                 }
                 clazz = clazz.superclass
             }
             null
-        } catch (e: Exception) {
+        } catch (_: Throwable) {
             null
         }
     }
@@ -190,7 +194,11 @@ object AdmobNextGenReflectionUtil {
 
             var clazz: Class<*>? = obj::class.java
             while (clazz != null) {
-                val fields = clazz.declaredFields
+                val fields = try {
+                    clazz.declaredFields
+                } catch (_: Throwable) {
+                    emptyArray<Field>()
+                }
                 for (field in fields) {
                     try {
                         field.isAccessible = true
@@ -212,7 +220,7 @@ object AdmobNextGenReflectionUtil {
                                 }
                             }
                         }
-                    } catch (e: Exception) {
+                    } catch (_: Throwable) {
                         continue
                     }
                 }
@@ -224,7 +232,7 @@ object AdmobNextGenReflectionUtil {
             } else {
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Throwable) {
             null
         }
     }
@@ -246,7 +254,7 @@ object AdmobNextGenReflectionUtil {
                 }
             }
             field?.get(this)
-        } catch (e: Exception) {
+        } catch (_: Throwable) {
             null
         }
     }
@@ -285,7 +293,7 @@ object AdmobNextGenReflectionUtil {
             )
             constructor.isAccessible = true
             constructor.newInstance(precision, valueMicros, currencyCode) as AdValue
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             AdLogger.e("[%s] 创建 AdValue 失败: %s", TAG, e.message)
             null
         }

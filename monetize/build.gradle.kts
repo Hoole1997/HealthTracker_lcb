@@ -7,7 +7,6 @@ plugins {
 
 val adMobConfig = findProperty("admob") as Map<*, *>
 val adMobUnitConfig = adMobConfig["adUnitIds"] as Map<*, *>
-val rewardedInterstitialAdUnitId = (adMobUnitConfig["rewarded_interstitial"] ?: "ca-app-pub-3940256099942544/5354046379").toString()
 
 android {
     namespace = "net.corekit.monetize"
@@ -22,7 +21,7 @@ android {
         buildConfigField("String", "ADMOB_NATIVE_ID", "\"${adMobUnitConfig["native"]}\"")
         buildConfigField("String", "ADMOB_FULL_NATIVE_ID", "\"${adMobUnitConfig["full_native"]}\"")
         buildConfigField("String", "ADMOB_REWARDED_ID", "\"${adMobUnitConfig["rewarded"]}\"")
-        buildConfigField("String", "ADMOB_REWARDED_INTERSTITIAL_ID", "\"$rewardedInterstitialAdUnitId\"")
+        buildConfigField("String", "ADMOB_REWARDED_INTERSTITIAL_ID", "\"${adMobUnitConfig["rewarded_interstitial"]}\"")
     }
 
     buildTypes {
@@ -62,7 +61,7 @@ dependencies {
     
     // 广告平台
     api("com.google.ads.mediation:facebook:6.20.0.0")
-    api("com.google.ads.mediation:pangle:7.5.0.4.0")
+    api("com.google.ads.mediation:pangle:7.2.0.6.0")
     // ump
     api("com.google.android.ump:user-messaging-platform:3.1.0")
     api("com.google.android.libraries.ads.mobile.sdk:ads-mobile-sdk:0.22.0-beta04")
