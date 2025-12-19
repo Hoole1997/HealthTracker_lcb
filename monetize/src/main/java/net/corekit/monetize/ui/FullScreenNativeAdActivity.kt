@@ -105,7 +105,9 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
                         findViewById<View>(R.id.ads_rl_top_buttons).apply {
                             isVisible = true
                             findViewById<View>(R.id.ads_btn_close).setOnClickListener {
-                                FullNativeAds.getInstance().triggerCloseEvent( adUnitId = BuildConfig.ADMOB_FULL_NATIVE_ID)
+                                FullNativeAds.getInstance().triggerCloseEvent(
+                                    adUnitId = BuildConfig.ADMOB_FULL_NATIVE_ID
+                                )
                                 closeAdAndFinish()
                             }
                         }

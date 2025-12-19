@@ -6,5 +6,6 @@ import net.corekit.monetize.ads.AdResult
 data class PendingShowRequest<T>(
     val ad: T,
     val adUnitId: String,
+    val position: String,
     val continuation: CancellableContinuation<AdResult<Unit>>
 )

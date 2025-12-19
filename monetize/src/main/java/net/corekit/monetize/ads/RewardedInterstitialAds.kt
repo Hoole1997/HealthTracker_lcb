@@ -123,6 +123,8 @@ class RewardedInterstitialAds private constructor() {
         
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID
 
+        val position = PositionGet.get()
+
         // 每次开始展示前清理状态，避免收益/展示状态污染
         currentAdValue = null
         
@@ -143,7 +145,7 @@ class RewardedInterstitialAds private constructor() {
             "ad_position",
             mapOf(
                 "ad_unit_name" to finalAdUnitId,
-                "position" to PositionGet.get(),
+                "position" to position,
                 "number" to totalTriggerCount
             )
         )
@@ -168,7 +170,7 @@ class RewardedInterstitialAds private constructor() {
                 return AdResult.Failure(createAdException("插页激励广告缓存为空"))
             }
 
-            showAdInternal(activity, adHolder.ad, finalAdUnitId)
+            showAdInternal(activity, adHolder.ad, finalAdUnitId, position)
         } catch (e: Exception) {
             AdLogger.e("显示插页激励广告异常", e)
             AdResult.Failure(createAdException("显示广告异常: ${e.message}", e))
@@ -267,7 +269,8 @@ class RewardedInterstitialAds private constructor() {
     private suspend fun showAdInternal(
         activity: Activity,
         ad: RewardedInterstitialAd,
-        adUnitId: String
+        adUnitId: String,
+        position: String
     ): AdResult<RewardedAds.RewardOutcome> {
         return suspendCancellableCoroutine { continuation ->
             var rewardItem: RewardItem? = null
@@ -284,7 +287,7 @@ class RewardedInterstitialAds private constructor() {
                         "ad_impression",
                         mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalShowCount,
                             "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (value.valueMicros / 1_000_000.0),
@@ -317,7 +320,7 @@ class RewardedInterstitialAds private constructor() {
                         "ad_close",
                         mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalCloseCount,
                             "reward_granted" to outcome.rewarded,
                             "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
@@ -377,7 +380,7 @@ class RewardedInterstitialAds private constructor() {
                         "ad_click",
                         mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalClickCount,
                             "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),

@@ -1,15 +1,11 @@
 package net.corekit.monetize.ads
 
 
-import ads_mobile_sdk.nu
 import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.blankj.utilcode.util.ActivityUtils
-import com.facebook.ads.RewardData
-import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
 import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
 import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.AdValue
@@ -18,8 +14,6 @@ import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
 import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardItem
 import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAd
 import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAdEventCallback
-import com.healthtracker.framework.ext.TAG
-import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.remax.bill.ads.report.IpuController
 import com.remax.bill.ads.report.RpuController
@@ -38,7 +32,6 @@ import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
-import net.corekit.monetize.ads.model.PendingShowRequest
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import net.corekit.monetize.util.PositionGet
@@ -152,12 +145,14 @@ class RewardedAds private constructor() {
     ): AdResult<RewardOutcome> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_REWARDED_ID
 
+        val position = PositionGet.get()
+
         totalTriggerCount++
         reportAdData(
             "ad_position",
             mapOf(
                 "ad_unit_name" to finalAdUnitId,
-                "position" to PositionGet.get(),
+                "position" to position,
                 "number" to totalTriggerCount
             )
         )
@@ -203,7 +198,7 @@ class RewardedAds private constructor() {
                        return suspendCancellableCoroutine { continuation ->
                            val observer = ResumeLifecycleObserver(activity,activity)
                            pendingRequest = PendingShowRequest(
-                               adHolder.ad,finalAdUnitId,continuation
+                               adHolder.ad,finalAdUnitId,position,continuation
                            )
                            activity.lifecycle.addObserver(observer)
                            continuation.invokeOnCancellation {
@@ -216,7 +211,7 @@ class RewardedAds private constructor() {
                }
 
                // 3. 显示广告
-               val result = showAdInternal(activity, adHolder.ad, finalAdUnitId)
+               val result = showAdInternal(activity, adHolder.ad, finalAdUnitId, position)
 
                result
            }else{
@@ -238,7 +233,7 @@ class RewardedAds private constructor() {
     }
 
 
-    private suspend fun showAdInternal(activity: Activity,rewardAd: RewardedAd,finalAdUnitId: String): AdResult<RewardOutcome>{
+    private suspend fun showAdInternal(activity: Activity,rewardAd: RewardedAd,finalAdUnitId: String, position: String): AdResult<RewardOutcome>{
         return suspendCancellableCoroutine { continuation ->
             var rewardItem: RewardItem? = null
 
@@ -259,7 +254,7 @@ class RewardedAds private constructor() {
                         "ad_impression",
                         mapOf(
                             "ad_unit_name" to finalAdUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalShowCount,
                             "ad_source" to (rewardAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (value.valueMicros / 1_000_000.0),
@@ -287,7 +282,7 @@ class RewardedAds private constructor() {
                         "ad_close",
                         mapOf(
                             "ad_unit_name" to finalAdUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalCloseCount,
                             "reward_granted" to outcome.rewarded,
                             "ad_source" to (rewardAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
@@ -349,7 +344,7 @@ class RewardedAds private constructor() {
                         eventName = "ad_click",
                         params = mapOf(
                             "ad_unit_name" to finalAdUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalClickCount,
                             "ad_source" to (rewardAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -578,7 +573,7 @@ class RewardedAds private constructor() {
 
                         lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) -> {
                             withContext(Dispatchers.Main.immediate){
-                                showAdInternal(activity,pending.ad,pending.adUnitId)
+                                showAdInternal(activity,pending.ad,pending.adUnitId,pending.position)
                             }
                         }
 
@@ -608,6 +603,7 @@ class RewardedAds private constructor() {
     data class PendingShowRequest<T>(
         val ad: T,
         val adUnitId: String,
+        val position: String,
         val continuation: CancellableContinuation<AdResult<RewardedAds.RewardOutcome>>
     )
 

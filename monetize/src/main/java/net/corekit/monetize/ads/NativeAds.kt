@@ -174,6 +174,7 @@ class NativeAds private constructor() {
         onClick:(() -> Unit)? = null
     ): Boolean {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_NATIVE_ID
+        val position = PositionGet.get()
         
         // 累积触发统计
         totalShowTriggerCount++
@@ -183,7 +184,7 @@ class NativeAds private constructor() {
             eventName = "ad_position",
             params = mapOf(
                 "ad_unit_name" to finalAdUnitId,
-                "position" to PositionGet.get(),
+                "position" to position,
                 "number" to totalShowTriggerCount
             ),
             style
@@ -200,7 +201,7 @@ class NativeAds private constructor() {
                     eventName = "ad_show_fail",
                     params = mapOf(
                         "ad_unit_name" to finalAdUnitId,
-                        "position" to PositionGet.get(),
+                        "position" to position,
                         "number" to totalShowFailCount,
                         "reason" to interceptResult.error.message
                     ),
@@ -233,7 +234,7 @@ class NativeAds private constructor() {
                                 eventName = "ad_impression",
                                 params = mapOf(
                                     "ad_unit_name" to finalAdUnitId,
-                                    "position" to PositionGet.get(),
+                                    "position" to position,
                                     "number" to totalShowCount,
                                     "ad_source" to (nativeAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }
@@ -264,7 +265,7 @@ class NativeAds private constructor() {
                                 eventName = "ad_click",
                                 params = mapOf(
                                     "ad_unit_name" to finalAdUnitId,
-                                    "position" to PositionGet.get(),
+                                    "position" to position,
                                     "number" to totalClickCount,
                                     "ad_source" to (nativeAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -297,7 +298,7 @@ class NativeAds private constructor() {
                                 eventName = "ad_close",
                                 params = mapOf(
                                     "ad_unit_name" to finalAdUnitId,
-                                    "position" to PositionGet.get(),
+                                    "position" to position,
                                     "number" to totalCloseCount,
                                     "ad_source" to (nativeAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -325,7 +326,7 @@ class NativeAds private constructor() {
                         eventName = "ad_show_fail",
                         params = mapOf(
                             "ad_unit_name" to finalAdUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalShowFailCount,
                             "reason" to result.error.message
                         ),
@@ -351,7 +352,7 @@ class NativeAds private constructor() {
                 eventName = "ad_show_fail",
                 params = mapOf(
                     "ad_unit_name" to finalAdUnitId,
-                    "position" to PositionGet.get(),
+                    "position" to position,
                     "number" to totalShowFailCount,
                     "reason" to "${e.message}"
                 ),

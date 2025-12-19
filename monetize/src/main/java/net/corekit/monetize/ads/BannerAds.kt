@@ -1,11 +1,9 @@
 package net.corekit.monetize.ads
 
-import android.R.attr.onClick
 import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.ViewGroup
-import com.blankj.utilcode.util.ActivityUtils
 import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdEventCallback
@@ -312,6 +310,7 @@ class BannerAds private constructor() {
      */
     suspend fun displayAd(context: Context, container: ViewGroup, adUnitId: String? = null,onClick:(() -> Unit)? = null,onClose:(() -> Unit)? = null): AdResult<Boolean> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_BANNER_ID
+        val position = PositionGet.get()
         
         // 累积触发统计
         totalShowTriggerCount++
@@ -321,7 +320,7 @@ class BannerAds private constructor() {
             eventName = "ad_position",
             params = mapOf(
                 "ad_unit_name" to finalAdUnitId,
-                "position" to PositionGet.get(),
+                "position" to position,
                 "number" to totalShowTriggerCount
             )
         )
@@ -337,7 +336,7 @@ class BannerAds private constructor() {
                     eventName = "ad_show_fail",
                     params = mapOf(
                         "ad_unit_name" to finalAdUnitId,
-                        "position" to PositionGet.get(),
+                        "position" to position,
                         "number" to totalShowFailCount,
                         "reason" to interceptResult.error.message
                     )
@@ -373,7 +372,7 @@ class BannerAds private constructor() {
                             eventName = "ad_impression",
                             params = mapOf(
                                 "ad_unit_name" to finalAdUnitId,
-                                "position" to PositionGet.get(),
+                                "position" to position,
                                 "number" to totalShowCount,
                                 "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                 "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -402,7 +401,7 @@ class BannerAds private constructor() {
                             eventName = "ad_click",
                             params = mapOf(
                                 "ad_unit_name" to finalAdUnitId,
-                                "position" to PositionGet.get(),
+                                "position" to position,
                                 "number" to totalClickCount,
                                 "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                 "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -427,7 +426,7 @@ class BannerAds private constructor() {
                             eventName = "ad_close",
                             params = mapOf(
                                 "ad_unit_name" to finalAdUnitId,
-                                "position" to PositionGet.get(),
+                                "position" to position,
                                 "number" to totalCloseCount,
                                 "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                 "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
@@ -463,7 +462,7 @@ class BannerAds private constructor() {
                     eventName = "ad_show_fail",
                     params = mapOf(
                         "ad_unit_name" to finalAdUnitId,
-                        "position" to PositionGet.get(),
+                        "position" to position,
                         "number" to totalShowFailCount,
                         "reason" to "No fill"
                     )
@@ -476,7 +475,7 @@ class BannerAds private constructor() {
                 eventName = "ad_show_fail",
                 params = mapOf(
                     "ad_unit_name" to finalAdUnitId,
-                    "position" to PositionGet.get(),
+                    "position" to position,
                     "number" to totalShowFailCount,
                     "reason" to e.message.orEmpty()
                 )

@@ -3,7 +3,6 @@ package net.corekit.monetize.ads
 import android.content.Context
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import com.blankj.utilcode.util.ActivityUtils
 import com.google.android.libraries.ads.mobile.sdk.common.AdChoicesPlacement
 
 
@@ -69,6 +68,8 @@ class FullNativeAds private constructor() {
 
     // 当前广告的收益信息（临时存储）
     private var currentAdValue: AdValue? = null
+
+    private var currentPosition: String = ""
 
     // 全屏原生广告是否正在显示的标识
     private var isShowing: Boolean = false
@@ -149,16 +150,14 @@ class FullNativeAds private constructor() {
         return loadAdToCache(context, finalAdUnitId)
     }
 
-    fun triggerCloseEvent(adUnitId: String = "") {
+    fun triggerCloseEvent(adUnitId: String = "", position: String = "") {
         totalCloseCount++
 
         reportAdData(
             eventName = "ad_close",
             params = mapOf(
                 "ad_unit_name" to adUnitId,
-                "position" to runCatching { PositionGet.get() }.getOrDefault(
-                    ""
-                ),
+                "position" to position.ifBlank { currentPosition },
                 "number" to totalCloseCount,
                 "ad_source" to (nativeAds?.getResponseInfo()?.loadedAdSourceResponseInfo?.name.orEmpty()),
                 "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
@@ -208,11 +207,14 @@ class FullNativeAds private constructor() {
         adUnitId: String? = null
     ): AdResult<Unit> {
         totalShowTriggerCount++
+
+        val position = PositionGet.get()
+        currentPosition = position
         reportAdData(
             eventName = "ad_position",
             params = mapOf(
                 "ad_unit_name" to adUnitId.orEmpty(),
-                "position" to PositionGet.get(),
+                "position" to position,
                 "number" to totalShowTriggerCount
             )
         )
@@ -229,7 +231,7 @@ class FullNativeAds private constructor() {
                     eventName = "ad_show_fail",
                     params = mapOf(
                         "ad_unit_name" to adUnitId.orEmpty(),
-                        "position" to PositionGet.get(),
+                        "position" to position,
                         "number" to totalShowFailCount,
                         "reason" to interceptResult.error.message
                     )
@@ -269,7 +271,7 @@ class FullNativeAds private constructor() {
                         eventName = "ad_show_fail",
                         params = mapOf(
                             "ad_unit_name" to adUnitId.orEmpty(),
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalShowFailCount,
                             "reason" to result.error.message
                         )
@@ -288,7 +290,7 @@ class FullNativeAds private constructor() {
                 eventName = "ad_show_fail",
                 params = mapOf(
                     "ad_unit_name" to adUnitId.orEmpty(),
-                    "position" to PositionGet.get(),
+                    "position" to position,
                     "number" to totalShowFailCount,
                     "reason" to e.message.orEmpty()
                 )
@@ -476,7 +478,7 @@ class FullNativeAds private constructor() {
                                 eventName = "ad_impression",
                                 params = mapOf(
                                     "ad_unit_name" to adUnitId,
-                                    "position" to PositionGet.get(),
+                                    "position" to currentPosition,
                                     "number" to totalShowCount,
                                     "ad_source" to (nativeAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }
@@ -506,7 +508,7 @@ class FullNativeAds private constructor() {
                                 eventName = "ad_click",
                                 params = mapOf(
                                     "ad_unit_name" to adUnitId,
-                                    "position" to PositionGet.get(),
+                                    "position" to currentPosition,
                                     "number" to totalClickCount,
                                     "ad_source" to (nativeAds?.getResponseInfo()?.loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }
@@ -541,7 +543,7 @@ class FullNativeAds private constructor() {
                                 eventName = "ad_close",
                                 params = mapOf(
                                     "ad_unit_name" to adUnitId,
-                                    "position" to PositionGet.get(),
+                                    "position" to currentPosition,
                                     "number" to totalCloseCount,
                                     "ad_source" to (nativeAds?.getResponseInfo()?.loadedAdSourceResponseInfo?.name.orEmpty()),
                                     "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),

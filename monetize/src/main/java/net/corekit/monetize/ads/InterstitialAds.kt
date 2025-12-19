@@ -176,11 +176,13 @@ class InterstitialAds private constructor() {
         totalShowTriggerCount++
         AdLogger.d("插页广告累积触发展示次数: $totalShowTriggerCount")
 
+        val position = PositionGet.get()
+
         reportAdData(
             eventName = "ad_position",
             params = mapOf(
                 "ad_unit_name" to finalAdUnitId,
-                "position" to PositionGet.get(),
+                "position" to position,
                 "number" to totalShowTriggerCount
             )
         )
@@ -196,7 +198,7 @@ class InterstitialAds private constructor() {
                     eventName = "ad_show_fail",
                     params = mapOf(
                         "ad_unit_name" to finalAdUnitId,
-                        "position" to PositionGet.get(),
+                        "position" to position,
                         "number" to totalShowFailCount,
                         "reason" to interceptResult.error.message
                     )
@@ -235,7 +237,7 @@ class InterstitialAds private constructor() {
                 AdLogger.d("使用缓存中的插页广告，广告位ID: %s", finalAdUnitId)
 
                 // 3. 显示广告
-                val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId, recordConfigShow)
+                val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId, recordConfigShow, position)
 
                 result
             } else {
@@ -438,7 +440,7 @@ class InterstitialAds private constructor() {
     /**
      * 显示广告的内部实现
      */
-    private suspend fun showAdInternal(activity: Activity, interstitialAd: InterstitialAd, adUnitId: String, recordConfigShow: Boolean): AdResult<Unit> {
+    private suspend fun showAdInternal(activity: Activity, interstitialAd: InterstitialAd, adUnitId: String, recordConfigShow: Boolean, position: String): AdResult<Unit> {
         return suspendCancellableCoroutine { continuation ->
             interstitialAd.adEventCallback = object : InterstitialAdEventCallback{
                 override fun onAdDismissedFullScreenContent() {
@@ -454,7 +456,7 @@ class InterstitialAds private constructor() {
                         eventName = "ad_close",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalCloseCount,
                             "ad_source" to (interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -485,7 +487,7 @@ class InterstitialAds private constructor() {
                         eventName = "ad_show_fail",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalShowFailCount,
                             "ad_source" to (interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "reason" to fullScreenContentError.message
@@ -526,7 +528,7 @@ class InterstitialAds private constructor() {
                         eventName = "ad_click",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalClickCount,
                             "ad_source" to (interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
@@ -563,7 +565,7 @@ class InterstitialAds private constructor() {
                         eventName = "ad_impression",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalShowCount,
                             "ad_source" to (interstitialAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 }

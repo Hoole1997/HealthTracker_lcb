@@ -1,14 +1,10 @@
 package net.corekit.monetize.ads
 
-import ads_mobile_sdk.ac
-import ads_mobile_sdk.el
-import ads_mobile_sdk.nu
 import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.blankj.utilcode.util.ActivityUtils
 import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
 import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAdEventCallback
 import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
@@ -24,7 +20,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -289,11 +284,13 @@ class LaunchAds private constructor() {
         totalShowTriggerCount++
         AdLogger.d("开屏广告累积触发展示次数: $totalShowTriggerCount")
 
+        val position = PositionGet.get()
+
         reportAdData(
             eventName = "ad_position",
             params = mapOf(
                 "ad_unit_name" to (adUnitId ?: ""),
-                "position" to PositionGet.get(),
+                "position" to position,
                 "number" to totalShowTriggerCount
             )
         )
@@ -309,7 +306,7 @@ class LaunchAds private constructor() {
                     eventName = "ad_show_fail",
                     params = mapOf(
                         "ad_unit_name" to (adUnitId ?: ""),
-                        "position" to PositionGet.get(),
+                        "position" to position,
                         "number" to totalShowFailCount,
                         "reason" to interceptResult.error.message,
                     )
@@ -354,7 +351,7 @@ class LaunchAds private constructor() {
                         return suspendCancellableCoroutine { continuation ->
                             val observer = ResumeLifecycleObserver(activity,activity)
                             pendingRequest = PendingShowRequest(
-                                cachedAd.ad,finalAdUnitId,continuation
+                                cachedAd.ad,finalAdUnitId,position,continuation
                             )
                             activity.lifecycle.addObserver(observer)
                             continuation.invokeOnCancellation {
@@ -367,7 +364,7 @@ class LaunchAds private constructor() {
                 }
 
                 // 3. 显示广告
-                val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId)
+                val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId, position)
 
                 result
 
@@ -476,7 +473,7 @@ class LaunchAds private constructor() {
     /**
      * 显示广告的内部实现
      */
-    private suspend fun showAdInternal(activity: Activity, appOpenAd: AppOpenAd, adUnitId: String): AdResult<Unit> {
+    private suspend fun showAdInternal(activity: Activity, appOpenAd: AppOpenAd, adUnitId: String, position: String): AdResult<Unit> {
         return suspendCancellableCoroutine { continuation ->
             // 临时变量保存收益数据
             var currentAdValue: AdValue? = null
@@ -493,7 +490,7 @@ class LaunchAds private constructor() {
                         eventName = "ad_impression",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalShowCount,
                             "ad_source" to (appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
@@ -515,7 +512,7 @@ class LaunchAds private constructor() {
                         eventName = "ad_close",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalCloseCount,
                             "ad_source" to (appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
@@ -536,7 +533,7 @@ class LaunchAds private constructor() {
                         eventName = "ad_show_fail",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalShowFailCount,
                             "reason" to fullScreenContentError.message
                         )
@@ -572,7 +569,7 @@ class LaunchAds private constructor() {
                         eventName = "ad_click",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "position" to PositionGet.get(),
+                            "position" to position,
                             "number" to totalClickCount,
                             "ad_source" to (appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
@@ -697,7 +694,7 @@ class LaunchAds private constructor() {
 
                         lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) -> {
                             withContext(Dispatchers.Main.immediate){
-                                showAdInternal(activity,pending.ad,pending.adUnitId)
+                                showAdInternal(activity,pending.ad,pending.adUnitId,pending.position)
                             }
                         }
 
