@@ -349,6 +349,8 @@ class RewardedInterstitialAds private constructor() {
                         "ad_show_fail",
                         mapOf(
                             "ad_unit_name" to adUnitId,
+                            "position" to position,
+                            "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "reason" to fullScreenContentError.message,
                             "code" to fullScreenContentError.code,
                             "number" to totalShowFailCount
@@ -397,6 +399,7 @@ class RewardedInterstitialAds private constructor() {
                     "ad_reward_earned",
                     mapOf(
                         "ad_unit_name" to adUnitId,
+                        "position" to position,
                         "number" to totalRewardCount,
                         "type" to item.type,
                         "amount" to item.amount,

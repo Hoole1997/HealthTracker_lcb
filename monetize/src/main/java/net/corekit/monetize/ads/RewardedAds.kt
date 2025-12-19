@@ -307,6 +307,8 @@ class RewardedAds private constructor() {
                         "ad_show_fail",
                         mapOf(
                             "ad_unit_name" to finalAdUnitId,
+                            "position" to position,
+                            "ad_source" to (rewardAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                             "reason" to fullScreenContentError.message,
                             "code" to fullScreenContentError.code,
                             "number" to totalShowFailCount
@@ -361,6 +363,7 @@ class RewardedAds private constructor() {
                     "ad_reward_earned",
                     mapOf(
                         "ad_unit_name" to finalAdUnitId,
+                        "position" to position,
                         "number" to totalRewardCount,
                         "type" to item.type,
                         "amount" to item.amount,
@@ -412,7 +415,6 @@ class RewardedAds private constructor() {
                                 "number" to totalLoadSucCount,
                                 "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
                                 "pass_time" to ceil(loadTime / 1000.0).toInt()
-
                             )
                         )
                         FpuController.onAdFill("RV")
