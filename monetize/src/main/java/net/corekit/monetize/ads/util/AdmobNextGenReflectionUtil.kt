@@ -9,7 +9,9 @@ import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAd
 import com.google.android.libraries.ads.mobile.sdk.rewardedinterstitial.RewardedInterstitialAd
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
 import net.corekit.monetize.ads.log.AdLogger
+import java.lang.reflect.Constructor
 import java.lang.reflect.Field
+import java.util.LinkedHashMap
 
 /**
  * AdMob Next-Gen SDK 反射工具类
@@ -21,6 +23,101 @@ import java.lang.reflect.Field
 object AdmobNextGenReflectionUtil {
 
     private const val TAG = "AdmobReflection"
+
+    private const val FIELD_CACHE_MAX_SIZE = 512
+    private const val DECLARED_FIELDS_CACHE_MAX_SIZE = 256
+
+    private class SynchronizedLruCache<K : Any, V : Any>(
+        private val maxSize: Int
+    ) {
+        private val lock = Any()
+        private val map = object : LinkedHashMap<K, V>(maxSize, 0.75f, true) {
+            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<K, V>): Boolean {
+                return size > maxSize
+            }
+        }
+
+        fun get(key: K): V? = synchronized(lock) { map[key] }
+
+        fun put(key: K, value: V) {
+            synchronized(lock) { map[key] = value }
+        }
+    }
+
+    private data class FieldKey(
+        val clazz: Class<*>,
+        val fieldName: String
+    )
+
+    private sealed class FieldLookupResult {
+        data class Found(val field: Field) : FieldLookupResult()
+        object NotFound : FieldLookupResult()
+    }
+
+    private val declaredFieldCache = SynchronizedLruCache<FieldKey, FieldLookupResult>(FIELD_CACHE_MAX_SIZE)
+    private val declaredFieldsCache = SynchronizedLruCache<Class<*>, Array<Field>>(DECLARED_FIELDS_CACHE_MAX_SIZE)
+    @Volatile
+    private var adValueConstructor: Constructor<AdValue>? = null
+
+    private fun getDeclaredFieldsCached(clazz: Class<*>): Array<Field> {
+        declaredFieldsCache.get(clazz)?.let { return it }
+        val fields = try {
+            clazz.declaredFields
+        } catch (_: Throwable) {
+            emptyArray<Field>()
+        }
+
+        for (f in fields) {
+            try {
+                f.isAccessible = true
+            } catch (_: Throwable) {
+            }
+        }
+
+        declaredFieldsCache.put(clazz, fields)
+        return fields
+    }
+
+    private fun getDeclaredFieldCached(clazz: Class<*>, fieldName: String): Field? {
+        val key = FieldKey(clazz, fieldName)
+        when (val cached = declaredFieldCache.get(key)) {
+            is FieldLookupResult.Found -> return cached.field
+            is FieldLookupResult.NotFound -> return null
+            null -> {
+            }
+        }
+
+        val field = try {
+            clazz.getDeclaredField(fieldName).apply { isAccessible = true }
+        } catch (_: Throwable) {
+            null
+        }
+
+        if (field != null) {
+            declaredFieldCache.put(key, FieldLookupResult.Found(field))
+        } else {
+            declaredFieldCache.put(key, FieldLookupResult.NotFound)
+        }
+        return field
+    }
+
+    private fun getAdValueConstructorCached(): Constructor<AdValue>? {
+        adValueConstructor?.let { return it }
+        synchronized(this) {
+            adValueConstructor?.let { return it }
+            val ctor = try {
+                AdValue::class.java.getDeclaredConstructor(
+                    PrecisionType::class.java,
+                    Long::class.javaPrimitiveType,
+                    String::class.java
+                ).apply { isAccessible = true }
+            } catch (_: Throwable) {
+                null
+            }
+            adValueConstructor = ctor
+            return ctor
+        }
+    }
 
     // 各广告类型的固定反射路径
     // 插屏广告路径
@@ -160,14 +257,9 @@ object AdmobNextGenReflectionUtil {
 
             var clazz: Class<*>? = obj::class.java
             while (clazz != null) {
-                val fields = try {
-                    clazz.declaredFields
-                } catch (_: Throwable) {
-                    emptyArray<Field>()
-                }
+                val fields = getDeclaredFieldsCached(clazz)
                 for (field in fields) {
                     try {
-                        field.isAccessible = true
                         val fieldValue = field.get(obj) ?: continue
                         if (isPrimitiveOrBasicType(field.type)) continue
                         findAdValueRecursively(fieldValue, adType, visited, depth + 1)?.let { return it }
@@ -194,14 +286,9 @@ object AdmobNextGenReflectionUtil {
 
             var clazz: Class<*>? = obj::class.java
             while (clazz != null) {
-                val fields = try {
-                    clazz.declaredFields
-                } catch (_: Throwable) {
-                    emptyArray<Field>()
-                }
+                val fields = getDeclaredFieldsCached(clazz)
                 for (field in fields) {
                     try {
-                        field.isAccessible = true
                         val fieldValue = field.get(obj) ?: continue
 
                         when {
@@ -247,9 +334,12 @@ object AdmobNextGenReflectionUtil {
             var field: Field? = null
             while (clazz != null) {
                 try {
-                    field = clazz.getDeclaredField(fieldName).apply { isAccessible = true }
-                    break
-                } catch (ignored: NoSuchFieldException) {
+                    field = getDeclaredFieldCached(clazz, fieldName)
+                    if (field != null) {
+                        break
+                    }
+                    clazz = clazz.superclass
+                } catch (_: Throwable) {
                     clazz = clazz.superclass
                 }
             }
@@ -286,12 +376,7 @@ object AdmobNextGenReflectionUtil {
      */
     private fun createAdValue(precision: PrecisionType, valueMicros: Long, currencyCode: String): AdValue? {
         return try {
-            val constructor = AdValue::class.java.getDeclaredConstructor(
-                PrecisionType::class.java,
-                Long::class.javaPrimitiveType,
-                String::class.java
-            )
-            constructor.isAccessible = true
+            val constructor = getAdValueConstructorCached() ?: return null
             constructor.newInstance(precision, valueMicros, currencyCode) as AdValue
         } catch (e: Throwable) {
             AdLogger.e("[%s] 创建 AdValue 失败: %s", TAG, e.message)
