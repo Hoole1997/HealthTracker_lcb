@@ -54,7 +54,8 @@ class BannerAds private constructor() {
 
     // 累积加载成功次数统计（持久化）
     private var totalLoadSucCount by DataStoreIntDelegate("pdf_a1x8j4r7", 0)
-    
+    private var totalLoadFailCount by DataStoreIntDelegate("banner_load_fail_count", 0)
+
     // 累积展示失败次数统计（持久化）
     private var totalShowFailCount by DataStoreIntDelegate("pdf_b4n6y3z9", 0)
     
@@ -219,18 +220,18 @@ class BannerAds private constructor() {
                 private var loadStartTime = System.currentTimeMillis()
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     val loadTime = System.currentTimeMillis() - loadStartTime
-                    AdLogger.e("Banner广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
-
-                    reportAdData(
-                        eventName = "ad_load_fail",
-                        params = mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "number" to totalLoadSucCount,
-                            "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
-                            "pass_time" to ceil(loadTime / 1000.0).toInt(),
-                            "reason" to adError.message
+                        totalLoadFailCount++
+                        AdLogger.e("Banner广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
+                        reportAdData(
+                            eventName = "ad_load_fail",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadFailCount,
+                                "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                                "reason" to adError.message
+                            )
                         )
-                    )
 
                     // 重置开始时间，为下次刷新做准备
                     loadStartTime = System.currentTimeMillis()

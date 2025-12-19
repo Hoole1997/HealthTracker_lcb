@@ -54,6 +54,7 @@ class NativeAds private constructor() {
 
     // 累积加载成功次数统计（持久化）
     private var totalLoadSucCount by DataStoreIntDelegate("pdf_f1m4x8n5", 0)
+    private var totalLoadFailCount by DataStoreIntDelegate("native_load_fail_count", 0)
     
     // 累积展示失败次数统计（持久化）
     private var totalShowFailCount by DataStoreIntDelegate("pdf_g3p6y1j7", 0)
@@ -421,11 +422,12 @@ class NativeAds private constructor() {
                     val loadTime = System.currentTimeMillis() - startTime
                     AdLogger.e("原生广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
 
+                    totalLoadFailCount++
                     reportAdData(
                         eventName = "ad_load_fail",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "number" to totalLoadSucCount,
+                            "number" to totalLoadFailCount,
                             "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt(),
                             "reason" to adError.message

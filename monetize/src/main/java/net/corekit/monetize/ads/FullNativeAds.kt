@@ -56,6 +56,7 @@ class FullNativeAds private constructor() {
 
     // 累积加载成功次数统计（持久化）
     private var totalLoadSucCount by DataStoreIntDelegate("pdf_t1w4y6p9", 0)
+    private var totalLoadFailCount by DataStoreIntDelegate("full_native_load_fail_count", 0)
 
     // 累积展示失败次数统计（持久化）
     private var totalShowFailCount by DataStoreIntDelegate("pdf_u7j3m8h4", 0)
@@ -569,11 +570,12 @@ class FullNativeAds private constructor() {
                         adError.message
                     )
 
+                    totalLoadFailCount++
                     reportAdData(
                         eventName = "ad_load_fail",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
-                            "number" to totalLoadSucCount,
+                            "number" to totalLoadFailCount,
                             "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt(),
                             "reason" to adError.message
