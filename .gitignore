@@ -54,5 +54,6 @@ google-services.json
 /.claude
 .windsurfrules
 *.md
+!docs/
+!docs/变更记录_*.md
 /claudedocs
-
