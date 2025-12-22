@@ -48,6 +48,7 @@ google-services.json
 .cxx
 /build
 /app/release
+app/mapping.txt
 /.history
 /.vscode
 /.kotlin
