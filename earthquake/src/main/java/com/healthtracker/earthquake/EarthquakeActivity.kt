@@ -45,8 +45,8 @@ class EarthquakeActivity : BaseMVVMActivity<BaseViewModel, ActivityEarthquakeBin
             tvDepth.text = if (!depth.isNaN()) String.format(Locale.getDefault(), "%.2f km", depth) else "-"
             tvTsunami.text = if (tsunami == 1) "Yes" else "No"
             tvWarning.text = alert?.uppercase(Locale.getDefault()) ?: "-"
-            tvMagType.text = if (!magType.isNullOrBlank()) magType else getString(R.string.mww)
-            tvDataStatus.text = if (!status.isNullOrBlank()) status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } else getString(R.string.reviewed)
+            tvMagType.text = if (!magType.isNullOrBlank()) magType else getString(R.string.ht_mww)
+            tvDataStatus.text = if (!status.isNullOrBlank()) status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } else getString(R.string.ht_reviewed)
 
             if (time > 0) {
                 val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())

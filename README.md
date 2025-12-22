@@ -120,3 +120,10 @@
 - `HistoryViewModel/HealthStatisticsViewModel`：统一/新增关键参数在 `SavedStateHandle` 中读写（例如 `RECORD_TYPE`、`date_range_preset`），支持旋转与进程重建恢复。
 - `build-common`：StringFog 模式由 `base64` 切换为 `bytes`。
 - 工程维护：忽略 `app/mapping.txt`（混淆 mapping 产物）；同时在 `.gitignore` 放行 `README.md`，避免被 `*.md` 规则误伤导致工具链无法读取。
+
+## 2025-12-22 补充变更记录（资源命名规范）
+
+- 范围：仅对 `app` / `weather` / `earthquake` 三个模块自身定义的字符串资源（`<string>` / `<string-array>` / `<plurals>`）进行统一命名调整。
+- 规则：除 `app_name` 外，所有字符串资源名统一添加 `ht_` 前缀；并全量更新工程内引用（XML 的 `@string/@array/@plurals`，以及代码的 `R.string/R.array/R.plurals`）。
+- 目的：统一资源命名空间，降低不同模块/功能迭代中出现“同名资源冲突/误引用”的概率。
+- 验证：已通过 `./gradlew :app:assembleDebug` 编译验证。

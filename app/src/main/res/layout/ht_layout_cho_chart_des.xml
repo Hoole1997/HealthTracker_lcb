@@ -15,7 +15,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cholesterol_tg_label"
+        android:text="@string/ht_cholesterol_tg_label"
         android:textColor="@color/color_999"
         android:textSize="@dimen/sp_11"
         android:layout_marginEnd="@dimen/dp_10"
@@ -30,7 +30,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cholesterol_ldl_label"
+        android:text="@string/ht_cholesterol_ldl_label"
         android:textColor="@color/color_999"
         android:textSize="@dimen/sp_11"
         android:layout_marginEnd="@dimen/dp_10"
@@ -45,7 +45,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cholesterol_hdl_label"
+        android:text="@string/ht_cholesterol_hdl_label"
         android:textColor="@color/color_999"
         android:textSize="@dimen/sp_11"
         style="@style/TextViewFont_RobotoRegular"/>

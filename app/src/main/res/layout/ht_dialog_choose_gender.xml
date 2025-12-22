@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:text="@string/please_choose_your_gender"
+        android:text="@string/ht_please_choose_your_gender"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:checked="true"
-        android:text="@string/male"
+        android:text="@string/ht_male"
         android:textColor="@color/ht_selector_gender_text_color"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="@id/v_male_center"
@@ -117,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/female"
+        android:text="@string/ht_female"
         android:textColor="@color/ht_selector_gender_text_color"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="@id/v_female_center"
@@ -138,7 +138,7 @@
             android:layout_height="@dimen/dp_48"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/ht_cancel" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_ok"
@@ -146,7 +146,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/ht_save" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 

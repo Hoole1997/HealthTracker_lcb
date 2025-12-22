@@ -117,7 +117,7 @@ class FeedbackActivity: BaseMVVMActivity<BaseViewModel, HtActivityFeedbackBindin
         if(goFeedback){
             lifecycleScope.launch {
                 delay(100L)
-                Toaster.show(getString(R.string.feedback_submitted))
+                Toaster.show(getString(R.string.ht_feedback_submitted))
                 finish()
             }
         }
@@ -152,7 +152,7 @@ class FeedbackActivity: BaseMVVMActivity<BaseViewModel, HtActivityFeedbackBindin
     private fun handleAddPhoto() {
         // 检查图片数量限制
         if (photoList.size >= MAX_PHOTO_COUNT) {
-            Toaster.show(getString(R.string.max_upload_photos, MAX_PHOTO_COUNT))
+            Toaster.show(getString(R.string.ht_max_upload_photos, MAX_PHOTO_COUNT))
             return
         }
         
@@ -220,7 +220,7 @@ class FeedbackActivity: BaseMVVMActivity<BaseViewModel, HtActivityFeedbackBindin
                 Toast.makeText(
                     this
                     ,
-                    getString(R.string.feedback_sending_failed),
+                    getString(R.string.ht_feedback_sending_failed),
                     Toast.LENGTH_SHORT
                 ).show()
             }

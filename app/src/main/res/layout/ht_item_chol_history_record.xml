@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_record_time"
-        tools:text="@string/blood_pressure_level_normal" />
+        tools:text="@string/ht_blood_pressure_level_normal" />
 
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/hdl"
+        android:text="@string/ht_hdl"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="@id/tv_hdl_value"
@@ -43,7 +43,7 @@
         style="@style/TextViewFont_RobotoMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/ldl"
+        android:text="@string/ht_ldl"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="@id/tv_ldl_value"
@@ -55,7 +55,7 @@
         style="@style/TextViewFont_RobotoMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tg"
+        android:text="@string/ht_tg"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="@id/tv_tg_value"
@@ -109,7 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/non_hdl"
+        android:text="@string/ht_non_hdl"
         android:textColor="@color/color_999"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="@id/tv_non_hdl_value"
@@ -123,7 +123,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/tc_hdl"
+        android:text="@string/ht_tc_hdl"
         android:textColor="@color/color_999"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="@id/tv_tc_hdl_value"
@@ -137,7 +137,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/tc_hdl"
+        android:text="@string/ht_tc_hdl"
         android:textColor="@color/color_999"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="@id/tv_ldl_hdl_value"

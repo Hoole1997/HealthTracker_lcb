@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:text="@string/please_choose_your_age"
+        android:text="@string/ht_please_choose_your_age"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +40,7 @@
         app:npv_TextSizeNormal="@dimen/sp_24"
         app:npv_TextSizeSelected="@dimen/sp_32"
         app:npv_WrapSelectorWheel="true"
-        tools:npv_TextArray="@array/hours" />
+        tools:npv_TextArray="@array/ht_hours" />
 
     <!-- 顶部渐变遮罩 -->
     <View
@@ -75,7 +75,7 @@
             android:layout_height="@dimen/dp_48"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/ht_cancel" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_ok"
@@ -83,7 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
             android:layout_weight="1"
-            android:text="@string/confirm" />
+            android:text="@string/ht_confirm" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 

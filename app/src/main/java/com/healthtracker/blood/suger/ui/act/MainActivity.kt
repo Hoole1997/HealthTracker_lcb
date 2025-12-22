@@ -131,7 +131,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
             val titleRes = when (position) {
                 0 -> {
                     // Home页面：显示默认状态
-                    R.string.home
+                    R.string.ht_home
                 }
 
                 1 -> {
@@ -142,24 +142,24 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
                     tvMonth.visible()
                     updateMonthDisplay()
                     medFrg?.needLoadAd()
-                    R.string.meds_manager
+                    R.string.ht_meds_manager
                 }
 
                 2 -> {
                     ReportDataManager.reportData("Insights_tab_enter",mapOf())
                     ivSetting.gone()
                     ivRemind.gone()
-                    R.string.insights
+                    R.string.ht_insights
                 }
 
                 3 -> {
                     ReportDataManager.reportData("Tracker_tab_enter",mapOf())
                     // Record页面：隐藏提醒按钮
                     ivRemind.gone()
-                    R.string.tracker
+                    R.string.ht_tracker
                 }
 
-                else -> R.string.home
+                else -> R.string.ht_home
             }
             tvTitle.text = getString(titleRes)
         }
@@ -287,10 +287,10 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
             removeAllTabs()
 
             val tabs = arrayListOf(
-                Pair(R.drawable.ht_selector_nav_home, R.string.home),
-                Pair(R.drawable.ht_selector_nav_meds, R.string.meds),
-                Pair(R.drawable.ht_selector_nav_insights, R.string.insights),
-                Pair(R.drawable.ht_selector_nav_record, R.string.tracker),
+                Pair(R.drawable.ht_selector_nav_home, R.string.ht_home),
+                Pair(R.drawable.ht_selector_nav_meds, R.string.ht_meds),
+                Pair(R.drawable.ht_selector_nav_insights, R.string.ht_insights),
+                Pair(R.drawable.ht_selector_nav_record, R.string.ht_tracker),
 
                 )
 

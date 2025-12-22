@@ -49,18 +49,18 @@ class TargetRangeAdapter(
                 tvLeveDiaValue.text = "≥ ${BsUnit.formatValue(item.ranges.diabetesLow, currentUnit)} $unitText"
 
                 tvLeveLowName.apply {
-                    text = context.getString(R.string.blood_sugar_level_low)
+                    text = context.getString(R.string.ht_blood_sugar_level_low)
                 }
                 tvLeveNormalName.apply {
-                    text = context.getString(R.string.blood_sugar_level_normal)
+                    text = context.getString(R.string.ht_blood_sugar_level_normal)
                 }
 
                 tvLevePreName.apply {
-                    text = context.getString(R.string.blood_sugar_level_prediabetes)
+                    text = context.getString(R.string.ht_blood_sugar_level_prediabetes)
                 }
 
                 tvLeveLowName.apply {
-                    text = context.getString(R.string.blood_sugar_level_diabetes)
+                    text = context.getString(R.string.ht_blood_sugar_level_diabetes)
                 }
 
                 // 点击事件

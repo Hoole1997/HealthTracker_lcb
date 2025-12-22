@@ -294,9 +294,9 @@ class CustomNotificationHelper(
         SpUtils.putInt(KEY_ASSISTANT_CALL_INDEX, nextIndex)
 
         val typeNameRes = when (nextIndex) {
-            0 -> R.string.blood_suger
-            1 -> R.string.blood_pressure
-            else -> R.string.heart_rate
+            0 -> R.string.ht_blood_suger
+            1 -> R.string.ht_blood_pressure
+            else -> R.string.ht_heart_rate
         }
         val typeName = context.getString(typeNameRes)
         val displayDesc = pushMessage.desc.replace(ASSISTANT_TYPE_PLACEHOLDER, typeName)

@@ -82,9 +82,9 @@ class GuideActivity : BaseMVVMActivity<BaseViewModel, HtActivityGuideBinding>() 
                         reportGuide(position + 2)
                     }
                     if (position == frags.size - 1) {
-                        btnNext.text = getString(R.string.start_health_journey)
+                        btnNext.text = getString(R.string.ht_start_health_journey)
                     } else {
-                        btnNext.text = getString(R.string.next)
+                        btnNext.text = getString(R.string.ht_next)
                         if(isShowNative && position == 1){
                             group.gone()
                         }
@@ -235,8 +235,8 @@ class GuideFrag2 : BaseMVVMFragment<BaseViewModel, HtFragmentGuide1Binding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind?.apply {
             ivGuide.setImageResource(R.mipmap.ht_ic_guide_2)
-            tvGuideTitle.text = getString(R.string.guide_title_2)
-            tvGuideDes.text = getString(R.string.guide_2_des)
+            tvGuideTitle.text = getString(R.string.ht_guide_title_2)
+            tvGuideDes.text = getString(R.string.ht_guide_2_des)
         }
 
     }

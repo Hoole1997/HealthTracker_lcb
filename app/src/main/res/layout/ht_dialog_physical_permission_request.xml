@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_48"
 
-            android:text="@string/enable_step_count"
+            android:text="@string/ht_enable_step_count"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_24"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
-            android:text="@string/without_this_authorization_step_count_will_not_work"
+            android:text="@string/ht_without_this_authorization_step_count_will_not_work"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_14"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
             android:layout_marginTop="@dimen/dp_32"
-            android:text="@string/go_to_set"
+            android:text="@string/ht_go_to_set"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_content"/>

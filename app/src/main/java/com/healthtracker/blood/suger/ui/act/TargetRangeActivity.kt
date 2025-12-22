@@ -47,7 +47,7 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, HtActivityTar
             showResetConfirmDialog()
         }
 
-        mViewBind.tvTitle.text = getString(R.string.target_range_temp, BsUnit.getPreferredUnit().displayName)
+        mViewBind.tvTitle.text = getString(R.string.ht_target_range_temp, BsUnit.getPreferredUnit().displayName)
     }
 
     /**
@@ -114,7 +114,7 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, HtActivityTar
                 // 2. 保存范围值
                 mViewModel.saveRanges(status, unit, ranges)
                 hasChanged = true
-                showToast(getString(R.string.save_success))
+                showToast(getString(R.string.ht_save_success))
             }
         ).show(supportFragmentManager, "RangeEditDialog")
     }
@@ -124,17 +124,17 @@ class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, HtActivityTar
      */
     private fun showResetConfirmDialog() {
         ConfirmDialog(
-            getString(R.string.reset),
-            getString(R.string.reset_all_ranges_confirm),
-            leftText = getString(R.string.cancel),
-            rightText = getString(R.string.confirm),
+            getString(R.string.ht_reset),
+            getString(R.string.ht_reset_all_ranges_confirm),
+            leftText = getString(R.string.ht_cancel),
+            rightText = getString(R.string.ht_confirm),
             onDialogListener = object :DialogListener{
                 override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                     super.onItemClick(dialogFragment, which)
                     if(which == R.id.btn_ok){
                         mViewModel.resetAllRanges()
                         hasChanged = true
-                        showToast(getString(R.string.reset_success))
+                        showToast(getString(R.string.ht_reset_success))
                     }
                 }
             }

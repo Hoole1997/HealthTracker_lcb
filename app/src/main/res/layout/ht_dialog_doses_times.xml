@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_6"
         android:gravity="center_horizontal"
-        android:text="@string/number_of_daily_doses"
+        android:text="@string/ht_number_of_daily_doses"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
         app:npv_ItemPaddingVertical="@dimen/dp_10"
         app:npv_ShowDivider="false"
         app:npv_ShownCount="3"
-        tools:npv_TextArray="@array/hours"
+        tools:npv_TextArray="@array/ht_hours"
         app:npv_TextColorNormal="@color/color_BFBFBF"
         app:npv_TextColorSelected="@color/t1"
         app:npv_TextSizeNormal="@dimen/sp_24"
@@ -75,7 +75,7 @@
             android:layout_height="@dimen/dp_48"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/ht_cancel" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_ok"
@@ -83,7 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
             android:layout_weight="1"
-            android:text="@string/confirm" />
+            android:text="@string/ht_confirm" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

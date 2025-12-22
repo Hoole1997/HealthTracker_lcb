@@ -130,7 +130,7 @@ class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, 
             cholesterolStatusView.setCurrentLevel(index)
 
             // 显示专家建议
-            val adviceArray = resources.getStringArray(R.array.cholesterol_level_expert_advice)
+            val adviceArray = resources.getStringArray(R.array.ht_cholesterol_level_expert_advice)
             val adviceIndex = when (cholesterolLevel) {
                 com.healthtracker.blood.suger.data.enums.CholesterolLevel.UNKNOWN -> 0
                 com.healthtracker.blood.suger.data.enums.CholesterolLevel.NORMAL -> 1

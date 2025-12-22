@@ -39,7 +39,7 @@
             android:includeFontPadding="false"
             android:paddingStart="@dimen/dp_44"
             android:paddingEnd="@dimen/dp_44"
-            android:text="@string/result"
+            android:text="@string/ht_result"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -121,7 +121,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
-                android:text="@string/bpm"
+                android:text="@string/ht_bpm"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintBaseline_toBaselineOf="@id/tv_bs_value"
@@ -154,7 +154,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="end"
                 app:layout_constraintStart_toEndOf="@id/tv_bs_value_unit"
-                tools:text="@string/blood_sugar_status_after_exercise" />
+                tools:text="@string/ht_blood_sugar_status_after_exercise" />
 
             <Space
                 android:id="@+id/space"

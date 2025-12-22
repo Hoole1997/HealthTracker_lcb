@@ -22,13 +22,13 @@ object HealthTipsProvider {
      */
     fun pickRandom(metric: HealthMetric): HealthTips {
         val (titlesRes, textsRes) = when (metric) {
-            HealthMetric.BLOOD_PRESSURE -> R.array.health_tips_blood_pressure_titles to R.array.health_tips_blood_pressure_texts
-            HealthMetric.BLOOD_SUGAR -> R.array.health_tips_blood_sugar_titles to R.array.health_tips_blood_sugar_texts
-            HealthMetric.CHOLESTEROL -> R.array.health_tips_cholesterol_titles to R.array.health_tips_cholesterol_texts
-            HealthMetric.HEART_RATE -> R.array.health_tips_heart_rate_titles to R.array.health_tips_heart_rate_texts
-            HealthMetric.BMI -> R.array.health_tips_bmi_titles to R.array.health_tips_bmi_texts
-            HealthMetric.STEPS -> R.array.health_tips_steps_titles to R.array.health_tips_steps_texts
-            HealthMetric.HYDRATION -> R.array.health_tips_hydration_titles to R.array.health_tips_hydration_texts
+            HealthMetric.BLOOD_PRESSURE -> R.array.ht_health_tips_blood_pressure_titles to R.array.ht_health_tips_blood_pressure_texts
+            HealthMetric.BLOOD_SUGAR -> R.array.ht_health_tips_blood_sugar_titles to R.array.ht_health_tips_blood_sugar_texts
+            HealthMetric.CHOLESTEROL -> R.array.ht_health_tips_cholesterol_titles to R.array.ht_health_tips_cholesterol_texts
+            HealthMetric.HEART_RATE -> R.array.ht_health_tips_heart_rate_titles to R.array.ht_health_tips_heart_rate_texts
+            HealthMetric.BMI -> R.array.ht_health_tips_bmi_titles to R.array.ht_health_tips_bmi_texts
+            HealthMetric.STEPS -> R.array.ht_health_tips_steps_titles to R.array.ht_health_tips_steps_texts
+            HealthMetric.HYDRATION -> R.array.ht_health_tips_hydration_titles to R.array.ht_health_tips_hydration_texts
         }
 
         val titles = safeGetStringArray(titlesRes)

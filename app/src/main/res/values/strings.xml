@@ -1,157 +1,157 @@
 <resources>
     <string name="app_name">Blood Sugar &amp; Health Tracker</string>
-    <string name="meds_manager">Medication Manager</string>
-    <string name="blood_suger">Blood Sugar</string>
-    <string name="blood_pressure">Blood Pressure</string>
-    <string name="home">Home</string>
-    <string name="meds">Meds</string>
-    <string name="insights">Insights</string>
-    <string name="tracker">Tracker</string>
-    <string name="record_now">Record Now</string>
+    <string name="ht_meds_manager">Medication Manager</string>
+    <string name="ht_blood_suger">Blood Sugar</string>
+    <string name="ht_blood_pressure">Blood Pressure</string>
+    <string name="ht_home">Home</string>
+    <string name="ht_meds">Meds</string>
+    <string name="ht_insights">Insights</string>
+    <string name="ht_tracker">Tracker</string>
+    <string name="ht_record_now">Record Now</string>
     <!-- 血糖和血压的单位不用翻译   -->
-    <string name="mg_dl" translatable="false">mg/dL</string>
-    <string name="mmol_l" translatable="false">mmol/L</string>
-    <string name="mmHg" translatable="false">mmHg</string>
-    <string name="loading">Loading...</string>
-    <string name="history">History</string>
-    <string name="click_to_record">Click to record</string>
-    <string name="new_record">New Record</string>
-    <string name="edit_record">Edit Record</string>
-    <string name="status">Status</string>
-    <string name="text_default">Default</string>
+    <string name="ht_mg_dl" translatable="false">mg/dL</string>
+    <string name="ht_mmol_l" translatable="false">mmol/L</string>
+    <string name="ht_mmHg" translatable="false">mmHg</string>
+    <string name="ht_loading">Loading...</string>
+    <string name="ht_history">History</string>
+    <string name="ht_click_to_record">Click to record</string>
+    <string name="ht_new_record">New Record</string>
+    <string name="ht_edit_record">Edit Record</string>
+    <string name="ht_status">Status</string>
+    <string name="ht_text_default">Default</string>
 
     <!-- 血糖等级 -->
-    <string name="blood_sugar_level_low">Low</string>
-    <string name="blood_sugar_level_normal">Normal</string>
-    <string name="blood_sugar_level_prediabetes">Pre-diabetes</string>
-    <string name="blood_sugar_level_diabetes">Diabetes</string>
+    <string name="ht_blood_sugar_level_low">Low</string>
+    <string name="ht_blood_sugar_level_normal">Normal</string>
+    <string name="ht_blood_sugar_level_prediabetes">Pre-diabetes</string>
+    <string name="ht_blood_sugar_level_diabetes">Diabetes</string>
 
     <!-- 总胆固醇风险等级 -->
-    <string name="cholesterol_level_normal">Normal</string>
-    <string name="cholesterol_level_normal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
-    <string name="cholesterol_level_near_optimal">Near Optimal</string>
-    <string name="cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
-    <string name="cholesterol_level_borderline">Borderline</string>
-    <string name="cholesterol_level_borderline_desc">TC 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
-    <string name="cholesterol_level_high">High</string>
-    <string name="cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
-    <string name="cholesterol_level_very_high">Very High</string>
-    <string name="cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
-    <string name="cholesterol_level_unknown">Unknown</string>
-    <string name="cholesterol_level_unknown_desc">Insufficient data to determine cholesterol level</string>
-    <string name="cholesterol_total_label">Total Cholesterol</string>
-    <string name="cholesterol_hdl_label">HDL</string>
-    <string name="cholesterol_ldl_label">LDL</string>
-    <string name="cholesterol_tg_label">TG</string>
-    <string name="cholesterol_unit_mg_dl" translatable="false">mg/dL</string>
-    <string name="cholesterol_total_placeholder">--</string>
+    <string name="ht_cholesterol_level_normal">Normal</string>
+    <string name="ht_cholesterol_level_normal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
+    <string name="ht_cholesterol_level_near_optimal">Near Optimal</string>
+    <string name="ht_cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_borderline">Borderline</string>
+    <string name="ht_cholesterol_level_borderline_desc">TC 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_high">High</string>
+    <string name="ht_cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_very_high">Very High</string>
+    <string name="ht_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_unknown">Unknown</string>
+    <string name="ht_cholesterol_level_unknown_desc">Insufficient data to determine cholesterol level</string>
+    <string name="ht_cholesterol_total_label">Total Cholesterol</string>
+    <string name="ht_cholesterol_hdl_label">HDL</string>
+    <string name="ht_cholesterol_ldl_label">LDL</string>
+    <string name="ht_cholesterol_tg_label">TG</string>
+    <string name="ht_cholesterol_unit_mg_dl" translatable="false">mg/dL</string>
+    <string name="ht_cholesterol_total_placeholder">--</string>
 
     <!-- 血压等级 -->
-    <string name="blood_pressure_level_low">hypotension</string>
-    <string name="blood_pressure_level_normal">Normal</string>
-    <string name="blood_pressure_level_elevated">Elevated</string>
-    <string name="blood_pressure_level_high_stage_1">Hypertension Stage 1</string>
-    <string name="blood_pressure_level_high_stage_2">Hypertension Stage 2</string>
-    <string name="blood_pressure_level_hypertensive_crisis">Hypertensive Crisis</string>
+    <string name="ht_blood_pressure_level_low">hypotension</string>
+    <string name="ht_blood_pressure_level_normal">Normal</string>
+    <string name="ht_blood_pressure_level_elevated">Elevated</string>
+    <string name="ht_blood_pressure_level_high_stage_1">Hypertension Stage 1</string>
+    <string name="ht_blood_pressure_level_high_stage_2">Hypertension Stage 2</string>
+    <string name="ht_blood_pressure_level_hypertensive_crisis">Hypertensive Crisis</string>
 
     <!-- 血压范围描述 - 状态显示用（缩写） -->
-    <string name="blood_pressure_range_low_short">SYS %1$s or DIA %2$s</string>
-    <string name="blood_pressure_range_normal_short">SYS %1$s and DIA %2$s</string>
-    <string name="blood_pressure_range_elevated_short">SYS %1$s and DIA %2$s</string>
-    <string name="blood_pressure_range_high_stage_1_short">SYS %1$s or DIA %2$s</string>
-    <string name="blood_pressure_range_high_stage_2_short">SYS %1$s or DIA %2$s</string>
-    <string name="blood_pressure_range_hypertensive_crisis_short">SYS %1$s or DIA %2$s</string>
+    <string name="ht_blood_pressure_range_low_short">SYS %1$s or DIA %2$s</string>
+    <string name="ht_blood_pressure_range_normal_short">SYS %1$s and DIA %2$s</string>
+    <string name="ht_blood_pressure_range_elevated_short">SYS %1$s and DIA %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_1_short">SYS %1$s or DIA %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_2_short">SYS %1$s or DIA %2$s</string>
+    <string name="ht_blood_pressure_range_hypertensive_crisis_short">SYS %1$s or DIA %2$s</string>
 
     <!-- 血压范围描述 - 列表视图用（全写） -->
-    <string name="blood_pressure_range_low_full">Systolic %1$s or Diastolic %2$s</string>
-    <string name="blood_pressure_range_normal_full">Systolic %1$s and Diastolic %2$s</string>
-    <string name="blood_pressure_range_elevated_full">Systolic %1$s and Diastolic %2$s</string>
-    <string name="blood_pressure_range_high_stage_1_full">Systolic %1$s or Diastolic %2$s</string>
-    <string name="blood_pressure_range_high_stage_2_full">Systolic %1$s or Diastolic %2$s</string>
-    <string name="blood_pressure_range_hypertensive_crisis_full">Systolic %1$s or Diastolic %2$s</string>
+    <string name="ht_blood_pressure_range_low_full">Systolic %1$s or Diastolic %2$s</string>
+    <string name="ht_blood_pressure_range_normal_full">Systolic %1$s and Diastolic %2$s</string>
+    <string name="ht_blood_pressure_range_elevated_full">Systolic %1$s and Diastolic %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_1_full">Systolic %1$s or Diastolic %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_2_full">Systolic %1$s or Diastolic %2$s</string>
+    <string name="ht_blood_pressure_range_hypertensive_crisis_full">Systolic %1$s or Diastolic %2$s</string>
 
     <!-- 闹钟通知相关字符串 -->
-    <string name="notification_channel_alarm_name">Health Reminder</string>
-    <string name="notification_channel_alarm_description">Health monitoring reminder notifications</string>
+    <string name="ht_notification_channel_alarm_name">Health Reminder</string>
+    <string name="ht_notification_channel_alarm_description">Health monitoring reminder notifications</string>
 
     <!-- 血糖提醒通知 -->
-    <string name="alarm_blood_sugar_title">Blood Sugar Reminder</string>
-    <string name="alarm_blood_sugar_content">It\'s time to record your blood sugar!</string>
+    <string name="ht_alarm_blood_sugar_title">Blood Sugar Reminder</string>
+    <string name="ht_alarm_blood_sugar_content">It\'s time to record your blood sugar!</string>
 
     <!-- 血压提醒通知 -->
-    <string name="alarm_blood_pressure_title">Blood Pressure Reminder</string>
-    <string name="alarm_blood_pressure_content">It\'s time to record your blood pressure!</string>
+    <string name="ht_alarm_blood_pressure_title">Blood Pressure Reminder</string>
+    <string name="ht_alarm_blood_pressure_content">It\'s time to record your blood pressure!</string>
 
     <!-- 默认健康提醒 -->
-    <string name="alarm_default_title">Health Reminder</string>
-    <string name="alarm_default_content">Please monitor your health on time</string>
+    <string name="ht_alarm_default_title">Health Reminder</string>
+    <string name="ht_alarm_default_content">Please monitor your health on time</string>
 
     <!-- 血压范围具体数值 -->
-    <string name="bp_range_low_sys">&lt; 90</string>
-    <string name="bp_range_low_dia">&lt; 60</string>
-    <string name="bp_range_normal_sys">90–119</string>
-    <string name="bp_range_normal_dia">60–79</string>
-    <string name="bp_range_elevated_sys">120–129</string>
-    <string name="bp_range_elevated_dia">60–79</string>
-    <string name="bp_range_high_stage_1_sys">130–139</string>
-    <string name="bp_range_high_stage_1_dia">80–89</string>
-    <string name="bp_range_high_stage_2_sys">140–180</string>
-    <string name="bp_range_high_stage_2_dia">90–120</string>
-    <string name="bp_range_hypertensive_crisis_sys">&gt; 180</string>
-    <string name="bp_range_hypertensive_crisis_dia">&gt; 120</string>
+    <string name="ht_bp_range_low_sys">&lt; 90</string>
+    <string name="ht_bp_range_low_dia">&lt; 60</string>
+    <string name="ht_bp_range_normal_sys">90–119</string>
+    <string name="ht_bp_range_normal_dia">60–79</string>
+    <string name="ht_bp_range_elevated_sys">120–129</string>
+    <string name="ht_bp_range_elevated_dia">60–79</string>
+    <string name="ht_bp_range_high_stage_1_sys">130–139</string>
+    <string name="ht_bp_range_high_stage_1_dia">80–89</string>
+    <string name="ht_bp_range_high_stage_2_sys">140–180</string>
+    <string name="ht_bp_range_high_stage_2_dia">90–120</string>
+    <string name="ht_bp_range_hypertensive_crisis_sys">&gt; 180</string>
+    <string name="ht_bp_range_hypertensive_crisis_dia">&gt; 120</string>
 
     <!-- 血糖测量状态 -->
-    <string name="blood_sugar_status_default">Default</string>
-    <string name="blood_sugar_status_fasting">Fasting</string>
-    <string name="blood_sugar_status_before_meal">Before meal</string>
-    <string name="blood_sugar_status_bedtime">Before bedtime</string>
-    <string name="blood_sugar_status_after_exercise">After exercise</string>
-    <string name="blood_sugar_status_one_hour_after_meal">1h after meal</string>
-    <string name="blood_sugar_status_before_exercise">Before exercise</string>
-    <string name="blood_sugar_status_two_hours_after_meal">2h after meal</string>
+    <string name="ht_blood_sugar_status_default">Default</string>
+    <string name="ht_blood_sugar_status_fasting">Fasting</string>
+    <string name="ht_blood_sugar_status_before_meal">Before meal</string>
+    <string name="ht_blood_sugar_status_bedtime">Before bedtime</string>
+    <string name="ht_blood_sugar_status_after_exercise">After exercise</string>
+    <string name="ht_blood_sugar_status_one_hour_after_meal">1h after meal</string>
+    <string name="ht_blood_sugar_status_before_exercise">Before exercise</string>
+    <string name="ht_blood_sugar_status_two_hours_after_meal">2h after meal</string>
 
     <!-- 按钮和操作 -->
-    <string name="save">Save</string>
-    <string name="save_changes">Save Changes</string>
-    <string name="cancel">Cancel</string>
-    <string name="saving">Saving...</string>
-    <string name="save_failed">Save failed, please try again</string>
-    <string name="date_time"><![CDATA[Date&Time]]></string>
-    <string name="label">Label</string>
+    <string name="ht_save">Save</string>
+    <string name="ht_save_changes">Save Changes</string>
+    <string name="ht_cancel">Cancel</string>
+    <string name="ht_saving">Saving...</string>
+    <string name="ht_save_failed">Save failed, please try again</string>
+    <string name="ht_date_time"><![CDATA[Date&Time]]></string>
+    <string name="ht_label">Label</string>
 
     <!-- 相对时间显示 -->
-    <string name="latest">Latest</string>
-    <string name="just_now">Just now</string>
-    <string name="seconds_ago">%d seconds ago</string>
-    <string name="minutes_ago">%d minutes ago</string>
-    <string name="hours_ago">%d hours ago</string>
-    <string name="days_ago">%d days ago</string>
-    <string name="systolic">Systolic</string>
-    <string name="diastolic">Diastolic</string>
-    <string name="pulse">Pulse</string>
-    <string name="type">Type</string>
-    <string name="bp_range_des">According to the latest guidelines from the AHA (American Heart Association)</string>
-    <string name="cholesterol_range_des">TC: Total Cholesterol\nHDL: High-Density Lipoprotein\nLDL: Low-Density Lipoprotein\nTG: Triglycerides\nNon-HDL: Non-High-Density Lipoprotein\n\nAccording to the Cleveland Clinic\'s guidelines.</string>
-    <string name="got_it">Got it</string>
-    <string name="details">Details</string>
-    <string name="all_types">All Types</string>
-    <string name="no_records">No Records</string>
-    <string name="load_fail_please_try_again">Load fail,please try again</string>
-    <string name="try_again">Try again</string>
-    <string name="delete_record_remind_title">Delete this record?</string>
-    <string name="tips">Tips</string>
-    <string name="delete_tips_content">Are you sure delete the item?</string>
-    <string name="confirm">Confirm</string>
-    <string name="delete_record_remind">Cannot be recovered after deletion</string>
-    <string name="add_record">Add Record</string>
+    <string name="ht_latest">Latest</string>
+    <string name="ht_just_now">Just now</string>
+    <string name="ht_seconds_ago">%d seconds ago</string>
+    <string name="ht_minutes_ago">%d minutes ago</string>
+    <string name="ht_hours_ago">%d hours ago</string>
+    <string name="ht_days_ago">%d days ago</string>
+    <string name="ht_systolic">Systolic</string>
+    <string name="ht_diastolic">Diastolic</string>
+    <string name="ht_pulse">Pulse</string>
+    <string name="ht_type">Type</string>
+    <string name="ht_bp_range_des">According to the latest guidelines from the AHA (American Heart Association)</string>
+    <string name="ht_cholesterol_range_des">TC: Total Cholesterol\nHDL: High-Density Lipoprotein\nLDL: Low-Density Lipoprotein\nTG: Triglycerides\nNon-HDL: Non-High-Density Lipoprotein\n\nAccording to the Cleveland Clinic\'s guidelines.</string>
+    <string name="ht_got_it">Got it</string>
+    <string name="ht_details">Details</string>
+    <string name="ht_all_types">All Types</string>
+    <string name="ht_no_records">No Records</string>
+    <string name="ht_load_fail_please_try_again">Load fail,please try again</string>
+    <string name="ht_try_again">Try again</string>
+    <string name="ht_delete_record_remind_title">Delete this record?</string>
+    <string name="ht_tips">Tips</string>
+    <string name="ht_delete_tips_content">Are you sure delete the item?</string>
+    <string name="ht_confirm">Confirm</string>
+    <string name="ht_delete_record_remind">Cannot be recovered after deletion</string>
+    <string name="ht_add_record">Add Record</string>
 
-    <string name="assistant_answer">Answer</string>
-    <string name="assistant_neglect">Neglect</string>
-    <string name="alarm_management">Alarm Management</string>
-    <string name="step_stats_max_title">Maximum</string>
-    <string name="step_stats_min_title">Minimum</string>
-    <string name="step_stats_avg_title">Average</string>
-    <string-array name="blood_sugar_labels">
+    <string name="ht_assistant_answer">Answer</string>
+    <string name="ht_assistant_neglect">Neglect</string>
+    <string name="ht_alarm_management">Alarm Management</string>
+    <string name="ht_step_stats_max_title">Maximum</string>
+    <string name="ht_step_stats_min_title">Minimum</string>
+    <string name="ht_step_stats_avg_title">Average</string>
+    <string-array name="ht_blood_sugar_labels">
         <item>Feeling excited</item>
         <item>After cardio</item>
         <item>Feeling down</item>
@@ -162,7 +162,7 @@
         <item>After drinking</item>
     </string-array>
 
-    <string-array name="blood_pressure_labels">
+    <string-array name="ht_blood_pressure_labels">
         <item>Left</item>
         <item>Right</item>
         <item>After medication</item>
@@ -175,7 +175,7 @@
     </string-array>
 
     <!-- BMI classification names (8 levels) -->
-    <string-array name="bmi_level_names">
+    <string-array name="ht_bmi_level_names">
         <item>Very Severely Underweight</item>
         <item>Severely Underweight</item>
         <item>Underweight</item>
@@ -187,17 +187,17 @@
     </string-array>
 
     <!-- BMI classification names (single items for mapping) -->
-    <string name="bmi_level_very_severely_underweight">Very Severely Underweight</string>
-    <string name="bmi_level_severely_underweight">Severely Underweight</string>
-    <string name="bmi_level_underweight">Underweight</string>
-    <string name="bmi_level_normal">Normal</string>
-    <string name="bmi_level_overweight">Overweight</string>
-    <string name="bmi_level_obesity_class_1">Obesity Class I</string>
-    <string name="bmi_level_obesity_class_2">Obesity Class II</string>
-    <string name="bmi_level_obesity_class_3">Obesity Class III</string>
+    <string name="ht_bmi_level_very_severely_underweight">Very Severely Underweight</string>
+    <string name="ht_bmi_level_severely_underweight">Severely Underweight</string>
+    <string name="ht_bmi_level_underweight">Underweight</string>
+    <string name="ht_bmi_level_normal">Normal</string>
+    <string name="ht_bmi_level_overweight">Overweight</string>
+    <string name="ht_bmi_level_obesity_class_1">Obesity Class I</string>
+    <string name="ht_bmi_level_obesity_class_2">Obesity Class II</string>
+    <string name="ht_bmi_level_obesity_class_3">Obesity Class III</string>
 
     <!-- BMI classification ranges (for display) -->
-    <string-array name="bmi_level_ranges" translatable="false">
+    <string-array name="ht_bmi_level_ranges" translatable="false">
         <item>BMI &lt;16.0</item>
         <item>BMI 16.0-16.9</item>
         <item>BMI 17.0-18.4</item>
@@ -209,7 +209,7 @@
     </string-array>
 
     <!-- BMI record tag labels -->
-    <string-array name="bmi_labels">
+    <string-array name="ht_bmi_labels">
         <item>Feeling excited</item>
         <item>After cardio</item>
         <item>Feeling down</item>
@@ -220,7 +220,7 @@
         <item>After drinking</item>
     </string-array>
 
-    <string-array name="systolic" translatable="false">
+    <string-array name="ht_systolic" translatable="false">
         <item>20</item>
         <item>21</item>
         <item>22</item>
@@ -504,7 +504,7 @@
         <item>300</item>
     </string-array>
 
-    <string-array name="pulse" translatable="false">
+    <string-array name="ht_pulse" translatable="false">
         <item>40</item>
         <item>41</item>
         <item>42</item>
@@ -688,7 +688,7 @@
         <item>220</item>
     </string-array>
 
-    <string-array name="hours" translatable="false">
+    <string-array name="ht_hours" translatable="false">
         <item>00</item>
         <item>01</item>
         <item>02</item>
@@ -715,7 +715,7 @@
         <item>23</item>
     </string-array>
 
-    <string-array name="minutes" translatable="false">
+    <string-array name="ht_minutes" translatable="false">
         <item>00</item>
         <item>01</item>
         <item>02</item>
@@ -779,7 +779,7 @@
     </string-array>
 
     <!-- 血糖等级专家建议文案数组 -->
-    <string-array name="bs_level_expert_advice">
+    <string-array name="ht_bs_level_expert_advice">
         <!-- 低血糖建议 -->
         <item>Your blood sugar level is &lt;font color="#3489FE"&gt;&lt;b&gt;low&lt;/b&gt;&lt;/font&gt;, also known as hypoglycemia, it\'s important to take immediate action to raise your blood sugar. Here are some simple suggestions: &lt;br&gt;&lt;b&gt;Consume a fast-acting source of glucose:&lt;/b&gt;&lt;br&gt; Consume 15 to 20 grams of fast-acting carbohydrates to raise your blood sugar quickly. Examples include glucose tablets or gel, fruit juice, regular soda, or a small serving of raisins. &lt;br&gt;&lt;b&gt;Check your blood sugar after 15 minutes:&lt;/b&gt;&lt;br&gt; If it is still low, repeat the process. &lt;br&gt;&lt;b&gt;Follow up with a balanced snack or meal:&lt;/b&gt;&lt;br&gt; Once your blood sugar has risen, it\'s important to stabilize it with a balanced snack or meal containing protein, complex carbohydrates, and healthy fats. This will help maintain your blood sugar at a normal level and prevent another drop. Good options include whole-grain crackers with peanut butter, a small sandwich, or a piece of fruit with a handful of nuts. &lt;br&gt;&lt;b&gt;Discuss with your healthcare provider:&lt;/b&gt;&lt;br&gt; If you frequently experience low blood sugar, it\'s important to discuss it with your healthcare provider. They can evaluate the underlying cause and adjust your treatment plan accordingly. They may recommend changes in your medication regimen, diet, or exercise routine to better manage your blood sugar levels.</item>
 
@@ -794,7 +794,7 @@
     </string-array>
 
 
-    <string-array name="bp_level_expert_advice">
+    <string-array name="ht_bp_level_expert_advice">
         <!-- Low Blood Pressure -->
         <item>
             <![CDATA[
@@ -928,7 +928,7 @@
         </item>
     </string-array>
 
-    <string-array name="week_simple">
+    <string-array name="ht_week_simple">
         <item>Sun</item>
         <item>Mon</item>
         <item>Tue</item>
@@ -937,7 +937,7 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
-    <string-array name="week_full">
+    <string-array name="ht_week_full">
         <item>Sunday</item>
         <item>Monday</item>
         <item>Tuesday</item>
@@ -947,124 +947,124 @@
         <item>Saturday</item>
     </string-array>
 
-    <string name="every_weekday">Every weekday</string>
-    <string name="every_weekend">Every weekend</string>
-    <string name="everyday">Everyday</string>
-    <string name="once">Once</string>
-    <string name="meds_remind_empty">Tap the button below to \nadd your reminders</string>
-    <string name="add">Add</string>
-    <string name="add_reminder">Add Reminder</string>
-    <string name="medication_name">Medication Name</string>
-    <string name="enter_medication_name">Enter Medication Name</string>
-    <string name="number_of_daily_doses">Number of Daily Doses:</string>
-    <string name="notes">Notes</string>
-    <string name="hint_meds_notes">Instructions: After meals, 3x daily.</string>
-    <string name="sync_with_calendar">Sync with Calendar</string>
-    <string name="take_now">Take now</string>
-    <string name="view_now">View_now</string>
-    <string name="edit">Edit</string>
-    <string name="delete">Delete</string>
+    <string name="ht_every_weekday">Every weekday</string>
+    <string name="ht_every_weekend">Every weekend</string>
+    <string name="ht_everyday">Everyday</string>
+    <string name="ht_once">Once</string>
+    <string name="ht_meds_remind_empty">Tap the button below to \nadd your reminders</string>
+    <string name="ht_add">Add</string>
+    <string name="ht_add_reminder">Add Reminder</string>
+    <string name="ht_medication_name">Medication Name</string>
+    <string name="ht_enter_medication_name">Enter Medication Name</string>
+    <string name="ht_number_of_daily_doses">Number of Daily Doses:</string>
+    <string name="ht_notes">Notes</string>
+    <string name="ht_hint_meds_notes">Instructions: After meals, 3x daily.</string>
+    <string name="ht_sync_with_calendar">Sync with Calendar</string>
+    <string name="ht_take_now">Take now</string>
+    <string name="ht_view_now">View_now</string>
+    <string name="ht_edit">Edit</string>
+    <string name="ht_delete">Delete</string>
 
     <!-- 药物提醒通知相关字符串 -->
-    <string name="medication_reminder_title">🔔 Medication Reminder</string>
-    <string name="medication_reminder_content">It is time for your medication, please take it on time and take good care of yourself.</string>
+    <string name="ht_medication_reminder_title">🔔 Medication Reminder</string>
+    <string name="ht_medication_reminder_content">It is time for your medication, please take it on time and take good care of yourself.</string>
 
 
     <!-- 通知权限相关字符串 -->
-    <string name="turn_on">Turn on</string>
-    <string name="notification_permission_title">Stay on track with your health goals</string>
-    <string name="notification_permission_des">Enable notifications to receive timely reminders for water intake, medication, and activities. Never miss a healthy habit again!</string>
-    <string name="close">Close</string>
-    <string name="medication_name_temp">💊 %1$s</string>
-    <string name="meds_notes_temp">📝 %1$s</string>
-    <string name="snooze_5_minutes">5 minutes later</string>
-    <string name="snooze_10_minutes">10 minutes later</string>
-    <string name="snooze_15_minutes">15 minutes later</string>
-    <string name="snooze_30_minutes">30 minutes later</string>
-    <string name="take_medication_now">Take now</string>
-    <string name="every_day_temp">⏰ Every day at %1$s</string>
-    <string name="now_time_temp">📱 Right now it\'s %1$s"</string>
-    <string name="have_reader_privacy">I have read the <font color="#02BC77">Privacy Policy</font></string>
-    <string name="choose_your_gender">Choose your gender</string>
-    <string name="please_choose_your_gender">Please choose your gender</string>
-    <string name="txt_profile_des">This will be used to generate your personalized data</string>
-    <string name="male">Male</string>
-    <string name="female">Female</string>
-    <string name="choose_your_age">choose your age</string>
-    <string name="please_choose_your_age">Please choose your age</string>
-    <string name="text_continue">Continue</string>
-    <string name="take_a_photo">Take a Photo</string>
-    <string name="choose_from_photos">Choose from photos</string>
-    <string name="please_select">Please select</string>
-    <string name="confirm_delete_title">Delete tag</string>
-    <string name="confirm_delete_message">Are you sure you want to delete this tag?</string>
-    <string name="temp_age">Age : %1$s</string>
-    <string name="enter_new_label">Enter new label</string>
-    <string name="add_label">Add label</string>
-    <string name="weight">Weight</string>
-    <string name="height">Height</string>
-    <string name="create_label_failed">Create label failed</string>
-    <string name="heart_rate">Heart Rate</string>
-    <string name="heart_rate_detail_description">Heart rate reflects your cardiovascular response. Track long-term trends and consult your doctor for abnormal readings.</string>
-    <string name="record_time_placeholder">--</string>
-    <string name="heart_rate_no_tags">No tags</string>
-    <string name="record_not_ready">Record is loading</string>
-    <string name="delete_record_failed">Failed to delete record</string>
-    <string name="heart_rate_record_deleted">Record deleted</string>
-    <string name="blood_sugar_record_deleted">Blood sugar record deleted</string>
-    <string name="bpm">BPM</string>
-    <string name="cholesterol">Cholesterol</string>
-    <string name="weight_and_bmi"><![CDATA[Weight & BMI]]></string>
+    <string name="ht_turn_on">Turn on</string>
+    <string name="ht_notification_permission_title">Stay on track with your health goals</string>
+    <string name="ht_notification_permission_des">Enable notifications to receive timely reminders for water intake, medication, and activities. Never miss a healthy habit again!</string>
+    <string name="ht_close">Close</string>
+    <string name="ht_medication_name_temp">💊 %1$s</string>
+    <string name="ht_meds_notes_temp">📝 %1$s</string>
+    <string name="ht_snooze_5_minutes">5 minutes later</string>
+    <string name="ht_snooze_10_minutes">10 minutes later</string>
+    <string name="ht_snooze_15_minutes">15 minutes later</string>
+    <string name="ht_snooze_30_minutes">30 minutes later</string>
+    <string name="ht_take_medication_now">Take now</string>
+    <string name="ht_every_day_temp">⏰ Every day at %1$s</string>
+    <string name="ht_now_time_temp">📱 Right now it\'s %1$s"</string>
+    <string name="ht_have_reader_privacy">I have read the <font color="#02BC77">Privacy Policy</font></string>
+    <string name="ht_choose_your_gender">Choose your gender</string>
+    <string name="ht_please_choose_your_gender">Please choose your gender</string>
+    <string name="ht_txt_profile_des">This will be used to generate your personalized data</string>
+    <string name="ht_male">Male</string>
+    <string name="ht_female">Female</string>
+    <string name="ht_choose_your_age">choose your age</string>
+    <string name="ht_please_choose_your_age">Please choose your age</string>
+    <string name="ht_text_continue">Continue</string>
+    <string name="ht_take_a_photo">Take a Photo</string>
+    <string name="ht_choose_from_photos">Choose from photos</string>
+    <string name="ht_please_select">Please select</string>
+    <string name="ht_confirm_delete_title">Delete tag</string>
+    <string name="ht_confirm_delete_message">Are you sure you want to delete this tag?</string>
+    <string name="ht_temp_age">Age : %1$s</string>
+    <string name="ht_enter_new_label">Enter new label</string>
+    <string name="ht_add_label">Add label</string>
+    <string name="ht_weight">Weight</string>
+    <string name="ht_height">Height</string>
+    <string name="ht_create_label_failed">Create label failed</string>
+    <string name="ht_heart_rate">Heart Rate</string>
+    <string name="ht_heart_rate_detail_description">Heart rate reflects your cardiovascular response. Track long-term trends and consult your doctor for abnormal readings.</string>
+    <string name="ht_record_time_placeholder">--</string>
+    <string name="ht_heart_rate_no_tags">No tags</string>
+    <string name="ht_record_not_ready">Record is loading</string>
+    <string name="ht_delete_record_failed">Failed to delete record</string>
+    <string name="ht_heart_rate_record_deleted">Record deleted</string>
+    <string name="ht_blood_sugar_record_deleted">Blood sugar record deleted</string>
+    <string name="ht_bpm">BPM</string>
+    <string name="ht_cholesterol">Cholesterol</string>
+    <string name="ht_weight_and_bmi"><![CDATA[Weight & BMI]]></string>
 
-    <string name="unit_kg" translatable="false">kg</string>
-    <string name="unit_lb" translatable="false">lbs</string>
-    <string name="unit_cm" translatable="false">cm</string>
-    <string name="unit_in" translatable="false">in</string>
-    <string name="unit_ft_in" translatable="false">ft-in</string>
-    <string name="unit_in_brackets" translatable="false">(%1$s)</string>
-    <string name="value_with_unit">%1$s %2$s</string>
+    <string name="ht_unit_kg" translatable="false">kg</string>
+    <string name="ht_unit_lb" translatable="false">lbs</string>
+    <string name="ht_unit_cm" translatable="false">cm</string>
+    <string name="ht_unit_in" translatable="false">in</string>
+    <string name="ht_unit_ft_in" translatable="false">ft-in</string>
+    <string name="ht_unit_in_brackets" translatable="false">(%1$s)</string>
+    <string name="ht_value_with_unit">%1$s %2$s</string>
 
     <!-- Heart rate -->
-    <string name="heart_rate_status_slow">Slow</string>
-    <string name="heart_rate_status_normal">Normal</string>
-    <string name="heart_rate_status_fast">Fast</string>
-    <string name="heart_rate_desc_slow">Resting heart rate &lt; 60 BPM</string>
-    <string name="heart_rate_desc_normal">Resting heart rate 60–100 BPM</string>
-    <string name="heart_rate_desc_fast">Resting heart rate &gt;100 BPM</string>
-    <string name="total_cholesterol">Total Cholesterol %1$s</string>
-    <string name="hdl">HDL</string>
-    <string name="ldl">LDL</string>
-    <string name="tg">TG</string>
-    <string name="non_hdl">Non-HDL</string>
-    <string name="tc_hdl">TC/HDL</string>
-    <string name="ldl_hdl">LDL/HDL</string>
-    <string name="result">Result</string>
-    <string name="exclusive_advice">Exclusive Advice</string>
-    <string name="bmi">BMI</string>
-    <string name="watch_ads_to_see_exclusive_advice">Watch Ads to see exclusive advice.</string>
-    <string name="get_exclusive_tips">Get Exclusive Tips</string>
-    <string name="kindly_note">Kindly Note</string>
-    <string name="your_health_data_requires">Your health data requires attention.Unlock personalized professional recommendations tailored to your measurements</string>
-    <string name="free_unlock">Free Unlock</string>
-    <string name="guide_title_1">Blood Pressure Health</string>
-    <string name="guide_title_2">Master Blood Pressure Trends</string>
-    <string name="guide_1_des">Record blood pressure data at any time</string>
-    <string name="guide_2_des">Data charts are clear at a glance</string>
-    <string name="guide_3_des">We are designed for personal daily blood pressure tracking and does not offer professional medical advice.
+    <string name="ht_heart_rate_status_slow">Slow</string>
+    <string name="ht_heart_rate_status_normal">Normal</string>
+    <string name="ht_heart_rate_status_fast">Fast</string>
+    <string name="ht_heart_rate_desc_slow">Resting heart rate &lt; 60 BPM</string>
+    <string name="ht_heart_rate_desc_normal">Resting heart rate 60–100 BPM</string>
+    <string name="ht_heart_rate_desc_fast">Resting heart rate &gt;100 BPM</string>
+    <string name="ht_total_cholesterol">Total Cholesterol %1$s</string>
+    <string name="ht_hdl">HDL</string>
+    <string name="ht_ldl">LDL</string>
+    <string name="ht_tg">TG</string>
+    <string name="ht_non_hdl">Non-HDL</string>
+    <string name="ht_tc_hdl">TC/HDL</string>
+    <string name="ht_ldl_hdl">LDL/HDL</string>
+    <string name="ht_result">Result</string>
+    <string name="ht_exclusive_advice">Exclusive Advice</string>
+    <string name="ht_bmi">BMI</string>
+    <string name="ht_watch_ads_to_see_exclusive_advice">Watch Ads to see exclusive advice.</string>
+    <string name="ht_get_exclusive_tips">Get Exclusive Tips</string>
+    <string name="ht_kindly_note">Kindly Note</string>
+    <string name="ht_your_health_data_requires">Your health data requires attention.Unlock personalized professional recommendations tailored to your measurements</string>
+    <string name="ht_free_unlock">Free Unlock</string>
+    <string name="ht_guide_title_1">Blood Pressure Health</string>
+    <string name="ht_guide_title_2">Master Blood Pressure Trends</string>
+    <string name="ht_guide_1_des">Record blood pressure data at any time</string>
+    <string name="ht_guide_2_des">Data charts are clear at a glance</string>
+    <string name="ht_guide_3_des">We are designed for personal daily blood pressure tracking and does not offer professional medical advice.
 For professional health guidance and diagnosis, we strongly encourage you to consult with a qualified
 healthcare provider or medical institution.</string>
-    <string name="disclaimers">Disclaimers</string>
-    <string name="skip">Skip</string>
-    <string name="next">Next</string>
-    <string name="start_health_journey">Start Health Journey!</string>
-    <string name="guide_bp_des">Click to add your first Blood Pressure reading now.</string>
-    <string name="guide_bs_des">Click to add your first Blood Sugar reading now.</string>
-    <string name="guide_hr_des">Click to add your first Heart Rate reading now.</string>
-    <string name="target_range">Target Range</string>
-    <string name="target_range_temp">Target Range(%1$s)</string>
-    <string name="reset">Reset</string>
+    <string name="ht_disclaimers">Disclaimers</string>
+    <string name="ht_skip">Skip</string>
+    <string name="ht_next">Next</string>
+    <string name="ht_start_health_journey">Start Health Journey!</string>
+    <string name="ht_guide_bp_des">Click to add your first Blood Pressure reading now.</string>
+    <string name="ht_guide_bs_des">Click to add your first Blood Sugar reading now.</string>
+    <string name="ht_guide_hr_des">Click to add your first Heart Rate reading now.</string>
+    <string name="ht_target_range">Target Range</string>
+    <string name="ht_target_range_temp">Target Range(%1$s)</string>
+    <string name="ht_reset">Reset</string>
 
-    <string-array name="heart_rate_labels">
+    <string-array name="ht_heart_rate_labels">
         <item>Excited state</item>
         <item>Depression</item>
         <item>Calm</item>
@@ -1076,7 +1076,7 @@ healthcare provider or medical institution.</string>
     </string-array>
 
     <!-- 心率等级专家建议文案数组 -->
-    <string-array name="hr_level_expert_advice">
+    <string-array name="ht_hr_level_expert_advice">
         <!-- 低心率建议 -->
         <item>
             <![CDATA[
@@ -1145,7 +1145,7 @@ healthcare provider or medical institution.</string>
     </string-array>
 
     <!-- BMI 等级专家建议文案数组 -->
-    <string-array name="bmi_level_expert_advice">
+    <string-array name="ht_bmi_level_expert_advice">
         <!-- 严重体重过轻 -->
         <item>Your body weight is critically low and poses a serious risk to your health. Immediate action is necessary to restore a healthy weight. &lt;br&gt;&lt;b&gt;Urgent Medical Consultation:&lt;/b&gt;&lt;br&gt; Seek immediate guidance from a doctor or dietitian to rule out underlying conditions. &lt;br&gt;&lt;b&gt;Structured Nutritional Plan:&lt;/b&gt;&lt;br&gt; Follow a high-calorie, nutrient-dense diet under professional supervision. &lt;br&gt;&lt;b&gt;Monitor Progress:&lt;/b&gt;&lt;br&gt; Track weight gain weekly to ensure you are moving toward a healthier range. &lt;br&gt;&lt;b&gt;Strength Training:&lt;/b&gt;&lt;br&gt; Incorporate gentle resistance exercises to build muscle mass safely.</item>
 
@@ -1172,7 +1172,7 @@ healthcare provider or medical institution.</string>
     </string-array>
 
     <!-- 胆固醇等级专家建议文案数组 -->
-    <string-array name="cholesterol_level_expert_advice">
+    <string-array name="ht_cholesterol_level_expert_advice">
         <!-- UNKNOWN - 数据不足 -->
         <item>Insufficient data to assess cholesterol level. Please ensure you have complete cholesterol measurements including HDL, LDL, Total Cholesterol, and Triglycerides. &lt;br&gt;&lt;b&gt;Complete Testing:&lt;/b&gt;&lt;br&gt; Get a comprehensive lipid panel test from your healthcare provider. &lt;br&gt;&lt;b&gt;Track Your Data:&lt;/b&gt;&lt;br&gt; Keep regular records of all cholesterol measurements. &lt;br&gt;&lt;b&gt;Consult Professional:&lt;/b&gt;&lt;br&gt; Discuss your cholesterol health with a doctor or dietitian.</item>
 
@@ -1193,177 +1193,177 @@ healthcare provider or medical institution.</string>
     </string-array>
 
     <!-- 血糖目标范围设置 -->
-    <string name="please_input_complete_data">Please enter complete data</string>
-    <string name="range_order_error">Range values must be in increasing order</string>
-    <string name="range_bounds_error">Range values are out of acceptable bounds</string>
-    <string name="reset_all_ranges_confirm">Reset all target ranges to default values?</string>
-    <string name="reset_success">Reset successful</string>
-    <string name="save_success">Saved successfully</string>
+    <string name="ht_please_input_complete_data">Please enter complete data</string>
+    <string name="ht_range_order_error">Range values must be in increasing order</string>
+    <string name="ht_range_bounds_error">Range values are out of acceptable bounds</string>
+    <string name="ht_reset_all_ranges_confirm">Reset all target ranges to default values?</string>
+    <string name="ht_reset_success">Reset successful</string>
+    <string name="ht_save_success">Saved successfully</string>
 
     <!-- 健康服务通知渠道 -->
-    <string name="health_service_channel_name">Health Monitoring Service</string>
-    <string name="health_service_channel_description">Displays persistent notification for quick health data recording</string>
+    <string name="ht_health_service_channel_name">Health Monitoring Service</string>
+    <string name="ht_health_service_channel_description">Displays persistent notification for quick health data recording</string>
 
     <!-- 自定义推送通知渠道 -->
-    <string name="custom_notification_channel_name">Health Alerts</string>
-    <string name="custom_notification_channel_description">Reminders for blood sugar, blood pressure, heart rate and more</string>
-    <string name="exit">Exit</string>
-    <string name="are_you_sure_exit">Are you sure want to exit the app?</string>
-    <string name="health_statistics">Health Statistics</string>
-    <string name="_7_days">7 Days</string>
-    <string name="_1_month">1 Month</string>
-    <string name="_3_month">3 Month</string>
-    <string name="select">Select</string>
-    <string name="summary">Summary</string>
-    <string name="avg">Avg</string>
-    <string name="min">Min</string>
-    <string name="max">Max</string>
-    <string name="all_history">All history</string>
-    <string name="health_tips">Health tips</string>
-    <string name="no_date">No date</string>
-    <string name="add_now">Add now</string>
+    <string name="ht_custom_notification_channel_name">Health Alerts</string>
+    <string name="ht_custom_notification_channel_description">Reminders for blood sugar, blood pressure, heart rate and more</string>
+    <string name="ht_exit">Exit</string>
+    <string name="ht_are_you_sure_exit">Are you sure want to exit the app?</string>
+    <string name="ht_health_statistics">Health Statistics</string>
+    <string name="ht__7_days">7 Days</string>
+    <string name="ht__1_month">1 Month</string>
+    <string name="ht__3_month">3 Month</string>
+    <string name="ht_select">Select</string>
+    <string name="ht_summary">Summary</string>
+    <string name="ht_avg">Avg</string>
+    <string name="ht_min">Min</string>
+    <string name="ht_max">Max</string>
+    <string name="ht_all_history">All history</string>
+    <string name="ht_health_tips">Health tips</string>
+    <string name="ht_no_date">No date</string>
+    <string name="ht_add_now">Add now</string>
 
     <!-- 补水 -->
-    <string name="hydrate">Hydrate</string>
-    <string name="walking">Walking</string>
-    <string name="walking_steps">Walking Steps</string>
-    <string name="drink_btn_format">Drink %d %s</string>
-    <string name="hydrate_cup_count_format">You drink %d cups of water today</string>
-    <string name="hydrate_complete_message">Well done! You\'ve finished your water!</string>
-    <string name="done">Done</string>
-    <string name="hydrate_empty_record">No water intake record yet.</string>
-    <string name="unit_ml" translatable="false">ML</string>
-    <string name="hydrate_setting">Setting</string>
-    <string name="daily_water_intake">Daily Water Intake</string>
-    <string name="cup_size">Cup Size</string>
-    <string name="fl_oz">fl oz</string>
-    <string name="ml">ML</string>
-    <string name="hydration_reminder_time">Hydration Reminder Time</string>
-    <string name="hydration_reminder_edit">Edit</string>
-    <string name="hydrate_reminder_delete_confirm_message">Are you sure you want to delete this alarm?</string>
-    <string name="coming_soon_title">Coming Soon!</string>
-    <string name="coming_soon_message">You‘re a time traveler! This day hasn’t arrived yet. Please select a previous date or return to today.</string>
-    <string name="back_to_today">BACK TO TODAY</string>
-    <string name="hydrate_reminder_exist">The reminder time has already been set.</string>
-    <string name="hydrate_reminder_empty_message">You haven‘t set any water reminders yet. Start building your hydration habit by adding your first reminder!</string>
+    <string name="ht_hydrate">Hydrate</string>
+    <string name="ht_walking">Walking</string>
+    <string name="ht_walking_steps">Walking Steps</string>
+    <string name="ht_drink_btn_format">Drink %d %s</string>
+    <string name="ht_hydrate_cup_count_format">You drink %d cups of water today</string>
+    <string name="ht_hydrate_complete_message">Well done! You\'ve finished your water!</string>
+    <string name="ht_done">Done</string>
+    <string name="ht_hydrate_empty_record">No water intake record yet.</string>
+    <string name="ht_unit_ml" translatable="false">ML</string>
+    <string name="ht_hydrate_setting">Setting</string>
+    <string name="ht_daily_water_intake">Daily Water Intake</string>
+    <string name="ht_cup_size">Cup Size</string>
+    <string name="ht_fl_oz">fl oz</string>
+    <string name="ht_ml">ML</string>
+    <string name="ht_hydration_reminder_time">Hydration Reminder Time</string>
+    <string name="ht_hydration_reminder_edit">Edit</string>
+    <string name="ht_hydrate_reminder_delete_confirm_message">Are you sure you want to delete this alarm?</string>
+    <string name="ht_coming_soon_title">Coming Soon!</string>
+    <string name="ht_coming_soon_message">You‘re a time traveler! This day hasn’t arrived yet. Please select a previous date or return to today.</string>
+    <string name="ht_back_to_today">BACK TO TODAY</string>
+    <string name="ht_hydrate_reminder_exist">The reminder time has already been set.</string>
+    <string name="ht_hydrate_reminder_empty_message">You haven‘t set any water reminders yet. Start building your hydration habit by adding your first reminder!</string>
     <!-- Hydration alarm -->
-    <string name="alarm_hydration_content">It’s time to drink water!</string>
-    <string name="drink_now">View Now</string>
-    <string name="medication_notification_title_with_time">%1$s at %2$s</string>
-    <string name="hydrate_quick_add">Quick Add</string>
-    <string name="step_count">Step Count</string>
-    <string name="today">Today</string>
-    <string name="unit_km">km</string>
-    <string name="kcal">Kcal</string>
-    <string name="today_s_goal">Today\'s goal</string>
-    <string name="step_goal">Step Goal</string>
-    <string name="text_steps" translatable="false">Steps</string>
-    <string name="enable_step_count">Physical activity permission required</string>
-    <string name="allow">Allow</string>
-    <string name="without_this_authorization_step_count_will_not_work">Without this authorization, the step-count feature <font color="#02BC77">will not work</font></string>
+    <string name="ht_alarm_hydration_content">It’s time to drink water!</string>
+    <string name="ht_drink_now">View Now</string>
+    <string name="ht_medication_notification_title_with_time">%1$s at %2$s</string>
+    <string name="ht_hydrate_quick_add">Quick Add</string>
+    <string name="ht_step_count">Step Count</string>
+    <string name="ht_today">Today</string>
+    <string name="ht_unit_km">km</string>
+    <string name="ht_kcal">Kcal</string>
+    <string name="ht_today_s_goal">Today\'s goal</string>
+    <string name="ht_step_goal">Step Goal</string>
+    <string name="ht_text_steps" translatable="false">Steps</string>
+    <string name="ht_enable_step_count">Physical activity permission required</string>
+    <string name="ht_allow">Allow</string>
+    <string name="ht_without_this_authorization_step_count_will_not_work">Without this authorization, the step-count feature <font color="#02BC77">will not work</font></string>
 
     <!-- Blood Pressure -->
-    <string-array name="health_tips_blood_pressure_titles">
+    <string-array name="ht_health_tips_blood_pressure_titles">
         <item>Keep Your Pressure Perfect</item>
         <item>Move for Your Heart</item>
         <item>Unwind for Wellness</item>
     </string-array>
-    <string-array name="health_tips_blood_pressure_texts">
+    <string-array name="ht_health_tips_blood_pressure_texts">
         <item>Stay mindful of salt intake and include potassium-rich foods like bananas to help maintain a healthy blood pressure.</item>
         <item>Regular walks and light exercise are great ways to keep your blood vessels flexible and your pressure in check.</item>
         <item>Managing stress through deep breathing or meditation can positively impact your blood pressure levels.</item>
     </string-array>
 
     <!-- Blood Sugar -->
-    <string-array name="health_tips_blood_sugar_titles">
+    <string-array name="ht_health_tips_blood_sugar_titles">
         <item>Balance Your Plate</item>
         <item>Choose Smart Carbs</item>
         <item>Stay Active Every Day</item>
     </string-array>
-    <string-array name="health_tips_blood_sugar_texts">
+    <string-array name="ht_health_tips_blood_sugar_texts">
         <item>Fill half your plate with non-starchy veggies to help keep your blood sugar levels stable after meals.</item>
         <item>Opt for whole grains like oats over refined ones to provide steady energy and avoid sugar spikes.</item>
         <item>A short walk after meals can significantly help your body manage blood sugar more effectively.</item>
     </string-array>
 
     <!-- Cholesterol -->
-    <string-array name="health_tips_cholesterol_titles">
+    <string-array name="ht_health_tips_cholesterol_titles">
         <item>Love Your Fats</item>
         <item>Fill Up on Fiber</item>
         <item>Move for Your Numbers</item>
     </string-array>
-    <string-array name="health_tips_cholesterol_texts">
+    <string-array name="ht_health_tips_cholesterol_texts">
         <item>Choose heart-healthy fats from avocados, nuts, and olive oil to help support healthy cholesterol levels.</item>
         <item>Foods high in soluble fiber, like apples and oats, can help your body manage LDL ("bad") cholesterol.</item>
         <item>Regular physical activity is a key factor in raising HDL ("good") cholesterol and lowering LDL.</item>
     </string-array>
 
     <!-- Heart Rate -->
-    <string-array name="health_tips_heart_rate_titles">
+    <string-array name="ht_health_tips_heart_rate_titles">
         <item>Find Your Calm</item>
         <item>Stay Hydrated, Steady Your Beat</item>
         <item>Consistency is Key</item>
     </string-array>
-    <string-array name="health_tips_heart_rate_texts">
+    <string-array name="ht_health_tips_heart_rate_texts">
         <item>Practices like meditation and deep breathing can help lower your resting heart rate over time.</item>
         <item>Dehydration can make your heart work harder. Drinking enough water helps maintain a normal heart rate.</item>
         <item>Regular, moderate exercise strengthens your heart muscle, helping it pump more efficiently at rest.</item>
     </string-array>
 
     <!-- BMI -->
-    <string-array name="health_tips_bmi_titles">
+    <string-array name="ht_health_tips_bmi_titles">
         <item>Make Every Bite Nutritious</item>
         <item>Build a Sustainable Routine</item>
         <item>Listen to Your Body</item>
     </string-array>
-    <string-array name="health_tips_bmi_texts">
+    <string-array name="ht_health_tips_bmi_texts">
         <item>Focus on a balanced diet rich in whole foods to feel full and support a healthy weight.</item>
         <item>Find physical activities you enjoy, making it easier to stay active and manage your weight long-term.</item>
         <item>Pay attention to hunger and fullness cues to avoid overeating and maintain a healthy balance.</item>
     </string-array>
 
     <!-- Steps -->
-    <string-array name="health_tips_steps_titles">
+    <string-array name="ht_health_tips_steps_titles">
         <item>Step It Up Daily</item>
         <item>Break Up Your Day</item>
         <item>Make Walking a Joy</item>
     </string-array>
-    <string-array name="health_tips_steps_texts">
+    <string-array name="ht_health_tips_steps_texts">
         <item>Aim for a consistent daily step count. Even small increases contribute to better cardiovascular health.</item>
         <item>Set a reminder to stand up and walk for a few minutes every hour to keep your metabolism active.</item>
         <item>Walk with a friend, listen to a podcast, or explore a new park to make your steps enjoyable.</item>
     </string-array>
 
     <!-- Hydration -->
-    <string-array name="health_tips_hydration_titles">
+    <string-array name="ht_health_tips_hydration_titles">
         <item>Start Your Day with Water</item>
         <item>Always Keep a Bottle Nearby</item>
         <item>Eat Your Water</item>
     </string-array>
-    <string-array name="health_tips_hydration_texts">
+    <string-array name="ht_health_tips_hydration_texts">
         <item>Drink a glass of water first thing in the morning to kickstart hydration and your metabolism.</item>
         <item>Having water visible and within reach makes you more likely to sip throughout the day.</item>
         <item>Enjoy fruits and vegetables with high water content, like watermelon and cucumber, to help you stay hydrated.</item>
     </string-array>
-    <string name="go_to_set">GO TO SET</string>
-    <string name="choose_language">Choose Language</string>
-    <string name="language">Language</string>
-    <string name="unit_settings">Unit Settings</string>
-    <string name="target_range_settings">Target Range Settings</string>
-    <string name="personal_info">Personal info</string>
-    <string name="feedback">Feedback</string>
-    <string name="privacy_policy">Privacy Policy</string>
-    <string name="terms_of_service">Terms of Service</string>
-    <string name="setting">Setting</string>
-    <string name="bill_ad_loading">AD loading…</string>
+    <string name="ht_go_to_set">GO TO SET</string>
+    <string name="ht_choose_language">Choose Language</string>
+    <string name="ht_language">Language</string>
+    <string name="ht_unit_settings">Unit Settings</string>
+    <string name="ht_target_range_settings">Target Range Settings</string>
+    <string name="ht_personal_info">Personal info</string>
+    <string name="ht_feedback">Feedback</string>
+    <string name="ht_privacy_policy">Privacy Policy</string>
+    <string name="ht_terms_of_service">Terms of Service</string>
+    <string name="ht_setting">Setting</string>
+    <string name="ht_bill_ad_loading">AD loading…</string>
 
-    <string name="please_tell_more">Please tell us more details so that we can locate and solve your problem faster</string>
-    <string name="upload_screenshots">Upload Screenshots</string>
-    <string name="btn_submit">Submit</string>
-    <string name="feedback_email_title">%s Feedback</string>
-    <string name="feedback_sending_failed">Sending failed, please check your email app.</string>
-    <string name="max_upload_photos">You can upload up to %d photos</string>
-    <string name="feedback_submitted">Submit successfully</string>
-    <string name="last_measurement">Last Measurement : %1$s</string>
+    <string name="ht_please_tell_more">Please tell us more details so that we can locate and solve your problem faster</string>
+    <string name="ht_upload_screenshots">Upload Screenshots</string>
+    <string name="ht_btn_submit">Submit</string>
+    <string name="ht_feedback_email_title">%s Feedback</string>
+    <string name="ht_feedback_sending_failed">Sending failed, please check your email app.</string>
+    <string name="ht_max_upload_photos">You can upload up to %d photos</string>
+    <string name="ht_feedback_submitted">Submit successfully</string>
+    <string name="ht_last_measurement">Last Measurement : %1$s</string>
 
 </resources>

@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toStartOf="@id/iv_arrow"
         app:layout_constraintStart_toEndOf="@id/iv_icon"
         app:layout_constraintTop_toTopOf="@id/iv_icon"
-        tools:text="@string/language" />
+        tools:text="@string/ht_language" />
 
 
     <androidx.appcompat.widget.AppCompatImageView

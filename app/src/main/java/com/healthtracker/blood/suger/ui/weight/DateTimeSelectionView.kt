@@ -51,9 +51,9 @@ class DateTimeSelectionView @JvmOverloads constructor(
             val typedArray = context.obtainStyledAttributes(it, R.styleable.DateTimeSelectionView)
             try {
                 titleText = typedArray.getString(R.styleable.DateTimeSelectionView_titleText) 
-                    ?: context.getString(R.string.date_time)
+                    ?: context.getString(R.string.ht_date_time)
                 labelText = typedArray.getString(R.styleable.DateTimeSelectionView_labelText) 
-                    ?: context.getString(R.string.label)
+                    ?: context.getString(R.string.ht_label)
                 showLabel = typedArray.getBoolean(R.styleable.DateTimeSelectionView_showLabel, true)
             } finally {
                 typedArray.recycle()

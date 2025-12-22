@@ -38,7 +38,7 @@
         app:npv_TextSizeNormal="@dimen/sp_28"
         app:npv_TextSizeSelected="@dimen/sp_28"
         app:npv_WrapSelectorWheel="true"
-        tools:npv_TextArray="@array/hours" />
+        tools:npv_TextArray="@array/ht_hours" />
 
     <!-- 顶部渐变遮罩 -->
     <View
@@ -64,7 +64,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_48"
         android:layout_marginTop="@dimen/dp_20"
-        android:text="@string/save"
+        android:text="@string/ht_save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginHorizontal="@dimen/dp_20"

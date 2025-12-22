@@ -154,11 +154,11 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
 
                     mViewBind.clRecentRecord.visibility = View.VISIBLE
                     mViewBind.tvRecordTitle.text = getString(
-                        R.string.last_measurement, when (item.getRecordType()) {
-                            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> getString(R.string.blood_pressure)
-                            HistoryRecordItem.RecordType.BLOOD_SUGAR -> getString(R.string.blood_suger)
-                            HistoryRecordItem.RecordType.HEART_RATE -> getString(R.string.heart_rate)
-                            HistoryRecordItem.RecordType.BMI_RECORD -> getString(R.string.bmi)
+                        R.string.ht_last_measurement, when (item.getRecordType()) {
+                            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> getString(R.string.ht_blood_pressure)
+                            HistoryRecordItem.RecordType.BLOOD_SUGAR -> getString(R.string.ht_blood_suger)
+                            HistoryRecordItem.RecordType.HEART_RATE -> getString(R.string.ht_heart_rate)
+                            HistoryRecordItem.RecordType.BMI_RECORD -> getString(R.string.ht_bmi)
                             else -> ""
                         }
                     )
@@ -213,10 +213,10 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
                         tvStatus.visibility = View.VISIBLE
                         when (item.getRecordType()) {
                             HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                                tvStatus.text = "${getString(R.string.pulse)}:$status"
+                                tvStatus.text = "${getString(R.string.ht_pulse)}:$status"
                             }
                             HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                                tvStatus.text = "${getString(R.string.status)}:$status"
+                                tvStatus.text = "${getString(R.string.ht_status)}:$status"
                             }
                             else -> {
                                 tvStatus.text = status

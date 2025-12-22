@@ -203,7 +203,7 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, HtActivityAd
             // 更新保存按钮状态和文字
             btnSave.isEnabled = state.isFormValid
             btnSave.text =
-                if (state.isEditMode) getString(R.string.save_changes) else getString(R.string.save)
+                if (state.isEditMode) getString(R.string.ht_save_changes) else getString(R.string.ht_save)
 
             Glide.with(this@AddReminderActivity)
                 .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.ht_ic_camera))
@@ -222,7 +222,7 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, HtActivityAd
 
             is SaveState.Loading -> {
                 mViewBind.btnSave.isEnabled = false
-                mViewBind.btnSave.text = getString(R.string.saving)
+                mViewBind.btnSave.text = getString(R.string.ht_saving)
             }
 
             is SaveState.Success -> {

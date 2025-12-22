@@ -64,7 +64,7 @@ class HeartRateDetailActivity :
             btnEdit.click {
                 mViewModel.currentRecordId()?.let { id ->
                     HeartRateRecordActivity.start(this@HeartRateDetailActivity, id)
-                } ?: showToast(getString(R.string.record_not_ready))
+                } ?: showToast(getString(R.string.ht_record_not_ready))
             }
 
             // 设置专家建议控件监听器
@@ -140,7 +140,7 @@ class HeartRateDetailActivity :
         mViewBind.tvTime.text = DateTimeUtils.formatDateTime(record.recordTime)
         val index = LeveDataFactory.HeartRate.indexFor(record.heartRateBpm)
         mViewBind.bpmStatusView.setCurrentLevel(index)
-        val desArray = resources.getStringArray(R.array.hr_level_expert_advice)
+        val desArray = resources.getStringArray(R.array.ht_hr_level_expert_advice)
         mViewBind.expertAdviceView.setAdviceText(desArray[index])
     }
 
@@ -152,7 +152,7 @@ class HeartRateDetailActivity :
 
     private fun updateTags(tags: List<HealthTag>) {
         mViewBind.tvTags.text = if (tags.isEmpty()) {
-            getString(R.string.heart_rate_no_tags)
+            getString(R.string.ht_heart_rate_no_tags)
         } else {
             tags.joinToString(" · ") { it.name }
         }

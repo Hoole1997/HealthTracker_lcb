@@ -96,11 +96,11 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, HtActivityHydrateBin
             HydrateSettingManager.cupVolumeFlow()
         ) { totalMl: Int, records: List<HydrateRecordItem>, count: Int, cupUnit, cupVolumeMl ->
             val cups = totalMl / 250
-            val unitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.fl_oz) else getString(R.string.unit_ml)
+            val unitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.ht_fl_oz) else getString(R.string.ht_unit_ml)
             val totalSection = HydrateItem.TotalSection(
                 totalIntake = totalMl,
                 unit = unitLabel,
-                description = String.format(this@HydrateActivity.getString(R.string.hydrate_cup_count_format), count),
+                description = String.format(this@HydrateActivity.getString(R.string.ht_hydrate_cup_count_format), count),
                 currentCups = cups,
                 maxCups = 8,
                 cupVolumeMl = cupVolumeMl

@@ -42,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_icon"
         app:layout_constraintTop_toTopOf="@id/iv_icon"
-        tools:text="@string/heart_rate" />
+        tools:text="@string/ht_heart_rate" />
 
     <!-- 空状态图标 -->
     <androidx.appcompat.widget.AppCompatImageView
@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/no_date"
+        android:text="@string/ht_no_date"
         android:textColor="@color/color_999"
         android:textSize="@dimen/sp_11"
         app:layout_constraintEnd_toEndOf="@id/iv_empty"
@@ -79,7 +79,7 @@
         android:clickable="false"
         android:focusable="false"
         android:maxLines="1"
-        android:text="@string/add_now"
+        android:text="@string/ht_add_now"
         app:autoSizeMaxTextSize="@dimen/sp_14"
         app:autoSizeMinTextSize="@dimen/sp_12"
         app:autoSizeStepGranularity="1sp"

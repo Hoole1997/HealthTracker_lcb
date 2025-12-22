@@ -25,7 +25,7 @@ class HydrateCompleteActivity : BaseInterActivity<BaseViewModel, HtActivityHydra
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.apply {
-            tvMessage.setText(R.string.hydrate_complete_message)
+            tvMessage.setText(R.string.ht_hydrate_complete_message)
 
             // 完成按钮
             btnDone.setOnClickListener { finish() }

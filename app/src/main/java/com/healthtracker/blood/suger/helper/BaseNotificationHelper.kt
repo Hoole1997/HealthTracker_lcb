@@ -43,10 +43,10 @@ open class BaseNotificationHelper(private val context: Context) {
                 // 常驻通知通道
                 val residentChannel = NotificationChannel(
                     HealthServiceConstants.CHANNEL_ID_HEALTH_SERVICE,
-                    context.getString(R.string.health_service_channel_name),
+                    context.getString(R.string.ht_health_service_channel_name),
                     NotificationManager.IMPORTANCE_HIGH
                 ).apply {
-                    description = context.getString(R.string.health_service_channel_description)
+                    description = context.getString(R.string.ht_health_service_channel_description)
                     setShowBadge(false)
                     enableLights(false)
                     enableVibration(false)

@@ -29,18 +29,18 @@ class BloodPressureHistoryItem(private val record: BloodPressureRecord) : Histor
     }
     
     override fun getUnit(): String {
-        return App.INSTANCE.getString(R.string.mmHg)
+        return App.INSTANCE.getString(R.string.ht_mmHg)
     }
     
     override fun getLevel(context: Context): String {
         val category = record.getBloodPressureCategoryEnum()
         return when (category) {
-            BloodPressureCategory.LOW -> context.getString(R.string.blood_pressure_level_low)
-            BloodPressureCategory.NORMAL -> context.getString(R.string.blood_pressure_level_normal)
-            BloodPressureCategory.ELEVATED -> context.getString(R.string.blood_pressure_level_elevated)
-            BloodPressureCategory.HIGH_STAGE_1 -> context.getString(R.string.blood_pressure_level_high_stage_1)
-            BloodPressureCategory.HIGH_STAGE_2 -> context.getString(R.string.blood_pressure_level_high_stage_2)
-            BloodPressureCategory.HYPERTENSIVE_CRISIS -> context.getString(R.string.blood_pressure_level_hypertensive_crisis)
+            BloodPressureCategory.LOW -> context.getString(R.string.ht_blood_pressure_level_low)
+            BloodPressureCategory.NORMAL -> context.getString(R.string.ht_blood_pressure_level_normal)
+            BloodPressureCategory.ELEVATED -> context.getString(R.string.ht_blood_pressure_level_elevated)
+            BloodPressureCategory.HIGH_STAGE_1 -> context.getString(R.string.ht_blood_pressure_level_high_stage_1)
+            BloodPressureCategory.HIGH_STAGE_2 -> context.getString(R.string.ht_blood_pressure_level_high_stage_2)
+            BloodPressureCategory.HYPERTENSIVE_CRISIS -> context.getString(R.string.ht_blood_pressure_level_hypertensive_crisis)
             BloodPressureCategory.UNKNOWN -> "UnKnow"
         }
     }

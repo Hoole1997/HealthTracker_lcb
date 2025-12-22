@@ -62,7 +62,7 @@
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:src="@drawable/ht_ic_delete_history"
-        android:contentDescription="@string/delete"
+        android:contentDescription="@string/ht_delete"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"

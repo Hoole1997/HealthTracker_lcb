@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:maxLines="1"
-            android:text="@string/exclusive_advice"
+            android:text="@string/ht_exclusive_advice"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="@id/iv_avatar_bg"
@@ -95,7 +95,7 @@
             android:drawablePadding="@dimen/dp_4"
             android:drawableTop="@mipmap/ht_ic_lock"
             android:gravity="center"
-            android:text="@string/watch_ads_to_see_exclusive_advice"
+            android:text="@string/ht_watch_ads_to_see_exclusive_advice"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_16"
             android:layout_marginTop="@dimen/dp_72"
@@ -131,7 +131,7 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_48"
                 android:layout_weight="1"
-                android:text="@string/cancel" />
+                android:text="@string/ht_cancel" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <!-- 获取提示按钮 -->
@@ -142,7 +142,7 @@
             android:layout_height="@dimen/dp_48"
             android:layout_marginHorizontal="@dimen/dp_32"
             android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/get_exclusive_tips"
+            android:text="@string/ht_get_exclusive_tips"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

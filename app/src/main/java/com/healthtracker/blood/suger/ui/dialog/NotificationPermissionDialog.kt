@@ -58,11 +58,11 @@ class NotificationPermissionDialog(
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {
             // 设置对话框内容
-            tvTitle.text = getString(R.string.notification_permission_title)
-            tvContent.text = getString(R.string.notification_permission_des)
+            tvTitle.text = getString(R.string.ht_notification_permission_title)
+            tvContent.text = getString(R.string.ht_notification_permission_des)
 
             // 设置按钮文本
-            btnAllow.text = getString(R.string.turn_on)
+            btnAllow.text = getString(R.string.ht_turn_on)
             // 设置按钮点击事件
             btnAllow.click {
                 onGoToSettings?.invoke()

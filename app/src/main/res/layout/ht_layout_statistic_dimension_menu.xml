@@ -14,7 +14,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingHorizontal="@dimen/dp_20"
         android:paddingVertical="@dimen/dp_10"
-        android:text="@string/avg"
+        android:text="@string/ht_avg"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_16"/>
 
@@ -25,7 +25,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingHorizontal="@dimen/dp_20"
         android:paddingVertical="@dimen/dp_10"
-        android:text="@string/min"
+        android:text="@string/ht_min"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_16"/>
 
@@ -36,7 +36,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingHorizontal="@dimen/dp_20"
         android:paddingVertical="@dimen/dp_10"
-        android:text="@string/max"
+        android:text="@string/ht_max"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_16"/>
 </LinearLayout>

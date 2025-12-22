@@ -39,7 +39,7 @@
             android:includeFontPadding="false"
             android:paddingStart="@dimen/dp_44"
             android:paddingEnd="@dimen/dp_44"
-            android:text="@string/result"
+            android:text="@string/ht_result"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -112,7 +112,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/color_9AE4C9"
-                android:text="@string/cholesterol_hdl_label"/>
+                android:text="@string/ht_cholesterol_hdl_label"/>
 
             <!-- TC/HDL Label -->
             <androidx.appcompat.widget.AppCompatTextView
@@ -125,7 +125,7 @@
                 app:layout_constraintTop_toTopOf="@id/tv_hdl_label"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/color_9AE4C9"
-                android:text="@string/tc_hdl"/>
+                android:text="@string/ht_tc_hdl"/>
 
             <!-- LDL/HDL Label -->
             <androidx.appcompat.widget.AppCompatTextView
@@ -138,7 +138,7 @@
                 app:layout_constraintTop_toTopOf="@id/tv_hdl_label"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/color_9AE4C9"
-                android:text="@string/ldl_hdl"/>
+                android:text="@string/ht_ldl_hdl"/>
 
 
             <!-- HDL Value -->

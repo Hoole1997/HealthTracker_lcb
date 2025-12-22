@@ -55,7 +55,7 @@
 //            Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 //            intent.setType("application/octet-stream");
 //            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{BuildConfig.FEEDBACK_EMAIL});
-//            String subject = context.getString(R.string.feedback_email_title, context.getString(R.string.app_name));
+//            String subject = context.getString(R.string.ht_feedback_email_title, context.getString(R.string.app_name));
 ////            if (!TextUtils.isEmpty(subAppend)) {
 ////                subject = subject + " " + subAppend;
 ////            }
@@ -83,14 +83,14 @@
 //                Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 //                intent.setType("application/octet-stream");
 //                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
-//                String subject = context.getString(R.string.feedback_email_title, context.getString(R.string.app_name));
+//                String subject = context.getString(R.string.ht_feedback_email_title, context.getString(R.string.app_name));
 //                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
 //                intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //                context.startActivity(Intent.createChooser(intent, subject));
 //            } catch (Throwable e2) {
-//                Toast.makeText(context.getApplicationContext(), context.getString(R.string.feedback_sending_failed), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context.getApplicationContext(), context.getString(R.string.ht_feedback_sending_failed), Toast.LENGTH_SHORT).show();
 //            }
 //        }
 //    }

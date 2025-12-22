@@ -110,7 +110,7 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, HtActivityBpDetailB
             tvDiastolicValue.text = record.diastolicPressure.toString()
             tvPulseValue.text = record.pulseRate.toString()
             tvTime.text = DateTimeUtils.formatDateTime(record.recordTime)
-            val rangeDes = resources.getStringArray(R.array.bp_level_expert_advice)
+            val rangeDes = resources.getStringArray(R.array.ht_bp_level_expert_advice)
             // 设置专家建议文案
             val adviceText = String.format(rangeDes[idx], record.systolicPressure, record.diastolicPressure)
             expertAdviceView.setAdviceText(adviceText)

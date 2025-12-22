@@ -30,7 +30,7 @@
         android:textStyle="bold"
         android:layout_marginHorizontal="@dimen/dp_6"
         android:layout_marginTop="@dimen/dp_22"
-        tools:text="@string/delete_record_remind"/>
+        tools:text="@string/ht_delete_record_remind"/>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -46,7 +46,7 @@
             android:layout_height="@dimen/dp_48"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/ht_cancel" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_ok"
@@ -60,7 +60,7 @@
             app:autoSizeMinTextSize="@dimen/sp_12"
             app:autoSizeStepGranularity="1sp"
             android:layout_weight="1"
-            android:text="@string/confirm" />
+            android:text="@string/ht_confirm" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

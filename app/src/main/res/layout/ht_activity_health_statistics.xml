@@ -38,7 +38,7 @@
             android:includeFontPadding="false"
             android:paddingStart="@dimen/dp_44"
             android:paddingEnd="@dimen/dp_44"
-            android:text="@string/blood_suger"
+            android:text="@string/ht_blood_suger"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -77,7 +77,7 @@
                 android:checked="true"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_16"
-                android:text="@string/_7_days"
+                android:text="@string/ht__7_days"
                 android:textColor="@color/ht_selector_data_range" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
@@ -91,7 +91,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_16"
-                android:text="@string/_1_month"
+                android:text="@string/ht__1_month"
                 android:textColor="@color/ht_selector_data_range" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
@@ -105,7 +105,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_16"
-                android:text="@string/_3_month"
+                android:text="@string/ht__3_month"
                 android:textColor="@color/ht_selector_data_range" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
@@ -121,7 +121,7 @@
                 android:drawablePadding="@dimen/dp_4"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_16"
-                android:text="@string/select"
+                android:text="@string/ht_select"
                 android:textColor="@color/ht_selector_data_range" />
 
         </RadioGroup>
@@ -166,7 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:text="@string/avg"
+                    android:text="@string/ht_avg"
                     android:textColor="@color/c5"
                     android:textSize="@dimen/sp_12"
                     app:layout_constraintEnd_toEndOf="@id/tv_avg_value"
@@ -179,7 +179,7 @@
                     style="@style/TextViewFont_RobotoRegular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/min"
+                    android:text="@string/ht_min"
                     android:textColor="@color/c5"
                     android:textSize="@dimen/sp_12"
                     app:layout_constraintEnd_toStartOf="@id/tv_max"
@@ -192,7 +192,7 @@
                     style="@style/TextViewFont_RobotoRegular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/max"
+                    android:text="@string/ht_max"
                     android:textColor="@color/c5"
                     android:textSize="@dimen/sp_12"
                     app:layout_constraintEnd_toEndOf="@id/tv_max_value"
@@ -259,7 +259,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/tv_date_range"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tv_date_range"
-                    tools:text="@string/text_default"
+                    tools:text="@string/ht_text_default"
                     android:visibility="gone"/>
 
 
@@ -316,7 +316,7 @@
                     style="@style/TextViewFont_RobotoBold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/history"
+                    android:text="@string/ht_history"
                     android:textColor="@color/t1"
                     android:textSize="@dimen/sp_16"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -332,7 +332,7 @@
                     android:drawableEnd="@drawable/ht_ic_status_arrow"
                     android:drawablePadding="@dimen/dp_6"
                     android:gravity="center_vertical"
-                    android:text="@string/all_history"
+                    android:text="@string/ht_all_history"
                     android:textColor="@color/color_999"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -358,7 +358,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/dp_16"
-                android:text="@string/health_tips"
+                android:text="@string/ht_health_tips"
                 android:textColor="@color/t1"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -421,7 +421,7 @@
         android:layout_marginHorizontal="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_15"
         android:gravity="center"
-        android:text="@string/add_record"
+        android:text="@string/ht_add_record"
         app:icon="@drawable/ht_ic_add"
         app:iconGravity="textStart"
         app:layout_constraintBottom_toBottomOf="parent"

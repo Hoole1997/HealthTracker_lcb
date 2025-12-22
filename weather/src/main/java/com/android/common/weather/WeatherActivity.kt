@@ -352,8 +352,8 @@ class WeatherActivity : BaseMVVMActivity<WeatherViewModel, ActivityWeatherBindin
             }
 
             with(mViewBind) {
-                tvHighTemperature.text = getString(R.string.temperature_high, highTemp)
-                tvLowTemperature.text = getString(R.string.temperature_low, lowTemp)
+                tvHighTemperature.text = getString(R.string.ht_temperature_high, highTemp)
+                tvLowTemperature.text = getString(R.string.ht_temperature_low, lowTemp)
             }
             
             // 绑定日出日落时间

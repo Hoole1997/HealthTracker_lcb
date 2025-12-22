@@ -92,7 +92,7 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, HtActivityBsRecordB
             showAppraiseDialog()
 
             editRecordId?.let {
-                tvTitle.text = getString(R.string.edit_record)
+                tvTitle.text = getString(R.string.ht_edit_record)
             }
 
             clRangeTarget.clickWithDuration {
@@ -124,7 +124,7 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, HtActivityBsRecordB
                         lifecycleScope.launch {
                             val id = mViewModel.createCustomTag(tagName)
                             if (id <= 0L) {
-                                showToast(getString(R.string.create_label_failed))
+                                showToast(getString(R.string.ht_create_label_failed))
                             }
                         }
                     }
@@ -246,9 +246,9 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, HtActivityBsRecordB
         this.collect(mViewModel.isLoading) { isLoading ->
             mViewBind.btnSave.isEnabled = !isLoading
             mViewBind.btnSave.text = if (isLoading) {
-                getString(R.string.saving)
+                getString(R.string.ht_saving)
             } else {
-                getString(R.string.save)
+                getString(R.string.ht_save)
             }
         }
 

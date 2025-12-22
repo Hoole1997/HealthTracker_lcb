@@ -97,7 +97,7 @@ class HydrateAdapter(
         private val binding: HtItemHydrateTotalSectionBinding,
         private val onDrinkClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val drinkTextFormat: String = binding.root.context.getString(R.string.drink_btn_format)
+        private val drinkTextFormat: String = binding.root.context.getString(R.string.ht_drink_btn_format)
 
         init {
             binding.drinkMore.setOnClickListener {
@@ -109,7 +109,7 @@ class HydrateAdapter(
                     10
                 }
                 currentDrinkAmountMl += stepMl
-                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.ht_fl_oz) else binding.root.context.getString(R.string.ht_unit_ml)
                 val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
                 binding.drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
             }
@@ -123,7 +123,7 @@ class HydrateAdapter(
                 }
                 val minMl = stepMl
                 currentDrinkAmountMl = max(minMl, currentDrinkAmountMl - stepMl)
-                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.ht_fl_oz) else binding.root.context.getString(R.string.ht_unit_ml)
                 val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
                 binding.drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
             }
@@ -147,7 +147,7 @@ class HydrateAdapter(
                 totalWaterDesc.text = item.description
 
                 // 根据当前选择的饮水量更新按钮文案
-                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.ht_fl_oz) else binding.root.context.getString(R.string.ht_unit_ml)
                 val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
                 drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
 
@@ -236,7 +236,7 @@ class HydrateAdapter(
                         setImageResource(R.mipmap.ht_ic_empty_hydrate_record)
                         adjustViewBounds = true
                         scaleType = ImageView.ScaleType.CENTER_INSIDE
-                        contentDescription = binding.root.context.getString(R.string.hydrate_empty_record)
+                        contentDescription = binding.root.context.getString(R.string.ht_hydrate_empty_record)
                         layoutParams = ConstraintLayout.LayoutParams(
                             dpToPx(150),
                             dpToPx(120)
@@ -251,7 +251,7 @@ class HydrateAdapter(
 
                     val tv = TextView(binding.root.context).apply {
                         id = View.generateViewId()
-                        val emptyHint = binding.root.context.getString(R.string.hydrate_empty_record)
+                        val emptyHint = binding.root.context.getString(R.string.ht_hydrate_empty_record)
                         text = emptyHint
                         setTextColor("#999999".toColorInt())
                         textSize = 14f
@@ -311,7 +311,7 @@ class HydrateAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(value: Int) {
             val cupUnit = HydrateSettingManager.getCupUnit()
-            val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+            val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.ht_fl_oz) else binding.root.context.getString(R.string.ht_unit_ml)
             val displayValue = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(value, HydrateSettingManager.CupUnit.FL_OZ) else value
             binding.tvLabel.text = displayValue.toString()
             binding.tvUnit.text = unitText
@@ -345,7 +345,7 @@ class HydrateAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HydrateRecordItem) {
             val cupUnit = HydrateSettingManager.getCupUnit()
-            val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.fl_oz) else binding.root.context.getString(R.string.unit_ml)
+            val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.ht_fl_oz) else binding.root.context.getString(R.string.ht_unit_ml)
             val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(item.intakeMl, HydrateSettingManager.CupUnit.FL_OZ) else item.intakeMl
             binding.tvAmount.text = displayAmount.toString()
             binding.tvUnit.text = unitText

@@ -28,7 +28,7 @@ class HeartRateHistoryItem(private val record: HeartRateRecord) : HistoryRecordI
     }
 
     override fun getUnit(): String {
-        return App.INSTANCE.getString(R.string.bpm)
+        return App.INSTANCE.getString(R.string.ht_bpm)
     }
 
     override fun getLevel(context: Context): String {

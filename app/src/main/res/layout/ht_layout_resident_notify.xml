@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/dp_2"
             android:textSize="11sp"
             android:textColor="@color/t1"
-            android:text="@string/blood_suger"/>
+            android:text="@string/ht_blood_suger"/>
     </LinearLayout>
 
     <LinearLayout
@@ -49,7 +49,7 @@
             android:layout_marginTop="@dimen/dp_2"
             android:textSize="11sp"
             android:textColor="@color/t1"
-            android:text="@string/blood_pressure"/>
+            android:text="@string/ht_blood_pressure"/>
     </LinearLayout>
 
     <LinearLayout
@@ -71,7 +71,7 @@
             android:layout_marginTop="@dimen/dp_2"
             android:textSize="11sp"
             android:textColor="@color/t1"
-            android:text="@string/heart_rate"/>
+            android:text="@string/ht_heart_rate"/>
     </LinearLayout>
 
 </LinearLayout>

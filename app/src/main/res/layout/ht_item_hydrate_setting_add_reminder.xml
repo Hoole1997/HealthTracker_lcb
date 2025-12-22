@@ -18,7 +18,7 @@
         app:iconTint="@color/white"
         app:iconPadding="@dimen/dp_8"
         app:iconGravity="textStart"
-        android:text="@string/add_reminder"/>
+        android:text="@string/ht_add_reminder"/>
     
 </FrameLayout>
 

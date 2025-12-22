@@ -56,7 +56,7 @@ class HeartRateRecordActivity :
         val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L).let { if (it == -1L) null else it }
         mViewModel.initialize(recordId)
         recordId?.let {
-            mViewBind.tvTitle.text = getString(R.string.edit_record)
+            mViewBind.tvTitle.text = getString(R.string.ht_edit_record)
         }
         setupAction()
         setupNumberPicker()
@@ -130,8 +130,8 @@ class HeartRateRecordActivity :
 
     private fun setupDateTimeView() {
         mViewBind.dateTimeSelectionView.apply {
-            setTitleText(getString(R.string.date_time))
-            setLabelText(getString(R.string.label))
+            setTitleText(getString(R.string.ht_date_time))
+            setLabelText(getString(R.string.ht_label))
             setOnLabelClickListener {
                 val selected = if (addTagIds.isEmpty()) null else {
                     healthTags.filter { tag -> addTagIds.contains(tag.id) }
@@ -152,7 +152,7 @@ class HeartRateRecordActivity :
                         lifecycleScope.launch {
                             val newId = mViewModel.createCustomTag(name)
                             if (newId <= 0L) {
-                                showToast(getString(R.string.create_label_failed))
+                                showToast(getString(R.string.ht_create_label_failed))
                             }
                         }
                     }
@@ -185,7 +185,7 @@ class HeartRateRecordActivity :
 
         collectLatest(mViewModel.isLoading) { loading ->
             mViewBind.btnSave.isEnabled = !loading
-            mViewBind.btnSave.text = if (loading) getString(R.string.saving) else getString(R.string.save)
+            mViewBind.btnSave.text = if (loading) getString(R.string.ht_saving) else getString(R.string.ht_save)
         }
 
         collectLatest(mViewModel.availableTags) { tags ->

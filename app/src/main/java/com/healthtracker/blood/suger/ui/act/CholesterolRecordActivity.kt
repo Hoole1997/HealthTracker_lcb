@@ -61,7 +61,7 @@ class CholesterolRecordActivity :
         val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L).let { if (it == -1L) null else it }
         mViewModel.initialize(recordId)
         recordId?.let {
-            mViewBind.tvTitle.text = getString(R.string.edit_record)
+            mViewBind.tvTitle.text = getString(R.string.ht_edit_record)
         }
         setupActionBar()
         setupNumberPickers()
@@ -166,9 +166,9 @@ class CholesterolRecordActivity :
         collectLatest(mViewModel.isSaving) { saving ->
             mViewBind.btnSave.isEnabled = !saving
             mViewBind.btnSave.text = if (saving) {
-                getString(R.string.saving)
+                getString(R.string.ht_saving)
             } else {
-                getString(R.string.save)
+                getString(R.string.ht_save)
             }
         }
 
@@ -192,7 +192,7 @@ class CholesterolRecordActivity :
     private fun updateMetrics(metrics: CholesterolMetrics) {
         with(mViewBind){
             val totalValue = metrics.totalCholesterol?.let { formatCholesterolValue(it) } ?: "--"
-            tvTc.text = getString(R.string.total_cholesterol,totalValue)
+            tvTc.text = getString(R.string.ht_total_cholesterol,totalValue)
         }
         if (::cholesterolDetailBinding.isInitialized) {
             cholesterolDetailBinding.tvNonHdlValue.text =
@@ -230,7 +230,7 @@ class CholesterolRecordActivity :
             val items = ArrayList(LeveDataFactory.Cholesterol.buildExplainItems(this))
             LevelExplainDialog.show(
                 supportFragmentManager,
-                des = getString(R.string.cholesterol_range_des),
+                des = getString(R.string.ht_cholesterol_range_des),
                 items = items
             )
         }

@@ -81,7 +81,7 @@
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:text="@string/assistant_neglect"
+                    android:text="@string/ht_assistant_neglect"
                     tools:text="Neglect" />
             </LinearLayout>
 
@@ -108,7 +108,7 @@
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:text="@string/assistant_answer"
+                    android:text="@string/ht_assistant_answer"
                     tools:text="Answer" />
             </LinearLayout>
         </LinearLayout>

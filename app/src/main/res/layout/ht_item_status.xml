@@ -13,7 +13,7 @@
         android:id="@+id/tv_satus_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/text_default"
+        android:text="@string/ht_text_default"
         android:textColor="@color/ht_selector_status_item_color"
         android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="parent"

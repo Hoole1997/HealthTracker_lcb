@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_16"
-        android:text="@string/hydrate_quick_add"
+        android:text="@string/ht_hydrate_quick_add"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_18" />
 

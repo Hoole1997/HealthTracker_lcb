@@ -14,7 +14,7 @@
         style="@style/TextViewFont_RobotoBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cup_size"
+        android:text="@string/ht_cup_size"
         android:textColor="@color/t1"
         android:textSize="@dimen/sp_16"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
             android:button="@null"
             android:checked="true"
             android:paddingHorizontal="@dimen/dp_12"
-            android:text="@string/fl_oz"
+            android:text="@string/ht_fl_oz"
             android:gravity="center"
             android:textColor="@color/ht_selector_unit_text_color"
             android:textSize="@dimen/sp_12" />
@@ -53,7 +53,7 @@
             android:button="@null"
             android:gravity="center"
             android:paddingHorizontal="@dimen/dp_12"
-            android:text="@string/ml"
+            android:text="@string/ht_ml"
             android:textColor="@color/ht_selector_unit_text_color"
             android:textSize="@dimen/sp_12" />
 

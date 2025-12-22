@@ -32,7 +32,7 @@
         app:layout_constraintStart_toEndOf="@+id/statusDot"
         app:layout_constraintTop_toTopOf="parent"
 
-        tools:text="@string/blood_pressure_level_normal" />
+        tools:text="@string/ht_blood_pressure_level_normal" />
 
 
     <!-- 血压范围描述文本 -->
@@ -48,7 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/statusDot"
-        tools:text="@string/blood_pressure_range_normal_short" />
+        tools:text="@string/ht_blood_pressure_range_normal_short" />
 
     <!-- 等级进度条（通用 LevelBar） -->
     <com.healthtracker.blood.suger.ui.weight.GenericLevelBar
@@ -93,7 +93,7 @@
         app:layout_constraintBottom_toBottomOf="@id/div_line"
         app:layout_constraintEnd_toStartOf="@id/div_line"
         app:layout_constraintTop_toTopOf="@id/div_line"
-        tools:text="@string/male" />
+        tools:text="@string/ht_male" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_age"

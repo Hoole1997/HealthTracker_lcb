@@ -75,9 +75,9 @@ class HydrateReminderTimeAdapter(
             val position = holder.bindingAdapterPosition
             if (position == RecyclerView.NO_POSITION) return@setOnClickListener
             DeleteHydrateReminderDialog(
-                message = activity.getString(R.string.hydrate_reminder_delete_confirm_message),
-                leftText = activity.getString(R.string.cancel),
-                rightText = activity.getString(R.string.confirm),
+                message = activity.getString(R.string.ht_hydrate_reminder_delete_confirm_message),
+                leftText = activity.getString(R.string.ht_cancel),
+                rightText = activity.getString(R.string.ht_confirm),
                 onDialogListener = object : DialogListener {
                     override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                         if (which == DeleteHydrateReminderDialog.BUTTON_OK) {

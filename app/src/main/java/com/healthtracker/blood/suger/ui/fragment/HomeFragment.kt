@@ -194,7 +194,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
         if (record == null) {
             latestSugerID = null
             mViewBind?.tvLatestBsValue?.text = "--"
-            mViewBind?.tvLatestRecordDate?.text = getString(R.string.click_to_record)
+            mViewBind?.tvLatestRecordDate?.text = getString(R.string.ht_click_to_record)
             return
         }
         latestSugerID = record.id
@@ -235,7 +235,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
      * 更新心率记录UI
      */
     private fun updateHeartRateUI(record: HeartRateRecord?) {
-        val unitText = getString(R.string.bpm)
+        val unitText = getString(R.string.ht_bpm)
         if (record == null) {
             mViewBind?.tvLatestHeartRateValue?.text = "--"
             mViewBind?.tvLatestHeartRateUnit?.text = unitText
@@ -280,7 +280,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
 
         // 如果记录时间在当前时间之后，显示Latest
         if (timeDiff < 0) {
-            return getString(R.string.latest)
+            return getString(R.string.ht_latest)
         }
 
         // 转换为秒
@@ -289,28 +289,28 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             seconds < 60 -> {
                 // Less than 1 minute: show "just now" if 0 seconds, otherwise show "x seconds ago"
                 if (seconds <= 0) {
-                    getString(R.string.just_now)
+                    getString(R.string.ht_just_now)
                 } else {
-                    getString(R.string.seconds_ago, seconds.toInt())
+                    getString(R.string.ht_seconds_ago, seconds.toInt())
                 }
             }
 
             seconds < 3600 -> {
                 // 不满1小时：x分钟前
                 val minutes = seconds / 60
-                getString(R.string.minutes_ago, minutes.toInt())
+                getString(R.string.ht_minutes_ago, minutes.toInt())
             }
 
             seconds < 86400 -> {
                 // 不满1天：x小时前
                 val hours = seconds / 3600
-                getString(R.string.hours_ago, hours.toInt())
+                getString(R.string.ht_hours_ago, hours.toInt())
             }
 
             else -> {
                 // 超过1天：x天前
                 val days = seconds / 86400
-                getString(R.string.days_ago, days.toInt())
+                getString(R.string.ht_days_ago, days.toInt())
             }
         }
     }

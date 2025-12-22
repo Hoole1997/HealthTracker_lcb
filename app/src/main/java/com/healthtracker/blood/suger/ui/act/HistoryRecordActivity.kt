@@ -177,10 +177,10 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, HtActivityHistor
 
     private fun showDeleteConfirm(recordId: Long, recordType: HistoryRecordItem.RecordType) {
         ConfirmDialog(
-            title = getString(R.string.delete_record_remind_title),
-            message = getString(R.string.delete_record_remind),
-            leftText = getString(R.string.cancel),
-            rightText = getString(R.string.confirm),
+            title = getString(R.string.ht_delete_record_remind_title),
+            message = getString(R.string.ht_delete_record_remind),
+            leftText = getString(R.string.ht_cancel),
+            rightText = getString(R.string.ht_confirm),
             onDialogListener = object : DialogListener {
                 override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                     super.onItemClick(dialogFragment, which)
@@ -251,7 +251,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, HtActivityHistor
      */
     private fun updateStatusDisplay(status: BloodSugarStatus?) {
         mViewBind.tvFilterStatu.text =
-            if (status == null) getString(R.string.all_types) else {
+            if (status == null) getString(R.string.ht_all_types) else {
                 getString(getStatusStringRes(status.statusType))
             }
     }

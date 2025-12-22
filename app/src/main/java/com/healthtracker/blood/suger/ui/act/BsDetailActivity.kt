@@ -140,7 +140,7 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, HtActivityBsDetailB
                 val index = LeveDataFactory.BloodSugar.indexFor(value, unit, status)
                 bsStatusView.setCurrentLevel(index)
 
-                val leveDescription = resources.getStringArray(R.array.bs_level_expert_advice)[index]
+                val leveDescription = resources.getStringArray(R.array.ht_bs_level_expert_advice)[index]
                 expertAdviceView.setAdviceText(leveDescription)
             }
 
@@ -153,7 +153,7 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, HtActivityBsDetailB
 
     private fun updateTags(tags: List<com.healthtracker.blood.suger.data.entity.HealthTag>) {
         mViewBind.tvTags.text = if (tags.isEmpty()) {
-            getString(R.string.heart_rate_no_tags)
+            getString(R.string.ht_heart_rate_no_tags)
         } else {
             tags.joinToString(" · ") { it.name }
         }

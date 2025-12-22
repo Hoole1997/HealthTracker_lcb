@@ -52,11 +52,11 @@ class InsightsFragment: BaseMVVMFragment<BaseViewModel, HtFragmentInsightsBindin
     }
 
     private val insightCategories = listOf(
-        InsightCategory(R.string.blood_suger, "blood_sugar"),
-        InsightCategory(R.string.blood_pressure, "blood_pressure"),
-        InsightCategory(R.string.heart_rate, "heart_rate"),
-        InsightCategory(R.string.hydrate, "hydrate"),
-        InsightCategory(R.string.walking, "walking")
+        InsightCategory(R.string.ht_blood_suger, "blood_sugar"),
+        InsightCategory(R.string.ht_blood_pressure, "blood_pressure"),
+        InsightCategory(R.string.ht_heart_rate, "heart_rate"),
+        InsightCategory(R.string.ht_hydrate, "hydrate"),
+        InsightCategory(R.string.ht_walking, "walking")
     )
 
     private fun setupViewPager() {

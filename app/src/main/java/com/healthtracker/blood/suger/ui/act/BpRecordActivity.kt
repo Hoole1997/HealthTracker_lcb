@@ -69,7 +69,7 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, HtActivityBpRecordB
 
             editRecordId?.let {
                 mViewModel.loadEditRecord(it)
-                tvTitle.text = getString(R.string.edit_record)
+                tvTitle.text = getString(R.string.ht_edit_record)
             }
             
             val tfRegular = getRobotoRegular(this@BpRecordActivity)
@@ -129,7 +129,7 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, HtActivityBpRecordB
                         lifecycleScope.launch {
                             val id = mViewModel.createCustomTag(tagName)
                             if (id <= 0L) {
-                                showToast(getString(R.string.create_label_failed))
+                                showToast(getString(R.string.ht_create_label_failed))
                             }
                         }
                     }
@@ -240,9 +240,9 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, HtActivityBpRecordB
             // 可以在这里显示加载状态
             mViewBind.btnSave.isEnabled = !isLoading
             mViewBind.btnSave.text = if (isLoading) {
-                getString(com.healthtracker.blood.suger.R.string.saving)
+                getString(com.healthtracker.blood.suger.R.string.ht_saving)
             } else {
-                getString(com.healthtracker.blood.suger.R.string.save)
+                getString(com.healthtracker.blood.suger.R.string.ht_save)
             }
         }
         
@@ -280,7 +280,7 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, HtActivityBpRecordB
             val items = ArrayList(LeveDataFactory.BloodPressure.buildExplainItems(this))
             LevelExplainDialog.show(
                 supportFragmentManager,
-                des = getString(R.string.bp_range_des),
+                des = getString(R.string.ht_bp_range_des),
                 items = items
             )
         }

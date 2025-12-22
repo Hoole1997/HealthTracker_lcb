@@ -45,7 +45,7 @@ class StatusSelectDialog(
                 .map { status -> StatuItem(status.statusType, getStatusStringRes(status.statusType)) }
                 .toMutableList()
             if (showAllOption) {
-                dataSource.add(0, StatuItem(statuType = -1, displayNameRes = R.string.all_types))
+                dataSource.add(0, StatuItem(statuType = -1, displayNameRes = R.string.ht_all_types))
             }
             it.rvStatus.adapter = StatusAdapter(dataSource)
             it.rvStatus.layoutManager = WrapLayoutLinearLayoutManager(view.context)
@@ -81,7 +81,7 @@ class StatusSelectDialog(
 
                     val statusType = list[position].statuType
                     val displayStatusStr = if(statusType == -1){
-                        tvSatusName.context.getString(R.string.all_types)
+                        tvSatusName.context.getString(R.string.ht_all_types)
                     }else {
                         tvSatusName.context.getString(getStatusStringRes(statusType))
                     }

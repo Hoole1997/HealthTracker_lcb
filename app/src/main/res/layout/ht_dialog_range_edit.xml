@@ -39,7 +39,7 @@
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:paddingHorizontal="@dimen/dp_10"
         android:paddingVertical="@dimen/dp_4"
-        android:text="@string/reset"
+        android:text="@string/ht_reset"
         android:textColor="@color/color_666"
         android:textSize="@dimen/sp_14"
         android:visibility="gone"
@@ -67,7 +67,7 @@
             android:button="@null"
             android:checked="true"
             android:paddingHorizontal="@dimen/dp_12"
-            android:text="@string/mg_dl"
+            android:text="@string/ht_mg_dl"
             android:textColor="@color/ht_selector_unit_text_color"
             android:textSize="@dimen/sp_12" />
 
@@ -78,7 +78,7 @@
             android:background="@drawable/ht_selector_unit_tab"
             android:button="@null"
             android:paddingHorizontal="@dimen/dp_12"
-            android:text="@string/mmol_l"
+            android:text="@string/ht_mmol_l"
             android:textColor="@color/ht_selector_unit_text_color"
             android:textSize="@dimen/sp_12" />
 
@@ -114,7 +114,7 @@
                 android:includeFontPadding="false"
                 android:textColor="@color/t1"
                 android:textSize="@dimen/sp_16"
-                android:text="@string/blood_sugar_level_low" />
+                android:text="@string/ht_blood_sugar_level_low" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextViewFont_RobotoMedium"
@@ -161,7 +161,7 @@
                 android:includeFontPadding="false"
                 android:textColor="@color/t1"
                 android:textSize="@dimen/sp_16"
-                android:text="@string/blood_sugar_level_normal" />
+                android:text="@string/ht_blood_sugar_level_normal" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_normal_value_min"
@@ -219,7 +219,7 @@
                 android:includeFontPadding="false"
                 android:textColor="@color/t1"
                 android:textSize="@dimen/sp_16"
-                android:text="@string/blood_sugar_level_prediabetes" />
+                android:text="@string/ht_blood_sugar_level_prediabetes" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_pre_value_min"
@@ -274,7 +274,7 @@
                 android:includeFontPadding="false"
                 android:textColor="@color/t1"
                 android:textSize="@dimen/sp_16"
-                android:text="@string/blood_sugar_level_diabetes" />
+                android:text="@string/ht_blood_sugar_level_diabetes" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextViewFont_RobotoMedium"
@@ -313,7 +313,7 @@
         android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_8"
         android:backgroundTint="#f6f6f6"
-        android:text="@string/cancel"
+        android:text="@string/ht_cancel"
         android:textColor="@color/color_999"
         app:layout_constraintEnd_toStartOf="@id/btn_save"
         app:layout_constraintStart_toStartOf="parent"
@@ -326,7 +326,7 @@
         android:layout_height="@dimen/dp_48"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_16"
-        android:text="@string/save"
+        android:text="@string/ht_save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_cancel"
         app:layout_constraintTop_toTopOf="@id/btn_cancel" />

@@ -18,7 +18,7 @@
         android:textSize="@dimen/sp_11"
         android:textColor="@color/color_999"
         style="@style/TextViewFont_RobotoRegular"
-        android:text="@string/systolic"/>
+        android:text="@string/ht_systolic"/>
 
     <View
         android:layout_width="@dimen/dp_6"
@@ -32,5 +32,5 @@
         android:textSize="@dimen/sp_11"
         android:textColor="@color/color_999"
         style="@style/TextViewFont_RobotoRegular"
-        android:text="@string/diastolic"/>
+        android:text="@string/ht_diastolic"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

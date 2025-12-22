@@ -223,8 +223,8 @@ class LeveStatusView @JvmOverloads constructor(
 
     fun updateProfile(){
         if (!showProfileInfo) return
-        binding.tvGender.text = context.getString(if (isMale()) R.string.male else R.string.female)
-        binding.tvAge.text = context.getString(R.string.temp_age, getUserAge().toString())
+        binding.tvGender.text = context.getString(if (isMale()) R.string.ht_male else R.string.ht_female)
+        binding.tvAge.text = context.getString(R.string.ht_temp_age, getUserAge().toString())
     }
 
     private fun showAgeDialog() {

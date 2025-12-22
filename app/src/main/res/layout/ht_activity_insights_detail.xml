@@ -36,7 +36,7 @@
             android:includeFontPadding="false"
             android:paddingStart="@dimen/dp_44"
             android:paddingEnd="@dimen/dp_44"
-            android:text="@string/insights"
+            android:text="@string/ht_insights"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -79,7 +79,7 @@
                 android:layout_marginTop="@dimen/dp_12"
                 app:layout_constraintDimensionRatio="343:186"
                 app:round="@dimen/dp_12"
-                android:contentDescription="@string/insights"
+                android:contentDescription="@string/ht_insights"
                 android:layout_marginBottom="@dimen/dp_16"
                 app:layout_constraintTop_toBottomOf="@id/tv_article_title"/>
 

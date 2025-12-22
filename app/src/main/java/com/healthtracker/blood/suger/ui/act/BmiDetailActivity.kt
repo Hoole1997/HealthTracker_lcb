@@ -173,7 +173,7 @@ class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, HtActivityBmiDeta
         }
 
         // Get expert advice from resources based on BMI category
-        val adviceArray = resources.getStringArray(R.array.bmi_level_expert_advice)
+        val adviceArray = resources.getStringArray(R.array.ht_bmi_level_expert_advice)
         val categoryIndex = LeveDataFactory.BMI.indexFor(mViewModel.calculateBmi() ?: 0f)
 
         if (categoryIndex in adviceArray.indices) {

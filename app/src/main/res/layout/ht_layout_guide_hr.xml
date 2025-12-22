@@ -23,7 +23,7 @@
         android:textColor="@color/t1"
         android:paddingVertical="@dimen/dp_16"
         android:paddingHorizontal="@dimen/dp_13"
-        android:text="@string/guide_bs_des"
+        android:text="@string/ht_guide_bs_des"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

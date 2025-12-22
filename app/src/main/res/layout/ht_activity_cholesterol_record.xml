@@ -38,7 +38,7 @@
             android:includeFontPadding="false"
             android:paddingStart="@dimen/dp_44"
             android:paddingEnd="@dimen/dp_44"
-            android:text="@string/new_record"
+            android:text="@string/ht_new_record"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:text="@string/cholesterol_hdl_label"
+                    android:text="@string/ht_cholesterol_hdl_label"
                     android:textColor="@color/t1"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintEnd_toStartOf="@id/tv_ldl"
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:text="@string/cholesterol_ldl_label"
+                    android:text="@string/ht_cholesterol_ldl_label"
                     android:textColor="@color/t1"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintEnd_toStartOf="@id/tv_tg"
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:text="@string/cholesterol_tg_label"
+                    android:text="@string/ht_cholesterol_tg_label"
                     android:textColor="@color/t1"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -124,7 +124,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_hdl"
                     app:npv_ItemPaddingVertical="@dimen/dp_4"
                     app:npv_ShowDivider="false"
-                    tools:npv_TextArray="@array/systolic"
+                    tools:npv_TextArray="@array/ht_systolic"
                     app:npv_TextColorNormal="@color/color_BFBFBF"
                     app:npv_TextColorSelected="@color/c5"
                     app:npv_TextSizeNormal="@dimen/sp_24"
@@ -142,7 +142,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_ldl"
                     app:npv_ItemPaddingVertical="@dimen/dp_4"
                     app:npv_ShowDivider="false"
-                    tools:npv_TextArray="@array/systolic"
+                    tools:npv_TextArray="@array/ht_systolic"
                     app:npv_TextColorNormal="@color/color_BFBFBF"
                     app:npv_TextColorSelected="@color/c5"
                     app:npv_TextSizeNormal="@dimen/sp_24"
@@ -160,7 +160,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_tg"
                     app:npv_ItemPaddingVertical="@dimen/dp_4"
                     app:npv_ShowDivider="false"
-                    tools:npv_TextArray="@array/systolic"
+                    tools:npv_TextArray="@array/ht_systolic"
                     app:npv_TextColorNormal="@color/color_BFBFBF"
                     app:npv_TextColorSelected="@color/c5"
                     app:npv_TextSizeNormal="@dimen/sp_24"
@@ -198,7 +198,7 @@
                     android:layout_marginTop="@dimen/dp_16"
                     android:textSize="@dimen/sp_16"
                     android:textColor="@color/color_666"
-                    tools:text="@string/total_cholesterol"/>
+                    tools:text="@string/ht_total_cholesterol"/>
 
                 <com.healthtracker.blood.suger.ui.weight.LeveStatusView
                     android:id="@+id/lsv_status"
@@ -222,7 +222,7 @@
                 android:layout_marginTop="@dimen/dp_12"
                 app:layout_constraintTop_toBottomOf="@id/cl_picker_container"
                 app:showLabel="false"
-                app:titleText="@string/date_time" />
+                app:titleText="@string/ht_date_time" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
@@ -240,7 +240,7 @@
         android:layout_height="@dimen/dp_48"
         android:layout_marginHorizontal="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_15"
-        android:text="@string/save"
+        android:text="@string/ht_save"
         app:layout_constraintBottom_toTopOf="@id/ad_Container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

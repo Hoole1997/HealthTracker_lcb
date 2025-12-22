@@ -63,7 +63,7 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, HtActivityBmiRec
         with(mViewBind) {
             btnBack.clickWithDuration { onBackPress() }
             editRecordId?.let {
-                tvTitle.text = getString(R.string.edit_record)
+                tvTitle.text = getString(R.string.ht_edit_record)
             }
             // 体重/身高编辑：复用通用输入 BottomSheet
             clWeight.clickWithDuration {
@@ -126,7 +126,7 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, HtActivityBmiRec
                         lifecycleScope.launch {
                             val id = mViewModel.createCustomTag(tagName)
                             if (id <= 0L) {
-                                showToast(getString(R.string.create_label_failed))
+                                showToast(getString(R.string.ht_create_label_failed))
                             }
                         }
                     }
@@ -222,9 +222,9 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, HtActivityBmiRec
         this.collectLatest(mViewModel.isLoading) { isLoading ->
             mViewBind.btnSave.isEnabled = !isLoading
             mViewBind.btnSave.text = if (isLoading) {
-                getString(R.string.saving)
+                getString(R.string.ht_saving)
             } else {
-                getString(R.string.save)
+                getString(R.string.ht_save)
             }
         }
 
@@ -289,11 +289,11 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, HtActivityBmiRec
 
     private fun getUnitLabelText(isWeight: Boolean, unit: BmiUnit): String {
         val unitName = when {
-            isWeight && unit == BmiUnit.METRIC -> getString(R.string.unit_kg)
-            isWeight && unit == BmiUnit.IMPERIAL -> getString(R.string.unit_lb)
-            !isWeight && unit == BmiUnit.METRIC -> getString(R.string.unit_cm)
-            else -> getString(R.string.unit_ft_in)
+            isWeight && unit == BmiUnit.METRIC -> getString(R.string.ht_unit_kg)
+            isWeight && unit == BmiUnit.IMPERIAL -> getString(R.string.ht_unit_lb)
+            !isWeight && unit == BmiUnit.METRIC -> getString(R.string.ht_unit_cm)
+            else -> getString(R.string.ht_unit_ft_in)
         }
-        return getString(R.string.unit_in_brackets, unitName.lowercase())
+        return getString(R.string.ht_unit_in_brackets, unitName.lowercase())
     }
 }

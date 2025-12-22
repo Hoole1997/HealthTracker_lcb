@@ -108,9 +108,9 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<HtDialogBmiPickerBinding>(
     private fun setupTitle() {
         mViewBind?.tvTitle?.text = getString(
             if (isWeightMode()) {
-                R.string.weight
+                R.string.ht_weight
             } else {
-                R.string.height
+                R.string.ht_height
             }
         )
     }
@@ -227,10 +227,10 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<HtDialogBmiPickerBinding>(
 
     private fun getUnitLabel(isWeight: Boolean, unit: BmiUnit): String {
         val resId = when {
-            isWeight && unit == BmiUnit.METRIC -> R.string.unit_kg
-            isWeight && unit == BmiUnit.IMPERIAL -> R.string.unit_lb
-            !isWeight && unit == BmiUnit.METRIC -> R.string.unit_cm
-            else -> R.string.unit_in
+            isWeight && unit == BmiUnit.METRIC -> R.string.ht_unit_kg
+            isWeight && unit == BmiUnit.IMPERIAL -> R.string.ht_unit_lb
+            !isWeight && unit == BmiUnit.METRIC -> R.string.ht_unit_cm
+            else -> R.string.ht_unit_in
         }
         return getString(resId)
     }

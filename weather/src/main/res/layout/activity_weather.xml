@@ -195,7 +195,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/dp_16"
-                        android:text="@string/wind_speed"
+                        android:text="@string/ht_wind_speed"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_18"
                         app:layout_constraintEnd_toStartOf="@id/v_middle_div"
@@ -253,7 +253,7 @@
                         app:layout_constraintStart_toEndOf="@id/iv_precipitation"
                         app:layout_constraintTop_toTopOf="@id/tv_wind_speed"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:text="@string/precip" />
+                        android:text="@string/ht_precip" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_precipitation_percent"
@@ -306,7 +306,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_18"
                     app:layout_constraintTop_toBottomOf="@id/cl_wind_and_precip"
-                    android:text="@string/daily_5_days" />
+                    android:text="@string/ht_daily_5_days" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_5_day_weather"
@@ -347,7 +347,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_18"
                     app:layout_constraintTop_toBottomOf="@id/rv_5_day_weather"
-                    android:text="@string/more_details" />
+                    android:text="@string/ht_more_details" />
 
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -396,7 +396,7 @@
                     style="@style/TextViewFont_RobotoRegular"
                     app:layout_constraintStart_toStartOf="@id/tv_humidity_value"
                     app:layout_constraintTop_toBottomOf="@id/tv_humidity_value"
-                    android:text="@string/humidity"/>
+                    android:text="@string/ht_humidity"/>
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_uv"
@@ -432,7 +432,7 @@
                     style="@style/TextViewFont_RobotoRegular"
                     app:layout_constraintStart_toStartOf="@id/tv_uv_value"
                     app:layout_constraintTop_toBottomOf="@id/tv_uv_value"
-                    android:text="@string/uv_index"/>
+                    android:text="@string/ht_uv_index"/>
 
 
                 <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -518,7 +518,7 @@
                     style="@style/TextViewFont_RobotoRegular"
                     app:layout_constraintStart_toStartOf="@id/tv_pressure_value"
                     app:layout_constraintTop_toBottomOf="@id/tv_pressure_value"
-                    android:text="@string/pressure"/>
+                    android:text="@string/ht_pressure"/>
 
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -553,7 +553,7 @@
                     style="@style/TextViewFont_RobotoRegular"
                     app:layout_constraintStart_toStartOf="@id/tv_visibility_value"
                     app:layout_constraintTop_toBottomOf="@id/tv_visibility_value"
-                    android:text="@string/visibility"/>
+                    android:text="@string/ht_visibility"/>
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_visibility_unit"
@@ -613,7 +613,7 @@
                     style="@style/TextViewFont_RobotoRegular"
                     app:layout_constraintStart_toStartOf="@id/tv_sunrise_value"
                     app:layout_constraintTop_toBottomOf="@id/tv_sunrise_value"
-                    android:text="@string/sunrise"/>
+                    android:text="@string/ht_sunrise"/>
 
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -649,7 +649,7 @@
                     style="@style/TextViewFont_RobotoRegular"
                     app:layout_constraintStart_toStartOf="@id/tv_sunset_value"
                     app:layout_constraintTop_toBottomOf="@id/tv_sunset_value"
-                    android:text="@string/sunset"/>
+                    android:text="@string/ht_sunset"/>
 
                 <View
                     android:id="@+id/v_line_center"

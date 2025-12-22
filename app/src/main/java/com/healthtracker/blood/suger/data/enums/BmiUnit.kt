@@ -177,15 +177,15 @@ enum class BmiUnit(
         }
 
         fun getWeightUnitLabel() = if (getPreferredWeightUnit() == METRIC) {
-            App.INSTANCE.getString(R.string.unit_kg)
+            App.INSTANCE.getString(R.string.ht_unit_kg)
         } else {
-            App.INSTANCE.getString(R.string.unit_lb)
+            App.INSTANCE.getString(R.string.ht_unit_lb)
         }
 
         fun getHeightUnitLabel() = if (getPreferredWeightUnit() == METRIC) {
-            App.INSTANCE.getString(R.string.unit_cm)
+            App.INSTANCE.getString(R.string.ht_unit_cm)
         } else {
-            App.INSTANCE.getString(R.string.unit_ft_in)
+            App.INSTANCE.getString(R.string.ht_unit_ft_in)
         }
     }
 

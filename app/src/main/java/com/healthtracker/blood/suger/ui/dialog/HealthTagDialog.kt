@@ -177,14 +177,14 @@ class HealthTagDialog(
      */
     private fun updateTagsData() {
         val labelsArray = when (tagType) {
-            TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.blood_sugar_labels)
-            TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.blood_pressure_labels)
+            TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.ht_blood_sugar_labels)
+            TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.ht_blood_pressure_labels)
             TagType.BMI -> {
-                val resId = resources.getIdentifier("bmi_labels", "array", requireContext().packageName)
+                val resId = resources.getIdentifier("ht_bmi_labels", "array", requireContext().packageName)
                 if (resId != 0) resources.getStringArray(resId) else emptyArray()
             }
             TagType.HEART_RATE -> {
-                val resId = resources.getIdentifier("heart_rate_labels", "array", requireContext().packageName)
+                val resId = resources.getIdentifier("ht_heart_rate_labels", "array", requireContext().packageName)
                 if (resId != 0) resources.getStringArray(resId) else emptyArray()
             }
         }
@@ -211,8 +211,8 @@ class HealthTagDialog(
     private fun handleTagSelection(tag: HealthTag) {
         if (isDeleteMode) {
             ConfirmDialog(
-                getString(R.string.confirm_delete_title),
-                getString(R.string.confirm_delete_message),
+                getString(R.string.ht_confirm_delete_title),
+                getString(R.string.ht_confirm_delete_message),
                 object : DialogListener {
                     override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                         super.onItemClick(dialogFragment, which)
@@ -233,8 +233,8 @@ class HealthTagDialog(
                     }
 
                 },
-                getString(R.string.cancel),
-                getString(R.string.delete)
+                getString(R.string.ht_cancel),
+                getString(R.string.ht_delete)
             ).show(childFragmentManager)
             return
         }

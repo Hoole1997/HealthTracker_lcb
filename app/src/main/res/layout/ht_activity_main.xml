@@ -23,7 +23,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:gravity="start"
             android:includeFontPadding="false"
-            android:text="@string/home"
+            android:text="@string/ht_home"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_18"
             app:layout_constraintBottom_toBottomOf="parent"

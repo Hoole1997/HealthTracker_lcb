@@ -251,10 +251,10 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, HtFragmentMedsBinding>() {
       */
      private fun showDeleteConfirmDialog(item: MedsReminderItem) {
          ConfirmDialog(
-             title = getString(R.string.tips),
-             message = getString(R.string.delete_tips_content),
-             leftText = getString(R.string.cancel),
-             rightText = getString(R.string.confirm),
+             title = getString(R.string.ht_tips),
+             message = getString(R.string.ht_delete_tips_content),
+             leftText = getString(R.string.ht_cancel),
+             rightText = getString(R.string.ht_confirm),
              onDialogListener = object : DialogListener {
                  override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                      super.onItemClick(dialogFragment, which)

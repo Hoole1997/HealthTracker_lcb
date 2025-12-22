@@ -36,9 +36,9 @@ class ComingSoonDialog(
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {
-            tvTitle.text = context?.getString(com.healthtracker.blood.suger.R.string.coming_soon_title)
-            tvMessage.text = context?.getString(com.healthtracker.blood.suger.R.string.coming_soon_message)
-            btnBackToday.text = context?.getString(com.healthtracker.blood.suger.R.string.back_to_today)
+            tvTitle.text = context?.getString(com.healthtracker.blood.suger.R.string.ht_coming_soon_title)
+            tvMessage.text = context?.getString(com.healthtracker.blood.suger.R.string.ht_coming_soon_message)
+            btnBackToday.text = context?.getString(com.healthtracker.blood.suger.R.string.ht_back_to_today)
 
             btnBackToday.click {
                 onBackToToday?.invoke()

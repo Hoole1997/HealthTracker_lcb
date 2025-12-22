@@ -76,10 +76,10 @@ class AlarmNotificationManager(
                 // 统一的健康提醒通知渠道（合并了血糖和血压提醒）
                 val alarmChannel = NotificationChannel(
                     CHANNEL_ID_ALARM,
-                    context.getString(R.string.notification_channel_alarm_name),
+                    context.getString(R.string.ht_notification_channel_alarm_name),
                     NotificationManager.IMPORTANCE_HIGH
                 ).apply {
-                    description = context.getString(R.string.notification_channel_alarm_description)
+                    description = context.getString(R.string.ht_notification_channel_alarm_description)
                     enableVibration(true)
                     enableLights(true)
                     setShowBadge(true)
@@ -251,8 +251,8 @@ class AlarmNotificationManager(
                 Triple(
 
                     alarmRecord.getFormattedTime(),
-                    context.getString(R.string.alarm_blood_sugar_content),
-                    context.getString(R.string.record_now)
+                    context.getString(R.string.ht_alarm_blood_sugar_content),
+                    context.getString(R.string.ht_record_now)
 
                 )
             }
@@ -260,32 +260,32 @@ class AlarmNotificationManager(
                 Triple(
 
                     alarmRecord.getFormattedTime(),
-                    context.getString(R.string.alarm_blood_pressure_content),
-                    context.getString(R.string.record_now)
+                    context.getString(R.string.ht_alarm_blood_pressure_content),
+                    context.getString(R.string.ht_record_now)
                 )
             }
             AlarmRecord.TYPE_MEDICATION -> {
                 Triple(
 
                     alarmRecord.getFormattedTime(),
-                    context.getString(R.string.medication_reminder_content),
-                    context.getString(R.string.take_now)
+                    context.getString(R.string.ht_medication_reminder_content),
+                    context.getString(R.string.ht_take_now)
                 )
             }
             AlarmRecord.TYPE_HYDRATION -> {
                 Triple(
                     alarmRecord.getFormattedTime(),
-                    context.getString(R.string.alarm_hydration_content),
-                    context.getString(R.string.drink_now)
+                    context.getString(R.string.ht_alarm_hydration_content),
+                    context.getString(R.string.ht_drink_now)
                 )
             }
             else -> {
                 // 默认使用健康提醒
                 Triple(
 
-                    context.getString(R.string.alarm_default_title), 
-                    context.getString(R.string.alarm_default_content),
-                    context.getString(R.string.view_now),
+                    context.getString(R.string.ht_alarm_default_title), 
+                    context.getString(R.string.ht_alarm_default_content),
+                    context.getString(R.string.ht_view_now),
 
                     )
             }

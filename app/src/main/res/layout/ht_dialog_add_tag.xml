@@ -23,7 +23,7 @@
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginHorizontal="@dimen/dp_6"
         android:gravity="center_horizontal"
-        android:text="@string/add_label"/>
+        android:text="@string/ht_add_label"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_label"
@@ -33,7 +33,7 @@
         android:layout_marginTop="@dimen/dp_12"
         android:background="@drawable/ht_bg_rect_white_12"
         android:backgroundTint="@color/color_F9F9FA"
-        android:hint="@string/enter_new_label"
+        android:hint="@string/ht_enter_new_label"
         android:maxLength="20"
         android:minHeight="@dimen/dp_44"
         android:paddingHorizontal="@dimen/dp_12"
@@ -54,7 +54,7 @@
             android:layout_height="@dimen/dp_48"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/ht_cancel" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_ok"
@@ -62,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/ht_save" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

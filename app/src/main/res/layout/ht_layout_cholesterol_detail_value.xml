@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="@dimen/sp_14"
         android:textColor="@color/color_999"
-        android:text="@string/non_hdl"/>
+        android:text="@string/ht_non_hdl"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_tc_hdl"
@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="@dimen/sp_14"
         android:textColor="@color/color_999"
-        android:text="@string/tc_hdl"/>
+        android:text="@string/ht_tc_hdl"/>
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_ldl_hdl"
         android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="@dimen/sp_14"
         android:textColor="@color/color_999"
-        android:text="@string/ldl_hdl"/>
+        android:text="@string/ht_ldl_hdl"/>
 
 
     <androidx.appcompat.widget.AppCompatTextView

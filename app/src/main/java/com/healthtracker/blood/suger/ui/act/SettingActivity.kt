@@ -92,47 +92,47 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, HtActivitySettingBinding
         return listOf(
 //            SettingItem(
 //                icon = R.drawable.ht_ic_setting_alarm,
-//                title = R.string.alarm_management,
+//                title = R.string.ht_alarm_management,
 //                type = SettingType.ALARM_MANAGEMENT
 //            ),
 //            SettingItem(
 //                icon = R.drawable.ht_ic_setting_unit,
-//                title = R.string.unit_settings,
+//                title = R.string.ht_unit_settings,
 //                type = SettingType.UNIT_SETTINGS
 //            ),
 //            SettingItem(
 //                icon = R.drawable.ht_ic_setting_target,
-//                title = R.string.target_range_settings,
+//                title = R.string.ht_target_range_settings,
 //                type = SettingType.TARGET_RANGE
 //            ),
 //            SettingItem(
 //                icon = R.drawable.ht_ic_setting_profile,
-//                title = R.string.personal_info,
+//                title = R.string.ht_personal_info,
 //                type = SettingType.PERSONAL_INFO
 //            ),
             SettingItem(
                 icon = R.drawable.ht_ic_setting_language,
-                title = R.string.language,
+                title = R.string.ht_language,
                 type = SettingType.LANGUAGE
             ),
             SettingItem(
                 icon = R.drawable.ht_ic_setting_feedback,
-                title = R.string.feedback,
+                title = R.string.ht_feedback,
                 type = SettingType.FEEDBACK
             ),
 //            SettingItem(
 //                icon = R.drawable.ht_ic_setting_disclaimers,
-//                title = R.string.disclaimers,
+//                title = R.string.ht_disclaimers,
 //                type = SettingType.DISCLAIMERS
 //            ),
             SettingItem(
                 icon = R.drawable.ht_ic_setting_privacy,
-                title = R.string.privacy_policy,
+                title = R.string.ht_privacy_policy,
                 type = SettingType.PRIVACY_POLICY
             ),
             SettingItem(
                 icon = R.drawable.ht_ic_setting_terms,
-                title = R.string.terms_of_service,
+                title = R.string.ht_terms_of_service,
                 type = SettingType.TERMS_OF_SERVICE
             )
         )

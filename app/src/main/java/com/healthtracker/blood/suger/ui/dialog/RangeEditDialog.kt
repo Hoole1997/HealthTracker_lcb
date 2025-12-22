@@ -281,19 +281,19 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<HtDialogRangeEditBinding>(
         // 1. 获取当前输入
         val ranges = getCurrentInputRanges()
         if (ranges == null) {
-            showToast(getString(R.string.please_input_complete_data))
+            showToast(getString(R.string.ht_please_input_complete_data))
             return
         }
 
         // 2. 验证范围顺序
         if (!validateRanges(ranges)) {
-            showToast(getString(R.string.range_order_error))
+            showToast(getString(R.string.ht_range_order_error))
             return
         }
 
         // 3. 验证范围边界
         if (!validateBounds(ranges)) {
-            showToast(getString(R.string.range_bounds_error))
+            showToast(getString(R.string.ht_range_bounds_error))
             return
         }
 

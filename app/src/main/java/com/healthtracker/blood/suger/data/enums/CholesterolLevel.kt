@@ -17,8 +17,8 @@ enum class CholesterolLevel(
      * 数据不足或无法判定
      */
     UNKNOWN(
-        labelRes = R.string.cholesterol_level_unknown,
-        descriptionRes = R.string.cholesterol_level_unknown_desc,
+        labelRes = R.string.ht_cholesterol_level_unknown,
+        descriptionRes = R.string.ht_cholesterol_level_unknown_desc,
         colorRes = R.color.color_CCCCCC
     ),
 
@@ -27,8 +27,8 @@ enum class CholesterolLevel(
      * TC < 200、Non-HDL < 130、LDL < 100、HDL > 40
      */
     NORMAL(
-        labelRes = R.string.cholesterol_level_normal,
-        descriptionRes = R.string.cholesterol_level_normal_desc,
+        labelRes = R.string.ht_cholesterol_level_normal,
+        descriptionRes = R.string.ht_cholesterol_level_normal_desc,
         colorRes = R.color.color_05BA7B
     ),
 
@@ -37,8 +37,8 @@ enum class CholesterolLevel(
      * TC < 200、Non-HDL < 130、LDL ∈ [100,129]、HDL ≤ 45
      */
     NEAR_OPTIMAL(
-        labelRes = R.string.cholesterol_level_near_optimal,
-        descriptionRes = R.string.cholesterol_level_near_optimal_desc,
+        labelRes = R.string.ht_cholesterol_level_near_optimal,
+        descriptionRes = R.string.ht_cholesterol_level_near_optimal_desc,
         colorRes = R.color.color_FFE902
     ),
 
@@ -47,8 +47,8 @@ enum class CholesterolLevel(
      * TC ∈ [200,239]、Non-HDL < 130、LDL ∈ [130,159]、HDL ≤ 45
      */
     BORDERLINE(
-        labelRes = R.string.cholesterol_level_borderline,
-        descriptionRes = R.string.cholesterol_level_borderline_desc,
+        labelRes = R.string.ht_cholesterol_level_borderline,
+        descriptionRes = R.string.ht_cholesterol_level_borderline_desc,
         colorRes = R.color.color_FFB909
     ),
 
@@ -57,8 +57,8 @@ enum class CholesterolLevel(
      * TC ≥ 240、Non-HDL ≥ 130、LDL ∈ [160,189]、HDL ≤ 45
      */
     HIGH(
-        labelRes = R.string.cholesterol_level_high,
-        descriptionRes = R.string.cholesterol_level_high_desc,
+        labelRes = R.string.ht_cholesterol_level_high,
+        descriptionRes = R.string.ht_cholesterol_level_high_desc,
         colorRes = R.color.color_FF8000
     ),
 
@@ -67,8 +67,8 @@ enum class CholesterolLevel(
      * TC ≥ 240、Non-HDL ≥ 130、LDL ≥ 190、HDL ≤ 45
      */
     VERY_HIGH(
-        labelRes = R.string.cholesterol_level_very_high,
-        descriptionRes = R.string.cholesterol_level_very_high_desc,
+        labelRes = R.string.ht_cholesterol_level_very_high,
+        descriptionRes = R.string.ht_cholesterol_level_very_high_desc,
         colorRes = R.color.color_FB0301
     );
 
