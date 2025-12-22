@@ -113,3 +113,10 @@
 - 建议在每次发布后打上 Git tag（例如 `v1.0.3`、`v1.0.4`），以便后续基于 tag 精确生成版本差异与变更记录。
 - 若希望 `docs/` 下的变更记录能被工具链读取与自动化处理，建议避免在 `.gitignore` 中全局忽略 `*.md`，或显式放行 `docs/**`。
 
+## 2025-12-22 补充变更记录（DI/构建/工程）
+
+- `BaseMVVMActivity`：通过 `CreationExtras` 创建 `SavedStateHandle` 并注入到 Koin ViewModel，解决以往手动 `SavedStateHandle()` 导致的参数丢失/状态不恢复问题。
+- `KoinModules`：将依赖 `SavedStateHandle` 的 ViewModel 调整为 `viewModel { (handle: SavedStateHandle) -> ... }` 形式，确保注入的是“带 extras 的 handle”。
+- `HistoryViewModel/HealthStatisticsViewModel`：统一/新增关键参数在 `SavedStateHandle` 中读写（例如 `RECORD_TYPE`、`date_range_preset`），支持旋转与进程重建恢复。
+- `build-common`：StringFog 模式由 `base64` 切换为 `bytes`。
+- 工程维护：忽略 `app/mapping.txt`（混淆 mapping 产物）；同时在 `.gitignore` 放行 `README.md`，避免被 `*.md` 规则误伤导致工具链无法读取。

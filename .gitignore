@@ -55,6 +55,7 @@ app/mapping.txt
 /.claude
 .windsurfrules
 *.md
+!/README.md
 !docs/
 !docs/变更记录_*.md
 /claudedocs
