@@ -16,6 +16,8 @@ plugins {
     // 其他特殊插件
     alias(libs.plugins.kotlin.parcelize)
     kotlin("plugin.serialization")
+    // Activity 混淆插件 - 与 AGP 8.10.1 存在兼容性问题，暂时禁用
+    // id("activityGuard")
 }
 
 // 引入统一的签名配置脚本
@@ -216,3 +218,31 @@ class BuildConfigFieldsBuilder {
     }
 }
 
+// ==================== activityGuard 四大组件混淆配置 ====================
+// 注意：activityGuard 与 AGP 8.10.1 存在兼容性问题
+// 混淆了类名但未更新 AndroidManifest.xml，导致应用无法启动
+// 暂时禁用，等待插件更新或寻找替代方案
+//actGuard {
+//    isEnable = true
+//    whiteClassList = hashSetOf(
+//        "org.koin.*",
+//        "com.google.firebase.*",
+//        "com.google.android.gms.*",
+//        "com.adjust.*",
+//        "com.facebook.*",
+//        "com.bytedance.*",
+//        "cn.thinkingdata.*",
+//    )
+//    otherClassList = hashSetOf(
+//        "com.healthtracker.blood.suger.ui.viewmodel.*",
+//        "com.healthtracker.blood.suger.viewmodel.*",
+//        "com.healthtracker.blood.suger.ui.weight.*",
+//        "com.healthtracker.blood.suger.ui.widget.*",
+//    )
+//    changePackageList = hashSetOf(
+//        "com.healthtracker.blood.suger.ui.viewmodel.*",
+//        "com.healthtracker.blood.suger.viewmodel.*",
+//    )
+//    classNameCharPool = "abcdefghijklmnopqrstuvwxyz"
+//    dirNameCharPool = "abcdefghijklmnopqrstuvwxyz"
+//}

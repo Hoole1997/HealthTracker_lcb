@@ -4,6 +4,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://jitpack.io") // activityGuard
         maven("https://maven.aliyun.com/nexus/content/groups/public/")
         maven("https://maven.aliyun.com/nexus/content/repositories/jcenter")
         maven("https://maven.aliyun.com/nexus/content/repositories/google")
