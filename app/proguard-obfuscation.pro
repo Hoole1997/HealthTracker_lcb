@@ -47,18 +47,6 @@
 
 # ==================== 必须保留的规则 ====================
 
-# 保留 ViewModel（与 StringFog 兼容性问题）
--keep class * extends androidx.lifecycle.ViewModel { *; }
-
-# 保留 Application 入口
--keep public class * extends android.app.Application { *; }
-
-# 保留四大组件
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Service
--keep public class * extends android.content.BroadcastReceiver
--keep public class * extends android.content.ContentProvider
-
 # 保留 Parcelable
 -keep class * implements android.os.Parcelable {
     public static final android.os.Parcelable$Creator *;
