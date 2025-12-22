@@ -158,3 +158,6 @@
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
+
+# ==================== 垃圾代码混淆增强 ====================
+-keep class com.healthtracker.blood.suger.junk.** { *; }

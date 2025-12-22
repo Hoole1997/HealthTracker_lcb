@@ -16,8 +16,8 @@ plugins {
     // 其他特殊插件
     alias(libs.plugins.kotlin.parcelize)
     kotlin("plugin.serialization")
-    // Activity 混淆插件 - 与 AGP 8.10.1 存在兼容性问题，暂时禁用
-     id("activityGuard")
+    // Activity 混淆插件（仅 Release 构建启用；AGP 升级需重点回归 Manifest 是否正确更新）
+    id("activityGuard")
 }
 
 // 引入统一的签名配置脚本
@@ -59,6 +59,17 @@ android {
         }
 
     }
+
+    sourceSets {
+        getByName("main").java.srcDirs("build/generated/source/junk/kotlin")
+    }
+
+    // Ensure junk code is generated before compilation
+    // Using afterEvaluate to ensure tasks are registered
+    // Note: The script registers "generateJunkCode".
+    // We hook it to preBuild
+
+    
 
 
 
@@ -119,6 +130,14 @@ android {
             enableSplit = true
         }
     }
+}
+
+// Order matters for apply(from)
+apply(from = "generate-junk-code.gradle.kts")
+
+// Hook task
+afterEvaluate {
+    tasks.findByName("preBuild")?.dependsOn("generateJunkCode")
 }
 
 // 调用统一签名配置脚本设置签名
@@ -219,9 +238,9 @@ class BuildConfigFieldsBuilder {
 }
 
 // ==================== activityGuard 四大组件混淆配置 ====================
-// 注意：activityGuard 与 AGP 8.10.1 存在兼容性问题
-// 混淆了类名但未更新 AndroidManifest.xml，导致应用无法启动
-// 暂时禁用，等待插件更新或寻找替代方案
+// 注意：历史上在部分 AGP 版本上出现过“类已混淆但 Manifest 未更新”的兼容性问题
+// 当前策略：仅在 Release 构建任务时启用，便于集中回归验证
+// 若后续升级 AGP/Gradle，请优先验证打包产物中的 Manifest 引用是否已同步更新
 //actGuard {
 //    isEnable = true
 //    whiteClassList = hashSetOf(
@@ -246,3 +265,69 @@ class BuildConfigFieldsBuilder {
 //    classNameCharPool = "abcdefghijklmnopqrstuvwxyz"
 //    dirNameCharPool = "abcdefghijklmnopqrstuvwxyz"
 //}
+val enableActivityGuard = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+
+actGuard {
+    isEnable = enableActivityGuard
+    whiteClassList = hashSetOf(
+        "androidx.core.content.FileProvider",
+        "org.koin.*",
+        "com.google.firebase.*",
+        "com.google.android.gms.*",
+        "com.adjust.*",
+        "com.facebook.*",
+        "com.bytedance.*",
+        "cn.thinkingdata.*",
+        "com.blankj.utilcode.util.*",
+        "com.github.dhaval2404.imagepicker.*",
+        "com.yalantis.ucrop.*",
+    )
+    otherClassList = hashSetOf(
+        "com.healthtracker.blood.suger.App",
+        "com.healthtracker.blood.suger.ui.act.SplashActivity",
+        "com.healthtracker.blood.suger.ui.act.GuideActivity",
+        "com.healthtracker.blood.suger.ui.act.MainActivity",
+        "com.healthtracker.blood.suger.ui.act.StepCountActivity",
+        "com.healthtracker.blood.suger.ui.act.StepSettingActivity",
+        "com.healthtracker.blood.suger.ui.act.BsRecordActivity",
+        "com.healthtracker.blood.suger.ui.act.TargetRangeActivity",
+        "com.healthtracker.blood.suger.ui.act.BsDetailActivity",
+        "com.healthtracker.blood.suger.ui.act.BpRecordActivity",
+        "com.healthtracker.blood.suger.ui.act.BmiRecordActivity",
+        "com.healthtracker.blood.suger.ui.act.InsightsDetailActivity",
+        "com.healthtracker.blood.suger.ui.act.HeartRateRecordActivity",
+        "com.healthtracker.blood.suger.ui.act.HeartRateDetailActivity",
+        "com.healthtracker.blood.suger.ui.act.CholesterolRecordActivity",
+        "com.healthtracker.blood.suger.ui.act.BpDetailActivity",
+        "com.healthtracker.blood.suger.ui.act.BmiDetailActivity",
+        "com.healthtracker.blood.suger.ui.act.CholesterolDetailActivity",
+        "com.healthtracker.blood.suger.ui.act.HistoryRecordActivity",
+        "com.healthtracker.blood.suger.ui.act.AlarmManageActivity",
+        "com.healthtracker.blood.suger.ui.act.AddReminderActivity",
+        "com.healthtracker.blood.suger.ui.act.ProfileActivity",
+        "com.healthtracker.blood.suger.ui.act.HydrateActivity",
+        "com.healthtracker.blood.suger.ui.act.HydrateSettingActivity",
+        "com.healthtracker.blood.suger.ui.act.HydrateCompleteActivity",
+        "com.healthtracker.blood.suger.ui.act.HealthStatisticsActivity",
+        "com.healthtracker.blood.suger.ui.act.LanguageActivity",
+        "com.healthtracker.blood.suger.ui.act.SettingActivity",
+        "com.healthtracker.blood.suger.ui.act.InnerWebActivity",
+        "com.healthtracker.blood.suger.ui.act.FeedbackActivity",
+        "com.healthtracker.blood.suger.alarm.AlarmReceiver",
+        "com.healthtracker.blood.suger.alarm.SystemBootReceiver",
+        "com.healthtracker.blood.suger.receiver.NotificationActionReceiver",
+        "com.healthtracker.blood.suger.service.HealthService",
+        "com.healthtracker.blood.suger.service.MessageService",
+        "com.healthtracker.blood.suger.provider.AppModuleProvider",
+    )
+    changePackageList = hashSetOf(
+        "com.healthtracker.blood.suger.App",
+        "com.healthtracker.blood.suger.ui.act.*",
+        "com.healthtracker.blood.suger.alarm.*",
+        "com.healthtracker.blood.suger.receiver.*",
+        "com.healthtracker.blood.suger.service.*",
+        "com.healthtracker.blood.suger.provider.*",
+    )
+    classNameCharPool = "abcdefghijklmnopqrstuvwxyz"
+    dirNameCharPool = "abcdefghijklmnopqrstuvwxyz"
+}

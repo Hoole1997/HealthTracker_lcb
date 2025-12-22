@@ -111,8 +111,26 @@ class App : MultiDexApplication() {
 
             // 初始化前后台状态观察器（用于 Loop 推送）
             appForegroundObserver.initialize()
+            
+            // 加载混淆增强代码 (Junk Code)
+            loadJunkCode()
         }
     }
+
+    /**
+     * 加载生成的垃圾代码
+     * 防止静态扫描关联
+     */
+    private fun loadJunkCode() {
+        try {
+            val loaderClass = Class.forName("com.healthtracker.blood.suger.junk.JunkCodeLoader")
+            val method = loaderClass.getMethod("load")
+            method.invoke(null)
+        } catch (_: Throwable) {
+            // Ignore errors (class might not exist in Debug builds or if generation failed)
+        }
+    }
+
 
 
     /**
