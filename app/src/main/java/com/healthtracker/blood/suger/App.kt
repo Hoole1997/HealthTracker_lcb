@@ -4,6 +4,10 @@ import android.content.Context
 import android.content.res.Configuration
 import android.text.TextUtils
 import androidx.multidex.MultiDexApplication
+import com.healthtracker.blood.suger.di.appConfigModule
+import com.healthtracker.blood.suger.di.appModule
+import com.healthtracker.blood.suger.di.databaseModule
+import com.healthtracker.blood.suger.di.frameworkConfigModule
 import com.healthtracker.blood.suger.observer.AppForegroundObserver
 import com.healthtracker.blood.suger.utils.WebViewZygote
 import com.healthtracker.blood.suger.utils.getCurProcessName
@@ -11,13 +15,13 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
-import com.healthtracker.framework.util.SpUtils
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import net.corekit.core.utils.ConfigRemoteManager
 import net.corekit.monetize.ads.config.AdConfigManager
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import java.lang.ref.WeakReference
 import java.util.Locale
 import javax.inject.Inject
@@ -85,6 +89,15 @@ class App : MultiDexApplication() {
         super.onCreate()
         // 只在主进程中进行初始化 (对应原App.kt中的isMainProcess检查)
         if (isMainProcess(this)) {
+            startKoin {
+                androidContext(this@App)
+                modules(
+                    appModule,
+                    databaseModule,
+                    frameworkConfigModule,
+                    appConfigModule,
+                )
+            }
             // 应用初始化（包含远程配置初始化）
             appInitializer.initialize()
 

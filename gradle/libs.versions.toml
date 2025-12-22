@@ -59,6 +59,7 @@ blur_view_version = "version-2.0.5"
 playServicesAds = "24.5.0"
 xxpermissions = "26.0"
 inapp_review ="2.0.2"
+koin_bom = "4.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -158,10 +159,13 @@ multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt_version" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt_version" }
 hilt-work = { group = "androidx.hilt", name = "hilt-work", version = "1.2.0" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin_bom" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-android-compat = { module = "io.insert-koin:koin-android-compat" }
 
-# Gradle Plugins (for build-common)
-android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
-kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ # Gradle Plugins (for build-common)
+ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+ kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room_version" }
@@ -180,12 +184,12 @@ androidx-room = { id = "androidx.room", version.ref = "room_version" }
 google-service = { id = "com.google.gms.google-services", version.ref = "google_service_version" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt_version" }
 
-# Custom Convention Plugins
-android-app = { id = "android.app", version = "unspecified" }
-android-library-convention = { id = "android.library", version = "unspecified" }
+ # Custom Convention Plugins
+ android-app = { id = "android.app", version = "unspecified" }
+ android-library-convention = { id = "android.library", version = "unspecified" }
 android-compose-convention = { id = "android.compose", version = "unspecified" }
 android-hilt-convention = { id = "android.hilt", version = "unspecified" }
+android-koin-convention = { id = "android.koin", version = "unspecified" }
 android-room-convention = { id = "android.room", version = "unspecified" }
 android-firebase-convention = { id = "android.firebase", version = "unspecified" }
 android-stringfog-convention = { id = "android.stringfog", version = "unspecified" }
-

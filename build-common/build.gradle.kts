@@ -51,6 +51,10 @@ gradlePlugin {
             id = "android.hilt"
             implementationClass = "convention.plugins.AndroidHiltConventionPlugin"
         }
+        register("androidKoin") {
+            id = "android.koin"
+            implementationClass = "convention.plugins.AndroidKoinConventionPlugin"
+        }
         register("androidRoom") {
             id = "android.room"
             implementationClass = "convention.plugins.AndroidRoomConventionPlugin"

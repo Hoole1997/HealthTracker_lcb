@@ -7,6 +7,7 @@ plugins {
     // 使用自定义插件
     alias(libs.plugins.android.app)
     alias(libs.plugins.android.compose.convention)
+    alias(libs.plugins.android.koin.convention)
     alias(libs.plugins.android.hilt.convention)
     alias(libs.plugins.android.room.convention)
     alias(libs.plugins.android.firebase.convention)
