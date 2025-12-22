@@ -43,3 +43,13 @@ val configFile = when {
 apply {
     from(configFile)
 }
+
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            force(libs.androidx.core.ktx)
+            // 同时也强制核心 core 库，因为 core-ktx 依赖 core
+            force("androidx.core:core:1.13.1")
+        }
+    }
+}

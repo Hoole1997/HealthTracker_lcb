@@ -17,7 +17,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     kotlin("plugin.serialization")
     // Activity 混淆插件 - 与 AGP 8.10.1 存在兼容性问题，暂时禁用
-    // id("activityGuard")
+     id("activityGuard")
 }
 
 // 引入统一的签名配置脚本
