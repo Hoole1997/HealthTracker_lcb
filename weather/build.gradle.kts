@@ -2,7 +2,6 @@ plugins {
     // 使用自定义插件
     alias(libs.plugins.android.library.convention)
     alias(libs.plugins.android.koin.convention)
-    alias(libs.plugins.android.hilt.convention)
 }
 
 android {

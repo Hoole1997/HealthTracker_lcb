@@ -37,16 +37,14 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.blood.suger.ui.tracker.HealthType
 import com.healthtracker.framework.util.getRobotoMedium
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
-import javax.inject.Inject
 
 /**
  * Health Statistics Activity
  */
-@AndroidEntryPoint
 class HealthStatisticsActivity :
     BaseInterActivity<HealthStatisticsViewModel, ActivityHealthStatisticsBinding>() {
 
@@ -98,8 +96,7 @@ class HealthStatisticsActivity :
         }
     }
 
-    @Inject
-    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+    private val chartManagerFactory: HealthLineChartManager.Factory by inject()
 
     private var chartManager: HealthLineChartManager? = null
     private val historyAdapter = HistoryAdapter().apply { showDeleteButton = false }

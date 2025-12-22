@@ -24,13 +24,11 @@ import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.LanguageUtils.getLanguageList
 import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoMedium
-import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 
-@AndroidEntryPoint
 class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBinding>() {
 
 
@@ -38,8 +36,7 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
-    @Inject
-    lateinit var remoteConfigManager: RemoteConfigManager
+    private val remoteConfigManager: RemoteConfigManager by inject()
 
     private var applyChange = false
     private var languageAdapter: LanguageAdapter? = null

@@ -5,15 +5,12 @@ import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.utils.TagUtils
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 心率记录数据仓库
  * 封装心率相关的业务操作
  */
-@Singleton
-class HeartRateRepository @Inject constructor(
+class HeartRateRepository(
     private val heartRateDao: HeartRateDao
 ) : BaseRepository<HeartRateRecord, HeartRateDao>() {
 

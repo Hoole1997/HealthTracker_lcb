@@ -35,13 +35,10 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.qualifiers.ApplicationContext
 import net.corekit.core.report.ReportDataManager
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.math.roundToInt
 import com.android.common.weather.R as WeatherR
 
@@ -49,9 +46,8 @@ import com.android.common.weather.R as WeatherR
  * 自定义通知辅助类
  * 根据 PushMessage 配置构建和发送自定义通知
  */
-@Singleton
-class CustomNotificationHelper @Inject constructor(
-    @ApplicationContext private val context: Context,
+class CustomNotificationHelper(
+    private val context: Context,
     private val resourceMapper: NotificationResourceMapper,
     private val configManager: RemoteConfigManager
 ): BaseNotificationHelper(context) {

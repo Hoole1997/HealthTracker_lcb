@@ -16,16 +16,13 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, ActivityCholesterolDetailBinding>() {
 
-    @Inject
-    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+    private val chartManagerFactory: HealthLineChartManager.Factory by inject()
     private var chartManager: HealthLineChartManager? = null
 
     companion object {

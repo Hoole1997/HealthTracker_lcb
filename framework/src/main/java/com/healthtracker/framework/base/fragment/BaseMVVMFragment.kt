@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.viewbinding.ViewBinding
 import com.healthtracker.framework.base.BaseViewModel
+import org.koin.core.context.GlobalContext
 
 /**
  * 描述　: ViewModelFragment基类，自动把ViewModel注入Fragment和 ViewBinding 注入进来了
@@ -85,7 +88,31 @@ abstract class BaseMVVMFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment
      * 创建viewModel
      */
     private fun createViewModel(): VM {
-        return ViewModelProvider(this)[getVMModelClass()]
+        val vmClass = getVMModelClass()
+        val defaultFactory = defaultViewModelProviderFactory
+        val koin = runCatching { GlobalContext.get() }.getOrNull()
+
+        val factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val koinVm = koin?.let { runCatching { it.get<Any>(clazz = modelClass.kotlin) }.getOrNull() }
+                if (koinVm != null) {
+                    @Suppress("UNCHECKED_CAST")
+                    return koinVm as T
+                }
+                return defaultFactory.create(modelClass)
+            }
+
+            override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+                val koinVm = koin?.let { runCatching { it.get<Any>(clazz = modelClass.kotlin) }.getOrNull() }
+                if (koinVm != null) {
+                    @Suppress("UNCHECKED_CAST")
+                    return koinVm as T
+                }
+                return defaultFactory.create(modelClass, extras)
+            }
+        }
+
+        return ViewModelProvider(this, factory)[vmClass]
     }
 
     /**

@@ -18,11 +18,9 @@ import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
 import net.corekit.core.report.ReportDataManager
 
-@AndroidEntryPoint
 class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBinding>() {
 
     private var wasLoading: Boolean = false

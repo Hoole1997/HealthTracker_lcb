@@ -5,15 +5,12 @@ import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 闹钟记录数据仓库
  * 提供闹钟数据的业务逻辑封装和数据访问
  */
-@Singleton
-class AlarmRepository @Inject constructor(
+class AlarmRepository(
     private val alarmDao: AlarmDao
 ) : BaseRepository<AlarmRecord, AlarmDao>() {
     

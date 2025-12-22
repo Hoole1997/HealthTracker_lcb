@@ -11,10 +11,7 @@ import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Calendar
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 系统级闹钟调度器
@@ -27,9 +24,8 @@ import javax.inject.Singleton
  * 4. 计算下次触发时间
  * 5. 系统重启后恢复闹钟
  */
-@Singleton
-class AlarmScheduler @Inject constructor(
-    @ApplicationContext private val context: Context
+class AlarmScheduler(
+    private val context: Context
 ) {
     
     companion object {

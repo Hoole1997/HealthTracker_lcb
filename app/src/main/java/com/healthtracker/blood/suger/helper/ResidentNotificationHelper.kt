@@ -18,18 +18,14 @@ import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
-import dagger.hilt.android.qualifiers.ApplicationContext
 import net.corekit.core.report.ReportDataManager
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 健康服务通知辅助类
  * 负责创建和管理常驻通知
  */
-@Singleton
-class ResidentNotificationHelper @Inject constructor(
-    @ApplicationContext private val context: Context,
+class ResidentNotificationHelper(
+    private val context: Context,
     private val permissionManager: PermissionManager
 ): BaseNotificationHelper(context) {
 

@@ -9,15 +9,12 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import kotlinx.coroutines.flow.Flow
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 
 /**
  * 药物提醒仓库 - 包含核心功能和闹钟调度
  */
-@Singleton
-class MedicineReminderRepository @Inject constructor(
+class MedicineReminderRepository(
     private val dao: MedicineReminderDao,
     private val alarmRepository: AlarmRepository,
     private val alarmScheduler: AlarmScheduler

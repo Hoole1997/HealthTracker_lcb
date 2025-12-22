@@ -28,10 +28,8 @@ import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
-import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 
-@AndroidEntryPoint
 class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryRecordBinding>() {
 
     // 历史记录适配器

@@ -17,7 +17,6 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
@@ -28,7 +27,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import net.corekit.core.controller.ChannelUserController
 import net.corekit.core.report.ReportDataManager
-import javax.inject.Inject
+import org.koin.core.context.GlobalContext
 
 /**
  * 健康监测前台服务
@@ -38,7 +37,6 @@ import javax.inject.Inject
  * - 启动前台服务，显示常驻通知
  * - 每 5 分钟自动刷新通知，确保通知始终显示
  */
-@AndroidEntryPoint
 class HealthService : Service() {
 
     companion object {
@@ -50,10 +48,8 @@ class HealthService : Service() {
         const val IS_SILENT = "is_silent"
     }
 
-    @Inject
-    lateinit var notificationHelper: ResidentNotificationHelper
-    @Inject
-    lateinit var configManager: RemoteConfigManager
+    private var notificationHelper: ResidentNotificationHelper? = null
+    private var configManager: RemoteConfigManager? = null
     // 服务级别的协程作用域
     private val serviceScope = CoroutineScope(Main + SupervisorJob())
 
@@ -75,6 +71,16 @@ class HealthService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        val koin = runCatching { GlobalContext.get() }.getOrNull()
+        notificationHelper = koin?.get<ResidentNotificationHelper>()
+        configManager = koin?.get<RemoteConfigManager>()
+
+        if (notificationHelper == null || configManager == null) {
+            "Koin not ready, stopping service".loge(TAG)
+            stopSelf()
+            return
+        }
         
         // 安全检查：确保 Application 是 Hilt 初始化的 App 类
         // 防止系统通过 START_STICKY 重启 Service 时 Hilt 未就绪导致崩溃
@@ -85,14 +91,17 @@ class HealthService : Service() {
         }
         
         "Health service created".logd(TAG)
-        notificationHelper.createNotificationChannel()
+        notificationHelper?.createNotificationChannel()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         try {
             val silent = intent?.getBooleanExtra(IS_SILENT,true) ?: true
             // 构建通知
-            val notification = notificationHelper.buildNotification(silent)
+            val notification = notificationHelper?.buildNotification(silent) ?: run {
+                stopSelf()
+                return START_NOT_STICKY
+            }
             "启动前台服务，发送常驻通知 silent：$silent".logd(PushOrchestrator.TAG)
 
             // 启动前台服务
@@ -151,6 +160,7 @@ class HealthService : Service() {
         // 如果已有刷新任务，先取消
         refreshJob?.cancel()
 
+        val configManager = configManager ?: return
         val interval = configManager.getConfig<PushConfig>().getChannelConfig(ChannelUserController.isPaidChannel()).keepalivePollingIntervalMinutes
         refreshJob = serviceScope.launch {
 
@@ -200,7 +210,7 @@ class HealthService : Service() {
      * 重新构建并显示通知，使用相同的 notification ID
      */
     private fun refreshNotification() {
-        val notification = notificationHelper.buildNotification()
+        val notification = notificationHelper?.buildNotification() ?: return
 
         // 使用相同的 ID 更新前台通知
         // startForeground() 是幂等的，重复调用只会更新通知

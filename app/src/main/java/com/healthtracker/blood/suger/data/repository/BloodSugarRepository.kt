@@ -6,15 +6,12 @@ import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.utils.TagUtils
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 血糖记录数据仓库
  * 提供血糖数据的业务逻辑封装和数据访问
  */
-@Singleton
-class BloodSugarRepository @Inject constructor(
+class BloodSugarRepository(
     private val bloodSugarDao: BloodSugarDao
 ) : BaseRepository<BloodSugarRecord, BloodSugarDao>() {
     

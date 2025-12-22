@@ -5,11 +5,8 @@ import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.utils.TagUtils
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class CholesterolRepository @Inject constructor(
+class CholesterolRepository(
     private val cholesterolDao: CholesterolDao
 ) : BaseRepository<CholesterolRecord, CholesterolDao>() {
 

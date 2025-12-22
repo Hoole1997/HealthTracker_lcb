@@ -17,7 +17,6 @@ import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,10 +24,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
-import javax.inject.Inject
 
-@HiltViewModel
-class BmiRecordViewModel @Inject constructor(
+class BmiRecordViewModel(
     private val bmiRepository: BmiRepository,
     private val healthTagRepository: HealthTagRepository
 ): BaseViewModel() {

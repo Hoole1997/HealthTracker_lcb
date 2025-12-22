@@ -16,7 +16,6 @@ import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -35,7 +34,6 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.roundToInt
-import javax.inject.Inject
 
 data class BloodSugarData(
     val timestamp: Long,
@@ -44,8 +42,7 @@ data class BloodSugarData(
     val updatedAt: Long = 0L
 )
 
-@HiltViewModel
-class BsDetailViewModel @Inject constructor(
+class BsDetailViewModel(
     private val bloodSugarRepository: BloodSugarRepository,
     private val healthTagRepository: HealthTagRepository
 ) : BaseViewModel() {

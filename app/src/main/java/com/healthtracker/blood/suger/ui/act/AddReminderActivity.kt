@@ -27,10 +27,8 @@ import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.hideSoftKeyBoard
-import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.core.report.ReportDataManager
 
-@AndroidEntryPoint
 class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddReminderBinding>(){
 
 

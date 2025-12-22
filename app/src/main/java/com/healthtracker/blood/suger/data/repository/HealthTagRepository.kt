@@ -4,20 +4,16 @@ import android.content.Context
 import com.healthtracker.blood.suger.data.dao.HealthTagDao
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 统一的健康标签仓库
  * 提供标签相关的所有业务逻辑操作
  */
-@Singleton
-class HealthTagRepository @Inject constructor(
+class HealthTagRepository(
     private val healthTagDao: HealthTagDao,
-    @ApplicationContext private val context: Context
+    private val context: Context
 ) {
     
     /**

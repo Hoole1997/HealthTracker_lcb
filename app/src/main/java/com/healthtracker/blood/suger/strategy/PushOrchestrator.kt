@@ -19,8 +19,6 @@ import kotlinx.coroutines.withContext
 import net.corekit.core.controller.ChannelUserController
 import net.corekit.core.report.ReportDataManager
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 推送总协调器
@@ -45,8 +43,7 @@ import javax.inject.Singleton
  * - PushMessageSelector (消息选择)
  * - 条件评估逻辑
  */
-@Singleton
-class PushOrchestrator @Inject constructor(
+class PushOrchestrator(
     private val frequencyController: PushFrequencyController,
     private val customNotificationHelper: CustomNotificationHelper,
     private val messageSelector: PushMessageSelector,

@@ -6,8 +6,6 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.healthtracker.blood.suger.strategy.LoopPushManager
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 应用前后台状态观察器
@@ -24,10 +22,7 @@ import javax.inject.Singleton
  * - 在 App.onCreate() 中调用 initialize()
  * - 使用 ProcessLifecycleOwner 监听整个应用的生命周期
  */
-@Singleton
-class AppForegroundObserver @Inject constructor(
-
-) : DefaultLifecycleObserver {
+class AppForegroundObserver : DefaultLifecycleObserver {
 
     companion object {
         private const val TAG = "AppForegroundObserver"

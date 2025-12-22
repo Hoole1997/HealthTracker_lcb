@@ -2,15 +2,12 @@ package com.healthtracker.blood.suger.helper
 
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 通知资源映射器
  * 根据 PushMessage 的 iconType 映射到对应的通知 UI 资源
  */
-@Singleton
-class NotificationResourceMapper @Inject constructor() {
+class NotificationResourceMapper {
 
     /**
      * 通知资源集合

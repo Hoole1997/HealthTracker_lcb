@@ -6,15 +6,12 @@ import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 饮水记录数据仓库
  * 提供面向业务的饮水记录CRUD与时间范围查询
  */
-@Singleton
-class HydrateRepository @Inject constructor(
+class HydrateRepository(
     private val hydrateDao: HydrateDao
 ) : BaseRepository<HydrateRecord, HydrateDao>() {
 

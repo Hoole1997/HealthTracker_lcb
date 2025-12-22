@@ -12,10 +12,8 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.core.report.ReportDataManager
 
-@AndroidEntryPoint
 class StepSettingActivity: BaseInterActivity<StepSettingViewModel, ActivityStepSettingBinding>() {
     override fun createViewBinding() = ActivityStepSettingBinding.inflate(layoutInflater)
 

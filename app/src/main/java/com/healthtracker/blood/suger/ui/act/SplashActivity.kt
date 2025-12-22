@@ -33,7 +33,6 @@ import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.CompletableDeferred
@@ -50,10 +49,9 @@ import net.corekit.monetize.ads.LaunchAds
 import net.corekit.monetize.ads.SplashBiddingManager
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 import kotlin.math.ceil
 
-@AndroidEntryPoint
 class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>() {
 
     companion object {
@@ -98,8 +96,7 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
         )
     }
 
-    @Inject
-    lateinit var permissionManager: PermissionManager
+    private val permissionManager: PermissionManager by inject()
 
     override fun createViewBinding() = ActivitySplashBinding.inflate(layoutInflater)
 

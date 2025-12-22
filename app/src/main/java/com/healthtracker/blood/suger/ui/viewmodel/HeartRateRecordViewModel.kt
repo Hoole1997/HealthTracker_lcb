@@ -15,7 +15,6 @@ import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.ext.loge
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,14 +23,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.Date
-import javax.inject.Inject
 
 /**
  * 心率记录 ViewModel
  * 负责管理心率记录页面的状态与业务逻辑
  */
-@HiltViewModel
-class HeartRateRecordViewModel @Inject constructor(
+class HeartRateRecordViewModel(
     private val heartRateRepository: HeartRateRepository,
     private val healthTagRepository: HealthTagRepository
 ) : BaseViewModel() {

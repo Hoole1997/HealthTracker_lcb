@@ -15,25 +15,21 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
-import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import net.corekit.monetize.ads.config.AdConfigManager
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import java.lang.ref.WeakReference
 import java.util.Locale
-import javax.inject.Inject
 
-@HiltAndroidApp
 class App : MultiDexApplication() {
 
-    @Inject
-    lateinit var appInitializer: AppInitializer
+    private val appInitializer: AppInitializer by inject()
 
-    @Inject
-    lateinit var appForegroundObserver: AppForegroundObserver
+    private val appForegroundObserver: AppForegroundObserver by inject()
 
     companion object {
         private const val TAG = "App"

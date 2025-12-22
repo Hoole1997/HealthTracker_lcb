@@ -9,7 +9,6 @@ import com.healthtracker.blood.suger.ui.model.ReminderStatus
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,14 +19,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
-import javax.inject.Inject
 
 /**
  * 药物管理页面ViewModel
  * 负责处理日期选择逻辑和相关数据管理
  */
-@HiltViewModel
-class MedsViewModel @Inject constructor(
+class MedsViewModel(
     // 这里可以注入需要的Repository，比如药物相关的Repository
      private val medsRepository: MedicineReminderRepository
 ) : BaseViewModel() {

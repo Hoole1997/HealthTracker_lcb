@@ -4,20 +4,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.healthtracker.blood.suger.helper.NotificationHelper
-import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class ScreenUnlockReceiver : BroadcastReceiver() {
     companion object {
        private const val  TAG = "ScreenUnlockReceiver"
     }
-    @Inject
-    lateinit var pushOrchestrator: PushOrchestrator
     override fun onReceive(context: Context, intent: Intent) {
         if (Intent.ACTION_USER_PRESENT == intent.action) {
             // 在这里调度WorkManager任务

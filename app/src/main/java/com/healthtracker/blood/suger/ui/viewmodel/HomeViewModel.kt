@@ -12,18 +12,15 @@ import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.data.entity.DailyStepStat
 import com.healthtracker.blood.suger.data.repo.StepRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 /**
  * 首页ViewModel
  * 显示最近一次的血糖和血压记录
  */
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val bloodSugarRepository: BloodSugarRepository,
     private val bloodPressureRepository: BloodPressureRepository,
     private val bmiRepository: BmiRepository,

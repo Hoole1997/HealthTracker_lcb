@@ -21,14 +21,11 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.NumberFormatter
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCountBinding>() {
 
-    @Inject
-    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+    private val chartManagerFactory: HealthLineChartManager.Factory by inject()
 
     private var chartManager: HealthLineChartManager? = null
 

@@ -7,7 +7,6 @@ import android.view.Gravity
 import com.blankj.utilcode.util.ActivityUtils
 import com.healthtracker.blood.suger.config.registry.AppConfigRegistry
 import com.healthtracker.blood.suger.constants.KEY_APP_FIRST_START_TIME
-import com.healthtracker.blood.suger.di.IoDispatcher
 import com.healthtracker.blood.suger.helper.NotificationHelper
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.toast.CustomToastStyle
@@ -36,18 +35,15 @@ import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.LaunchAds
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 应用初始化器
  * 统一管理应用启动时的初始化逻辑
  * 迁移自App.kt，保持所有原有功能，使用SpUtils管理偏好设置
  */
-@Singleton
-class AppInitializer @Inject constructor(
+class AppInitializer(
     private val application: Application,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val ioDispatcher: CoroutineDispatcher,
     private val remoteConfigManager: RemoteConfigManager,
     private val appConfigRegistry: AppConfigRegistry,
     private val healthServiceForegroundObserver: com.healthtracker.blood.suger.observer.HealthServiceForegroundObserver

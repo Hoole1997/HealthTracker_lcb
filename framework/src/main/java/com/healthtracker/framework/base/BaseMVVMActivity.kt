@@ -13,7 +13,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import androidx.viewbinding.ViewBinding
@@ -24,6 +26,7 @@ import com.healthtracker.framework.SysBarUtils.hideNavigationBar
 import com.healthtracker.framework.SysBarUtils.hideStateBar
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.RestoreUtils
+import org.koin.core.context.GlobalContext
 import kotlin.math.max
 
 
@@ -62,7 +65,31 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
      * 创建viewModel
      */
     open fun createViewModel(): VM {
-        return ViewModelProvider(this)[getVMModelClass()]
+        val vmClass = getVMModelClass()
+        val defaultFactory = defaultViewModelProviderFactory
+        val koin = runCatching { GlobalContext.get() }.getOrNull()
+
+        val factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val koinVm = koin?.let { runCatching { it.get<Any>(clazz = modelClass.kotlin) }.getOrNull() }
+                if (koinVm != null) {
+                    @Suppress("UNCHECKED_CAST")
+                    return koinVm as T
+                }
+                return defaultFactory.create(modelClass)
+            }
+
+            override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+                val koinVm = koin?.let { runCatching { it.get<Any>(clazz = modelClass.kotlin) }.getOrNull() }
+                if (koinVm != null) {
+                    @Suppress("UNCHECKED_CAST")
+                    return koinVm as T
+                }
+                return defaultFactory.create(modelClass, extras)
+            }
+        }
+
+        return ViewModelProvider(this, factory)[vmClass]
     }
 
     open fun isFullscreen() = false

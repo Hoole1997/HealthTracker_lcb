@@ -10,15 +10,12 @@ import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.alarm.AlarmNotificationManager
 import com.healthtracker.blood.suger.alarm.AlarmScheduler
 import com.healthtracker.framework.base.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class HydrateSettingViewModel @Inject constructor(
+class HydrateSettingViewModel(
     private val hydrateReminderDao: HydrateReminderDao,
     private val alarmRepository: AlarmRepository,
     private val alarmScheduler: AlarmScheduler,

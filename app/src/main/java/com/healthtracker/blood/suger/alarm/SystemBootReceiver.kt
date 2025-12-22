@@ -10,12 +10,11 @@ import com.healthtracker.blood.suger.manager.HealthServiceManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.core.context.GlobalContext
 
 /**
  * 系统启动广播接收器
@@ -28,37 +27,48 @@ import javax.inject.Inject
  * 4. 重新注册系统级闹钟
  * 5. 处理恢复过程中的异常
  */
-@AndroidEntryPoint
 class SystemBootReceiver : BroadcastReceiver() {
     
     companion object {
         private const val TAG = "SystemBootReceiver"
     }
     
-    @Inject
-    lateinit var alarmRepository: AlarmRepository
-    
-    @Inject
-    lateinit var alarmScheduler: AlarmScheduler
-    
     // 协程作用域，用于异步处理
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    
+    // 延迟初始化的依赖
+    private val alarmRepository: AlarmRepository? by lazy {
+        runCatching { GlobalContext.get().get<AlarmRepository>() }.getOrNull()
+    }
+    private val alarmScheduler: AlarmScheduler? by lazy {
+        runCatching { GlobalContext.get().get<AlarmScheduler>() }.getOrNull()
+    }
     
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
         "System broadcast received: $action".logd(TAG)
+
+        val koin = runCatching { GlobalContext.get() }.getOrNull()
+        val alarmRepository = koin?.get<AlarmRepository>()
+        val alarmScheduler = koin?.get<AlarmScheduler>()
+        val serviceManager = koin?.get<HealthServiceManager>()
+
+        if (alarmRepository == null || alarmScheduler == null) {
+            "Koin not ready, skipping broadcast handling".logw(TAG)
+            return
+        }
         
         when (action) {
             Intent.ACTION_BOOT_COMPLETED -> {
                 "System boot completed, restoring alarms".logd(TAG)
-                restoreAlarms(context, "BOOT_COMPLETED")
-                tryShowResident(context)
+                restoreAlarms(context, "BOOT_COMPLETED", alarmRepository, alarmScheduler)
+                tryShowResident(serviceManager)
                 // 初始化地震推送每日调度
                 EarthquakePushInitializer.init(context.applicationContext)
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 "App package replaced, restoring alarms".logd(TAG)
-                restoreAlarms(context, "PACKAGE_REPLACED")
+                restoreAlarms(context, "PACKAGE_REPLACED", alarmRepository, alarmScheduler)
                 // 应用更新后重新初始化地震推送每日调度
                 EarthquakePushInitializer.init(context.applicationContext)
             }
@@ -67,7 +77,7 @@ class SystemBootReceiver : BroadcastReceiver() {
                 val packageName = intent.dataString?.removePrefix("package:")
                 if (packageName == context.packageName) {
                     "Current app package replaced, restoring alarms".logd(TAG)
-                    restoreAlarms(context, "PACKAGE_REPLACED")
+                    restoreAlarms(context, "PACKAGE_REPLACED", alarmRepository, alarmScheduler)
                     // 当前应用替换后重新初始化地震推送每日调度
                     EarthquakePushInitializer.init(context.applicationContext)
                 }
@@ -83,8 +93,15 @@ class SystemBootReceiver : BroadcastReceiver() {
      * 
      * @param context 上下文
      * @param reason 恢复原因
+     * @param alarmRepository 闹钟仓库
+     * @param alarmScheduler 闹钟调度器
      */
-    private fun restoreAlarms(context: Context, reason: String) {
+    private fun restoreAlarms(
+        context: Context,
+        reason: String,
+        alarmRepository: AlarmRepository,
+        alarmScheduler: AlarmScheduler
+    ) {
         val pendingResult = goAsync()
         
         coroutineScope.launch {
@@ -111,7 +128,7 @@ class SystemBootReceiver : BroadcastReceiver() {
                 "Found ${enabledAlarms.size} enabled alarms to restore".logd(TAG)
                 
                 // 批量恢复闹钟
-                val restoredCount = restoreAlarmsInBatch(enabledAlarms)
+                val restoredCount = restoreAlarmsInBatch(enabledAlarms, alarmScheduler)
                 
                 "Alarm restoration completed: $restoredCount/${enabledAlarms.size} alarms restored, reason: $reason".logd(TAG)
                 
@@ -130,15 +147,16 @@ class SystemBootReceiver : BroadcastReceiver() {
      * 批量恢复闹钟
      * 
      * @param alarms 要恢复的闹钟列表
+     * @param scheduler 闹钟调度器
      * @return 成功恢复的数量
      */
-    private suspend fun restoreAlarmsInBatch(alarms: List<AlarmRecord>): Int {
+    private suspend fun restoreAlarmsInBatch(alarms: List<AlarmRecord>, scheduler: AlarmScheduler): Int {
         var successCount = 0
         var failureCount = 0
         
         alarms.forEach { alarm ->
             try {
-                val success = alarmScheduler.scheduleAlarm(alarm)
+                val success = scheduler.scheduleAlarm(alarm)
                 if (success) {
                     successCount++
                     "Alarm restored: ID=${alarm.id}, Time=${alarm.getFormattedTime()}, Type=${alarm.type}".logd(TAG)
@@ -193,12 +211,13 @@ class SystemBootReceiver : BroadcastReceiver() {
      * 检查是否真的需要恢复闹钟
      * 
      * @param context 上下文
+     * @param scheduler 闹钟调度器
      * @return 是否需要恢复
      */
-    private fun shouldRestoreAlarms(context: Context): Boolean {
+    private fun shouldRestoreAlarms(context: Context, scheduler: AlarmScheduler): Boolean {
         return try {
             // 检查调度器是否可用
-            val schedulerStatus = alarmScheduler.getSchedulerStatus()
+            val schedulerStatus = scheduler.getSchedulerStatus()
             if (!schedulerStatus.fullyAvailable) {
                 "Scheduler not available, skipping restoration".logw(TAG)
                 return false
@@ -246,9 +265,12 @@ class SystemBootReceiver : BroadcastReceiver() {
      */
     suspend fun getRestorationStatus(): AlarmRestorationStatus {
         return try {
-            val allAlarms = alarmRepository.getAllRecordsSync()
+            val repo = alarmRepository ?: return AlarmRestorationStatus(0, 0, false, false)
+            val scheduler = alarmScheduler ?: return AlarmRestorationStatus(0, 0, false, false)
+            
+            val allAlarms = repo.getAllRecordsSync()
             val enabledAlarms = allAlarms.filter { it.isEnabled && !it.isDeleted }
-            val schedulerStatus = alarmScheduler.getSchedulerStatus()
+            val schedulerStatus = scheduler.getSchedulerStatus()
             
             AlarmRestorationStatus(
                 totalAlarms = allAlarms.size,
@@ -262,11 +284,8 @@ class SystemBootReceiver : BroadcastReceiver() {
         }
     }
 
-    @Inject
-    lateinit var serviceManager: HealthServiceManager
-
-    private fun tryShowResident(context: Context){
-        serviceManager.startHealthService()
+    private fun tryShowResident(serviceManager: HealthServiceManager?) {
+        serviceManager?.startHealthService()
     }
 }
 

@@ -23,12 +23,10 @@ import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
 import com.healthtracker.blood.suger.ui.tracker.HealthType
 import com.healthtracker.blood.suger.ui.tracker.trackAddNewRecord
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Calendar
 
-@AndroidEntryPoint
 class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, ActivityBmiRecordBinding>() {
 
     private val healthTags = mutableListOf<HealthTag>()

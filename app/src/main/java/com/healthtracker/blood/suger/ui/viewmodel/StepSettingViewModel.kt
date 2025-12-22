@@ -7,15 +7,12 @@ import com.healthtracker.blood.suger.data.preferences.BodyMetricsPreferences
 import com.healthtracker.blood.suger.data.repository.BmiRepository
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class StepSettingViewModel @Inject constructor(
+class StepSettingViewModel(
     private val bmiRepository: BmiRepository
 ) : BaseViewModel() {
     companion object{

@@ -15,19 +15,15 @@ import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.hasOreo
-import dagger.hilt.android.qualifiers.ApplicationContext
 import net.corekit.core.report.ReportDataManager
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.compareTo
 
 /**
  * 健康服务管理器
  * 负责健康服务的启动、停止和状态管理
  */
-@Singleton
-class HealthServiceManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+class HealthServiceManager(
+    private val context: Context,
     private val permissionManager: PermissionManager,
     private val residentNotificationHelper: ResidentNotificationHelper
 ) {

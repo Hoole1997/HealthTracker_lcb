@@ -18,7 +18,6 @@ import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,13 +27,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
 import java.util.Calendar
 import java.util.Date
-import javax.inject.Inject
 
 /**
  * 历史记录页面ViewModel
  */
-@HiltViewModel
-class HistoryViewModel @Inject constructor(
+class HistoryViewModel(
     private val bpRepository: BloodPressureRepository,
     private val bsRepository: BloodSugarRepository,
     private val cholesterolRepository: CholesterolRepository,

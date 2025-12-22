@@ -6,7 +6,6 @@ import com.healthtracker.blood.suger.data.repository.HydrateRepository
 import com.healthtracker.blood.suger.ui.adapter.HydrateRecordItem
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.framework.base.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,10 +16,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.Calendar
-import javax.inject.Inject
 
-@HiltViewModel
-class HydrateViewModel @Inject constructor(
+class HydrateViewModel(
     private val hydrateRepository: HydrateRepository
 ) : BaseViewModel() {
 

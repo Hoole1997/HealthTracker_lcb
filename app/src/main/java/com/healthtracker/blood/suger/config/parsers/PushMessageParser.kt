@@ -9,8 +9,6 @@ import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.config.models.PushMessageConfig
 import com.healthtracker.framework.config.core.ConfigParser
 import com.healthtracker.framework.ext.logd
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
 /**
  * 推送消息内容解析器（动态多语言支持）
@@ -56,9 +54,9 @@ import javax.inject.Inject
  * - 应用会自动根据当前语言设置选择对应内容
  * - 如果目标语言不存在，自动降级到英语
  */
-class PushMessageParser @Inject constructor(
+class PushMessageParser(
     private val gson: Gson,
-    @ApplicationContext private val context: Context
+    private val context: Context
 ) : ConfigParser<List<PushMessage>> {
 
     override val configKey: String = ConfigKeys.PUSH_ARRAY

@@ -10,9 +10,7 @@ import com.healthtracker.blood.suger.ui.adapter.HydrateSettingAdapter
 import com.healthtracker.blood.suger.ui.viewmodel.HydrateSettingViewModel
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, ActivityHydrateSettingBinding>() {
 
     companion object {

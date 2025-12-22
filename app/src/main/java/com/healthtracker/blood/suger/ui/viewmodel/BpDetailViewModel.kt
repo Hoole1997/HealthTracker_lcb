@@ -11,7 +11,6 @@ import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,14 +21,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
-import javax.inject.Inject
 
 /**
  * 血压详情页ViewModel
  * 负责加载和管理血压记录详情数据
  */
-@HiltViewModel
-class BpDetailViewModel @Inject constructor(
+class BpDetailViewModel(
     private val bloodPressureRepository: BloodPressureRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {

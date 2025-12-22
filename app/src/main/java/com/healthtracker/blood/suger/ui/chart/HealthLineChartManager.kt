@@ -23,9 +23,6 @@ import com.patrykandpatrick.vico.core.common.Position
 import com.patrykandpatrick.vico.views.cartesian.CartesianChartView
 import com.patrykandpatrick.vico.views.cartesian.ScrollHandler
 import com.patrykandpatrick.vico.views.cartesian.ZoomHandler
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import java.text.DecimalFormat
 import kotlin.math.abs
 import kotlin.math.max
@@ -44,9 +41,9 @@ import kotlin.math.max
  * @param chartView 要渲染的图表视图
  * @param lifecycleOwner 生命周期所有者，用于自动资源管理
  */
-class HealthLineChartManager @AssistedInject constructor(
-    @Assisted private val chartView: CartesianChartView,
-    @Assisted private val lifecycleOwner: LifecycleOwner
+class HealthLineChartManager(
+    private val chartView: CartesianChartView,
+    private val lifecycleOwner: LifecycleOwner
 ) : DefaultLifecycleObserver {
 
     // 优先使用已存在的 modelProducer，避免在配置变更时创建新实例导致崩溃
@@ -336,7 +333,6 @@ class HealthLineChartManager @AssistedInject constructor(
         labels = emptyList()
     }
 
-    @AssistedFactory
     interface Factory {
         fun create(
             chartView: CartesianChartView,

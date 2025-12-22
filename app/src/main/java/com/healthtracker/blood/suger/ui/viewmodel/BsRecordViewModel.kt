@@ -12,18 +12,15 @@ import com.healthtracker.blood.suger.constants.KEY_LAST_RECORD_TYPE
 import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
-import javax.inject.Inject
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import kotlinx.coroutines.flow.Flow
 
-@HiltViewModel
-class BsRecordViewModel @Inject constructor(
+class BsRecordViewModel(
     private val bloodSugarRepository: BloodSugarRepository,
     private val healthTagRepository: HealthTagRepository
 ) : BaseViewModel() {

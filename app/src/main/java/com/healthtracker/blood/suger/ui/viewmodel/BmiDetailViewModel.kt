@@ -14,7 +14,6 @@ import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,12 +25,10 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.ThreadLocalRandom
-import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-@HiltViewModel
-class BmiDetailViewModel @Inject constructor(
+class BmiDetailViewModel(
     private val bmiRepository: BmiRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {

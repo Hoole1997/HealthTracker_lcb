@@ -10,7 +10,6 @@ import com.healthtracker.blood.suger.ui.chart.ChartUiState
 import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,10 +22,8 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ThreadLocalRandom
-import javax.inject.Inject
 
-@HiltViewModel
-class CholesterolDetailViewModel @Inject constructor(
+class CholesterolDetailViewModel(
     private val cholesterolRepository: CholesterolRepository
 ) : BaseViewModel() {
 

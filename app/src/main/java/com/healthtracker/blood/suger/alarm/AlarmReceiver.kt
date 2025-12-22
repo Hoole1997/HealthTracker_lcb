@@ -6,16 +6,14 @@ import android.content.Intent
 import android.os.PowerManager
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
 import com.healthtracker.blood.suger.data.repository.AlarmRepository
-import com.healthtracker.blood.suger.data.repository.MedicineReminderRepository
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.core.context.GlobalContext
 
 /**
  * 闹钟广播接收器
@@ -28,7 +26,6 @@ import javax.inject.Inject
  * 4. 处理重复闹钟的下次调度
  * 5. 更新闹钟触发记录
  */
-@AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
     
     companion object {
@@ -41,23 +38,21 @@ class AlarmReceiver : BroadcastReceiver() {
         private const val WAKE_LOCK_TIMEOUT = 30 * 1000L // 30秒
     }
     
-    @Inject
-    lateinit var alarmRepository: AlarmRepository
-
-    @Inject
-    lateinit var alarmScheduler: AlarmScheduler
-
-    @Inject
-    lateinit var notificationManager: AlarmNotificationManager
-
-    @Inject
-    lateinit var medicineReminderRepository: MedicineReminderRepository
-
     // 协程作用域，用于异步处理
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     
     override fun onReceive(context: Context, intent: Intent) {
         "Alarm broadcast received".logd(TAG)
+
+        val koin = runCatching { GlobalContext.get() }.getOrNull()
+        val alarmRepository = koin?.get<AlarmRepository>()
+        val alarmScheduler = koin?.get<AlarmScheduler>()
+        val notificationManager = koin?.get<AlarmNotificationManager>()
+
+        if (alarmRepository == null || alarmScheduler == null || notificationManager == null) {
+            "Koin not ready, skipping alarm handling".logw(TAG)
+            return
+        }
         
         // 获取WakeLock确保处理完成前设备保持唤醒
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -84,7 +79,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val pendingResult = goAsync()
             coroutineScope.launch {
                 try {
-                    handleAlarmTrigger(context, alarmId, alarmType)
+                    handleAlarmTrigger(alarmRepository, alarmScheduler, notificationManager, alarmId, alarmType)
                 } catch (e: Exception) {
                     "Error handling alarm trigger: ${e.message}".loge(TAG)
                 } finally {
@@ -108,7 +103,13 @@ class AlarmReceiver : BroadcastReceiver() {
      * @param alarmId 闹钟ID
      * @param alarmType 闹钟类型
      */
-    private suspend fun handleAlarmTrigger(context: Context, alarmId: Long, alarmType: Int) {
+    private suspend fun handleAlarmTrigger(
+        alarmRepository: AlarmRepository,
+        alarmScheduler: AlarmScheduler,
+        notificationManager: AlarmNotificationManager,
+        alarmId: Long,
+        alarmType: Int
+    ) {
         try {
             // 从数据库获取闹钟记录
             val alarmRecord = alarmRepository.getRecordById(alarmId)
@@ -131,13 +132,13 @@ class AlarmReceiver : BroadcastReceiver() {
             "Alarm trigger validated: ID=$alarmId, Time=${alarmRecord.getFormattedTime()}".logd(TAG)
             
             // 显示通知
-            showAlarmNotification(alarmRecord)
+            showAlarmNotification(notificationManager, alarmRecord)
 
             // 更新最后触发时间
-            updateLastTriggerTime(alarmId)
+            updateLastTriggerTime(alarmRepository, alarmId)
             
             // 处理重复闹钟的下次调度
-            scheduleNextRepeat(alarmRecord)
+            scheduleNextRepeat(alarmRepository, alarmScheduler, alarmRecord)
             
             "Alarm trigger processed successfully: ID=$alarmId".logd(TAG)
             
@@ -152,7 +153,7 @@ class AlarmReceiver : BroadcastReceiver() {
      *
      * @param alarmRecord 闹钟记录
      */
-    private fun showAlarmNotification(alarmRecord: AlarmRecord) {
+    private fun showAlarmNotification(notificationManager: AlarmNotificationManager, alarmRecord: AlarmRecord) {
         try {
             notificationManager.showAlarmNotification(alarmRecord)
         } catch (e: Exception) {
@@ -166,7 +167,7 @@ class AlarmReceiver : BroadcastReceiver() {
      * 
      * @param alarmId 闹钟ID
      */
-    private suspend fun updateLastTriggerTime(alarmId: Long) {
+    private suspend fun updateLastTriggerTime(alarmRepository: AlarmRepository, alarmId: Long) {
         try {
             val success = alarmRepository.updateLastTriggerTime(alarmId)
             if (success) {
@@ -184,7 +185,11 @@ class AlarmReceiver : BroadcastReceiver() {
      *
      * @param alarmRecord 闹钟记录
      */
-    private fun scheduleNextRepeat(alarmRecord: AlarmRecord) {
+    private fun scheduleNextRepeat(
+        alarmRepository: AlarmRepository,
+        alarmScheduler: AlarmScheduler,
+        alarmRecord: AlarmRecord
+    ) {
         try {
             if (alarmRecord.isRepeating()) {
                 val success = alarmScheduler.rescheduleRepeatingAlarm(alarmRecord)

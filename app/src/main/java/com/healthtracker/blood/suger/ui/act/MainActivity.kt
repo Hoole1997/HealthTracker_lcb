@@ -47,14 +47,12 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.Restore
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.corekit.core.report.ReportDataManager
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), PermissionProvider {
 
     companion object {
@@ -66,10 +64,8 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     private var recordFrg: RecordFragment? = null
     private var insightsFrg: InsightsFragment? = null
 
-    @Inject
-    lateinit var customNotificationHelper: CustomNotificationHelper
-    @Inject
-    lateinit var permissionManager: PermissionManager
+    private val customNotificationHelper: CustomNotificationHelper by inject()
+    private val permissionManager: PermissionManager by inject()
     @Restore
     private var currentTabIndex = 0
 

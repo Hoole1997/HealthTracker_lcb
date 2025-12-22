@@ -32,20 +32,17 @@ import com.healthtracker.framework.ext.invisible
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>() {
 
     companion object{
         private const val TAG = "RecordFragment"
     }
 
-    @Inject
-    lateinit var chartManagerFactory: HealthLineChartManager.Factory
+    private val chartManagerFactory: HealthLineChartManager.Factory by inject()
 
     // ========== 广告加载标志 ==========
     private var isAdLoaded = false

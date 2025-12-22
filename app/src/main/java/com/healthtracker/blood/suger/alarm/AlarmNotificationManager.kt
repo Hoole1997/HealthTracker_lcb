@@ -24,9 +24,6 @@ import com.healthtracker.blood.suger.ui.act.SplashActivity
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 闹钟通知管理器
@@ -43,9 +40,8 @@ import javax.inject.Singleton
  * - v2.0: 将血糖和血压通知渠道合并为统一的健康提醒渠道
  * - 保持向后兼容性，旧的API仍可使用但已标记为过时
  */
-@Singleton
-class AlarmNotificationManager @Inject constructor(
-    @ApplicationContext private val context: Context
+class AlarmNotificationManager(
+    private val context: Context
 ) {
     
     companion object {

@@ -5,16 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.PresetTimes
 import com.healthtracker.blood.suger.data.repository.MedicineReminderRepository
 import com.healthtracker.framework.base.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import androidx.core.net.toUri
 
-@HiltViewModel
-class AddReminderViewModel @Inject constructor(
+class AddReminderViewModel(
     private val medicineReminderRepository: MedicineReminderRepository
 ) : BaseViewModel() {
 

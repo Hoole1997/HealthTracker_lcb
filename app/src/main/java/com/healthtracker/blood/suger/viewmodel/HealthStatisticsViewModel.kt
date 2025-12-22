@@ -36,14 +36,12 @@ import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.blood.suger.viewmodel.HealthStatisticsViewModel.StatsUiState.Companion.KEY_SELECTED_STATUS
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.util.LanguageUtils
-import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -66,8 +64,7 @@ enum class StatisticDimension {
     MAX     // 最大值
 }
 
-@HiltViewModel
-class HealthStatisticsViewModel @Inject constructor(
+class HealthStatisticsViewModel(
     private val bloodSugarRepository: BloodSugarRepository,
     private val bloodPressureRepository: BloodPressureRepository,
     private val cholesterolRepository: CholesterolRepository,

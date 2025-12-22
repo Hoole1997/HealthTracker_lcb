@@ -8,7 +8,6 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,8 +15,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Loop 推送管理器
@@ -38,11 +35,10 @@ import javax.inject.Singleton
  * @param permissionManager 权限管理器
  * @param context 应用上下文
  */
-@Singleton
-class LoopPushManager @Inject constructor(
+class LoopPushManager(
     private val customNotificationHelper: CustomNotificationHelper,
     private val permissionManager: PermissionManager,
-    @ApplicationContext private val context: Context
+    private val context: Context
 ) {
 
     companion object {

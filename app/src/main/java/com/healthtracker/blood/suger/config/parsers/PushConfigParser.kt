@@ -8,7 +8,6 @@ import com.healthtracker.blood.suger.config.ConfigKeys
 import com.healthtracker.blood.suger.config.models.ChannelConfig
 import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.framework.config.core.ConfigParser
-import javax.inject.Inject
 
 /**
  * 推送配置解析器
@@ -31,7 +30,7 @@ import javax.inject.Inject
  * }
  * ```
  */
-class PushConfigParser @Inject constructor(
+class PushConfigParser(
     private val gson: Gson,
     private val pushMessageParser: PushMessageParser,
     private val remoteConfig: FirebaseRemoteConfig

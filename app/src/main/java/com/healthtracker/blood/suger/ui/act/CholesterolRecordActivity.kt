@@ -25,7 +25,6 @@ import com.healthtracker.blood.suger.ui.tracker.HealthType
 import com.healthtracker.blood.suger.ui.tracker.trackAddNewRecord
 import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoRegular
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Calendar
@@ -34,7 +33,6 @@ import java.util.Locale
 /**
  * 胆固醇记录页面
  */
-@AndroidEntryPoint
 class CholesterolRecordActivity :
     BaseInterActivity<CholesterolRecordViewModel, ActivityCholesterolRecordBinding>() {
 

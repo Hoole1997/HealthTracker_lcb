@@ -15,13 +15,11 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.showToast
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /**
  * 血糖目标范围设置页面
  */
-@AndroidEntryPoint
 class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, ActivityTargetRangeBinding>() {
 
     private lateinit var adapter: TargetRangeAdapter

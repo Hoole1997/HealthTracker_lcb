@@ -10,8 +10,7 @@ import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import org.koin.core.context.GlobalContext
 
 /**
  * 通知动作接收器
@@ -28,7 +27,6 @@ import javax.inject.Inject
  * - 划掉通知：NotificationActionReceiver → 停止 Loop
  * - 切回前台：AppForegroundObserver → 停止所有 Loop
  */
-@AndroidEntryPoint
 class NotificationActionReceiver : BroadcastReceiver() {
 
     companion object {
@@ -43,10 +41,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
         const val EXTRA_ACTION_VALUE = "action_value"
     }
 
-    @Inject
-    lateinit var loopPushManager: LoopPushManager
-
     override fun onReceive(context: Context, intent: Intent) {
+        val loopPushManager = runCatching { GlobalContext.get().get<LoopPushManager>() }.getOrNull()
+        if (loopPushManager == null) {
+            "Koin not ready, skipping notification action".logw(PushOrchestrator.TAG)
+            return
+        }
+
         if (BuildState.debug) {
             "onReceive: action=${intent.action}".logd(PushOrchestrator.TAG)
         }
@@ -59,8 +60,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
 
         when (intent.action) {
-            ACTION_NOTIFICATION_CLICKED -> handleNotificationClicked(notificationId)
-            ACTION_NOTIFICATION_DISMISSED -> handleNotificationDismissed(notificationId)
+            ACTION_NOTIFICATION_CLICKED -> handleNotificationClicked(loopPushManager, notificationId)
+            ACTION_NOTIFICATION_DISMISSED -> handleNotificationDismissed(loopPushManager, notificationId)
             else -> {
                 "Unknown action: ${intent.action}".logw(PushOrchestrator.TAG)
             }
@@ -74,7 +75,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
      * 1. 停止对应的 Loop 推送
      * 2. 启动 SplashActivity（传递 action_value 用于导航）
      */
-    private fun handleNotificationClicked(notificationId: Int) {
+    private fun handleNotificationClicked(loopPushManager: LoopPushManager, notificationId: Int) {
         if (BuildState.debug) {
             "Notification clicked: notificationId=$notificationId".logd(PushOrchestrator.TAG)
         }
@@ -88,7 +89,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
      * 流程：
      * 1. 停止对应的 Loop 推送
      */
-    private fun handleNotificationDismissed(notificationId: Int) {
+    private fun handleNotificationDismissed(loopPushManager: LoopPushManager, notificationId: Int) {
         if (BuildState.debug) {
             "Notification dismissed: notificationId=$notificationId".logd(PushOrchestrator.TAG)
         }

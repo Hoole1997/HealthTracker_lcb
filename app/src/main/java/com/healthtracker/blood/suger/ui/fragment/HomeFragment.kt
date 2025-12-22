@@ -51,7 +51,6 @@ import com.hyy.highlightpro.shape.RectShape
 import com.hyy.highlightpro.util.dp
 import com.healthtracker.blood.suger.ui.tracker.HealthType
 import com.healthtracker.blood.suger.ui.tracker.trackEnterPageClick
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CompletableDeferred
 import java.util.Date
 import java.util.Locale
@@ -60,7 +59,6 @@ import java.util.Locale
  * 首页Fragment
  * 显示最近一次的血糖和血压记录
  */
-@AndroidEntryPoint
 class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
 
    companion object{

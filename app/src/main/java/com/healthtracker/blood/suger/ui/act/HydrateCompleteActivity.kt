@@ -7,11 +7,9 @@ import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.databinding.ActivityHydrateCompleteBinding
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.startActivity
-import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.monetize.ui.NativeAdStyle
 import com.healthtracker.blood.suger.utils.loadNative
 
-@AndroidEntryPoint
 class HydrateCompleteActivity : BaseInterActivity<BaseViewModel, ActivityHydrateCompleteBinding>() {
 
     companion object {

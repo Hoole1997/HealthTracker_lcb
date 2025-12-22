@@ -13,15 +13,12 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
-import dagger.hilt.android.AndroidEntryPoint
 import net.corekit.monetize.ui.NativeAdStyle
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManagerBinding>() {
 
-    @Inject
-    lateinit var permissionManager: PermissionManager
+    private val permissionManager: PermissionManager by inject()
 
     // 血糖闹钟适配器
     private lateinit var bloodSugarAdapter: AlarmAdapter

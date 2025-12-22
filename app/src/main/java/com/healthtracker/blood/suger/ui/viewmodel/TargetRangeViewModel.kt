@@ -6,18 +6,15 @@ import com.healthtracker.blood.suger.data.enums.BloodSugarRanges
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.framework.base.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * 血糖目标范围设置页面的 ViewModel
  */
-@HiltViewModel
-class TargetRangeViewModel @Inject constructor() : BaseViewModel() {
+class TargetRangeViewModel : BaseViewModel() {
 
     // 当前选择的单位
     private val _currentUnit = MutableStateFlow(BsUnit.getPreferredUnit())

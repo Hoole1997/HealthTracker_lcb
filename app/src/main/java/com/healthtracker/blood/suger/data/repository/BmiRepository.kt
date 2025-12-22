@@ -5,15 +5,12 @@ import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.utils.TagUtils
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * BMI记录数据仓库（最简实现）
  * 提供BMI数据的业务逻辑封装和数据访问
  */
-@Singleton
-class BmiRepository @Inject constructor(
+class BmiRepository(
     private val bmiDao: BmiDao
 ) : BaseRepository<BmiRecord, BmiDao>() {
 

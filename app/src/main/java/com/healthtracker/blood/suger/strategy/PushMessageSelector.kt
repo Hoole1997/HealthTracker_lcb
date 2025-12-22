@@ -7,11 +7,8 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 推送消息选择器（循环推送模式）
@@ -28,10 +25,9 @@ import javax.inject.Singleton
  * - 第 11 次推送：push_011（index 10）
  * - 第 12 次推送：push_001（index 0，循环回第一条）
  */
-@Singleton
-class PushMessageSelector @Inject constructor(
+class PushMessageSelector(
     private val messageRepository: PushMessageRepository,
-    @ApplicationContext private val context: Context
+    private val context: Context
 ) {
 
     companion object {

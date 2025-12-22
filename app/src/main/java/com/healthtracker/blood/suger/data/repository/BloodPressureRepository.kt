@@ -11,15 +11,12 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 血压记录数据仓库
  * 提供血压数据的业务逻辑封装和数据访问
  */
-@Singleton
-class BloodPressureRepository @Inject constructor(
+class BloodPressureRepository(
     private val bloodPressureDao: BloodPressureDao
 ) : BaseRepository<BloodPressureRecord, BloodPressureDao>() {
     

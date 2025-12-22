@@ -26,7 +26,6 @@ import com.healthtracker.blood.suger.util.ChartConfigHelper
 import com.healthtracker.blood.suger.util.ChartPalette
 import com.healthtracker.blood.suger.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -38,11 +37,9 @@ import java.text.DecimalFormatSymbols
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
 import kotlin.math.pow
 
-@HiltViewModel
-class TrackerViewModel @Inject constructor(
+class TrackerViewModel(
     private val bsRepository: BloodSugarRepository,
     private val bpRepository: BloodPressureRepository,
     private val hrRepository: HeartRateRepository,

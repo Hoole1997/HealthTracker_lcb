@@ -10,13 +10,10 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 推送频率控制器
@@ -31,9 +28,8 @@ import javax.inject.Singleton
  * - 自然用户：每日 3 次，24 分钟新用户冷却，10 分钟推送间隔，免打扰 02:00-08:00
  * - 免打扰时间（闹钟场景除外）
  */
-@Singleton
-class PushFrequencyController @Inject constructor(
-    @ApplicationContext private val context: Context,
+class PushFrequencyController(
+    private val context: Context,
     private val permissionManager: PermissionManager
 ) {
 

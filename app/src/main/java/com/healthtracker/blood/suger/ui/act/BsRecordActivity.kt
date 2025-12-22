@@ -41,7 +41,6 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.showToast
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.SpUtils
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -49,7 +48,6 @@ import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Calendar
 
 @OptIn(FlowPreview::class)
-@AndroidEntryPoint
 class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
 
     // ActivityResult launcher for target range settings

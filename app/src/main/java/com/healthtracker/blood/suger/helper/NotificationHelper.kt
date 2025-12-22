@@ -10,14 +10,13 @@ import com.healthtracker.blood.suger.strategy.PushOrchestrator
 import com.healthtracker.blood.suger.strategy.PushResult
 import com.healthtracker.blood.suger.strategy.PushScenario
 import com.healthtracker.blood.suger.work.PeriodicScanWorker
-import com.healthtracker.blood.suger.work.WorkerDependencies
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.isLeast12
-import dagger.hilt.android.EntryPointAccessors
+import org.koin.core.context.GlobalContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,24 +24,17 @@ import kotlinx.coroutines.launch
 object NotificationHelper {
     private const val TAG = "NotificationHelper"
 
-    // ✅ 通过 EntryPoint 获取依赖（延迟初始化）
-    private val dependencies: WorkerDependencies by lazy {
-        EntryPointAccessors.fromApplication(
-            App.INSTANCE,
-            WorkerDependencies::class.java
-        )
-    }
-
+    // 通过 Koin 获取依赖（延迟初始化）
     private val pushOrchestrator: PushOrchestrator by lazy {
-        dependencies.pushOrchestrator()
+        GlobalContext.get().get()
     }
 
     private val healthServiceManager: HealthServiceManager by lazy {
-        dependencies.healthServiceManager()
+        GlobalContext.get().get()
     }
 
     private val notificationHelper: ResidentNotificationHelper by lazy {
-        dependencies.notificationHelper()
+        GlobalContext.get().get()
     }
 
     fun show(scenario: PushScenario){

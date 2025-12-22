@@ -4,8 +4,6 @@ import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.blood.suger.config.parsers.PushConfigParser
 import com.healthtracker.blood.suger.config.parsers.PushMessageParser
 import com.healthtracker.framework.config.core.ConfigRegistry
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 应用配置注册中心
@@ -28,8 +26,7 @@ import javax.inject.Singleton
  * @property pushConfigParser 推送配置解析器
  * @property pushMessageParser 推送消息解析器
  */
-@Singleton
-class AppConfigRegistry @Inject constructor(
+class AppConfigRegistry(
     private val registry: ConfigRegistry,
     private val pushConfigParser: PushConfigParser,
     private val pushMessageParser: PushMessageParser

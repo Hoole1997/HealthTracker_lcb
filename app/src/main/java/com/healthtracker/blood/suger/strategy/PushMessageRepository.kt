@@ -3,8 +3,6 @@ package com.healthtracker.blood.suger.strategy
 import com.healthtracker.blood.suger.config.models.PushConfig
 import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.framework.config.core.RemoteConfigManager
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 推送消息数据仓库
@@ -13,8 +11,7 @@ import javax.inject.Singleton
  * - 提供可用的推送消息列表（优先从 Remote Config 获取多语言配置）
  * - 降级方案：使用 PushMessage.createDefaultList() 中的默认消息
  */
-@Singleton
-class PushMessageRepository @Inject constructor(
+class PushMessageRepository(
     private val configManager: RemoteConfigManager
 ) {
 

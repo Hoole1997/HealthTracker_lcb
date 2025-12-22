@@ -2,32 +2,25 @@ package com.healthtracker.blood.suger.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.healthtracker.blood.suger.data.entity.CholesterolRecord
-import com.healthtracker.blood.suger.data.enums.CholesterolLevel
 import com.healthtracker.blood.suger.data.repository.CholesterolRepository
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.blood.suger.util.CholesterolCalculator
 import com.healthtracker.blood.suger.util.CholesterolMetrics
 import com.healthtracker.framework.base.BaseViewModel
-import com.healthtracker.blood.suger.getUserAge
-import com.healthtracker.blood.suger.isMale
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Date
-import javax.inject.Inject
 
 /**
  * 胆固醇记录新增/编辑页对应的 ViewModel
  * 负责管理输入值、派生指标与保存逻辑
  */
-@HiltViewModel
-class CholesterolRecordViewModel @Inject constructor(
+class CholesterolRecordViewModel(
     private val cholesterolRepository: CholesterolRepository
 ) : BaseViewModel() {
 

@@ -17,8 +17,6 @@ import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.isLeast13
 import com.hjq.permissions.permission.PermissionLists
 import net.corekit.core.report.ReportDataManager
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 权限管理器
@@ -28,10 +26,7 @@ import javax.inject.Singleton
  * 1. 通知权限管理
  * 2. 权限状态检查
  */
-@Singleton
-class PermissionManager @Inject constructor(
-
-) {
+class PermissionManager {
 
     companion object {
         const val TAG = "PermissionManager"

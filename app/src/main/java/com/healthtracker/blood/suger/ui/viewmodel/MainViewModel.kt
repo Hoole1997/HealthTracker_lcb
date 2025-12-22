@@ -7,7 +7,6 @@ import com.healthtracker.blood.suger.manager.HealthServiceManager
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
-import dagger.hilt.android.lifecycle.HiltViewModel
 import com.android.common.weather.util.TemperaturePreferences
 import com.android.common.weather.util.TemperatureUtils
 import kotlin.math.roundToInt
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * 天气数据状态
@@ -36,8 +34,7 @@ data class WeatherData(
     }
 }
 
-@HiltViewModel
-class MainViewModel @Inject constructor(
+class MainViewModel(
     private val healthServiceManager: HealthServiceManager,
     private val permissionManager: PermissionManager
 ) : BaseViewModel() {

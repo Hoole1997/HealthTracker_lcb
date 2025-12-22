@@ -9,8 +9,6 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppForegroundObserver
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 健康服务前台观察器
@@ -39,17 +37,14 @@ import javax.inject.Singleton
  * 前台通知替换普通通知 ✅
  * ```
  */
-@Singleton
-class HealthServiceForegroundObserver @Inject constructor(
-    private val healthServiceManager: HealthServiceManager
+class HealthServiceForegroundObserver(
+    private val healthServiceManager: HealthServiceManager,
+    private val pushOrchestrator: PushOrchestrator
 ) : AppForegroundObserver {
 
     companion object {
         private const val TAG = "HealthServiceForegroundObserver"
     }
-    @Inject
-    lateinit var pushOrchestrator: PushOrchestrator
-
     override fun onAppForeground() {
         // 应用回到前台时，启动健康服务
         if (BuildState.debug) {
