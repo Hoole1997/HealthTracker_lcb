@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
-import com.healthtracker.blood.suger.databinding.ItemLabelBinding
-import com.healthtracker.blood.suger.databinding.ItemLabelFlexBinding
+import com.healthtracker.blood.suger.databinding.HtItemLabelBinding
+import com.healthtracker.blood.suger.databinding.HtItemLabelFlexBinding
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
@@ -50,7 +50,7 @@ class HealthTagAdapter(
      * 标签ViewHolder
      */
     inner class TagViewHolder(
-        private val binding: ItemLabelFlexBinding
+        private val binding: HtItemLabelFlexBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: TagItem) {
@@ -74,7 +74,7 @@ class HealthTagAdapter(
                     )
                     labelItem.background = ContextCompat.getDrawable(
                         labelItem.context,
-                        R.drawable.bg_label_select_selected
+                        R.drawable.ht_bg_label_select_selected
                     )
                 } else {
                     tvLabel.setTextColor(
@@ -85,7 +85,7 @@ class HealthTagAdapter(
                     )
                     labelItem.background = ContextCompat.getDrawable(
                         labelItem.context,
-                        R.drawable.bg_label_select_normal
+                        R.drawable.ht_bg_label_select_normal
                     )
                 }
 
@@ -98,7 +98,7 @@ class HealthTagAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
-        val binding = ItemLabelFlexBinding.inflate(
+        val binding = HtItemLabelFlexBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false

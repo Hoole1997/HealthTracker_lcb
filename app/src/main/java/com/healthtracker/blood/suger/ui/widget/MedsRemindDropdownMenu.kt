@@ -3,7 +3,7 @@ package com.healthtracker.blood.suger.ui.widget
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.PopupWindow
-import com.healthtracker.blood.suger.databinding.LayoutMedsRemindMenuBinding
+import com.healthtracker.blood.suger.databinding.HtLayoutMedsRemindMenuBinding
 import com.healthtracker.framework.ext.click
 
 
@@ -13,7 +13,7 @@ class MedsRemindDropdownMenu(
     private val onSelect: ((MenuAction) -> Unit)? = null
 ) : PopupWindow(context) {
 
-    private val binding = LayoutMedsRemindMenuBinding.inflate(LayoutInflater.from(context))
+    private val binding = HtLayoutMedsRemindMenuBinding.inflate(LayoutInflater.from(context))
 
     init {
         setupView()

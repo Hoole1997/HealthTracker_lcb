@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.data.entity.AlarmRecord
-import com.healthtracker.blood.suger.databinding.ActivityAlarmManagerBinding
+import com.healthtracker.blood.suger.databinding.HtActivityAlarmManagerBinding
 import com.healthtracker.blood.suger.ui.adapter.AlarmAdapter
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.AlarmViewModel
@@ -16,7 +16,7 @@ import com.healthtracker.framework.ext.collectLatest
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
-class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManagerBinding>() {
+class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, HtActivityAlarmManagerBinding>() {
 
     private val permissionManager: PermissionManager by inject()
 
@@ -27,7 +27,7 @@ class AlarmManageActivity : BaseMVVMActivity<AlarmViewModel, ActivityAlarmManage
     private lateinit var bloodPressureAdapter: AlarmAdapter
 
 
-    override fun createViewBinding() = ActivityAlarmManagerBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityAlarmManagerBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = AlarmViewModel::class.java
 

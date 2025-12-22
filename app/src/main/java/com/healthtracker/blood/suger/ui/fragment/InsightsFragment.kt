@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.FragmentInsightsBinding
-import com.healthtracker.blood.suger.databinding.ItemInsightsViewpageBinding
+import com.healthtracker.blood.suger.databinding.HtFragmentInsightsBinding
+import com.healthtracker.blood.suger.databinding.HtItemInsightsViewpageBinding
 import com.healthtracker.blood.suger.ui.act.InsightsDetailActivity
 import com.healthtracker.blood.suger.ui.adapter.InsightsArticleAdapter
 import com.healthtracker.blood.suger.utils.InsightAssetPreparer
@@ -30,7 +30,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 
-class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>() {
+class InsightsFragment: BaseMVVMFragment<BaseViewModel, HtFragmentInsightsBinding>() {
 
     private data class InsightCategory(
         val titleRes: Int,
@@ -41,7 +41,7 @@ class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = FragmentInsightsBinding.inflate(inflater,parent,attachToParent)
+    ) = HtFragmentInsightsBinding.inflate(inflater,parent,attachToParent)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -151,7 +151,7 @@ class InsightsFragment: BaseMVVMFragment<BaseViewModel, FragmentInsightsBinding>
         private val inflater = LayoutInflater.from(requireContext())
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val itemBinding = ItemInsightsViewpageBinding.inflate(inflater, container, false)
+            val itemBinding = HtItemInsightsViewpageBinding.inflate(inflater, container, false)
             itemBinding.rvInsights.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = InsightsArticleAdapter(::openArticleDetail).also { adapter ->

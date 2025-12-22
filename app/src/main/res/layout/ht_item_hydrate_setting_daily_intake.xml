@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_16"
+    android:background="@drawable/ht_bg_rect_white_12"
+    android:padding="@dimen/dp_16">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_daily_title"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/daily_water_intake"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/intakeLess"
+        android:layout_width="@dimen/dp_77"
+        android:layout_height="@dimen/dp_40"
+        app:layout_constraintTop_toBottomOf="@id/tv_daily_title"
+        android:src="@mipmap/ht_ic_water_intake_less"
+        android:layout_marginTop="@dimen/dp_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvCupsOfDay"
+        android:layout_marginStart="@dimen/dp_22"/>
+    
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvCupsOfDay"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_40"
+        android:minWidth="@dimen/dp_77"
+        app:layout_constraintStart_toEndOf="@id/intakeLess"
+        app:layout_constraintTop_toTopOf="@id/intakeLess"
+        app:layout_constraintEnd_toStartOf="@id/intakeMore"
+        android:background="@drawable/ht_bg_intake_cups"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_18"
+        android:textSize="@dimen/sp_18"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:gravity="center"
+        tools:text="8"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/intakeMore"
+        android:layout_width="@dimen/dp_77"
+        android:layout_height="@dimen/dp_40"
+        app:layout_constraintTop_toBottomOf="@id/tv_daily_title"
+        android:src="@mipmap/ht_ic_water_intake_more"
+        app:layout_constraintStart_toEndOf="@id/tvCupsOfDay"
+        app:layout_constraintTop_toTopOf="@id/intakeLess"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/dp_22"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

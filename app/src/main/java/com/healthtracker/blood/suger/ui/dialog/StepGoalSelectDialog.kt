@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.healthtracker.blood.suger.constants.KEY_STEP_COUNT_GOLE
-import com.healthtracker.blood.suger.databinding.DialogSelectStepGoalBinding
+import com.healthtracker.blood.suger.databinding.HtDialogSelectStepGoalBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.getRobotoBold
 
 class StepGoalSelectDialog(private val callBack: ((Int) -> Unit)? = null) :
-    BaseBottomSheetDialogFragment<DialogSelectStepGoalBinding>() {
+    BaseBottomSheetDialogFragment<HtDialogSelectStepGoalBinding>() {
 
     constructor() : this(null)
 
@@ -20,7 +20,7 @@ class StepGoalSelectDialog(private val callBack: ((Int) -> Unit)? = null) :
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DialogSelectStepGoalBinding.inflate(layoutInflater)
+    ) = HtDialogSelectStepGoalBinding.inflate(layoutInflater)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.run {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/label_item"
+    android:layout_width="@dimen/dp_56"
+    android:layout_height="@dimen/dp_56"
+    android:background="@drawable/ht_bg_hydrate_quick_add"
+    android:padding="12dp"
+    android:minHeight="@dimen/dp_31"
+    android:paddingHorizontal="@dimen/dp_12"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginStart="@dimen/dp_16"
+    tools:ignore="UselessParent">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_unit"
+        tools:text="100" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_666"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_item"
+        tools:text="ML" />
+
+</LinearLayout>

@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.DialogStatusSelectBinding
-import com.healthtracker.blood.suger.databinding.ItemStatusBinding
+import com.healthtracker.blood.suger.databinding.HtDialogStatusSelectBinding
+import com.healthtracker.blood.suger.databinding.HtItemStatusBinding
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
 import com.healthtracker.blood.suger.ui.weight.WrapLayoutLinearLayoutManager
@@ -18,7 +18,7 @@ class StatusSelectDialog(
     private val currentStatus: BloodSugarStatus?,
     private val showAllOption: Boolean,
     private val onSelect: ((BloodSugarStatus?) -> Unit)? = null
-) : BaseBottomSheetDialogFragment<DialogStatusSelectBinding>() {
+) : BaseBottomSheetDialogFragment<HtDialogStatusSelectBinding>() {
 
     companion object{
         fun show(
@@ -37,7 +37,7 @@ class StatusSelectDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DialogStatusSelectBinding.inflate(inflater,parent,attachToParent)
+    ) = HtDialogStatusSelectBinding.inflate(inflater,parent,attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.let {
@@ -67,7 +67,7 @@ class StatusSelectDialog(
         }
 
 
-        inner class SatusViewHolder(private val itemBinding: ItemStatusBinding) : RecyclerView.ViewHolder(itemBinding.root),
+        inner class SatusViewHolder(private val itemBinding: HtItemStatusBinding) : RecyclerView.ViewHolder(itemBinding.root),
             View.OnClickListener {
             init {
                 itemBinding.root.setOnClickListener(this@SatusViewHolder)
@@ -108,7 +108,7 @@ class StatusSelectDialog(
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SatusViewHolder {
-            val itemBinding = ItemStatusBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val itemBinding = HtItemStatusBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return SatusViewHolder(itemBinding)
         }
 

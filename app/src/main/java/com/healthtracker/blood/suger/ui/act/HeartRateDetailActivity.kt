@@ -9,7 +9,7 @@ import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.enums.HeartRateStatus
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.ActivityHeartRateDetailBinding
+import com.healthtracker.blood.suger.databinding.HtActivityHeartRateDetailBinding
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.viewmodel.HeartRateDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
@@ -25,7 +25,7 @@ import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
 class HeartRateDetailActivity :
-    BaseInterActivity<HeartRateDetailViewModel, ActivityHeartRateDetailBinding>() {
+    BaseInterActivity<HeartRateDetailViewModel, HtActivityHeartRateDetailBinding>() {
 
     private val chartManagerFactory: HealthLineChartManager.Factory by inject()
     private var chartManager: HealthLineChartManager? = null
@@ -38,8 +38,8 @@ class HeartRateDetailActivity :
         }
     }
 
-    override fun createViewBinding(): ActivityHeartRateDetailBinding =
-        ActivityHeartRateDetailBinding.inflate(layoutInflater)
+    override fun createViewBinding(): HtActivityHeartRateDetailBinding =
+        HtActivityHeartRateDetailBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HeartRateDetailViewModel::class.java
 

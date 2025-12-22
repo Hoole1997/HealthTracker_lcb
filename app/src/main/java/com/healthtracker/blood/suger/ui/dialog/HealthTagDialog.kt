@@ -14,7 +14,7 @@ import com.google.android.flexbox.JustifyContent
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.TagType
-import com.healthtracker.blood.suger.databinding.DialogLabelSelectBinding
+import com.healthtracker.blood.suger.databinding.HtDialogLabelSelectBinding
 import com.healthtracker.blood.suger.ui.adapter.HealthTagAdapter
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog.Companion.BUTTON_OK
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
@@ -36,7 +36,7 @@ class HealthTagDialog(
     private val onSave: ((List<HealthTag>) -> Unit)? = null,
     private val onDelete: ((HealthTag) -> Unit)? = null,
     private val onAdd: ((String) -> Unit)? = null
-) : BaseBottomSheetDialogFragment<DialogLabelSelectBinding>() {
+) : BaseBottomSheetDialogFragment<HtDialogLabelSelectBinding>() {
 
     constructor() : this(
         tagType = TagType.BLOOD_SUGAR,
@@ -131,7 +131,7 @@ class HealthTagDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DialogLabelSelectBinding.inflate(layoutInflater, parent, attachToParent)
+    ) = HtDialogLabelSelectBinding.inflate(layoutInflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         initRecyclerView()

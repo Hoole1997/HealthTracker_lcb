@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ActivityFeedbackBinding
+import com.healthtracker.blood.suger.databinding.HtActivityFeedbackBinding
 import com.healthtracker.blood.suger.ui.adapter.ChoosePhotoRCVAdapter
 import com.healthtracker.blood.suger.ui.dialog.ImgGetTypeDialog
 import com.healthtracker.blood.suger.utils.FeedbackUtils
@@ -24,7 +24,7 @@ import com.hjq.toast.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FeedbackActivity: BaseMVVMActivity<BaseViewModel, ActivityFeedbackBinding>() {
+class FeedbackActivity: BaseMVVMActivity<BaseViewModel, HtActivityFeedbackBinding>() {
     
     companion object {
         private const val MAX_PHOTO_COUNT = 6
@@ -78,7 +78,7 @@ class FeedbackActivity: BaseMVVMActivity<BaseViewModel, ActivityFeedbackBinding>
         }
     }
     
-    override fun createViewBinding() = ActivityFeedbackBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityFeedbackBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 

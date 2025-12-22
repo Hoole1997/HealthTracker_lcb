@@ -12,7 +12,7 @@ import com.healthtracker.blood.suger.data.enums.BloodSugarRanges
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
-import com.healthtracker.blood.suger.databinding.DialogRangeEditBinding
+import com.healthtracker.blood.suger.databinding.HtDialogRangeEditBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
@@ -21,7 +21,7 @@ import com.healthtracker.framework.ext.showToast
 /**
  * 血糖目标范围编辑对话框
  */
-class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() {
+class RangeEditDialog : BaseBottomSheetDialogFragment<HtDialogRangeEditBinding>() {
 
     private lateinit var bloodSugarStatus: BloodSugarStatus
     private var currentUnit: BsUnit = BsUnit.MG_DL
@@ -35,7 +35,7 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<DialogRangeEditBinding>() 
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DialogRangeEditBinding.inflate(inflater, parent, attachToParent)
+    ) = HtDialogRangeEditBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         // 获取传入参数

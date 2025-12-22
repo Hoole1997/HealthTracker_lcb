@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
-import com.healthtracker.blood.suger.databinding.ActivityInsightsDetailBinding
+import com.healthtracker.blood.suger.databinding.HtActivityInsightsDetailBinding
 import com.healthtracker.blood.suger.utils.InsightAssetPreparer
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.base.BaseViewModel
@@ -21,7 +21,7 @@ import net.corekit.monetize.ui.NativeAdStyle
 import java.io.File
 
 class InsightsDetailActivity :
-    BaseInterActivity<BaseViewModel, ActivityInsightsDetailBinding>() {
+    BaseInterActivity<BaseViewModel, HtActivityInsightsDetailBinding>() {
 
     companion object {
         private const val EXTRA_TITLE = "extra_title"
@@ -43,7 +43,7 @@ class InsightsDetailActivity :
 
     private var isWebViewMode = false
 
-    override fun createViewBinding() = ActivityInsightsDetailBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityInsightsDetailBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -90,11 +90,11 @@ class InsightsDetailActivity :
             if (imagePath.isNotEmpty()) {
                 Glide.with(ivCover)
                     .load(File(imagePath))
-                    .placeholder(R.drawable.bg_rect_white_12)
+                    .placeholder(R.drawable.ht_bg_rect_white_12)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(ivCover)
             } else {
-                ivCover.setImageResource(R.drawable.bg_rect_white_12)
+                ivCover.setImageResource(R.drawable.ht_bg_rect_white_12)
             }
             
             // Initialize WebView

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.DialogChooseGenderBinding
+import com.healthtracker.blood.suger.databinding.HtDialogChooseGenderBinding
 import com.healthtracker.blood.suger.isMale
 import com.healthtracker.blood.suger.saveUserGender
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
@@ -16,7 +16,7 @@ import com.healthtracker.framework.ext.clickWithDuration
 /**
  * 性别选择弹窗
  */
-class GenderChooseDialog : BaseVbDialogFragment<DialogChooseGenderBinding>() {
+class GenderChooseDialog : BaseVbDialogFragment<HtDialogChooseGenderBinding>() {
 
     private var onGenderConfirmed: (() -> Unit)? = null
     private var selectedGender: Int = if (isMale()) GENDER_MALE else GENDER_FEMALE
@@ -39,7 +39,7 @@ class GenderChooseDialog : BaseVbDialogFragment<DialogChooseGenderBinding>() {
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ): DialogChooseGenderBinding = DialogChooseGenderBinding.inflate(inflater, parent, attachToParent)
+    ): HtDialogChooseGenderBinding = HtDialogChooseGenderBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         setupGenderGroup()

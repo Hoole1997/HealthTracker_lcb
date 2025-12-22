@@ -9,8 +9,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.models.PushConfig
-import com.healthtracker.blood.suger.databinding.ActivityLanguageSelectBinding
-import com.healthtracker.blood.suger.databinding.ItemAppLanguageBinding
+import com.healthtracker.blood.suger.databinding.HtActivityLanguageSelectBinding
+import com.healthtracker.blood.suger.databinding.HtItemAppLanguageBinding
 import com.healthtracker.blood.suger.ui.weight.WrapLayoutLinearLayoutManager
 import com.healthtracker.blood.suger.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -29,10 +29,10 @@ import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
 
-class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBinding>() {
+class LanguageActivity: BaseMVVMActivity<BaseViewModel, HtActivityLanguageSelectBinding>() {
 
 
-    override fun createViewBinding() = ActivityLanguageSelectBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityLanguageSelectBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -122,7 +122,7 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
             onSelectChanged() // Notify activity about selection change
         }
 
-        inner class LanguageViewHolder(private val itemBinding: ItemAppLanguageBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+        inner class LanguageViewHolder(private val itemBinding: HtItemAppLanguageBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
             fun bind(position: Int) {
                 itemBinding.apply {
@@ -132,7 +132,7 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
                         ivSelect.visible()
                         itemBinding.root.background = ContextCompat.getDrawable(
                             this@LanguageActivity,
-                            R.drawable.bg_rect_language_selected
+                            R.drawable.ht_bg_rect_language_selected
                         )
                         tvLang.setTextColor(ContextCompat.getColor(this@LanguageActivity, R.color.c5))
                         tvLang.typeface = getRobotoBold(this@LanguageActivity)
@@ -140,7 +140,7 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
                         ivSelect.gone()
                         itemBinding.root.background = ContextCompat.getDrawable(
                             this@LanguageActivity,
-                            R.drawable.bg_rect_white_8
+                            R.drawable.ht_bg_rect_white_8
                         )
                         tvLang.setTextColor(ContextCompat.getColor(this@LanguageActivity, R.color.t1))
                         tvLang.typeface = getRobotoMedium(this@LanguageActivity)
@@ -158,7 +158,7 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, ActivityLanguageSelectBi
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LanguageViewHolder {
-            val itemBinding = ItemAppLanguageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val itemBinding = HtItemAppLanguageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return LanguageViewHolder(itemBinding)
         }
 

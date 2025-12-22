@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.healthtracker.blood.suger.databinding.DialogComingSoonBinding
+import com.healthtracker.blood.suger.databinding.HtDialogComingSoonBinding
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.ext.click
 
@@ -15,7 +15,7 @@ import com.healthtracker.framework.ext.click
  */
 class ComingSoonDialog(
     private val onBackToToday: (() -> Unit)? = null
-) : BaseVbDialogFragment<DialogComingSoonBinding>() {
+) : BaseVbDialogFragment<HtDialogComingSoonBinding>() {
 
     companion object {
         fun show(
@@ -32,7 +32,7 @@ class ComingSoonDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DialogComingSoonBinding.inflate(inflater, parent, attachToParent)
+    ) = HtDialogComingSoonBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {

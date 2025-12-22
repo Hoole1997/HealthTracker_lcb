@@ -18,15 +18,15 @@ import com.google.android.libraries.ads.mobile.sdk.common.AdInspectorError
 import com.google.android.libraries.ads.mobile.sdk.common.OnAdInspectorClosedListener
 import com.healthtracker.blood.suger.BuildConfig
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ActivitySettingBinding
-import com.healthtracker.blood.suger.databinding.ItemSettingBinding
+import com.healthtracker.blood.suger.databinding.HtActivitySettingBinding
+import com.healthtracker.blood.suger.databinding.HtItemSettingBinding
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.startActivity
 
-class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>() {
+class SettingActivity : BaseMVVMActivity<BaseViewModel, HtActivitySettingBinding>() {
 
     companion object {
         private const val KEY_IS_LANGUAGE_CHANGED = "key_is_language_changed"
@@ -54,7 +54,7 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
             }
         }
 
-    override fun createViewBinding() = ActivitySettingBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivitySettingBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -91,47 +91,47 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
     private fun getSettingItems(): List<SettingItem> {
         return listOf(
 //            SettingItem(
-//                icon = R.drawable.ic_setting_alarm,
+//                icon = R.drawable.ht_ic_setting_alarm,
 //                title = R.string.alarm_management,
 //                type = SettingType.ALARM_MANAGEMENT
 //            ),
 //            SettingItem(
-//                icon = R.drawable.ic_setting_unit,
+//                icon = R.drawable.ht_ic_setting_unit,
 //                title = R.string.unit_settings,
 //                type = SettingType.UNIT_SETTINGS
 //            ),
 //            SettingItem(
-//                icon = R.drawable.ic_setting_target,
+//                icon = R.drawable.ht_ic_setting_target,
 //                title = R.string.target_range_settings,
 //                type = SettingType.TARGET_RANGE
 //            ),
 //            SettingItem(
-//                icon = R.drawable.ic_setting_profile,
+//                icon = R.drawable.ht_ic_setting_profile,
 //                title = R.string.personal_info,
 //                type = SettingType.PERSONAL_INFO
 //            ),
             SettingItem(
-                icon = R.drawable.ic_setting_language,
+                icon = R.drawable.ht_ic_setting_language,
                 title = R.string.language,
                 type = SettingType.LANGUAGE
             ),
             SettingItem(
-                icon = R.drawable.ic_setting_feedback,
+                icon = R.drawable.ht_ic_setting_feedback,
                 title = R.string.feedback,
                 type = SettingType.FEEDBACK
             ),
 //            SettingItem(
-//                icon = R.drawable.ic_setting_disclaimers,
+//                icon = R.drawable.ht_ic_setting_disclaimers,
 //                title = R.string.disclaimers,
 //                type = SettingType.DISCLAIMERS
 //            ),
             SettingItem(
-                icon = R.drawable.ic_setting_privacy,
+                icon = R.drawable.ht_ic_setting_privacy,
                 title = R.string.privacy_policy,
                 type = SettingType.PRIVACY_POLICY
             ),
             SettingItem(
-                icon = R.drawable.ic_setting_terms,
+                icon = R.drawable.ht_ic_setting_terms,
                 title = R.string.terms_of_service,
                 type = SettingType.TERMS_OF_SERVICE
             )
@@ -208,7 +208,7 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
         private val onItemClick: (SettingItem) -> Unit
     ) : RecyclerView.Adapter<SettingAdapter.ViewHolder>() {
 
-        inner class ViewHolder(private val binding: ItemSettingBinding) :
+        inner class ViewHolder(private val binding: HtItemSettingBinding) :
             RecyclerView.ViewHolder(binding.root) {
 
             fun bind(item: SettingItem) {
@@ -223,7 +223,7 @@ class SettingActivity : BaseMVVMActivity<BaseViewModel, ActivitySettingBinding>(
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding = ItemSettingBinding.inflate(
+            val binding = HtItemSettingBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false

@@ -213,7 +213,7 @@ class AppInitializer(
     private fun initializeDelayedServices() {
         postRunnable {
             try {
-                Toaster.init(application, CustomToastStyle(R.layout.toast_success, Gravity.BOTTOM))
+                Toaster.init(application, CustomToastStyle(R.layout.ht_toast_success, Gravity.BOTTOM))
                 // 1. ScanWorkTask.registerReceiver(this) - 屏幕解锁广播
                 HealthWorkTask.registerReceiver(application)
 

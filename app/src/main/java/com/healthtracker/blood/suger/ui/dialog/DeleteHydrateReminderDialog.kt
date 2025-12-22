@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.DialogDeleteConfirmBinding
+import com.healthtracker.blood.suger.databinding.HtDialogDeleteConfirmBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
@@ -15,7 +15,7 @@ class DeleteHydrateReminderDialog(
     private val message: String,
     private val onDialogListener: DialogListener?,
     private val leftText: String? = null, private val rightText: String? = null
-) : BaseBottomSheetDialogFragment<DialogDeleteConfirmBinding>(onDialogListener){
+) : BaseBottomSheetDialogFragment<HtDialogDeleteConfirmBinding>(onDialogListener){
 
     companion object {
         val BUTTON_OK = R.id.btn_ok
@@ -37,7 +37,7 @@ class DeleteHydrateReminderDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DialogDeleteConfirmBinding.inflate(inflater, parent, attachToParent)
+    ) = HtDialogDeleteConfirmBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {

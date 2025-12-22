@@ -3,7 +3,7 @@ package com.healthtracker.blood.suger.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.healthtracker.blood.suger.databinding.ItemRemindMedsTimeBinding
+import com.healthtracker.blood.suger.databinding.HtItemRemindMedsTimeBinding
 import com.healthtracker.framework.ext.click
 
 class ReminderTimeAdapter(
@@ -18,7 +18,7 @@ class ReminderTimeAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeViewHolder {
-        val binding = ItemRemindMedsTimeBinding.inflate(
+        val binding = HtItemRemindMedsTimeBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return TimeViewHolder(binding)
@@ -31,7 +31,7 @@ class ReminderTimeAdapter(
     override fun getItemCount(): Int = timeList.size
 
     inner class TimeViewHolder(
-        private val binding: ItemRemindMedsTimeBinding
+        private val binding: HtItemRemindMedsTimeBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(time: String, position: Int) {

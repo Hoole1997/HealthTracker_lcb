@@ -41,7 +41,7 @@ class HydrateReminderTimeAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_hydrate_setting_reminder_time, parent, false)
+            .inflate(R.layout.ht_item_hydrate_setting_reminder_time, parent, false)
         return TimeViewHolder(view)
     }
 

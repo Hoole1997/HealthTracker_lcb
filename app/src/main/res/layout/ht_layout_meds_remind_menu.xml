@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/dp_5"
+    android:clipToPadding="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@drawable/ht_bg_menu">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_take_now"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ht_ic_menu_meds"
+            android:drawablePadding="@dimen/dp_10"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingVertical="@dimen/dp_10"
+            android:text="@string/take_now"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ht_ic_menu_edit"
+            android:drawablePadding="@dimen/dp_10"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingVertical="@dimen/dp_10"
+            android:text="@string/edit"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_take_now" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ht_ic_menu_delete"
+            android:drawablePadding="@dimen/dp_10"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingVertical="@dimen/dp_10"
+            android:text="@string/delete"
+            android:textColor="@color/t1"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_edit" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ui.dialog.AgeChooseDialog
 import com.healthtracker.blood.suger.ui.dialog.GenderChooseDialog
-import com.healthtracker.blood.suger.databinding.LeveStatusViewBinding
+import com.healthtracker.blood.suger.databinding.HtLeveStatusViewBinding
 import com.healthtracker.blood.suger.getUserAge
 import com.healthtracker.blood.suger.isMale
 import com.healthtracker.framework.ext.clickWithDuration
@@ -33,8 +33,8 @@ class LeveStatusView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val binding: LeveStatusViewBinding =
-        LeveStatusViewBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding: HtLeveStatusViewBinding =
+        HtLeveStatusViewBinding.inflate(LayoutInflater.from(context), this, true)
 
     /** 是否为“添加记录”场景（默认 false） */
     private var isAddRecordScene: Boolean = false
@@ -143,7 +143,7 @@ class LeveStatusView @JvmOverloads constructor(
         val showIcon = explainClickable && onExplainClick != null
         if (showIcon) {
             binding.rangeText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                0, 0, R.drawable.ic_blood_detail, 0
+                0, 0, R.drawable.ht_ic_blood_detail, 0
             )
         } else {
             binding.rangeText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)

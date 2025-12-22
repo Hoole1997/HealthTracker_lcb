@@ -5,13 +5,13 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.config.HydrateSettingManager
-import com.healthtracker.blood.suger.databinding.ActivityHydrateSettingBinding
+import com.healthtracker.blood.suger.databinding.HtActivityHydrateSettingBinding
 import com.healthtracker.blood.suger.ui.adapter.HydrateSettingAdapter
 import com.healthtracker.blood.suger.ui.viewmodel.HydrateSettingViewModel
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
 
-class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, ActivityHydrateSettingBinding>() {
+class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, HtActivityHydrateSettingBinding>() {
 
     companion object {
         fun start(context: Context) {
@@ -19,8 +19,8 @@ class HydrateSettingActivity : BaseInterActivity<HydrateSettingViewModel, Activi
         }
     }
 
-    override fun createViewBinding(): ActivityHydrateSettingBinding =
-        ActivityHydrateSettingBinding.inflate(layoutInflater)
+    override fun createViewBinding(): HtActivityHydrateSettingBinding =
+        HtActivityHydrateSettingBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HydrateSettingViewModel::class.java
 

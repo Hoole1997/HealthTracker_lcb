@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.LayoutDatetimeSelectionBinding
+import com.healthtracker.blood.suger.databinding.HtLayoutDatetimeSelectionBinding
 import java.util.*
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
 import com.healthtracker.framework.ext.clickWithDuration
@@ -21,7 +21,7 @@ class DateTimeSelectionView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     // 加载布局
-    private val binding: LayoutDatetimeSelectionBinding = LayoutDatetimeSelectionBinding.inflate(
+    private val binding: HtLayoutDatetimeSelectionBinding = HtLayoutDatetimeSelectionBinding.inflate(
         LayoutInflater.from(context), this, true
     )
 

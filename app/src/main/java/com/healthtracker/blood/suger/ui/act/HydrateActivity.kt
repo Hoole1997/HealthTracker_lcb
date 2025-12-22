@@ -8,7 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
-import com.healthtracker.blood.suger.databinding.ActivityHydrateBinding
+import com.healthtracker.blood.suger.databinding.HtActivityHydrateBinding
 import com.healthtracker.blood.suger.ui.dialog.ComingSoonDialog
 import com.healthtracker.blood.suger.ui.adapter.HydrateAdapter
 import com.healthtracker.blood.suger.ui.adapter.HydrateItem
@@ -21,7 +21,7 @@ import com.healthtracker.framework.ext.startActivity
 import kotlinx.coroutines.flow.combine
 import net.corekit.core.report.ReportDataManager
 
-class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBinding>() {
+class HydrateActivity : BaseInterActivity<HydrateViewModel, HtActivityHydrateBinding>() {
 
     private var wasLoading: Boolean = false
     private var actionBarBaseHeight: Int = -1
@@ -34,8 +34,8 @@ class HydrateActivity : BaseInterActivity<HydrateViewModel, ActivityHydrateBindi
 
     override fun getStatusBarColor() = R.color.bg_window
 
-    override fun createViewBinding(): ActivityHydrateBinding =
-        ActivityHydrateBinding.inflate(layoutInflater)
+    override fun createViewBinding(): HtActivityHydrateBinding =
+        HtActivityHydrateBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HydrateViewModel::class.java
 

@@ -7,7 +7,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ActivityInnerWebBinding
+import com.healthtracker.blood.suger.databinding.HtActivityInnerWebBinding
 import com.healthtracker.blood.suger.utils.WebViewUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
@@ -15,7 +15,7 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 
-class InnerWebActivity: BaseMVVMActivity<BaseViewModel, ActivityInnerWebBinding>() {
+class InnerWebActivity: BaseMVVMActivity<BaseViewModel, HtActivityInnerWebBinding>() {
 
     companion object{
         private const val EXTRA_RRL = "EXTRA_RRL"
@@ -24,7 +24,7 @@ class InnerWebActivity: BaseMVVMActivity<BaseViewModel, ActivityInnerWebBinding>
         }
     }
 
-    override fun createViewBinding() = ActivityInnerWebBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityInnerWebBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 

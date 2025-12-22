@@ -30,7 +30,7 @@ class DateTimePicker @JvmOverloads constructor(
     private val minutePicker: NumberPickerView
 
     init {
-        val inflater = LayoutInflater.from(context).inflate(R.layout.layout_datetime_picker, this)
+        val inflater = LayoutInflater.from(context).inflate(R.layout.ht_layout_datetime_picker, this)
         yearPicker = inflater.findViewById(R.id.yearPicker)
         monthPicker = inflater.findViewById(R.id.monthPicker)
         dayPicker = inflater.findViewById(R.id.dayPicker)

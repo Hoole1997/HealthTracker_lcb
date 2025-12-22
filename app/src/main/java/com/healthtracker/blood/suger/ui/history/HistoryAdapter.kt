@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.ItemCholHistoryRecordBinding
-import com.healthtracker.blood.suger.databinding.ItemHistoryRecordBinding
+import com.healthtracker.blood.suger.databinding.HtItemCholHistoryRecordBinding
+import com.healthtracker.blood.suger.databinding.HtItemHistoryRecordBinding
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
 
@@ -76,11 +76,11 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
 
         return when (viewType) {
             VIEW_TYPE_SIMPLE -> {
-                val binding = ItemHistoryRecordBinding.inflate(inflater, parent, false)
+                val binding = HtItemHistoryRecordBinding.inflate(inflater, parent, false)
                 SimpleHistoryViewHolder(binding)
             }
             VIEW_TYPE_CHOLESTEROL -> {
-                val binding = ItemCholHistoryRecordBinding.inflate(inflater, parent, false)
+                val binding = HtItemCholHistoryRecordBinding.inflate(inflater, parent, false)
                 CholesterolViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
@@ -95,7 +95,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
         }
     }
 
-    inner class SimpleHistoryViewHolder(private val binding: ItemHistoryRecordBinding) :
+    inner class SimpleHistoryViewHolder(private val binding: HtItemHistoryRecordBinding) :
         RecyclerView.ViewHolder(binding.root) {
         
         fun bind(item: HistoryRecordItem) {
@@ -173,7 +173,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
      * 使用 item_chol_history_record.xml 布局
      */
     inner class CholesterolViewHolder(
-        private val binding: ItemCholHistoryRecordBinding
+        private val binding: HtItemCholHistoryRecordBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CholesterolHistoryItem) {

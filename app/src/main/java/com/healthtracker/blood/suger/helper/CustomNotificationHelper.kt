@@ -190,7 +190,7 @@ class CustomNotificationHelper(
                 return@apply
             }
 
-            if (layoutResources.collapsedLayout == R.layout.layout_assistant_notify) {
+            if (layoutResources.collapsedLayout == R.layout.ht_layout_assistant_notify) {
                 setTextViewText(R.id.tv_time, pushMessage.title)
                 setOnClickPendingIntent(R.id.iv_confirm, clickIntent)
                 setOnClickPendingIntent(R.id.iv_close, deleteIntent)
@@ -236,7 +236,7 @@ class CustomNotificationHelper(
                 return@apply
             }
 
-            if (layoutResources.expandedLayout == R.layout.layout_assistant_notify_big) {
+            if (layoutResources.expandedLayout == R.layout.ht_layout_assistant_notify_big) {
                 setTextViewText(R.id.tv_title, pushMessage.title)
                 setTextViewText(R.id.tv_content, pushMessage.desc)
                 setOnClickPendingIntent(R.id.ll_answer, clickIntent)

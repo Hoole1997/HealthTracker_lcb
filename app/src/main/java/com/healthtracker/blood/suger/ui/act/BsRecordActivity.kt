@@ -21,7 +21,7 @@ import com.healthtracker.blood.suger.constants.IN_APP_REVIEW_TIMES
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
-import com.healthtracker.blood.suger.databinding.ActivityBsRecordBinding
+import com.healthtracker.blood.suger.databinding.HtActivityBsRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.dialog.StatusSelectDialog
@@ -48,7 +48,7 @@ import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Calendar
 
 @OptIn(FlowPreview::class)
-class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBinding>() {
+class BsRecordActivity: BaseInterActivity<BsRecordViewModel, HtActivityBsRecordBinding>() {
 
     // ActivityResult launcher for target range settings
     private val targetRangeLauncher = registerForActivityResult(
@@ -71,7 +71,7 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, ActivityBsRecordBin
         }
     }
 
-    override fun createViewBinding() = ActivityBsRecordBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityBsRecordBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BsRecordViewModel::class.java
 

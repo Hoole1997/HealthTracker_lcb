@@ -3,15 +3,15 @@ package com.healthtracker.blood.suger.ui.dialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.healthtracker.blood.suger.databinding.ItemLevelExplainBinding
+import com.healthtracker.blood.suger.databinding.HtItemLevelExplainBinding
 
 class LevelExplainAdapter(private var items: List<LevelExplainItem>) :
     RecyclerView.Adapter<LevelExplainAdapter.VH>() {
 
-    inner class VH(val binding: ItemLevelExplainBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class VH(val binding: HtItemLevelExplainBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val binding = ItemLevelExplainBinding.inflate(
+        val binding = HtItemLevelExplainBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return VH(binding)

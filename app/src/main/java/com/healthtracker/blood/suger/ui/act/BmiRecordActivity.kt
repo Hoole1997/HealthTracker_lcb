@@ -8,7 +8,7 @@ import com.healthtracker.blood.suger.data.constants.BodyMetricsDefaults
 import com.healthtracker.blood.suger.data.entity.HealthTag
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.TagType
-import com.healthtracker.blood.suger.databinding.ActivityBmiRecordBinding
+import com.healthtracker.blood.suger.databinding.HtActivityBmiRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.BmiPickerDialog
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Calendar
 
-class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, ActivityBmiRecordBinding>() {
+class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, HtActivityBmiRecordBinding>() {
 
     private val healthTags = mutableListOf<HealthTag>()
     private val addTagIds = mutableListOf<Long>()
@@ -48,7 +48,7 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, ActivityBmiRecor
         }
     }
 
-    override fun createViewBinding() = ActivityBmiRecordBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityBmiRecordBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BmiRecordViewModel::class.java
 

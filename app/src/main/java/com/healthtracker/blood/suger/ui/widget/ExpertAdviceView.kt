@@ -13,7 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.LayoutExpertAdviceBinding
+import com.healthtracker.blood.suger.databinding.HtLayoutExpertAdviceBinding
 import com.healthtracker.blood.suger.ui.act.BmiDetailActivity
 import com.healthtracker.blood.suger.ui.act.BpDetailActivity
 import com.healthtracker.blood.suger.ui.act.BsDetailActivity
@@ -54,7 +54,7 @@ class ExpertAdviceView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     // ViewBinding
-    private val binding: LayoutExpertAdviceBinding
+    private val binding: HtLayoutExpertAdviceBinding
 
     // 状态
     private var isMaskVisible = false
@@ -121,7 +121,7 @@ class ExpertAdviceView @JvmOverloads constructor(
     init {
         // 加载布局
         val inflater = LayoutInflater.from(context)
-        binding = LayoutExpertAdviceBinding.inflate(inflater, this)
+        binding = HtLayoutExpertAdviceBinding.inflate(inflater, this)
 
         // 读取自定义属性
         context.obtainStyledAttributes(attrs, R.styleable.ExpertAdviceView).apply {

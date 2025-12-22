@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.DialogComingSoonBinding
-import com.healthtracker.blood.suger.databinding.DialogPhysicalPermissionRequestBinding
+import com.healthtracker.blood.suger.databinding.HtDialogComingSoonBinding
+import com.healthtracker.blood.suger.databinding.HtDialogPhysicalPermissionRequestBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.ext.click
@@ -19,7 +19,7 @@ import com.healthtracker.framework.ext.click
  */
 class ActivityPerRequestDialog(
     private val onAllow: (() -> Unit)? = null
-) : BaseBottomSheetDialogFragment<DialogPhysicalPermissionRequestBinding>() {
+) : BaseBottomSheetDialogFragment<HtDialogPhysicalPermissionRequestBinding>() {
 
     companion object {
         fun show(
@@ -36,7 +36,7 @@ class ActivityPerRequestDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DialogPhysicalPermissionRequestBinding.inflate(inflater, parent, attachToParent)
+    ) = HtDialogPhysicalPermissionRequestBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {

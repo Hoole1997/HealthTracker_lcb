@@ -14,7 +14,7 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
-import com.healthtracker.blood.suger.databinding.ActivityHealthStatisticsBinding
+import com.healthtracker.blood.suger.databinding.HtActivityHealthStatisticsBinding
 import com.healthtracker.blood.suger.tips.HealthMetric
 import com.healthtracker.blood.suger.tips.HealthTips
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
@@ -46,7 +46,7 @@ import java.util.TimeZone
  * Health Statistics Activity
  */
 class HealthStatisticsActivity :
-    BaseInterActivity<HealthStatisticsViewModel, ActivityHealthStatisticsBinding>() {
+    BaseInterActivity<HealthStatisticsViewModel, HtActivityHealthStatisticsBinding>() {
 
     companion object {
         // Intent extra keys - must match ViewModel's SavedStateHandle keys
@@ -106,8 +106,8 @@ class HealthStatisticsActivity :
     private var dimensionMenu: StatisticDimensionMenu? = null
     private var currentMetricType: HealthMetric = HealthMetric.BLOOD_SUGAR
 
-    override fun createViewBinding(): ActivityHealthStatisticsBinding {
-        return ActivityHealthStatisticsBinding.inflate(layoutInflater)
+    override fun createViewBinding(): HtActivityHealthStatisticsBinding {
+        return HtActivityHealthStatisticsBinding.inflate(layoutInflater)
     }
 
     override fun getVMModelClass(): Class<HealthStatisticsViewModel> {

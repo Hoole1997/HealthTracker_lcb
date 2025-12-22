@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionBarSize"
+        android:background="@color/c1"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_4"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ht_ic_back" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_choose_gender"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_20"
+        android:text="@string/choose_your_gender"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_bar"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_des"
+        style="@style/TextViewFont_RobotoRegular"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_14"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/txt_profile_des"
+        android:textColor="@color/color_666"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_choose_gender" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_v_center"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+
+    <RadioGroup
+        android:id="@+id/rg_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_des">
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/rb_male"
+            android:layout_width="@dimen/dp_154"
+            android:layout_height="@dimen/dp_130"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:background="@drawable/ht_selector_gender_item"
+            android:button="@null"
+            android:checked="true" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/rb_female"
+            android:layout_width="@dimen/dp_154"
+            android:layout_height="@dimen/dp_130"
+            android:layout_marginStart="@dimen/dp_5"
+            android:background="@drawable/ht_selector_gender_item"
+            android:button="@null" />
+    </RadioGroup>
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="@dimen/dp_92"
+        android:layout_height="@dimen/dp_92"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:layout_marginBottom="@dimen/dp_1"
+        app:layout_constraintBottom_toBottomOf="@id/rg_gender"
+        app:layout_constraintEnd_toEndOf="@id/guide_v_center"
+        app:srcCompat="@mipmap/ht_ic_male" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="@dimen/dp_92"
+        android:layout_height="@dimen/dp_92"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_1"
+        app:layout_constraintBottom_toBottomOf="@id/rg_gender"
+        app:layout_constraintEnd_toEndOf="@id/rg_gender"
+        app:srcCompat="@mipmap/ht_ic_female" />
+
+    <androidx.appcompat.widget.AppCompatCheckedTextView
+        android:id="@+id/tv_male"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_16"
+        android:checked="true"
+        android:text="@string/male"
+        android:textColor="@color/ht_selector_gender_text_color"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintStart_toStartOf="@id/rg_gender"
+        app:layout_constraintTop_toTopOf="@id/rg_gender" />
+
+    <androidx.appcompat.widget.AppCompatCheckedTextView
+        android:id="@+id/tv_female"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/female"
+        android:textColor="@color/ht_selector_gender_text_color"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintStart_toStartOf="@id/guide_v_center"
+        app:layout_constraintTop_toTopOf="@id/rg_gender" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_choose_age"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_30"
+        android:text="@string/choose_your_age"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rg_gender" />
+
+
+    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
+        android:id="@+id/numberPicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_choose_age"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        app:npv_ItemPaddingHorizontal="@dimen/dp_24"
+        app:npv_ItemPaddingVertical="@dimen/dp_10"
+        tools:npv_TextArray="@array/hours"
+        app:npv_ShowDivider="false"
+        app:npv_SelectedItemBackground="@drawable/ht_bg_age_select"
+        app:npv_ShownCount="3"
+        app:npv_TextColorNormal="@color/color_BFBFBF"
+        app:npv_TextColorSelected="@color/c5"
+        app:npv_TextSizeNormal="@dimen/sp_24"
+        app:npv_TextSizeSelected="@dimen/sp_24"
+        app:npv_WrapSelectorWheel="true" />
+
+    <!-- 顶部渐变遮罩 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ht_gradient_npv_top"
+        app:layout_constraintBottom_toTopOf="@id/v_age_select"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/numberPicker" />
+
+    <!-- 底部渐变遮罩 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ht_gradient_npv_bottom"
+        app:layout_constraintBottom_toBottomOf="@id/numberPicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_age_select" />
+
+    <View
+        android:id="@+id/v_age_select"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:background="@drawable/ht_bg_age_select"
+        app:layout_constraintBottom_toBottomOf="@id/numberPicker"
+        app:layout_constraintTop_toTopOf="@id/numberPicker"
+        android:visibility="invisible"/>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_continue"
+        style="@style/MaterialButton.b1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginHorizontal="@dimen/dp_32"
+
+        android:text="@string/text_continue"
+        app:layout_constraintBottom_toTopOf="@id/tv_skip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_skip"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_32"
+
+        android:gravity="center"
+        android:padding="@dimen/dp_16"
+        android:text="@string/skip"
+        android:textColor="@color/color_999"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ad_Container" />
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/group_guide"
+        app:constraint_referenced_ids="tv_skip,btn_continue"
+        android:visibility="visible"/>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save"
+        style="@style/MaterialButton.b1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginHorizontal="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_32"
+        android:text="@string/save"
+        app:layout_constraintBottom_toTopOf="@id/tv_skip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:enabled="false"
+        android:visibility="gone"/>
+
+
+    <FrameLayout
+        android:id="@+id/ad_Container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

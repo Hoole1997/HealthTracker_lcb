@@ -7,8 +7,8 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.enums.CholesterolLevel
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.ActivityCholesterolRecordBinding
-import com.healthtracker.blood.suger.databinding.LayoutCholesterolDetailValueBinding
+import com.healthtracker.blood.suger.databinding.HtActivityCholesterolRecordBinding
+import com.healthtracker.blood.suger.databinding.HtLayoutCholesterolDetailValueBinding
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
 import com.healthtracker.blood.suger.ui.viewmodel.CholesterolRecordViewModel
@@ -34,7 +34,7 @@ import java.util.Locale
  * 胆固醇记录页面
  */
 class CholesterolRecordActivity :
-    BaseInterActivity<CholesterolRecordViewModel, ActivityCholesterolRecordBinding>() {
+    BaseInterActivity<CholesterolRecordViewModel, HtActivityCholesterolRecordBinding>() {
 
     companion object {
         private const val EXTRA_RECORD_ID = "extra_record_id"
@@ -50,10 +50,10 @@ class CholesterolRecordActivity :
         }
     }
 
-    private lateinit var cholesterolDetailBinding: LayoutCholesterolDetailValueBinding
+    private lateinit var cholesterolDetailBinding: HtLayoutCholesterolDetailValueBinding
 
-    override fun createViewBinding(): ActivityCholesterolRecordBinding =
-        ActivityCholesterolRecordBinding.inflate(layoutInflater)
+    override fun createViewBinding(): HtActivityCholesterolRecordBinding =
+        HtActivityCholesterolRecordBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = CholesterolRecordViewModel::class.java
 
@@ -221,7 +221,7 @@ class CholesterolRecordActivity :
         val levels = LeveDataFactory.Cholesterol.buildItems(this)
         mViewBind.lsvStatus.setLevels(levels)
 
-        cholesterolDetailBinding = LayoutCholesterolDetailValueBinding.inflate(layoutInflater)
+        cholesterolDetailBinding = HtLayoutCholesterolDetailValueBinding.inflate(layoutInflater)
         mViewBind.lsvStatus.setExtraView(cholesterolDetailBinding.root)
 
         // 在记录页开启范围说明点击，弹出通用等级说明对话框

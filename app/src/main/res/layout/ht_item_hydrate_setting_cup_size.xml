@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_12"
+    android:background="@drawable/ht_bg_rect_white_12"
+    android:padding="@dimen/dp_16">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_cup_title"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cup_size"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/rg_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_32"
+        android:background="@drawable/ht_bg_unit_switch"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tv_cup_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_16">
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/rb_floz"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/ht_selector_unit_tab"
+            android:button="@null"
+            android:checked="true"
+            android:paddingHorizontal="@dimen/dp_12"
+            android:text="@string/fl_oz"
+            android:gravity="center"
+            android:textColor="@color/ht_selector_unit_text_color"
+            android:textSize="@dimen/sp_12" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/rb_ml"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/ht_selector_unit_tab"
+            android:button="@null"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/dp_12"
+            android:text="@string/ml"
+            android:textColor="@color/ht_selector_unit_text_color"
+            android:textSize="@dimen/sp_12" />
+
+    </RadioGroup>
+
+    <!-- 直接放置两个 TextView，基线对齐 + packed 水平链居中 -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_select_value"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_42"
+        tools:text="20"
+        app:layout_constraintTop_toBottomOf="@id/rg_unit"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_select_unit"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_select_unit"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        tools:text="ml"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_select_value"
+        app:layout_constraintStart_toEndOf="@id/tv_select_value"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.healthtracker.blood.suger.ui.weight.RulerView
+        android:id="@+id/rulerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        app:indicatorHeight="@dimen/dp_30"
+        app:indicatorStroke="@dimen/dp_3"
+        app:isBgRoundRect="true"
+        app:largeScaleColor="#D9D9D9"
+        app:largeScaleHeight="@dimen/dp_30"
+        app:largeScaleStroke="@dimen/dp_2"
+        app:layout_constraintTop_toBottomOf="@id/tv_select_value"
+        app:midScaleColor="#D9D9D9"
+        app:midScaleHeight="@dimen/dp_22"
+        app:midScaleStroke="@dimen/dp_2"
+        app:rulerHeight="@dimen/dp_52"
+        app:scaleNumColor="@color/color_999"
+        app:scaleNumTextSize="@dimen/sp_14"
+        app:scaleTextMargin="@dimen/dp_6"
+        app:smallScaleColor="#D9D9D9"
+        app:smallScaleHeight="@dimen/dp_22"
+        app:smallScaleStroke="@dimen/dp_2"
+        tools:decimalPlaces="0"
+        tools:firstScale="20"
+        tools:maxScale="50"
+        tools:minScale="5"
+        tools:scaleCount="5"
+        tools:scaleStep="5"
+        tools:scrollableMaxScale="50"
+        tools:scrollableMinScale="5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

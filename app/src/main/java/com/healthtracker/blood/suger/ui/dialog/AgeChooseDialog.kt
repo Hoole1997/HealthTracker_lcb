@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.healthtracker.blood.suger.databinding.DialogChooseAgeBinding
+import com.healthtracker.blood.suger.databinding.HtDialogChooseAgeBinding
 import com.healthtracker.blood.suger.getUserAge
 import com.healthtracker.blood.suger.saveUserAge
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
@@ -16,7 +16,7 @@ import com.healthtracker.framework.util.getRobotoRegular
 /**
  * 年龄选择弹窗
  */
-class AgeChooseDialog : BaseVbDialogFragment<DialogChooseAgeBinding>() {
+class AgeChooseDialog : BaseVbDialogFragment<HtDialogChooseAgeBinding>() {
 
     private var onAgeConfirmed: (() -> Unit)? = null
     private var selectedAge: Int = getUserAge()
@@ -36,7 +36,7 @@ class AgeChooseDialog : BaseVbDialogFragment<DialogChooseAgeBinding>() {
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ): DialogChooseAgeBinding = DialogChooseAgeBinding.inflate(inflater, parent, attachToParent)
+    ): HtDialogChooseAgeBinding = HtDialogChooseAgeBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         setupNumberPicker()

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.BsUnit
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
-import com.healthtracker.blood.suger.databinding.ItemTargetRangeBinding
+import com.healthtracker.blood.suger.databinding.HtItemTargetRangeBinding
 import com.healthtracker.blood.suger.ui.viewmodel.RangeItem
 import com.healthtracker.framework.ext.click
 
@@ -21,7 +21,7 @@ class TargetRangeAdapter(
 ) : ListAdapter<RangeItem, TargetRangeAdapter.ViewHolder>(RangeItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemTargetRangeBinding.inflate(
+        val binding = HtItemTargetRangeBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -33,7 +33,7 @@ class TargetRangeAdapter(
         holder.bind(getItem(position))
     }
 
-    inner class ViewHolder(private val binding: ItemTargetRangeBinding) :
+    inner class ViewHolder(private val binding: HtItemTargetRangeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: RangeItem) {

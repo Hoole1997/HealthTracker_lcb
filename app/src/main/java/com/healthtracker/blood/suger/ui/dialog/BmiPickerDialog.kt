@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.BmiUnit
-import com.healthtracker.blood.suger.databinding.DialogBmiPickerBinding
+import com.healthtracker.blood.suger.databinding.HtDialogBmiPickerBinding
 import com.healthtracker.blood.suger.ui.weight.RulerView
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
  * BMI 数值选择弹窗，复用通用标尺控件
  * 通过参数区分身高/体重，并支持单位切换与当前值回显
  */
-class BmiPickerDialog : BaseBottomSheetDialogFragment<DialogBmiPickerBinding>() {
+class BmiPickerDialog : BaseBottomSheetDialogFragment<HtDialogBmiPickerBinding>() {
 
     private var style: Int = STYLE_WEIGHT
     private var initialValue: Float = 0f
@@ -96,7 +96,7 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<DialogBmiPickerBinding>() 
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ): DialogBmiPickerBinding = DialogBmiPickerBinding.inflate(inflater, parent, attachToParent)
+    ): HtDialogBmiPickerBinding = HtDialogBmiPickerBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         setupTitle()

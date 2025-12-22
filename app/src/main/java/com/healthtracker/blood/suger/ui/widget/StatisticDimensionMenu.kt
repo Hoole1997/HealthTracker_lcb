@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.PopupWindow
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.LayoutStatisticDimensionMenuBinding
+import com.healthtracker.blood.suger.databinding.HtLayoutStatisticDimensionMenuBinding
 import com.healthtracker.blood.suger.viewmodel.StatisticDimension
 import com.healthtracker.framework.ext.click
 
@@ -14,7 +14,7 @@ class StatisticDimensionMenu(
     private val onSelect: ((StatisticDimension) -> Unit)? = null
 ) : PopupWindow(context) {
 
-    private val binding = LayoutStatisticDimensionMenuBinding.inflate(LayoutInflater.from(context))
+    private val binding = HtLayoutStatisticDimensionMenuBinding.inflate(LayoutInflater.from(context))
 
     init {
         setupView()

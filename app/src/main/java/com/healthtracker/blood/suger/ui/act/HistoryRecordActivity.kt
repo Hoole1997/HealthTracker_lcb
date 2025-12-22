@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ActivityHistoryRecordBinding
+import com.healthtracker.blood.suger.databinding.HtActivityHistoryRecordBinding
 import com.healthtracker.blood.suger.data.enums.BloodSugarStatus
 import com.healthtracker.blood.suger.data.enums.getStatusStringRes
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
@@ -30,7 +30,7 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import java.util.Date
 
-class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryRecordBinding>() {
+class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, HtActivityHistoryRecordBinding>() {
 
     // 历史记录适配器
     private lateinit var historyAdapter: HistoryAdapter
@@ -50,7 +50,7 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, ActivityHistoryR
     }
 
 
-    override fun createViewBinding() = ActivityHistoryRecordBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityHistoryRecordBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HistoryViewModel::class.java
 

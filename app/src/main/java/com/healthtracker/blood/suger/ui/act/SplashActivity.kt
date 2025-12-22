@@ -17,7 +17,7 @@ import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_CONTENT
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_FROM
 import com.healthtracker.blood.suger.constants.LANDING_NOTIFICATION_TITLE
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.ActivitySplashBinding
+import com.healthtracker.blood.suger.databinding.HtActivitySplashBinding
 import com.healthtracker.blood.suger.hasNewGuide
 import com.healthtracker.blood.suger.receiver.NotificationActionReceiver
 import com.healthtracker.blood.suger.ui.history.HistoryRecordItem
@@ -52,7 +52,7 @@ import net.corekit.monetize.ads.log.AdLogger
 import org.koin.android.ext.android.inject
 import kotlin.math.ceil
 
-class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>() {
+class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>() {
 
     companion object {
         private const val TAG = "SplashActivity"
@@ -98,7 +98,7 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
 
     private val permissionManager: PermissionManager by inject()
 
-    override fun createViewBinding() = ActivitySplashBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivitySplashBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = SplashViewModel::class.java
     private var launchTime = 0L
@@ -170,9 +170,9 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
                     }
 
                     val layoutId = if (item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_PRESSURE) {
-                        R.layout.layout_recent_bp
+                        R.layout.ht_layout_recent_bp
                     } else {
-                        R.layout.layout_recent_bs
+                        R.layout.ht_layout_recent_bs
                     }
 
                     val contentView = layoutInflater.inflate(layoutId, mViewBind.clRecentRecord, false)
@@ -198,7 +198,7 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, ActivitySplashBinding>(
                     tvLevel.text = item.getLevel(this@SplashActivity)
                     tvTime.text = DateTimeUtils.formatDateTime(item.getRecordTime())
 
-                    if(layoutId == R.layout.layout_recent_bp){
+                    if(layoutId == R.layout.ht_layout_recent_bp){
                         val secondaryValue = item.getSecondaryValue()
                         if (secondaryValue != null) {
                             tvValue2.text = secondaryValue

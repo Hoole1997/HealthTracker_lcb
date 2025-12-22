@@ -5,7 +5,7 @@ import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.entity.HealthTag
-import com.healthtracker.blood.suger.databinding.ActivityHeartRateRecordBinding
+import com.healthtracker.blood.suger.databinding.HtActivityHeartRateRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
@@ -29,7 +29,7 @@ import java.util.Calendar
  * 心率记录页面
  */
 class HeartRateRecordActivity :
-    BaseInterActivity<HeartRateRecordViewModel, ActivityHeartRateRecordBinding>() {
+    BaseInterActivity<HeartRateRecordViewModel, HtActivityHeartRateRecordBinding>() {
 
     private val healthTags = mutableListOf<HealthTag>()
     private val addTagIds = mutableListOf<Long>()
@@ -48,7 +48,7 @@ class HeartRateRecordActivity :
         }
     }
 
-    override fun createViewBinding() = ActivityHeartRateRecordBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityHeartRateRecordBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HeartRateRecordViewModel::class.java
 

@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.constants.KEY_STEP_COUNT_GOLE
-import com.healthtracker.blood.suger.databinding.ActivityStepCountBinding
+import com.healthtracker.blood.suger.databinding.HtActivityStepCountBinding
 import com.healthtracker.blood.suger.service.HealthService
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.framework.ext.clickWithDuration
@@ -23,7 +23,7 @@ import com.healthtracker.framework.util.NumberFormatter
 import com.healthtracker.framework.util.SpUtils
 import org.koin.android.ext.android.inject
 
-class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCountBinding>() {
+class StepCountActivity : BaseInterActivity<StepCountViewModel, HtActivityStepCountBinding>() {
 
     private val chartManagerFactory: HealthLineChartManager.Factory by inject()
 
@@ -33,7 +33,7 @@ class StepCountActivity : BaseInterActivity<StepCountViewModel, ActivityStepCoun
         if (granted) startHealthService() else Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
     }
 
-    override fun createViewBinding() = ActivityStepCountBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityStepCountBinding.inflate(layoutInflater)
     override fun getVMModelClass() = StepCountViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {

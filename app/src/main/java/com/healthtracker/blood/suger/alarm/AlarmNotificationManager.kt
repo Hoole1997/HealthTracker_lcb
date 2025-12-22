@@ -105,7 +105,7 @@ class AlarmNotificationManager(
         try {
 
             val notificationId = generateNotificationId(alarmRecord)
-            val icon = if(alarmRecord.type == AlarmRecord.TYPE_BLOOD_PRESSURE) R.drawable.ic_notifcation_pb else R.drawable.ic_notification_bs
+            val icon = if(alarmRecord.type == AlarmRecord.TYPE_BLOOD_PRESSURE) R.drawable.ht_ic_notifcation_pb else R.drawable.ic_notification_bs
             // 创建点击意图
             val clickIntent = createClickPendingIntent(alarmRecord.type)
 
@@ -159,7 +159,7 @@ class AlarmNotificationManager(
     ): RemoteViews {
         val (time,des,btnText) = getNotificationContent(alarmRecord)
         val notifResources = getAlarmNotificationRes(alarmRecord.type)
-        return RemoteViews(context.packageName, R.layout.layout_meds_notify).apply {
+        return RemoteViews(context.packageName, R.layout.ht_layout_meds_notify).apply {
 
             // 设置标题和按钮文字
             setTextViewText(R.id.tv_title, des)
@@ -183,7 +183,7 @@ class AlarmNotificationManager(
     ): RemoteViews {
         val (time,des,btnText) = getNotificationContent(alarmRecord)
         val notifResources = getAlarmNotificationRes(alarmRecord.type)
-        return RemoteViews(context.packageName, R.layout.layout_meds_notify_big).apply {
+        return RemoteViews(context.packageName, R.layout.ht_layout_meds_notify_big).apply {
            // 设置背景（如果有）
             notifResources?.decorIcon?.let { bg ->
                 setImageViewResource(R.id.ic_bg_icon,bg)
@@ -343,30 +343,30 @@ class AlarmNotificationManager(
     private fun getAlarmNotificationRes(recordType:Int) = when(recordType){
         AlarmRecord.TYPE_BLOOD_SUGAR -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.bg_rect_white_12,
-            largeIcon = R.drawable.ic_remind_notify,
-            decorIcon = R.mipmap.ic_bs_notify_icon,
+            background = R.drawable.ht_bg_rect_white_12,
+            largeIcon = R.drawable.ht_ic_remind_notify,
+            decorIcon = R.mipmap.ht_ic_bs_notify_icon,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_BLOOD_PRESSURE-> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.bg_rect_white_12,
-            largeIcon = R.drawable.ic_remind_notify,
-            decorIcon = R.mipmap.ic_bp_notify_icon,
+            background = R.drawable.ht_bg_rect_white_12,
+            largeIcon = R.drawable.ht_ic_remind_notify,
+            decorIcon = R.mipmap.ht_ic_bp_notify_icon,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_MEDICATION -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.bg_rect_white_12,
-            largeIcon = R.drawable.ic_remind_notify,
-            decorIcon = R.mipmap.ic_meds_notify,
+            background = R.drawable.ht_bg_rect_white_12,
+            largeIcon = R.drawable.ht_ic_remind_notify,
+            decorIcon = R.mipmap.ht_ic_meds_notify,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_HYDRATION -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.bg_rect_white_12,
-            largeIcon = R.drawable.ic_remind_notify,
-            decorIcon = R.mipmap.ic_hydrate_noti,
+            background = R.drawable.ht_bg_rect_white_12,
+            largeIcon = R.drawable.ht_ic_remind_notify,
+            decorIcon = R.mipmap.ht_ic_hydrate_noti,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         else -> null

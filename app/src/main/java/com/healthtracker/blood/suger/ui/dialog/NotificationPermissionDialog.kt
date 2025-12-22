@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.DialogNotificationPermissionBinding
+import com.healthtracker.blood.suger.databinding.HtDialogNotificationPermissionBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 
@@ -19,7 +19,7 @@ import com.healthtracker.framework.ext.click
 class NotificationPermissionDialog(
     private val onGoToSettings: (() -> Unit)? = null,
     private val onCancel: (() -> Unit)? = null
-) : BaseBottomSheetDialogFragment<DialogNotificationPermissionBinding>() {
+) : BaseBottomSheetDialogFragment<HtDialogNotificationPermissionBinding>() {
 
     companion object {
         private const val TAG = "NotificationPermissionDialog"
@@ -53,7 +53,7 @@ class NotificationPermissionDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = DialogNotificationPermissionBinding.inflate(inflater, parent, attachToParent)
+    ) = HtDialogNotificationPermissionBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {

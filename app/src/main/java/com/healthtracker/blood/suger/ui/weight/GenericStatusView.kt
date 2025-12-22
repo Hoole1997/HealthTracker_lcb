@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ViewGenericStatusBinding
+import com.healthtracker.blood.suger.databinding.HtViewGenericStatusBinding
 
 /**
  * 通用状态视图基类
@@ -20,8 +20,8 @@ abstract class GenericStatusView<T> @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) where T : Enum<T>, T : LevelCategory {
 
-    protected val binding: ViewGenericStatusBinding =
-        ViewGenericStatusBinding.inflate(LayoutInflater.from(context), this, true)
+    protected val binding: HtViewGenericStatusBinding =
+        HtViewGenericStatusBinding.inflate(LayoutInflater.from(context), this, true)
 
     // 当前状态
     protected var currentLevelValue: T? = null

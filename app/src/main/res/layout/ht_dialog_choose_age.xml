@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ht_bg_rect_white_12"
+    android:paddingHorizontal="@dimen/dp_16"
+    android:paddingVertical="@dimen/dp_20">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_choose_age"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:text="@string/please_choose_your_age"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
+        android:id="@+id/numberPicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_choose_age"
+        app:npv_ItemPaddingHorizontal="@dimen/dp_24"
+        app:npv_ItemPaddingVertical="@dimen/dp_4"
+        app:npv_ShowDivider="false"
+        app:npv_ShownCount="3"
+        app:npv_TextColorNormal="@color/color_BFBFBF"
+        app:npv_TextColorSelected="@color/c5"
+        app:npv_TextSizeNormal="@dimen/sp_24"
+        app:npv_TextSizeSelected="@dimen/sp_32"
+        app:npv_WrapSelectorWheel="true"
+        tools:npv_TextArray="@array/hours" />
+
+    <!-- 顶部渐变遮罩 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/ht_gradient_npv_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/numberPicker" />
+
+    <!-- 底部渐变遮罩 -->
+    <View
+        android:id="@+id/v_bottom_mask"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/ht_gradient_npv_bottom"
+        app:layout_constraintBottom_toBottomOf="@id/numberPicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        app:layout_constraintTop_toBottomOf="@id/numberPicker">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            style="@style/MaterialButton.b3"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_weight="1"
+            android:text="@string/cancel" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_ok"
+            style="@style/MaterialButton.b1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_weight="1"
+            android:text="@string/confirm" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

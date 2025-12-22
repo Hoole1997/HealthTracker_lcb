@@ -20,8 +20,8 @@ import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.alarm.PermissionManager
 import com.healthtracker.blood.suger.config.models.PushMessage
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.ActivityMainBinding
-import com.healthtracker.blood.suger.databinding.LayoutHomeTabItemBinding
+import com.healthtracker.blood.suger.databinding.HtActivityMainBinding
+import com.healthtracker.blood.suger.databinding.HtLayoutHomeTabItemBinding
 import com.healthtracker.blood.suger.helper.CustomNotificationHelper
 import com.healthtracker.blood.suger.permission.PermissionProvider
 import com.healthtracker.blood.suger.permission.PermissionRequest
@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 import net.corekit.core.report.ReportDataManager
 import org.koin.android.ext.android.inject
 
-class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), PermissionProvider {
+class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), PermissionProvider {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -179,7 +179,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
         }
     }
 
-    override fun createViewBinding() = ActivityMainBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityMainBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = MainViewModel::class.java
 
@@ -287,10 +287,10 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
             removeAllTabs()
 
             val tabs = arrayListOf(
-                Pair(R.drawable.selector_nav_home, R.string.home),
-                Pair(R.drawable.selector_nav_meds, R.string.meds),
-                Pair(R.drawable.selector_nav_insights, R.string.insights),
-                Pair(R.drawable.selector_nav_record, R.string.tracker),
+                Pair(R.drawable.ht_selector_nav_home, R.string.home),
+                Pair(R.drawable.ht_selector_nav_meds, R.string.meds),
+                Pair(R.drawable.ht_selector_nav_insights, R.string.insights),
+                Pair(R.drawable.ht_selector_nav_record, R.string.tracker),
 
                 )
 
@@ -322,7 +322,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, ActivityMainBinding>(), Per
     private fun addBottomNavTab(tabLayout: TabLayout, icon: Int, title: String) {
         tabLayout.addTab(tabLayout.newTab().apply {
             text = title
-            customView = LayoutHomeTabItemBinding.inflate(layoutInflater, tabLayout, false).let {
+            customView = HtLayoutHomeTabItemBinding.inflate(layoutInflater, tabLayout, false).let {
                 it.tvTabText.text = title
                 it.ivTabIcon.setImageResource(icon)
 

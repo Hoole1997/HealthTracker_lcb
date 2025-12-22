@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.config.HydrateSettingManager
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.ItemHydrateQuickAddSectionBinding
-import com.healthtracker.blood.suger.databinding.ItemHydrateRecordItemBinding
-import com.healthtracker.blood.suger.databinding.ItemHydrateRecordSectionBinding
-import com.healthtracker.blood.suger.databinding.ItemHydrateTotalSectionBinding
-import com.healthtracker.blood.suger.databinding.ItemLabelBinding
+import com.healthtracker.blood.suger.databinding.HtItemHydrateQuickAddSectionBinding
+import com.healthtracker.blood.suger.databinding.HtItemHydrateRecordItemBinding
+import com.healthtracker.blood.suger.databinding.HtItemHydrateRecordSectionBinding
+import com.healthtracker.blood.suger.databinding.HtItemHydrateTotalSectionBinding
+import com.healthtracker.blood.suger.databinding.HtItemLabelBinding
 import java.util.Date
 import kotlin.math.max
 
@@ -70,15 +70,15 @@ class HydrateAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_TOTAL_SECTION -> TotalSectionViewHolder(
-                ItemHydrateTotalSectionBinding.inflate(inflater, parent, false),
+                HtItemHydrateTotalSectionBinding.inflate(inflater, parent, false),
                 onDrinkClick
             )
             TYPE_QUICK_ADD_SECTION -> QuickAddSectionViewHolder(
-                ItemHydrateQuickAddSectionBinding.inflate(inflater, parent, false),
+                HtItemHydrateQuickAddSectionBinding.inflate(inflater, parent, false),
                 onQuickAddClick
             )
             TYPE_RECORD_SECTION -> RecordSectionViewHolder(
-                ItemHydrateRecordSectionBinding.inflate(inflater, parent, false),
+                HtItemHydrateRecordSectionBinding.inflate(inflater, parent, false),
                 onRecordDeleteClick
             )
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
@@ -94,7 +94,7 @@ class HydrateAdapter(
     }
 
     inner class TotalSectionViewHolder(
-        private val binding: ItemHydrateTotalSectionBinding,
+        private val binding: HtItemHydrateTotalSectionBinding,
         private val onDrinkClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private val drinkTextFormat: String = binding.root.context.getString(R.string.drink_btn_format)
@@ -162,7 +162,7 @@ class HydrateAdapter(
     }
 
     class QuickAddSectionViewHolder(
-        private val binding: ItemHydrateQuickAddSectionBinding,
+        private val binding: HtItemHydrateQuickAddSectionBinding,
         private val onItemClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private var adapter: QuickAddAdapter? = null
@@ -195,7 +195,7 @@ class HydrateAdapter(
     }
 
     class RecordSectionViewHolder(
-        private val binding: ItemHydrateRecordSectionBinding,
+        private val binding: HtItemHydrateRecordSectionBinding,
         private val onDeleteClick: (HydrateRecordItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private var adapter: RecordAdapter? = null
@@ -233,7 +233,7 @@ class HydrateAdapter(
                     // 图片：居中于父
                     val iv = ImageView(binding.root.context).apply {
                         id = View.generateViewId()
-                        setImageResource(R.mipmap.ic_empty_hydrate_record)
+                        setImageResource(R.mipmap.ht_ic_empty_hydrate_record)
                         adjustViewBounds = true
                         scaleType = ImageView.ScaleType.CENTER_INSIDE
                         contentDescription = binding.root.context.getString(R.string.hydrate_empty_record)
@@ -296,7 +296,7 @@ class HydrateAdapter(
         override fun areContentsTheSame(oldItem: Int, newItem: Int): Boolean = oldItem == newItem
     }) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuickAddViewHolder {
-            val binding = ItemLabelBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding = HtItemLabelBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return QuickAddViewHolder(binding, onItemClick)
         }
 
@@ -306,7 +306,7 @@ class HydrateAdapter(
     }
 
     private class QuickAddViewHolder(
-        private val binding: ItemLabelBinding,
+        private val binding: HtItemLabelBinding,
         private val onItemClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(value: Int) {
@@ -330,7 +330,7 @@ class HydrateAdapter(
         override fun areContentsTheSame(oldItem: HydrateRecordItem, newItem: HydrateRecordItem): Boolean = oldItem == newItem
     }) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
-            val binding = ItemHydrateRecordItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding = HtItemHydrateRecordItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return RecordViewHolder(binding, onDeleteClick)
         }
 
@@ -340,7 +340,7 @@ class HydrateAdapter(
     }
 
     private class RecordViewHolder(
-        private val binding: ItemHydrateRecordItemBinding,
+        private val binding: HtItemHydrateRecordItemBinding,
         private val onDeleteClick: (HydrateRecordItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: HydrateRecordItem) {

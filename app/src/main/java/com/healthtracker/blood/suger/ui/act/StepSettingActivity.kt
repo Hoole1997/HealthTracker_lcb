@@ -5,7 +5,7 @@ import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.constants.KEY_STEP_COUNT_GOLE
 import com.healthtracker.blood.suger.data.entity.BmiRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
-import com.healthtracker.blood.suger.databinding.ActivityStepSettingBinding
+import com.healthtracker.blood.suger.databinding.HtActivityStepSettingBinding
 import com.healthtracker.blood.suger.ui.dialog.StepGoalSelectDialog
 import com.healthtracker.blood.suger.ui.viewmodel.StepSettingViewModel
 import com.healthtracker.framework.ext.clickWithDuration
@@ -14,8 +14,8 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.report.ReportDataManager
 
-class StepSettingActivity: BaseInterActivity<StepSettingViewModel, ActivityStepSettingBinding>() {
-    override fun createViewBinding() = ActivityStepSettingBinding.inflate(layoutInflater)
+class StepSettingActivity: BaseInterActivity<StepSettingViewModel, HtActivityStepSettingBinding>() {
+    override fun createViewBinding() = HtActivityStepSettingBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = StepSettingViewModel::class.java
 

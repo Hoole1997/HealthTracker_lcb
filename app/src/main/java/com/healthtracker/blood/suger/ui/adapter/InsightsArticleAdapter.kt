@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ItemInsightsBinding
+import com.healthtracker.blood.suger.databinding.HtItemInsightsBinding
 import com.healthtracker.blood.suger.utils.InsightAssetPreparer
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.util.isLeast9
@@ -25,7 +25,7 @@ class InsightsArticleAdapter(
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
-        val binding = ItemInsightsBinding.inflate(
+        val binding = HtItemInsightsBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -38,7 +38,7 @@ class InsightsArticleAdapter(
     }
 
     inner class ArticleViewHolder(
-        private val binding: ItemInsightsBinding
+        private val binding: HtItemInsightsBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private var currentArticle: InsightAssetPreparer.InsightArticle? = null
@@ -60,11 +60,11 @@ class InsightsArticleAdapter(
             }
             val imagePath = article.listImagePath
             if (imagePath.isNullOrEmpty()) {
-                binding.ivImg.setImageResource(R.drawable.bg_rect_white_12)
+                binding.ivImg.setImageResource(R.drawable.ht_bg_rect_white_12)
             } else {
                 Glide.with(binding.ivImg)
                     .load(File(imagePath))
-                    .placeholder(R.drawable.bg_rect_white_12)
+                    .placeholder(R.drawable.ht_bg_rect_white_12)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.ivImg)
             }

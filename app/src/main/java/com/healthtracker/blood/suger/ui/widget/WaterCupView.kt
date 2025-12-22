@@ -22,9 +22,9 @@ import kotlin.math.sin
 
 /**
  * 自定义控件：喝水状态杯子
- * - 底层绘制杯子图片 `R.mipmap.ic_cup`
+ * - 底层绘制杯子图片 `R.mipmap.ht_ic_cup`
  * - 盖上水波纹（Canvas 绘制的两层正弦波填充）
- * - 最上层覆盖杯子遮罩 `R.mipmap.ic_cup_cover` 以遮挡超出杯沿的波纹
+ * - 最上层覆盖杯子遮罩 `R.mipmap.ht_ic_cup_cover` 以遮挡超出杯沿的波纹
  */
 class WaterCupView @JvmOverloads constructor(
     context: Context,
@@ -107,8 +107,8 @@ class WaterCupView @JvmOverloads constructor(
 
         // 初始化位图资源
         try {
-            cupBitmapSrc = BitmapFactory.decodeResource(resources, R.mipmap.ic_cup)
-            coverBitmapSrc = BitmapFactory.decodeResource(resources, R.mipmap.ic_cup_cover)
+            cupBitmapSrc = BitmapFactory.decodeResource(resources, R.mipmap.ht_ic_cup)
+            coverBitmapSrc = BitmapFactory.decodeResource(resources, R.mipmap.ht_ic_cup_cover)
         } catch (_: Throwable) {
             // 忽略：若资源不存在，控件仍可不崩溃运行（只绘制波纹）
         }

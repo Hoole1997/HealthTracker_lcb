@@ -16,7 +16,7 @@ import com.healthtracker.blood.suger.data.entity.CholesterolRecord
 import com.healthtracker.blood.suger.data.entity.HeartRateRecord
 import com.healthtracker.blood.suger.data.enums.BmiUnit
 import com.healthtracker.blood.suger.data.enums.BsUnit
-import com.healthtracker.blood.suger.databinding.FragmentHomeBinding
+import com.healthtracker.blood.suger.databinding.HtFragmentHomeBinding
 import com.healthtracker.blood.suger.hasAddProfile
 import com.healthtracker.blood.suger.hasShowAllGuide
 import com.healthtracker.blood.suger.hasShowGuideBp
@@ -59,7 +59,7 @@ import java.util.Locale
  * 首页Fragment
  * 显示最近一次的血糖和血压记录
  */
-class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
+class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
 
    companion object{
        private const val TAG = "HomeFragment"
@@ -90,7 +90,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = FragmentHomeBinding.inflate(inflater, parent, attachToParent)
+    ) = HtFragmentHomeBinding.inflate(inflater, parent, attachToParent)
 
     override fun getVMModelClass() = HomeViewModel::class.java
 
@@ -351,7 +351,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             .setHighlightParameter {
                 HighlightParameter.Builder()
                     .setHighlightViewId(R.id.cl_blood_pressure)
-                    .setTipsViewId(R.layout.layout_guide_bp)
+                    .setTipsViewId(R.layout.ht_layout_guide_bp)
                     .setHighlightShape(RectShape(4f.dp, 4f.dp, 12f))
                     .setHighlightHorizontalPadding(0f.dp)
                     .setConstraints(Constraints.StartToStartOfHighlight + Constraints.TopToBottomOfHighlight + Constraints.EndToEndOfHighlight)
@@ -384,7 +384,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             .setHighlightParameter {
                 HighlightParameter.Builder()
                     .setHighlightViewId(R.id.cl_ps_record)
-                    .setTipsViewId(R.layout.layout_guide_bs)
+                    .setTipsViewId(R.layout.ht_layout_guide_bs)
                     .setHighlightShape(RectShape(4f.dp, 4f.dp, 12f))
                     .setHighlightHorizontalPadding(0f.dp)
                     .setConstraints(Constraints.StartToStartOfHighlight + Constraints.TopToBottomOfHighlight + Constraints.EndToEndOfHighlight)
@@ -418,7 +418,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>() {
             .setHighlightParameter {
                 HighlightParameter.Builder()
                     .setHighlightViewId(R.id.cl_heart_rate)
-                    .setTipsViewId(R.layout.layout_guide_hr)
+                    .setTipsViewId(R.layout.ht_layout_guide_hr)
                     .setHighlightShape(RectShape(4f.dp, 4f.dp, 12f))
                     .setHighlightHorizontalPadding(0f.dp)
                     .setConstraints(Constraints.StartToStartOfHighlight + Constraints.TopToBottomOfHighlight + Constraints.EndToEndOfHighlight)

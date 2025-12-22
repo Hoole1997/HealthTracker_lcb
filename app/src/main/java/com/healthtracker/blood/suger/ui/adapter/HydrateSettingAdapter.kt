@@ -50,16 +50,16 @@ class HydrateSettingAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_DAILY -> DailyViewHolder(
-                inflater.inflate(R.layout.item_hydrate_setting_daily_intake, parent, false)
+                inflater.inflate(R.layout.ht_item_hydrate_setting_daily_intake, parent, false)
             )
             TYPE_CUP -> CupViewHolder(
-                inflater.inflate(R.layout.item_hydrate_setting_cup_size, parent, false)
+                inflater.inflate(R.layout.ht_item_hydrate_setting_cup_size, parent, false)
             )
             TYPE_REMINDER -> ReminderContainerViewHolder(
-                inflater.inflate(R.layout.item_hydrate_setting_reminder_container, parent, false)
+                inflater.inflate(R.layout.ht_item_hydrate_setting_reminder_container, parent, false)
             )
             TYPE_ADD_REMINDER -> AddReminderViewHolder(
-                inflater.inflate(R.layout.item_hydrate_setting_add_reminder, parent, false)
+                inflater.inflate(R.layout.ht_item_hydrate_setting_add_reminder, parent, false)
             )
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
         }

@@ -12,10 +12,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.ethanhua.skeleton.ViewSkeletonScreen
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ActivityGuideBinding
-import com.healthtracker.blood.suger.databinding.FragmentGuide1Binding
-import com.healthtracker.blood.suger.databinding.FragmentGuide2Binding
-import com.healthtracker.blood.suger.databinding.FragmentGuide3Binding
+import com.healthtracker.blood.suger.databinding.HtActivityGuideBinding
+import com.healthtracker.blood.suger.databinding.HtFragmentGuide1Binding
+import com.healthtracker.blood.suger.databinding.HtFragmentGuide2Binding
+import com.healthtracker.blood.suger.databinding.HtFragmentGuide3Binding
 import com.healthtracker.blood.suger.saveHasNewGuide
 import com.healthtracker.blood.suger.utils.loadFullNative
 import com.healthtracker.framework.BuildState
@@ -34,8 +34,8 @@ import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
 
-class GuideActivity : BaseMVVMActivity<BaseViewModel, ActivityGuideBinding>() {
-    override fun createViewBinding() = ActivityGuideBinding.inflate(layoutInflater)
+class GuideActivity : BaseMVVMActivity<BaseViewModel, HtActivityGuideBinding>() {
+    override fun createViewBinding() = HtActivityGuideBinding.inflate(layoutInflater)
 
     private val isShowNative = AdConfigManager.shouldShowGuideFullNative()
     override fun getVMModelClass() = BaseViewModel::class.java
@@ -157,13 +157,13 @@ fun reportGuide(flag:Int){
 }
 
 
-class GuideFrag1 : BaseMVVMFragment<BaseViewModel, FragmentGuide1Binding>() {
+class GuideFrag1 : BaseMVVMFragment<BaseViewModel, HtFragmentGuide1Binding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = FragmentGuide1Binding.inflate(inflater, parent, attachToParent)
+    ) = HtFragmentGuide1Binding.inflate(inflater, parent, attachToParent)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -173,20 +173,20 @@ class GuideFrag1 : BaseMVVMFragment<BaseViewModel, FragmentGuide1Binding>() {
 }
 
 
-class GuideFragAd : BaseMVVMFragment<BaseViewModel, FragmentGuide2Binding>() {
+class GuideFragAd : BaseMVVMFragment<BaseViewModel, HtFragmentGuide2Binding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = FragmentGuide2Binding.inflate(inflater, parent, attachToParent)
+    ) = HtFragmentGuide2Binding.inflate(inflater, parent, attachToParent)
 
     override fun getVMModelClass() = BaseViewModel::class.java
     private lateinit var skeleton: ViewSkeletonScreen
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind?.apply {
             skeleton = ViewSkeletonScreen.Builder(adContainer)
-                .load(R.layout.fragment_guide_ad)
+                .load(R.layout.ht_fragment_guide_ad)
                 .shimmer(true)
                 .angle(30)
                 .duration(1200)
@@ -222,19 +222,19 @@ class GuideFragAd : BaseMVVMFragment<BaseViewModel, FragmentGuide2Binding>() {
 }
 
 
-class GuideFrag2 : BaseMVVMFragment<BaseViewModel, FragmentGuide1Binding>() {
+class GuideFrag2 : BaseMVVMFragment<BaseViewModel, HtFragmentGuide1Binding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = FragmentGuide1Binding.inflate(inflater, parent, attachToParent)
+    ) = HtFragmentGuide1Binding.inflate(inflater, parent, attachToParent)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind?.apply {
-            ivGuide.setImageResource(R.mipmap.ic_guide_2)
+            ivGuide.setImageResource(R.mipmap.ht_ic_guide_2)
             tvGuideTitle.text = getString(R.string.guide_title_2)
             tvGuideDes.text = getString(R.string.guide_2_des)
         }
@@ -242,13 +242,13 @@ class GuideFrag2 : BaseMVVMFragment<BaseViewModel, FragmentGuide1Binding>() {
     }
 }
 
-class GuideFrag3 : BaseMVVMFragment<BaseViewModel, FragmentGuide3Binding>() {
+class GuideFrag3 : BaseMVVMFragment<BaseViewModel, HtFragmentGuide3Binding>() {
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = FragmentGuide3Binding.inflate(inflater, parent, attachToParent)
+    ) = HtFragmentGuide3Binding.inflate(inflater, parent, attachToParent)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 

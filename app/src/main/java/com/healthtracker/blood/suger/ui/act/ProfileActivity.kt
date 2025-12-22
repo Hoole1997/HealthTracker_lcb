@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.constants.KEY_HAS_ADD_PROFILE
-import com.healthtracker.blood.suger.databinding.ActivityProfileBinding
+import com.healthtracker.blood.suger.databinding.HtActivityProfileBinding
 import com.healthtracker.blood.suger.getUserAge
 import com.healthtracker.blood.suger.isMale
 import com.healthtracker.blood.suger.saveUserAge
@@ -22,7 +22,7 @@ import com.healthtracker.framework.util.getRobotoRegular
 import com.hjq.toast.Toaster
 import net.corekit.monetize.ui.NativeAdStyle
 
-class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>() {
+class ProfileActivity: BaseInterActivity<BaseViewModel, HtActivityProfileBinding>() {
     companion object{
         private const val TAG = "ProfileActivity"
 
@@ -55,7 +55,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, ActivityProfileBinding>(
 
 
 
-    override fun createViewBinding() = ActivityProfileBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityProfileBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 

@@ -15,7 +15,7 @@ import com.healthtracker.blood.suger.App
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.ActivityAddReminderBinding
+import com.healthtracker.blood.suger.databinding.HtActivityAddReminderBinding
 import com.healthtracker.blood.suger.ui.adapter.ReminderTimeAdapter
 import com.healthtracker.blood.suger.ui.dialog.AlarmTimeSelectDialog
 import com.healthtracker.blood.suger.ui.dialog.DosesTimesDialog
@@ -29,7 +29,7 @@ import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.hideSoftKeyBoard
 import net.corekit.core.report.ReportDataManager
 
-class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddReminderBinding>(){
+class AddReminderActivity : BaseInterActivity<AddReminderViewModel, HtActivityAddReminderBinding>(){
 
 
     private val startForProfileImageResult =
@@ -57,7 +57,7 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
 
     private lateinit var timeAdapter: ReminderTimeAdapter
 
-    override fun createViewBinding() = ActivityAddReminderBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityAddReminderBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = AddReminderViewModel::class.java
 
@@ -206,7 +206,7 @@ class AddReminderActivity : BaseInterActivity<AddReminderViewModel, ActivityAddR
                 if (state.isEditMode) getString(R.string.save_changes) else getString(R.string.save)
 
             Glide.with(this@AddReminderActivity)
-                .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.ic_camera))
+                .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.ht_ic_camera))
                 .load(state.coverUri)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(ivImg)

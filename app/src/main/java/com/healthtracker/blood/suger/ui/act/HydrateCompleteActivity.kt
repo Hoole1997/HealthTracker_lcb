@@ -4,13 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
-import com.healthtracker.blood.suger.databinding.ActivityHydrateCompleteBinding
+import com.healthtracker.blood.suger.databinding.HtActivityHydrateCompleteBinding
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.startActivity
 import net.corekit.monetize.ui.NativeAdStyle
 import com.healthtracker.blood.suger.utils.loadNative
 
-class HydrateCompleteActivity : BaseInterActivity<BaseViewModel, ActivityHydrateCompleteBinding>() {
+class HydrateCompleteActivity : BaseInterActivity<BaseViewModel, HtActivityHydrateCompleteBinding>() {
 
     companion object {
         fun start(context: Context) {
@@ -18,8 +18,8 @@ class HydrateCompleteActivity : BaseInterActivity<BaseViewModel, ActivityHydrate
         }
     }
 
-    override fun createViewBinding(): ActivityHydrateCompleteBinding =
-        ActivityHydrateCompleteBinding.inflate(layoutInflater)
+    override fun createViewBinding(): HtActivityHydrateCompleteBinding =
+        HtActivityHydrateCompleteBinding.inflate(layoutInflater)
 
     override fun getVMModelClass(): Class<BaseViewModel> = BaseViewModel::class.java
 

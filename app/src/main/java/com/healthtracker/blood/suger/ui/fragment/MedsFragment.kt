@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.FragmentMedsBinding
+import com.healthtracker.blood.suger.databinding.HtFragmentMedsBinding
 import com.healthtracker.blood.suger.ui.act.AddReminderActivity
 import com.healthtracker.blood.suger.ui.adapter.MedsReminderAdapter
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
 import net.corekit.core.report.ReportDataManager
 import java.util.Date
 
-class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
+class MedsFragment: BaseMVVMFragment<MedsViewModel, HtFragmentMedsBinding>() {
 
 
     private lateinit var reminderAdapter: MedsReminderAdapter
@@ -38,7 +38,7 @@ class MedsFragment: BaseMVVMFragment<MedsViewModel, FragmentMedsBinding>() {
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = FragmentMedsBinding.inflate(layoutInflater,parent,attachToParent)
+    ) = HtFragmentMedsBinding.inflate(layoutInflater,parent,attachToParent)
 
     companion object{
         private const val TAG = "MedsFragment"

@@ -16,8 +16,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.ethanhua.skeleton.ViewSkeletonScreen
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.ItemMedsRemindBinding
-import com.healthtracker.blood.suger.databinding.LayoutAdItemBinding
+import com.healthtracker.blood.suger.databinding.HtItemMedsRemindBinding
+import com.healthtracker.blood.suger.databinding.HtLayoutAdItemBinding
 import com.healthtracker.blood.suger.ui.act.MainActivity
 import com.healthtracker.blood.suger.ui.model.MedsReminderItem
 import com.healthtracker.blood.suger.ui.model.ReminderStatus
@@ -46,9 +46,9 @@ class MedsReminderAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_AD) {
-            AdViewHolder(LayoutAdItemBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+            AdViewHolder(HtLayoutAdItemBinding.inflate(LayoutInflater.from(parent.context),parent,false))
         } else {
-            val binding = ItemMedsRemindBinding.inflate(
+            val binding = HtItemMedsRemindBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
             ReminderViewHolder(binding)
@@ -71,7 +71,7 @@ class MedsReminderAdapter(
     }
 
     inner class ReminderViewHolder(
-        private val binding: ItemMedsRemindBinding
+        private val binding: HtItemMedsRemindBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -91,7 +91,7 @@ class MedsReminderAdapter(
 
                 if (!item.medicineCover.isEmpty()) {
                     Glide.with(ivStatu)
-                        .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.ic_camera))
+                        .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.ht_ic_camera))
                         .load(item.medicineCover.toUri())
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .into(ivStatu)
@@ -116,13 +116,13 @@ class MedsReminderAdapter(
         }
     }
 
-    inner class AdViewHolder(private val binding: LayoutAdItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class AdViewHolder(private val binding: HtLayoutAdItemBinding) : RecyclerView.ViewHolder(binding.root) {
         private lateinit var skeleton: ViewSkeletonScreen
         fun bind() {
             if (needLoadAd) {
                 binding.root.visible()
                 skeleton = ViewSkeletonScreen.Builder(binding.adContainer)
-                    .load(R.layout.layout_skeleton_banner_ads)
+                    .load(R.layout.ht_layout_skeleton_banner_ads)
                     .shimmer(true)
                     .angle(30)
                     .duration(1200)

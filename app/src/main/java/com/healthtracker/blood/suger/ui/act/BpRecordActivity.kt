@@ -5,7 +5,7 @@ import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.entity.HealthTag
-import com.healthtracker.blood.suger.databinding.ActivityBpRecordBinding
+import com.healthtracker.blood.suger.databinding.HtActivityBpRecordBinding
 import com.healthtracker.blood.suger.ui.dialog.HealthTagDialog
 import com.healthtracker.blood.suger.ui.dialog.LevelExplainDialog
 import com.healthtracker.blood.suger.ui.dialog.SaveCompleteDialog
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Calendar
 
-class BpRecordActivity: BaseInterActivity<BpRecordViewModel, ActivityBpRecordBinding>() {
+class BpRecordActivity: BaseInterActivity<BpRecordViewModel, HtActivityBpRecordBinding>() {
     
     private val healthTags = mutableListOf<HealthTag>()
     private val addTagIds = mutableListOf<Long>()
@@ -44,7 +44,7 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, ActivityBpRecordBin
             context.startActivity(intent)
         }
     }
-    override fun createViewBinding() = ActivityBpRecordBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityBpRecordBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BpRecordViewModel::class.java
 

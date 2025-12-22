@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.data.enums.BsUnit
-import com.healthtracker.blood.suger.databinding.ActivityTargetRangeBinding
+import com.healthtracker.blood.suger.databinding.HtActivityTargetRangeBinding
 import com.healthtracker.blood.suger.ui.adapter.TargetRangeAdapter
 import com.healthtracker.blood.suger.ui.dialog.ConfirmDialog
 import com.healthtracker.blood.suger.ui.dialog.RangeEditDialog
@@ -20,12 +20,12 @@ import kotlinx.coroutines.launch
 /**
  * 血糖目标范围设置页面
  */
-class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, ActivityTargetRangeBinding>() {
+class TargetRangeActivity : BaseMVVMActivity<TargetRangeViewModel, HtActivityTargetRangeBinding>() {
 
     private lateinit var adapter: TargetRangeAdapter
     private var hasChanged = false  // 标记是否有修改
 
-    override fun createViewBinding() = ActivityTargetRangeBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityTargetRangeBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = TargetRangeViewModel::class.java
 

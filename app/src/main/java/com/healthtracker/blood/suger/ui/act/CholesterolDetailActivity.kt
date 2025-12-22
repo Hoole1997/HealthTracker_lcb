@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.ActivityCholesterolDetailBinding
+import com.healthtracker.blood.suger.databinding.HtActivityCholesterolDetailBinding
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.viewmodel.CholesterolDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
-class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, ActivityCholesterolDetailBinding>() {
+class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, HtActivityCholesterolDetailBinding>() {
 
     private val chartManagerFactory: HealthLineChartManager.Factory by inject()
     private var chartManager: HealthLineChartManager? = null
@@ -33,7 +33,7 @@ class CholesterolDetailActivity : BaseInterActivity<CholesterolDetailViewModel, 
         }
     }
 
-    override fun createViewBinding() = ActivityCholesterolDetailBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityCholesterolDetailBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = CholesterolDetailViewModel::class.java
 

@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
 import com.healthtracker.blood.suger.data.utils.DateTimeUtils
-import com.healthtracker.blood.suger.databinding.ActivityBsDetailBinding
+import com.healthtracker.blood.suger.databinding.HtActivityBsDetailBinding
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
 import com.healthtracker.blood.suger.ui.viewmodel.BsDetailViewModel
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
-class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBinding>() {
+class BsDetailActivity: BaseInterActivity<BsDetailViewModel, HtActivityBsDetailBinding>() {
 
     private val chartManagerFactory: HealthLineChartManager.Factory by inject()
     private var chartManager: HealthLineChartManager? = null
@@ -34,7 +34,7 @@ class BsDetailActivity: BaseInterActivity<BsDetailViewModel, ActivityBsDetailBin
         }
     }
 
-    override fun createViewBinding() =  ActivityBsDetailBinding.inflate(layoutInflater)
+    override fun createViewBinding() =  HtActivityBsDetailBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BsDetailViewModel::class.java
 

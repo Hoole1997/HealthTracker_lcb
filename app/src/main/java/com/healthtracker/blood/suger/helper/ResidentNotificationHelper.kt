@@ -61,7 +61,7 @@ class ResidentNotificationHelper(
         // 创建自定义通知布局
         val remoteViews = RemoteViews(
             context.packageName,
-            R.layout.layout_resident_notify
+            R.layout.ht_layout_resident_notify
         )
 
         // 获取本地化 Context 以正确加载多语言资源

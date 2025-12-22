@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.core.content.ContextCompat
 import com.healthtracker.blood.suger.R
-import com.healthtracker.blood.suger.databinding.FragmentRecordBinding
-import com.healthtracker.blood.suger.databinding.ItemHealthChartCardBinding
+import com.healthtracker.blood.suger.databinding.HtFragmentRecordBinding
+import com.healthtracker.blood.suger.databinding.HtItemHealthChartCardBinding
 import com.healthtracker.blood.suger.tips.HealthMetric
 import com.healthtracker.blood.suger.ui.act.BmiRecordActivity
 import com.healthtracker.blood.suger.ui.act.BpRecordActivity
@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
-class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>() {
+class RecordFragment: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
 
     companion object{
         private const val TAG = "RecordFragment"
@@ -60,7 +60,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = FragmentRecordBinding.inflate(inflater, parent, attachToParent)
+    ) = HtFragmentRecordBinding.inflate(inflater, parent, attachToParent)
 
     override fun getVMModelClass() = TrackerViewModel::class.java
 
@@ -141,34 +141,34 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
     private fun setupHealthCards() {
         mViewBind?.run {
             // Blood Sugar
-            includeBs.ivIcon.setImageResource(R.mipmap.ic_blood_suger)
+            includeBs.ivIcon.setImageResource(R.mipmap.ht_ic_blood_suger)
             includeBs.tvTitle.text = getString(R.string.blood_suger)
 
             // Blood Pressure
-            includeBp.ivIcon.setImageResource(R.mipmap.ic_blood_pressure)
+            includeBp.ivIcon.setImageResource(R.mipmap.ht_ic_blood_pressure)
             includeBp.tvTitle.text = getString(R.string.blood_pressure)
 
             // Heart Rate
-            includeHr.ivIcon.setImageResource(R.mipmap.ic_heart)
+            includeHr.ivIcon.setImageResource(R.mipmap.ht_ic_heart)
             includeHr.tvTitle.text = getString(R.string.heart_rate)
 
             // Cholesterol
-            includeCho.ivIcon.setImageResource(R.mipmap.ic_cholesterol)
+            includeCho.ivIcon.setImageResource(R.mipmap.ht_ic_cholesterol)
             includeCho.tvTitle.text = getString(R.string.cholesterol)
 
             // BMI (组合 Weight + BMI)
-            includeBmi.ivIcon.setImageResource(R.mipmap.ic_bmi)
+            includeBmi.ivIcon.setImageResource(R.mipmap.ht_ic_bmi)
             "${getString(R.string.weight)} & ${getString(R.string.bmi)}".also { includeBmi.tvTitle.text = it }
 
             // Steps
-            includeStep.ivIcon.setImageResource(R.mipmap.ic_home_step)
+            includeStep.ivIcon.setImageResource(R.mipmap.ht_ic_home_step)
             includeStep.tvTitle.text = getString(R.string.step_count)
             includeStep.btnAdd.apply {
                 text = getString(R.string.hydrate_setting)
             }
 
             // Hydrate
-            includeHydrate.ivIcon.setImageResource(R.mipmap.ic_home_cup)
+            includeHydrate.ivIcon.setImageResource(R.mipmap.ht_ic_home_cup)
             includeHydrate.tvTitle.text = getString(R.string.hydrate)
             includeHydrate.btnAdd.apply {
                 text = getString(R.string.hydrate_setting)
@@ -355,7 +355,7 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, FragmentRecordBinding>(
     /**
      * ✨ 简化：更新图表和空状态的可见性
      */
-    private fun updateChartVisibility(hasData: Boolean, cardBinding: ItemHealthChartCardBinding?) {
+    private fun updateChartVisibility(hasData: Boolean, cardBinding: HtItemHealthChartCardBinding?) {
         cardBinding?.run {
             if (hasData) {
                 chartView.visible()

@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import com.healthtracker.blood.suger.R
 import com.healthtracker.blood.suger.ad.BaseInterActivity
-import com.healthtracker.blood.suger.databinding.ActivityBmiDetailBinding
+import com.healthtracker.blood.suger.databinding.HtActivityBmiDetailBinding
 import com.healthtracker.blood.suger.ui.chart.HealthLineChartManager
 import com.healthtracker.blood.suger.ui.viewmodel.BmiDetailViewModel
 import com.healthtracker.blood.suger.ui.weight.LeveDataFactory
@@ -19,7 +19,7 @@ import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, ActivityBmiDetailBinding>() {
+class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, HtActivityBmiDetailBinding>() {
 
     private val chartManagerFactory: HealthLineChartManager.Factory by inject()
     private var chartManager: HealthLineChartManager? = null
@@ -37,7 +37,7 @@ class BmiDetailActivity: BaseInterActivity<BmiDetailViewModel, ActivityBmiDetail
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
 
-    override fun createViewBinding() = ActivityBmiDetailBinding.inflate(layoutInflater)
+    override fun createViewBinding() = HtActivityBmiDetailBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BmiDetailViewModel::class.java
 
