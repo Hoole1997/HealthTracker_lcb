@@ -121,6 +121,21 @@
 - `build-common`：StringFog 模式由 `base64` 切换为 `bytes`。
 - 工程维护：忽略 `app/mapping.txt`（混淆 mapping 产物）；同时在 `.gitignore` 放行 `README.md`，避免被 `*.md` 规则误伤导致工具链无法读取。
 
+### 补充：四大组件包路径/类名混淆（activityGuard）
+
+- 目标：对 `AndroidManifest.xml` 中明文暴露的四大组件（含 `Application`）进行名称与包路径混淆，降低入口组件的可读性。
+- 配置位置：`app/build.gradle.kts`。
+- 启用策略：仅在执行 `*Release*` 构建任务时启用，避免 Debug 构建引入额外不确定性。
+- 范围：仅处理 Manifest 声明的 `Application`、`Activity`、`Service`、`Receiver`、自有 `Provider`（不包含 `androidx.core.content.FileProvider`）。
+- 可选：若希望自定义 View 的包路径也不明显，可额外将 `ui.weight` / `ui.widget` 等自定义 View 包加入混淆范围（需要同时确保布局 XML 的类名引用被同步替换）。
+- 验收建议：
+  - `SplashActivity` 启动正常（Launcher）。
+  - 开机广播/包替换广播正常（`SystemBootReceiver`）。
+  - 通知动作广播正常（`NotificationActionReceiver`）。
+  - 前台服务正常（`HealthService`），FCM 回调正常（`MessageService`）。
+- 已知注意事项：若后续升级 AGP 版本导致构建链路变化，需要重点确认插件是否仍能正确更新合并后的 Manifest（否则会出现“类已混淆但 Manifest 未更新”导致无法启动）。
+- 重新生成映射：插件默认会增量复用 `app/mapping.txt`，如需生成新的包/类映射，需要先删除 `app/mapping.txt` 再执行 Release 构建。
+
 ## 2025-12-22 补充变更记录（资源命名规范）
 
 - 范围：仅对 `app` / `weather` / `earthquake` 三个模块自身定义的字符串资源（`<string>` / `<string-array>` / `<plurals>`）进行统一命名调整。
