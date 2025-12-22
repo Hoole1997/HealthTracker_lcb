@@ -46,7 +46,7 @@ class AndroidStringFogConventionPlugin : Plugin<Project> {
 
                 // 设置 mode (bytes)
                 val modeClass = Class.forName("com.github.megatronking.stringfog.plugin.StringFogMode")
-                val bytesMode = modeClass.enumConstants.first { it.toString() == "base64" }
+                val bytesMode = modeClass.enumConstants.first { it.toString() == "bytes" }
                 extensionClass.getMethod("setMode", modeClass)
                     .invoke(stringfogExtension, bytesMode)
 
