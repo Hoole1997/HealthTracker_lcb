@@ -21,6 +21,9 @@ plugins {
 // 引入统一的签名配置脚本
 apply(from = "../scripts/sign.gradle")
 
+// 引入动态混淆字典生成脚本
+apply(from = "generate-dictionary.gradle.kts")
+
 // 使用默认配置，避免不同变种间的冲突
 val showLog = findProperty("app")?.let { (it as Map<*, *>)["show_log"] as Boolean } ?: false
 val url = findProperty("url") as Map<*, *>
@@ -32,8 +35,8 @@ android {
     namespace = "com.healthtracker.blood.suger"
 
     defaultConfig {
-        versionCode = 8
-        versionName = "1.0.4"
+        versionCode = 1
+        versionName = "1.0.0"
         buildConfig {
             boolean("showLog", showLog)
         }
@@ -82,7 +85,8 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
+                "proguard-obfuscation.pro"
             )
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
@@ -211,3 +215,4 @@ class BuildConfigFieldsBuilder {
         }
     }
 }
+

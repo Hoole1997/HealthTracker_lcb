@@ -1,39 +1,31 @@
 # ==================== 通用混淆规则 ====================
 
-# 保留行号信息，用于调试堆栈跟踪
--keepattributes SourceFile,LineNumberTable
--renamesourcefileattribute SourceFile
+# 注意：调试信息已在 app/proguard-obfuscation.pro 中统一配置移除
+# 以下规则仅保留必要的注解和签名信息
 
-# 保留注解
+# 保留注解（Koin、Room、Gson 等需要）
 -keepattributes *Annotation*
 -keepattributes Signature
--keepattributes InnerClasses
--keepattributes EnclosingMethod
 -keepattributes Exceptions
--keepattributes LocalVariableTable
--keepattributes MethodParameters
+
+# 以下属性已移除以增强混淆：
+# - SourceFile, LineNumberTable（源文件和行号）
+# - LocalVariableTable（本地变量表）
+# - MethodParameters（方法参数名）
+# - InnerClasses, EnclosingMethod（内部类信息 - 按需保留）
 
 # ==================== Android 基础组件保护 ====================
+# 注意：仅保留类名，允许混淆内部成员
 
-# 保留所有 Activity
--keep public class * extends android.app.Activity { *; }
--keep public class * extends androidx.activity.ComponentActivity { *; }
-
-# 保留所有 Fragment
--keep public class * extends android.app.Fragment { *; }
--keep public class * extends androidx.fragment.app.Fragment { *; }
-
-# 保留所有 Service
--keep public class * extends android.app.Service { *; }
-
-# 保留所有 BroadcastReceiver
--keep public class * extends android.content.BroadcastReceiver { *; }
-
-# 保留所有 ContentProvider
--keep public class * extends android.content.ContentProvider { *; }
-
-# 保留所有 Application
--keep public class * extends android.app.Application { *; }
+# 保留四大组件类名（Android 系统通过反射调用）
+-keep public class * extends android.app.Activity
+-keep public class * extends androidx.activity.ComponentActivity
+-keep public class * extends android.app.Fragment
+-keep public class * extends androidx.fragment.app.Fragment
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.Application
 
 # ==================== ViewBinding 和 DataBinding ====================
 
@@ -203,21 +195,21 @@
     public static ** valueOf(java.lang.String);
 }
 
-# 保留所有接口
--keep interface * {
-    *;
+# 注意：以下规则已移除以增强混淆
+# - 保留所有接口（过于宽泛）
+# - 保留所有内部类（过于宽泛）
+# - 保留所有异常（过于宽泛）
+# - 保留所有 Serializable（过于宽泛）
+
+# 仅保留必要的 Serializable 成员
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
 }
-
-# 保留所有内部类
--keepclassmembers class * {
-    ** *$*;
-}
-
-# 保留所有自定义异常
--keep public class * extends java.lang.Exception { *; }
-
-# 保留所有数据模型类
--keep class * implements java.io.Serializable { *; }
 
 
 # ==================== BuildConfig 保护 ====================

@@ -1,1 +1,4 @@
 /build
+
+# 动态生成的混淆字典（每次构建自动生成）
+proguard-dictionary-generated.txt
