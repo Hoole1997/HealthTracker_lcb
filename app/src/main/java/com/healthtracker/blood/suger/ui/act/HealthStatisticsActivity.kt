@@ -135,6 +135,8 @@ class HealthStatisticsActivity :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        // ViewModel automatically initialized via SavedStateHandle thanks to BaseMVVMActivity fixes
+
         chartManager = chartManagerFactory.create(mViewBind.chartView, this)
         setupToolbar()
         setupRangeButtons()

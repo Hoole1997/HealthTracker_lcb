@@ -44,9 +44,13 @@ class HeartRateDetailActivity :
     override fun getVMModelClass() = HeartRateDetailViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
-        setupActionBar()
-        setupStatusView()
+        // 创建chartManager时传入lifecycleOwner，自动绑定生命周期
         chartManager = chartManagerFactory.create(mViewBind.chartView, this)
+        with(mViewBind){
+            setupActionBar()
+            setupStatusView()
+        }
+
         observeViewModel()
     }
 

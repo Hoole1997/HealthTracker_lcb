@@ -38,6 +38,9 @@ class BpDetailActivity: BaseInterActivity<BpDetailViewModel, HtActivityBpDetailB
     override fun initView(savedInstanceState: Bundle?) {
         // 创建chartManager时传入lifecycleOwner，自动绑定生命周期
         chartManager = chartManagerFactory.create(mViewBind.chartView, this)
+
+
+        
         with(mViewBind){
             btnBack.clickWithDuration {
                 handleBackPress()

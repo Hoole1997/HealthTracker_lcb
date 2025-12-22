@@ -61,7 +61,9 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, HtActivityHistor
             HistoryRecordItem.RecordType.BLOOD_SUGAR.ordinal
         )
         val recordType = HistoryRecordItem.RecordType.values()[recordTypeOrdinal]
-        mViewModel.setHistoryType(recordType)
+        
+        // mViewModel.initialize(recordType = recordType) 
+        // SavedStateHandle会自动处理RECORD_TYPE参数 injection
 
         // 初始化RecyclerView和适配器
         initRecyclerView()

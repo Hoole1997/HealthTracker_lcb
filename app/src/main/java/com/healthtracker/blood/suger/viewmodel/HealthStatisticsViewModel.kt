@@ -100,6 +100,7 @@ class HealthStatisticsViewModel(
             const val KEY_METRIC_TYPE = "metric_type"
             const val KEY_SELECTED_STATUS = "selected_status"
             const val KEY_STATISTIC_DIMENSION = "statistic_dimension"
+            const val KEY_DATE_RANGE_PRESET = "date_range_preset"
             const val HISTORY_PREVIEW_LIMIT = 2
         }
     }
@@ -108,8 +109,15 @@ class HealthStatisticsViewModel(
     private val dateFormatter = SimpleDateFormat("MMM dd, yyyy", LanguageUtils.getAppLocale(App.INSTANCE))
     private val labelFormatter = SimpleDateFormat("M/d", LanguageUtils.getAppLocale(App.INSTANCE))
 
-    private val _selectedPreset = MutableStateFlow(DateRangePreset.DAYS_7)
-    private val _dateRange = MutableStateFlow(createPresetRange(DateRangePreset.DAYS_7))
+    // 优先从 SavedStateHandle 获取预设，默认为 DAYS_7
+    private val _selectedPreset = MutableStateFlow(
+        savedStateHandle.get<Int>(StatsUiState.KEY_DATE_RANGE_PRESET)?.let {
+            DateRangePreset.entries.getOrNull(it)
+        } ?: DateRangePreset.DAYS_7
+    )
+    
+    // 根据 _selectedPreset 初始化日期范围
+    private val _dateRange = MutableStateFlow(createPresetRange(_selectedPreset.value))
     private val _selectedStatus = MutableStateFlow<BloodSugarStatus?>(
         savedStateHandle.get<Int>(KEY_SELECTED_STATUS)?.let {
             BloodSugarStatus.fromStatusType(it)
@@ -408,6 +416,8 @@ class HealthStatisticsViewModel(
         if (preset != DateRangePreset.CUSTOM) {
             _dateRange.value = createPresetRange(preset)
         }
+        // Save to handle
+        savedStateHandle[StatsUiState.KEY_DATE_RANGE_PRESET] = preset.ordinal
     }
 
     fun updateCustomRange(startMillis: Long, endMillis: Long) {

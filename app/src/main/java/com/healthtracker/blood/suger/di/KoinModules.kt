@@ -66,6 +66,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.koin.core.module.dsl.viewModel
 
 val appModule = module {
     single<CoroutineDispatcher>(named("IoDispatcher")) { Dispatchers.IO }
@@ -149,20 +150,20 @@ val databaseModule = module {
     factory { BsRecordViewModel(get(), get()) }
     factory { BpRecordViewModel(get(), get()) }
     factory { BsDetailViewModel(get(), get()) }
-    factory { BpDetailViewModel(get(), SavedStateHandle()) }
+    viewModel { (handle: SavedStateHandle) -> BpDetailViewModel(get(), handle) }
     factory { BmiRecordViewModel(get(), get()) }
-    factory { BmiDetailViewModel(get(), SavedStateHandle()) }
+    viewModel { (handle: SavedStateHandle) -> BmiDetailViewModel(get(), handle) }
     factory { HeartRateRecordViewModel(get(), get()) }
-    factory { HeartRateDetailViewModel(get(), get(), SavedStateHandle()) }
+    viewModel { (handle: SavedStateHandle) -> HeartRateDetailViewModel(get(), get(), handle) }
     factory { CholesterolRecordViewModel(get()) }
     factory { CholesterolDetailViewModel(get()) }
     factory { HydrateViewModel(get()) }
     factory { HydrateSettingViewModel(get(), get(), get(), get(), get()) }
-    factory { HistoryViewModel(get(), get(), get(), get(), get(), SavedStateHandle()) }
+    viewModel { (handle: SavedStateHandle) -> HistoryViewModel(get(), get(), get(), get(), get(), handle) }
     factory { AddReminderViewModel(get()) }
     factory { TargetRangeViewModel() }
     factory { StepSettingViewModel(get()) }
-    factory { HealthStatisticsViewModel(get(), get(), get(), get(), get(), get(), get(), SavedStateHandle()) }
+    viewModel { (handle: SavedStateHandle) -> HealthStatisticsViewModel(get(), get(), get(), get(), get(), get(), get(), handle) }
     factory { StepCountViewModel() }
 }
 

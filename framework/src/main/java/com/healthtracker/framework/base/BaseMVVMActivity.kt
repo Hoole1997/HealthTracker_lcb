@@ -16,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.createSavedStateHandle
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import androidx.viewbinding.ViewBinding
@@ -80,7 +81,19 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
             }
 
             override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-                val koinVm = koin?.let { runCatching { it.get<Any>(clazz = modelClass.kotlin) }.getOrNull() }
+                // 尝试从 Koin 获取实例，并注入 SavedStateHandle
+                val koinVm = koin?.let {
+                    runCatching {
+                        // 从 extras 中创建 SavedStateHandle
+                        val savedStateHandle = extras.createSavedStateHandle()
+                        // 将 handle 作为参数传递给 Koin
+                        it.get<Any>(
+                            clazz = modelClass.kotlin,
+                            parameters = { org.koin.core.parameter.parametersOf(savedStateHandle) }
+                        )
+                    }.getOrNull()
+                }
+                
                 if (koinVm != null) {
                     @Suppress("UNCHECKED_CAST")
                     return koinVm as T

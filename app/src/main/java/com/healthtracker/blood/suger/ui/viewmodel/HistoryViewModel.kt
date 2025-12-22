@@ -42,7 +42,7 @@ class HistoryViewModel(
 
     companion object {
         private const val TAG = "HistoryViewModel"
-        private const val KEY_RECORD_TYPE = "record_type"
+        private const val KEY_RECORD_TYPE = "RECORD_TYPE"
         private const val KEY_SELECTED_STATUS = "selected_status"
         private const val KEY_START_DATE = "start_date"
         private const val KEY_END_DATE = "end_date"
