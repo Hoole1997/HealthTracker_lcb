@@ -28,29 +28,25 @@ import kotlinx.coroutines.delay
  * - 通过 EntryPoint 手动获取 Hilt 依赖
  * - 延迟初始化（lazy）避免构造时阻塞
  */
-class PeriodicScanWorker(
+class HealthWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
     companion object {
-        private const val TAG = "PeriodicScanWorker"
+        private const val TAG = "HealthWorker"
     }
-
-    private var initTime = System.currentTimeMillis()
-
-
 
 
     override suspend fun doWork(): Result {
-        if (BuildState.debug) "PeriodicScanWorker Run".logd(TAG)
+        if (BuildState.debug) "HealthWorker Run".logd(TAG)
         try {
             delay(1000L)
             if(AppLifecycleManager.isBackground()){
                 NotificationHelper.show(PushScenario.KEEPALIVE)
             }
         } catch (e: Throwable) {
-            "PeriodicScanWorker error: ${e.message}".logd(TAG)
+            "HealthWorker error: ${e.message}".logd(TAG)
             e.printStackTrace()
         }
         return Result.success()

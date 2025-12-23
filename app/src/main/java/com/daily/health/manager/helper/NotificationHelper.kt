@@ -1,15 +1,9 @@
 package com.daily.health.manager.helper
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.core.app.ActivityCompat
-import com.daily.health.manager.App
 import com.daily.health.manager.manager.HealthServiceManager
 import com.daily.health.manager.strategy.PushOrchestrator
 import com.daily.health.manager.strategy.PushResult
 import com.daily.health.manager.strategy.PushScenario
-import com.daily.health.manager.work.PeriodicScanWorker
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge

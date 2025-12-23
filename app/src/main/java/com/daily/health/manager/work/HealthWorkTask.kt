@@ -18,7 +18,7 @@ object HealthWorkTask {
     fun start(context: Context, tag: String, repeatInterval: Long = 15, repeatIntervalTimeUnit: TimeUnit = TimeUnit.MINUTES) {
         WorkManager.getInstance(context).apply {
             cancelAllWorkByTag(tag)
-            enqueue(PeriodicWorkRequest.Builder(PeriodicScanWorker::class.java, repeatInterval, repeatIntervalTimeUnit).addTag(tag).build())
+            enqueue(PeriodicWorkRequest.Builder(HealthWorker::class.java, repeatInterval, repeatIntervalTimeUnit).addTag(tag).build())
         }
         initUser()
     }
