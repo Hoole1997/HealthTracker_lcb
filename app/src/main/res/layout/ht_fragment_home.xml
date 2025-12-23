@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:paddingHorizontal="@dimen/dp_16"
-    android:paddingVertical="@dimen/dp_10">
+    android:paddingVertical="@dimen/dp_12">
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -18,20 +18,19 @@
             android:id="@+id/cl_ps_record"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/ht_bg_home_blood_suger"
-            android:paddingHorizontal="@dimen/dp_16"
-            android:paddingVertical="@dimen/dp_12">
+            android:paddingBottom="@dimen/dp_16"
+            android:background="@drawable/ht_bg_home_blood_suger">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_blood_suger"
                 style="@style/TextViewFont_RobotoBold"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_13"
                 android:text="@string/ht_blood_suger"
                 android:textColor="@color/c5"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_18"
                 app:layout_constraintEnd_toStartOf="@id/iv_blood_suger"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -43,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
                 android:textColor="@color/c5"
-                android:textSize="@dimen/sp_14"
+                android:textSize="@dimen/sp_30"
                 app:layout_constraintStart_toStartOf="@id/tv_blood_suger"
                 app:layout_constraintTop_toBottomOf="@id/tv_blood_suger"
                 tools:text="71.0" />
@@ -57,6 +56,7 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/ht_mg_dl"
                 android:textColor="@color/c5"
+                android:alpha="0.85"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toEndOf="@id/tv_latest_bs_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/tv_latest_bs_value"
@@ -66,6 +66,7 @@
                 android:id="@+id/cl_history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@drawable/ht_bg_home_blood_suger_history"
                 android:foreground="?android:attr/selectableItemBackground"
@@ -111,6 +112,7 @@
                 android:id="@+id/btn_record_now"
                 style="@style/MaterialButton.b2"
                 android:layout_width="match_parent"
+                android:layout_marginHorizontal="@dimen/dp_16"
                 android:layout_height="@dimen/dp_44"
                 android:layout_marginTop="@dimen/dp_20"
                 android:ellipsize="end"
@@ -126,10 +128,12 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_blood_suger"
-                android:layout_width="@dimen/dp_82"
-                android:layout_height="@dimen/dp_83"
-                android:scaleType="center"
-
+                android:layout_width="@dimen/dp_76"
+                android:layout_height="@dimen/dp_77"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:scaleType="centerInside"
+                android:alpha="0.65"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@mipmap/ht_ic_blood_suger" />
@@ -149,10 +153,11 @@
             android:layout_height="wrap_content"
             android:clipToOutline="true"
             android:outlineProvider="background"
-            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_12"
             android:background="@drawable/ht_bg_home_blood_pressure"
             android:foreground="?android:attr/selectableItemBackground"
-            android:paddingHorizontal="@dimen/dp_16">
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_10">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guide_h_center"
@@ -182,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_5"
                 android:textColor="@color/color_2AA1FC"
-                android:textSize="@dimen/sp_14"
+                android:textSize="@dimen/sp_20"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/guide_h_center"
                 tools:text="100/70" />
@@ -194,6 +199,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginTop="@dimen/dp_10"
+                android:alpha="0.85"
                 android:text="@string/ht_mmHg"
                 android:textColor="@color/color_2AA1FC"
                 android:textSize="@dimen/sp_14"
@@ -207,6 +213,7 @@
                 android:layout_width="@dimen/dp_95"
                 android:layout_height="@dimen/dp_95"
                 android:scaleType="center"
+                android:alpha="0.55"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -220,11 +227,12 @@
             android:layout_height="wrap_content"
             android:clipToOutline="true"
             android:outlineProvider="background"
-            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_12"
             android:background="@drawable/ht_bg_home_blood_pressure"
             android:backgroundTint="@color/color_ffe4e3"
             android:foreground="?android:attr/selectableItemBackground"
-            android:paddingHorizontal="@dimen/dp_16">
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_10">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/heart_guide_h_center"
@@ -254,7 +262,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_5"
                 android:textColor="@color/color_FF4420"
-                android:textSize="@dimen/sp_14"
+                android:textSize="@dimen/sp_20"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/heart_guide_h_center"
                 tools:text="82" />
@@ -267,6 +275,7 @@
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/ht_bpm"
+                android:alpha="0.85"
                 android:textColor="@color/color_FF4420"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toEndOf="@id/tv_latest_heart_rate_value"
@@ -279,6 +288,7 @@
                 android:layout_width="@dimen/dp_95"
                 android:layout_height="@dimen/dp_95"
                 android:scaleType="center"
+                android:alpha="0.55"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -290,7 +300,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_14">
+            android:layout_marginTop="@dimen/dp_12">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_cholesterol"
@@ -336,6 +346,7 @@
                     android:id="@+id/iv_cholesterol"
                     android:layout_width="@dimen/dp_76"
                     android:layout_height="@dimen/dp_76"
+                    android:alpha="0.7"
                     android:scaleType="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -397,6 +408,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_4"
                     android:textColor="@color/color_30A6ED"
+                    android:alpha="0.85"
                     android:textSize="@dimen/sp_12"
                     app:layout_constraintBaseline_toBaselineOf="@id/tv_latest_weight_value"
                     app:layout_constraintStart_toEndOf="@id/tv_latest_weight_value"
@@ -407,6 +419,7 @@
                     android:layout_width="@dimen/dp_76"
                     android:layout_height="@dimen/dp_76"
                     android:scaleType="center"
+                    android:alpha="0.7"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:srcCompat="@mipmap/ht_ic_bmi" />
@@ -416,7 +429,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_14">
+            android:layout_marginTop="@dimen/dp_12">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_step_count"
@@ -462,6 +475,7 @@
                     android:id="@+id/iv_step_count"
                     android:layout_width="@dimen/dp_76"
                     android:layout_height="@dimen/dp_76"
+                    android:alpha="0.7"
                     android:scaleType="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -531,6 +545,7 @@
                     android:id="@+id/iv_hydrate"
                     android:layout_width="@dimen/dp_76"
                     android:layout_height="@dimen/dp_76"
+                    android:alpha="0.7"
                     android:scaleType="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
