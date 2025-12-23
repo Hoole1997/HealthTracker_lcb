@@ -66,7 +66,6 @@ import com.daily.health.manager.ui.theme.HealthTrackerTheme
 import com.daily.health.manager.ui.viewmodel.SplashViewModel
 import com.daily.health.manager.util.logEvent
 import com.daily.health.manager.utils.isAdPage
-import com.healthtracker.framework.R as FrameworkR
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -92,8 +91,8 @@ import net.corekit.monetize.ads.LaunchAds
 import net.corekit.monetize.ads.SplashBiddingManager
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
-import org.koin.android.ext.android.inject
 import kotlin.math.ceil
+import com.healthtracker.framework.R as FrameworkR
 
 class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>() {
 
