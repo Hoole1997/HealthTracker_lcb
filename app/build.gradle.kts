@@ -57,7 +57,7 @@ android {
                 arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
             }
         }
-
+        resConfigs("en","tr","ko")
     }
 
     sourceSets {
