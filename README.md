@@ -142,3 +142,16 @@
 - 规则：除 `app_name` 外，所有字符串资源名统一添加 `ht_` 前缀；并全量更新工程内引用（XML 的 `@string/@array/@plurals`，以及代码的 `R.string/R.array/R.plurals`）。
 - 目的：统一资源命名空间，降低不同模块/功能迭代中出现“同名资源冲突/误引用”的概率。
 - 验证：已通过 `./gradlew :app:assembleDebug` 编译验证。
+
+## 2025-12-23 临时下线（天气/地震）
+
+- 目标：暂时移除天气与地震相关功能（包含通知），但保留模块代码，便于后续快速恢复。
+- 构建策略：仅将 `:weather` / `:earthquake` 从工程 include 与 `app` 依赖中移除，使其不参与编译与打包。
+- App 侧改动：移除 `app` 模块内所有天气/地震入口与引用（主页入口、推送/通知样式、以及地震初始化调度）。
+- 验证：已通过 `./gradlew :app:assembleInternalDebug` 编译验证。
+
+### 回滚方式
+
+- 将 `settings.gradle.kts` 中的 `include(":weather")`、`include(":earthquake")` 加回。
+- 将 `app/build.gradle.kts` 中的 `api(project(":weather"))`、`api(project(":earthquake"))` 加回。
+- 恢复 `app` 模块中与天气/地震相关的入口/通知样式/初始化代码（按本次提交 diff 反向回滚即可）。

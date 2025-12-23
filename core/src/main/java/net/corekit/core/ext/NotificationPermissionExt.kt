@@ -1,6 +1,5 @@
 package net.corekit.core.ext
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,7 +17,10 @@ import kotlin.apply
 fun Context.canSendNotification(): Boolean {
     // 检查权限
     val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        ActivityCompat.checkSelfPermission(
+            this,
+            "android.permission.POST_NOTIFICATIONS"
+        ) == PackageManager.PERMISSION_GRANTED
     } else {
         true // Android 13 以下默认有权限
     }
@@ -44,8 +46,9 @@ fun Context. requestNotificationPermission(
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         // Android 13+ 需要请求通知权限
-        launcher.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS)) { permissions ->
-            val isGranted = permissions[Manifest.permission.POST_NOTIFICATIONS] ?: false
+        val permission = "android.permission.POST_NOTIFICATIONS"
+        launcher.launch(arrayOf(permission)) { permissions ->
+            val isGranted = permissions[permission] ?: false
             result(isGranted)
         }
     } else {

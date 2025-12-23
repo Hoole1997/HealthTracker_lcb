@@ -35,5 +35,4 @@ object HealthServiceConstants {
     const val ACTION_VALUE_MEDICATION = "medication"
     const val ACTION_VALUE_HYDRATION = "hydration"
     const val ACTION_VALUE_STEPS = "steps"
-    const val ACTION_VALUE_WEATHER = "weather"
 }

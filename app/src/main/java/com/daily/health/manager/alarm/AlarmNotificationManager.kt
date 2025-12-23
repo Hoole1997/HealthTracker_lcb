@@ -1,6 +1,5 @@
 package com.daily.health.manager.alarm
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -128,21 +127,15 @@ class AlarmNotificationManager(
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
             val notification = notificationBuilder.build()
             
-            // 显示通知
-            if (ActivityCompat.checkSelfPermission(
+            val hasPostNotificationsPermission = if (Build.VERSION.SDK_INT >= 33) {
+                ActivityCompat.checkSelfPermission(
                     App.INSTANCE,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
+                    "android.permission.POST_NOTIFICATIONS"
+                ) == PackageManager.PERMISSION_GRANTED
+            } else {
+                true
             }
+            if (!hasPostNotificationsPermission) return
             notificationManager.notify(notificationId, notification)
             
             "Alarm notification shown: ID=${alarmRecord.id}, Type=${alarmRecord.type}".logd(TAG)

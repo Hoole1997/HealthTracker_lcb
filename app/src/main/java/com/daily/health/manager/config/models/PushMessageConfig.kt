@@ -105,10 +105,7 @@ data class PushMessageConfig(
         if (actionType !in 1..12) return false
         if (localizations.isEmpty()) return false
 
-        // 天气通知：文案由业务动态填充，允许远端下发空文案
-        if (iconType == 11 && actionType == 11) {
-            return true
-        }
+        if (iconType == 11 || actionType == 11) return false
 
         return localizations.values.all { it.isValid() }
     }

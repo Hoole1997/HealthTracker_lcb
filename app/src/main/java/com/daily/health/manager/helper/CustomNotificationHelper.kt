@@ -1,21 +1,17 @@
 package com.daily.health.manager.helper
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.android.common.weather.cache.WeatherCacheManager
-import com.android.common.weather.util.TemperaturePreferences
-import com.android.common.weather.util.WeatherIconMapper
-import com.android.common.weather.util.fahrenheitToCelsius
 import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.config.models.PushMessage
@@ -33,14 +29,8 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
-import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.report.ReportDataManager
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import kotlin.math.roundToInt
-import com.android.common.weather.R as WeatherR
 
 /**
  * 自定义通知辅助类
@@ -74,7 +64,6 @@ class CustomNotificationHelper(
                 8 -> HealthServiceConstants.ACTION_VALUE_MEDICATION
                 9 -> HealthServiceConstants.ACTION_VALUE_HYDRATION
                 10 -> HealthServiceConstants.ACTION_VALUE_STEPS
-                11 -> HealthServiceConstants.ACTION_VALUE_WEATHER
                 else -> {
                     "Unknown actionType: $actionType, defaulting to homepage".logd(PushOrchestrator.TAG)
                     HealthServiceConstants.ACTION_VALUE_HOMEPAGE
@@ -124,11 +113,6 @@ class CustomNotificationHelper(
             val collapsedView = createCollapsedView(displayMessage, notifResources, layoutResources, clickIntent, deleteIntent)
             val expandedView = createExpandedView(displayMessage, notifResources, layoutResources, finalNotificationId, clickIntent, deleteIntent)
 
-            // 如果是天气通知布局，则绑定天气数据
-            if (layoutResources.collapsedLayout == WeatherR.layout.layout_weather_notification_normal) {
-                bindWeatherData(collapsedView, expandedView)
-            }
-
             val channelId = if(isSilent) CHANNEL_ID_GENERAL_SILENT else CHANNEL_ID_GENERAL
             // 构建通知（根据 isSilent 参数决定是否静音）
             val notificationBuilder = NotificationCompat.Builder(context, channelId)
@@ -149,13 +133,15 @@ class CustomNotificationHelper(
             val notification = notificationBuilder.build()
 
             // 发送通知
-            if (ActivityCompat.checkSelfPermission(
+            val hasPostNotificationsPermission = if (Build.VERSION.SDK_INT >= 33) {
+                ActivityCompat.checkSelfPermission(
                     App.INSTANCE,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return 0
+                    "android.permission.POST_NOTIFICATIONS"
+                ) == PackageManager.PERMISSION_GRANTED
+            } else {
+                true
             }
+            if (!hasPostNotificationsPermission) return 0
             NotificationManagerCompat.from(context).notify(finalNotificationId, notification)
 
             val silentTag = if (isSilent) "[Silent]" else ""
@@ -181,15 +167,7 @@ class CustomNotificationHelper(
         clickIntent: PendingIntent,
         deleteIntent: PendingIntent
     ): RemoteViews {
-        val isWeatherLayout =
-            layoutResources.collapsedLayout == WeatherR.layout.layout_weather_notification_normal
-
         return RemoteViews(context.packageName, layoutResources.collapsedLayout).apply {
-            if (isWeatherLayout) {
-                // 天气通知使用独立布局，后续由 bindWeatherData 绑定数据，这里不触碰通用 id
-                return@apply
-            }
-
             if (layoutResources.collapsedLayout == R.layout.ht_layout_assistant_notify) {
                 setTextViewText(R.id.tv_time, pushMessage.title)
                 setOnClickPendingIntent(R.id.iv_confirm, clickIntent)
@@ -227,15 +205,7 @@ class CustomNotificationHelper(
         clickIntent: PendingIntent,
         deleteIntent: PendingIntent
     ): RemoteViews {
-        val isWeatherLayout =
-            layoutResources.expandedLayout == WeatherR.layout.layout_weather_notification_big
-
         return RemoteViews(context.packageName, layoutResources.expandedLayout).apply {
-            if (isWeatherLayout) {
-                // 天气通知使用独立布局，后续由 bindWeatherData 绑定数据，这里不触碰通用 id
-                return@apply
-            }
-
             if (layoutResources.expandedLayout == R.layout.ht_layout_assistant_notify_big) {
                 setTextViewText(R.id.tv_title, pushMessage.title)
                 setTextViewText(R.id.tv_content, pushMessage.desc)
@@ -389,126 +359,4 @@ class CustomNotificationHelper(
 
     private  fun canClose() = SpUtils.getString(PUSH_CLOSE_ACTION) != "0"
 
-    /**
-     * 绑定天气数据到 RemoteViews
-     */
-    private fun bindWeatherData(collapsedView: RemoteViews, expandedView: RemoteViews?) {
-        try {
-            val weatherData = WeatherCacheManager.getCachedResponse() ?: return
-
-            val context = context
-            val isCelsius = TemperaturePreferences.isCelsius()
-
-        // 1. 绑定当前天气 (Collapsed & Expanded)
-        val currentCondition = weatherData.currentConditions?.firstOrNull()
-        val currentTemp = currentCondition?.temperature?.imperial?.value?.let { 
-            if (isCelsius) it.fahrenheitToCelsius() else it.roundToInt() 
-        } ?: 0
-        val weatherText = currentCondition?.weatherText ?: ""
-        val weatherIconId = currentCondition?.weatherIcon ?: 1
-        val weatherIconRes = WeatherIconMapper.getIconResource(weatherIconId)
-        
-        val locationName = weatherData.city?.localizedName ?: weatherData.city?.englishName ?: "Unknown"
-
-        // 更新 Collapsed View
-        with(collapsedView) {
-            setTextViewText(WeatherR.id.tv_temperature, "$currentTemp°")
-            setTextViewText(WeatherR.id.tv_weather, weatherText)
-            setTextViewText(WeatherR.id.tv_location, locationName)
-            setImageViewResource(WeatherR.id.iv_weather, weatherIconRes)
-        }
-
-        // 更新 Expanded View
-        expandedView?.let { view ->
-            // 基本信息
-            view.setTextViewText(WeatherR.id.tv_temperature, "$currentTemp°")
-            view.setTextViewText(WeatherR.id.tv_weather, weatherText)
-            view.setTextViewText(WeatherR.id.tv_location, locationName)
-            view.setImageViewResource(WeatherR.id.iv_weather, weatherIconRes)
-            
-            // 日期
-            val dateFormat = SimpleDateFormat("EEE, MMM dd", LanguageUtils.getAppLocale(context))
-            view.setTextViewText(WeatherR.id.tv_date, dateFormat.format(Date()))
-
-            // 过滤过期数据 (同 WeatherActivity 逻辑)
-            val forecasts = weatherData.dailyForecasts?.dailyForecasts ?: emptyList()
-            val todayCalendar = java.util.Calendar.getInstance().apply {
-                set(java.util.Calendar.HOUR_OF_DAY, 0)
-                set(java.util.Calendar.MINUTE, 0)
-                set(java.util.Calendar.SECOND, 0)
-                set(java.util.Calendar.MILLISECOND, 0)
-            }
-
-//            val validForecasts = forecasts.filter { forecast ->
-//                val forecastDateStr = forecast.date
-//                if (forecastDateStr != null) {
-//                    try {
-//                        val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US)
-//                        val date = isoFormat.parse(forecastDateStr)
-//                        if (date != null) {
-//                            val forecastCalendar = java.util.Calendar.getInstance()
-//                            forecastCalendar.time = date
-//                            forecastCalendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
-//                            forecastCalendar.set(java.util.Calendar.MINUTE, 0)
-//                            forecastCalendar.set(java.util.Calendar.SECOND, 0)
-//                            forecastCalendar.set(java.util.Calendar.MILLISECOND, 0)
-//                            !forecastCalendar.before(todayCalendar)
-//                        } else true
-//                    } catch (e: Exception) { true }
-//                } else true
-//            }
-
-//            val finalForecasts = forecasts.ifEmpty { forecasts }
-
-            // 今日的高低温 (High:21° Low:15°)
-            val todayForecast = forecasts.firstOrNull()
-            todayForecast?.let {
-                val high = if (isCelsius) it.temperature?.maximum?.value?.fahrenheitToCelsius() else it.temperature?.maximum?.value?.roundToInt()
-                val low = if (isCelsius) it.temperature?.minimum?.value?.fahrenheitToCelsius() else it.temperature?.minimum?.value?.roundToInt()
-                view.setTextViewText(WeatherR.id.tv_temperature_range, "High:${high ?: "--"}° Low:${low ?: "--"}°")
-            }
-
-            // 5天预报列表
-            view.removeAllViews(WeatherR.id.ll_forecast_container)
-            forecasts.take(5).forEach { forecast ->
-                val itemRemoteView = RemoteViews(context.packageName, WeatherR.layout.layout_notification_daily_item)
-                
-                // 日期 (Thu)
-                forecast.date?.let { dateStr ->
-                    try {
-                        // 使用兼容 API < 24 的时区格式
-                        val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US)
-                        // 处理 +08:00 格式转换为 +0800
-                        val normalizedDateStr = dateStr.replace(Regex("([+-]\\d{2}):(\\d{2})$"), "$1$2")
-                        val dayFormat = SimpleDateFormat("EEE", LanguageUtils.getAppLocale(context))
-                        val date = isoFormat.parse(normalizedDateStr)
-                        val dayStr = date?.let { dayFormat.format(it) } ?: "N/A"
-                        itemRemoteView.setTextViewText(WeatherR.id.tv_date, dayStr)
-                    } catch (e: Exception) {
-                        itemRemoteView.setTextViewText(WeatherR.id.tv_date, "N/A")
-                    }
-                }
-                
-                // 图标
-                forecast.day?.icon?.let { iconId ->
-                    itemRemoteView.setImageViewResource(WeatherR.id.iv_weather, WeatherIconMapper.getIconResource(iconId))
-                }
-                
-                // 温度范围 (Low/High)
-                // 注意：DailyForecastAdapter 使用 $low/$high
-                val high = if (isCelsius) forecast.temperature?.maximum?.value?.fahrenheitToCelsius() else forecast.temperature?.maximum?.value?.roundToInt()
-                val low = if (isCelsius) forecast.temperature?.minimum?.value?.fahrenheitToCelsius() else forecast.temperature?.minimum?.value?.roundToInt()
-                itemRemoteView.setTextViewText(WeatherR.id.tv_temperature_range, "${low ?: "--"}°/${high ?: "--"}°")
-                
-                // 降水概率
-                val rainPercent = forecast.day?.precipitationProbability ?: 0
-                itemRemoteView.setTextViewText(WeatherR.id.tv_rain_percent, "$rainPercent%")
-                
-                view.addView(WeatherR.id.ll_forecast_container, itemRemoteView)
-            }
-        }
-        } catch (e: Exception) {
-            "Failed to bind weather data: ${e.message}".loge(TAG)
-        }
-    }
 }
