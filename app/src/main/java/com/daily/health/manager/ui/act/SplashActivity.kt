@@ -1,18 +1,59 @@
 package com.daily.health.manager.ui.act
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.core.animation.addListener
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.daily.health.manager.App
-import com.daily.health.manager.BuildConfig
 import com.daily.health.manager.R
-import com.daily.health.manager.alarm.PermissionManager
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_CONTENT
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_FROM
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_TITLE
@@ -21,13 +62,14 @@ import com.daily.health.manager.databinding.HtActivitySplashBinding
 import com.daily.health.manager.hasNewGuide
 import com.daily.health.manager.receiver.NotificationActionReceiver
 import com.daily.health.manager.ui.history.HistoryRecordItem
+import com.daily.health.manager.ui.theme.HealthTrackerTheme
 import com.daily.health.manager.ui.viewmodel.SplashViewModel
 import com.daily.health.manager.util.logEvent
 import com.daily.health.manager.utils.isAdPage
+import com.healthtracker.framework.R as FrameworkR
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
-import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
@@ -35,9 +77,10 @@ import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.SpUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import net.corekit.core.report.ReportDataManager
@@ -65,8 +108,7 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
     private val hasInterstitialShowing: Boolean
         get() = InterstitialAds.getInstance().checkAdShowing()
     
-    // 用于等待权限授权完成的信号
-    private val permissionCompleteDeferred = CompletableDeferred<Unit>()
+    private val startAnimationFlow = MutableStateFlow(false)
 
 
     // 状态机负责协调动画、权限、前后台状态与跳转
@@ -96,13 +138,23 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
         )
     }
 
-    private val permissionManager: PermissionManager by inject()
-
     override fun createViewBinding() = HtActivitySplashBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = SplashViewModel::class.java
     private var launchTime = 0L
     override fun initView(savedInstanceState: Bundle?) {
+        mViewBind.composeView.setViewCompositionStrategy(
+            ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+        )
+        mViewBind.composeView.setContent {
+            HealthTrackerTheme {
+                SplashScreen(
+                    startAnimationFlow = startAnimationFlow,
+                    recentRecordFlow = mViewModel.recentRecord,
+                    onAnimationCompleted = ::onAnimationCompleted
+                )
+            }
+        }
         lifecycleScope.launch {
             try {
                 if (!isTaskRoot) {
@@ -125,114 +177,10 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
 
             launchTime = System.currentTimeMillis()
             logEvent("loading_page_show")
-            mViewBind.tvPrivacy.clickWithDuration {
-                InnerWebActivity.start(this@SplashActivity, BuildConfig.PRIVACY_POLICY)
-            }
-
             playAnimations()
-            // 重置权限拦截器，确保每次启动都能正确等待权限
-            LaunchAds.getInstance().resetInterceptor()
-            permissionManager.checkNotificationPermission(this@SplashActivity){
-                onPermissionCheckCompleted()
-            }
-            lifecycleScope.launch {
-                delay(180_000L)
-                if (!permissionCompleteDeferred.isCompleted) {
-                    if (BuildState.debug) "启动页通知授权流程超时兜底，强制完成权限流程".logw(PermissionManager.TAG)
-                    onPermissionCheckCompleted()
-                }
-            }
+            // 启动页不再承载权限流程：直接标记权限流程完成，避免状态机卡住。
+            stateMachine.onPermissionCheckCompleted()
             checkNotificationOpen()
-
-            // 监听最近记录并显示
-            lifecycleScope.launch {
-                mViewModel.recentRecord.collect { item ->
-                    if (item == null) {
-                        mViewBind.clRecentRecord.visibility = View.GONE
-                        return@collect
-                    }
-
-                    mViewBind.clRecentRecord.visibility = View.VISIBLE
-                    mViewBind.tvRecordTitle.text = getString(
-                        R.string.ht_last_measurement, when (item.getRecordType()) {
-                            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> getString(R.string.ht_blood_pressure)
-                            HistoryRecordItem.RecordType.BLOOD_SUGAR -> getString(R.string.ht_blood_suger)
-                            HistoryRecordItem.RecordType.HEART_RATE -> getString(R.string.ht_heart_rate)
-                            HistoryRecordItem.RecordType.BMI_RECORD -> getString(R.string.ht_bmi)
-                            else -> ""
-                        }
-                    )
-
-                    // 清除旧的动态视图（除了标题）
-                    val childCount = mViewBind.clRecentRecord.childCount
-                    if (childCount > 1) {
-                         mViewBind.clRecentRecord.removeViews(1, childCount - 1)
-                    }
-
-                    val layoutId = if (item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_PRESSURE) {
-                        R.layout.ht_layout_recent_bp
-                    } else {
-                        R.layout.ht_layout_recent_bs
-                    }
-
-                    val contentView = layoutInflater.inflate(layoutId, mViewBind.clRecentRecord, false)
-                    val params = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
-                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT,
-                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    params.topToBottom = mViewBind.tvRecordTitle.id
-                    contentView.layoutParams = params
-                    mViewBind.clRecentRecord.addView(contentView)
-
-                    // 绑定数据
-                    val tvValue1 = contentView.findViewById<android.widget.TextView>(R.id.tv_value_1)
-                    val tvValue2 = contentView.findViewById<android.widget.TextView>(R.id.tv_value_2)
-                    val tvUnit = contentView.findViewById<android.widget.TextView>(R.id.tv_unit)
-                    val tvLevel = contentView.findViewById<android.widget.TextView>(R.id.tv_leve)
-                    val tvStatus = contentView.findViewById<android.widget.TextView>(R.id.tv_status)
-                    val tvTime = contentView.findViewById<android.widget.TextView>(R.id.tv_record_time)
-                    val vRangeFlag = contentView.findViewById<View>(R.id.v_range_flag)
-
-                    tvValue1.text = item.getPrimaryValue()
-                    tvUnit.text = item.getUnit()
-                    tvLevel.text = item.getLevel(this@SplashActivity)
-                    tvTime.text = DateTimeUtils.formatDateTime(item.getRecordTime())
-
-                    if(layoutId == R.layout.ht_layout_recent_bp){
-                        val secondaryValue = item.getSecondaryValue()
-                        if (secondaryValue != null) {
-                            tvValue2.text = secondaryValue
-                            tvValue2.visibility = View.VISIBLE
-                        } else {
-                            tvValue2.visibility = View.GONE
-                        }
-                    }
-
-                    val status = item.getStatus(this@SplashActivity)
-                    if (status != null) {
-                        tvStatus.visibility = View.VISIBLE
-                        when (item.getRecordType()) {
-                            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                                tvStatus.text = "${getString(R.string.ht_pulse)}:$status"
-                            }
-                            HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                                tvStatus.text = "${getString(R.string.ht_status)}:$status"
-                            }
-                            else -> {
-                                tvStatus.text = status
-                                tvStatus.setTextColor(getColor(R.color.t1))
-                            }
-                        }
-                    } else {
-                        tvStatus.visibility = View.GONE
-                    }
-
-                    vRangeFlag.backgroundTintList = androidx.core.content.ContextCompat.getColorStateList(
-                        this@SplashActivity,
-                        item.getLeveColorRes()
-                    )
-                }
-            }
 
             try {
                 val adJob = async {
@@ -242,10 +190,6 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
                 val timeout = AdConfigManager.getSplashTimeout()
                 AdLogger.d("启动页面，超时时长：$timeout s")
                 val timeoutJob = async {
-                    // 等待权限授权完成后才开始计时
-                    AdLogger.d("等待权限授权完成后开始超时计时...")
-                    permissionCompleteDeferred.await()
-                    AdLogger.d("权限授权完成，开始超时计时 $timeout s")
                     delay(timeout * 1000L)
                 }
                 val timeoutTriggered = select<Boolean> {
@@ -419,9 +363,6 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
     }
 
     override fun onDestroy() {
-        if (!permissionCompleteDeferred.isCompleted) {
-            permissionCompleteDeferred.complete(Unit)
-        }
         stateMachine.onDestroy()
         super.onDestroy()
         logEvent(
@@ -437,60 +378,16 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
      * 播放所有启动动画
      */
     private fun playAnimations() {
-        with(mViewBind) {
-            // 创建组合动画
-            val animatorSet = AnimatorSet().apply {
-                startDelay = 200 // 延迟200毫秒开始动画
-                duration = 1000 // 动画持续时间350毫秒
-            }
-
-            // 创建各个视图的动画
-            val logoAnimator = createAlphaAnimator(ivLogo)
-            val nameAnimator = createAlphaAnimator(tvAppName)
-
-
-            // 设置动画同时播放
-            animatorSet.playTogether(logoAnimator, nameAnimator)
-
-            // 添加动画监听器
-            animatorSet.addListener(
-                onEnd = {
-                    // 动画结束后标记可以进行导航
-                    onAnimationCompleted()
-                },
-                onCancel = {
-                    // 部分设备上动画可能被系统取消，这里兜底仍然推进流程
-                    onAnimationCompleted()
-                }
-            )
-
-            // 开始动画
-            animatorSet.start()
+        if (startAnimationFlow.value) {
+            return
         }
+        startAnimationFlow.value = true
     }
 
     /**
      * 创建淡入动画
      * 保持与原版本完全相同的动画参数
      */
-    private fun createAlphaAnimator(view: View): ObjectAnimator {
-        return ObjectAnimator.ofFloat(view, "alpha", 0f, 1.0f)
-    }
-
-
-
-    /**
-     * 权限检查完成回调
-     */
-    private fun onPermissionCheckCompleted() {
-        if(BuildState.debug) "启动页通知授权流程完成".logd(PermissionManager.TAG)
-        // 通知权限检查完成，可以开始广告超时计时
-        if (!permissionCompleteDeferred.isCompleted) {
-            permissionCompleteDeferred.complete(Unit)
-        }
-        stateMachine.onPermissionCheckCompleted()
-
-    }
 
     /**
      * 动画完成回调
@@ -532,7 +429,7 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
             }
             permissionDone = true
             if (BuildState.debug) "Permission check completed".logd(TAG)
-            if(BuildState.debug) "设置开屏拦截等待结束".logd(PermissionManager.TAG)
+            if(BuildState.debug) "设置开屏拦截等待结束".logd(TAG)
             LaunchAds.getInstance().cancelInterceptor()
             tryNavigate()
 
@@ -621,6 +518,311 @@ class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding
             SpUtils.putBoolean("has_report_group_$group",true)
             if(BuildState.debug) "上报Group,value:$group".logd(TAG)
             ReportDataManager.reportData("Grouping_$group")
+        }
+    }
+}
+
+@Composable
+private fun AutoSizeSingleLineText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color,
+    maxFontSize: androidx.compose.ui.unit.TextUnit,
+    minFontSize: androidx.compose.ui.unit.TextUnit,
+    fontFamily: FontFamily? = null,
+    fontWeight: FontWeight? = null
+) {
+    var fontSize by remember(text) { mutableStateOf(maxFontSize) }
+    Text(
+        text = text,
+        color = color,
+        fontSize = fontSize,
+        fontFamily = fontFamily,
+        fontWeight = fontWeight,
+        modifier = modifier,
+        maxLines = 1,
+        softWrap = false,
+        overflow = TextOverflow.Clip,
+        onTextLayout = { result ->
+            if (!result.didOverflowWidth || fontSize <= minFontSize) {
+                return@Text
+            }
+
+            val availableWidth = result.size.width.toFloat()
+            val lineRight = try {
+                result.getLineRight(0)
+            } catch (_: Throwable) {
+                0f
+            }
+            if (availableWidth <= 0f || lineRight <= 0f) {
+                return@Text
+            }
+
+            val ratio = (availableWidth / lineRight).coerceIn(0f, 1f)
+            val next = (fontSize.value * ratio).coerceAtLeast(minFontSize.value)
+            if (next < fontSize.value - 0.1f) {
+                fontSize = next.sp
+            }
+        }
+    )
+}
+
+@Composable
+private fun SplashScreen(
+    startAnimationFlow: StateFlow<Boolean>,
+    recentRecordFlow: StateFlow<HistoryRecordItem?>,
+    onAnimationCompleted: () -> Unit
+) {
+    val startAnimation by startAnimationFlow.collectAsState()
+    val recentRecord by recentRecordFlow.collectAsState()
+    val onAnimationCompletedState by rememberUpdatedState(onAnimationCompleted)
+
+    val contentAlpha = remember { Animatable(0f) }
+    var hasSentAnimationCompleted by remember { mutableStateOf(false) }
+
+    LaunchedEffect(startAnimation) {
+        if (!startAnimation) {
+            return@LaunchedEffect
+        }
+        hasSentAnimationCompleted = false
+        contentAlpha.snapTo(0f)
+
+        delay(200)
+        contentAlpha.animateTo(1f, animationSpec = tween(durationMillis = 1000))
+
+        if (!hasSentAnimationCompleted) {
+            hasSentAnimationCompleted = true
+            onAnimationCompletedState()
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.c1))
+    ) {
+        Image(
+            painter = painterResource(id = R.mipmap.ht_bg_splash),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        Image(
+            painter = painterResource(id = R.mipmap.ht_bg_splash_top_start),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        Image(
+            painter = painterResource(id = R.mipmap.ht_bg_splash_top_end),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val (logo, appName, loadingBar, loadingText, recentCard) = createRefs()
+            val centerGuideline = createGuidelineFromTop(0.22f)
+            val bottomGuideline = createGuidelineFromTop(0.88f)
+
+            Image(
+                painter = painterResource(id = R.drawable.ht_ic_logo_sq),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(96.dp)
+                    .constrainAs(logo) {
+                        top.linkTo(centerGuideline)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                alpha = contentAlpha.value
+            )
+
+            Text(
+                text = stringResource(id = R.string.app_name),
+                color = colorResource(id = R.color.c5).copy(alpha = contentAlpha.value),
+                fontSize = 22.sp,
+                fontFamily = FontFamily(Font(FrameworkR.font.roboto_bold)),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.constrainAs(appName) {
+                    top.linkTo(logo.bottom, margin = 20.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            recentRecord?.let {
+                RecentRecordCard(
+                    modifier = Modifier.constrainAs(recentCard) {
+                        bottom.linkTo(loadingBar.top, margin = 26.dp)
+                        start.linkTo(loadingBar.start)
+                        end.linkTo(loadingBar.end)
+                        width = Dimension.fillToConstraints
+                    },
+                    item = it
+                )
+            }
+
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .constrainAs(loadingBar) {
+                        top.linkTo(bottomGuideline)
+                        bottom.linkTo(bottomGuideline)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.percent(0.8f)
+                    },
+                color = colorResource(id = R.color.c5),
+                trackColor = Color(0xFFB1EDD6),
+                strokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap
+            )
+
+            Text(
+                text = stringResource(id = R.string.ht_loading),
+                color = colorResource(id = R.color.color_666),
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(FrameworkR.font.roboto_regular)),
+                modifier = Modifier.constrainAs(loadingText) {
+                    top.linkTo(loadingBar.bottom, margin = 10.dp)
+                    start.linkTo(loadingBar.start)
+                    end.linkTo(loadingBar.end)
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+private fun RecentRecordCard(
+    modifier: Modifier = Modifier,
+    item: HistoryRecordItem
+) {
+    val context = LocalContext.current
+
+    val typeName = when (item.getRecordType()) {
+        HistoryRecordItem.RecordType.BLOOD_PRESSURE -> stringResource(id = R.string.ht_blood_pressure)
+        HistoryRecordItem.RecordType.BLOOD_SUGAR -> stringResource(id = R.string.ht_blood_suger)
+        HistoryRecordItem.RecordType.HEART_RATE -> stringResource(id = R.string.ht_heart_rate)
+        HistoryRecordItem.RecordType.BMI_RECORD -> stringResource(id = R.string.ht_bmi)
+        else -> ""
+    }
+
+    val title = stringResource(id = R.string.ht_last_measurement, typeName)
+    val levelText = item.getLevel(context)
+    val timeText = DateTimeUtils.formatDateTime(item.getRecordTime())
+    val statusValue = item.getStatus(context)
+
+    val statusText = when {
+        statusValue.isNullOrBlank() -> null
+        item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+            "${stringResource(id = R.string.ht_pulse)}:$statusValue"
+        }
+        item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+            "${stringResource(id = R.string.ht_status)}:$statusValue"
+        }
+        else -> statusValue
+    }
+
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.color_F1F8F6))
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Text(
+                text = title,
+                color = colorResource(id = R.color.t1),
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(FrameworkR.font.roboto_black)),
+                fontWeight = FontWeight.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = item.getPrimaryValue(),
+                        color = colorResource(id = R.color.t1),
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily(Font(FrameworkR.font.roboto_black)),
+                        fontWeight = FontWeight.Black
+                    )
+                    val secondary = item.getSecondaryValue()
+                    if (!secondary.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = secondary,
+                            color = colorResource(id = R.color.t1),
+                            fontSize = 18.sp,
+                            fontFamily = FontFamily(Font(FrameworkR.font.roboto_black)),
+                            fontWeight = FontWeight.Black
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = item.getUnit(),
+                        color = colorResource(id = R.color.color_999),
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(FrameworkR.font.roboto_regular))
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .width(4.dp)
+                        .height(74.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(colorResource(id = item.getLeveColorRes()))
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = levelText,
+                        color = colorResource(id = R.color.t1),
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily(Font(FrameworkR.font.roboto_bold)),
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if (!statusText.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        AutoSizeSingleLineText(
+                            text = statusText,
+                            modifier = Modifier.fillMaxWidth(),
+                            color = colorResource(id = R.color.t1),
+                            maxFontSize = 14.sp,
+                            minFontSize = 6.sp,
+                            fontFamily = FontFamily(Font(FrameworkR.font.roboto_regular))
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = timeText,
+                        color = colorResource(id = R.color.color_999),
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily(Font(FrameworkR.font.roboto_regular)),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
         }
     }
 }

@@ -6,6 +6,10 @@ import com.daily.health.manager.data.repository.BloodSugarRepository
 import com.daily.health.manager.data.repository.BmiRepository
 import com.daily.health.manager.data.repository.CholesterolRepository
 import com.daily.health.manager.data.repository.HeartRateRepository
+import com.daily.health.manager.ui.history.BloodPressureHistoryItem
+import com.daily.health.manager.ui.history.BloodSugarHistoryItem
+import com.daily.health.manager.ui.history.BmiHistoryItem
+import com.daily.health.manager.ui.history.HeartRateHistoryItem
 import com.daily.health.manager.ui.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +21,7 @@ class SplashViewModel(
     private val cholesterolRepository: CholesterolRepository,
     private val heartRateRepository: HeartRateRepository,
     private val bmiRepository: BmiRepository): BaseViewModel(){
-    private val _recentRecord = kotlinx.coroutines.flow.MutableStateFlow<com.daily.health.manager.ui.history.HistoryRecordItem?>(null)
+    private val _recentRecord = kotlinx.coroutines.flow.MutableStateFlow<HistoryRecordItem?>(null)
     val recentRecord = _recentRecord.asStateFlow()
 
     init {
@@ -33,24 +37,28 @@ class SplashViewModel(
         viewModelScope.launch {
             try {
                 when (type) {
-                    com.daily.health.manager.ui.history.HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
                         bpRepository.getLatestBloodPressureRecords(1).collect { list ->
-                             _recentRecord.value = list.firstOrNull()?.let { com.daily.health.manager.ui.history.BloodPressureHistoryItem(it) }
+                             _recentRecord.value = list.firstOrNull()?.let {
+                                 BloodPressureHistoryItem(
+                                     it
+                                 )
+                             }
                         }
                     }
-                    com.daily.health.manager.ui.history.HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
                         bsRepository.getLatestBloodSugarRecords(1).collect { list ->
-                            _recentRecord.value = list.firstOrNull()?.let { com.daily.health.manager.ui.history.BloodSugarHistoryItem(it) }
+                            _recentRecord.value = list.firstOrNull()?.let { BloodSugarHistoryItem(it) }
                         }
                     }
-                    com.daily.health.manager.ui.history.HistoryRecordItem.RecordType.HEART_RATE -> {
+                    HistoryRecordItem.RecordType.HEART_RATE -> {
                         heartRateRepository.getLatestHeartRateRecords(1).collect { list ->
-                            _recentRecord.value = list.firstOrNull()?.let { com.daily.health.manager.ui.history.HeartRateHistoryItem(it) }
+                            _recentRecord.value = list.firstOrNull()?.let { HeartRateHistoryItem(it) }
                         }
                     }
-                    com.daily.health.manager.ui.history.HistoryRecordItem.RecordType.BMI_RECORD -> {
+                    HistoryRecordItem.RecordType.BMI_RECORD -> {
                         bmiRepository.getLatestBmiRecords(1).collect { list ->
-                            _recentRecord.value = list.firstOrNull()?.let { com.daily.health.manager.ui.history.BmiHistoryItem(it) }
+                            _recentRecord.value = list.firstOrNull()?.let { BmiHistoryItem(it) }
                         }
                     }
                     else -> {}

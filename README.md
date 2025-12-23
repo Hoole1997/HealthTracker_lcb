@@ -155,3 +155,9 @@
 - 将 `settings.gradle.kts` 中的 `include(":weather")`、`include(":earthquake")` 加回。
 - 将 `app/build.gradle.kts` 中的 `api(project(":weather"))`、`api(project(":earthquake"))` 加回。
 - 恢复 `app` 模块中与天气/地震相关的入口/通知样式/初始化代码（按本次提交 diff 反向回滚即可）。
+
+## 2025-12-23 启动页迁移（Compose 承载，方案A）
+
+- 启动入口仍为 `SplashActivity`（Manifest 不变），保持原有开屏广告/上报/状态机与跳转逻辑不变；通知权限申请已从启动页移除（计划在首页触发）。
+- 将 `ht_activity_splash.xml` 精简为单个 `ComposeView`，在 `SplashActivity` 中通过 `composeView.setContent { ... }` 渲染启动页 UI。
+- 当前阶段暂不实现“隐私政策入口”，后续如需恢复可在 Compose UI 中补充点击区域并复用原跳转逻辑。
