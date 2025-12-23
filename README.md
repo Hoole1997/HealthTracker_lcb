@@ -161,3 +161,26 @@
 - 启动入口仍为 `SplashActivity`（Manifest 不变），保持原有开屏广告/上报/状态机与跳转逻辑不变；通知权限申请已从启动页移除（计划在首页触发）。
 - 将 `ht_activity_splash.xml` 精简为单个 `ComposeView`，在 `SplashActivity` 中通过 `composeView.setContent { ... }` 渲染启动页 UI。
 - 当前阶段暂不实现“隐私政策入口”，后续如需恢复可在 Compose UI 中补充点击区域并复用原跳转逻辑。
+
+## 2025-12-23 未使用图片资源清理（drawable/mipmap）
+
+- 范围：仅删除工程内 `src/main/res/drawable*` 下 **零引用** 的图片资源（本次均为 `.xml` drawable），不做重命名/不做兼容 alias。
+- 扫描口径：同时扫描代码与 XML 引用（`R.drawable.*` / `R.mipmap.*` / `@drawable/*` / `@mipmap/*`），并额外检查是否存在 `Resources.getIdentifier(..., "drawable"|"mipmap", ...)` 等动态查找（本项目未发现此类用法）。
+- 删除清单：
+  - `app/src/main/res/drawable/ht_bg_assistant_fg.xml`
+  - `app/src/main/res/drawable/ht_bg_blue.xml`
+  - `app/src/main/res/drawable/ht_bg_hydrate_drink.xml`
+  - `app/src/main/res/drawable/ht_bg_hydrate_reminder_add.xml`
+  - `app/src/main/res/drawable/ht_bg_label_selector.xml`
+  - `app/src/main/res/drawable/ht_bg_rect_white_16.xml`
+  - `app/src/main/res/drawable/ht_ic_ad_close.xml`
+  - `app/src/main/res/drawable/ht_ic_feedback_add.xml`
+  - `app/src/main/res/drawable/ht_ic_fis_home.xml`
+  - `app/src/main/res/drawable/ht_ic_sync_check_normal.xml`
+  - `app/src/main/res/drawable/ht_ic_weather.xml`
+  - `monetize/src/main/res/drawable/bg_ad_label_enhanced.xml`
+  - `monetize/src/main/res/drawable/bg_button_gray_rounded.xml`
+  - `monetize/src/main/res/drawable/bg_button_rounded.xml`
+  - `monetize/src/main/res/drawable/bg_native_ad_card.xml`
+  - `monetize/src/main/res/drawable/ic_ad_collapse.xml`
+- 验证：已执行 `./gradlew :app:assembleInternalDebug` 编译通过。
