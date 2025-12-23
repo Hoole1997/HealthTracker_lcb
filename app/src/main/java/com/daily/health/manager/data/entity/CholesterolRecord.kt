@@ -9,71 +9,71 @@ import java.util.Date
  * 胆固醇记录实体
  * 默认仅记录总胆固醇值（mg/dL）
  */
-@Entity(tableName = "cholesterol_records")
-data class CholesterolRecord(
+@Entity(tableName = "t08")
+data class LocalEntity08(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "c01")
     val id: Long = 0,
 
     /**
      * 记录时间
      */
-    @ColumnInfo(name = "record_time")
+    @ColumnInfo(name = "c02")
     val recordTime: Date,
 
     /** 高密度脂蛋白 HDL（mg/dL） */
-    @ColumnInfo(name = "hdl")
+    @ColumnInfo(name = "c03")
     val hdl: Int,
 
     /** 低密度脂蛋白 LDL（mg/dL） */
-    @ColumnInfo(name = "ldl")
+    @ColumnInfo(name = "c04")
     val ldl: Int,
 
     /** 甘油三酯 TG（mg/dL） */
-    @ColumnInfo(name = "triglyceride")
+    @ColumnInfo(name = "c05")
     val triglyceride: Int,
 
     /** 总胆固醇 TC（mg/dL） */
-    @ColumnInfo(name = "tc")
+    @ColumnInfo(name = "c06")
     val tc: Float,
 
     /** 非高密度脂蛋白 Non-HDL（mg/dL） */
-    @ColumnInfo(name = "non_hdl")
+    @ColumnInfo(name = "c07")
     val nonHdl: Float,
 
     /** TC/HDL 比值 */
-    @ColumnInfo(name = "tc_hdl_ratio")
+    @ColumnInfo(name = "c08")
     val tcHdlRatio: Float,
 
     /** LDL/HDL 比值 */
-    @ColumnInfo(name = "ldl_hdl_ratio")
+    @ColumnInfo(name = "c09")
     val ldlHdlRatio: Float,
 
     /**
      * 标签ID列表（逗号分隔）
      */
-    @ColumnInfo(name = "tag_ids")
+    @ColumnInfo(name = "c10")
     val tagIds: String? = null,
 
     /**
      * 软删除标记
      */
-    @ColumnInfo(name = "is_delete")
+    @ColumnInfo(name = "c11")
     val isDeleted: Boolean = false,
 
     /**
      * 更新时间戳
      */
-    @ColumnInfo(name = "updated_at")
+    @ColumnInfo(name = "c12")
     val updatedAt: Long = System.currentTimeMillis(),
 
-    @ColumnInfo(name = "ext1")
+    @ColumnInfo(name = "c13")
     val ext1: String? = null,
 
-    @ColumnInfo(name = "ext2")
+    @ColumnInfo(name = "c14")
     val ext2: String? = null,
 
-    @ColumnInfo(name = "ext3")
+    @ColumnInfo(name = "c15")
     val ext3: String? = null
 ) {
     fun getTagIdList(): List<Long> {
@@ -85,3 +85,5 @@ data class CholesterolRecord(
 
     fun withUpdatedTimestamp(): CholesterolRecord = copy(updatedAt = System.currentTimeMillis())
 }
+
+typealias CholesterolRecord = LocalEntity08

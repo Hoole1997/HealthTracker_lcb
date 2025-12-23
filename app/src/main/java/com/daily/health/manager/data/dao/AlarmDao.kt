@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
  * 提供闹钟数据的CRUD操作
  */
 @Dao
-interface AlarmDao {
+interface LocalDao04 {
 
     /**
      * 插入闹钟记录
@@ -48,7 +48,7 @@ interface AlarmDao {
      * @param id 记录ID
      * @return 影响的行数
      */
-    @Query("DELETE FROM alarm_records WHERE id = :id")
+    @Query("DELETE FROM t04 WHERE c01 = :id")
     suspend fun deleteById(id: Long): Int
 
     /**
@@ -56,7 +56,7 @@ interface AlarmDao {
      * @param id 记录ID
      * @return 影响的行数
      */
-    @Query("UPDATE alarm_records SET is_delete = 1 WHERE id = :id")
+    @Query("UPDATE t04 SET c09 = 1 WHERE c01 = :id")
     suspend fun softDeleteById(id: Long): Int
 
     /**
@@ -64,21 +64,21 @@ interface AlarmDao {
      * @param id 记录ID
      * @return 闹钟记录对象，可能为null
      */
-    @Query("SELECT * FROM alarm_records WHERE id = :id AND is_delete = 0")
+    @Query("SELECT * FROM t04 WHERE c01 = :id AND c09 = 0")
     suspend fun getById(id: Long): AlarmRecord?
 
     /**
      * 获取所有有效的闹钟记录，按时间排序
      * @return Flow形式的闹钟记录列表，支持数据变化监听
      */
-    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 ORDER BY hour ASC, minute ASC")
+    @Query("SELECT * FROM t04 WHERE c09 = 0 ORDER BY c03 ASC, c04 ASC")
     fun getAllRecords(): Flow<List<AlarmRecord>>
 
     /**
      * 获取所有启用的闹钟记录
      * @return Flow形式的启用闹钟记录列表
      */
-    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 AND enable = 1 ORDER BY hour ASC, minute ASC")
+    @Query("SELECT * FROM t04 WHERE c09 = 0 AND c07 = 1 ORDER BY c03 ASC, c04 ASC")
     fun getEnabledRecords(): Flow<List<AlarmRecord>>
 
     /**
@@ -86,7 +86,7 @@ interface AlarmDao {
      * @param type 闹钟类型
      * @return Flow形式的闹钟记录列表
      */
-    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 AND type = :type ORDER BY hour ASC, minute ASC")
+    @Query("SELECT * FROM t04 WHERE c09 = 0 AND c02 = :type ORDER BY c03 ASC, c04 ASC")
     fun getRecordsByType(type: Int): Flow<List<AlarmRecord>>
 
     /**
@@ -96,7 +96,7 @@ interface AlarmDao {
      * @param minute 分钟
      * @return 匹配的闹钟记录列表
      */
-    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 AND type = :type AND hour = :hour AND minute = :minute")
+    @Query("SELECT * FROM t04 WHERE c09 = 0 AND c02 = :type AND c03 = :hour AND c04 = :minute")
     suspend fun getRecordsByTypeAndTime(type: Int, hour: Int, minute: Int): List<AlarmRecord>
 
     /**
@@ -105,21 +105,21 @@ interface AlarmDao {
      * @param endHour 结束小时
      * @return Flow形式的闹钟记录列表
      */
-    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 AND hour BETWEEN :startHour AND :endHour ORDER BY hour ASC, minute ASC")
+    @Query("SELECT * FROM t04 WHERE c09 = 0 AND c03 BETWEEN :startHour AND :endHour ORDER BY c03 ASC, c04 ASC")
     fun getRecordsByTimeRange(startHour: Int, endHour: Int): Flow<List<AlarmRecord>>
 
     /**
      * 获取重复闹钟记录
      * @return Flow形式的重复闹钟记录列表
      */
-    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 AND repeat_flag > 0 ORDER BY hour ASC, minute ASC")
+    @Query("SELECT * FROM t04 WHERE c09 = 0 AND c05 > 0 ORDER BY c03 ASC, c04 ASC")
     fun getRepeatingRecords(): Flow<List<AlarmRecord>>
 
     /**
      * 获取单次闹钟记录
      * @return Flow形式的单次闹钟记录列表
      */
-    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 AND repeat_flag = 0 ORDER BY hour ASC, minute ASC")
+    @Query("SELECT * FROM t04 WHERE c09 = 0 AND c05 = 0 ORDER BY c03 ASC, c04 ASC")
     fun getOnceRecords(): Flow<List<AlarmRecord>>
 
     /**
@@ -128,7 +128,7 @@ interface AlarmDao {
      * @param isEnabled 是否启用
      * @return 影响的行数
      */
-    @Query("UPDATE alarm_records SET enable = :isEnabled WHERE id = :id")
+    @Query("UPDATE t04 SET c07 = :isEnabled WHERE c01 = :id")
     suspend fun updateEnabledStatus(id: Long, isEnabled: Boolean): Int
 
     /**
@@ -137,28 +137,28 @@ interface AlarmDao {
      * @param lastTriggerTime 最后触发时间戳
      * @return 影响的行数
      */
-    @Query("UPDATE alarm_records SET long2 = :lastTriggerTime WHERE id = :id")
+    @Query("UPDATE t04 SET c17 = :lastTriggerTime WHERE c01 = :id")
     suspend fun updateLastTriggerTime(id: Long, lastTriggerTime: Long): Int
 
     /**
      * 获取记录总数
      * @return 记录总数
      */
-    @Query("SELECT COUNT(*) FROM alarm_records WHERE is_delete = 0")
+    @Query("SELECT COUNT(*) FROM t04 WHERE c09 = 0")
     suspend fun getRecordCount(): Int
 
     /**
      * 同步获取所有有效的闹钟记录，按时间排序
      * @return 闹钟记录列表
      */
-    @Query("SELECT * FROM alarm_records WHERE is_delete = 0 ORDER BY hour ASC, minute ASC")
+    @Query("SELECT * FROM t04 WHERE c09 = 0 ORDER BY c03 ASC, c04 ASC")
     suspend fun getAllRecordsSync(): List<AlarmRecord>
 
     /**
      * 获取启用的闹钟记录总数
      * @return 启用记录总数
      */
-    @Query("SELECT COUNT(*) FROM alarm_records WHERE is_delete = 0 AND enable = 1")
+    @Query("SELECT COUNT(*) FROM t04 WHERE c09 = 0 AND c07 = 1")
     suspend fun getEnabledRecordCount(): Int
 
     /**
@@ -166,7 +166,7 @@ interface AlarmDao {
      * @param type 闹钟类型
      * @return 指定类型的记录总数
      */
-    @Query("SELECT COUNT(*) FROM alarm_records WHERE is_delete = 0 AND type = :type")
+    @Query("SELECT COUNT(*) FROM t04 WHERE c09 = 0 AND c02 = :type")
     suspend fun getRecordCountByType(type: Int): Int
 
     /**
@@ -176,7 +176,7 @@ interface AlarmDao {
      * @param excludeId 排除的记录ID（用于更新时检查）
      * @return 是否存在相同时间的闹钟
      */
-    @Query("SELECT COUNT(*) > 0 FROM alarm_records WHERE is_delete = 0 AND hour = :hour AND minute = :minute AND id != :excludeId")
+    @Query("SELECT COUNT(*) > 0 FROM t04 WHERE c09 = 0 AND c03 = :hour AND c04 = :minute AND c01 != :excludeId")
     suspend fun existsAtTime(hour: Int, minute: Int, excludeId: Long = -1): Boolean
 
     /**
@@ -186,10 +186,10 @@ interface AlarmDao {
      * @return 下一个闹钟记录，可能为null
      */
     @Query("""
-        SELECT * FROM alarm_records 
-        WHERE is_delete = 0 AND enable = 1 
-        AND (hour > :currentHour OR (hour = :currentHour AND minute > :currentMinute))
-        ORDER BY hour ASC, minute ASC 
+        SELECT * FROM t04 
+        WHERE c09 = 0 AND c07 = 1 
+        AND (c03 > :currentHour OR (c03 = :currentHour AND c04 > :currentMinute))
+        ORDER BY c03 ASC, c04 ASC 
         LIMIT 1
     """)
     suspend fun getNextAlarm(currentHour: Int, currentMinute: Int): AlarmRecord?
@@ -198,14 +198,14 @@ interface AlarmDao {
      * 删除所有记录（慎用）
      * @return 影响的行数
      */
-    @Query("DELETE FROM alarm_records")
+    @Query("DELETE FROM t04")
     suspend fun deleteAllRecords(): Int
 
     /**
      * 软删除所有记录
      * @return 影响的行数
      */
-    @Query("UPDATE alarm_records SET is_delete = 1")
+    @Query("UPDATE t04 SET c09 = 1")
     suspend fun softDeleteAllRecords(): Int
 
     /**
@@ -213,20 +213,22 @@ interface AlarmDao {
      * @param id 记录ID
      * @return 影响的行数
      */
-    @Query("UPDATE alarm_records SET is_delete = 0 WHERE id = :id")
+    @Query("UPDATE t04 SET c09 = 0 WHERE c01 = :id")
     suspend fun restoreRecord(id: Long): Int
 
     /**
      * 获取已删除的记录（回收站功能）
      * @return Flow形式的已删除记录列表
      */
-    @Query("SELECT * FROM alarm_records WHERE is_delete = 1 ORDER BY hour ASC, minute ASC")
+    @Query("SELECT * FROM t04 WHERE c09 = 1 ORDER BY c03 ASC, c04 ASC")
     fun getDeletedRecords(): Flow<List<AlarmRecord>>
 
     /**
      * 永久删除已软删除的记录
      * @return 影响的行数
      */
-    @Query("DELETE FROM alarm_records WHERE is_delete = 1")
+    @Query("DELETE FROM t04 WHERE c09 = 1")
     suspend fun permanentlyDeleteSoftDeletedRecords(): Int
 }
+
+typealias AlarmDao = LocalDao04

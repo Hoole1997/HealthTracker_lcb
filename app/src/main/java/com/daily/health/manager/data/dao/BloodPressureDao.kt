@@ -10,7 +10,7 @@ import java.util.*
  * 提供血压数据的CRUD操作
  */
 @Dao
-interface BloodPressureDao {
+interface LocalDao02 {
 
     /**
      * 插入血压记录
@@ -49,7 +49,7 @@ interface BloodPressureDao {
      * @param id 记录ID
      * @return 影响的行数
      */
-    @Query("DELETE FROM blood_pressure_records WHERE id = :id")
+    @Query("DELETE FROM t02 WHERE c01 = :id")
     suspend fun deleteById(id: Long): Int
 
     /**
@@ -57,7 +57,7 @@ interface BloodPressureDao {
      * @param id 记录ID
      * @return 血压记录对象，可能为null
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE id = :id")
+    @Query("SELECT * FROM t02 WHERE c01 = :id")
     suspend fun getById(id: Long): BloodPressureRecord?
 
     /**
@@ -65,21 +65,21 @@ interface BloodPressureDao {
      * @param id 记录ID
      * @return Flow形式的血压记录对象，支持数据变化监听
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE id = :id")
+    @Query("SELECT * FROM t02 WHERE c01 = :id")
     fun getByIdFlow(id: Long): Flow<BloodPressureRecord?>
 
     /**
      * 获取所有血压记录，按时间倒序排列
      * @return Flow形式的血压记录列表，支持数据变化监听
      */
-    @Query("SELECT * FROM blood_pressure_records ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t02 ORDER BY c02 DESC, c03 DESC")
     fun getAllRecords(): Flow<List<BloodPressureRecord>>
 
     /**
      * 获取可在图表中显示的血压记录，按时间排序
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE show_in_chart = 1 ORDER BY record_time ASC")
+    @Query("SELECT * FROM t02 WHERE c09 = 1 ORDER BY c02 ASC")
     fun getChartRecords(): Flow<List<BloodPressureRecord>>
 
     /**
@@ -88,7 +88,7 @@ interface BloodPressureDao {
      * @param endTime 结束时间
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t02 WHERE c02 BETWEEN :startTime AND :endTime ORDER BY c02 DESC, c03 DESC")
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodPressureRecord>>
 
 
@@ -98,7 +98,7 @@ interface BloodPressureDao {
      * @param bpCategory 血压分类code
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE bp_category = :bpCategory ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t02 WHERE c07 = :bpCategory ORDER BY c02 DESC, c03 DESC")
     fun getRecordsByBloodPressureCategory(bpCategory: String): Flow<List<BloodPressureRecord>>
 
     /**
@@ -106,7 +106,7 @@ interface BloodPressureDao {
      * @param pulseCategory 脉搏分类code
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE pulse_category = :pulseCategory ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t02 WHERE c08 = :pulseCategory ORDER BY c02 DESC, c03 DESC")
     fun getRecordsByPulseCategory(pulseCategory: String): Flow<List<BloodPressureRecord>>
 
     /**
@@ -115,7 +115,7 @@ interface BloodPressureDao {
      * @param maxSystolic 最大收缩压
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE systolic_pressure BETWEEN :minSystolic AND :maxSystolic ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t02 WHERE c04 BETWEEN :minSystolic AND :maxSystolic ORDER BY c02 DESC, c03 DESC")
     fun getRecordsBySystolicRange(minSystolic: Int, maxSystolic: Int): Flow<List<BloodPressureRecord>>
 
     /**
@@ -124,7 +124,7 @@ interface BloodPressureDao {
      * @param maxDiastolic 最大舒张压
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE diastolic_pressure BETWEEN :minDiastolic AND :maxDiastolic ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t02 WHERE c05 BETWEEN :minDiastolic AND :maxDiastolic ORDER BY c02 DESC, c03 DESC")
     fun getRecordsByDiastolicRange(minDiastolic: Int, maxDiastolic: Int): Flow<List<BloodPressureRecord>>
 
     /**
@@ -133,7 +133,7 @@ interface BloodPressureDao {
      * @param maxPulse 最大脉搏
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE pulse_rate BETWEEN :minPulse AND :maxPulse ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t02 WHERE c06 BETWEEN :minPulse AND :maxPulse ORDER BY c02 DESC, c03 DESC")
     fun getRecordsByPulseRange(minPulse: Int, maxPulse: Int): Flow<List<BloodPressureRecord>>
 
     /**
@@ -141,49 +141,49 @@ interface BloodPressureDao {
      * @param limit 记录数量限制
      * @return Flow形式的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
+    @Query("SELECT * FROM t02 ORDER BY c02 DESC, c03 DESC LIMIT :limit")
     fun getRecentRecords(limit: Int): Flow<List<BloodPressureRecord>>
 
     /**
      * 获取血压记录总数
      * @return 记录总数
      */
-    @Query("SELECT COUNT(*) FROM blood_pressure_records")
+    @Query("SELECT COUNT(*) FROM t02")
     suspend fun getRecordCount(): Int
 
     /**
      * 获取平均收缩压
      * @return 平均收缩压
      */
-    @Query("SELECT AVG(systolic_pressure) FROM blood_pressure_records")
+    @Query("SELECT AVG(c04) FROM t02")
     suspend fun getAverageSystolic(): Double?
 
     /**
      * 获取平均舒张压
      * @return 平均舒张压
      */
-    @Query("SELECT AVG(diastolic_pressure) FROM blood_pressure_records")
+    @Query("SELECT AVG(c05) FROM t02")
     suspend fun getAverageDiastolic(): Double?
 
     /**
      * 获取平均脉搏
      * @return 平均脉搏
      */
-    @Query("SELECT AVG(pulse_rate) FROM blood_pressure_records")
+    @Query("SELECT AVG(c06) FROM t02")
     suspend fun getAveragePulse(): Double?
 
     /**
      * 获取最高血压记录
      * @return 最高血压记录
      */
-    @Query("SELECT * FROM blood_pressure_records ORDER BY systolic_pressure DESC LIMIT 1")
+    @Query("SELECT * FROM t02 ORDER BY c04 DESC LIMIT 1")
     suspend fun getHighestBloodPressureRecord(): BloodPressureRecord?
 
     /**
      * 获取最低血压记录
      * @return 最低血压记录
      */
-    @Query("SELECT * FROM blood_pressure_records ORDER BY systolic_pressure ASC LIMIT 1")
+    @Query("SELECT * FROM t02 ORDER BY c04 ASC LIMIT 1")
     suspend fun getLowestBloodPressureRecord(): BloodPressureRecord?
 
     /**
@@ -191,24 +191,24 @@ interface BloodPressureDao {
      * @return 血压统计数据
      */
     @Query("""
-        SELECT
-            COUNT(*) as total_count,
-            AVG(systolic_pressure) as avg_systolic,
-            AVG(diastolic_pressure) as avg_diastolic,
-            AVG(pulse_rate) as avg_pulse,
-            MAX(systolic_pressure) as max_systolic,
-            MIN(systolic_pressure) as min_systolic,
-            MAX(diastolic_pressure) as max_diastolic,
-            MIN(diastolic_pressure) as min_diastolic
-        FROM blood_pressure_records
-    """)
+       SELECT
+           COUNT(*) as total_count,
+           AVG(c04) as avg_systolic,
+           AVG(c05) as avg_diastolic,
+           AVG(c06) as avg_pulse,
+           MAX(c04) as max_systolic,
+           MIN(c04) as min_systolic,
+           MAX(c05) as max_diastolic,
+           MIN(c05) as min_diastolic
+       FROM t02
+   """)
     suspend fun getBloodPressureStatistics(): BloodPressureStatistics?
 
     /**
      * 清空所有血压记录
      * @return 影响的行数
      */
-    @Query("DELETE FROM blood_pressure_records")
+    @Query("DELETE FROM t02")
     suspend fun deleteAllRecords(): Int
 
     /**
@@ -217,7 +217,7 @@ interface BloodPressureDao {
      * @param showInChart 是否显示在图表中
      * @return 影响的行数
      */
-    @Query("UPDATE blood_pressure_records SET show_in_chart = :showInChart WHERE id = :id")
+    @Query("UPDATE t02 SET c09 = :showInChart WHERE c01 = :id")
     suspend fun updateChartVisibility(id: Long, showInChart: Boolean): Int
 
     /**
@@ -225,16 +225,18 @@ interface BloodPressureDao {
      * @param tagId 标签ID
      * @return 包含该标签的血压记录列表
      */
-    @Query("SELECT * FROM blood_pressure_records WHERE tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t02 WHERE c10 LIKE '%' || :tagId || '%' ORDER BY c02 DESC, c03 DESC")
     suspend fun getRecordsByTagId(tagId: String): List<BloodPressureRecord>
 
     /**
      * 获取包含标签的血压记录数量
      * @return 包含标签的记录数量
      */
-    @Query("SELECT COUNT(*) FROM blood_pressure_records WHERE tag_ids IS NOT NULL AND tag_ids != ''")
+    @Query("SELECT COUNT(*) FROM t02 WHERE c10 IS NOT NULL AND c10 != ''")
     suspend fun getRecordsWithTagsCount(): Int
 }
+
+ typealias BloodPressureDao = LocalDao02
 
 /**
  * 血压统计数据类

@@ -12,29 +12,29 @@ import java.util.Date
  * 闹钟记录数据实体
  * 对应数据表：alarm_records
  */
-@Entity(tableName = "alarm_records")
-data class AlarmRecord(
+@Entity(tableName = "t04")
+data class LocalEntity04(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "c01")
     val id: Long = 0,
 
     /**
      * 闹钟类型
      * 0: 普通闹钟, 1: 健康提醒, 2: 用药提醒, 3: 运动提醒等
      */
-    @ColumnInfo(name = "type")
+    @ColumnInfo(name = "c02")
     val type: Int,
 
     /**
      * 小时 (0-23)
      */
-    @ColumnInfo(name = "hour")
+    @ColumnInfo(name = "c03")
     val hour: Int,
 
     /**
      * 分钟 (0-59)
      */
-    @ColumnInfo(name = "minute")
+    @ColumnInfo(name = "c04")
     val minute: Int,
 
     /**
@@ -42,112 +42,112 @@ data class AlarmRecord(
      * 使用位运算表示星期重复模式
      * 例如: 127表示每天, 31表示工作日, 96表示周末
      */
-    @ColumnInfo(name = "repeat_flag")
+    @ColumnInfo(name = "c05")
     val repeatFlag: Int,
 
     /**
      * 铃声ID
      * 关联系统铃声或自定义铃声的ID
      */
-    @ColumnInfo(name = "sound_id")
+    @ColumnInfo(name = "c06")
     val soundId: Long,
 
     /**
      * 启用状态
      * true: 启用, false: 禁用
      */
-    @ColumnInfo(name = "enable")
+    @ColumnInfo(name = "c07")
     val isEnabled: Boolean = true,
 
     /**
      * 振动时长 (毫秒)
      * 0表示不振动
      */
-    @ColumnInfo(name = "vibrate_time")
+    @ColumnInfo(name = "c08")
     val vibrateTime: Long = 0,
 
     /**
      * 删除标记
      * true: 已删除, false: 正常
      */
-    @ColumnInfo(name = "is_delete")
+    @ColumnInfo(name = "c09")
     val isDeleted: Boolean = false,
 
     /**
      * 其他信息
      * 可用于存储闹钟标签、备注等
      */
-    @ColumnInfo(name = "other")
+    @ColumnInfo(name = "c10")
     val other: String? = null,
 
     /**
      * 整型扩展字段1
      * 可用于存储优先级、重要程度等
      */
-    @ColumnInfo(name = "int1")
+    @ColumnInfo(name = "c11")
     val intExt1: Int? = null,
 
     /**
      * 整型扩展字段2
      * 可用于存储提前提醒时间等
      */
-    @ColumnInfo(name = "int2")
+    @ColumnInfo(name = "c12")
     val intExt2: Int? = null,
 
     /**
      * 整型扩展字段3
      * 预留扩展字段
      */
-    @ColumnInfo(name = "int3")
+    @ColumnInfo(name = "c13")
     val intExt3: Int? = null,
 
     /**
      * 浮点型扩展字段1
      * 可用于存储音量大小等
      */
-    @ColumnInfo(name = "float1")
+    @ColumnInfo(name = "c14")
     val floatExt1: Float? = null,
 
     /**
      * 浮点型扩展字段2
      * 预留扩展字段
      */
-    @ColumnInfo(name = "float2")
+    @ColumnInfo(name = "c15")
     val floatExt2: Float? = null,
 
     /**
      * 长整型扩展字段1
      * 可用于存储创建时间戳等
      */
-    @ColumnInfo(name = "long1")
+    @ColumnInfo(name = "c16")
     val longExt1: Long? = null,
 
     /**
      * 长整型扩展字段2
      * 可用于存储最后触发时间等
      */
-    @ColumnInfo(name = "long2")
+    @ColumnInfo(name = "c17")
     val longExt2: Long? = null,
 
     /**
      * 文本扩展字段1
      * 可用于存储闹钟标签、名称等
      */
-    @ColumnInfo(name = "text1")
+    @ColumnInfo(name = "c18")
     val textExt1: String? = null,
 
     /**
      * 文本扩展字段2
      * 可用于存储备注信息等
      */
-    @ColumnInfo(name = "text2")
+    @ColumnInfo(name = "c19")
     val textExt2: String? = null,
 
     /**
      * 文本扩展字段3
      * 预留扩展字段
      */
-    @ColumnInfo(name = "text3")
+    @ColumnInfo(name = "c20")
     val textExt3: String? = null,
 
     /**
@@ -155,7 +155,7 @@ data class AlarmRecord(
      * 记录数据最后修改的时间，以毫秒为单位
      * 在创建和更新时自动维护
      */
-    @ColumnInfo(name = "updated_at")
+    @ColumnInfo(name = "c21")
     val updatedAt: Long = System.currentTimeMillis()
 ) {
 
@@ -192,7 +192,7 @@ data class AlarmRecord(
     fun getRepeatDescription(context: Context): String {
         return AlarmRepeatHelper.getRepeatDescription(context, repeatFlag)
     }
-    
+
     /**
      * 获取简短的重复模式描述
      * @param context Android上下文，用于获取字符串资源
@@ -201,8 +201,6 @@ data class AlarmRecord(
     fun getShortRepeatDescription(context: Context): String {
         return AlarmRepeatHelper.getShortRepeatDescription(context, repeatFlag)
     }
-
-
 
     /**
      * 检查是否有振动
@@ -246,9 +244,6 @@ data class AlarmRecord(
         return if (isMedicationReminder()) longExt1 else null
     }
 
-
-
-
     companion object {
         /**
          * 闹钟类型常量
@@ -257,7 +252,7 @@ data class AlarmRecord(
         const val TYPE_BLOOD_PRESSURE = 1  // 血压测量提醒
         const val TYPE_MEDICATION = 2      // 服药提醒
         const val TYPE_HYDRATION = 3       // 饮水提醒
-        
+
         /**
          * 重复模式常量
          */
@@ -289,7 +284,7 @@ data class AlarmRecord(
             other: String? = null
         ): AlarmRecord {
             val currentTime = System.currentTimeMillis()
-            return AlarmRecord(
+            return LocalEntity04(
                 type = type,
                 hour = hour,
                 minute = minute,
@@ -403,7 +398,7 @@ data class AlarmRecord(
             repeatFlag: Int = REPEAT_DAILY
         ): AlarmRecord {
             val currentTime = System.currentTimeMillis()
-            return AlarmRecord(
+            return LocalEntity04(
                 type = TYPE_MEDICATION,
                 hour = hour,
                 minute = minute,
@@ -422,3 +417,5 @@ data class AlarmRecord(
         }
     }
 }
+
+typealias AlarmRecord = LocalEntity04

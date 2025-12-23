@@ -9,54 +9,55 @@ import java.util.Date
 /**
  * 药物提醒实体 - 一个表解决所有需求
  */
-@Entity(tableName = "medicine_reminders")
-data class MedicineReminder(
+@Entity(tableName = "t05")
+data class LocalEntity05(
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "c01")
     val id: Long = 0,
 
     /**
      * 药物名称
      */
-    @ColumnInfo(name = "medicine_name")
+    @ColumnInfo(name = "c02")
     val medicineName: String,
 
     /**
      * 药物封面图片路径
      */
-    @ColumnInfo(name = "medicine_cover")
+    @ColumnInfo(name = "c03")
     val medicineCover: String = "",
 
     /**
      * 开始提醒时间列表（时间戳数组，逗号分隔）
      * 格式: "1758844800000,1758859200000,1758880800000"
      */
-    @ColumnInfo(name = "start_remind_times")
+    @ColumnInfo(name = "c04")
     val startRemindTimes: String,
 
     /**
      * 备注信息
      */
-    @ColumnInfo(name = "note")
+    @ColumnInfo(name = "c05")
     val note: String = "",
 
     /**
      * 是否同步到系统日历
      * 0-不同步，1-同步
      */
-    @ColumnInfo(name = "sync_calendar")
+    @ColumnInfo(name = "c06")
     val syncCalendar: Int = 0,
 
     /**
      * 时间相关配置（预留字段）
      */
-    @ColumnInfo(name = "time")
+    @ColumnInfo(name = "c07")
     val time: String = "",
 
     /**
      * 已服药时间记录（时间戳数组，逗号分隔）
      * 格式: "1758859200000,1758895200000"
      */
-    @ColumnInfo(name = "taked_times")
+    @ColumnInfo(name = "c08")
     val takedTimes: String = "",
 
     /**
@@ -64,19 +65,19 @@ data class MedicineReminder(
      * 格式: "1758844800000,1758931200000,1759017600000"
      * 系统实际推送提醒的时间记录
      */
-    @ColumnInfo(name = "real_remind_times")
+    @ColumnInfo(name = "c09")
     val realRemindTimes: String = "",
 
     /**
      * 是否启用
      */
-    @ColumnInfo(name = "is_active")
+    @ColumnInfo(name = "c10")
     val isActive: Boolean = true,
 
     /**
      * 创建时间
      */
-    @ColumnInfo(name = "created_at")
+    @ColumnInfo(name = "c11")
     val createdAt: Date = DateTimeUtils.now()
 ) {
 
@@ -167,7 +168,6 @@ data class MedicineReminder(
      */
     companion object {
 
-
         private const val TIME_SEPARATOR = ","
 
         /**
@@ -185,7 +185,7 @@ data class MedicineReminder(
             note: String = "",
             syncCalendar: Boolean = false
         ): MedicineReminder {
-            return MedicineReminder(
+            return LocalEntity05(
                 medicineName = medicineName.trim(),
                 startRemindTimes = startRemindTimes.map { it.time.toString() }.joinToString(TIME_SEPARATOR),
                 medicineCover = medicineCover,
@@ -232,6 +232,8 @@ data class MedicineReminder(
        
     }
 }
+
+typealias MedicineReminder = LocalEntity05
 
 /**
  * 常用提醒时间组合

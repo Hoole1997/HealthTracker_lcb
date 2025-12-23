@@ -10,72 +10,72 @@ import java.util.Date
  * 血糖记录数据实体
  * 对应数据表：blood_sugar_records
  */
-@Entity(tableName = "blood_sugar_records")
-data class BloodSugarRecord(
+@Entity(tableName = "t01")
+data class LocalEntity01(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "c01")
     val id: Long = 0,
 
     /**
      * 记录时间 - 通过多滚轮控件选择年月日时分钟生成
      * 兼容API 24+，使用Date类型
      */
-    @ColumnInfo(name = "record_time")
+    @ColumnInfo(name = "c02")
     val recordTime: Date,
 
     /**
      * 更新时间戳（毫秒）。创建与更新时维护。
      */
-    @ColumnInfo(name = "updated_at")
+    @ColumnInfo(name = "c03")
     val updatedAt: Long = System.currentTimeMillis(),
 
     /**
      * 血糖值 (mg/dL)
      * 有效范围: 18.0~630.0 mg/dL
      */
-    @ColumnInfo(name = "glucose_value")
+    @ColumnInfo(name = "c04")
     val glucoseValue: Double,
 
     /**
      * 状态类型
      * 存储枚举的code值，支持国际化
      */
-    @ColumnInfo(name = "status")
+    @ColumnInfo(name = "c05")
     val satus: Int,
 
 
     /**
      * 是否在图表中显示此数据点
      */
-    @ColumnInfo(name = "show_in_chart")
+    @ColumnInfo(name = "c06")
     val showInChart: Boolean = true,
 
     /**
      * 关联的标签ID列表
      * 格式：以逗号分隔的标签ID，如 "1,3,5"
      */
-    @ColumnInfo(name = "tag_ids")
+    @ColumnInfo(name = "c07")
     val tagIds: String? = null,
 
     /**
      * 预留扩展字段1
      * 可用于存储备注、用药情况等
      */
-    @ColumnInfo(name = "ext1")
+    @ColumnInfo(name = "c08")
     val ext1: String? = null,
 
     /**
      * 预留扩展字段2
      * 可用于存储运动情况、情绪状态等
      */
-    @ColumnInfo(name = "ext2")
+    @ColumnInfo(name = "c09")
     val ext2: String? = null,
 
     /**
      * 预留扩展字段3
      * 可用于存储其他相关信息
      */
-    @ColumnInfo(name = "ext3")
+    @ColumnInfo(name = "c10")
     val ext3: String? = null,
 
     /**
@@ -83,7 +83,7 @@ data class BloodSugarRecord(
      * 0: mg/dL, 1: mmol/L
      * 默认为 mg/dL
      */
-    @ColumnInfo(name = "selected_unit", defaultValue = "0")
+    @ColumnInfo(name = "c11", defaultValue = "0")
     val selectedUnit: Int = BsUnit.MG_DL.value
 ) {
     /**
@@ -168,7 +168,7 @@ data class BloodSugarRecord(
             ext3: String? = null
         ): BloodSugarRecord {
             val tagIdsString = tagIds?.joinToString(",")
-            return BloodSugarRecord(
+            return LocalEntity01(
                 recordTime = recordTime,
                 glucoseValue = glucoseValue,
                 satus = status,
@@ -182,3 +182,5 @@ data class BloodSugarRecord(
         }
     }
 }
+
+typealias BloodSugarRecord = LocalEntity01

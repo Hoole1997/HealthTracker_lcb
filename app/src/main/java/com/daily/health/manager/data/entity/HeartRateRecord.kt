@@ -9,49 +9,49 @@ import java.util.Date
  * 心率记录数据实体
  * 存储基础心率信息及标签关联
  */
-@Entity(tableName = "heart_rate_records")
-data class HeartRateRecord(
+@Entity(tableName = "t07")
+data class LocalEntity07(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "c01")
     val id: Long = 0,
 
     /**
      * 记录时间
      */
-    @ColumnInfo(name = "record_time")
+    @ColumnInfo(name = "c02")
     val recordTime: Date,
 
     /**
      * 心率值（BPM）
      */
-    @ColumnInfo(name = "heart_rate_bpm")
+    @ColumnInfo(name = "c03")
     val heartRateBpm: Int,
 
     /**
      * 关联的标签ID列表（逗号分隔）
      */
-    @ColumnInfo(name = "tag_ids")
+    @ColumnInfo(name = "c04")
     val tagIds: String? = null,
 
     /**
      * 软删除标记
      */
-    @ColumnInfo(name = "is_delete")
+    @ColumnInfo(name = "c05")
     val isDeleted: Boolean = false,
 
     /**
      * 更新时间戳
      */
-    @ColumnInfo(name = "updated_at")
+    @ColumnInfo(name = "c06")
     val updatedAt: Long = System.currentTimeMillis(),
 
-    @ColumnInfo(name = "ext1")
+    @ColumnInfo(name = "c07")
     val ext1: String? = null,
 
-    @ColumnInfo(name = "ext2")
+    @ColumnInfo(name = "c08")
     val ext2: String? = null,
 
-    @ColumnInfo(name = "ext3")
+    @ColumnInfo(name = "c09")
     val ext3: String? = null
 ) {
     /**
@@ -75,3 +75,5 @@ data class HeartRateRecord(
         return copy(updatedAt = System.currentTimeMillis())
     }
 }
+
+typealias HeartRateRecord = LocalEntity07

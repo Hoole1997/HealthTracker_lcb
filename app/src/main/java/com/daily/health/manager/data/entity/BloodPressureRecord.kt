@@ -11,44 +11,44 @@ import java.util.*
  * 血压记录数据实体
  * 对应数据表：blood_pressure_records
  */
-@Entity(tableName = "blood_pressure_records")
-data class BloodPressureRecord(
+@Entity(tableName = "t02")
+data class LocalEntity02(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "c01")
     val id: Long = 0,
 
     /**
      * 记录时间 - 通过多滚轮控件选择年月日时分钟生成
      * 兼容API 24+，使用Date类型
      */
-    @ColumnInfo(name = "record_time")
+    @ColumnInfo(name = "c02")
     val recordTime: Date,
 
     /**
      * 更新时间戳（毫秒）。创建与更新时维护。
      */
-    @ColumnInfo(name = "updated_at")
+    @ColumnInfo(name = "c03")
     val updatedAt: Long = System.currentTimeMillis(),
 
     /**
      * 收缩压 (mmHg)
      * 正常范围: 90-140 mmHg
      */
-    @ColumnInfo(name = "systolic_pressure")
+    @ColumnInfo(name = "c04")
     val systolicPressure: Int,
 
     /**
      * 舒张压 (mmHg)
      * 正常范围: 60-90 mmHg
      */
-    @ColumnInfo(name = "diastolic_pressure")
+    @ColumnInfo(name = "c05")
     val diastolicPressure: Int,
 
     /**
      * 脉搏/心率 (次/分钟)
      * 正常范围: 60-100 次/分钟
      */
-    @ColumnInfo(name = "pulse_rate")
+    @ColumnInfo(name = "c06")
     val pulseRate: Int,
 
 
@@ -57,48 +57,48 @@ data class BloodPressureRecord(
      * 血压分类
      * 存储枚举的code值，支持国际化
      */
-    @ColumnInfo(name = "bp_category")
+    @ColumnInfo(name = "c07")
     val bpCategory: String,
 
     /**
      * 脉搏分类
      * 存储枚举的code值，支持国际化
      */
-    @ColumnInfo(name = "pulse_category")
+    @ColumnInfo(name = "c08")
     val pulseCategory: String,
 
     /**
      * 是否在图表中显示此数据点
      */
-    @ColumnInfo(name = "show_in_chart")
+    @ColumnInfo(name = "c09")
     val showInChart: Boolean = true,
 
     /**
      * 关联的标签ID列表
      * 格式：以逗号分隔的标签ID，如 "1,3,5"
      */
-    @ColumnInfo(name = "tag_ids")
+    @ColumnInfo(name = "c10")
     val tagIds: String? = null,
 
     /**
      * 预留扩展字段1
      * 可用于存储备注、用药情况等
      */
-    @ColumnInfo(name = "ext1")
+    @ColumnInfo(name = "c11")
     val ext1: String? = null,
 
     /**
      * 预留扩展字段2
      * 可用于存储运动情况、情绪状态等
      */
-    @ColumnInfo(name = "ext2")
+    @ColumnInfo(name = "c12")
     val ext2: String? = null,
 
     /**
      * 预留扩展字段3
      * 可用于存储其他相关信息
      */
-    @ColumnInfo(name = "ext3")
+    @ColumnInfo(name = "c13")
     val ext3: String? = null
 ) {
 
@@ -205,7 +205,7 @@ data class BloodPressureRecord(
             val pulseCategory = PulseCategory.fromPulseRate(pulseRate)
 
             val tagIdsString = tagIds?.joinToString(",")
-            return BloodPressureRecord(
+            return LocalEntity02(
                 recordTime = recordTime,
                 systolicPressure = systolicPressure,
                 diastolicPressure = diastolicPressure,
@@ -221,3 +221,5 @@ data class BloodPressureRecord(
         }
     }
 }
+
+typealias BloodPressureRecord = LocalEntity02

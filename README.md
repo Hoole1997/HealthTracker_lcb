@@ -184,3 +184,19 @@
   - `monetize/src/main/res/drawable/bg_native_ad_card.xml`
   - `monetize/src/main/res/drawable/ic_ad_collapse.xml`
 - 验证：已执行 `./gradlew :app:assembleInternalDebug` 编译通过。
+
+## 2025-12-23 Room 数据库混淆（Entity/Dao/Table/Column）
+
+- 目标：降低 Room 相关符号可读性（实体类名/DAO 类名/表名/列名），但保持业务层 Kotlin 调用点不改。
+- 方案：底层 Room 类型重命名为 `LocalEntityXX` / `LocalDaoXX`，并在文件末尾使用 `typealias` 保持原类型名对 Kotlin 侧可用。
+- 数据库：
+  - 数据库文件名：`local_store.db`
+  - Room Database 底层类名：`LocalDatabase`
+  - Kotlin 兼容：`typealias HealthDatabase = LocalDatabase`
+- 表/列命名：
+  - 表名统一为 `t01..t11`
+  - 列名统一为 `c01..`（每张表内部顺序递增）
+- 说明：
+  - 这是一套“闭环”改动：每张表都同步完成 `@Entity`（table/column）+ `@Dao`（所有 `@Query` SQL）+ `typealias`。
+  - 不关注数据迁移（使用 destructive migration）。
+- 验证：每次闭环后均通过 `./gradlew :app:assembleInternalDebug` 编译验证（含 Room/KSP 代码生成）。

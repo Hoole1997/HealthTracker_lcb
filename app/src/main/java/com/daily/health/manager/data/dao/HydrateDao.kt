@@ -13,7 +13,7 @@ import java.util.Date
  * 饮水记录数据访问对象
  */
 @Dao
-interface HydrateDao {
+interface LocalDao09 {
 
     /** 插入 */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -28,31 +28,31 @@ interface HydrateDao {
     suspend fun update(record: HydrateRecord): Int
 
     /** 根据ID获取 */
-    @Query("SELECT * FROM hydrate_records WHERE id = :id")
+    @Query("SELECT * FROM t09 WHERE c01 = :id")
     suspend fun getById(id: Long): HydrateRecord?
 
     /** 根据ID监听 */
-    @Query("SELECT * FROM hydrate_records WHERE id = :id")
+    @Query("SELECT * FROM t09 WHERE c01 = :id")
     fun observeById(id: Long): Flow<HydrateRecord?>
 
     /** 获取最近一条记录 */
-    @Query("SELECT * FROM hydrate_records ORDER BY record_time DESC LIMIT 1")
+    @Query("SELECT * FROM t09 ORDER BY c02 DESC LIMIT 1")
     suspend fun getLatestRecord(): HydrateRecord?
 
     /** 获取全部记录（按时间倒序） */
-    @Query("SELECT * FROM hydrate_records ORDER BY record_time DESC")
+    @Query("SELECT * FROM t09 ORDER BY c02 DESC")
     fun getAllRecords(): Flow<List<HydrateRecord>>
 
     /** 按时间范围查询 */
-    @Query("SELECT * FROM hydrate_records WHERE record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC")
+    @Query("SELECT * FROM t09 WHERE c02 BETWEEN :startTime AND :endTime ORDER BY c02 DESC")
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<HydrateRecord>>
 
     /** 根据ID删除 */
-    @Query("DELETE FROM hydrate_records WHERE id = :id")
+    @Query("DELETE FROM t09 WHERE c01 = :id")
     suspend fun deleteById(id: Long): Int
 
     /** 清空记录 */
-    @Query("DELETE FROM hydrate_records")
+    @Query("DELETE FROM t09")
     suspend fun deleteAll(): Int
 
     /**
@@ -60,7 +60,7 @@ interface HydrateDao {
      * @param limit 记录数量限制
      * @return Flow形式的BMI记录列表
      */
-    @Query("SELECT * FROM hydrate_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
+    @Query("SELECT * FROM t09 WHERE c07 = 0 ORDER BY c02 DESC, c08 DESC LIMIT :limit")
     fun getRecentRecords(limit: Int): Flow<List<HydrateRecord>>
 
     /**
@@ -68,12 +68,12 @@ interface HydrateDao {
      * 仅更新未软删除的记录
      */
     @Query(
-        "UPDATE hydrate_records " +
-        "SET daily_goal_cups = :dailyGoalCups, " +
-        "cup_volume_ml = :cupVolumeMl, " +
-        "daily_goal_total_ml = :dailyGoalTotalMl, " +
-        "updated_at = :updatedAt " +
-        "WHERE is_delete = 0 AND record_time BETWEEN :startTime AND :endTime"
+        "UPDATE t09 " +
+        "SET c04 = :dailyGoalCups, " +
+        "c05 = :cupVolumeMl, " +
+        "c06 = :dailyGoalTotalMl, " +
+        "c08 = :updatedAt " +
+        "WHERE c07 = 0 AND c02 BETWEEN :startTime AND :endTime"
     )
     suspend fun updateRecordSettingsByTimeRange(
         startTime: Date,
@@ -84,3 +84,5 @@ interface HydrateDao {
         updatedAt: Long
     ): Int
 }
+
+typealias HydrateDao = LocalDao09

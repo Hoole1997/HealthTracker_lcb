@@ -10,12 +10,13 @@ import java.util.Date
  * 统一的健康标签实体类
  * 用于存储血糖和血压的标签信息
  */
-@Entity(tableName = "health_tags")
-data class HealthTag(
+@Entity(tableName = "t03")
+data class LocalEntity03(
     /**
      * 标签ID，自动生成
      */
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "c01")
     val id: Long = 0,
     
     /**
@@ -23,7 +24,7 @@ data class HealthTag(
      * 对于预定义标签，这个字段存储显示名称
      * 对于自定义标签，这个字段存储用户输入的名称
      */
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "c02")
     val name: String,
     
     /**
@@ -31,7 +32,7 @@ data class HealthTag(
      * 区分是血糖标签还是血压标签
      * 存储TagType枚举的value值: 0-血糖, 1-血压
      */
-    @ColumnInfo(name = "tag_type")
+    @ColumnInfo(name = "c03")
     val tagType: Int,
     
     /**
@@ -39,7 +40,7 @@ data class HealthTag(
      * true: 预定义标签（来自字符串资源）
      * false: 用户自定义标签
      */
-    @ColumnInfo(name = "is_predefined")
+    @ColumnInfo(name = "c04")
     val isPredefined: Boolean,
     
     /**
@@ -48,13 +49,13 @@ data class HealthTag(
      * 血糖标签: 0-7 (对应blood_sugar_labels数组)
      * 血压标签: 0-8 (对应blood_pressure_labels数组)
      */
-    @ColumnInfo(name = "predefined_index")
+    @ColumnInfo(name = "c05")
     val predefinedIndex: Int? = null,
     
     /**
      * 标签创建时间
      */
-    @ColumnInfo(name = "create_time")
+    @ColumnInfo(name = "c06")
     val createTime: Date = Date(),
     
     /**
@@ -62,7 +63,7 @@ data class HealthTag(
      * true: 已删除（软删除）
      * false: 未删除（正常状态）
      */
-    @ColumnInfo(name = "is_deleted")
+    @ColumnInfo(name = "c07")
     val isDeleted: Boolean = false
 ) {
     
@@ -96,7 +97,7 @@ data class HealthTag(
          * @return HealthTag实例
          */
         fun createPredefined(name: String, tagType: TagType, index: Int? = null): HealthTag {
-            return HealthTag(
+            return LocalEntity03(
                 name = name,
                 tagType = tagType.value,
                 isPredefined = true,
@@ -112,7 +113,7 @@ data class HealthTag(
          * @return HealthTag实例
          */
         fun createCustom(name: String, tagType: TagType): HealthTag {
-            return HealthTag(
+            return LocalEntity03(
                 name = name,
                 tagType = tagType.value,
                 isPredefined = false,
@@ -139,7 +140,7 @@ data class HealthTag(
             predefinedIndex: Int? = null,
             createTime: Date = Date()
         ): HealthTag {
-            return HealthTag(
+            return LocalEntity03(
                 id = id,
                 name = name,
                 tagType = tagType.value,
@@ -151,3 +152,5 @@ data class HealthTag(
 
     }
 }
+
+typealias HealthTag = LocalEntity03

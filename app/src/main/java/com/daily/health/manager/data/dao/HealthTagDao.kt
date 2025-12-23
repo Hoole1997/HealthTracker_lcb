@@ -1,8 +1,12 @@
 package com.daily.health.manager.data.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.daily.health.manager.data.entity.HealthTag
-import com.daily.health.manager.data.enums.TagType
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -10,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
  * 提供对health_tags表的所有数据库操作
  */
 @Dao
-interface HealthTagDao {
+interface LocalDao03 {
     
     /**
      * 插入单个标签
@@ -41,7 +45,7 @@ interface HealthTagDao {
      * @param tag 要删除的标签
      * @return 受影响的行数
      */
-    @Query("UPDATE health_tags SET is_deleted = 1 WHERE id = :id")
+    @Query("UPDATE t03 SET c07 = 1 WHERE c01 = :id")
     suspend fun softDelete(id: Long): Int
     
     /**
@@ -57,7 +61,7 @@ interface HealthTagDao {
      * @param id 标签ID
      * @return 受影响的行数
      */
-    @Query("UPDATE health_tags SET is_deleted = 1 WHERE id = :id")
+    @Query("UPDATE t03 SET c07 = 1 WHERE c01 = :id")
     suspend fun softDeleteById(id: Long): Int
     
     /**
@@ -65,7 +69,7 @@ interface HealthTagDao {
      * @param id 标签ID
      * @return 受影响的行数
      */
-    @Query("DELETE FROM health_tags WHERE id = :id")
+    @Query("DELETE FROM t03 WHERE c01 = :id")
     suspend fun deleteById(id: Long): Int
     
     /**
@@ -73,7 +77,7 @@ interface HealthTagDao {
      * @param id 标签ID
      * @return 标签实体，如果不存在或已软删除则返回null
      */
-    @Query("SELECT * FROM health_tags WHERE id = :id AND is_deleted = 0")
+    @Query("SELECT * FROM t03 WHERE c01 = :id AND c07 = 0")
     suspend fun getById(id: Long): HealthTag?
     
     /**
@@ -81,7 +85,7 @@ interface HealthTagDao {
      * @param ids 标签ID列表
      * @return 标签列表
      */
-    @Query("SELECT * FROM health_tags WHERE id IN (:ids) AND is_deleted = 0")
+    @Query("SELECT * FROM t03 WHERE c01 IN (:ids) AND c07 = 0")
     suspend fun getByIds(ids: List<Long>): List<HealthTag>
     
     /**
@@ -89,7 +93,7 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 标签列表的Flow，按预定义标签优先、创建时间升序排列
      */
-    @Query("SELECT * FROM health_tags WHERE tag_type = :tagType AND is_deleted = 0 ORDER BY is_predefined DESC, create_time ASC")
+    @Query("SELECT * FROM t03 WHERE c03 = :tagType AND c07 = 0 ORDER BY c04 DESC, c06 ASC")
     fun getTagsByType(tagType: Int): Flow<List<HealthTag>>
     
     /**
@@ -97,7 +101,7 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 标签列表，按预定义标签优先、创建时间升序排列
      */
-    @Query("SELECT * FROM health_tags WHERE tag_type = :tagType AND is_deleted = 0 ORDER BY is_predefined DESC, create_time ASC")
+    @Query("SELECT * FROM t03 WHERE c03 = :tagType AND c07 = 0 ORDER BY c04 DESC, c06 ASC")
     suspend fun getTagsByTypeSync(tagType: Int): List<HealthTag>
     
     /**
@@ -105,7 +109,7 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 预定义标签列表，按预定义索引升序排列
      */
-    @Query("SELECT * FROM health_tags WHERE tag_type = :tagType AND is_predefined = 1 AND is_deleted = 0 ORDER BY predefined_index ASC")
+    @Query("SELECT * FROM t03 WHERE c03 = :tagType AND c04 = 1 AND c07 = 0 ORDER BY c05 ASC")
     suspend fun getPredefinedTagsByType(tagType: Int): List<HealthTag>
     
     /**
@@ -113,14 +117,14 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 自定义标签列表的Flow，按创建时间升序排列
      */
-    @Query("SELECT * FROM health_tags WHERE tag_type = :tagType AND is_predefined = 0 AND is_deleted = 0 ORDER BY create_time ASC")
+    @Query("SELECT * FROM t03 WHERE c03 = :tagType AND c04 = 0 AND c07 = 0 ORDER BY c06 ASC")
     fun getCustomTagsByType(tagType: Int): Flow<List<HealthTag>>
     
     /**
      * 获取所有标签（过滤软删除）
      * @return 所有标签的Flow
      */
-    @Query("SELECT * FROM health_tags WHERE is_deleted = 0 ORDER BY tag_type ASC, is_predefined DESC, create_time ASC")
+    @Query("SELECT * FROM t03 WHERE c07 = 0 ORDER BY c03 ASC, c04 DESC, c06 ASC")
     fun getAllTags(): Flow<List<HealthTag>>
     
     /**
@@ -129,7 +133,7 @@ interface HealthTagDao {
      * @param name 标签名称
      * @return 是否存在
      */
-    @Query("SELECT COUNT(*) > 0 FROM health_tags WHERE tag_type = :tagType AND name = :name AND is_deleted = 0")
+    @Query("SELECT COUNT(*) > 0 FROM t03 WHERE c03 = :tagType AND c02 = :name AND c07 = 0")
     suspend fun existsByTypeAndName(tagType: Int, name: String): Boolean
     
     /**
@@ -137,7 +141,7 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 预定义标签数量
      */
-    @Query("SELECT COUNT(*) FROM health_tags WHERE tag_type = :tagType AND is_predefined = 1 AND is_deleted = 0")
+    @Query("SELECT COUNT(*) FROM t03 WHERE c03 = :tagType AND c04 = 1 AND c07 = 0")
     suspend fun getPredefinedTagCount(tagType: Int): Int
     
     /**
@@ -145,7 +149,7 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 标签总数
      */
-    @Query("SELECT COUNT(*) FROM health_tags WHERE tag_type = :tagType AND is_deleted = 0")
+    @Query("SELECT COUNT(*) FROM t03 WHERE c03 = :tagType AND c07 = 0")
     suspend fun getTagCountByType(tagType: Int): Int
     
     /**
@@ -153,7 +157,7 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 删除的标签数量
      */
-    @Query("UPDATE health_tags SET is_deleted = 1 WHERE tag_type = :tagType AND is_deleted = 0")
+    @Query("UPDATE t03 SET c07 = 1 WHERE c03 = :tagType AND c07 = 0")
     suspend fun softDeleteAllByType(tagType: Int): Int
     
     /**
@@ -161,7 +165,7 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 删除的标签数量
      */
-    @Query("UPDATE health_tags SET is_deleted = 1 WHERE tag_type = :tagType AND is_predefined = 0 AND is_deleted = 0")
+    @Query("UPDATE t03 SET c07 = 1 WHERE c03 = :tagType AND c04 = 0 AND c07 = 0")
     suspend fun softDeleteCustomTagsByType(tagType: Int): Int
     
     /**
@@ -169,7 +173,7 @@ interface HealthTagDao {
      * @param id 标签ID
      * @return 受影响的行数
      */
-    @Query("UPDATE health_tags SET is_deleted = 0 WHERE id = :id")
+    @Query("UPDATE t03 SET c07 = 0 WHERE c01 = :id")
     suspend fun restoreById(id: Long): Int
     
     /**
@@ -177,7 +181,7 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 删除的标签数量
      */
-    @Query("DELETE FROM health_tags WHERE tag_type = :tagType")
+    @Query("DELETE FROM t03 WHERE c03 = :tagType")
     suspend fun deleteAllByType(tagType: Int): Int
     
     /**
@@ -185,13 +189,15 @@ interface HealthTagDao {
      * @param tagType 标签类型的int值，参考 TagType 枚举
      * @return 删除的标签数量
      */
-    @Query("DELETE FROM health_tags WHERE tag_type = :tagType AND is_predefined = 0")
+    @Query("DELETE FROM t03 WHERE c03 = :tagType AND c04 = 0")
     suspend fun deleteCustomTagsByType(tagType: Int): Int
     
     /**
      * 清空所有标签
      * @return 受影响的行数
      */
-    @Query("DELETE FROM health_tags")
+    @Query("DELETE FROM t03")
     suspend fun deleteAll(): Int
 }
+
+typealias HealthTagDao = LocalDao03

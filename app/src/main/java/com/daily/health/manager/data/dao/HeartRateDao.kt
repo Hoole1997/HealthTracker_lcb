@@ -13,7 +13,7 @@ import java.util.Date
  * 心率记录数据访问对象
  */
 @Dao
-interface HeartRateDao {
+interface LocalDao07 {
 
     /** 插入 */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -28,25 +28,25 @@ interface HeartRateDao {
     suspend fun update(record: HeartRateRecord): Int
 
     /** 根据ID获取 */
-    @Query("SELECT * FROM heart_rate_records WHERE id = :id AND is_delete = 0")
+    @Query("SELECT * FROM t07 WHERE c01 = :id AND c05 = 0")
     suspend fun getById(id: Long): HeartRateRecord?
 
     /** 根据ID监听 */
-    @Query("SELECT * FROM heart_rate_records WHERE id = :id AND is_delete = 0")
+    @Query("SELECT * FROM t07 WHERE c01 = :id AND c05 = 0")
     fun observeById(id: Long): Flow<HeartRateRecord?>
 
     /** 获取最近一条记录 */
-    @Query("SELECT * FROM heart_rate_records WHERE is_delete = 0 ORDER BY record_time DESC LIMIT 1")
+    @Query("SELECT * FROM t07 WHERE c05 = 0 ORDER BY c02 DESC LIMIT 1")
     suspend fun getLatestRecord(): HeartRateRecord?
 
     /** 获取全部记录（按时间倒序） */
-    @Query("SELECT * FROM heart_rate_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t07 WHERE c05 = 0 ORDER BY c02 DESC, c06 DESC")
     fun getAllRecords(): Flow<List<HeartRateRecord>>
 
     /** 按时间范围查询 */
     @Query(
-        "SELECT * FROM heart_rate_records WHERE is_delete = 0 " +
-            "AND record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC, updated_at DESC"
+        "SELECT * FROM t07 WHERE c05 = 0 " +
+            "AND c02 BETWEEN :startTime AND :endTime ORDER BY c02 DESC, c06 DESC"
     )
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<HeartRateRecord>>
 
@@ -55,21 +55,23 @@ interface HeartRateDao {
      * @param limit 记录数量限制
      * @return Flow形式的心率记录列表
      */
-    @Query("SELECT * FROM heart_rate_records WHERE is_delete = 0 ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
+    @Query("SELECT * FROM t07 WHERE c05 = 0 ORDER BY c02 DESC, c06 DESC LIMIT :limit")
     fun getRecentRecords(limit: Int): Flow<List<HeartRateRecord>>
 
     /** 软删除 */
-    @Query("UPDATE heart_rate_records SET is_delete = 1, updated_at = :updatedAt WHERE id = :id")
+    @Query("UPDATE t07 SET c05 = 1, c06 = :updatedAt WHERE c01 = :id")
     suspend fun softDeleteById(id: Long, updatedAt: Long = System.currentTimeMillis()): Int
 
     /** 按标签查询 */
     @Query(
-        "SELECT * FROM heart_rate_records WHERE is_delete = 0 " +
-            "AND tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC, updated_at DESC"
+        "SELECT * FROM t07 WHERE c05 = 0 " +
+            "AND c04 LIKE '%' || :tagId || '%' ORDER BY c02 DESC, c06 DESC"
     )
     suspend fun getRecordsByTagId(tagId: String): List<HeartRateRecord>
 
     /** 清空记录 */
-    @Query("DELETE FROM heart_rate_records")
+    @Query("DELETE FROM t07")
     suspend fun clearAll(): Int
 }
+
+typealias HeartRateDao = LocalDao07

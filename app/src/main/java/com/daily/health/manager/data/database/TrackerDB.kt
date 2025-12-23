@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.daily.health.manager.data.converter.DateTimeConverter
 import com.daily.health.manager.data.dao.AlarmDao
@@ -60,7 +59,7 @@ import com.daily.health.manager.data.entity.DailyStepStat
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
-abstract class HealthDatabase : RoomDatabase() {
+abstract class LocalDatabase : RoomDatabase() {
 
     /**
      * 获取血糖记录DAO
@@ -118,13 +117,13 @@ abstract class HealthDatabase : RoomDatabase() {
         /**
          * 数据库名称
          */
-        private const val DATABASE_NAME = "health_tracker.db"
+        private const val DATABASE_NAME = "local_store.db"
 
         /**
          * 单例数据库实例
          */
         @Volatile
-        private var INSTANCE: HealthDatabase? = null
+        private var INSTANCE: LocalDatabase? = null
 
         /**
          * 获取数据库实例
@@ -133,11 +132,11 @@ abstract class HealthDatabase : RoomDatabase() {
          * @param context 应用上下文
          * @return 数据库实例
          */
-        fun getDatabase(context: Context): HealthDatabase {
+        fun getDatabase(context: Context): LocalDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    HealthDatabase::class.java,
+                    LocalDatabase::class.java,
                     DATABASE_NAME
                 )
                     .addCallback(object : RoomDatabase.Callback() {
@@ -184,7 +183,7 @@ abstract class HealthDatabase : RoomDatabase() {
 //                        text3 TEXT
 //                    )
 //                """)
-//                
+//
 //                // 为alarm_records表创建索引
 //                database.execSQL("CREATE INDEX index_alarm_records_type ON alarm_records(type)")
 //                database.execSQL("CREATE INDEX index_alarm_records_time ON alarm_records(hour, minute)")
@@ -289,7 +288,7 @@ abstract class HealthDatabase : RoomDatabase() {
             val hours = intArrayOf(8, 10, 12, 14, 16, 18, 20, 22)
             for (h in hours) {
                 db.execSQL(
-                    "INSERT INTO hydrate_reminders (hour, minute, enabled) VALUES (?, ?, 1)",
+                    "INSERT INTO t10 (c02, c03, c04) VALUES (?, ?, 1)",
                     arrayOf<Any>(h, 0)
                 )
             }
@@ -311,3 +310,5 @@ abstract class HealthDatabase : RoomDatabase() {
         return context.getDatabasePath(DATABASE_NAME).exists()
     }
 }
+
+typealias HealthDatabase = LocalDatabase

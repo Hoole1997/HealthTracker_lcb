@@ -10,7 +10,7 @@ import java.util.*
  * 提供血糖数据的CRUD操作
  */
 @Dao
-interface BloodSugarDao {
+interface LocalDao01 {
 
     /**
      * 插入血糖记录
@@ -49,7 +49,7 @@ interface BloodSugarDao {
      * @param id 记录ID
      * @return 影响的行数
      */
-    @Query("DELETE FROM blood_sugar_records WHERE id = :id")
+    @Query("DELETE FROM t01 WHERE c01 = :id")
     suspend fun deleteById(id: Long): Int
 
     /**
@@ -57,27 +57,27 @@ interface BloodSugarDao {
      * @param id 记录ID
      * @return 血糖记录对象，可能为null
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE id = :id")
+    @Query("SELECT * FROM t01 WHERE c01 = :id")
     suspend fun getById(id: Long): BloodSugarRecord?
 
     /**
      * 根据ID监听血糖记录变化
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE id = :id")
+    @Query("SELECT * FROM t01 WHERE c01 = :id")
     fun observeById(id: Long): Flow<BloodSugarRecord?>
 
     /**
      * 获取所有血糖记录，按时间倒序排列
      * @return Flow形式的血糖记录列表，支持数据变化监听
      */
-    @Query("SELECT * FROM blood_sugar_records ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t01 ORDER BY c02 DESC, c03 DESC")
     fun getAllRecords(): Flow<List<BloodSugarRecord>>
 
     /**
      * 获取可在图表中显示的血糖记录，按时间排序
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE show_in_chart = 1 ORDER BY record_time ASC, updated_at DESC")
+    @Query("SELECT * FROM t01 WHERE c06 = 1 ORDER BY c02 ASC, c03 DESC")
     fun getChartRecords(): Flow<List<BloodSugarRecord>>
 
     /**
@@ -86,7 +86,7 @@ interface BloodSugarDao {
      * @param endTime 结束时间
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE record_time BETWEEN :startTime AND :endTime ORDER BY record_time DESC, updated_at DESC")
+    @Query("SELECT * FROM t01 WHERE c02 BETWEEN :startTime AND :endTime ORDER BY c02 DESC, c03 DESC")
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<BloodSugarRecord>>
 
     /**
@@ -94,10 +94,10 @@ interface BloodSugarDao {
      */
     @Query(
         """
-        SELECT * FROM blood_sugar_records 
-        WHERE record_time BETWEEN :startTime AND :endTime
-        AND (:status IS NULL OR status = :status)
-        ORDER BY record_time DESC, updated_at DESC
+        SELECT * FROM t01 
+        WHERE c02 BETWEEN :startTime AND :endTime
+        AND (:status IS NULL OR c05 = :status)
+        ORDER BY c02 DESC, c03 DESC
         """
     )
     fun getRecordsByRangeAndStatus(
@@ -111,7 +111,7 @@ interface BloodSugarDao {
      * @param tag 测量标签
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE status = :status ORDER BY record_time DESC")
+    @Query("SELECT * FROM t01 WHERE c05 = :status ORDER BY c02 DESC")
     fun getRecordsByTag(status: Int): Flow<List<BloodSugarRecord>>
 
     /**
@@ -120,7 +120,7 @@ interface BloodSugarDao {
      * @param maxValue 最大血糖值
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE glucose_value BETWEEN :minValue AND :maxValue ORDER BY record_time DESC")
+    @Query("SELECT * FROM t01 WHERE c04 BETWEEN :minValue AND :maxValue ORDER BY c02 DESC")
     fun getRecordsByGlucoseRange(minValue: Double, maxValue: Double): Flow<List<BloodSugarRecord>>
 
     /**
@@ -128,42 +128,42 @@ interface BloodSugarDao {
      * @param limit 记录数量限制
      * @return Flow形式的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records ORDER BY record_time DESC, updated_at DESC LIMIT :limit")
+    @Query("SELECT * FROM t01 ORDER BY c02 DESC, c03 DESC LIMIT :limit")
     fun getRecentRecords(limit: Int): Flow<List<BloodSugarRecord>>
 
     /**
      * 获取血糖记录总数
      * @return 记录总数
      */
-    @Query("SELECT COUNT(*) FROM blood_sugar_records")
+    @Query("SELECT COUNT(*) FROM t01")
     suspend fun getRecordCount(): Int
 
     /**
      * 获取平均血糖值
      * @return 平均血糖值
      */
-    @Query("SELECT AVG(glucose_value) FROM blood_sugar_records")
+    @Query("SELECT AVG(c04) FROM t01")
     suspend fun getAverageGlucose(): Double?
 
     /**
      * 获取最高血糖记录
      * @return 最高血糖记录
      */
-    @Query("SELECT * FROM blood_sugar_records ORDER BY glucose_value DESC LIMIT 1")
+    @Query("SELECT * FROM t01 ORDER BY c04 DESC LIMIT 1")
     suspend fun getHighestGlucoseRecord(): BloodSugarRecord?
 
     /**
      * 获取最低血糖记录
      * @return 最低血糖记录
      */
-    @Query("SELECT * FROM blood_sugar_records ORDER BY glucose_value ASC LIMIT 1")
+    @Query("SELECT * FROM t01 ORDER BY c04 ASC LIMIT 1")
     suspend fun getLowestGlucoseRecord(): BloodSugarRecord?
 
     /**
      * 清空所有血糖记录
      * @return 影响的行数
      */
-    @Query("DELETE FROM blood_sugar_records")
+    @Query("DELETE FROM t01")
     suspend fun deleteAllRecords(): Int
 
     /**
@@ -172,7 +172,7 @@ interface BloodSugarDao {
      * @param showInChart 是否显示在图表中
      * @return 影响的行数
      */
-    @Query("UPDATE blood_sugar_records SET show_in_chart = :showInChart WHERE id = :id")
+    @Query("UPDATE t01 SET c06 = :showInChart WHERE c01 = :id")
     suspend fun updateChartVisibility(id: Long, showInChart: Boolean): Int
 
     /**
@@ -180,20 +180,22 @@ interface BloodSugarDao {
      * @param tagId 标签ID
      * @return 包含该标签的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE tag_ids LIKE '%' || :tagId || '%' ORDER BY record_time DESC")
+    @Query("SELECT * FROM t01 WHERE c07 LIKE '%' || :tagId || '%' ORDER BY c02 DESC")
     suspend fun getRecordsByTagId(tagId: String): List<BloodSugarRecord>
 
     /**
      * 获取所有包含标签的血糖记录
      * @return 包含标签的血糖记录列表
      */
-    @Query("SELECT * FROM blood_sugar_records WHERE tag_ids IS NOT NULL AND tag_ids != '' ORDER BY record_time DESC")
+    @Query("SELECT * FROM t01 WHERE c07 IS NOT NULL AND c07 != '' ORDER BY c02 DESC")
     suspend fun getAllRecordsWithTags(): List<BloodSugarRecord>
 
     /**
      * 获取包含标签的血糖记录数量
      * @return 包含标签的记录数量
      */
-    @Query("SELECT COUNT(*) FROM blood_sugar_records WHERE tag_ids IS NOT NULL AND tag_ids != ''")
+    @Query("SELECT COUNT(*) FROM t01 WHERE c07 IS NOT NULL AND c07 != ''")
     suspend fun getRecordsWithTagsCount(): Int
 }
+
+typealias BloodSugarDao = LocalDao01
