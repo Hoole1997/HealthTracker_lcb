@@ -66,7 +66,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.healthtracker.blood.suger.ui.widget.WeeklyDateSelector
+    <com.daily.health.manager.ui.widget.WeeklyDateSelector
         android:id="@+id/weeklyDateSelector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

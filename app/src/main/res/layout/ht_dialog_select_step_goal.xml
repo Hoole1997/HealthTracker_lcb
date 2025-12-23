@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
+    <com.daily.health.manager.ui.widget.NumberPickerView
         android:id="@+id/numberPicker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

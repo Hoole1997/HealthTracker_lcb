@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
+    <com.daily.health.manager.ui.widget.NumberPickerView
         android:id="@+id/hourPicker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         app:layout_constraintTop_toTopOf="@id/hourPicker" />
 
     <!-- 分钟选择器 -->
-    <com.healthtracker.blood.suger.ui.widget.NumberPickerView
+    <com.daily.health.manager.ui.widget.NumberPickerView
         android:id="@+id/minutePicker"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"

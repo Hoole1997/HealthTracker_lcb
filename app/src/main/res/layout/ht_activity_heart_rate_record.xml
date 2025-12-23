@@ -72,7 +72,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.healthtracker.blood.suger.ui.widget.NumberPickerView
+                <com.daily.health.manager.ui.widget.NumberPickerView
                     android:id="@+id/npv_heart_rate"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.healthtracker.blood.suger.ui.weight.LeveStatusView
+                <com.daily.health.manager.ui.weight.LeveStatusView
                     android:id="@+id/lsv_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
                     app:lsvShowProfile="true" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
+            <com.daily.health.manager.ui.weight.DateTimeSelectionView
                 android:id="@+id/date_time_selection_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

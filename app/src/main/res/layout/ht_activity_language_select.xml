@@ -77,7 +77,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/ht_item_app_language"/>
 
-    <com.healthtracker.blood.suger.ui.weight.MaxHeightFrameLayout
+    <com.daily.health.manager.ui.weight.MaxHeightFrameLayout
         android:id="@+id/ad_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

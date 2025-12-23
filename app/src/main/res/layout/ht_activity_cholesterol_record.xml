@@ -114,7 +114,7 @@
                     app:layout_constraintStart_toEndOf="@id/tv_ldl"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.healthtracker.blood.suger.ui.widget.NumberPickerView
+                <com.daily.health.manager.ui.widget.NumberPickerView
                     android:id="@+id/npv_hdl"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
                     app:npv_WrapSelectorWheel="false"
                     tools:layout_editor_absoluteX="0dp" />
 
-                <com.healthtracker.blood.suger.ui.widget.NumberPickerView
+                <com.daily.health.manager.ui.widget.NumberPickerView
                     android:id="@+id/npv_ldl"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
                     app:npv_WrapSelectorWheel="false"
                     tools:layout_editor_absoluteX="0dp" />
 
-                <com.healthtracker.blood.suger.ui.widget.NumberPickerView
+                <com.daily.health.manager.ui.widget.NumberPickerView
                     android:id="@+id/npv_tg"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -200,7 +200,7 @@
                     android:textColor="@color/color_666"
                     tools:text="@string/ht_total_cholesterol"/>
 
-                <com.healthtracker.blood.suger.ui.weight.LeveStatusView
+                <com.daily.health.manager.ui.weight.LeveStatusView
                     android:id="@+id/lsv_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -215,7 +215,7 @@
 
 
 
-            <com.healthtracker.blood.suger.ui.weight.DateTimeSelectionView
+            <com.daily.health.manager.ui.weight.DateTimeSelectionView
                 android:id="@+id/dateTimeSelectionView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -34,11 +34,11 @@ val adMobUnitConfig = adMobConfig["adUnitIds"] as Map<*, *>
 println("showLog = $showLog")
 
 android {
-    namespace = "com.healthtracker.blood.suger"
+    namespace = "com.daily.health.manager"
 
     defaultConfig {
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 10
+        versionName = "1.0.5"
         buildConfig {
             boolean("showLog", showLog)
         }
@@ -80,7 +80,7 @@ android {
         // 内部测试版本
         create("internal") {
             dimension = "distribution"
-            applicationId = "com.healthtracker.blood.suger.internal"
+            applicationId = "com.daily.health.manager"
             versionNameSuffix = "-internal"
         }
 
@@ -253,14 +253,14 @@ class BuildConfigFieldsBuilder {
 //        "cn.thinkingdata.*",
 //    )
 //    otherClassList = hashSetOf(
-//        "com.healthtracker.blood.suger.ui.viewmodel.*",
-//        "com.healthtracker.blood.suger.viewmodel.*",
-//        "com.healthtracker.blood.suger.ui.weight.*",
-//        "com.healthtracker.blood.suger.ui.widget.*",
+//        "com.daily.health.manager.ui.viewmodel.*",
+//        "com.daily.health.manager.viewmodel.*",
+//        "com.daily.health.manager.ui.weight.*",
+//        "com.daily.health.manager.ui.widget.*",
 //    )
 //    changePackageList = hashSetOf(
-//        "com.healthtracker.blood.suger.ui.viewmodel.*",
-//        "com.healthtracker.blood.suger.viewmodel.*",
+//        "com.daily.health.manager.ui.viewmodel.*",
+//        "com.daily.health.manager.viewmodel.*",
 //    )
 //    classNameCharPool = "abcdefghijklmnopqrstuvwxyz"
 //    dirNameCharPool = "abcdefghijklmnopqrstuvwxyz"
@@ -283,24 +283,24 @@ actGuard {
         "com.yalantis.ucrop.*",
     )
     otherClassList = hashSetOf(
-        "com.healthtracker.blood.suger.App",
-        "com.healthtracker.blood.suger.ui.act.*",
-        "com.healthtracker.blood.suger.alarm.*",
-        "com.healthtracker.blood.suger.receiver.*",
-        "com.healthtracker.blood.suger.service.*",
-        "com.healthtracker.blood.suger.provider.*",
-        "com.healthtracker.blood.suger.ui.weight.*",
-        "com.healthtracker.blood.suger.ui.widget.*",
+        "com.daily.health.manager.App",
+        "com.daily.health.manager.ui.act.*",
+        "com.daily.health.manager.alarm.*",
+        "com.daily.health.manager.receiver.*",
+        "com.daily.health.manager.service.*",
+        "com.daily.health.manager.provider.*",
+        "com.daily.health.manager.ui.weight.*",
+        "com.daily.health.manager.ui.widget.*",
     )
     changePackageList = hashSetOf(
-        "com.healthtracker.blood.suger.App",
-        "com.healthtracker.blood.suger.ui.act.*",
-        "com.healthtracker.blood.suger.alarm.*",
-        "com.healthtracker.blood.suger.receiver.*",
-        "com.healthtracker.blood.suger.service.*",
-        "com.healthtracker.blood.suger.provider.*",
-        "com.healthtracker.blood.suger.ui.weight.*",
-        "com.healthtracker.blood.suger.ui.widget.*",
+        "com.daily.health.manager.App",
+        "com.daily.health.manager.ui.act.*",
+        "com.daily.health.manager.alarm.*",
+        "com.daily.health.manager.receiver.*",
+        "com.daily.health.manager.service.*",
+        "com.daily.health.manager.provider.*",
+        "com.daily.health.manager.ui.weight.*",
+        "com.daily.health.manager.ui.widget.*",
     )
     classNameCharPool = "abcdefghijklmnopqrstuvwxyz"
     dirNameCharPool = "abcdefghijklmnopqrstuvwxyz"

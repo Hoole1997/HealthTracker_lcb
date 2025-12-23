@@ -15,7 +15,7 @@ tasks.register("generateJunkCode") {
         }
         outputDir.mkdirs()
 
-        val packageName = "com.healthtracker.blood.suger.junk"
+        val packageName = "com.daily.health.manager.junk"
         val packageDir = File(outputDir, packageName.replace('.', '/'))
         packageDir.mkdirs()
 

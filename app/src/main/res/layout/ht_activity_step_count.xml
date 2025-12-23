@@ -92,7 +92,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.healthtracker.blood.suger.ui.widget.CircularProgressView
+                <com.daily.health.manager.ui.widget.CircularProgressView
                     android:id="@+id/progress_bar"
                     android:layout_width="0dp"
                     android:layout_height="0dp"

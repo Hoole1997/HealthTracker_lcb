@@ -111,7 +111,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.healthtracker.blood.suger.ui.weight.CustomViewPager
+    <com.daily.health.manager.ui.weight.CustomViewPager
         android:id="@+id/view_pager_home"
         android:layout_width="match_parent"
         android:layout_height="0dp"

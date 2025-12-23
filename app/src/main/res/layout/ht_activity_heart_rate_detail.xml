@@ -172,7 +172,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/bpm_status_view"
                 app:layout_constraintTop_toTopOf="@id/bpm_status_view" />
 
-            <com.healthtracker.blood.suger.ui.weight.LeveStatusView
+            <com.daily.health.manager.ui.weight.LeveStatusView
                 android:id="@+id/bpm_status_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
 
 
             <!-- 专家建议自定义控件 -->
-            <com.healthtracker.blood.suger.ui.widget.ExpertAdviceView
+            <com.daily.health.manager.ui.widget.ExpertAdviceView
                 android:id="@+id/expert_advice_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

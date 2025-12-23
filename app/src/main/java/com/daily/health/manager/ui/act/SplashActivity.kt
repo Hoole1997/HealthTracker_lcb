@@ -1,0 +1,626 @@
+package com.daily.health.manager.ui.act
+
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.core.animation.addListener
+import androidx.lifecycle.lifecycleScope
+import com.blankj.utilcode.util.ActivityUtils
+import com.daily.health.manager.App
+import com.daily.health.manager.BuildConfig
+import com.daily.health.manager.R
+import com.daily.health.manager.alarm.PermissionManager
+import com.daily.health.manager.constants.LANDING_NOTIFICATION_CONTENT
+import com.daily.health.manager.constants.LANDING_NOTIFICATION_FROM
+import com.daily.health.manager.constants.LANDING_NOTIFICATION_TITLE
+import com.daily.health.manager.data.utils.DateTimeUtils
+import com.daily.health.manager.databinding.HtActivitySplashBinding
+import com.daily.health.manager.hasNewGuide
+import com.daily.health.manager.receiver.NotificationActionReceiver
+import com.daily.health.manager.ui.history.HistoryRecordItem
+import com.daily.health.manager.ui.viewmodel.SplashViewModel
+import com.daily.health.manager.util.logEvent
+import com.daily.health.manager.utils.isAdPage
+import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.SysBarUtils
+import com.healthtracker.framework.base.BaseMVVMActivity
+import com.healthtracker.framework.ext.clickWithDuration
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
+import com.healthtracker.framework.ext.logw
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
+import com.healthtracker.framework.util.SpUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
+import net.corekit.core.report.ReportDataManager
+import net.corekit.core.utils.ConfigRemoteManager
+import net.corekit.monetize.ads.AdResult
+import net.corekit.monetize.ads.FullNativeAds
+import net.corekit.monetize.ads.InterstitialAds
+import net.corekit.monetize.ads.LaunchAds
+import net.corekit.monetize.ads.SplashBiddingManager
+import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.log.AdLogger
+import org.koin.android.ext.android.inject
+import kotlin.math.ceil
+
+class SplashActivity : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>() {
+
+    companion object {
+        private const val TAG = "SplashActivity"
+
+    }
+
+    private var isAdLoaded = false
+    private val hasFullNativeShowing: Boolean
+        get() = FullNativeAds.getInstance().checkAdShowing()
+    private val hasInterstitialShowing: Boolean
+        get() = InterstitialAds.getInstance().checkAdShowing()
+    
+    // 用于等待权限授权完成的信号
+    private val permissionCompleteDeferred = CompletableDeferred<Unit>()
+
+
+    // 状态机负责协调动画、权限、前后台状态与跳转
+    private val stateMachine by lazy {
+        SplashStateMachine(
+            scope = lifecycleScope,
+            onNavigate = {
+                reportGroup()
+                if (ActivityUtils.isActivityExistsInStack(MainActivity::class.java)) {
+                    finish()
+                    return@SplashStateMachine
+                }
+                // 判断应该跳转到哪个页面
+                val targetActivity = if (hasNewGuide() || !AdConfigManager.showNewGuide()) {
+                    MainActivity::class.java
+                } else {
+                    GuideActivity::class.java
+                }
+                // 创建Intent并传递通知参数
+                val targetIntent = Intent(this, targetActivity).apply {
+                    putExtras(intent)
+                }
+
+                startActivity(targetIntent)
+                finish()
+            }
+        )
+    }
+
+    private val permissionManager: PermissionManager by inject()
+
+    override fun createViewBinding() = HtActivitySplashBinding.inflate(layoutInflater)
+
+    override fun getVMModelClass() = SplashViewModel::class.java
+    private var launchTime = 0L
+    override fun initView(savedInstanceState: Bundle?) {
+        lifecycleScope.launch {
+            try {
+                if (!isTaskRoot) {
+                    val activityList = ActivityUtils.getActivityList()
+                    if (isAdPage(activityList[1])) {
+                        "当前是广告页面或引导页面，直接关闭启动页".logd(TAG)
+                        finish()
+                        return@launch
+                    }
+
+                    if(!App.INSTANCE.isLongLeaveApp() && (App.INSTANCE.isClickAdLeave || App.INSTANCE.isFeatureLeave || App.INSTANCE.isGoSetting)){
+                        "用户点击广告，业务操作，请求权限短时间离开应用，直接关闭启动页".logd(TAG)
+                        finish()
+                        return@launch
+                    }
+                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+
+            launchTime = System.currentTimeMillis()
+            logEvent("loading_page_show")
+            mViewBind.tvPrivacy.clickWithDuration {
+                InnerWebActivity.start(this@SplashActivity, BuildConfig.PRIVACY_POLICY)
+            }
+
+            playAnimations()
+            // 重置权限拦截器，确保每次启动都能正确等待权限
+            LaunchAds.getInstance().resetInterceptor()
+            permissionManager.checkNotificationPermission(this@SplashActivity){
+                onPermissionCheckCompleted()
+            }
+            lifecycleScope.launch {
+                delay(180_000L)
+                if (!permissionCompleteDeferred.isCompleted) {
+                    if (BuildState.debug) "启动页通知授权流程超时兜底，强制完成权限流程".logw(PermissionManager.TAG)
+                    onPermissionCheckCompleted()
+                }
+            }
+            checkNotificationOpen()
+
+            // 监听最近记录并显示
+            lifecycleScope.launch {
+                mViewModel.recentRecord.collect { item ->
+                    if (item == null) {
+                        mViewBind.clRecentRecord.visibility = View.GONE
+                        return@collect
+                    }
+
+                    mViewBind.clRecentRecord.visibility = View.VISIBLE
+                    mViewBind.tvRecordTitle.text = getString(
+                        R.string.ht_last_measurement, when (item.getRecordType()) {
+                            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> getString(R.string.ht_blood_pressure)
+                            HistoryRecordItem.RecordType.BLOOD_SUGAR -> getString(R.string.ht_blood_suger)
+                            HistoryRecordItem.RecordType.HEART_RATE -> getString(R.string.ht_heart_rate)
+                            HistoryRecordItem.RecordType.BMI_RECORD -> getString(R.string.ht_bmi)
+                            else -> ""
+                        }
+                    )
+
+                    // 清除旧的动态视图（除了标题）
+                    val childCount = mViewBind.clRecentRecord.childCount
+                    if (childCount > 1) {
+                         mViewBind.clRecentRecord.removeViews(1, childCount - 1)
+                    }
+
+                    val layoutId = if (item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_PRESSURE) {
+                        R.layout.ht_layout_recent_bp
+                    } else {
+                        R.layout.ht_layout_recent_bs
+                    }
+
+                    val contentView = layoutInflater.inflate(layoutId, mViewBind.clRecentRecord, false)
+                    val params = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
+                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT,
+                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    params.topToBottom = mViewBind.tvRecordTitle.id
+                    contentView.layoutParams = params
+                    mViewBind.clRecentRecord.addView(contentView)
+
+                    // 绑定数据
+                    val tvValue1 = contentView.findViewById<android.widget.TextView>(R.id.tv_value_1)
+                    val tvValue2 = contentView.findViewById<android.widget.TextView>(R.id.tv_value_2)
+                    val tvUnit = contentView.findViewById<android.widget.TextView>(R.id.tv_unit)
+                    val tvLevel = contentView.findViewById<android.widget.TextView>(R.id.tv_leve)
+                    val tvStatus = contentView.findViewById<android.widget.TextView>(R.id.tv_status)
+                    val tvTime = contentView.findViewById<android.widget.TextView>(R.id.tv_record_time)
+                    val vRangeFlag = contentView.findViewById<View>(R.id.v_range_flag)
+
+                    tvValue1.text = item.getPrimaryValue()
+                    tvUnit.text = item.getUnit()
+                    tvLevel.text = item.getLevel(this@SplashActivity)
+                    tvTime.text = DateTimeUtils.formatDateTime(item.getRecordTime())
+
+                    if(layoutId == R.layout.ht_layout_recent_bp){
+                        val secondaryValue = item.getSecondaryValue()
+                        if (secondaryValue != null) {
+                            tvValue2.text = secondaryValue
+                            tvValue2.visibility = View.VISIBLE
+                        } else {
+                            tvValue2.visibility = View.GONE
+                        }
+                    }
+
+                    val status = item.getStatus(this@SplashActivity)
+                    if (status != null) {
+                        tvStatus.visibility = View.VISIBLE
+                        when (item.getRecordType()) {
+                            HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                                tvStatus.text = "${getString(R.string.ht_pulse)}:$status"
+                            }
+                            HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                                tvStatus.text = "${getString(R.string.ht_status)}:$status"
+                            }
+                            else -> {
+                                tvStatus.text = status
+                                tvStatus.setTextColor(getColor(R.color.t1))
+                            }
+                        }
+                    } else {
+                        tvStatus.visibility = View.GONE
+                    }
+
+                    vRangeFlag.backgroundTintList = androidx.core.content.ContextCompat.getColorStateList(
+                        this@SplashActivity,
+                        item.getLeveColorRes()
+                    )
+                }
+            }
+
+            try {
+                val adJob = async {
+                    initializeAndShowAd()
+                }
+
+                val timeout = AdConfigManager.getSplashTimeout()
+                AdLogger.d("启动页面，超时时长：$timeout s")
+                val timeoutJob = async {
+                    // 等待权限授权完成后才开始计时
+                    AdLogger.d("等待权限授权完成后开始超时计时...")
+                    permissionCompleteDeferred.await()
+                    AdLogger.d("权限授权完成，开始超时计时 $timeout s")
+                    delay(timeout * 1000L)
+                }
+                val timeoutTriggered = select<Boolean> {
+                    adJob.onAwait {
+                        false
+                    }
+                    timeoutJob.onAwait {
+                        true
+                    }
+                }
+
+                if (timeoutTriggered) {
+                    "触发超时".logd(TAG)
+                    val hasAdLoaded = isAdLoaded
+                    if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
+                        // 没有任何广告，执行继续流程
+                        if (BuildState.debug) Log.d(TAG, "${timeout}秒超时兜底：无广告，执行继续流程")
+                    } else {
+                        // 有广告加载或显示，继续等待广告完成
+                        if (BuildState.debug) Log.d(
+                            TAG,
+                            "${timeout}秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成"
+                        )
+                        adJob.await()
+                    }
+                } else {
+                    "非超时触发".logd(TAG)
+                }
+            } catch (e: Throwable) {
+
+            } finally {
+                stateMachine.onAdCompleted()
+            }
+
+
+
+
+        }
+
+    }
+
+    private fun checkNotificationOpen() {
+        try {
+            val notificationId =
+                intent.getIntExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, -1)
+            reportOpen()
+
+            if (notificationId == -1) {
+                if (BuildState.debug) "Invalid notification ID: $notificationId".logw(TAG)
+                return
+            }
+            reportNotificationParam()
+            val actionType = intent.getStringExtra(NotificationActionReceiver.EXTRA_ACTION_VALUE)
+            if (BuildState.debug) "checkNotificationOpen actionType = $actionType".logd(TAG)
+            sendBroadcast(Intent(this, NotificationActionReceiver::class.java).apply {
+                action = NotificationActionReceiver.ACTION_NOTIFICATION_CLICKED
+                putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+            })
+        } catch (e: Throwable) {
+
+        }
+
+
+    }
+
+
+    private fun reportOpen() {
+        ReportDataManager.reportData(
+            "app_open", mapOf(
+                "type" to if (isTaskRoot) "cold_open" else "hot_open",
+                "position" to if (intent.hasExtra(LANDING_NOTIFICATION_FROM)) intent.getStringExtra(
+                    LANDING_NOTIFICATION_FROM
+                ).orEmpty().ifBlank { "other" } else "other"
+            ))
+    }
+
+    private fun reportNotificationParam() {
+        val params = mutableMapOf<String, Any>(
+            "Notific_Type" to when (intent.getStringExtra(LANDING_NOTIFICATION_FROM)
+                .orEmpty()) {
+                "firebase_push" -> 2
+                "top_notification" -> 4
+                else -> 1
+            },
+            "Notific_Position" to when (intent.getStringExtra(LANDING_NOTIFICATION_FROM)
+                .orEmpty()) {
+                "top_notification" -> 2
+                else -> 1
+            },
+            "Notific_Priority" to when (intent.getStringExtra(LANDING_NOTIFICATION_FROM)
+                .orEmpty()) {
+                "top_notification" -> "PRIORITY_DEFAULT"
+                else -> "PRIORITY_HIGH"
+            },
+            "event_id" to when (intent.getStringExtra(LANDING_NOTIFICATION_FROM)
+                .orEmpty()) {
+                "top_notification" -> "permanent"
+                else -> "customer_general_style"
+            },
+            "title" to intent.getStringExtra(LANDING_NOTIFICATION_TITLE).orEmpty(),
+            "text" to intent.getStringExtra(LANDING_NOTIFICATION_CONTENT).orEmpty()
+        )
+
+        ReportDataManager.reportData(
+            "Notific_Enter", params
+        )
+
+        ReportDataManager.reportData(
+            "Notific_Click", params.apply {
+                put("from_background", AppLifecycleManager.isBackground())
+
+            }
+        )
+    }
+
+    /**
+     * 初始化 AdMob 并显示开屏广告
+     * 根据配置决定是使用竞价模式还是传统模式
+     * @return 广告是否加载成功
+     */
+    private suspend fun initializeAndShowAd(): Boolean {
+        try {
+            if (BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
+
+            // 检查是否启用竞价模式
+            val useBidding = SplashBiddingManager.shouldUseBidding()
+            AdLogger.d("[SplashActivity] 竞价模式: %s", if (useBidding) "启用" else "禁用")
+
+            val adResult = if (useBidding) {
+                // 竞价模式：同时请求开屏和插屏，展示eCPM更高的
+                if (BuildState.debug) "使用竞价模式加载广告".logd(TAG)
+                SplashBiddingManager.bidAndShow(
+                    activity = this,
+                    onAdLoaded = { isSuccess ->
+                        isAdLoaded = isSuccess
+                    }
+                )
+            } else {
+                // 传统模式：只请求开屏广告
+                if (BuildState.debug) "使用传统模式加载开屏广告".logd(TAG)
+                LaunchAds.getInstance().displayAd(
+                    activity = this,
+                    onLoaded = { isSuccess ->
+                        isAdLoaded = isSuccess
+                    }
+                )
+            }
+
+            if (adResult is AdResult.Success) {
+                if (BuildState.debug) "广告展示完成并关闭".logd(TAG)
+                return true
+            } else {
+                if (BuildState.debug) "广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(TAG)
+                return false
+            }
+        } catch (e: Exception) {
+            if (BuildState.debug) "广告初始化或显示异常 e:$e".loge(TAG)
+            return false
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        stateMachine.onResume()
+        SysBarUtils.hideNavigationBar(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stateMachine.onPause()
+    }
+
+    override fun onDestroy() {
+        if (!permissionCompleteDeferred.isCompleted) {
+            permissionCompleteDeferred.complete(Unit)
+        }
+        stateMachine.onDestroy()
+        super.onDestroy()
+        logEvent(
+            "loading_page_end", mapOf(
+                "pass_time" to ceil((System.currentTimeMillis() - launchTime) / 1000.0).toInt()
+            )
+        )
+    }
+
+    override fun isFullscreen() = true
+
+    /**
+     * 播放所有启动动画
+     */
+    private fun playAnimations() {
+        with(mViewBind) {
+            // 创建组合动画
+            val animatorSet = AnimatorSet().apply {
+                startDelay = 200 // 延迟200毫秒开始动画
+                duration = 1000 // 动画持续时间350毫秒
+            }
+
+            // 创建各个视图的动画
+            val logoAnimator = createAlphaAnimator(ivLogo)
+            val nameAnimator = createAlphaAnimator(tvAppName)
+
+
+            // 设置动画同时播放
+            animatorSet.playTogether(logoAnimator, nameAnimator)
+
+            // 添加动画监听器
+            animatorSet.addListener(
+                onEnd = {
+                    // 动画结束后标记可以进行导航
+                    onAnimationCompleted()
+                },
+                onCancel = {
+                    // 部分设备上动画可能被系统取消，这里兜底仍然推进流程
+                    onAnimationCompleted()
+                }
+            )
+
+            // 开始动画
+            animatorSet.start()
+        }
+    }
+
+    /**
+     * 创建淡入动画
+     * 保持与原版本完全相同的动画参数
+     */
+    private fun createAlphaAnimator(view: View): ObjectAnimator {
+        return ObjectAnimator.ofFloat(view, "alpha", 0f, 1.0f)
+    }
+
+
+
+    /**
+     * 权限检查完成回调
+     */
+    private fun onPermissionCheckCompleted() {
+        if(BuildState.debug) "启动页通知授权流程完成".logd(PermissionManager.TAG)
+        // 通知权限检查完成，可以开始广告超时计时
+        if (!permissionCompleteDeferred.isCompleted) {
+            permissionCompleteDeferred.complete(Unit)
+        }
+        stateMachine.onPermissionCheckCompleted()
+
+    }
+
+    /**
+     * 动画完成回调
+     */
+    private fun onAnimationCompleted() {
+        if (BuildState.debug) "动画执行完成".logd(TAG)
+        stateMachine.onAnimationCompleted()
+    }
+
+    /**
+     * 启动页状态机，统一管理动画、权限与导航状态
+     */
+    private  class SplashStateMachine(
+        private val scope: CoroutineScope,
+        private val onNavigate: suspend () -> Unit
+    ) {
+
+        private var animationDone = false
+        private var permissionDone = false
+        private var adDone = false
+        private var isForeground = true
+        private var pendingForegroundNavigation = false
+        private var hasNavigated = false
+        private var navigationJob: Job? = null
+
+        fun onAnimationCompleted() {
+            if (animationDone) {
+                return
+            }
+            animationDone = true
+            if (BuildState.debug) "Animation completed".logd(TAG)
+            tryNavigate()
+
+        }
+
+        fun onPermissionCheckCompleted() {
+            if (permissionDone) {
+                return
+            }
+            permissionDone = true
+            if (BuildState.debug) "Permission check completed".logd(TAG)
+            if(BuildState.debug) "设置开屏拦截等待结束".logd(PermissionManager.TAG)
+            LaunchAds.getInstance().cancelInterceptor()
+            tryNavigate()
+
+        }
+
+        fun onAdCompleted() {
+            if (adDone) {
+                return
+            }
+            adDone = true
+            if (BuildState.debug) "Ad completed".logd(TAG)
+            tryNavigate()
+        }
+
+        fun onResume() {
+            isForeground = true
+            if (pendingForegroundNavigation) {
+                tryNavigate()
+            }
+        }
+
+        fun onPause() {
+            isForeground = false
+        }
+
+        fun onDestroy() {
+            navigationJob?.cancel()
+            navigationJob = null
+        }
+
+        private fun tryNavigate() {
+            if (hasNavigated) {
+                if (BuildState.debug) "Already navigated, ignore further requests".logd(TAG)
+                return
+            }
+
+            if (!(animationDone && permissionDone && adDone)) {
+                if (BuildState.debug) "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(
+                    TAG
+                )
+                return
+            }
+
+            if (navigationJob?.isActive == true) {
+                if (BuildState.debug) "Navigation coroutine is already running".logd(TAG)
+                return
+            }
+
+            navigationJob = scope.launch {
+                val skipDelay = pendingForegroundNavigation
+                if (!skipDelay) {
+                    delay(500)
+                }
+
+                if (!isForeground) {
+                    pendingForegroundNavigation = true
+                    return@launch
+                }
+
+                pendingForegroundNavigation = false
+                if (hasNavigated) {
+                    return@launch
+                }
+
+                hasNavigated = true
+                onNavigate()
+            }.also { job ->
+                job.invokeOnCompletion {
+                    navigationJob = null
+                }
+            }
+        }
+    }
+
+    private fun reportGroup(){
+        lifecycleScope.launch {
+           val group =  ConfigRemoteManager.getString("Grouping","")
+            if(group.isNullOrEmpty()){
+                if(BuildState.debug) "没有配置Group,不上报".logd(TAG)
+                return@launch
+            }
+            if(SpUtils.getBoolean("has_report_group_$group",false)){
+                if(BuildState.debug) "已经上报过$group,不再上报".logd(TAG)
+                return@launch
+            }
+            SpUtils.putBoolean("has_report_group_$group",true)
+            if(BuildState.debug) "上报Group,value:$group".logd(TAG)
+            ReportDataManager.reportData("Grouping_$group")
+        }
+    }
+}

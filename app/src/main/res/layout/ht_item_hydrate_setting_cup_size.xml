@@ -88,7 +88,7 @@
         app:layout_constraintStart_toEndOf="@id/tv_select_value"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.healthtracker.blood.suger.ui.weight.RulerView
+    <com.daily.health.manager.ui.weight.RulerView
         android:id="@+id/rulerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
