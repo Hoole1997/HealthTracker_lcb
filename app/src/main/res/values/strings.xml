@@ -7,6 +7,7 @@
     <string name="ht_meds">Meds</string>
     <string name="ht_insights">Insights</string>
     <string name="ht_tracker">Tracker</string>
+    <string name="ht_settings">Settings</string>
     <string name="ht_record_now">Record Now</string>
     <!-- 血糖和血压的单位不用翻译   -->
     <string name="ht_mg_dl" translatable="false">mg/dL</string>
@@ -1233,7 +1234,6 @@ healthcare provider or medical institution.</string>
     <string name="ht_done">Done</string>
     <string name="ht_hydrate_empty_record">No water intake record yet.</string>
     <string name="ht_unit_ml" translatable="false">ML</string>
-    <string name="ht_hydrate_setting">Setting</string>
     <string name="ht_daily_water_intake">Daily Water Intake</string>
     <string name="ht_cup_size">Cup Size</string>
     <string name="ht_fl_oz">fl oz</string>
@@ -1354,7 +1354,11 @@ healthcare provider or medical institution.</string>
     <string name="ht_feedback">Feedback</string>
     <string name="ht_privacy_policy">Privacy Policy</string>
     <string name="ht_terms_of_service">Terms of Service</string>
-    <string name="ht_setting">Setting</string>
+    <string name="ht_settings_section_tracking_and_targets">Tracking &amp; Targets</string>
+    <string name="ht_settings_section_preferences">Preferences</string>
+    <string name="ht_settings_section_help_and_feedback">Help &amp; Feedback</string>
+    <string name="ht_settings_section_legal_and_policies">Legal &amp; Policies</string>
+    <string name="ht_settings_version_format">Version %1$s</string>
     <string name="ht_bill_ad_loading">AD loading…</string>
 
     <string name="ht_please_tell_more">Please tell us more details so that we can locate and solve your problem faster</string>

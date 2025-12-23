@@ -372,12 +372,11 @@
     <string name="ht_hydrate">수분 섭취</string>
     <string name="ht_walking">걷기</string>
     <string name="ht_walking_steps">걸음 수</string>
-    <string name="ht_drink_btn_format">%d %s 마시기</string>
+    <string name="ht_drink_btn_format">%1$d %2$s 마시기</string>
     <string name="ht_hydrate_cup_count_format">오늘 물을 %d잔 마셨습니다</string>
     <string name="ht_hydrate_complete_message">잘하셨습니다! 수분 섭취 목표를 달성했습니다!</string>
     <string name="ht_done">완료</string>
     <string name="ht_hydrate_empty_record">수분 섭취 기록이 아직 없습니다.</string>
-    <string name="ht_hydrate_setting">설정</string>
     <string name="ht_daily_water_intake">일일 수분 섭취량</string>
     <string name="ht_cup_size">컵 크기</string>
     <string name="ht_hydration_reminder_time">수분 섭취 알림 시간</string>
@@ -410,7 +409,12 @@
     <string name="ht_feedback">피드백</string>
     <string name="ht_privacy_policy">개인정보 처리방침</string>
     <string name="ht_terms_of_service">이용 약관</string>
-    <string name="ht_setting">설정</string>
+    <string name="ht_settings_section_tracking_and_targets">기록 및 목표</string>
+    <string name="ht_settings_section_preferences">환경 설정</string>
+    <string name="ht_settings_section_help_and_feedback">도움말 및 피드백</string>
+    <string name="ht_settings_section_legal_and_policies">약관 및 정책</string>
+    <string name="ht_settings_version_format">버전 %1$s</string>
+    <string name="ht_settings">설정</string>
 
     <!-- 反馈相关字符串 -->
     <string name="ht_please_tell_more">문제를 더 빠르게 파악하고 해결할 수 있도록 자세한 내용을 알려주세요</string>

@@ -31,19 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_setting"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_5"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:scaleType="center"
 
-            app:layout_constraintBottom_toBottomOf="@id/area_bar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/area_bar"
-            app:layout_goneMarginEnd="@dimen/dp_6"
-            app:srcCompat="@drawable/ht_ic_setting" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_remind"
@@ -53,7 +41,7 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
             app:layout_constraintBottom_toBottomOf="@id/area_bar"
-            app:layout_constraintEnd_toStartOf="@id/iv_setting"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/area_bar"
             app:srcCompat="@drawable/ht_ic_remind" />
 

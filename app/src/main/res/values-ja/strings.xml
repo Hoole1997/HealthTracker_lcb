@@ -372,12 +372,11 @@
     <string name="ht_hydrate">水分補給</string>
     <string name="ht_walking">ウォーキング</string>
     <string name="ht_walking_steps">歩数</string>
-    <string name="ht_drink_btn_format">%d %s 飲む</string>
+    <string name="ht_drink_btn_format">%1$d %2$s 飲む</string>
     <string name="ht_hydrate_cup_count_format">今日は水を%d杯飲みました</string>
     <string name="ht_hydrate_complete_message">よくできました！水分補給目標を達成しました！</string>
     <string name="ht_done">完了</string>
     <string name="ht_hydrate_empty_record">水分摂取記録はまだありません。</string>
-    <string name="ht_hydrate_setting">設定</string>
     <string name="ht_daily_water_intake">1日の水分摂取量</string>
     <string name="ht_cup_size">カップサイズ</string>
     <string name="ht_hydration_reminder_time">水分補給リマインダー時間</string>
@@ -410,7 +409,12 @@
     <string name="ht_feedback">フィードバック</string>
     <string name="ht_privacy_policy">プライバシーポリシー</string>
     <string name="ht_terms_of_service">利用規約</string>
-    <string name="ht_setting">設定</string>
+    <string name="ht_settings_section_tracking_and_targets">記録と目標</string>
+    <string name="ht_settings_section_preferences">アプリ設定</string>
+    <string name="ht_settings_section_help_and_feedback">ヘルプとフィードバック</string>
+    <string name="ht_settings_section_legal_and_policies">規約・ポリシー</string>
+    <string name="ht_settings_version_format">バージョン %1$s</string>
+    <string name="ht_settings">設定</string>
 
     <!-- 反馈相关字符串 -->
     <string name="ht_please_tell_more">問題をより早く特定し解決できるよう、詳細をお聞かせください</string>

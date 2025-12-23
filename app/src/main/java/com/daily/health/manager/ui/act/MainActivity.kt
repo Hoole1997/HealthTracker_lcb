@@ -29,6 +29,7 @@ import com.daily.health.manager.ui.fragment.HomeFragment
 import com.daily.health.manager.ui.fragment.InsightsFragment
 import com.daily.health.manager.ui.fragment.MedsFragment
 import com.daily.health.manager.ui.fragment.RecordFragment
+import com.daily.health.manager.ui.fragment.SettingsFragment
 import com.daily.health.manager.ui.tracker.HealthType
 import com.daily.health.manager.ui.tracker.trackEnterPageClick
 import com.daily.health.manager.ui.viewmodel.MainViewModel
@@ -58,6 +59,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
     private var medFrg: MedsFragment? = null
     private var recordFrg: RecordFragment? = null
     private var insightsFrg: InsightsFragment? = null
+    private var settingsFrg: SettingsFragment? = null
 
     private val customNotificationHelper: CustomNotificationHelper by inject()
     private val permissionManager: PermissionManager by inject()
@@ -89,12 +91,13 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
     }
 
     internal val homeFragmentAdapter =
-        FragmentsAdapter(supportFragmentManager, 4, object : FragmentsAdapter.Callback {
+        FragmentsAdapter(supportFragmentManager, 5, object : FragmentsAdapter.Callback {
             override fun createInstance(position: Int) = when (position) {
                 0 -> HomeFragment()
                 1 -> MedsFragment()
                 2 -> InsightsFragment()
                 3 -> RecordFragment()
+                4 -> SettingsFragment()
                 else -> throw IllegalArgumentException("Invalid position: $position")
             }
 
@@ -104,6 +107,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
                     is RecordFragment -> recordFrg = fragment
                     is MedsFragment -> medFrg = fragment
                     is InsightsFragment -> insightsFrg = fragment
+                    is SettingsFragment -> settingsFrg = fragment
                 }
             }
         })
@@ -117,7 +121,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
         with(mViewBind) {
             // 重置所有UI元素的默认状态
             ivRemind.visible()
-            ivSetting.visible()
             tvMonth.gone()
 
             // 根据不同位置设置特定的UI状态和标题
@@ -130,7 +133,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
                 1 -> {
                     ReportDataManager.reportData("Meds_tab_enter",mapOf())
                     // Meds页面：隐藏设置和提醒按钮，显示月份
-                    ivSetting.gone()
                     ivRemind.gone()
                     tvMonth.visible()
                     updateMonthDisplay()
@@ -140,7 +142,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
 
                 2 -> {
                     ReportDataManager.reportData("Insights_tab_enter",mapOf())
-                    ivSetting.gone()
                     ivRemind.gone()
                     R.string.ht_insights
                 }
@@ -150,6 +151,12 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
                     // Record页面：隐藏提醒按钮
                     ivRemind.gone()
                     R.string.ht_tracker
+                }
+
+                4 -> {
+                    ReportDataManager.reportData("Settings_tab_enter",mapOf())
+                    ivRemind.gone()
+                    R.string.ht_settings
                 }
 
                 else -> R.string.ht_home
@@ -185,14 +192,11 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
         }
         mViewModel.startHealthService()
         with(mViewBind) {
-            ivSetting.clickWithDuration {
-                settingLauncher.launch(Intent(this@MainActivity, SettingActivity::class.java))
-            }
             viewPagerHome.offscreenPageLimit = 0
 
             // Debug 专用：长按发送测试通知
             if (BuildState.debug) {
-                ivSetting.setOnLongClickListener {
+                ivRemind.setOnLongClickListener {
                     sendTestNotifications()
                     true
                 }
@@ -215,19 +219,15 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
         lifecycleScope.launch {
             delay(500)
             homeFrg?.highLightComplete?.await()
-            if(BuildState.debug) "高亮完成，继续流程".logd(PermissionManager.TAG)
             loadBanner(mViewBind.adViewContainer, onClose = {
                 if (!bannerShowComplete.isCompleted) {
                     bannerShowComplete.complete(true)
                 }
-                if(BuildState.debug) "首页折叠banner收起".logd(PermissionManager.TAG)
             }){
                 if (!bannerShowComplete.isCompleted) {
                     bannerShowComplete.complete(it)
                 }
-                if(BuildState.debug) "非折叠banner或未展示成功".logd(PermissionManager.TAG)
             }
-            if(BuildState.debug) "等待首页banner完成".logd(PermissionManager.TAG)
             bannerShowComplete.await()
             if(BuildState.debug) "首页banner完成，继续流程".logd(PermissionManager.TAG)
             permissionManager.checkNotificationPermission(this@MainActivity){
@@ -254,6 +254,7 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
                 Pair(R.drawable.ht_selector_nav_meds, R.string.ht_meds),
                 Pair(R.drawable.ht_selector_nav_insights, R.string.ht_insights),
                 Pair(R.drawable.ht_selector_nav_record, R.string.ht_tracker),
+                Pair(R.drawable.ht_selector_nav_settings, R.string.ht_settings),
 
                 )
 

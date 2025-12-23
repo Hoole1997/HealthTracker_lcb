@@ -164,14 +164,14 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding
             includeStep.ivIcon.setImageResource(R.mipmap.ht_ic_home_step)
             includeStep.tvTitle.text = getString(R.string.ht_step_count)
             includeStep.btnAdd.apply {
-                text = getString(R.string.ht_hydrate_setting)
+                text = getString(R.string.ht_settings)
             }
 
             // Hydrate
             includeHydrate.ivIcon.setImageResource(R.mipmap.ht_ic_home_cup)
             includeHydrate.tvTitle.text = getString(R.string.ht_hydrate)
             includeHydrate.btnAdd.apply {
-                text = getString(R.string.ht_hydrate_setting)
+                text = getString(R.string.ht_settings)
             }
         }
     }

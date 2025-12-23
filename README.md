@@ -200,3 +200,13 @@
   - 这是一套“闭环”改动：每张表都同步完成 `@Entity`（table/column）+ `@Dao`（所有 `@Query` SQL）+ `typealias`。
   - 不关注数据迁移（使用 destructive migration）。
 - 验证：每次闭环后均通过 `./gradlew :app:assembleInternalDebug` 编译验证（含 Room/KSP 代码生成）。
+
+## 2025-12-23 新增底部 Tab：Settings
+
+- 新增第 5 个底部导航 Tab（Settings），接入 `TabLayout + ViewPager + FragmentsAdapter`。
+- 图标资源新增：
+  - `ht_ic_tab_settings_normal.xml`
+  - `ht_ic_tab_settings_selected.xml`
+  - `ht_selector_nav_settings.xml`
+- 新增 `SettingsFragment`（占位实现）：复用 Setting 页的列表交互（语言/反馈/隐私/条款），并通过 `ActivityResultLauncher` 处理语言变更后刷新。
+- 验证：已执行 `./gradlew :app:assembleInternalDebug` 编译通过。
