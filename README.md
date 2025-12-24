@@ -214,6 +214,19 @@
   - `app/src/main/res/layout/ht_activity_language_select.xml`
 - 验证：`./gradlew :app:assembleInternalDebug`
 
+## 2025-12-24 个人信息页迁移（Compose 承载，方案A）
+
+- 目标：将 `ProfileActivity` 的 UI 迁移到 Compose，但保留 Activity 入口/返回处理（含插屏逻辑）与 `MODE_GUIDE / MODE_SETTINGS` 行为不变。
+- 实现方式：
+  - `ht_activity_profile.xml` 精简为 `ComposeView` + 底部 `ad_container`（原生广告容器保持 View 体系，继续使用 `loadNative`）。
+  - `ProfileActivity` 在 `composeView.setContent { ... }` 中渲染性别选择/年龄选择/底部按钮区；保存逻辑仍走 `saveUserAge/saveUserGender` 并写入 `KEY_HAS_ADD_PROFILE`。
+  - 年龄滚轮继续复用原有 `NumberPickerView`：新增 `ht_layout_profile_age_picker.xml` 作为 AndroidView 的 inflate 容器，保留原 XML 属性（选中背景/渐变遮罩/字体等）。
+- 受影响文件：
+  - `app/src/main/java/com/daily/health/manager/ui/act/ProfileActivity.kt`
+  - `app/src/main/res/layout/ht_activity_profile.xml`
+  - `app/src/main/res/layout/ht_layout_profile_age_picker.xml`（新增）
+- 验证：`./gradlew :app:assembleInternalDebug`
+
 ## 2025-12-23 新增底部 Tab：Settings
 
 - 新增第 5 个底部导航 Tab（Settings），接入 `TabLayout + ViewPager + FragmentsAdapter`。
