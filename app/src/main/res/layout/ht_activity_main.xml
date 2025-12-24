@@ -11,8 +11,6 @@
         android:layout_height="@dimen/home_top_bar_height"
         android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-
-
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -25,7 +23,7 @@
             android:includeFontPadding="false"
             android:text="@string/ht_home"
             android:textColor="@color/t1"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_18"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/iv_remind"
             app:layout_constraintStart_toStartOf="parent"

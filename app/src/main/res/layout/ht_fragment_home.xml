@@ -118,7 +118,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/ht_record_now"
-                app:autoSizeMaxTextSize="@dimen/sp_20"
+                app:autoSizeMaxTextSize="@dimen/sp_16"
                 app:autoSizeMinTextSize="@dimen/sp_10"
                 app:autoSizeStepGranularity="1sp"
                 app:autoSizeTextType="uniform"
