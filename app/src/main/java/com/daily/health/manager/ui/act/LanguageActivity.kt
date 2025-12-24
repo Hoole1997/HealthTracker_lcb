@@ -22,8 +22,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -257,20 +261,14 @@ private fun TopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (applyChange) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { onBack() },
-                contentAlignment = Alignment.Center
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier.size(48.dp)
             ) {
-                Image(
+                Icon(
                     painter = painterResource(R.drawable.ht_ic_back),
                     contentDescription = "back",
-                    modifier = Modifier.size(24.dp)
+                    tint = Color.Unspecified,
                 )
             }
         } else {
@@ -285,15 +283,21 @@ private fun TopBar(
             modifier = Modifier.weight(1f)
         )
 
-        Text(
-            text = stringResource(R.string.ht_confirm),
-            color = confirmColor,
-            fontSize = 16.sp,
-            modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .clickable(enabled = confirmEnabled) { onConfirm() }
-                .padding(horizontal = 14.dp, vertical = 8.dp)
-        )
+        TextButton(
+            onClick = onConfirm,
+            enabled = confirmEnabled,
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = colorResource(R.color.c5),
+                disabledContentColor = Color(android.graphics.Color.DKGRAY)
+            ),
+            contentPadding = ButtonDefaults.TextButtonContentPadding
+        ) {
+            Text(
+                text = stringResource(R.string.ht_confirm),
+                color = confirmColor,
+                fontSize = 16.sp,
+            )
+        }
     }
 }
 
