@@ -10,6 +10,7 @@ import com.daily.health.manager.ui.dialog.HealthTagDialog
 import com.daily.health.manager.ui.dialog.LevelExplainDialog
 import com.daily.health.manager.ui.dialog.SaveCompleteDialog
 import com.daily.health.manager.ui.viewmodel.BpRecordViewModel
+import com.daily.health.manager.ui.act.HealthDetailActivity.DetailType
 import com.daily.health.manager.ui.weight.LeveDataFactory
 import com.daily.health.manager.utils.loadNative
 import com.daily.health.manager.utils.showInter
@@ -177,7 +178,7 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, HtActivityBpRecordB
     private fun goDetail(recordId:Long){
         SaveCompleteDialog.show(supportFragmentManager){
             showInter {
-                BpDetailActivity.start(this@BpRecordActivity, recordId)
+                HealthDetailActivity.start(this@BpRecordActivity, DetailType.BLOOD_PRESSURE, recordId)
                 finish()
             }
 

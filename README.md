@@ -241,6 +241,51 @@
   - `app/src/main/res/layout/ht_activity_insights_detail.xml`
 - 验证：`./gradlew :app:assembleInternalDebug`
 
+## 2025-12-24 合并 5 个 DetailActivity → `HealthDetailActivity`（Compose 承载，方案A）
+
+- 目标：将以下 5 个详情页合并为一个统一入口 Activity，并迁移为 Compose 宿主（Scheme A），**保证业务逻辑与 ViewModel 不变**。
+  - `BsDetailActivity`
+  - `BpDetailActivity`
+  - `BmiDetailActivity`
+  - `HeartRateDetailActivity`
+  - `CholesterolDetailActivity`
+
+### 实现方式（低风险迁移）
+
+- 新增统一入口：`app/src/main/java/com/daily/health/manager/ui/act/HealthDetailActivity.kt`
+- 新增宿主布局：`app/src/main/res/layout/ht_activity_health_detail.xml`（仅包含 `ComposeView`）
+- 在 `HealthDetailActivity` 内部：
+  - `ComposeView.setContent { AndroidView(...) }`
+  - `AndroidView` 中通过 `LayoutInflater.inflate(...)` 按类型加载原 5 套 detail XML（完全复用原 View 结构与自定义控件）
+  - 复用原 5 个 ViewModel（不合并），并保持各自的数据绑定/Flow 收集/图表渲染逻辑
+
+### 关键兼容点
+
+- **埋点/返回事件**：`BaseInterActivity` 原先通过 Activity class 判断 `HealthType`。
+  - 现在 `HealthDetailActivity` 通过覆写 `getCurrentHealthType()` 提供当前类型，使 `ResultPage_Back` 埋点保持一致。
+- **专家建议遮罩控件**：`ExpertAdviceView` 原先通过 Activity class 识别 `HealthType`。
+  - 新增 `HealthTypeProvider`，并让 `ExpertAdviceView` 优先从该接口获取 `HealthType`，兼容合并后的入口。
+- **收尾清理**：删除旧 5 个 DetailActivity 源文件，并移除 `BaseInterActivity`/`ExpertAdviceView` 中对旧 Activity class 的分支判断，避免误用与死代码。
+- **SavedStateHandle**：`BpDetailViewModel`/`HeartRateDetailViewModel` 在 init 读取 `record_id`。
+  - `HealthDetailActivity.start(...)` 同时写入 `record_id`（并兼容写入 BMI 的 `extra_record_id`）。
+  - 在 Activity 内按与 `BaseMVVMActivity` 一致的方式（Koin + `CreationExtras.createSavedStateHandle()`）创建 VM，确保依赖注入与参数读取一致。
+- **BP 特殊返回**：保留 `BpDetailActivity` 中返回前 `stopCountdown()` 的行为（在统一 Activity 的 BP 分支复刻）。
+
+### 验证清单
+
+建议对每个类型（BS/BP/BMI/HR/CHO）分别验证：
+
+- **入口**：
+  - `HistoryRecordActivity` 点击记录
+  - `HealthStatisticsActivity` 点击历史列表
+  - 各 `*RecordActivity` 保存完成弹窗后进入详情
+- **展示一致性**：头部数值/时间/标签、等级视图、专家建议文案
+- **图表**：`HealthLineChartManager` 渲染/滚动/数据刷新
+- **广告**：native ad 加载与展示
+- **遮罩**：`ExpertAdviceView` 解锁/倒计时/返回后不重复触发
+- **返回**：触发插屏 + `finish()`；`ResultPage_Back` 的 `HealthType` 正确
+- **编辑/删除**：编辑跳转对应 RecordActivity；删除确认弹窗与删除后返回逻辑正常
+
 ## 2025-12-23 新增底部 Tab：Settings
 
 - 新增第 5 个底部导航 Tab（Settings），接入 `TabLayout + ViewPager + FragmentsAdapter`。

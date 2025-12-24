@@ -26,6 +26,7 @@ import com.daily.health.manager.ui.history.CholesterolHistoryItem
 import com.daily.health.manager.ui.history.HeartRateHistoryItem
 import com.daily.health.manager.ui.history.HistoryAdapter
 import com.daily.health.manager.ui.history.HistoryRecordItem
+import com.daily.health.manager.ui.act.HealthDetailActivity
 import com.daily.health.manager.ui.widget.StatisticDimensionMenu
 import com.daily.health.manager.viewmodel.HealthStatisticsViewModel
 import com.daily.health.manager.viewmodel.StatisticDimension
@@ -211,11 +212,11 @@ class HealthStatisticsActivity :
         historyAdapter.setOnItemClickListener(object : HistoryAdapter.OnItemClickListener {
             override fun onItemClick(item: HistoryRecordItem, position: Int) {
                 when (item.getRecordType()) {
-                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> BsDetailActivity.start(this@HealthStatisticsActivity, item.getId())
-                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> BpDetailActivity.start(this@HealthStatisticsActivity, item.getId())
-                    HistoryRecordItem.RecordType.CHOLESTEROL -> CholesterolDetailActivity.start(this@HealthStatisticsActivity, item.getId())
-                    HistoryRecordItem.RecordType.HEART_RATE -> HeartRateDetailActivity.start(this@HealthStatisticsActivity, item.getId())
-                    HistoryRecordItem.RecordType.BMI_RECORD -> BmiDetailActivity.start(this@HealthStatisticsActivity, item.getId())
+                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> HealthDetailActivity.start(this@HealthStatisticsActivity, HealthDetailActivity.DetailType.BLOOD_SUGAR, item.getId())
+                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> HealthDetailActivity.start(this@HealthStatisticsActivity, HealthDetailActivity.DetailType.BLOOD_PRESSURE, item.getId())
+                    HistoryRecordItem.RecordType.CHOLESTEROL -> HealthDetailActivity.start(this@HealthStatisticsActivity, HealthDetailActivity.DetailType.CHOLESTEROL, item.getId())
+                    HistoryRecordItem.RecordType.HEART_RATE -> HealthDetailActivity.start(this@HealthStatisticsActivity, HealthDetailActivity.DetailType.HEART_RATE, item.getId())
+                    HistoryRecordItem.RecordType.BMI_RECORD -> HealthDetailActivity.start(this@HealthStatisticsActivity, HealthDetailActivity.DetailType.BMI, item.getId())
                 }
             }
 

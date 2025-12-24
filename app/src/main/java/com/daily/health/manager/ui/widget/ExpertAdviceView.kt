@@ -1,6 +1,7 @@
 package com.daily.health.manager.ui.widget
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -14,17 +15,13 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.daily.health.manager.R
 import com.daily.health.manager.databinding.HtLayoutExpertAdviceBinding
-import com.daily.health.manager.ui.act.BmiDetailActivity
-import com.daily.health.manager.ui.act.BpDetailActivity
-import com.daily.health.manager.ui.act.BsDetailActivity
-import com.daily.health.manager.ui.act.CholesterolDetailActivity
-import com.daily.health.manager.ui.act.HeartRateDetailActivity
 import com.daily.health.manager.ui.act.showFreeLockConfirm
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
 import com.daily.health.manager.ui.tracker.HealthType
+import com.daily.health.manager.ui.tracker.HealthTypeProvider
 import com.daily.health.manager.ui.tracker.trackAdAutoCancel
 import com.daily.health.manager.ui.tracker.trackAdAutoPlay
 import com.daily.health.manager.ui.tracker.trackRecommCancel
@@ -169,15 +166,6 @@ class ExpertAdviceView @JvmOverloads constructor(
      */
     fun setAdviceText(text: String) {
         binding.tvAdviceContent.text = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
-    }
-
-    private val pageName = when(context){
-        is BpDetailActivity -> "Blood Pressure"
-        is BsDetailActivity -> "Blood Sugar"
-        is CholesterolDetailActivity -> "Cholesterol"
-        is BmiDetailActivity -> "BMI"
-        is HeartRateDetailActivity -> "Heart Rate"
-        else -> null
     }
     
     /**
@@ -446,13 +434,13 @@ class ExpertAdviceView @JvmOverloads constructor(
     }
 
     private fun getHealthType(activity: Context): HealthType {
-        return when (activity) {
-            is BsDetailActivity -> HealthType.BLOOD_SUGAR
-            is BpDetailActivity -> HealthType.BLOOD_PRESSURE
-            is CholesterolDetailActivity -> HealthType.CHOLESTEROL
-            is BmiDetailActivity -> HealthType.BMI
-            is HeartRateDetailActivity -> HealthType.HEART_RATE
-            else -> HealthType.OTHER
+        var ctx: Context? = activity
+        while (ctx is ContextWrapper) {
+            if (ctx is HealthTypeProvider) {
+                return ctx.getHealthType()
+            }
+            ctx = ctx.baseContext
         }
+        return (ctx as? HealthTypeProvider)?.getHealthType() ?: HealthType.OTHER
     }
 }

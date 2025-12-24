@@ -3,16 +3,12 @@ package com.daily.health.manager.ad
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import com.daily.health.manager.ui.act.BmiDetailActivity
 import com.daily.health.manager.ui.act.BmiRecordActivity
-import com.daily.health.manager.ui.act.BpDetailActivity
 import com.daily.health.manager.ui.act.BpRecordActivity
-import com.daily.health.manager.ui.act.BsDetailActivity
 import com.daily.health.manager.ui.act.BsRecordActivity
-import com.daily.health.manager.ui.act.CholesterolDetailActivity
 import com.daily.health.manager.ui.act.CholesterolRecordActivity
+import com.daily.health.manager.ui.act.HealthDetailActivity
 import com.daily.health.manager.ui.act.HealthStatisticsActivity
-import com.daily.health.manager.ui.act.HeartRateDetailActivity
 import com.daily.health.manager.ui.act.HeartRateRecordActivity
 import com.daily.health.manager.ui.act.HydrateActivity
 import com.daily.health.manager.ui.act.StepCountActivity
@@ -78,11 +74,10 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
             is HydrateActivity -> EventType.NEW_RECORD_PAGE to HealthType.HYDRATE
 
             // Detail Activities -> ResultPage_Back
-            is BsDetailActivity -> EventType.RESULT_PAGE to HealthType.BLOOD_SUGAR
-            is BpDetailActivity -> EventType.RESULT_PAGE to HealthType.BLOOD_PRESSURE
-            is CholesterolDetailActivity -> EventType.RESULT_PAGE to HealthType.CHOLESTEROL
-            is HeartRateDetailActivity -> EventType.RESULT_PAGE to HealthType.HEART_RATE
-            is BmiDetailActivity -> EventType.RESULT_PAGE to HealthType.BMI
+            is HealthDetailActivity -> {
+                val healthType = getCurrentHealthType()
+                EventType.RESULT_PAGE to healthType
+            }
 
             // Statistics Activity -> Trackpage_Back
             is HealthStatisticsActivity -> {

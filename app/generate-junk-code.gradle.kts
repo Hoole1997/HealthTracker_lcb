@@ -10,9 +10,9 @@ tasks.register("generateJunkCode") {
     outputs.upToDateWhen { false } 
 
     doLast {
-        if (outputDir.exists()) {
-            outputDir.deleteRecursively()
-        }
+        // Do NOT delete the whole output directory.
+        // KotlinCompile may still hold a stale file list (configuration cache / incremental compilation).
+        // If we delete here, compilation can fail with: "source file or directory not found".
         outputDir.mkdirs()
 
         val packageName = "com.daily.health.manager.junk"

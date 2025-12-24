@@ -12,6 +12,7 @@ import com.daily.health.manager.databinding.HtLayoutCholesterolDetailValueBindin
 import com.daily.health.manager.ui.dialog.LevelExplainDialog
 import com.daily.health.manager.ui.dialog.SaveCompleteDialog
 import com.daily.health.manager.ui.viewmodel.CholesterolRecordViewModel
+import com.daily.health.manager.ui.act.HealthDetailActivity.DetailType
 import com.daily.health.manager.ui.weight.LeveDataFactory
 import com.daily.health.manager.ui.widget.NumberPickerView
 import com.daily.health.manager.util.CholesterolMetrics
@@ -96,7 +97,7 @@ class CholesterolRecordActivity :
     private fun goDetail(recordId:Long){
         SaveCompleteDialog.show(supportFragmentManager){
            showInter {
-               CholesterolDetailActivity.start(this@CholesterolRecordActivity,recordId)
+               HealthDetailActivity.start(this@CholesterolRecordActivity, DetailType.CHOLESTEROL, recordId)
                finish()
            }
         }

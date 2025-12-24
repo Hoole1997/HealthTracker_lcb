@@ -19,6 +19,7 @@ import com.daily.health.manager.ui.history.CholesterolHistoryItem
 import com.daily.health.manager.ui.history.HeartRateHistoryItem
 import com.daily.health.manager.ui.history.HistoryAdapter
 import com.daily.health.manager.ui.history.HistoryRecordItem
+import com.daily.health.manager.ui.act.HealthDetailActivity.DetailType
 import com.daily.health.manager.ui.viewmodel.HistoryViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
@@ -151,19 +152,19 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, HtActivityHistor
     private fun handleItemClick(item: HistoryRecordItem) {
         when (item.getRecordType()) {
             HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                BsDetailActivity.start(this, item.getId())
+                HealthDetailActivity.start(this, DetailType.BLOOD_SUGAR, item.getId())
             }
             HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                BpDetailActivity.start(this, item.getId())
+                HealthDetailActivity.start(this, DetailType.BLOOD_PRESSURE, item.getId())
             }
             HistoryRecordItem.RecordType.CHOLESTEROL -> {
-                CholesterolDetailActivity.start(this, item.getId())
+                HealthDetailActivity.start(this, DetailType.CHOLESTEROL, item.getId())
             }
             HistoryRecordItem.RecordType.HEART_RATE -> {
-                HeartRateDetailActivity.start(this, item.getId())
+                HealthDetailActivity.start(this, DetailType.HEART_RATE, item.getId())
             }
             HistoryRecordItem.RecordType.BMI_RECORD -> {
-                BmiDetailActivity.start(this, item.getId())
+                HealthDetailActivity.start(this, DetailType.BMI, item.getId())
             }
         }
     }

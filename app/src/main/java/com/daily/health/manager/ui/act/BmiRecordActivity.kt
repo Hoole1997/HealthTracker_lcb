@@ -14,6 +14,7 @@ import com.daily.health.manager.ui.dialog.HealthTagDialog
 import com.daily.health.manager.ui.dialog.LevelExplainDialog
 import com.daily.health.manager.ui.dialog.SaveCompleteDialog
 import com.daily.health.manager.ui.viewmodel.BmiRecordViewModel
+import com.daily.health.manager.ui.act.HealthDetailActivity.DetailType
 import com.daily.health.manager.ui.weight.LeveDataFactory
 import com.daily.health.manager.utils.loadNative
 import com.daily.health.manager.utils.showInter
@@ -171,7 +172,7 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, HtActivityBmiRec
     private fun goDetail(recordId:Long){
         SaveCompleteDialog.show(supportFragmentManager){
            showInter {
-               BmiDetailActivity.start(this@BmiRecordActivity,recordId)
+               HealthDetailActivity.start(this@BmiRecordActivity, DetailType.BMI, recordId)
                finish()
            }
         }

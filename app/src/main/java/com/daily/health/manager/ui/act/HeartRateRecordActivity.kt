@@ -10,6 +10,7 @@ import com.daily.health.manager.ui.dialog.HealthTagDialog
 import com.daily.health.manager.ui.dialog.LevelExplainDialog
 import com.daily.health.manager.ui.dialog.SaveCompleteDialog
 import com.daily.health.manager.ui.viewmodel.HeartRateRecordViewModel
+import com.daily.health.manager.ui.act.HealthDetailActivity.DetailType
 import com.daily.health.manager.ui.weight.LeveDataFactory
 import com.daily.health.manager.utils.loadNative
 import com.daily.health.manager.utils.showInter
@@ -92,7 +93,7 @@ class HeartRateRecordActivity :
     private fun goDetail(recordId:Long){
         SaveCompleteDialog.show(supportFragmentManager){
             showInter {
-                HeartRateDetailActivity.start(this@HeartRateRecordActivity,recordId)
+                HealthDetailActivity.start(this@HeartRateRecordActivity, DetailType.HEART_RATE, recordId)
                 finish()
             }
         }

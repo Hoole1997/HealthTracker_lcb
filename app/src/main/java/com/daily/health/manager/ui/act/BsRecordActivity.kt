@@ -28,6 +28,7 @@ import com.daily.health.manager.ui.dialog.StatusSelectDialog
 import com.daily.health.manager.ui.tracker.HealthType
 import com.daily.health.manager.ui.tracker.trackAddNewRecord
 import com.daily.health.manager.ui.viewmodel.BsRecordViewModel
+import com.daily.health.manager.ui.act.HealthDetailActivity.DetailType
 import com.daily.health.manager.ui.weight.RulerView
 import com.daily.health.manager.util.BloodSugarScaleHelper
 import com.daily.health.manager.utils.getTodayStart
@@ -213,7 +214,7 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, HtActivityBsRecordB
     private fun goDetail(recordId:Long){
         SaveCompleteDialog.show(supportFragmentManager){
            showInter {
-               BsDetailActivity.start(this@BsRecordActivity, recordId)
+               HealthDetailActivity.start(this@BsRecordActivity, DetailType.BLOOD_SUGAR, recordId)
                finish()
            }
         }

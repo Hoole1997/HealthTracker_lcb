@@ -84,7 +84,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.act.BsDetailActivity"
+            android:name=".ui.act.HealthDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
@@ -118,35 +118,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ui.act.HeartRateDetailActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-        <activity
             android:name=".ui.act.CholesterolRecordActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".ui.act.BpDetailActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".ui.act.BmiDetailActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".ui.act.CholesterolDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
