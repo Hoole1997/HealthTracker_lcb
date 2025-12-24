@@ -198,8 +198,21 @@
   - 列名统一为 `c01..`（每张表内部顺序递增）
 - 说明：
   - 这是一套“闭环”改动：每张表都同步完成 `@Entity`（table/column）+ `@Dao`（所有 `@Query` SQL）+ `typealias`。
-  - 不关注数据迁移（使用 destructive migration）。
-- 验证：每次闭环后均通过 `./gradlew :app:assembleInternalDebug` 编译验证（含 Room/KSP 代码生成）。
+
+## 2025-12-24 语言选择页迁移（Compose 承载，方案A）
+
+- 目标：将 `LanguageActivity` 的 UI 完全迁移到 Compose，但保留 Activity 入口与结果回传协议（避免影响 Settings 页的 `ActivityResult` 逻辑）。
+- 实现方式：
+  - `ht_activity_language_select.xml` 精简为 `ComposeView` + 底部 `ad_container`（原生广告容器保持 View 体系）。
+  - `LanguageActivity` 使用 `composeView.setContent { ... }` 渲染顶部栏 + 语言列表；确认按钮启用逻辑与原实现保持一致。
+  - Confirm 点击后仍执行：`LanguageUtils.setAppLanguage(...)` + `remoteConfigManager.clearCache<PushConfig>()`；
+    - `apply_change=true`：`setResult(RESULT_OK)` 通知设置页 `recreate()`；
+    - 否则：按原逻辑跳转 `GuideActivity/MainActivity` 并透传 extras。
+  - 选择项状态通过回调同步回 Activity，用于 `onSaveInstanceState` 恢复。
+- 受影响文件：
+  - `app/src/main/java/com/daily/health/manager/ui/act/LanguageActivity.kt`
+  - `app/src/main/res/layout/ht_activity_language_select.xml`
+- 验证：`./gradlew :app:assembleInternalDebug`
 
 ## 2025-12-23 新增底部 Tab：Settings
 

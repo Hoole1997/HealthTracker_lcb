@@ -5,77 +5,14 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/action_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/actionBarSize"
-        android:background="@color/c1"
-        android:gravity="center_vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_back"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:scaleType="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ht_ic_back"
-            android:visibility="gone"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_title"
-            style="@style/TextViewFont_RobotoBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginTop="@dimen/dp_1"
-            app:layout_goneMarginStart="@dimen/dp_16"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:text="@string/ht_choose_language"
-            android:textColor="@color/t1"
-            android:textSize="@dimen/sp_18"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_back"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_confirm"
-            style="@style/TextViewFont_RobotoRegular"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="@dimen/dp_14"
-            android:enabled="false"
-            android:text="@string/ht_confirm"
-            android:textColor="@color/ht_selector_btn_color"
-            android:textSize="@dimen/sp_16"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_language"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
-        android:clipToPadding="false"
-        android:padding="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/action_bar"
         app:layout_constraintBottom_toTopOf="@id/ad_container"
-        tools:itemCount="12"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/ht_item_app_language"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.daily.health.manager.ui.weight.MaxHeightFrameLayout
         android:id="@+id/ad_container"

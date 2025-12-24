@@ -2,28 +2,58 @@ package com.daily.health.manager.ui.act
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.RecyclerView
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
 import com.daily.health.manager.config.models.PushConfig
 import com.daily.health.manager.databinding.HtActivityLanguageSelectBinding
-import com.daily.health.manager.databinding.HtItemAppLanguageBinding
-import com.daily.health.manager.ui.weight.WrapLayoutLinearLayoutManager
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.config.core.RemoteConfigManager
-import com.healthtracker.framework.ext.click
-import com.healthtracker.framework.ext.clickWithDuration
-import com.healthtracker.framework.ext.gone
-import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.LanguageUtils.getLanguageList
-import com.healthtracker.framework.util.getRobotoBold
-import com.healthtracker.framework.util.getRobotoMedium
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
@@ -39,51 +69,52 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, HtActivityLanguageSelect
     private val remoteConfigManager: RemoteConfigManager by inject()
 
     private var applyChange = false
-    private var languageAdapter: LanguageAdapter? = null
+    private var languageList: List<LanguageUtils.LangBean> = emptyList()
+    private var savedSelectIndex: Int = -1
     
     override fun initView(savedInstanceState: Bundle?) {
         applyChange = intent?.getBooleanExtra(KEY_APPLY_CHANGE, false) ?: false
         
-        val languageList = getLanguageList(this@LanguageActivity)
-        val savedSelectIndex = savedInstanceState?.getInt(KEY_SELECT_INDEX, -1) ?: -1
+        languageList = getLanguageList(this@LanguageActivity)
+        savedSelectIndex = savedInstanceState?.getInt(KEY_SELECT_INDEX, -1) ?: -1
+
+        if (savedSelectIndex !in languageList.indices) {
+            val currentLangId = LanguageUtils.getAppLanguage(this@LanguageActivity)
+            savedSelectIndex = languageList.indexOfFirst { it.id == currentLangId }.takeIf { it >= 0 } ?: 0
+        }
         
         with(mViewBind){
-            rvLanguage.layoutManager = WrapLayoutLinearLayoutManager(this@LanguageActivity)
-            rvLanguage.adapter = LanguageAdapter(languageList, savedSelectIndex).also { 
-                languageAdapter = it 
+            composeView.setViewCompositionStrategy(
+                ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+            )
+            composeView.setContent {
+                LanguageSelectScreen(
+                    applyChange = applyChange,
+                    list = languageList,
+                    savedSelectIndex = savedSelectIndex,
+                    onSelectedIndexChanged = { newIndex ->
+                        this@LanguageActivity.savedSelectIndex = newIndex
+                    },
+                    onBack = { finish() },
+                    onConfirm = { selectedIndex ->
+                        onChoiceLangDone(selectedIndex)
+                    },
+                    onReportGuide = {
+                        reportGuide(1)
+                    }
+                )
             }
-            onSelectChanged()
 
-            if (applyChange) {
-                btnBack.isVisible = true
-                btnBack.click {
-                    finish()
-                }
-            }else{
-                reportGuide(1)
-            }
-            tvConfirm.clickWithDuration {
-                onChoiceLangDone()
-            }
             loadNative(adContainer, NativeAdStyle.CARD_7)
         }
     }
 
 
-    private fun onSelectChanged() {
-        val selectedLang = languageAdapter?.getSelectedLang()?.id ?: return
-        val currentLang = LanguageUtils.getAppLanguage(this)
-        val isFirstSelection = LanguageUtils.getSavedLanguage().isEmpty()
-        
-        mViewBind.tvConfirm.isEnabled = selectedLang != currentLang || isFirstSelection
-    }
-
-    private fun onChoiceLangDone() {
-        languageAdapter?.let {
-            LanguageUtils.setAppLanguage(it.getSelectedLang().id)
-            // 语言改变后，清除 PushConfig 缓存，以便下次获取时使用新语言重新解析
-            remoteConfigManager.clearCache<PushConfig>()
-        }
+    private fun onChoiceLangDone(selectedIndex: Int) {
+        val selectedLangId = languageList.getOrNull(selectedIndex)?.id ?: return
+        LanguageUtils.setAppLanguage(selectedLangId)
+        // 语言改变后，清除 PushConfig 缓存，以便下次获取时使用新语言重新解析
+        remoteConfigManager.clearCache<PushConfig>()
         if (applyChange) {
             // 通知设置页面需要重建以应用语言变更
             setResult(RESULT_OK)
@@ -97,83 +128,9 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, HtActivityLanguageSelect
         finish()
     }
 
-
-    private inner class LanguageAdapter(
-        private val list: List<LanguageUtils.LangBean>,
-        savedSelectIndex: Int = -1
-    ) : RecyclerView.Adapter<LanguageAdapter.LanguageViewHolder>() {
-        
-        var selectIndex: Int = if (savedSelectIndex >= 0 && savedSelectIndex < list.size) {
-            savedSelectIndex
-        } else {
-            // 查找当前语言在列表中的位置
-            val currentLang = LanguageUtils.getAppLanguage(this@LanguageActivity)
-            list.indexOfFirst { it.id == currentLang }.takeIf { it >= 0 } ?: 0
-        }
-            private set
-
-        fun getSelectedLang() = list[selectIndex]
-        
-        fun updateSelectIndex(newIndex: Int) {
-            val oldIndex = selectIndex
-            selectIndex = newIndex
-            notifyItemChanged(oldIndex)
-            notifyItemChanged(selectIndex)
-            onSelectChanged() // Notify activity about selection change
-        }
-
-        inner class LanguageViewHolder(private val itemBinding: HtItemAppLanguageBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-
-            fun bind(position: Int) {
-                itemBinding.apply {
-                    val isSelected = selectIndex == position
-                    
-                    if (isSelected) {
-                        ivSelect.visible()
-                        itemBinding.root.background = ContextCompat.getDrawable(
-                            this@LanguageActivity,
-                            R.drawable.ht_bg_rect_language_selected
-                        )
-                        tvLang.setTextColor(ContextCompat.getColor(this@LanguageActivity, R.color.c5))
-                        tvLang.typeface = getRobotoBold(this@LanguageActivity)
-                    } else {
-                        ivSelect.gone()
-                        itemBinding.root.background = ContextCompat.getDrawable(
-                            this@LanguageActivity,
-                            R.drawable.ht_bg_rect_white_8
-                        )
-                        tvLang.setTextColor(ContextCompat.getColor(this@LanguageActivity, R.color.t1))
-                        tvLang.typeface = getRobotoMedium(this@LanguageActivity)
-                    }
-                    tvLang.text = list[position].displayName
-                    root.isEnabled = !isSelected
-                    root.click {
-                        if (selectIndex == position) {
-                            return@click
-                        }
-                        updateSelectIndex(position)
-                    }
-                }
-            }
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LanguageViewHolder {
-            val itemBinding = HtItemAppLanguageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return LanguageViewHolder(itemBinding)
-        }
-
-        override fun getItemCount() = list.size
-
-        override fun onBindViewHolder(holder: LanguageViewHolder, position: Int) {
-            holder.bind(position)
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        languageAdapter?.let {
-            outState.putInt(KEY_SELECT_INDEX, it.selectIndex)
-        }
+        outState.putInt(KEY_SELECT_INDEX, savedSelectIndex)
     }
 
     override fun shouldDisableBackPressed() = true
@@ -183,5 +140,207 @@ class LanguageActivity: BaseMVVMActivity<BaseViewModel, HtActivityLanguageSelect
         private const val TAG = "LanguageActivity"
 
         const val KEY_APPLY_CHANGE = "apply_change"
+    }
+}
+
+@Composable
+private fun LanguageSelectScreen(
+    applyChange: Boolean,
+    list: List<LanguageUtils.LangBean>,
+    savedSelectIndex: Int,
+    onSelectedIndexChanged: (Int) -> Unit,
+    onBack: () -> Unit,
+    onConfirm: (selectedIndex: Int) -> Unit,
+    onReportGuide: () -> Unit,
+) {
+    val context = LocalContext.current
+    val resolvedInitialIndex = remember(list, savedSelectIndex) {
+        when {
+            savedSelectIndex in list.indices -> savedSelectIndex
+            else -> {
+                val current = LanguageUtils.getAppLanguage(context)
+                list.indexOfFirst { it.id == current }.takeIf { it >= 0 } ?: 0
+            }
+        }
+    }
+
+    var selectedIndex by rememberSaveable {
+        mutableIntStateOf(resolvedInitialIndex)
+    }
+
+    LaunchedEffect(selectedIndex) {
+        onSelectedIndexChanged(selectedIndex)
+    }
+
+    LaunchedEffect(applyChange) {
+        if (!applyChange) {
+            onReportGuide()
+        }
+    }
+
+    val isFirstSelection by remember {
+        derivedStateOf { LanguageUtils.getSavedLanguage().isEmpty() }
+    }
+    val selectedLangId by remember(list, selectedIndex) {
+        derivedStateOf { list.getOrNull(selectedIndex)?.id }
+    }
+    val currentLangId by remember {
+        derivedStateOf { LanguageUtils.getAppLanguage(context) }
+    }
+    val confirmEnabled by remember {
+        derivedStateOf {
+            val selected = selectedLangId ?: return@derivedStateOf false
+            selected != currentLangId || isFirstSelection
+        }
+    }
+
+    val bgColor = colorResource(R.color.c1)
+    val titleColor = colorResource(R.color.t1)
+    val primaryColor = colorResource(R.color.c5)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(bgColor)
+    ) {
+        TopBar(
+            applyChange = applyChange,
+            confirmEnabled = confirmEnabled,
+            onBack = onBack,
+            onConfirm = { onConfirm(selectedIndex) }
+        )
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = colorResource(R.color.bg_window))
+                .weight(1f),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            itemsIndexed(list) { index, item ->
+                val isSelected = index == selectedIndex
+                LanguageItem(
+                    title = item.displayName,
+                    isSelected = isSelected,
+                    onClick = {
+                        if (!isSelected) {
+                            selectedIndex = index
+                        }
+                    },
+                    titleColor = if (isSelected) primaryColor else titleColor,
+                    titleFontFamily = FontFamily.Default,
+                    titleFontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TopBar(
+    applyChange: Boolean,
+    confirmEnabled: Boolean,
+    onBack: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    val bgColor = colorResource(R.color.c1)
+    val titleColor = colorResource(R.color.t1)
+    val confirmColor = if (confirmEnabled) colorResource(R.color.c5) else Color(android.graphics.Color.DKGRAY)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(bgColor)
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (applyChange) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { onBack() },
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ht_ic_back),
+                    contentDescription = "back",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        } else {
+            Spacer(modifier = Modifier.width(48.dp))
+        }
+
+        Text(
+            text = stringResource(R.string.ht_choose_language),
+            color = titleColor,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(1f)
+        )
+
+        Text(
+            text = stringResource(R.string.ht_confirm),
+            color = confirmColor,
+            fontSize = 16.sp,
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .clickable(enabled = confirmEnabled) { onConfirm() }
+                .padding(horizontal = 14.dp, vertical = 8.dp)
+        )
+    }
+}
+
+@Composable
+private fun LanguageItem(
+    title: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    titleColor: Color,
+    titleFontFamily: FontFamily,
+    titleFontWeight: FontWeight,
+) {
+    val shape = RoundedCornerShape(8.dp)
+    val bgColor = if (isSelected) colorResource(R.color.color_EFFBF7) else Color.White
+    val borderColor = if (isSelected) colorResource(R.color.c5) else Color.Transparent
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = shape,
+        color = bgColor,
+        border = if (isSelected) BorderStroke(1.dp, borderColor) else null,
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
+        onClick = onClick,
+        enabled = !isSelected,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 18.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                color = titleColor,
+                fontSize = 16.sp,
+                fontFamily = titleFontFamily,
+                fontWeight = titleFontWeight,
+                modifier = Modifier.weight(1f)
+            )
+            if (isSelected) {
+                Image(
+                    painter = painterResource(R.drawable.ht_ic_checked),
+                    contentDescription = "selected",
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        }
     }
 }
