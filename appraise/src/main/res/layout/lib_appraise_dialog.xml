@@ -157,7 +157,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/lib_rate_button"
-                style="@style/TextViewFont_RobotoSignificant"
+                style="@style/TextViewFont_RobotoBold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_click_c5_c8_12dp"

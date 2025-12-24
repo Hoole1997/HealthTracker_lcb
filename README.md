@@ -210,3 +210,15 @@
   - `ht_selector_nav_settings.xml`
 - 新增 `SettingsFragment`（占位实现）：复用 Setting 页的列表交互（语言/反馈/隐私/条款），并通过 `ActivityResultLauncher` 处理语言变更后刷新。
 - 验证：已执行 `./gradlew :app:assembleInternalDebug` 编译通过。
+
+## 2025-12-24 字体替换（Roboto → Inter Variable）
+
+- 目标：将项目中统一使用的 Roboto 字体替换为 Inter Variable（尽量不改调用方，降低改动面）。
+- 策略：保留原有样式/方法命名（如 `TextViewFont_Roboto*`、`getRoboto*()`），仅将其内部指向的字体资源从 `roboto_*` 切换为 `inter_*`（基于 `inter_variable.ttf` 的字重包装资源）。
+- 修改点：
+  - `framework/src/main/res/font/inter_*.xml`：新增 `inter_light/regular/medium/bold/black` 字重包装资源（内部引用 `inter_variable.ttf` 并固定 `wght`）。
+  - `framework/src/main/res/values/font_style.xml`：`TextViewFont_Roboto*` 样式内部字体引用改为 `@font/inter_*`。
+  - `app/src/main/res/values/styls.xml`：`MaterialButton.b1/b2/b3` 字体引用改为 `@font/inter_*`。
+  - `framework/src/main/java/com/healthtracker/framework/util/FontUtils.kt`：`getRoboto*()` 内部改为返回 `R.font.inter_*`。
+  - `app/src/main/java/com/daily/health/manager/ui/act/SplashActivity.kt`：Compose 侧字体引用改为 `FrameworkR.font.inter_*`。
+- 验证建议：执行 `./gradlew :app:assembleInternalDebug`。

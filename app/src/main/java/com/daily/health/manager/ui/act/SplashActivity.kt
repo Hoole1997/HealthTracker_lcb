@@ -641,7 +641,7 @@ private fun SplashScreen(
                 text = stringResource(id = R.string.app_name),
                 color = colorResource(id = R.color.c5).copy(alpha = contentAlpha.value),
                 fontSize = 22.sp,
-                fontFamily = FontFamily(Font(FrameworkR.font.roboto_bold)),
+                fontFamily = FontFamily(Font(FrameworkR.font.inter_bold)),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.constrainAs(appName) {
                     top.linkTo(logo.bottom, margin = 20.dp)
@@ -684,7 +684,7 @@ private fun SplashScreen(
                 text = stringResource(id = R.string.ht_loading),
                 color = colorResource(id = R.color.color_666),
                 fontSize = 14.sp,
-                fontFamily = FontFamily(Font(FrameworkR.font.roboto_regular)),
+                fontFamily = FontFamily(Font(FrameworkR.font.inter_regular)),
                 modifier = Modifier.constrainAs(loadingText) {
                     top.linkTo(loadingBar.bottom, margin = 10.dp)
                     start.linkTo(loadingBar.start)
@@ -738,7 +738,7 @@ private fun RecentRecordCard(
                 text = title,
                 color = colorResource(id = R.color.t1),
                 fontSize = 14.sp,
-                fontFamily = FontFamily(Font(FrameworkR.font.roboto_black)),
+                fontFamily = FontFamily(Font(FrameworkR.font.inter_black)),
                 fontWeight = FontWeight.Black,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -757,7 +757,7 @@ private fun RecentRecordCard(
                         text = item.getPrimaryValue(),
                         color = colorResource(id = R.color.t1),
                         fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(FrameworkR.font.roboto_black)),
+                        fontFamily = FontFamily(Font(FrameworkR.font.inter_black)),
                         fontWeight = FontWeight.Black
                     )
                     val secondary = item.getSecondaryValue()
@@ -767,7 +767,7 @@ private fun RecentRecordCard(
                             text = secondary,
                             color = colorResource(id = R.color.t1),
                             fontSize = 18.sp,
-                            fontFamily = FontFamily(Font(FrameworkR.font.roboto_black)),
+                            fontFamily = FontFamily(Font(FrameworkR.font.inter_black)),
                             fontWeight = FontWeight.Black
                         )
                     }
@@ -776,7 +776,7 @@ private fun RecentRecordCard(
                         text = item.getUnit(),
                         color = colorResource(id = R.color.color_999),
                         fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(FrameworkR.font.roboto_regular))
+                        fontFamily = FontFamily(Font(FrameworkR.font.inter_regular))
                     )
                 }
 
@@ -795,7 +795,7 @@ private fun RecentRecordCard(
                         text = levelText,
                         color = colorResource(id = R.color.t1),
                         fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(FrameworkR.font.roboto_bold)),
+                        fontFamily = FontFamily(Font(FrameworkR.font.inter_bold)),
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -808,7 +808,7 @@ private fun RecentRecordCard(
                             color = colorResource(id = R.color.t1),
                             maxFontSize = 14.sp,
                             minFontSize = 6.sp,
-                            fontFamily = FontFamily(Font(FrameworkR.font.roboto_regular))
+                            fontFamily = FontFamily(Font(FrameworkR.font.inter_regular))
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -816,7 +816,7 @@ private fun RecentRecordCard(
                         text = timeText,
                         color = colorResource(id = R.color.color_999),
                         fontSize = 12.sp,
-                        fontFamily = FontFamily(Font(FrameworkR.font.roboto_regular)),
+                        fontFamily = FontFamily(Font(FrameworkR.font.inter_regular)),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

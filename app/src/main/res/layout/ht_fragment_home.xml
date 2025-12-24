@@ -37,7 +37,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_latest_bs_value"
-                style="@style/TextViewFont_RobotoBold"
+                style="@style/TextViewFont_RobotoBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"

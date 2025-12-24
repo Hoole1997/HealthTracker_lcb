@@ -2,27 +2,27 @@
 <resources>
     <!--300-->
     <style name="TextViewFont_RobotoLight">
-        <item name="android:fontFamily">@font/roboto_light</item>
-        <item name="fontFamily">@font/roboto_light</item>
+        <item name="android:fontFamily">@font/inter_light</item>
+        <item name="fontFamily">@font/inter_light</item>
     </style>
     <!--400-->
     <style name="TextViewFont_RobotoRegular">
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_regular</item>
     </style>
     <!--500-->
     <style name="TextViewFont_RobotoMedium">
-        <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+        <item name="fontFamily">@font/inter_medium</item>
     </style>
     <!--700-->
     <style name="TextViewFont_RobotoBold">
-        <item name="android:fontFamily">@font/roboto_bold</item>
-        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="fontFamily">@font/inter_bold</item>
     </style>
     <!--900-->
     <style name="TextViewFont_RobotoBlack">
-        <item name="android:fontFamily">@font/roboto_black</item>
-        <item name="fontFamily">@font/roboto_black</item>
+        <item name="android:fontFamily">@font/inter_black</item>
+        <item name="fontFamily">@font/inter_black</item>
     </style>
 </resources>
