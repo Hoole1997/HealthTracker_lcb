@@ -32,7 +32,7 @@
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="@string/ht_new_record"
-            android:textColor="#1C1C1E"
+            android:textColor="@color/t1"
             android:textSize="@dimen/sp_18"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_back"

@@ -54,7 +54,7 @@ class InsightsDetailActivity :
 
         with(mViewBind) {
             btnBack.clickWithDuration { handleBackPress() }
-            tvToolbarTitle.text = getString(R.string.ht_insights)
+            tvTitle.text = getString(R.string.ht_insights)
             tvArticleTitle.text = title
             
             // Set HTML content and intercept link clicks
