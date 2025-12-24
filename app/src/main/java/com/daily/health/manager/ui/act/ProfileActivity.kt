@@ -348,20 +348,27 @@ private fun ProfileTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(48.dp)
             .background(colorResource(R.color.c1))
-            .padding(horizontal = 8.dp),
+            .padding(end = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
             onClick = onBack,
             modifier = Modifier.size(48.dp)
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ht_ic_back),
-                contentDescription = "back",
-                tint = Color.Unspecified,
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ht_ic_back),
+                    contentDescription = "back",
+                    tint = Color.Unspecified,
+                )
+            }
         }
     }
 }
