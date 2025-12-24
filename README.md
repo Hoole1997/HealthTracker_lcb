@@ -227,6 +227,20 @@
   - `app/src/main/res/layout/ht_layout_profile_age_picker.xml`（新增）
 - 验证：`./gradlew :app:assembleInternalDebug`
 
+## 2025-12-24 Insights 详情页迁移（Compose 承载，方案A）
+
+- 目标：将 `InsightsDetailActivity` 的 UI 迁移到 Compose，但保留 Activity 入口、返回插屏逻辑、埋点与原生广告加载不变。
+- 实现方式：
+  - `ht_activity_insights_detail.xml` 精简为 `ComposeView` + 底部 `ad_container`。
+  - Compose 层渲染顶部栏与滚动容器；文章封面与富文本内容使用 `AndroidView` 复用原逻辑：
+    - 封面：`ImageFilterView` + `Glide` 加载本地图片。
+    - 正文：`TextView` + `HtmlCompat` 解析 + `CustomQuoteSpan` 替换引用样式 + 链接点击拦截跳转 `InnerWebActivity`。
+  - `loadNative(adContainer, NativeAdStyle.STANDARD)` 保持不变。
+- 受影响文件：
+  - `app/src/main/java/com/daily/health/manager/ui/act/InsightsDetailActivity.kt`
+  - `app/src/main/res/layout/ht_activity_insights_detail.xml`
+- 验证：`./gradlew :app:assembleInternalDebug`
+
 ## 2025-12-23 新增底部 Tab：Settings
 
 - 新增第 5 个底部导航 Tab（Settings），接入 `TabLayout + ViewPager + FragmentsAdapter`。

@@ -6,99 +6,14 @@
     android:layout_height="match_parent"
     android:background="@color/c1">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/action_bar"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/actionBarSize"
-        android:gravity="center_vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_back"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:scaleType="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ht_ic_back" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_title"
-            style="@style/TextViewFont_RobotoBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginTop="@dimen/dp_1"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:textColor="@color/t1"
-            android:textSize="@dimen/sp_18"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_back"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:fillViewport="true"
-        android:padding="@dimen/dp_16"
+        android:layout_height="@dimen/dp_0"
         app:layout_constraintBottom_toTopOf="@id/ad_Container"
-        app:layout_constraintTop_toBottomOf="@id/action_bar">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_article_title"
-                style="@style/TextViewFont_RobotoBold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/t1"
-                android:textSize="@dimen/sp_20"
-                tools:text="Best and Worst Foods for Managing Diabetes"
-                app:layout_constraintTop_toTopOf="parent"/>
-            <androidx.constraintlayout.utils.widget.ImageFilterView
-                android:id="@+id/iv_cover"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:background="@color/c1"
-                android:layout_marginTop="@dimen/dp_12"
-                app:layout_constraintDimensionRatio="343:186"
-                app:round="@dimen/dp_12"
-                android:contentDescription="@string/ht_insights"
-                android:layout_marginBottom="@dimen/dp_16"
-                app:layout_constraintTop_toBottomOf="@id/tv_article_title"/>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_article_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
-                android:textColor="@color/t1"
-                android:textSize="@dimen/sp_14"
-                android:lineSpacingExtra="@dimen/dp_4"
-                tools:text="Content"
-                app:layout_constraintTop_toBottomOf="@id/iv_cover"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-
-
-
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/ad_Container"
