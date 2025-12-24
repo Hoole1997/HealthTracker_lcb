@@ -63,13 +63,13 @@ class BpRecordActivity: BaseInterActivity<BpRecordViewModel, HtActivityBpRecordB
         mViewModel.initializeTags()
         
         with(mViewBind){
-            btnBack.clickWithDuration {
+            actionBar.btnBack.clickWithDuration {
                 handleBackPress()
             }
 
             editRecordId?.let {
                 mViewModel.loadEditRecord(it)
-                tvTitle.text = getString(R.string.ht_edit_record)
+                actionBar.tvTitle.text = getString(R.string.ht_edit_record)
             }
             
             val tfRegular = getRobotoRegular(this@BpRecordActivity)

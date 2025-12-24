@@ -85,14 +85,14 @@ class BsRecordActivity: BaseInterActivity<BsRecordViewModel, HtActivityBsRecordB
         mViewModel.initializeWithRecord(editRecordId)
 
         with(mViewBind) {
-            btnBack.clickWithDuration {
+            actionBar.btnBack.clickWithDuration {
                 onBackPress()
             }
 
             showAppraiseDialog()
 
             editRecordId?.let {
-                tvTitle.text = getString(R.string.ht_edit_record)
+                actionBar.tvTitle.text = getString(R.string.ht_edit_record)
             }
 
             clRangeTarget.clickWithDuration {

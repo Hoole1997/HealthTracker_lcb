@@ -61,7 +61,7 @@ class CholesterolRecordActivity :
         val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L).let { if (it == -1L) null else it }
         mViewModel.initialize(recordId)
         recordId?.let {
-            mViewBind.tvTitle.text = getString(R.string.ht_edit_record)
+            mViewBind.actionBar.tvTitle.text = getString(R.string.ht_edit_record)
         }
         setupActionBar()
         setupNumberPickers()
@@ -72,7 +72,7 @@ class CholesterolRecordActivity :
     }
 
     private fun setupActionBar() {
-        mViewBind.btnBack.clickWithDuration { onBackPress() }
+        mViewBind.actionBar.btnBack.clickWithDuration { onBackPress() }
         mViewBind.btnSave.clickWithDuration {
             trackAddNewRecord(HealthType.CHOLESTEROL)
             lifecycleScope.launch {

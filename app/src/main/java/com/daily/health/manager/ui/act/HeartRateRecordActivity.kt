@@ -56,7 +56,7 @@ class HeartRateRecordActivity :
         val recordId = intent.getLongExtra(EXTRA_RECORD_ID, -1L).let { if (it == -1L) null else it }
         mViewModel.initialize(recordId)
         recordId?.let {
-            mViewBind.tvTitle.text = getString(R.string.ht_edit_record)
+            mViewBind.actionBar.tvTitle.text = getString(R.string.ht_edit_record)
         }
         setupAction()
         setupNumberPicker()
@@ -67,7 +67,7 @@ class HeartRateRecordActivity :
     }
 
     private fun setupAction() {
-        mViewBind.btnBack.clickWithDuration { onBackPress() }
+        mViewBind.actionBar.btnBack.clickWithDuration { onBackPress() }
         mViewBind.btnSave.clickWithDuration {
             trackAddNewRecord(HealthType.HEART_RATE)
             lifecycleScope.launch {

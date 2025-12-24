@@ -222,3 +222,16 @@
   - `framework/src/main/java/com/healthtracker/framework/util/FontUtils.kt`：`getRoboto*()` 内部改为返回 `R.font.inter_*`。
   - `app/src/main/java/com/daily/health/manager/ui/act/SplashActivity.kt`：Compose 侧字体引用改为 `FrameworkR.font.inter_*`。
 - 验证建议：执行 `./gradlew :app:assembleInternalDebug`。
+
+## 2025-12-24 Record 页面顶部 ActionBar 抽取（include + merge）
+
+- 目标：将多个 `*_record.xml` 页面顶部的“返回按钮 + 标题”公共 UI 抽取为可复用组件，减少重复布局。
+- 做法：新增通用布局 `ht_layout_action_bar_back_title.xml`（根节点为 `ConstraintLayout`），页面顶部使用 `<include>` 引入。
+- 影响页面（已替换为 include）：
+  - `ht_activity_bs_record.xml`
+  - `ht_activity_bp_record.xml`
+  - `ht_activity_bmi_record.xml`
+  - `ht_activity_cholesterol_record.xml`
+  - `ht_activity_heart_rate_record.xml`
+- ViewBinding 访问方式（推荐实践）：为 `<include>` 添加 `android:id="@+id/action_bar"`，由 ViewBinding 生成 include 的子 Binding，通过 `mViewBind.actionBar.btnBack / mViewBind.actionBar.tvTitle` 访问。
+- 验证：已通过 `./gradlew :app:assembleInternalDebug`。

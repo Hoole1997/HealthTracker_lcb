@@ -5,50 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
         android:id="@+id/action_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/actionBarSize"
-        android:background="@color/c1"
-        android:elevation="@dimen/dp_8"
-        android:gravity="center_vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingEnd="@dimen/dp_4"
-            android:scaleType="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ht_ic_back" />
-
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_title"
-            style="@style/TextViewFont_RobotoBold"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:paddingStart="@dimen/dp_44"
-            android:paddingEnd="@dimen/dp_44"
-            android:text="@string/ht_new_record"
-            android:textColor="@color/t1"
-            android:textSize="@dimen/sp_16"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        layout="@layout/ht_layout_action_bar_back_title" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

@@ -61,9 +61,9 @@ class BmiRecordActivity : BaseInterActivity<BmiRecordViewModel, HtActivityBmiRec
         mViewModel.initializeWithRecord(editRecordId)
 
         with(mViewBind) {
-            btnBack.clickWithDuration { onBackPress() }
+            actionBar.btnBack.clickWithDuration { onBackPress() }
             editRecordId?.let {
-                tvTitle.text = getString(R.string.ht_edit_record)
+                actionBar.tvTitle.text = getString(R.string.ht_edit_record)
             }
             // 体重/身高编辑：复用通用输入 BottomSheet
             clWeight.clickWithDuration {
