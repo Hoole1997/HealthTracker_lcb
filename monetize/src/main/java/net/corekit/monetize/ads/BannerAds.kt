@@ -214,7 +214,7 @@ class BannerAds private constructor() {
         return suspendCancellableCoroutine { continuation ->
             val adRequest = BannerAdRequest.Builder(adUnitId, getAdSize(context)).setGoogleExtrasBundle(
                 Bundle().apply {
-                    putString("collapsible", "bottom")
+//                    putString("collapsible", "bottom")
                 }).build()
             BannerAd.load(adRequest,object : AdLoadCallback<BannerAd>{
                 private var loadStartTime = System.currentTimeMillis()

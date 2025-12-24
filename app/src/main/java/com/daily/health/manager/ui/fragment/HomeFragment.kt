@@ -86,6 +86,8 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
 
     var highLightComplete = CompletableDeferred<Boolean>()
 
+    private var notificationPermissionFlowFinished = false
+
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
@@ -184,7 +186,25 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
     override fun onResume() {
         super.onResume()
         mViewBind?.tvTargetCupCount?.text = "/${HydrateSettingManager.getDailyCups()}"
-        guidFeature()
+        isHeighLightLeave = false
+        if (notificationPermissionFlowFinished) {
+            guidFeature()
+        }
+    }
+
+    fun onNotificationPermissionFlowFinished() {
+        if (notificationPermissionFlowFinished) {
+            return
+        }
+        notificationPermissionFlowFinished = true
+        if (isResumed) {
+            guidFeature()
+        }
+        if (hasShowAllGuide()) {
+            if (!highLightComplete.isCompleted) {
+                highLightComplete.complete(true)
+            }
+        }
     }
 
     /**
@@ -318,9 +338,13 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
     private var isShowHighligh = false
     private var isHeighLightLeave = false
     private fun guidFeature(): Boolean {
+        if (!notificationPermissionFlowFinished) {
+            return false
+        }
         if (hasShowAllGuide()) {
-            if(BuildState.debug) "已经展示全部高亮引导".logd(PermissionManager.TAG)
-            highLightComplete.complete(true)
+            if (!highLightComplete.isCompleted) {
+                highLightComplete.complete(true)
+            }
             return false
         }
 
@@ -328,11 +352,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             return false
         }
 
-        if (guideBp()) {
+        if (guideBs()) {
             return true
         }
-
-        if (guideBs()) {
+        if (guideBp()) {
             return true
         }
 
@@ -360,6 +383,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             }
             .setOnMaskViewClickCallback { index ->
                 //do something
+                isHeighLightLeave = true
                 BpRecordActivity.start(requireActivity())
                 reportGuide(6)
             }
@@ -369,11 +393,24 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             }
             .setOnDismissCallback {
                 isShowHighligh = false
+                onGuideDismissed()
             }
             .show()
 
         return true
 
+    }
+
+    private fun onGuideDismissed() {
+        if (hasShowAllGuide()) {
+            if (!highLightComplete.isCompleted) {
+                highLightComplete.complete(true)
+            }
+            return
+        }
+        if (!isHeighLightLeave && isResumed) {
+            guidFeature()
+        }
     }
 
     private fun guideBs(): Boolean {
@@ -395,14 +432,17 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             .setOnMaskViewClickCallback { index ->
                 //do something
                 isShowHighligh = true
+                isHeighLightLeave = true
                 BsRecordActivity.start(requireActivity())
                 reportGuide(7)
             }
             .setOnShowCallback {
+                isShowHighligh = true
                 saveShowGuideBs()
             }
             .setOnDismissCallback {
                 isShowHighligh = false
+                onGuideDismissed()
             }
             .show()
 
@@ -437,6 +477,7 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             }
             .setOnDismissCallback {
                 isShowHighligh = false
+                onGuideDismissed()
             }
             .show()
 

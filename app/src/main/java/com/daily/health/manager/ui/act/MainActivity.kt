@@ -7,9 +7,10 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.alarm.PermissionManager
@@ -34,7 +35,7 @@ import com.daily.health.manager.ui.tracker.HealthType
 import com.daily.health.manager.ui.tracker.trackEnterPageClick
 import com.daily.health.manager.ui.viewmodel.MainViewModel
 import com.daily.health.manager.utils.loadBanner
-import com.daily.health.manager.utils.loadRewardBidding
+import com.google.android.material.tabs.TabLayout
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
@@ -46,8 +47,10 @@ import com.healthtracker.framework.util.Restore
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.core.report.ReportDataManager
 import org.koin.android.ext.android.inject
+import kotlin.coroutines.resume
 
 class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), PermissionProvider {
 
@@ -67,6 +70,8 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
     private var currentTabIndex = 0
 
     private val bannerShowComplete = CompletableDeferred<Boolean>()
+
+    private val homeFragmentReady = CompletableDeferred<HomeFragment>()
 
     private val settingLauncher =
         registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { result ->
@@ -103,7 +108,12 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
 
             override fun onInstance(position: Int, fragment: Fragment) {
                 when (fragment) {
-                    is HomeFragment -> homeFrg = fragment
+                    is HomeFragment -> {
+                        homeFrg = fragment
+                        if (!homeFragmentReady.isCompleted) {
+                            homeFragmentReady.complete(fragment)
+                        }
+                    }
                     is RecordFragment -> recordFrg = fragment
                     is MedsFragment -> medFrg = fragment
                     is InsightsFragment -> insightsFrg = fragment
@@ -217,28 +227,81 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
         
         // Banner 和权限流程
         lifecycleScope.launch {
-            delay(500)
-            homeFrg?.highLightComplete?.await()
+            awaitResumedIfNeeded()
+            checkNotificationPermissionFlow()
+            val homeFragment = homeFragmentReady.await()
+            homeFragment.onNotificationPermissionFlowFinished()
+            if (currentTabIndex == 0) {
+                homeFragment.highLightComplete.await()
+            }
+            awaitResumedIfNeeded()
             loadBanner(mViewBind.adViewContainer, onClose = {
                 if (!bannerShowComplete.isCompleted) {
                     bannerShowComplete.complete(true)
                 }
-            }){
+            }) {
                 if (!bannerShowComplete.isCompleted) {
                     bannerShowComplete.complete(it)
                 }
             }
             bannerShowComplete.await()
-            if(BuildState.debug) "首页banner完成，继续流程".logd(PermissionManager.TAG)
-            permissionManager.checkNotificationPermission(this@MainActivity){
-                if(BuildState.debug) "通知权限检查完成".logd(PermissionManager.TAG)
-            }
         }
         
     }
 
+    private suspend fun awaitResumedIfNeeded() {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            return
+        }
+        awaitNextResume()
+    }
 
+    private suspend fun checkNotificationPermissionFlow(): Boolean {
+        var goSetting = false
+        val result = suspendCancellableCoroutine<Boolean> { cont ->
+            permissionManager.checkNotificationPermission(
+                activity = this@MainActivity,
+                onGoSetting = {
+                    goSetting = true
+                }
+            ) {
+                if (cont.isActive) {
+                    cont.resume(it)
+                }
+            }
+        }
+        if (goSetting) {
+            awaitNextResume()
+            return permissionManager.isNotificationPermissionGranted()
+        }
+        return result
+    }
 
+    private suspend fun awaitNextResume() {
+        suspendCancellableCoroutine<Unit> { cont ->
+            lateinit var observer: LifecycleEventObserver
+            val needPauseFirst = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+            var hasPaused = false
+            observer = LifecycleEventObserver { _, event ->
+                if (needPauseFirst && !hasPaused) {
+                    if (event == Lifecycle.Event.ON_PAUSE || event == Lifecycle.Event.ON_STOP) {
+                        hasPaused = true
+                    }
+                    return@LifecycleEventObserver
+                }
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    lifecycle.removeObserver(observer)
+                    if (cont.isActive) {
+                        cont.resume(Unit)
+                    }
+                }
+            }
+            lifecycle.addObserver(observer)
+            cont.invokeOnCancellation {
+                lifecycle.removeObserver(observer)
+            }
+        }
+    }
 
     /**
      * 设置底部导航栏
@@ -333,14 +396,8 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
      * 根据传入的action参数跳转到对应的记录页面
      */
     private fun handleNotificationAction(intent: Intent?) {
-        val action = intent?.getStringExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION)
-
-        if (action == null) {
-            "No notification action, normal app launch".logd(TAG)
-            return
-        }
-
-        "Handling notification action: $action".logd(TAG)
+        val action =
+            intent?.getStringExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION) ?: return
 
         when (action) {
             HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR -> {
@@ -405,7 +462,6 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
                 Toast.LENGTH_SHORT
             ).show()
 
-            "Starting to send ${messages.size} test notifications".logd(TAG)
 
             messages.forEachIndexed { index, message ->
                 customNotificationHelper.showCustomNotification(
