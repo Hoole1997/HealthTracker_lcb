@@ -320,3 +320,73 @@
   - `ht_activity_heart_rate_record.xml`
 - ViewBinding 访问方式（推荐实践）：为 `<include>` 添加 `android:id="@+id/action_bar"`，由 ViewBinding 生成 include 的子 Binding，通过 `mViewBind.actionBar.btnBack / mViewBind.actionBar.tvTitle` 访问。
 - 验证：已通过 `./gradlew :app:assembleInternalDebug`。
+
+## 2025-12-25 合并 5 个 RecordActivity → `HealthRecordActivity`（Compose 承载，方案A）
+
+- 目标：将以下 5 个“新增/编辑记录”页面合并为一个统一入口 Activity，并迁移为 Compose 宿主（Scheme A），**保证业务逻辑与 ViewModel 不变**。
+  - `BsRecordActivity`
+  - `BpRecordActivity`
+  - `BmiRecordActivity`
+  - `HeartRateRecordActivity`
+  - `CholesterolRecordActivity`
+
+### 实现方式（低风险迁移）
+
+- 新增统一入口：`app/src/main/java/com/daily/health/manager/ui/act/HealthRecordActivity.kt`
+- 新增宿主布局：`app/src/main/res/layout/ht_activity_health_record.xml`（包含 `ComposeView` + 原生广告容器）
+- 在 `HealthRecordActivity` 内部：
+  - `composeView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)`
+  - `setContent { AndroidView(...) }`
+  - `AndroidView.factory` 中按 `RecordType` 动态 `LayoutInflater.inflate(...)` 加载原 5 套 record XML（完全复用 View 结构与自定义控件）
+  - `bindAndSetup(type, root)` 内部复用旧 Activity 的绑定/交互/保存逻辑
+
+### 关键决策与兼容点
+
+- **不合并 ViewModel**：仍保留 5 个独立 ViewModel（BS/BP/BMI/HR/CHO），仅统一 UI 入口。
+- **保留目标范围设置**：血糖页仍通过 `TargetRangeActivity` 设置范围。
+- **移除“应用内评价弹窗”**：血糖保存流程不再触发应用内评价弹窗（按需求临时下线）。
+- **编辑入口统一**：`HealthDetailActivity` 的编辑按钮统一跳转 `HealthRecordActivity.start(type, recordId)`。
+- **Koin + SavedStateHandle**：`HealthRecordActivity` 使用 `CreationExtras.createSavedStateHandle()` 兼容 SavedStateHandle 注入，同时兼容不依赖 handle 的 ViewModel。
+
+### 工程清理
+
+- 已更新所有入口跳转到 `HealthRecordActivity`（Home/Record/History/Statistics/通知/详情编辑/步数设置等）。
+- 已移除 Manifest 中旧 5 个 `*RecordActivity` 声明，并删除对应源码文件（不保留壳/转发）。
+
+### 编译与回归建议
+
+- 编译：已通过 `./gradlew :app:assembleInternalDebug`。
+- 建议对每个类型（BS/BP/BMI/HR/CHO）分别验证：
+  - **新增**：进入页面、选择数值/时间/标签、保存成功跳转详情
+  - **编辑**：从详情页点击编辑进入、修改后保存、详情刷新
+  - **返回**：返回埋点与插屏逻辑正常（`BaseInterActivity`）
+  - **广告**：Native Ad 正常加载展示
+
+### 2025-12-25 修复 RulerView 同步问题
+
+#### 问题现象
+血糖记录页切换单位（mmol/L ↔ mg/dL）时，刻度尺的视觉位置与显示数值不同步。
+
+#### 根本原因
+`observeBloodSugarViewModel` 中使用两个独立的 `collectLatest` 分别监听 `currentUnit` 和 `currentValue`：
+- 当 `switchUnit()` 同时修改这两个 StateFlow 时，两个 collector 的执行顺序不确定
+- 如果 `currentValue` collector 先执行，会用**旧的** `scaleGap/minScale` 计算位置，导致位置错误
+
+#### 修复方案
+使用 `combine` 合并两个 Flow，确保配置和定位的原子性：
+```kotlin
+lifecycleScope.launch {
+    combine(bsViewModel.currentUnit, bsViewModel.currentValue) { unit, value ->
+        unit to value
+    }.collectLatest { (unit, value) ->
+        // 1. 先配置 RulerView 参数（minScale/maxScale/scaleGap 等）
+        BloodSugarScaleHelper.configureRulerForUnit(binding.rulerView, unit)
+        // 2. 再设置刻度位置（此时参数已正确）
+        binding.rulerView.setScaleImmediately(value, suppressCallback = true)
+    }
+}
+```
+
+#### 验证
+- 编译通过：`./gradlew :app:compileInternalDebugKotlin`
+- 手动测试：切换血糖单位时，刻度位置与显示值保持同步

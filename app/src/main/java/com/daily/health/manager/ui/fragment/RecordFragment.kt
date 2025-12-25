@@ -11,12 +11,8 @@ import com.daily.health.manager.R
 import com.daily.health.manager.databinding.HtFragmentRecordBinding
 import com.daily.health.manager.databinding.HtItemHealthChartCardBinding
 import com.daily.health.manager.tips.HealthMetric
-import com.daily.health.manager.ui.act.BmiRecordActivity
-import com.daily.health.manager.ui.act.BpRecordActivity
-import com.daily.health.manager.ui.act.BsRecordActivity
-import com.daily.health.manager.ui.act.CholesterolRecordActivity
+import com.daily.health.manager.ui.act.HealthRecordActivity
 import com.daily.health.manager.ui.act.HealthStatisticsActivity
-import com.daily.health.manager.ui.act.HeartRateRecordActivity
 import com.daily.health.manager.ui.act.HydrateActivity
 import com.daily.health.manager.ui.act.HydrateSettingActivity
 import com.daily.health.manager.ui.act.MainActivity
@@ -215,7 +211,10 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding
                 if(includeBs.chartView.isVisible){
                     HealthStatisticsActivity.start(requireActivity(), HealthMetric.BLOOD_SUGAR)
                 }else{
-                    BsRecordActivity.start(requireActivity())
+                    HealthRecordActivity.start(
+                        requireActivity(),
+                        HealthRecordActivity.RecordType.BLOOD_SUGAR
+                    )
                 }
             }
 
@@ -224,7 +223,10 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding
                 if(includeBp.chartView.isVisible){
                     HealthStatisticsActivity.start(requireActivity(), HealthMetric.BLOOD_PRESSURE)
                 }else{
-                    BpRecordActivity.start(requireActivity())
+                    HealthRecordActivity.start(
+                        requireActivity(),
+                        HealthRecordActivity.RecordType.BLOOD_PRESSURE
+                    )
                 }
             }
 
@@ -233,7 +235,10 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding
                 if(includeHr.chartView.isVisible){
                     HealthStatisticsActivity.start(requireActivity(), HealthMetric.HEART_RATE)
                 }else{
-                    HeartRateRecordActivity.start(requireActivity())
+                    HealthRecordActivity.start(
+                        requireActivity(),
+                        HealthRecordActivity.RecordType.HEART_RATE
+                    )
                 }
             }
 
@@ -242,7 +247,10 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding
                 if(includeCho.chartView.isVisible){
                     HealthStatisticsActivity.start(requireActivity(), HealthMetric.CHOLESTEROL)
                 }else{
-                    CholesterolRecordActivity.start(requireActivity())
+                    HealthRecordActivity.start(
+                        requireActivity(),
+                        HealthRecordActivity.RecordType.CHOLESTEROL
+                    )
                 }
             }
 
@@ -251,7 +259,10 @@ class RecordFragment: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding
                 if(includeBmi.chartView.isVisible){
                     HealthStatisticsActivity.start(requireActivity(), HealthMetric.BMI)
                 }else{
-                    BmiRecordActivity.start(requireActivity())
+                    HealthRecordActivity.start(
+                        requireActivity(),
+                        HealthRecordActivity.RecordType.BMI
+                    )
                 }
             }
 

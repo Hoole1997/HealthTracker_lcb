@@ -3,13 +3,9 @@ package com.daily.health.manager.ad
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import com.daily.health.manager.ui.act.BmiRecordActivity
-import com.daily.health.manager.ui.act.BpRecordActivity
-import com.daily.health.manager.ui.act.BsRecordActivity
-import com.daily.health.manager.ui.act.CholesterolRecordActivity
 import com.daily.health.manager.ui.act.HealthDetailActivity
+import com.daily.health.manager.ui.act.HealthRecordActivity
 import com.daily.health.manager.ui.act.HealthStatisticsActivity
-import com.daily.health.manager.ui.act.HeartRateRecordActivity
 import com.daily.health.manager.ui.act.HydrateActivity
 import com.daily.health.manager.ui.act.StepCountActivity
 import com.daily.health.manager.utils.loadRewardBidding
@@ -65,11 +61,7 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
     private fun getEventTypeAndHealthType(): Pair<EventType, HealthType>? {
         return when(this) {
             // Record Activities -> NewRecordPage_Back
-            is BsRecordActivity -> EventType.NEW_RECORD_PAGE to HealthType.BLOOD_SUGAR
-            is BpRecordActivity -> EventType.NEW_RECORD_PAGE to HealthType.BLOOD_PRESSURE
-            is CholesterolRecordActivity -> EventType.NEW_RECORD_PAGE to HealthType.CHOLESTEROL
-            is HeartRateRecordActivity-> EventType.NEW_RECORD_PAGE to HealthType.HEART_RATE
-            is BmiRecordActivity -> EventType.NEW_RECORD_PAGE to HealthType.BMI
+            is HealthRecordActivity -> EventType.NEW_RECORD_PAGE to getCurrentHealthType()
             is StepCountActivity -> EventType.NEW_RECORD_PAGE to HealthType.WALKING_STEPS
             is HydrateActivity -> EventType.NEW_RECORD_PAGE to HealthType.HYDRATE
 

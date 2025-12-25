@@ -98,19 +98,34 @@ class HistoryRecordActivity: BaseMVVMActivity<HistoryViewModel, HtActivityHistor
             btnAddRecord.clickWithDuration {
                 when (recordType) {
                     HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                        BsRecordActivity.start(this@HistoryRecordActivity)
+                        HealthRecordActivity.start(
+                            this@HistoryRecordActivity,
+                            HealthRecordActivity.RecordType.BLOOD_SUGAR
+                        )
                     }
                     HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                        BpRecordActivity.start(this@HistoryRecordActivity)
+                        HealthRecordActivity.start(
+                            this@HistoryRecordActivity,
+                            HealthRecordActivity.RecordType.BLOOD_PRESSURE
+                        )
                     }
                     HistoryRecordItem.RecordType.CHOLESTEROL -> {
-                        CholesterolRecordActivity.start(this@HistoryRecordActivity)
+                        HealthRecordActivity.start(
+                            this@HistoryRecordActivity,
+                            HealthRecordActivity.RecordType.CHOLESTEROL
+                        )
                     }
                     HistoryRecordItem.RecordType.HEART_RATE -> {
-                        HeartRateRecordActivity.start(this@HistoryRecordActivity)
+                        HealthRecordActivity.start(
+                            this@HistoryRecordActivity,
+                            HealthRecordActivity.RecordType.HEART_RATE
+                        )
                     }
                     HistoryRecordItem.RecordType.BMI_RECORD -> {
-                        BmiRecordActivity.start(this@HistoryRecordActivity)
+                        HealthRecordActivity.start(
+                            this@HistoryRecordActivity,
+                            HealthRecordActivity.RecordType.BMI
+                        )
                     }
                 }
             }

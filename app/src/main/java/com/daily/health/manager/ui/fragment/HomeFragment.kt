@@ -25,11 +25,7 @@ import com.daily.health.manager.hasShowGuideHr
 import com.daily.health.manager.saveShowGuideBp
 import com.daily.health.manager.saveShowGuideBs
 import com.daily.health.manager.saveShowGuideHr
-import com.daily.health.manager.ui.act.BmiRecordActivity
-import com.daily.health.manager.ui.act.BpRecordActivity
-import com.daily.health.manager.ui.act.BsRecordActivity
-import com.daily.health.manager.ui.act.CholesterolRecordActivity
-import com.daily.health.manager.ui.act.HeartRateRecordActivity
+import com.daily.health.manager.ui.act.HealthRecordActivity
 import com.daily.health.manager.ui.act.HistoryRecordActivity
 import com.daily.health.manager.ui.act.HydrateActivity
 import com.daily.health.manager.ui.act.MainActivity
@@ -101,22 +97,34 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             clHistory.clickWithDuration {
                 latestSugerID?.let {
                     requireActivity().startActivity<HistoryRecordActivity>()
-                } ?: requireActivity().startActivity<BsRecordActivity>()
+                } ?: HealthRecordActivity.start(
+                    requireActivity(),
+                    HealthRecordActivity.RecordType.BLOOD_SUGAR
+                )
             }
 
             clPsRecord.clickWithDuration {
                 requireContext().trackEnterPageClick(HealthType.BLOOD_SUGAR)
-                BsRecordActivity.start(requireActivity())
+                HealthRecordActivity.start(
+                    requireActivity(),
+                    HealthRecordActivity.RecordType.BLOOD_SUGAR
+                )
 
             }
             btnRecordNow.clickWithDuration {
                 requireContext().trackEnterPageClick(HealthType.BLOOD_SUGAR)
-                BsRecordActivity.start(requireActivity())
+                HealthRecordActivity.start(
+                    requireActivity(),
+                    HealthRecordActivity.RecordType.BLOOD_SUGAR
+                )
             }
 
             clBloodPressure.clickWithDuration {
                 requireContext().trackEnterPageClick(HealthType.BLOOD_PRESSURE)
-                requireActivity().startActivity<BpRecordActivity>()
+                HealthRecordActivity.start(
+                    requireActivity(),
+                    HealthRecordActivity.RecordType.BLOOD_PRESSURE
+                )
             }
 
             clHeartRate.clickWithDuration {
@@ -384,7 +392,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             .setOnMaskViewClickCallback { index ->
                 //do something
                 isHeighLightLeave = true
-                BpRecordActivity.start(requireActivity())
+                HealthRecordActivity.start(
+                    requireActivity(),
+                    HealthRecordActivity.RecordType.BLOOD_PRESSURE
+                )
                 reportGuide(6)
             }
             .setOnShowCallback {
@@ -433,7 +444,10 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
                 //do something
                 isShowHighligh = true
                 isHeighLightLeave = true
-                BsRecordActivity.start(requireActivity())
+                HealthRecordActivity.start(
+                    requireActivity(),
+                    HealthRecordActivity.RecordType.BLOOD_SUGAR
+                )
                 reportGuide(7)
             }
             .setOnShowCallback {
@@ -504,15 +518,24 @@ class HomeFragment: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
         when (activityType) {
             PendingActivityType.BMI -> {
                 requireContext().trackEnterPageClick(HealthType.BMI)
-                requireActivity().startActivity<BmiRecordActivity>()
+                HealthRecordActivity.start(
+                    requireActivity(),
+                    HealthRecordActivity.RecordType.BMI
+                )
             }
             PendingActivityType.CHOLESTEROL -> {
                 requireContext().trackEnterPageClick(HealthType.CHOLESTEROL)
-                CholesterolRecordActivity.start(requireActivity())
+                HealthRecordActivity.start(
+                    requireActivity(),
+                    HealthRecordActivity.RecordType.CHOLESTEROL
+                )
             }
             PendingActivityType.HEART_RATE -> {
                 requireContext().trackEnterPageClick(HealthType.HEART_RATE)
-                requireActivity().startActivity<HeartRateRecordActivity>()
+                HealthRecordActivity.start(
+                    requireActivity(),
+                    HealthRecordActivity.RecordType.HEART_RATE
+                )
             }
         }
     }

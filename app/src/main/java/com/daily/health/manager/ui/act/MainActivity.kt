@@ -401,15 +401,24 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
 
         when (action) {
             HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR -> {
-                startActivity<BsRecordActivity>()
+                HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.BLOOD_SUGAR
+                )
             }
 
             HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE -> {
-                startActivity<BpRecordActivity>()
+                HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.BLOOD_PRESSURE
+                )
             }
 
             HealthServiceConstants.ACTION_VALUE_HEART_RATE -> {
-                startActivity<HeartRateRecordActivity>()
+                HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.HEART_RATE
+                )
             }
 
             HealthServiceConstants.ACTION_VALUE_HYDRATION -> {
@@ -425,11 +434,17 @@ class MainActivity : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), P
             }
 
             HealthServiceConstants.ACTION_VALUE_CHOLESTEROL -> {
-                startActivity<CholesterolRecordActivity>()
+                HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.CHOLESTEROL
+                )
             }
 
             HealthServiceConstants.ACTION_VALUE_BMI -> {
-                startActivity<BmiRecordActivity>()
+                HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.BMI
+                )
             }
 
             HealthServiceConstants.ACTION_VALUE_HISTORY -> {

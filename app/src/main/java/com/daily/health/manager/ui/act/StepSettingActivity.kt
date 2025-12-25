@@ -27,10 +27,16 @@ class StepSettingActivity: BaseInterActivity<StepSettingViewModel, HtActivitySte
         mViewModel.loadRecord()
         with(mViewBind){
             clWeight.clickWithDuration {
-                startActivity<BmiRecordActivity>()
+                HealthRecordActivity.start(
+                    this@StepSettingActivity,
+                    HealthRecordActivity.RecordType.BMI
+                )
             }
             clHeight.clickWithDuration {
-                startActivity<BmiRecordActivity>()
+                HealthRecordActivity.start(
+                    this@StepSettingActivity,
+                    HealthRecordActivity.RecordType.BMI
+                )
             }
 
             llGoal.clickWithDuration {

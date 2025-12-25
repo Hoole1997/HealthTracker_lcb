@@ -70,13 +70,6 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.act.BsRecordActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-        <activity
             android:name=".ui.act.TargetRangeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
@@ -91,14 +84,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".ui.act.BpRecordActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".ui.act.BmiRecordActivity"
+            android:name=".ui.act.HealthRecordActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
@@ -106,19 +92,6 @@
 
         <activity
             android:name=".ui.act.InsightsDetailActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".ui.act.HeartRateRecordActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".ui.act.CholesterolRecordActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"

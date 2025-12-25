@@ -222,7 +222,9 @@ class HealthDetailActivity : BaseInterActivity<BaseViewModel, HtActivityHealthDe
 
         binding.btnBack.clickWithDuration { onBackPress() }
         binding.btnDelete.clickWithDuration { showDeleteConfirmBs() }
-        binding.btnEdit.clickWithDuration { BsRecordActivity.start(this, recordId) }
+        binding.btnEdit.clickWithDuration {
+            HealthRecordActivity.start(this, HealthRecordActivity.RecordType.BLOOD_SUGAR, recordId)
+        }
 
         setupCommonExpertAdvice(binding.expertAdviceView)
         loadNative(binding.adContainer, style = NativeAdStyle.CARD_5)
@@ -289,7 +291,7 @@ class HealthDetailActivity : BaseInterActivity<BaseViewModel, HtActivityHealthDe
         binding.btnDelete.clickWithDuration { showDeleteConfirmBp() }
         binding.btnEdit.clickWithDuration {
             bpViewModel.bloodPressureRecord.value?.let {
-                BpRecordActivity.start(this, it.id)
+                HealthRecordActivity.start(this, HealthRecordActivity.RecordType.BLOOD_PRESSURE, it.id)
             }
         }
 
@@ -341,7 +343,7 @@ class HealthDetailActivity : BaseInterActivity<BaseViewModel, HtActivityHealthDe
         binding.btnBack.clickWithDuration { onBackPress() }
         binding.btnEdit.clickWithDuration {
             bmiViewModel.bmiRecord.value?.let {
-                BmiRecordActivity.start(this, it.id)
+                HealthRecordActivity.start(this, HealthRecordActivity.RecordType.BMI, it.id)
             }
         }
         binding.btnDelete.clickWithDuration { showDeleteConfirmBmi() }
@@ -412,7 +414,7 @@ class HealthDetailActivity : BaseInterActivity<BaseViewModel, HtActivityHealthDe
         binding.btnDelete.click { showDeleteConfirmHr() }
         binding.btnEdit.click {
             hrViewModel.currentRecordId()?.let { id ->
-                HeartRateRecordActivity.start(this, id)
+                HealthRecordActivity.start(this, HealthRecordActivity.RecordType.HEART_RATE, id)
             } ?: showToast(getString(R.string.ht_record_not_ready))
         }
 
@@ -481,7 +483,7 @@ class HealthDetailActivity : BaseInterActivity<BaseViewModel, HtActivityHealthDe
 
         binding.btnBack.clickWithDuration { onBackPress() }
         binding.btnEdit.clickWithDuration {
-            CholesterolRecordActivity.start(this, recordId)
+            HealthRecordActivity.start(this, HealthRecordActivity.RecordType.CHOLESTEROL, recordId)
         }
         binding.btnDelete.clickWithDuration { showDeleteConfirmCho() }
 

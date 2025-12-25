@@ -244,13 +244,31 @@ class HealthStatisticsActivity :
         }
         mViewBind.btnAddRecord.clickWithDuration {
             when (mViewModel.selectedMetricType.value) {
-                HealthMetric.BLOOD_SUGAR -> BsRecordActivity.start(this)
-                HealthMetric.BLOOD_PRESSURE -> BpRecordActivity.start(this)
-                HealthMetric.CHOLESTEROL -> CholesterolRecordActivity.start(this)
-                HealthMetric.HEART_RATE -> HeartRateRecordActivity.start(this)
-                HealthMetric.BMI -> BmiRecordActivity.start(this)
+                HealthMetric.BLOOD_SUGAR -> HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.BLOOD_SUGAR
+                )
+                HealthMetric.BLOOD_PRESSURE -> HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.BLOOD_PRESSURE
+                )
+                HealthMetric.CHOLESTEROL -> HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.CHOLESTEROL
+                )
+                HealthMetric.HEART_RATE -> HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.HEART_RATE
+                )
+                HealthMetric.BMI -> HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.BMI
+                )
                 HealthMetric.HYDRATION -> HydrateActivity.start(this)
-                else -> BsRecordActivity.start(this)
+                else -> HealthRecordActivity.start(
+                    this,
+                    HealthRecordActivity.RecordType.BLOOD_SUGAR
+                )
             }
         }
     }

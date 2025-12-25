@@ -300,6 +300,14 @@ class RulerView @JvmOverloads constructor(
         centerX = viewWidth / 2f
 
         setMeasuredDimension(viewWidth, viewHeight)
+        
+        // 如果有待应用的刻度值，在测量完成后应用
+        pendingScale?.let { scale ->
+            post {
+                applyScaleImmediately(scale, pendingSuppressCallback)
+                pendingScale = null
+            }
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -712,6 +720,10 @@ class RulerView @JvmOverloads constructor(
         invalidate()
     }
 
+    // 待应用的目标刻度值（用于 View 未测量完成时延迟设置）
+    private var pendingScale: Float? = null
+    private var pendingSuppressCallback: Boolean = false
+
     /**
      * 立即设置刻度位置，无动画效果
      * 用于初始化和单位切换时的直接定位
@@ -720,6 +732,25 @@ class RulerView @JvmOverloads constructor(
      */
     fun setScaleImmediately(scale: Float, suppressCallback: Boolean = false) {
         val clampedScale = scale.coerceIn(scrollableMinScale, scrollableMaxScale)
+        
+        // 如果 View 还未测量完成（centerX = 0），延迟到测量后再设置
+        if (centerX <= 0f) {
+            pendingScale = clampedScale
+            pendingSuppressCallback = suppressCallback
+            currentScale = clampedScale
+            isFirstScale = false
+            // 请求重新布局，触发 onSizeChanged
+            requestLayout()
+            return
+        }
+        
+        applyScaleImmediately(clampedScale, suppressCallback)
+    }
+    
+    /**
+     * 内部方法：实际应用刻度位置
+     */
+    private fun applyScaleImmediately(clampedScale: Float, suppressCallback: Boolean) {
         val targetPosition = getScalePosition(clampedScale)
         
         // 直接设置位置，跳过动画
