@@ -4,13 +4,10 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
 import android.os.PowerManager
 import android.os.Process
-import android.view.Gravity
-import com.blankj.utilcode.util.ToastUtils
 import com.bytedance.sdk.openadsdk.activity.TTAdActivity
 import com.bytedance.sdk.openadsdk.activity.TTAppOpenAdActivity
 import com.facebook.ads.AudienceNetworkActivity
@@ -18,8 +15,8 @@ import com.google.android.libraries.ads.mobile.sdk.common.AdActivity
 import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
 import com.daily.health.manager.constants.KEY_APP_OPEN_TIMES
 import com.daily.health.manager.constants.KEY_APP_START_TIME
-import com.daily.health.manager.ui.act.GuideActivity
-import com.daily.health.manager.ui.act.SplashActivity
+import com.daily.health.manager.face.act.GuideScreen
+import com.daily.health.manager.face.act.SplashScreen
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils
@@ -94,8 +91,8 @@ private fun getDateInt(calendar: Calendar, time: Long): Int {
 }
 
 fun isExcludePage(lastVisibleActivity: Activity?) =
-    lastVisibleActivity is SplashActivity ||
-            lastVisibleActivity is GuideActivity
+    lastVisibleActivity is SplashScreen ||
+            lastVisibleActivity is GuideScreen
 
 
 fun isAdPage(activity: Activity?) = activity?.run {
@@ -110,7 +107,7 @@ val adClasses = arrayOf(
     AudienceNetworkActivity::class.java,
     TTAppOpenAdActivity::class.java,
     TTAdActivity::class.java,
-    GuideActivity::class.java
+    GuideScreen::class.java
 )
 
 fun getTodayStart(): Date {

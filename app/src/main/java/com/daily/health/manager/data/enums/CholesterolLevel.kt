@@ -1,7 +1,7 @@
 package com.daily.health.manager.data.enums
 import androidx.annotation.StringRes
 import com.daily.health.manager.R
-import com.daily.health.manager.ui.weight.LevelCategory
+import com.daily.health.manager.face.weight.LevelCategory
 
 /**
  * 胆固醇风险等级

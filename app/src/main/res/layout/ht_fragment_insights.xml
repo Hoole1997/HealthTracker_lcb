@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/white"/>
 
-    <com.daily.health.manager.ui.weight.CustomViewPager
+    <com.daily.health.manager.face.weight.CustomViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"

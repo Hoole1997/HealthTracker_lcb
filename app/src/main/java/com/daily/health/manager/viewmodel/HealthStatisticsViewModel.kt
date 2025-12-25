@@ -27,9 +27,9 @@ import com.daily.health.manager.data.utils.toLocalEpochDay
 import com.daily.health.manager.tips.HealthTips
 import com.daily.health.manager.tips.HealthTipsProvider
 import com.daily.health.manager.tips.HealthMetric
-import com.daily.health.manager.ui.chart.ChartDataSet
-import com.daily.health.manager.ui.chart.ChartSeriesIds
-import com.daily.health.manager.ui.chart.ChartUiState
+import com.daily.health.manager.face.chart.ChartDataSet
+import com.daily.health.manager.face.chart.ChartSeriesIds
+import com.daily.health.manager.face.chart.ChartUiState
 import com.daily.health.manager.utils.combine
 import com.daily.health.manager.util.ChartPalette
 import com.daily.health.manager.util.LineStyle

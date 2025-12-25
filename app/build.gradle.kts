@@ -37,8 +37,8 @@ android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        versionCode = 10
-        versionName = "1.0.5"
+        versionCode = 1
+        versionName = "1.0.0"
         buildConfig {
             boolean("showLog", showLog)
         }
@@ -280,10 +280,10 @@ actGuard {
         "com.blankj.utilcode.util.*",
         "com.github.dhaval2404.imagepicker.*",
         "com.yalantis.ucrop.*",
+        "com.daily.health.manager.face.act.*",
     )
     otherClassList = hashSetOf(
         "com.daily.health.manager.App",
-        "com.daily.health.manager.ui.act.*",
         "com.daily.health.manager.alarm.*",
         "com.daily.health.manager.receiver.*",
         "com.daily.health.manager.service.*",
@@ -293,7 +293,6 @@ actGuard {
     )
     changePackageList = hashSetOf(
         "com.daily.health.manager.App",
-        "com.daily.health.manager.ui.act.*",
         "com.daily.health.manager.alarm.*",
         "com.daily.health.manager.receiver.*",
         "com.daily.health.manager.service.*",

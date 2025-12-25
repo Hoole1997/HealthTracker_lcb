@@ -76,7 +76,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
 
-                <com.daily.health.manager.ui.widget.NumberPickerView
+                <com.daily.health.manager.face.widget.NumberPickerView
                     android:id="@+id/npv_systolic"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                     app:npv_WrapSelectorWheel="false"
                     tools:layout_editor_absoluteX="0dp" />
 
-                <com.daily.health.manager.ui.widget.NumberPickerView
+                <com.daily.health.manager.face.widget.NumberPickerView
                     android:id="@+id/npv_diastolic"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
                     app:npv_WrapSelectorWheel="false"
                     tools:layout_editor_absoluteX="0dp" />
 
-                <com.daily.health.manager.ui.widget.NumberPickerView
+                <com.daily.health.manager.face.widget.NumberPickerView
                     android:id="@+id/npv_pulse"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -149,7 +149,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.daily.health.manager.ui.weight.LeveStatusView
+                <com.daily.health.manager.face.weight.LeveStatusView
                     android:id="@+id/lsv_status_bp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
                     app:layout_constraintTop_toBottomOf="@id/v_bottom_mask" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.daily.health.manager.ui.weight.DateTimeSelectionView
+            <com.daily.health.manager.face.weight.DateTimeSelectionView
                 android:id="@+id/dateTimeSelectionView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

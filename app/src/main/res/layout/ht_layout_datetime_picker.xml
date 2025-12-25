@@ -10,7 +10,7 @@
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <!-- 年份选择器 -->
-    <com.daily.health.manager.ui.widget.NumberPickerView
+    <com.daily.health.manager.face.widget.NumberPickerView
         android:id="@+id/yearPicker"
         android:layout_width="@dimen/dp_60"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         app:npv_WrapSelectorWheel="false" />
 
     <!-- 月份选择器 -->
-    <com.daily.health.manager.ui.widget.NumberPickerView
+    <com.daily.health.manager.face.widget.NumberPickerView
         android:id="@+id/monthPicker"
         android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         app:npv_WrapSelectorWheel="true" />
 
     <!-- 日期选择器 -->
-    <com.daily.health.manager.ui.widget.NumberPickerView
+    <com.daily.health.manager.face.widget.NumberPickerView
         android:id="@+id/dayPicker"
         android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
         app:npv_WrapSelectorWheel="true" />
 
     <!-- 小时选择器 -->
-    <com.daily.health.manager.ui.widget.NumberPickerView
+    <com.daily.health.manager.face.widget.NumberPickerView
         android:id="@+id/hourPicker"
         android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
         app:layout_constraintBottom_toBottomOf="@id/hourPicker"/>
 
     <!-- 分钟选择器 -->
-    <com.daily.health.manager.ui.widget.NumberPickerView
+    <com.daily.health.manager.face.widget.NumberPickerView
         android:id="@+id/minutePicker"
         android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"

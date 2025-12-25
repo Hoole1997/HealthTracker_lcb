@@ -4,10 +4,10 @@ import androidx.fragment.app.FragmentActivity
 import com.daily.health.manager.App
 import com.daily.health.manager.constants.HAS_NOTIFICATION_PERMISSION
 import com.daily.health.manager.constants.HAS_REPORT_NOTIFICATION_REVOKED
-import com.daily.health.manager.ui.act.AlarmManageActivity
-import com.daily.health.manager.ui.act.MainActivity
-import com.daily.health.manager.ui.act.SplashActivity
-import com.daily.health.manager.ui.dialog.NotificationPermissionDialog
+import com.daily.health.manager.face.act.AlarmManageScreen
+import com.daily.health.manager.face.act.MainScreen
+import com.daily.health.manager.face.act.SplashScreen
+import com.daily.health.manager.face.dialog.NotificationPermissionDialog
 import com.daily.health.manager.util.pushRequest
 import com.daily.health.manager.util.pushResult
 import com.healthtracker.framework.BuildState
@@ -66,9 +66,9 @@ class PermissionManager {
     fun checkNotificationPermission(activity: FragmentActivity, onGoSetting:(() -> Unit)? = null, onComplete:(Boolean) -> Unit) {
 
         val position = when (activity) {
-            is SplashActivity -> "AppStart"
-            is MainActivity -> "Home"
-            is AlarmManageActivity -> "alarm"
+            is SplashScreen -> "AppStart"
+            is MainScreen -> "Home"
+            is AlarmManageScreen -> "alarm"
             else -> "other"
         }
 
@@ -90,7 +90,7 @@ class PermissionManager {
                             TAG
                         )
                         pushResult(if (isDoNotAsk) "denied_forever" else "denied", position)
-                        if (isDoNotAsk && activity !is SplashActivity) {
+                        if (isDoNotAsk && activity !is SplashScreen) {
                             if(BuildState.debug) "非启动页，永久拒绝，尝试自定义弹窗请求通知权限".logd(TAG)
                             showCustomNotificationRequest(activity,onGoSetting,onComplete)
                         } else {
@@ -122,7 +122,7 @@ class PermissionManager {
     }
 
     private fun showCustomNotificationRequest(activity: FragmentActivity, onGoSetting:(() -> Unit)? = null, onComplete: (Boolean) -> Unit){
-        if (activity is MainActivity) {
+        if (activity is MainScreen) {
             if (hasShowCustomNotificationRequest) {
                 if (BuildState.debug) "本次启动，用户已请求过通知权限，不再请求".logd(
                     TAG

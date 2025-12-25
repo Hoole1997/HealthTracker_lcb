@@ -14,7 +14,7 @@ import com.daily.health.manager.receiver.NotificationActionReceiver
 import com.daily.health.manager.service.HealthServiceConstants
 import com.daily.health.manager.service.HealthServiceConstants.NOTIFICATION_ID_HEALTH_SERVICE
 import com.daily.health.manager.strategy.PushOrchestrator
-import com.daily.health.manager.ui.act.SplashActivity
+import com.daily.health.manager.face.act.SplashScreen
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
@@ -173,7 +173,7 @@ class ResidentNotificationHelper(
         }
 
         // 直接创建启动 SplashActivity 的 Intent
-        val intent = Intent(context, SplashActivity::class.java).apply {
+        val intent = Intent(context, SplashScreen::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(HealthServiceConstants.EXTRA_NOTIFICATION_ACTION, actionValue)
             putExtra(LANDING_NOTIFICATION_FROM,"top_notification")

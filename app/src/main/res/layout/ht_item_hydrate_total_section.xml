@@ -46,7 +46,7 @@
         android:textSize="14sp"
         android:textColor="#999999"/>
 
-    <com.daily.health.manager.ui.widget.WaterCupView
+    <com.daily.health.manager.face.widget.WaterCupView
         android:id="@+id/waterCupView"
         android:layout_width="@dimen/dp_230"
         android:layout_height="@dimen/dp_252"

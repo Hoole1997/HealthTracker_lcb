@@ -159,7 +159,7 @@
                         tools:text="165.0" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <com.daily.health.manager.ui.weight.LeveStatusView
+                <com.daily.health.manager.face.weight.LeveStatusView
                     android:id="@+id/bp_status_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.daily.health.manager.ui.weight.DateTimeSelectionView
+            <com.daily.health.manager.face.weight.DateTimeSelectionView
                 android:id="@+id/dateTimeSelectionView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

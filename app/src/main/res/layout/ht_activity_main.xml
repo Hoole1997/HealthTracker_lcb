@@ -60,7 +60,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.daily.health.manager.ui.weight.CustomViewPager
+    <com.daily.health.manager.face.weight.CustomViewPager
         android:id="@+id/view_pager_home"
         android:layout_width="match_parent"
         android:layout_height="0dp"

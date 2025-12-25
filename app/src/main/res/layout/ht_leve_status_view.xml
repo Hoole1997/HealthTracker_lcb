@@ -51,7 +51,7 @@
         tools:text="@string/ht_blood_pressure_range_normal_short" />
 
     <!-- 等级进度条（通用 LevelBar） -->
-    <com.daily.health.manager.ui.weight.GenericLevelBar
+    <com.daily.health.manager.face.weight.GenericLevelBar
         android:id="@+id/levelBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

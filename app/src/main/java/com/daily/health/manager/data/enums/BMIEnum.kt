@@ -1,7 +1,7 @@
 package com.daily.health.manager.data.enums
 
 import com.daily.health.manager.R
-import com.daily.health.manager.ui.weight.LevelCategory
+import com.daily.health.manager.face.weight.LevelCategory
 
 /**
  * BMI 分类枚举（8 档）

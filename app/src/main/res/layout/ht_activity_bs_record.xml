@@ -119,7 +119,7 @@
                     app:layout_constraintTop_toBottomOf="@id/rg_unit"
                     tools:text="4.2" />
 
-                <com.daily.health.manager.ui.weight.RulerView
+                <com.daily.health.manager.face.weight.RulerView
                     android:id="@+id/rulerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
                     tools:scrollableMaxScale="35"
                     tools:scrollableMinScale="1" />
 
-                <com.daily.health.manager.ui.weight.BloodSugarRangeView
+                <com.daily.health.manager.face.weight.BloodSugarRangeView
                     android:id="@+id/rangeView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.daily.health.manager.ui.weight.DateTimeSelectionView
+            <com.daily.health.manager.face.weight.DateTimeSelectionView
                 android:id="@+id/dateTimeSelectionView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

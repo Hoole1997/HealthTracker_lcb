@@ -19,7 +19,7 @@ import com.daily.health.manager.helper.NotificationResourceMapper.NotificationRe
 import com.daily.health.manager.receiver.NotificationActionReceiver
 import com.daily.health.manager.service.HealthServiceConstants
 import com.daily.health.manager.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
-import com.daily.health.manager.ui.act.SplashActivity
+import com.daily.health.manager.face.act.SplashScreen
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.util.SpUtils
@@ -308,7 +308,7 @@ class AlarmNotificationManager(
         val actionValue = getNotificationAction(alarmType)
 
         // 直接创建启动 SplashActivity 的 Intent
-        val intent = Intent(context, SplashActivity::class.java).apply {
+        val intent = Intent(context, SplashScreen::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(EXTRA_NOTIFICATION_ACTION, actionValue)
         }

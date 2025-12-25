@@ -1,7 +1,7 @@
 package com.daily.health.manager.tips
 
 import com.daily.health.manager.R
-import com.daily.health.manager.ui.act.getText
+import com.daily.health.manager.face.act.getText
 import kotlin.random.Random
 
 /**

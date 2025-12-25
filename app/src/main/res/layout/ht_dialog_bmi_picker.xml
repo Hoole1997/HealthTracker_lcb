@@ -80,7 +80,7 @@
         app:layout_constraintTop_toBottomOf="@id/rg_unit"
         tools:text="60.0" />
 
-    <com.daily.health.manager.ui.weight.RulerView
+    <com.daily.health.manager.face.weight.RulerView
         android:id="@+id/rulerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

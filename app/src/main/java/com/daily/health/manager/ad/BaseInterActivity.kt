@@ -3,20 +3,20 @@ package com.daily.health.manager.ad
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import com.daily.health.manager.ui.act.HealthDetailActivity
-import com.daily.health.manager.ui.act.HealthRecordActivity
-import com.daily.health.manager.ui.act.HealthStatisticsActivity
-import com.daily.health.manager.ui.act.HydrateActivity
-import com.daily.health.manager.ui.act.StepCountActivity
+import com.daily.health.manager.face.act.HealthDetailScreen
+import com.daily.health.manager.face.act.HealthRecordScreen
+import com.daily.health.manager.face.act.HealthStatisticsScreen
+import com.daily.health.manager.face.act.HydrateScreen
+import com.daily.health.manager.face.act.StepCountScreen
 import com.daily.health.manager.utils.loadRewardBidding
 import com.daily.health.manager.utils.showInter
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
-import com.daily.health.manager.ui.tracker.HealthType
-import com.daily.health.manager.ui.tracker.trackEnterTrackPageClick
-import com.daily.health.manager.ui.tracker.trackNewRecordPageBack
-import com.daily.health.manager.ui.tracker.trackResultPageBack
-import com.daily.health.manager.ui.tracker.trackTrackPageBack
+import com.daily.health.manager.face.tracker.HealthType
+import com.daily.health.manager.face.tracker.trackEnterTrackPageClick
+import com.daily.health.manager.face.tracker.trackNewRecordPageBack
+import com.daily.health.manager.face.tracker.trackResultPageBack
+import com.daily.health.manager.face.tracker.trackTrackPageBack
 import kotlinx.coroutines.launch
 
 abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVMActivity<VM,VB>() {
@@ -36,7 +36,7 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(this is HealthStatisticsActivity){
+        if(this is HealthStatisticsScreen){
             trackEnterTrackPageClick(getCurrentHealthType())
         }
     }
@@ -61,18 +61,18 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
     private fun getEventTypeAndHealthType(): Pair<EventType, HealthType>? {
         return when(this) {
             // Record Activities -> NewRecordPage_Back
-            is HealthRecordActivity -> EventType.NEW_RECORD_PAGE to getCurrentHealthType()
-            is StepCountActivity -> EventType.NEW_RECORD_PAGE to HealthType.WALKING_STEPS
-            is HydrateActivity -> EventType.NEW_RECORD_PAGE to HealthType.HYDRATE
+            is HealthRecordScreen -> EventType.NEW_RECORD_PAGE to getCurrentHealthType()
+            is StepCountScreen -> EventType.NEW_RECORD_PAGE to HealthType.WALKING_STEPS
+            is HydrateScreen -> EventType.NEW_RECORD_PAGE to HealthType.HYDRATE
 
             // Detail Activities -> ResultPage_Back
-            is HealthDetailActivity -> {
+            is HealthDetailScreen -> {
                 val healthType = getCurrentHealthType()
                 EventType.RESULT_PAGE to healthType
             }
 
             // Statistics Activity -> Trackpage_Back
-            is HealthStatisticsActivity -> {
+            is HealthStatisticsScreen -> {
                 // 从子类获取当前的健康类型
                 val healthType = getCurrentHealthType()
                 EventType.TRACK_PAGE to healthType

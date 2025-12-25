@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.daily.health.manager.ui.widget.WeeklyDateSelector
+    <com.daily.health.manager.face.widget.WeeklyDateSelector
         android:id="@+id/weeklyDateSelector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -4,7 +4,7 @@ import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.config.BloodSugarRangeManager
 import com.healthtracker.framework.util.SpUtils
-import com.daily.health.manager.ui.weight.LevelCategory
+import com.daily.health.manager.face.weight.LevelCategory
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.NumberFormatter
 import kotlin.math.roundToInt

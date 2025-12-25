@@ -3,7 +3,7 @@ package com.daily.health.manager.util
 import android.content.Context
 import android.util.TypedValue
 import com.daily.health.manager.data.enums.BsUnit
-import com.daily.health.manager.ui.weight.RulerView
+import com.daily.health.manager.face.weight.RulerView
 
 /**
  * 血糖刻度尺配置帮助类
