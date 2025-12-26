@@ -2,6 +2,10 @@
 
 本次改动目标：将健康统计页适配为血糖统计视图，统一单位显示、修复统计逻辑、并改进图表与历史列表的呈现一致性。
 
+## 分支变更总结（防关联 & 代码安全）
+
+- `feature_1.0.0` 分支汇总文档：[`docs/Branch_Change_Summary.md`](docs/Branch_Change_Summary.md)
+
 ## 主要改动
 
 - 统计页视图（Activity）与视图模型（ViewModel）统一血糖单位：
@@ -112,6 +116,9 @@
 
 - 建议在每次发布后打上 Git tag（例如 `v1.0.3`、`v1.0.4`），以便后续基于 tag 精确生成版本差异与变更记录。
 - 若希望 `docs/` 下的变更记录能被工具链读取与自动化处理，建议避免在 `.gitignore` 中全局忽略 `*.md`，或显式放行 `docs/**`。
+
+- 建议将“防关联 & 代码安全”类工程变更维护为分支级汇总文档（例如 `docs/Branch_Change_Summary.md`），并在合并/发布前作为 checklist 的输入。
+- 建议 CI 增加 Release smoke 构建（至少 `:app:assembleRelease`），用于验证 activityGuard/StringFog/Proguard/字典/垃圾代码 等链路是否完整可用。
 
 ## 2025-12-22 补充变更记录（DI/构建/工程）
 
@@ -390,3 +397,12 @@ lifecycleScope.launch {
 #### 验证
 - 编译通过：`./gradlew :app:compileInternalDebugKotlin`
 - 手动测试：切换血糖单位时，刻度位置与显示值保持同步
+
+## 2025-12-25 Hydrate 水位动画修复（WaveLoadingView）
+
+- 现象：新增饮水时，水位偶发出现“先下降再上升”的回跳。
+- 根因：`setProgressValue()` 在重复 bind/频繁更新时会启动多个 water level 动画（或反复 cancel + restart），导致 `waterLevelRatio` 被不同动画交替写入，视觉上出现回跳。
+- 修复：
+  - 在 `WaveLoadingView` 内部持有单例 `waterLevelAnim`，启动新动画前先取消旧动画，避免重叠。
+  - `progress` 做 `0..100` clamp；当 `progress` 未变化时直接 return，避免 RecyclerView 重复 bind 触发动画重启。
+- 验证：`./gradlew :app:assembleInternalDebug`；Hydrate 页连续快速加水，水位应平滑上升且不回跳。

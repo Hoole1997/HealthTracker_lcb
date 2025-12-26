@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:clipToPadding="false">
 
     <View
@@ -80,38 +80,38 @@
         app:weekStartOnMonday="false"
         app:dayNumberNormalBackground="@drawable/ht_bg_week_day_white"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcyHydrate"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/weeklyDateSelector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <FrameLayout
-        android:id="@+id/loadingOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="#80000000"
-        android:fitsSystemWindows="false"
-        android:clickable="true"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieHydrateLoading"
-            android:layout_width="@dimen/dp_84"
-            android:layout_height="@dimen/dp_94"
-            android:layout_gravity="center"
-            app:lottie_fileName="hydrate_loading/data.json"
-            app:lottie_imageAssetsFolder="hydrate_loading/images"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    </FrameLayout>
+            <!-- TotalSection：水杯视图 + Drink按钮 -->
+            <include
+                android:id="@+id/totalSection"
+                layout="@layout/ht_item_hydrate_total_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- QuickAdd + Records 列表 -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcyHydrate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

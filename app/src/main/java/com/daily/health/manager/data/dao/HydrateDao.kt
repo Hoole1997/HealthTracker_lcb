@@ -47,6 +47,10 @@ interface LocalDao09 {
     @Query("SELECT * FROM t09 WHERE c02 BETWEEN :startTime AND :endTime ORDER BY c02 DESC")
     fun getRecordsByTimeRange(startTime: Date, endTime: Date): Flow<List<HydrateRecord>>
 
+    /** 按时间范围一次性查询（非 Flow） */
+    @Query("SELECT * FROM t09 WHERE c02 BETWEEN :startTime AND :endTime ORDER BY c02 DESC")
+    suspend fun getRecordsByTimeRangeOnce(startTime: Date, endTime: Date): List<HydrateRecord>
+
     /** 根据ID删除 */
     @Query("DELETE FROM t09 WHERE c01 = :id")
     suspend fun deleteById(id: Long): Int

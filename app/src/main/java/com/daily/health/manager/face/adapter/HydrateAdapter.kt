@@ -22,24 +22,20 @@ import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.HtItemHydrateQuickAddSectionBinding
 import com.daily.health.manager.databinding.HtItemHydrateRecordItemBinding
 import com.daily.health.manager.databinding.HtItemHydrateRecordSectionBinding
-import com.daily.health.manager.databinding.HtItemHydrateTotalSectionBinding
 import com.daily.health.manager.databinding.HtItemLabelBinding
 import java.util.Date
-import kotlin.math.max
 
 /**
  * 喝水页面 RecyclerView 适配器
- * - 目前仅实现第一个部分：总饮水量与水杯视图
- * - 后续可扩展其他部分为不同的 ViewType
+ * - 仅处理 QuickAddSection 和 RecordSection
+ * - TotalSection 已移至布局直接绑定
  */
 class HydrateAdapter(
     private val onQuickAddClick: (Int) -> Unit = {},
-    private val onRecordDeleteClick: (HydrateRecordItem) -> Unit = {},
-    private val onDrinkClick: (Int) -> Unit = {}
+    private val onRecordDeleteClick: (HydrateRecordItem) -> Unit = {}
 ) : ListAdapter<HydrateItem, RecyclerView.ViewHolder>(DIFF) {
 
     companion object {
-        private const val TYPE_TOTAL_SECTION = 1
         private const val TYPE_QUICK_ADD_SECTION = 2
         private const val TYPE_RECORD_SECTION = 3
 
@@ -54,22 +50,15 @@ class HydrateAdapter(
         }
     }
 
-    // 适配器级别维护当前选择的饮水量，避免 ViewHolder 重建后丢失状态
-    private var currentDrinkAmountMl: Int = 100
-
     override fun getItemViewType(position: Int): Int = when (getItem(position)) {
-        is HydrateItem.TotalSection -> TYPE_TOTAL_SECTION
         is HydrateItem.QuickAddSection -> TYPE_QUICK_ADD_SECTION
         is HydrateItem.RecordSection -> TYPE_RECORD_SECTION
+        else -> throw IllegalArgumentException("Unsupported item type")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            TYPE_TOTAL_SECTION -> TotalSectionViewHolder(
-                HtItemHydrateTotalSectionBinding.inflate(inflater, parent, false),
-                onDrinkClick
-            )
             TYPE_QUICK_ADD_SECTION -> QuickAddSectionViewHolder(
                 HtItemHydrateQuickAddSectionBinding.inflate(inflater, parent, false),
                 onQuickAddClick
@@ -84,77 +73,8 @@ class HydrateAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is TotalSectionViewHolder -> holder.bind(getItem(position) as HydrateItem.TotalSection)
             is QuickAddSectionViewHolder -> holder.bind(getItem(position) as HydrateItem.QuickAddSection)
             is RecordSectionViewHolder -> holder.bind(getItem(position) as HydrateItem.RecordSection)
-        }
-    }
-
-    inner class TotalSectionViewHolder(
-        private val binding: HtItemHydrateTotalSectionBinding,
-        private val onDrinkClick: (Int) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
-        private val drinkTextFormat: String = binding.root.context.getString(R.string.ht_drink_btn_format)
-
-        init {
-            binding.drinkMore.setOnClickListener {
-                // 根据单位设置步进：fl oz 为 1 fl oz；ml 为 10 ml
-                val cupUnit = HydrateSettingManager.getCupUnit()
-                val stepMl = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
-                    HydrateSettingManager.toMl(1, HydrateSettingManager.CupUnit.FL_OZ)
-                } else {
-                    10
-                }
-                currentDrinkAmountMl += stepMl
-                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.ht_fl_oz) else binding.root.context.getString(R.string.ht_unit_ml)
-                val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
-                binding.drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
-            }
-            binding.drinkLess.setOnClickListener {
-                // 根据单位设置步进与下限：fl oz 为 1 fl oz；ml 为 10 ml
-                val cupUnit = HydrateSettingManager.getCupUnit()
-                val stepMl = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
-                    HydrateSettingManager.toMl(1, HydrateSettingManager.CupUnit.FL_OZ)
-                } else {
-                    10
-                }
-                val minMl = stepMl
-                currentDrinkAmountMl = max(minMl, currentDrinkAmountMl - stepMl)
-                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.ht_fl_oz) else binding.root.context.getString(R.string.ht_unit_ml)
-                val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
-                binding.drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
-            }
-            binding.drinkBtn.setOnClickListener {
-                onDrinkClick(currentDrinkAmountMl)
-            }
-        }
-        fun bind(item: HydrateItem.TotalSection) {
-            binding.apply {
-                // 每次饮水量同步为杯子容积（ml），同时保证不低于单位最小值
-                val cupUnit = HydrateSettingManager.getCupUnit()
-                val minMl = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
-                    HydrateSettingManager.toMl(1, HydrateSettingManager.CupUnit.FL_OZ)
-                } else {
-                    10
-                }
-                currentDrinkAmountMl = max(minMl, item.cupVolumeMl)
-                val displayTotal = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(item.totalIntake, HydrateSettingManager.CupUnit.FL_OZ) else item.totalIntake
-                totalWaterIntake.text = displayTotal.toString()
-                totalWaterUnit.text = item.unit
-                totalWaterDesc.text = item.description
-
-                // 根据当前选择的饮水量更新按钮文案
-                val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) binding.root.context.getString(R.string.ht_fl_oz) else binding.root.context.getString(R.string.ht_unit_ml)
-                val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ) else currentDrinkAmountMl
-                drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
-
-                // 更新水杯视图：以毫升驱动，最小单位 10ml
-                // 目标毫升按照 1杯 = 250ml 计算（保持与业务“8杯=2000ml”一致）
-                val targetMl = item.maxCups * 250
-                waterCupView.setStepMl(10)
-                waterCupView.setTargetMl(targetMl)
-                waterCupView.setCurrentMl(item.totalIntake)
-            }
         }
     }
 
@@ -357,12 +277,11 @@ class HydrateAdapter(
  */
 sealed class HydrateItem {
     data class TotalSection(
-        val totalIntake: Int, // 总饮水量数值
-        val unit: String,     // 单位，例如 "ML" 或 "CUPS"
+        val totalIntake: Int,  // 总饮水量数值（ml）
+        val targetMl: Int,     // 目标饮水量（ml）
+        val unit: String,      // 单位标签，例如 "ML" 或 "fl oz"
         val description: String, // 描述文案
-        val currentCups: Int, // 当前已喝的杯数
-        val maxCups: Int,     // 最大杯数目标
-        val cupVolumeMl: Int  // 杯子容积（ml），用于 Drink 按钮每次饮水量
+        val cupVolumeMl: Int   // 杯子容积（ml），用于 Drink 按钮每次饮水量
     ) : HydrateItem()
 
     data class QuickAddSection(

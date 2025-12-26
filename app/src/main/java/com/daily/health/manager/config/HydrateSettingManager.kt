@@ -15,10 +15,12 @@ object HydrateSettingManager {
     private const val KEY_DAILY_CUPS = KEY_PREFIX + "daily_cups"
     private const val KEY_CUP_VOLUME = KEY_PREFIX + "cup_volume"
     private const val KEY_CUP_UNIT = KEY_PREFIX + "cup_unit"
+    private const val KEY_DAILY_TARGET_ML = KEY_PREFIX + "daily_target_ml"
 
     private const val DEFAULT_DAILY_CUPS = 8
-    private const val DEFAULT_CUP_VOLUME = 100 // 存储基准为 ml，此值表示 20ml
+    private const val DEFAULT_CUP_VOLUME = 250 // 存储基准为 ml，8杯 × 250ml = 2000ml 默认目标
     private val DEFAULT_CUP_UNIT = CupUnit.ML
+    private const val DEFAULT_DAILY_TARGET_ML = 2000 // 默认目标饮水量 2000ml
     private const val ML_PER_FLOZ = 29.5735f
 
     @Volatile
@@ -27,17 +29,23 @@ object HydrateSettingManager {
     private var cacheCupVolume: Int? = null
     @Volatile
     private var cacheCupUnit: CupUnit? = null
+    @Volatile
+    private var cacheDailyTargetMl: Int? = null
 
     // 供界面观察的单位流，单位变更后立即发出新值以触发 UI 更新
     private val cupUnitStateFlow: MutableStateFlow<CupUnit> = MutableStateFlow(DEFAULT_CUP_UNIT)
     // 供界面观察的杯子容积流，容积变更后立即发出新值以触发 UI 更新（存储基准为 ml）
     private val cupVolumeStateFlow: MutableStateFlow<Int> = MutableStateFlow(DEFAULT_CUP_VOLUME)
+    // 供界面观察的目标饮水量流（单位 ml）
+    private val dailyTargetMlStateFlow: MutableStateFlow<Int> = MutableStateFlow(DEFAULT_DAILY_TARGET_ML)
 
     init {
         // 初始化时同步持久化的单位到流
         cupUnitStateFlow.value = getCupUnit()
         // 初始化时同步持久化的容积到流
         cupVolumeStateFlow.value = getCupVolume()
+        // 初始化时同步持久化的目标饮水量到流
+        dailyTargetMlStateFlow.value = getDailyTargetMl()
     }
 
     /**
@@ -132,6 +140,31 @@ object HydrateSettingManager {
     fun cupVolumeFlow(): StateFlow<Int> = cupVolumeStateFlow
 
     /**
+     * 获取每日目标饮水量（ml）
+     */
+    fun getDailyTargetMl(): Int {
+        cacheDailyTargetMl?.let { return it }
+        val value = SpUtils.getInt(KEY_DAILY_TARGET_ML, DEFAULT_DAILY_TARGET_ML)
+        cacheDailyTargetMl = value
+        return value
+    }
+
+    /**
+     * 设置每日目标饮水量（ml）
+     */
+    fun setDailyTargetMl(targetMl: Int) {
+        val safe = targetMl.coerceAtLeast(100) // 最少 100ml
+        cacheDailyTargetMl = safe
+        SpUtils.putInt(KEY_DAILY_TARGET_ML, safe)
+        dailyTargetMlStateFlow.value = safe
+    }
+
+    /**
+     * 目标饮水量变更的观察流（单位 ml）
+     */
+    fun dailyTargetMlFlow(): StateFlow<Int> = dailyTargetMlStateFlow
+
+    /**
      * 是否已设置过任意饮水配置
      */
     fun hasAnySetting(): Boolean {
@@ -145,9 +178,11 @@ object HydrateSettingManager {
         cacheDailyCups = null
         cacheCupVolume = null
         cacheCupUnit = null
+        cacheDailyTargetMl = null
         SpUtils.remove(KEY_DAILY_CUPS)
         SpUtils.remove(KEY_CUP_VOLUME)
         SpUtils.remove(KEY_CUP_UNIT)
+        SpUtils.remove(KEY_DAILY_TARGET_ML)
     }
 
     /**
@@ -164,7 +199,7 @@ object HydrateSettingManager {
         return when (unit) {
             CupUnit.ML -> ml
             CupUnit.FL_OZ -> (ml / ML_PER_FLOZ).roundToInt()
-        }.coerceAtLeast(1)
+        }.coerceAtLeast(0)  // 饮水量可以为 0，不强制最小值为 1
     }
 
 }

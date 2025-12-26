@@ -41,6 +41,13 @@ class HydrateRepository(
         return hydrateDao.getRecordsByTimeRange(startTime, endTime)
     }
 
+    /**
+     * 一次性获取指定时间范围内的饮水记录（非 Flow）
+     */
+    suspend fun getRecordsByTimeRangeOnce(startTime: Date, endTime: Date): List<HydrateRecord> {
+        return hydrateDao.getRecordsByTimeRangeOnce(startTime, endTime)
+    }
+
     override fun getChartRecords(): Flow<List<HydrateRecord>> {
         // 饮水暂不区分图表记录，直接返回全部
         return getAllRecords()

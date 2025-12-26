@@ -471,6 +471,44 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:text="0" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_step_unit"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_F0832D"
+                    android:alpha="0.5"
+                    android:textSize="@dimen/sp_14"
+                    android:text="steps"
+                    android:layout_marginStart="@dimen/dp_4"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_step_count_value"
+                    app:layout_constraintStart_toEndOf="@id/tv_step_count_value" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_step_kcal"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_F0832D"
+                    android:textSize="@dimen/sp_20"
+                    android:layout_marginStart="@dimen/dp_12"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_step_count_value"
+                    app:layout_constraintStart_toEndOf="@id/tv_step_unit"
+                    android:text="0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_step_kcal_unit"
+                    style="@style/TextViewFont_RobotoRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_F0832D"
+                    android:alpha="0.5"
+                    android:textSize="@dimen/sp_14"
+                    android:text="kcal"
+                    android:layout_marginStart="@dimen/dp_2"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_step_kcal"
+                    app:layout_constraintStart_toEndOf="@id/tv_step_kcal" />
+
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_step_count"
                     android:layout_width="@dimen/dp_76"
@@ -495,13 +533,15 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_124"
                 android:clipToOutline="true"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:outlineProvider="background"
                 android:background="@drawable/ht_bg_rect_white_8"
                 android:backgroundTint="@color/color_DFF5FF"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:paddingStart="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_17"
-                android:paddingEnd="@dimen/dp_0"
+                android:paddingEnd="@dimen/dp_16"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/space_1"
                 app:layout_constraintTop_toTopOf="parent">
@@ -536,6 +576,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/color_30A6ED"
+                    android:alpha="0.5"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintBaseline_toBaselineOf="@id/tv_has_drink_cup"
                     app:layout_constraintStart_toEndOf="@id/tv_has_drink_cup"
@@ -550,6 +591,16 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:srcCompat="@mipmap/ht_ic_home_cup" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_target_status"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    app:layout_constraintStart_toEndOf="@id/tv_target_cup_count"
+                    app:srcCompat="@drawable/ht_ic_hydrate_not_reach_goal"
+                    app:layout_constraintTop_toTopOf="@id/tv_target_cup_count"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_target_cup_count"
+                    android:layout_marginStart="@dimen/dp_6"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 

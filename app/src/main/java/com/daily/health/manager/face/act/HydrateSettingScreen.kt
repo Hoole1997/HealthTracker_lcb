@@ -33,6 +33,9 @@ class HydrateSettingScreen : BaseInterActivity<HydrateSettingViewModel, HtActivi
         val adapter = HydrateSettingAdapter(
             onDailyCupsChanged = { cups ->
                 HydrateSettingManager.setDailyCups(cups)
+                // 同步更新目标饮水量 = 杯数 × 杯子容量
+                val newTargetMl = cups * HydrateSettingManager.getCupVolume()
+                HydrateSettingManager.setDailyTargetMl(newTargetMl)
                 // DailyCups 变更后，同步当天插入的记录字段
                 mViewModel.syncTodayHydrateRecordSettings()
             },
@@ -41,6 +44,9 @@ class HydrateSettingScreen : BaseInterActivity<HydrateSettingViewModel, HtActivi
                 val ml = HydrateSettingManager.toMl(value, unit)
                 HydrateSettingManager.setCupVolume(ml)
                 HydrateSettingManager.setCupUnit(unit)
+                // 同步更新目标饮水量 = 杯数 × 杯子容量
+                val newTargetMl = HydrateSettingManager.getDailyCups() * ml
+                HydrateSettingManager.setDailyTargetMl(newTargetMl)
                 // CupVolume 变更后，同步当天插入的记录字段
                 mViewModel.syncTodayHydrateRecordSettings()
             },

@@ -32,6 +32,8 @@ import com.daily.health.manager.face.act.ProfileActivity
 import com.daily.health.manager.face.act.reportGuide
 import com.daily.health.manager.face.viewmodel.HomeViewModel
 import com.daily.health.manager.util.CholesterolCalculator
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
@@ -177,20 +179,26 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             updateCholesterolUI(record)
         }
 
-        collectLatest(mViewModel.todyCupCount) { count ->
+        collectLatest(mViewModel.todayTotalIntakeMl) { totalMl ->
             mViewBind?.run {
-                tvHasDrinkCup.text = count ?: ""
+                tvHasDrinkCup.text = totalMl.toString()
+                updateWaterStatus(totalMl)
             }
         }
 
         collectLatest(mViewModel.todayStepStat) { stat ->
-            mViewBind?.tvStepCountValue?.text = stat?.steps?.toString() ?: "0"
+            mViewBind?.run {
+                tvStepCountValue.text = stat?.steps?.toString() ?: "0"
+                tvStepKcal.text = stat?.let { 
+                    NumberFormatter.formatNumber(it.kcal, LanguageUtils.getAppLocale(requireContext()), 1)
+                } ?: "0"
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        mViewBind?.tvTargetCupCount?.text = "/${HydrateSettingManager.getDailyCups()}"
+        updateWaterStatus(mViewModel.todayTotalIntakeMl.value)
         isHeighLightLeave = false
         if (notificationPermissionFlowFinished) {
             guidFeature()
@@ -210,6 +218,16 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
                 highLightComplete.complete(true)
             }
         }
+    }
+
+    private fun updateWaterStatus(currentIntakeMl: Int) {
+        // 显示目标饮水量，格式: /2000ml
+        val targetMl = HydrateSettingManager.getDailyTargetMl()
+        mViewBind?.tvTargetCupCount?.text = "/${targetMl}ml"
+
+        // 根据是否达标显示不同图标
+        val statusRes = if (currentIntakeMl >= targetMl) R.drawable.ht_ic_checked else R.drawable.ht_ic_hydrate_not_reach_goal
+        mViewBind?.ivTargetStatus?.setImageResource(statusRes)
     }
 
     /**

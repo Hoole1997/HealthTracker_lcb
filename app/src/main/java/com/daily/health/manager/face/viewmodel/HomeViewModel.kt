@@ -70,13 +70,14 @@ class HomeViewModel(
         )
 
 
-    val todyCupCount = hydrateRepository.getRecordsByTimeRange(DateTimeUtils.getTodayRange().first,
+    // 今日总饮水量（毫升）
+    val todayTotalIntakeMl = hydrateRepository.getRecordsByTimeRange(DateTimeUtils.getTodayRange().first,
         DateTimeUtils.getTodayRange().second)
-        .map { records -> records.size.toString() }
+        .map { records -> records.sumOf { it.intakeMl } }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
+            initialValue = 0
         )
 
     private val stepRepo = StepRepository.get(App.INSTANCE)

@@ -46,19 +46,61 @@
         android:textSize="14sp"
         android:textColor="#999999"/>
 
-    <com.daily.health.manager.face.widget.WaterCupView
-        android:id="@+id/waterCupView"
-        android:layout_width="@dimen/dp_230"
-        android:layout_height="@dimen/dp_252"
-        android:layout_marginTop="@dimen/dp_12"
-        app:maxCups="8"
-        app:currentCups="3"
-        app:waterColor="#03bc78"
-        app:waveAmplitude="8dp"
-        app:cupWaveSpeed="48"
-        app:cupTopInset="@dimen/dp_92"
-        app:cupBottomInset="0dp"
-        app:cupSideInset="1dp" />
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="@dimen/dp_12">
+       <View
+           android:id="@+id/v_cup"
+           android:layout_width="0dp"
+           android:layout_height="0dp"
+           android:layout_marginTop="@dimen/dp_8"
+           android:layout_marginHorizontal="@dimen/sp_20"
+           android:layout_marginBottom="@dimen/dp_7"
+           app:layout_constraintTop_toTopOf="@id/v_outline"
+           app:layout_constraintBottom_toBottomOf="@id/v_outline"
+           app:layout_constraintStart_toStartOf="@id/v_outline"
+           app:layout_constraintEnd_toEndOf="@id/v_outline"
+
+           android:background="@mipmap/ht_ic_cup_cover1"/>
+
+       <View
+           android:layout_width="@dimen/dp_0"
+           android:layout_height="@dimen/dp_25"
+           app:layout_constraintStart_toStartOf="@id/v_cup"
+           app:layout_constraintEnd_toEndOf="@id/v_cup"
+           app:layout_constraintTop_toTopOf="@id/v_cup"
+           android:background="@drawable/ht_bg_cup_top"/>
+       <com.daily.health.manager.face.widget.WaveLoadingView
+           android:id="@+id/waterCupView"
+           android:layout_width="0dp"
+           android:layout_height="0dp"
+           app:layout_constraintStart_toStartOf="@id/v_outline"
+           app:layout_constraintEnd_toEndOf="@id/v_outline"
+           app:layout_constraintBottom_toBottomOf="@id/v_outline"
+           app:layout_constraintTop_toTopOf="@id/v_cup"
+           android:layout_marginHorizontal="@dimen/dp_22"
+
+           android:layout_marginBottom="@dimen/dp_10"
+
+           app:wlv_borderWidth="0dp"
+           app:wlv_round_rectangle="true"
+           app:wlv_shapeType="rectangle"
+           app:wlv_triangle_direction="east"
+           app:wlv_waveAmplitude="20"
+           app:wlv_waveInnerColor="#B4F9C6"
+           app:wlv_waveColor="#02BC77" />
+       <View
+           android:id="@+id/v_outline"
+           app:layout_constraintBottom_toBottomOf="parent"
+           android:layout_width="@dimen/dp_230"
+           android:layout_height="0dp"
+           app:layout_constraintDimensionRatio="230:264"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintEnd_toEndOf="parent"
+           android:background="@drawable/ht_bg_cup_cover"
+           />
+   </androidx.constraintlayout.widget.ConstraintLayout>
     
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,6 +1,7 @@
 package com.daily.health.manager.face.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.daily.health.manager.config.HydrateSettingManager
 import com.daily.health.manager.data.repository.HydrateRepository
 import com.daily.health.manager.face.adapter.HydrateRecordItem
 import com.daily.health.manager.data.utils.DateTimeUtils
@@ -22,6 +23,10 @@ class HydrateViewModel(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
+
+    // 是否刚达到目标饮水量（用于触发完成页面跳转，一次性事件）
+    private val _justReachedTarget = MutableStateFlow(false)
+    val justReachedTarget = _justReachedTarget.asStateFlow()
 
     // 选中日期（默认今天）
     private val _selectedDate = MutableStateFlow(DateTimeUtils.now())
@@ -101,13 +106,31 @@ class HydrateViewModel(
         viewModelScope.launch {
             try {
                 _isLoading.value = true
+                // 直接从数据库获取当前总量，避免 StateFlow 缓存问题
+                val (startOfDay, endOfDay) = getDayRange(_selectedDate.value)
+                val currentRecords = hydrateRepository.getRecordsByTimeRangeOnce(startOfDay, endOfDay)
+                val beforeTotal = currentRecords.sumOf { it.intakeMl }
+                
                 val recordTime = composeRecordTimeForSelectedDate()
                 hydrateRepository.addHydrateRecord(intakeMl, recordTime = recordTime)
-                delay(500)
+                
+                // 检查是否刚好达到或超过目标（之前未达到，现在达到）
+                val targetMl = HydrateSettingManager.getDailyTargetMl()
+                val afterTotal = beforeTotal + intakeMl
+                if (beforeTotal < targetMl && afterTotal >= targetMl) {
+                    _justReachedTarget.value = true
+                }
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+
+    /**
+     * 重置达到目标的状态（UI 消费后调用）
+     */
+    fun consumeJustReachedTarget() {
+        _justReachedTarget.value = false
     }
 
     private fun composeRecordTimeForSelectedDate(): Date {
