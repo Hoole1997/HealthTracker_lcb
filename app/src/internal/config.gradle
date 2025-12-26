@@ -20,13 +20,13 @@ ext {
     url = [privacyUrl: "https://www.google.com.hk",
            teamUrl   : "https://www.google.com.hk",
            fcmUrl    : "https://sandc.gameztsvc.com",
-           fcmPkg    : "com.health.sugar.log.medication.manage.track.blood.pressure",
+           fcmPkg    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
            email     : "blaze.labs7@gmail.com"
     ]
 
     // 统计归因配置
-    analytics = [adjustAppToken: "9zc5ybfkhurk",           // Adjust App Token
-                 thinkingDataAppId: "d0299fbdb71b49fba65e700bbc413a08",   // 数数 SDK APP ID
-                 thinkingDataServerUrl: "https://app.blazelabstudio.com",     // 数数上报域名
+    analytics = [adjustAppToken: "1rbqbbrxrcu8",           // Adjust App Token
+                 thinkingDataAppId: "7eb813add90f4740b63817dcb3d8c49f",   // 数数 SDK APP ID
+                 thinkingDataServerUrl: "https://ht.hero-t.com",     // 数数上报域名
                  defaultUserChannel: "paid"]                           // 默认用户渠道，internal默认paid
 }
