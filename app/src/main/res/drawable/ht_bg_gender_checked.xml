@@ -2,7 +2,7 @@
     android:width="153dp"
     android:height="130dp"
     android:viewportWidth="153"
-    android:viewportHeight="130">
+    android:viewportHeight="130" android:autoMirrored="false" android:alpha="1">
   <path
       android:strokeWidth="1"
       android:pathData="M20.79,0.5H140.09C146.77,0.5 152.04,6.18 151.56,12.84L143.77,118.84C143.33,124.85 138.32,129.5 132.3,129.5H12.03C5.31,129.5 0.02,123.75 0.57,117.05L9.33,11.05C9.82,5.09 14.81,0.5 20.79,0.5Z"

@@ -2,7 +2,7 @@
     android:width="6dp"
     android:height="10dp"
     android:viewportWidth="6"
-    android:viewportHeight="10">
+    android:viewportHeight="10" android:autoMirrored="false" android:alpha="1">
   <path
       android:pathData="M1,9L5,5L1,1"
       android:strokeLineJoin="round"

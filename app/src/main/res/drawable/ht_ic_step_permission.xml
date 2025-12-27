@@ -3,7 +3,7 @@
     android:width="64dp"
     android:height="64dp"
     android:viewportWidth="64"
-    android:viewportHeight="64">
+    android:viewportHeight="64" android:autoMirrored="false" android:alpha="1">
   <path
       android:pathData="M32,1L32,1A31,31 0,0 1,63 32L63,32A31,31 0,0 1,32 63L32,63A31,31 0,0 1,1 32L1,32A31,31 0,0 1,32 1z">
     <aapt:attr name="android:fillColor">

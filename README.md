@@ -406,3 +406,13 @@ lifecycleScope.launch {
   - 在 `WaveLoadingView` 内部持有单例 `waterLevelAnim`，启动新动画前先取消旧动画，避免重叠。
   - `progress` 做 `0..100` clamp；当 `progress` 未变化时直接 return，避免 RecyclerView 重复 bind 触发动画重启。
 - 验证：`./gradlew :app:assembleInternalDebug`；Hydrate 页连续快速加水，水位应平滑上升且不回跳。
+
+## 2025-12-27 drawable 资源指纹差异化（不改变外观）
+
+- 目标：在**不改变渲染外观**的前提下，改变 APK/AAB 内 `res/drawable/*.xml` 的字节内容指纹（hash）。
+- 范围：`app/src/main/res/drawable/*.xml`（排除：`ic_launcher_foreground.xml`）。
+- 处理方式：对 drawable XML 进行“默认值显式化注入”（不覆盖原有属性，仅在缺失时补齐）。
+  - `vector`：补齐 `android:alpha="1"`、`android:autoMirrored="false"`。
+  - `selector`：补齐 `android:enterFadeDuration="0"`、`android:exitFadeDuration="0"`。
+  - `shape`：补齐 `android:useLevel="false"`（含 `layer-list` 内部的嵌套 `shape`）。
+- 验证：执行 `./gradlew :app:assembleInternalDebug`，并从 APK 中 `unzip -p` 目标 `res/drawable/*.xml` 后计算 sha256，对比改动前后应发生变化。

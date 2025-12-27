@@ -6,7 +6,7 @@
         android:left="0dp"
         android:right="0dp"
         android:bottom="0dp">
-        <shape android:shape="rectangle">
+        <shape android:shape="rectangle" android:useLevel="false">
             <corners android:radius="@dimen/dp_12" />
             <solid android:color="#40E4E4E4" />
         </shape>
@@ -18,7 +18,7 @@
         android:left="0dp"
         android:right="0dp"
         android:bottom="@dimen/dp_2">
-        <shape android:shape="rectangle">
+        <shape android:shape="rectangle" android:useLevel="false">
             <corners android:radius="@dimen/dp_12" />
             <solid android:color="#FFFFFF" />
         </shape>
