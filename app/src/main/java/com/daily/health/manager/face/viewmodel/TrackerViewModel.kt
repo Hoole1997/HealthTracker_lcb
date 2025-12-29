@@ -26,6 +26,7 @@ import com.daily.health.manager.util.ChartConfigHelper
 import com.daily.health.manager.util.ChartPalette
 import com.daily.health.manager.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -340,13 +341,7 @@ class TrackerViewModel(
         val interval = resolveStepInterval(maxSteps, divisor)
         val maxY = interval * divisor
         val useKiloFormat = maxY >= 1000.0
-        val stepsAxisFormatter = object : com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter {
-            override fun format(
-                context: com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext,
-                value: Double,
-                verticalAxisPosition: com.patrykandpatrick.vico.core.cartesian.axis.Axis.Position.Vertical?
-            ): CharSequence = formatStepsLabel(value, useKiloFormat)
-        }
+        val stepsAxisFormatter = CartesianValueFormatter { context, value, verticalAxisPosition -> formatStepsLabel(value, useKiloFormat) }
 
         return ChartUiState(
             labels = weekLabels,
@@ -453,13 +448,7 @@ class TrackerViewModel(
         )
 
         val useKiloFormat = maxY >= 1000.0
-        val formatter = object : com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter {
-            override fun format(
-                context: com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext,
-                value: Double,
-                verticalAxisPosition: com.patrykandpatrick.vico.core.cartesian.axis.Axis.Position.Vertical?
-            ): CharSequence = formatStepsLabel(value, useKiloFormat = useKiloFormat)
-        }
+        val formatter = CartesianValueFormatter { context, value, verticalAxisPosition -> formatStepsLabel(value, useKiloFormat = useKiloFormat) }
 
         return ChartUiState(
             labels = weekLabels,

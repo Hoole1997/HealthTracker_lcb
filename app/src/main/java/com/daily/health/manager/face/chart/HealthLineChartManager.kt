@@ -345,10 +345,10 @@ class HealthLineChartManager(
         private const val DEFAULT_AXIS_STEPS = 6
         private const val ZERO_DATA_PLACEHOLDER = "-"
         private const val AXIS_LABEL_TEXT_SIZE = 12f
-        private const val DEFAULT_COLUMN_WIDTH_DP = 18f
+        private const val DEFAULT_COLUMN_WIDTH_DP = 16f
         private const val MIN_COLUMN_WIDTH_DP = 8f
-        private const val MAX_COLUMN_WIDTH_DP = 28f
-        private const val COLUMN_GAP_FACTOR = 1.6f
+        private const val MAX_COLUMN_WIDTH_DP = 24f
+        private const val COLUMN_GAP_FACTOR = 1.4f
 
         private val DEFAULT_LINE_STYLES = listOf(
             LineStyle(color = ChartPalette.lineBpSystolic),
