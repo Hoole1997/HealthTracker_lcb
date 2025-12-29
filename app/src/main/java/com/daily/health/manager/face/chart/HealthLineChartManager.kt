@@ -8,6 +8,7 @@ import com.daily.health.manager.util.AxisStyle
 import com.daily.health.manager.util.BaselineStyle
 import com.daily.health.manager.util.ChartConfigHelper
 import com.daily.health.manager.util.ColumnStyle
+import com.daily.health.manager.util.LAYER_PADDING
 import com.daily.health.manager.util.ChartPalette
 import com.daily.health.manager.util.LineStyle
 import com.patrykandpatrick.vico.core.cartesian.AutoScrollCondition
@@ -47,11 +48,11 @@ class HealthLineChartManager(
 ) : DefaultLifecycleObserver {
 
     // 优先使用已存在的 modelProducer，避免在配置变更时创建新实例导致崩溃
-    private val modelProducer: CartesianChartModelProducer = 
+    private val modelProducer: CartesianChartModelProducer =
         chartView.modelProducer ?: CartesianChartModelProducer().also {
             chartView.modelProducer = it
         }
-    
+
     private var labels: List<String> = emptyList()
 
     @Volatile
@@ -59,7 +60,7 @@ class HealthLineChartManager(
 
     init {
         // modelProducer 已在属性初始化时设置，这里不需要再赋值
-        
+
         // 自动绑定生命周期，避免在已销毁的LifecycleOwner上注册
         if (lifecycleOwner.lifecycle.currentState != Lifecycle.State.DESTROYED) {
             lifecycleOwner.lifecycle.addObserver(this)
@@ -157,7 +158,8 @@ class HealthLineChartManager(
         isShowLabel: Boolean = true,
         enableScroll: Boolean = false,
         showBaseline: Boolean = true,
-        columnWidthScale: Float = 1f
+        columnWidthScale: Float = 1f,
+        layerPaddingDp: Float = LAYER_PADDING
     ): Boolean {
         if (isReleased) {
             Log.w(TAG, "Attempted to render on released manager, ignoring")
@@ -203,6 +205,7 @@ class HealthLineChartManager(
             columnStyle = columnStyle,
             axisStyle = axisStyle,
             baselineStyle = baselineStyle,
+            layerPaddingDp = layerPaddingDp,
             isShowLabel = isShowLabel,
             lastX = highlightX,
             onInvalidate = {
@@ -345,10 +348,10 @@ class HealthLineChartManager(
         private const val DEFAULT_AXIS_STEPS = 6
         private const val ZERO_DATA_PLACEHOLDER = "-"
         private const val AXIS_LABEL_TEXT_SIZE = 12f
-        private const val DEFAULT_COLUMN_WIDTH_DP = 16f
+        private const val DEFAULT_COLUMN_WIDTH_DP = 12f
         private const val MIN_COLUMN_WIDTH_DP = 8f
-        private const val MAX_COLUMN_WIDTH_DP = 24f
-        private const val COLUMN_GAP_FACTOR = 1.4f
+        private const val MAX_COLUMN_WIDTH_DP = 20f
+        private const val COLUMN_GAP_FACTOR = 2.0f
 
         private val DEFAULT_LINE_STYLES = listOf(
             LineStyle(color = ChartPalette.lineBpSystolic),
@@ -360,12 +363,15 @@ class HealthLineChartManager(
 
     private fun computeColumnStyle(pointCount: Int, enableScroll: Boolean, scale: Float): ColumnStyle {
         val normalizedScale = if (scale > 0f) scale else 1f
+        // 当 enableScroll 或无有效数据点时，使用默认宽度（应用 scale）
         if (enableScroll || pointCount <= 0) {
             return ColumnStyle(color = ChartPalette.columnSteps, widthDp = DEFAULT_COLUMN_WIDTH_DP * normalizedScale)
         }
         val availableWidthPx = (chartView.width - chartView.paddingStart - chartView.paddingEnd).coerceAtLeast(0)
+        // 关键修复：当 View 未完成布局时（width=0），不应用 scale，返回合理默认值
+        // 避免因 scale=0.5 导致柱体过窄（8dp）而显示不完整
         if (availableWidthPx <= 0) {
-            return ColumnStyle(color = ChartPalette.columnSteps, widthDp = DEFAULT_COLUMN_WIDTH_DP * normalizedScale)
+            return ColumnStyle(color = ChartPalette.columnSteps, widthDp = DEFAULT_COLUMN_WIDTH_DP)
         }
         val density = chartView.resources.displayMetrics.density.takeIf { it > 0f } ?: 1f
         val rawWidthPx = availableWidthPx / (pointCount * COLUMN_GAP_FACTOR)

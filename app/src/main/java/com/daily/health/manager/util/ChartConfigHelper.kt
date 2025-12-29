@@ -76,7 +76,7 @@ private const val LABEL_TEXT_SIZE = 12f
 private const val LABEL_PADDING = 8f
 
 // 图层配置
-private const val LAYER_PADDING = 8f
+const val LAYER_PADDING = 8f
 private const val CURVATURE = 0.5f
 
 // 坐标轴配置

@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.core.content.ContextCompat
@@ -330,33 +331,57 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
         }
 
         // Steps (column chart)
+        // 修复：先设置可见，等待布局完成后再渲染，确保 chartView.width 正确
         collectLatest(mViewModel.stepChartState) { state ->
             lifecycleScope.launch {
                 val hasPermission = hasActivityRecognitionPermission()
-                if (hasPermission) {
-                    val hasData = stepChartManager?.renderColumn(
-                        state,
-                        isShowLabel = false,
-                        showBaseline = false,
-                        columnWidthScale = 0.5f
-                    ) ?: false
-                    updateChartVisibility(hasData, mViewBind?.includeStep)
+                val cardBinding = mViewBind?.includeStep
+                if (hasPermission && state.hasData) {
+                    // 先设置可见，再等待布局完成后渲染
+                    cardBinding?.chartView?.visible()
+                    cardBinding?.gpEmpty?.invisible()
+                    cardBinding?.chartView?.doOnLayout {
+                        // doOnLayout 回调非 suspend，需要启动新协程
+                        lifecycleScope.launch {
+                            stepChartManager?.renderColumn(
+                                state,
+                                isShowLabel = false,
+                                showBaseline = false,
+                                columnWidthScale = 0.5f,
+                                layerPaddingDp = 0f
+                            )
+                        }
+                    }
                 } else {
-                    updateChartVisibility(false, mViewBind?.includeStep)
+                    updateChartVisibility(false, cardBinding)
                 }
             }
         }
 
         // Hydrate (column chart)
+        // 修复：先设置可见，等待布局完成后再渲染，确保 chartView.width 正确
         collectLatest(mViewModel.hydrateChartState) { state ->
             lifecycleScope.launch {
-                val hasData = hydrateChartManager?.renderColumn(
-                    state,
-                    isShowLabel = false,
-                    showBaseline = false,
-                    columnWidthScale = 0.5f
-                ) ?: false
-                updateChartVisibility(hasData, mViewBind?.includeHydrate)
+                val cardBinding = mViewBind?.includeHydrate
+                if (state.hasData) {
+                    // 先设置可见，再等待布局完成后渲染
+                    cardBinding?.chartView?.visible()
+                    cardBinding?.gpEmpty?.invisible()
+                    cardBinding?.chartView?.doOnLayout {
+                        // doOnLayout 回调非 suspend，需要启动新协程
+                        lifecycleScope.launch {
+                            hydrateChartManager?.renderColumn(
+                                state,
+                                isShowLabel = false,
+                                showBaseline = false,
+                                columnWidthScale = 0.5f,
+                                layerPaddingDp = 0f
+                            )
+                        }
+                    }
+                } else {
+                    updateChartVisibility(false, cardBinding)
+                }
             }
         }
     }
