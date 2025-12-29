@@ -87,7 +87,7 @@ android {
         // Play 市场版本
         create("playstore") {
             dimension = "distribution"
-            applicationId = "com.health.sugar.log.medication.manage.track.blood.pressure"
+            applicationId = "com.health.sugar.log.medication.pressure.manage.track.blood.tool"
             versionNameSuffix = ""
         }
     }
@@ -281,24 +281,25 @@ actGuard {
         "com.github.dhaval2404.imagepicker.*",
         "com.yalantis.ucrop.*",
         "com.daily.health.manager.face.act.*",
+        "com.daily.health.manager.alarm.*",
+
     )
     otherClassList = hashSetOf(
         "com.daily.health.manager.App",
-        "com.daily.health.manager.alarm.*",
-        "com.daily.health.manager.receiver.*",
         "com.daily.health.manager.service.*",
         "com.daily.health.manager.provider.*",
         "com.daily.health.manager.ui.weight.*",
         "com.daily.health.manager.ui.widget.*",
+        "com.daily.health.manager.receiver.*",
     )
     changePackageList = hashSetOf(
         "com.daily.health.manager.App",
-        "com.daily.health.manager.alarm.*",
-        "com.daily.health.manager.receiver.*",
+
         "com.daily.health.manager.service.*",
         "com.daily.health.manager.provider.*",
         "com.daily.health.manager.ui.weight.*",
         "com.daily.health.manager.ui.widget.*",
+        "com.daily.health.manager.receiver.*",
     )
     classNameCharPool = "abcdefghijklmnopqrstuvwxyz"
     dirNameCharPool = "abcdefghijklmnopqrstuvwxyz"

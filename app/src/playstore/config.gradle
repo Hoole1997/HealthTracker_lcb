@@ -11,21 +11,21 @@ ext {
 
     ]
     // 应用版本配置
-    app = [applicationId    : "com.health.sugar.log.medication.manage.track.blood.pressure",
+    app = [applicationId    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
            show_log   : false,
            string_fog   : true,
     ]
 
-    url = [privacyUrl: "https://blazelabstudio.com/privacy.html",
-           teamUrl   : "https://blazelabstudio.com/privacy.html",
-           fcmUrl    : "https://max.blazelabstudio.com",
-           fcmPkg    : "com.health.sugar.log.medication.manage.track.blood.pressure",
-           email     : "blaze.labs7@gmail.com"
+    url = [privacyUrl: "https://hero-t.com/privacy.html",
+           teamUrl   : "https://hero-t.com/privacy.html",
+           fcmUrl    : "",
+           fcmPkg    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
+           email     : "bluepsme000@gmail.com"
     ]
 
     // 统计归因配置
-    analytics = [adjustAppToken: "9zc5ybfkhurk",           // Adjust App Token
-                 thinkingDataAppId: "d0299fbdb71b49fba65e700bbc413a08",   // 数数 SDK APP ID
-                 thinkingDataServerUrl: "https://app.blazelabstudio.com",     // 数数上报域名
+    analytics = [adjustAppToken: "1rbqbbrxrcu8",           // Adjust App Token
+                 thinkingDataAppId: "7eb813add90f4740b63817dcb3d8c49f",   // 数数 SDK APP ID
+                 thinkingDataServerUrl: "https://ht.hero-t.com",     // 数数上报域名
                  defaultUserChannel: "paid"]
 }

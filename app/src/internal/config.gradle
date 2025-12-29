@@ -21,7 +21,7 @@ ext {
            teamUrl   : "https://www.google.com.hk",
            fcmUrl    : "https://sandc.gameztsvc.com",
            fcmPkg    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
-           email     : "blaze.labs7@gmail.com"
+           email     : "bluepsme000@gmail.com"
     ]
 
     // 统计归因配置
