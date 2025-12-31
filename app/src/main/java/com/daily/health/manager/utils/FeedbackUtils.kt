@@ -37,7 +37,7 @@ object FeedbackUtils {
         val emailBody = buildEmailBody(context, feedback)
         
         // 获取反馈邮箱地址
-        val email = "jiaoyun76861590@gmail.com"
+        val email = BuildConfig.FEEDBACK_EMAIL
         
         // 构建邮件主题
         val subject = buildSubject(context, subAppend)
