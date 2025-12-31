@@ -1,12 +1,13 @@
 ext {
     // AdMob配置
-    admob = [applicationId: "ca-app-pub-1350364678590045~4521462185", // 测试应用ID，请替换为实际的AdMob应用ID
-             adUnitIds    : [banner      : "ca-app-pub-1350364678590045/3771293773",        // 横幅广告测试ID
-                             interstitial: "ca-app-pub-1350364678590045/6888411701", // 插页广告测试ID
-                             splash      : "ca-app-pub-1350364678590045/9271225987",       // 开屏广告测试ID
-                             native      : "ca-app-pub-1350364678590045/6464087484",        // 原生广告测试ID
-                             full_native : "ca-app-pub-1350364678590045/7463126772",        // 全屏原生广告测试ID
-                             rewarded    : "ca-app-pub-1350364678590045/1612227818"         // 激励广告测试ID
+    admob = [applicationId: "ca-app-pub-8468697989886586~7705543629",
+             adUnitIds    : [banner      : "ca-app-pub-8468697989886586/9321877626",
+                             interstitial: "ca-app-pub-8468697989886586/6783166585",
+                             splash      : "ca-app-pub-8468697989886586/8161479822",
+                             native      : "ca-app-pub-8468697989886586/1910113856",
+                             full_native : "ca-app-pub-8468697989886586/4289042793",
+                             rewarded    : "ca-app-pub-8468697989886586/5577896120",
+                             rewarded_interstitial:"ca-app-pub-8468697989886586/6242264624"
              ]
 
     ]
