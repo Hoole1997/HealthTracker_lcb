@@ -133,13 +133,7 @@ android {
     }
 }
 
-// Order matters for apply(from)
-apply(from = "generate-junk-code.gradle.kts")
 
-// Hook task
-afterEvaluate {
-    tasks.findByName("preBuild")?.dependsOn("generateJunkCode")
-}
 
 // 调用统一签名配置脚本设置签名
 apply<Any> {
