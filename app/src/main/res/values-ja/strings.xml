@@ -775,5 +775,22 @@
     </string-array>
     <string name="ht_bill_ad_loading">広告を読み込み中…</string>
     <string name="ht_last_measurement">最新の測定 : %1$s</string>
+
+    <!-- Uninstall Intercept Strings -->
+    <string name="ht_uninstall_lose_access_title">このアプリをアンインストールすると、以下の機能にアクセスできなくなります：</string>
+    <string name="ht_uninstall_feature_blood_sugar">血糖値・血圧の記録</string>
+    <string name="ht_uninstall_feature_trend">健康データのトレンド分析</string>
+    <string name="ht_uninstall_feature_reminder">服薬・健康リマインダー</string>
+    <string name="ht_uninstall_feature_insights">健康インサイト・パーソナライズされたヒント</string>
+    <string name="ht_uninstall_btn_dont_uninstall">まだアンインストールしない</string>
+    <string name="ht_uninstall_btn_uninstall">アンインストール</string>
+    <string name="ht_uninstall_reason_title">%1$sをアンインストールする理由は？</string>
+    <string name="ht_uninstall_reason_difficult">使いにくい</string>
+    <string name="ht_uninstall_reason_too_many_ads">広告が多すぎる</string>
+    <string name="ht_uninstall_reason_poor_experience">ユーザー体験が悪い</string>
+    <string name="ht_uninstall_reason_similar_installed">類似のアプリをインストール済み</string>
+    <string name="ht_uninstall_reason_unable_meet_demand">ニーズを満たせない</string>
+    <string name="ht_uninstall_reason_others">その他</string>
+    <string name="ht_uninstall_reason_hint">%1$sをアンインストールする理由を入力してください</string>
 </resources>
 

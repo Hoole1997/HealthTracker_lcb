@@ -2,6 +2,8 @@ package com.healthtracker.framework.util
 
 import android.annotation.SuppressLint
 import android.os.Build
+@SuppressLint("AnnotateVersionCheck")
+fun isLeast8() =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
 
 @SuppressLint("AnnotateVersionCheck")

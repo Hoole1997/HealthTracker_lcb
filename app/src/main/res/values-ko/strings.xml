@@ -775,5 +775,22 @@
     </string-array>
     <string name="ht_bill_ad_loading">광고 로드 중…</string>
     <string name="ht_last_measurement">최근 측정 : %1$s</string>
+
+    <!-- Uninstall Intercept Strings -->
+    <string name="ht_uninstall_lose_access_title">이 앱을 삭제하면 다음 기능에 접근할 수 없게 됩니다:</string>
+    <string name="ht_uninstall_feature_blood_sugar">혈당 및 혈압 추적</string>
+    <string name="ht_uninstall_feature_trend">건강 데이터 트렌드 분석</string>
+    <string name="ht_uninstall_feature_reminder">복약 및 건강 알림</string>
+    <string name="ht_uninstall_feature_insights">건강 인사이트 및 맞춤 팁</string>
+    <string name="ht_uninstall_btn_dont_uninstall">아직 삭제하지 않기</string>
+    <string name="ht_uninstall_btn_uninstall">삭제</string>
+    <string name="ht_uninstall_reason_title">%1$s을(를) 삭제하는 이유는?</string>
+    <string name="ht_uninstall_reason_difficult">사용하기 어려움</string>
+    <string name="ht_uninstall_reason_too_many_ads">광고가 너무 많음</string>
+    <string name="ht_uninstall_reason_poor_experience">사용자 경험이 좋지 않음</string>
+    <string name="ht_uninstall_reason_similar_installed">유사한 제품이 이미 설치됨</string>
+    <string name="ht_uninstall_reason_unable_meet_demand">요구 사항을 충족할 수 없음</string>
+    <string name="ht_uninstall_reason_others">기타</string>
+    <string name="ht_uninstall_reason_hint">%1$s을(를) 삭제하는 이유를 입력해 주세요</string>
 </resources>
 

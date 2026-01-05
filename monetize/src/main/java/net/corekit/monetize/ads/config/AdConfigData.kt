@@ -45,8 +45,15 @@ data class AdConfigData(
         @SerializedName(value = "reward_bidding_time_out")
         val rewardBiddingTimeout: Int = 5,
         @SerializedName(value = "reward_bidding_enabled")
-        val rewardBiddingEnabled: Int = 1
-
+        val rewardBiddingEnabled: Int = 1,
+        @SerializedName(value = "NA_Uninstall1")
+        val showUninstall1Native: Int = 1,
+        @SerializedName(value = "IV_Uninstall1")
+        val showUninstall1Interstitial: Int = 0,
+        @SerializedName(value = "NA_Uninstall2")
+        val showUninstall2Native: Int = 1,
+        @SerializedName(value = "IV_Uninstall2")
+        val showUninstall2Interstitial: Int = 0
     )
     
     data class AdTypeConfig(

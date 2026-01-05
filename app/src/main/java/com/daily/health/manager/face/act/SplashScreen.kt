@@ -54,9 +54,11 @@ import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.daily.health.manager.App
 import com.daily.health.manager.R
+import com.daily.health.manager.constants.KEY_FROM_SHORTCUT
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_CONTENT
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_FROM
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_TITLE
+import com.daily.health.manager.constants.UNINSTALL
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.HtActivitySplashBinding
 import com.daily.health.manager.hasNewGuide
@@ -115,6 +117,13 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
         SplashStateMachine(
             scope = lifecycleScope,
             onNavigate = {
+                if(intent.hasExtra(KEY_FROM_SHORTCUT) && intent.getStringExtra(KEY_FROM_SHORTCUT) == UNINSTALL){
+                    // 跳转到卸载挽留页面
+                    "来自卸载拦截".logd(TAG)
+                    startActivity(Intent(this@SplashScreen, UninstallResenActivity::class.java))
+                    finish()
+                    return@SplashStateMachine
+                }
                 reportGroup()
                 if (ActivityUtils.isActivityExistsInStack(MainScreen::class.java)) {
                     finish()
@@ -159,13 +168,11 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
                 if (!isTaskRoot) {
                     val activityList = ActivityUtils.getActivityList()
                     if (isAdPage(activityList[1])) {
-                        "当前是广告页面或引导页面，直接关闭启动页".logd(TAG)
                         finish()
                         return@launch
                     }
 
                     if(!App.INSTANCE.isLongLeaveApp() && (App.INSTANCE.isClickAdLeave || App.INSTANCE.isFeatureLeave || App.INSTANCE.isGoSetting)){
-                        "用户点击广告，业务操作，请求权限短时间离开应用，直接关闭启动页".logd(TAG)
                         finish()
                         return@launch
                     }

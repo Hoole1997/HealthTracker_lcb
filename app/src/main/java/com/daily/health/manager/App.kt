@@ -15,6 +15,7 @@ import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.isLeast8
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -96,7 +97,9 @@ class App : MultiDexApplication() {
             }
             // 应用初始化（包含远程配置初始化）
             appInitializer.initialize()
-
+            if(isLeast8()){
+                BusinessShortcutManager.setAppShortcuts(this)
+            }
             // ✅ 初始化应用生命周期管理器(替代旧的initProcessLifeCycle)
             AppLifecycleManager.initialize(this)
 

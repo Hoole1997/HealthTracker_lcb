@@ -8,7 +8,7 @@
     "fullpage_ad": {
       "daily_display_cap": 10,
       "daily_interaction_cap": 3,
-      "cooldown_seconds": 30
+      "cooldown_seconds": 120
     },
     "embed_ad": {
       "daily_display_cap": 10,
@@ -29,7 +29,11 @@
     "auto_play_reward": 1,
     "reward_bidding_time_out": 5,
     "reward_bidding_enabled": 1,
-    "splash_bidding_enabled": 1
+    "splash_bidding_enabled": 1,
+    "NA_Uninstall1":1,
+    "IV_Uninstall1":0,
+    "NA_Uninstall2":1,
+    "IV_Uninstall2":0
   },
   "premium_user": {
     "launch_ad": {
@@ -40,7 +44,7 @@
     "fullpage_ad": {
       "daily_display_cap": 20,
       "daily_interaction_cap": 10,
-      "cooldown_seconds": 0
+      "cooldown_seconds": 30
     },
     "embed_ad": {
       "daily_display_cap": 20,
@@ -61,6 +65,10 @@
     "auto_play_reward": 1,
     "reward_bidding_time_out": 5,
     "reward_bidding_enabled": 1,
-    "splash_bidding_enabled": 1
+    "splash_bidding_enabled": 1,
+    "NA_Uninstall1":1,
+    "IV_Uninstall1":0,
+    "NA_Uninstall2":1,
+    "IV_Uninstall2":0
   }
 }

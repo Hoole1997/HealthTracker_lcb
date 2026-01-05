@@ -1369,5 +1369,23 @@ healthcare provider or medical institution.</string>
     <string name="ht_max_upload_photos">You can upload up to %d photos</string>
     <string name="ht_feedback_submitted">Submit successfully</string>
     <string name="ht_last_measurement">Last Measurement : %1$s</string>
+    <string name="shortcut_uninstall_short">Uninstall</string>
+
+    <!-- Uninstall Intercept Strings -->
+    <string name="ht_uninstall_lose_access_title">If you uninstall this APP, you will lose access to the following features:</string>
+    <string name="ht_uninstall_feature_blood_sugar">Blood Sugar &amp; Pressure Tracking</string>
+    <string name="ht_uninstall_feature_trend">Health Data Trend Analysis</string>
+    <string name="ht_uninstall_feature_reminder">Medication &amp; Health Reminders</string>
+    <string name="ht_uninstall_feature_insights">Health Insights &amp; Personalized Tips</string>
+    <string name="ht_uninstall_btn_dont_uninstall">Don\'t uninstall yet</string>
+    <string name="ht_uninstall_btn_uninstall">Uninstall</string>
+    <string name="ht_uninstall_reason_title">Why uninstall %1$s?</string>
+    <string name="ht_uninstall_reason_difficult">Difficult to use</string>
+    <string name="ht_uninstall_reason_too_many_ads">Too many ads</string>
+    <string name="ht_uninstall_reason_poor_experience">Poor user experience</string>
+    <string name="ht_uninstall_reason_similar_installed">Similar products have been installed</string>
+    <string name="ht_uninstall_reason_unable_meet_demand">Unable to meet the demand</string>
+    <string name="ht_uninstall_reason_others">Others</string>
+    <string name="ht_uninstall_reason_hint">Please enter the reason why you uninstalling %1$s</string>
 
 </resources>

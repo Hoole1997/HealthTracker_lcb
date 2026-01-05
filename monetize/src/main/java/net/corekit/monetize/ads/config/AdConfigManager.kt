@@ -283,6 +283,54 @@ object AdConfigManager {
     } ?: true
 
     /**
+     * 卸载拦截页1是否展示原生广告
+     */
+    fun shouldShowUninstall1Native(): Boolean {
+        return configData?.let { config ->
+            when (ChannelUserController.getCurrentChannel()) {
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.showUninstall1Native == 1
+                ChannelUserController.UserChannelType.PAID -> config.paid.showUninstall1Native == 1
+            }
+        } ?: true
+    }
+
+    /**
+     * 卸载拦截页1是否展示插屏广告
+     */
+    fun shouldShowUninstall1Interstitial(): Boolean {
+        return configData?.let { config ->
+            when (ChannelUserController.getCurrentChannel()) {
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.showUninstall1Interstitial == 1
+                ChannelUserController.UserChannelType.PAID -> config.paid.showUninstall1Interstitial == 1
+            }
+        } ?: false
+    }
+
+    /**
+     * 卸载拦截页2是否展示原生广告
+     */
+    fun shouldShowUninstall2Native(): Boolean {
+        return configData?.let { config ->
+            when (ChannelUserController.getCurrentChannel()) {
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.showUninstall2Native == 1
+                ChannelUserController.UserChannelType.PAID -> config.paid.showUninstall2Native == 1
+            }
+        } ?: true
+    }
+
+    /**
+     * 卸载拦截页2是否展示插屏广告
+     */
+    fun shouldShowUninstall2Interstitial(): Boolean {
+        return configData?.let { config ->
+            when (ChannelUserController.getCurrentChannel()) {
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.showUninstall2Interstitial == 1
+                ChannelUserController.UserChannelType.PAID -> config.paid.showUninstall2Interstitial == 1
+            }
+        } ?: false
+    }
+
+    /**
      * 获取是否启用开屏竞价
      * 开屏竞价：同时请求开屏和插屏广告，展示eCPM更高的广告
      */
