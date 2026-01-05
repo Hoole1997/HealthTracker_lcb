@@ -155,6 +155,8 @@ dependencies {
     api(project(":monetize"))
     api(project(":core"))
     api(project(":metrics"))
+    api(project(":earthquake"))
+    api(project(":weather"))
     api(project(":appraise"))
 
     // Core Android

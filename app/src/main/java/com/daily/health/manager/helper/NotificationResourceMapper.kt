@@ -102,6 +102,13 @@ class NotificationResourceMapper {
                 decorIcon = R.mipmap.ht_bg_step_notify_icon,
                 btnTextColor = R.color.color_F0832D
             )
+            11 -> NotificationResources(
+                smallIcon = com.android.common.weather.R.drawable.ic_cloudy,
+                background = null,
+                largeIcon = null,
+                decorIcon = null,
+                btnTextColor = null
+            )
             12 -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
                 background = null,
@@ -122,7 +129,13 @@ class NotificationResourceMapper {
      * 根据 iconType 获取布局资源
      */
     fun getLayoutResources(iconType: Int): LayoutResources {
-        return  if (iconType == 12) {
+        return  if (iconType == 11) {
+            // 天气通知使用天气模块布局
+            LayoutResources(
+                collapsedLayout = com.android.common.weather.R.layout.layout_weather_notification_normal,
+                expandedLayout = com.android.common.weather.R.layout.layout_weather_notification_big
+            )
+        } else if (iconType == 12) {
             LayoutResources(
                 collapsedLayout = R.layout.ht_layout_assistant_notify,
                 expandedLayout = R.layout.ht_layout_assistant_notify_big

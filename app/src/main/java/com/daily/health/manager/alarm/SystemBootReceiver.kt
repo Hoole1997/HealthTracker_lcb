@@ -3,6 +3,7 @@ package com.daily.health.manager.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.healthtracker.earthquake.push.EarthquakePushInitializer
 import com.daily.health.manager.data.entity.AlarmRecord
 import com.daily.health.manager.data.repository.AlarmRepository
 import com.daily.health.manager.manager.HealthServiceManager
@@ -62,10 +63,14 @@ class SystemBootReceiver : BroadcastReceiver() {
                 "System boot completed, restoring alarms".logd(TAG)
                 restoreAlarms(context, "BOOT_COMPLETED", alarmRepository, alarmScheduler)
                 tryShowResident(serviceManager)
+                // 初始化地震推送每日调度
+                EarthquakePushInitializer.init(context.applicationContext)
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 "App package replaced, restoring alarms".logd(TAG)
                 restoreAlarms(context, "PACKAGE_REPLACED", alarmRepository, alarmScheduler)
+                // 应用更新后重新初始化地震推送每日调度
+                EarthquakePushInitializer.init(context.applicationContext)
             }
             Intent.ACTION_PACKAGE_REPLACED -> {
                 // 检查是否是当前应用的包被替换
@@ -73,6 +78,8 @@ class SystemBootReceiver : BroadcastReceiver() {
                 if (packageName == context.packageName) {
                     "Current app package replaced, restoring alarms".logd(TAG)
                     restoreAlarms(context, "PACKAGE_REPLACED", alarmRepository, alarmScheduler)
+                    // 当前应用替换后重新初始化地震推送每日调度
+                    EarthquakePushInitializer.init(context.applicationContext)
                 }
             }
             else -> {

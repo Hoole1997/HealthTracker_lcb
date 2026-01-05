@@ -29,7 +29,42 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="@dimen/dp_16"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent">
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_weather"
+                android:layout_width="@dimen/dp_18"
+                android:layout_height="@dimen/dp_18"
+                android:tint="#30BAFF"
+                app:srcCompat="@drawable/ic_dreary" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_temperature"
+                style="@style/TextViewFont_RobotoMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_4"
+                android:textColor="@color/t1"
+                android:textSize="@dimen/sp_16"
+                tools:text="25" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_temperature_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="°C"
+                android:textColor="@color/color_666"
+                android:textSize="@dimen/sp_12" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_remind"

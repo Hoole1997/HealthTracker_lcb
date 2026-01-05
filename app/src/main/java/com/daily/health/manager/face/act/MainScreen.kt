@@ -10,7 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager.widget.ViewPager
+import com.android.common.weather.WeatherActivity
+import com.android.common.weather.util.TemperaturePreferences
+import com.android.common.weather.util.WeatherIconMapper
 import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.alarm.PermissionManager
@@ -84,6 +88,8 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
     
     override fun onResume() {
         super.onResume()
+        // 刷新天气显示（温度单位可能已切换）
+        mViewModel.refreshWeatherDisplay()
     }
 
     override fun onStop() {
@@ -219,6 +225,12 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             setupBottomNavBar()
             setupViewPager()
 
+            // 天气数据点击事件（从 tvTitle 迁移到 llWeather）
+            llWeather.clickWithDuration {
+                ReportDataManager.reportData("weather_page_click")
+                startActivity<WeatherActivity>()
+            }
+
             // 延迟处理通知点击参数，确保UI完全初始化
             root.postDelayed({
                 handleNotificationAction(intent)
@@ -247,6 +259,30 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             bannerShowComplete.await()
         }
         
+        // 观察天气数据
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.weatherData.collect { weatherData ->
+                    weatherData?.let { data ->
+                        with(mViewBind) {
+                            // 更新天气图标
+                            val iconRes = WeatherIconMapper.getIconResource(data.weatherIconId)
+                            ivWeather.setImageResource(iconRes)
+                            
+                            // 更新温度
+                            tvTemperature.text = data.getDisplayTemperature().toString()
+                            
+                            // 更新温度单位
+                            tvTemperatureUnit.text = if (TemperaturePreferences.isCelsius()) "°C" else "°F"
+                            
+                            // 显示天气控件，隐藏标题
+                            llWeather.visible()
+                            tvTitle.gone()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private suspend fun awaitResumedIfNeeded() {
@@ -453,6 +489,10 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
 
             HealthServiceConstants.ACTION_VALUE_MEDICATION -> {
                 mViewBind.viewPagerHome.currentItem = 1
+            }
+
+            HealthServiceConstants.ACTION_VALUE_WEATHER -> {
+                startActivity<WeatherActivity>()
             }
 
             else -> {

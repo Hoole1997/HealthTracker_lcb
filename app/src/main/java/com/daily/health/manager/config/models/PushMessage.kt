@@ -164,7 +164,16 @@ data class PushMessage(
                     iconType = 10,
                     actionType = 10
                 ),
-                // 14. 助手来电
+                // 14. 天气通知
+                PushMessage(
+                    id = "push_021",
+                    title = "",
+                    desc = "",
+                    buttonText = "",
+                    iconType = 11,
+                    actionType = 11
+                ),
+                // 15. 助手来电
                 PushMessage(
                     id = "push_022",
                     title = "Your Health Assistant",
@@ -182,6 +191,11 @@ data class PushMessage(
      */
     fun isValid(): Boolean {
         if (id.isBlank()) return false
+
+        // 天气通知：文案由业务动态填充，允许空字符串
+        if (iconType == 11 || actionType == 11) {
+            return iconType == 11 && actionType == 11
+        }
 
         // 助手来电：允许 buttonText 为空
         if (iconType == 12 || actionType == 12) {

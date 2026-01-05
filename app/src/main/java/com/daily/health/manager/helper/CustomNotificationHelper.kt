@@ -64,6 +64,7 @@ class CustomNotificationHelper(
                 8 -> HealthServiceConstants.ACTION_VALUE_MEDICATION
                 9 -> HealthServiceConstants.ACTION_VALUE_HYDRATION
                 10 -> HealthServiceConstants.ACTION_VALUE_STEPS
+                11 -> HealthServiceConstants.ACTION_VALUE_WEATHER
                 else -> {
                     "Unknown actionType: $actionType, defaulting to homepage".logd(PushOrchestrator.TAG)
                     HealthServiceConstants.ACTION_VALUE_HOMEPAGE

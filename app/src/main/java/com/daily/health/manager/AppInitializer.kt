@@ -14,6 +14,7 @@ import com.daily.health.manager.face.act.SplashScreen
 import com.daily.health.manager.utils.InsightAssetPreparer
 import com.daily.health.manager.utils.isAdPage
 import com.daily.health.manager.work.HealthWorkTask
+import com.healthtracker.earthquake.push.EarthquakePushInitializer
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
@@ -159,6 +160,14 @@ class AppInitializer(
 
         // 4. 远程配置初始化
         initializeRemoteConfig()
+
+        // 5. 地震模块初始化
+        initEarthquakeModule()
+    }
+
+    private fun initEarthquakeModule() {
+        // 第二个参数可以传入RemoteConfig获取的intervalHours,不传默认32H
+        EarthquakePushInitializer.init(application)
     }
 
     /**
