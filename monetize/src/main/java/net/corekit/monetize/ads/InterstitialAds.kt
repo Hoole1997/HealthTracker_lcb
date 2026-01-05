@@ -9,8 +9,8 @@ import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
 import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
 import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAd
 import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAdEventCallback
-import com.remax.bill.ads.report.IpuController
-import com.remax.bill.ads.report.RpuController
+import net.corekit.monetize.ads.report.IpuController
+import net.corekit.monetize.ads.report.RpuController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext

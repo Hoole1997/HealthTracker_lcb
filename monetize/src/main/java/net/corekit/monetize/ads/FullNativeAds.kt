@@ -15,8 +15,8 @@ import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdLoader
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdLoaderCallback
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdRequest
 import net.corekit.monetize.ads.report.FpuController
-import com.remax.bill.ads.report.IpuController
-import com.remax.bill.ads.report.RpuController
+import net.corekit.monetize.ads.report.IpuController
+import net.corekit.monetize.ads.report.RpuController
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.interceptor.ClickLimitInterceptor

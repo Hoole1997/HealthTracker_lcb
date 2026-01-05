@@ -5,8 +5,8 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
 import net.corekit.monetize.ads.report.FpuController
-import com.remax.bill.ads.report.IpuController
-import com.remax.bill.ads.report.RpuController
+import net.corekit.monetize.ads.report.IpuController
+import net.corekit.monetize.ads.report.RpuController
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 

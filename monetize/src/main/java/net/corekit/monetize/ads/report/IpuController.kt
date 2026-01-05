@@ -1,4 +1,4 @@
-package com.remax.bill.ads.report
+package net.corekit.monetize.ads.report
 
 import android.annotation.SuppressLint
 import android.content.Context
