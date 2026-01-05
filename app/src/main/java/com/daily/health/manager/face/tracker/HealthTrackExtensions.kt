@@ -103,3 +103,38 @@ fun Context.trackAdAutoPlay(healthType: HealthType) {
 fun Context.trackAdAutoCancel(healthType: HealthType) {
     trackHealthEvent(HealthTrackEvent.AdAutoCancel(healthType))
 }
+
+/**
+ * Track "Uninstall_click" event - 用户长按APP点击卸载
+ */
+fun Context.trackUninstallClick() {
+    trackHealthEvent(HealthTrackEvent.UninstallClick)
+}
+
+/**
+ * Track "Page1_dont_click" event - 在卸载界面1点击不卸载
+ */
+fun Context.trackPage1DontClick() {
+    trackHealthEvent(HealthTrackEvent.Page1DontClick)
+}
+
+/**
+ * Track "Page2_dont_click" event - 在卸载界面2点击不卸载
+ */
+fun Context.trackPage2DontClick() {
+    trackHealthEvent(HealthTrackEvent.Page2DontClick)
+}
+
+/**
+ * Track "Page1_Uninstall_click" event - 在卸载界面1点击卸载
+ */
+fun Context.trackPage1UninstallClick() {
+    trackHealthEvent(HealthTrackEvent.Page1UninstallClick)
+}
+
+/**
+ * Track "Page2_Uninstall_click" event - 在卸载界面2点击卸载
+ */
+fun Context.trackPage2UninstallClick() {
+    trackHealthEvent(HealthTrackEvent.Page2UninstallClick)
+}

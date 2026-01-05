@@ -28,12 +28,10 @@ data class AdConfigData(
         val showNewGuide: Int,
         @SerializedName("enable_bottom_ad_on_locale")
         val showBottomNativeOnLanguageSelection: Int,
-        @SerializedName("random_fullpage_cooldown")
-        val randomInterstitialInterval: Int,
-        @SerializedName("onboarding_bottom_ad_enabled")
-        val showGuideBottomNative: Int,
-        @SerializedName("onboarding_dialog_ad_enabled")
-        val showGuideDialogNative: Int,
+//        @SerializedName("onboarding_bottom_ad_enabled")
+//        val showGuideBottomNative: Int,
+//        @SerializedName("onboarding_dialog_ad_enabled")
+//        val showGuideDialogNative: Int,
         @SerializedName(value = "splash_time_out")
         val splashTimeout:Int,
         @SerializedName(value = "long_leave_app")
@@ -53,7 +51,10 @@ data class AdConfigData(
         @SerializedName(value = "NA_Uninstall2")
         val showUninstall2Native: Int = 1,
         @SerializedName(value = "IV_Uninstall2")
-        val showUninstall2Interstitial: Int = 0
+        val showUninstall2Interstitial: Int = 0,
+        /** 原生广告自动刷新间隔（秒），默认30秒 */
+        @SerializedName(value = "native_ad_refresh_interval")
+        val nativeAdRefreshInterval: Int = 30
     )
     
     data class AdTypeConfig(

@@ -157,30 +157,6 @@ object AdConfigManager {
     }
 
     /**
-     * 获取是否显示引导页底部原生广告
-     */
-    fun shouldShowGuideBottomNative(): Boolean {
-        return configData?.let { config ->
-            when (ChannelUserController.getCurrentChannel()) {
-                ChannelUserController.UserChannelType.NATURAL -> config.natural.showGuideBottomNative == 1
-                ChannelUserController.UserChannelType.PAID -> config.paid.showGuideBottomNative == 1
-            }
-        } ?: false
-    }
-
-    /**
-     * 获取是否显示引导页对话框原生广告
-     */
-    fun shouldShowGuideDialogNative(): Boolean {
-        return configData?.let { config ->
-            when (ChannelUserController.getCurrentChannel()) {
-                ChannelUserController.UserChannelType.NATURAL -> config.natural.showGuideDialogNative == 1
-                ChannelUserController.UserChannelType.PAID -> config.paid.showGuideDialogNative == 1
-            }
-        } ?: false
-    }
-
-    /**
      * 获取是否在语言选择页显示底部原生广告
      */
     fun shouldShowBottomNativeOnLanguageSelection(): Boolean {
@@ -328,6 +304,21 @@ object AdConfigManager {
                 ChannelUserController.UserChannelType.PAID -> config.paid.showUninstall2Interstitial == 1
             }
         } ?: false
+    }
+
+    /**
+     * 获取原生广告自动刷新间隔（毫秒）
+     * @return 刷新间隔毫秒数，默认30秒
+     */
+    fun getNativeAdRefreshIntervalMs(): Long {
+        return configData?.let { config ->
+            val intervalSeconds = when (ChannelUserController.getCurrentChannel()) {
+                ChannelUserController.UserChannelType.NATURAL -> config.natural.nativeAdRefreshInterval
+                ChannelUserController.UserChannelType.PAID -> config.paid.nativeAdRefreshInterval
+            }
+            // 确保最小间隔为10秒，避免配置错误导致频繁刷新
+            (intervalSeconds.coerceAtLeast(10) * 1000L)
+        } ?: 30_000L
     }
 
     /**

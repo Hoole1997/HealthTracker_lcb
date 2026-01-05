@@ -15,6 +15,7 @@ import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.BannerAds
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.InterstitialAds
+import net.corekit.monetize.ads.NativeAdAutoRefreshManager
 import net.corekit.monetize.ads.NativeAds
 import net.corekit.monetize.ads.RewardBiddingManager
 import net.corekit.monetize.ads.RewardedAds
@@ -82,20 +83,51 @@ fun FragmentActivity.loadBanner(
     }
 }
 
+/**
+ * 加载原生广告（向后兼容版本）
+ * @param container 广告容器
+ * @param style 广告样式
+ * @param enableAutoRefresh 是否启用自动刷新，默认为true
+ * @param condition 条件判断
+ * @param onClick 点击回调
+ * @param call 结果回调
+ */
 fun FragmentActivity.loadNative(
     container: ViewGroup,
     style: NativeAdStyle = NativeAdStyle.STANDARD,
+    enableAutoRefresh: Boolean = true,
     condition: () -> Boolean = { true },
     onClick: () -> Unit = {App.INSTANCE.isClickAdLeave = true},
     call: (Boolean) -> Unit = {}
+) {
+    loadNativeWithManager(container, style, enableAutoRefresh, condition, onClick) { success, _ ->
+        call.invoke(success)
+    }
+}
 
+/**
+ * 加载原生广告（完整版，可获取刷新管理器）
+ * @param container 广告容器
+ * @param style 广告样式
+ * @param enableAutoRefresh 是否启用自动刷新，默认为true
+ * @param condition 条件判断
+ * @param onClick 点击回调
+ * @param call 结果回调，第一个参数为是否成功，第二个参数为刷新管理器（可用于手动控制 stop()/release()）
+ */
+fun FragmentActivity.loadNativeWithManager(
+    container: ViewGroup,
+    style: NativeAdStyle = NativeAdStyle.STANDARD,
+    enableAutoRefresh: Boolean = true,
+    condition: () -> Boolean = { true },
+    onClick: () -> Unit = {App.INSTANCE.isClickAdLeave = true},
+    call: (success: Boolean, refreshManager: NativeAdAutoRefreshManager?) -> Unit = { _, _ -> }
 ) {
     lifecycleScope.launch {
         try {
             // 检查条件是否满足
             if (!condition.invoke()) {
                 container.visibility = View.GONE
-                call.invoke(false)
+                call.invoke(false, null)
                 return@launch
             }
 
@@ -108,14 +140,37 @@ fun FragmentActivity.loadNative(
 
             if (success) {
                 container.visibility = View.VISIBLE
-                call.invoke(true)
+                
+                // 如果启用自动刷新，创建并启动刷新管理器
+                val refreshManager = if (enableAutoRefresh) {
+                    NativeAdAutoRefreshManager(
+                        container = container,
+                        style = style,
+                        lifecycleOwner = this@loadNativeWithManager,
+                        onRefresh = {
+                            // 刷新时重新加载广告
+                            NativeAds.getInstance().displayAdInView(
+                                context = container.context,
+                                container = container,
+                                style = style,
+                                onClick = onClick
+                            )
+                        },
+                        onClick = onClick
+                    ).also { it.startRefreshTimer() }
+                } else {
+                    null
+                }
+                
+                // 通过回调传递 refreshManager，解决返回值无效问题
+                call.invoke(true, refreshManager)
             } else {
                 container.visibility = View.GONE
-                call.invoke(false)
+                call.invoke(false, null)
             }
         } catch (e: Exception) {
             container.visibility = View.GONE
-            call.invoke(false)
+            call.invoke(false, null)
         }
     }
 }

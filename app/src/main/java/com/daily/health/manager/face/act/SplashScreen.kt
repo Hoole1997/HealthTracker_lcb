@@ -68,6 +68,7 @@ import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.viewmodel.SplashViewModel
 import com.daily.health.manager.util.logEvent
 import com.daily.health.manager.utils.isAdPage
+import com.daily.health.manager.face.tracker.trackUninstallClick
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -119,7 +120,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
             onNavigate = {
                 if(intent.hasExtra(KEY_FROM_SHORTCUT) && intent.getStringExtra(KEY_FROM_SHORTCUT) == UNINSTALL){
                     // 跳转到卸载挽留页面
-                    "来自卸载拦截".logd(TAG)
+                    trackUninstallClick()
                     startActivity(Intent(this@SplashScreen, UninstallResenActivity::class.java))
                     finish()
                     return@SplashStateMachine

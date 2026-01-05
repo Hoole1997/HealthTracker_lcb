@@ -62,4 +62,35 @@ sealed class HealthTrackEvent(
         eventName = "Ad_auto_Cancel",
         params = mapOf("page_name" to healthType.pageName)
     )
+    
+    // Uninstall events
+    /** 用户长按APP点击卸载 */
+    object UninstallClick : HealthTrackEvent(
+        eventName = "Uninstall_click",
+        params = emptyMap()
+    )
+    
+    /** 在卸载界面1点击不卸载 */
+    object Page1DontClick : HealthTrackEvent(
+        eventName = "Page1_dont_click",
+        params = emptyMap()
+    )
+    
+    /** 在卸载界面2点击不卸载 */
+    object Page2DontClick : HealthTrackEvent(
+        eventName = "Page2_dont_click",
+        params = emptyMap()
+    )
+    
+    /** 在卸载界面1点击卸载 */
+    object Page1UninstallClick : HealthTrackEvent(
+        eventName = "Page1_Uninstall_click",
+        params = emptyMap()
+    )
+    
+    /** 在卸载界面2点击卸载 */
+    object Page2UninstallClick : HealthTrackEvent(
+        eventName = "Page2_Uninstall_click",
+        params = emptyMap()
+    )
 }

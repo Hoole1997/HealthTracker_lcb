@@ -792,5 +792,6 @@
     <string name="ht_uninstall_reason_unable_meet_demand">ニーズを満たせない</string>
     <string name="ht_uninstall_reason_others">その他</string>
     <string name="ht_uninstall_reason_hint">%1$sをアンインストールする理由を入力してください</string>
+    <string name="shortcut_uninstall_short">アンインストール</string>
 </resources>
 
