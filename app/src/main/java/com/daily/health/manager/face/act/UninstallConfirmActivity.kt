@@ -90,7 +90,7 @@ class UninstallConfirmActivity : BaseMVVMActivity<BaseViewModel, HtActivityUnins
 
     private fun loadNativeAdIfEnabled() {
         if (AdConfigManager.shouldShowUninstall2Native()) {
-            loadNative(mViewBind.adContainer, NativeAdStyle.CARD_8)
+            loadNative(mViewBind.adContainer, NativeAdStyle.CARD_7)
         }
     }
 

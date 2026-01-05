@@ -36,6 +36,7 @@ import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.daily.health.manager.face.tracker.HealthType
+import com.daily.health.manager.utils.loadInterstitial
 import com.healthtracker.framework.util.getRobotoMedium
 import org.koin.android.ext.android.inject
 import java.util.Calendar
@@ -143,6 +144,7 @@ class HealthStatisticsScreen :
         setupStatusFilter()
         setupHistoryList()
         setupActions()
+        loadInterstitial {  }
     }
 
     private fun setupToolbar() {
