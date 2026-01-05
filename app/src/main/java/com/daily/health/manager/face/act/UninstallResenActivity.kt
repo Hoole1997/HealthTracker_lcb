@@ -47,6 +47,8 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
+import com.daily.health.manager.face.tracker.trackPage1DontClick
+import com.daily.health.manager.face.tracker.trackPage1UninstallClick
 
 class UninstallResenActivity : BaseMVVMActivity<BaseViewModel, HtActivityUninstallResenBinding>() {
 
@@ -63,8 +65,14 @@ class UninstallResenActivity : BaseMVVMActivity<BaseViewModel, HtActivityUninsta
                 HealthTrackerTheme {
                     UninstallResenScreen(
                         onBack = { navigateToMain() },
-                        onDontUninstall = { navigateToMain() },
-                        onUninstall = { handleUninstallClick() }
+                        onDontUninstall = { 
+                            trackPage1DontClick()
+                            navigateToMain() 
+                        },
+                        onUninstall = { 
+                            trackPage1UninstallClick()
+                            handleUninstallClick() 
+                        }
                     )
                 }
             }

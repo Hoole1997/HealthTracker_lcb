@@ -59,6 +59,8 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
+import com.daily.health.manager.face.tracker.trackPage2DontClick
+import com.daily.health.manager.face.tracker.trackPage2UninstallClick
 
 class UninstallConfirmActivity : BaseMVVMActivity<BaseViewModel, HtActivityUninstallConfirmBinding>() {
 
@@ -75,8 +77,12 @@ class UninstallConfirmActivity : BaseMVVMActivity<BaseViewModel, HtActivityUnins
                 HealthTrackerTheme {
                     UninstallConfirmScreen(
                         onBack = { navigateToMain() },
-                        onDontUninstall = { navigateToMain() },
+                        onDontUninstall = { 
+                            trackPage2DontClick()
+                            navigateToMain() 
+                        },
                         onUninstall = { selectedReason, otherText ->
+                            trackPage2UninstallClick()
                             handleUninstallClick(selectedReason, otherText)
                         }
                     )
