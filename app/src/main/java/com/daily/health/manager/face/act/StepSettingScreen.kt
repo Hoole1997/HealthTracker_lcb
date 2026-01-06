@@ -50,11 +50,10 @@ class StepSettingScreen: BaseInterActivity<StepSettingViewModel, HtActivityStepS
             }
 
             btnSave.clickWithDuration {
-                if(newGoal != goal){
+                if(newGoal > 0 && newGoal != goal){
                     SpUtils.putInt(KEY_STEP_COUNT_GOLE,newGoal)
-                    handleBackPress()
                 }
-
+                handleBackPress()
             }
 
             btnBack.clickWithDuration {
