@@ -106,7 +106,10 @@ class LanguageScreen: BaseMVVMActivity<BaseViewModel, HtActivityLanguageSelectBi
                 )
             }
 
-            loadNative(adContainer, NativeAdStyle.CARD_7)
+            if(AdConfigManager.shouldShowBottomNativeOnLanguageSelection()){
+                loadNative(adContainer, NativeAdStyle.CARD_7)
+            }
+
         }
     }
 
