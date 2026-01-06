@@ -34,7 +34,7 @@ import com.daily.health.manager.face.fragment.HomeFrg
 import com.daily.health.manager.face.fragment.InsightsFrg
 import com.daily.health.manager.face.fragment.MedsFrg
 import com.daily.health.manager.face.fragment.RecordFrg
-import com.daily.health.manager.face.fragment.SettingsFragment
+import com.daily.health.manager.face.fragment.SettingsFrg
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
 import com.daily.health.manager.face.viewmodel.MainViewModel
@@ -66,7 +66,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
     private var medFrg: MedsFrg? = null
     private var recordFrg: RecordFrg? = null
     private var insightsFrg: InsightsFrg? = null
-    private var settingsFrg: SettingsFragment? = null
+    private var settingsFrg: SettingsFrg? = null
 
     private val customNotificationHelper: CustomNotificationHelper by inject()
     private val permissionManager: PermissionManager by inject()
@@ -108,7 +108,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
                 1 -> MedsFrg()
                 2 -> InsightsFrg()
                 3 -> RecordFrg()
-                4 -> SettingsFragment()
+                4 -> SettingsFrg()
                 else -> throw IllegalArgumentException("Invalid position: $position")
             }
 
@@ -123,7 +123,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
                     is RecordFrg -> recordFrg = fragment
                     is MedsFrg -> medFrg = fragment
                     is InsightsFrg -> insightsFrg = fragment
-                    is SettingsFragment -> settingsFrg = fragment
+                    is SettingsFrg -> settingsFrg = fragment
                 }
             }
         })

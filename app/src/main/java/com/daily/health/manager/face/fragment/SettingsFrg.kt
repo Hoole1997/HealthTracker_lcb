@@ -50,7 +50,7 @@ import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 
-class SettingsFragment : BaseMVVMFragment<BaseViewModel, HtFragmentSettingsBinding>() {
+class SettingsFrg : BaseMVVMFragment<BaseViewModel, HtFragmentSettingsBinding>() {
 
     private val languageSelectLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -167,7 +167,7 @@ private fun SettingsScreen(
     val legalItems = listOf(
 //        SettingsItemUi(SettingsAction.Disclaimers, R.string.ht_disclaimers, R.drawable.ht_ic_setting_disclaimers, isLegal = true),
         SettingsItemUi(SettingsAction.PrivacyPolicy, R.string.ht_privacy_policy, R.drawable.ht_ic_setting_privacy, isLegal = true),
-        SettingsItemUi(SettingsAction.TermsOfService, R.string.ht_terms_of_service, R.drawable.ht_ic_setting_terms, isLegal = true)
+//        SettingsItemUi(SettingsAction.TermsOfService, R.string.ht_terms_of_service, R.drawable.ht_ic_setting_terms, isLegal = true)
     )
 
     LazyColumn(
