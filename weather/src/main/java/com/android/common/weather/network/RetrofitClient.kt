@@ -61,6 +61,18 @@ object RetrofitClient {
 
     // 在首次访问前设置，之后不可更改
     private var logEnabled: Boolean = true
+    private var appName: String = ""
+    private var version: String = ""
+
+    /**
+     * 获取应用包名
+     */
+    fun getAppName(): String = appName
+
+    /**
+     * 获取应用版本号
+     */
+    fun getVersion(): String = version
 
     /**
      * OkHttpClient 实例（单例）
@@ -107,5 +119,16 @@ object RetrofitClient {
      */
     fun setLogEnabled(enabled: Boolean) {
         logEnabled = enabled
+    }
+
+    /**
+     * 设置应用信息
+     * 注意：必须在首次使用 weatherApi 之前调用才有效
+     * @param appName 应用包名
+     * @param version 应用版本号
+     */
+    fun setAppInfo(appName: String, version: String) {
+        this.appName = appName
+        this.version = version
     }
 }

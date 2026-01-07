@@ -52,4 +52,14 @@
     <string name="ht_weather_unknown">Unknown</string>
     <string name="ht_search">Search</string>
     <string name="ht_current_location">Current Location</string>
+
+    <string-array name="ht_week_simple">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
 </resources>

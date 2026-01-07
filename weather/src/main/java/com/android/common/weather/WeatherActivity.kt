@@ -23,6 +23,7 @@ import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.util.LanguageUtils
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -212,8 +213,15 @@ class WeatherActivity : BaseMVVMActivity<WeatherViewModel, ActivityWeatherBindin
      * 绑定当前日期
      */
     private fun bindCurrentDate() {
-        val dateFormat = SimpleDateFormat("EEE, MMM dd", LanguageUtils.getAppLocale(this))
-        mViewBind.tvDate.text = dateFormat.format(Date())
+        val calendar = Calendar.getInstance()
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
+        val weekDays = resources.getStringArray(R.array.ht_week_simple)
+        val weekStr = if (dayOfWeek in weekDays.indices) weekDays[dayOfWeek] else ""
+        
+        val dateFormat = SimpleDateFormat("MMM dd", LanguageUtils.getAppLocale(this))
+        val dateStr = dateFormat.format(Date())
+        
+        mViewBind.tvDate.text = if (weekStr.isNotEmpty()) "$weekStr, $dateStr" else dateStr
     }
     
     /**

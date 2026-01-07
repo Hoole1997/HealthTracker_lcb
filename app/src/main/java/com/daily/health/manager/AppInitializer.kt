@@ -15,6 +15,7 @@ import com.daily.health.manager.utils.InsightAssetPreparer
 import com.daily.health.manager.utils.isAdPage
 import com.daily.health.manager.work.HealthWorkTask
 import com.healthtracker.earthquake.push.EarthquakePushInitializer
+import com.android.common.weather.WeatherInitializer
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
@@ -163,6 +164,18 @@ class AppInitializer(
 
         // 5. 地震模块初始化
         initEarthquakeModule()
+
+        // 6. 天气模块初始化
+        initializeWeatherModule()
+    }
+
+    private fun initializeWeatherModule() {
+        try {
+            WeatherInitializer.init(application, BuildState.debug)
+            if (BuildState.debug) "Weather module initialized".logd(TAG)
+        } catch (e: Exception) {
+            if (BuildState.debug) "Failed to initialize weather module: ${e.message}".loge(TAG)
+        }
     }
 
     private fun initEarthquakeModule() {

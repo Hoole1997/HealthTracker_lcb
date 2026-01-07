@@ -13,6 +13,7 @@ import com.android.common.weather.util.WeatherIconMapper
 import com.android.common.weather.util.fahrenheitToCelsius
 import com.healthtracker.framework.util.LanguageUtils
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -47,9 +48,15 @@ class DailyForecastAdapter : ListAdapter<AccuWeatherDailyForecast, DailyForecast
                 forecast.date?.let {
                     try {
                         val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US)
-                        val dayFormat = SimpleDateFormat("EEE", LanguageUtils.getAppLocale(binding.root.context))
                         val date = isoFormat.parse(it)
-                        tvDate.text = date?.let { d -> dayFormat.format(d) } ?: "N/A"
+                        date?.let { d ->
+                            val calendar = Calendar.getInstance().apply { time = d }
+                            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1 // Calendar.SUNDAY is 1
+                            val weekDays = binding.root.context.resources.getStringArray(com.android.common.weather.R.array.ht_week_simple)
+                            tvDate.text = if (dayOfWeek in weekDays.indices) weekDays[dayOfWeek] else "N/A"
+                        } ?: run {
+                            tvDate.text = "N/A"
+                        }
                     } catch (e: Exception) {
                         tvDate.text = "N/A"
                     }

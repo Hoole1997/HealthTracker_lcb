@@ -22,6 +22,13 @@ object WeatherInitializer {
             return
         }
 
+        // 获取应用包名和版本号
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        val appName = context.packageName
+        val version = packageInfo.versionName ?: ""
+
+        // 设置应用信息
+        RetrofitClient.setAppInfo(appName, version)
         // 设置 Retrofit 日志开关
         RetrofitClient.setLogEnabled(enableLog)
 
