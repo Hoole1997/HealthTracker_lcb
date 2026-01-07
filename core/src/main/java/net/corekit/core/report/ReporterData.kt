@@ -1,4 +1,7 @@
 package net.corekit.core.report
+ 
+import android.util.Log
+import com.healthtracker.framework.BuildState
 
 /**
  * 数据上报接口
@@ -85,6 +88,9 @@ object ReportDataManager {
      * @param data 数据Map
      */
     fun reportData(eventName: String, data: Map<String, Any> = mapOf()) {
+        if (BuildState.debug && data.containsKey("position")) {
+            Log.d("AdPosition", "Event: $eventName, Position: ${data["position"]}")
+        }
         try {
             // 遍历所有上报器进行上报
             reporters.forEach { reporter ->
@@ -108,6 +114,9 @@ object ReportDataManager {
      * @param data 数据Map
      */
     fun reportDataByName(reporterName: String, eventName: String, data: Map<String, Any>) {
+        if (BuildState.debug && data.containsKey("position")) {
+            Log.d("AdPosition", "Event: $eventName, Position: ${data["position"]}")
+        }
         try {
             // 查找指定名称的上报器
             val targetReporter = reporters.find { it.getName() == reporterName }

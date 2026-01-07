@@ -9,7 +9,7 @@ class FragmentsAdapter(
     fm: FragmentManager,
     private val count: Int,
     private val callback: Callback
-): FragmentPagerAdapter(fm) {
+): FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     interface Callback {
         fun getPageTitle(position: Int): String? {
             return null

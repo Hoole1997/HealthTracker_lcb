@@ -71,8 +71,13 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
         setupAdLazyLoading()
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkAdVisibility("onResume")
+    }
+
     /**
-     * 设置广告懒加载：当 adContainer 可见时才触发加载
+     * 设置广告懒加载
      */
     private fun setupAdLazyLoading() {
         val scrollView = mViewBind?.root?.findViewById(
@@ -80,20 +85,10 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
         ) ?: (mViewBind?.root?.getChildAt(0) as? androidx.core.widget.NestedScrollView) ?: return
         val adContainer = mViewBind?.adContainer ?: return
 
-        val visibilityChecker = { source: String ->
-            val isVisible = isAdContainerVisible(adContainer, scrollView)
-            if(BuildState.debug) "[$source] isAdLoaded=$isAdLoaded, isVisible=$isVisible".logd(TAG)
-            if (!isAdLoaded && isVisible) {
-                isAdLoaded = true
-                if(BuildState.debug) "✅ Triggering ad load from: $source".logd(TAG)
-                activity?.loadNative(adContainer, AdPosition.NA_MAIN_TRACKER_MIDDLE, style = NativeAdStyle.CARD_8)
-            }
-        }
-
         // 初始布局完成后检测（处理不需要滚动就能看到的情况）
         adContainer.viewTreeObserver.addOnGlobalLayoutListener(object : android.view.ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                visibilityChecker("GlobalLayout")
+                checkAdVisibility("GlobalLayout")
                 if (isAdLoaded) {
                     adContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
@@ -102,7 +97,27 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
 
         // 监听滚动事件
         scrollView.viewTreeObserver.addOnScrollChangedListener {
-            visibilityChecker("Scroll")
+            checkAdVisibility("Scroll")
+        }
+    }
+
+    /**
+     * 检测广告可见性并触发加载
+     */
+    private fun checkAdVisibility(source: String) {
+        val adContainer = mViewBind?.adContainer ?: return
+        val scrollView = mViewBind?.root?.findViewById(
+            mViewBind?.root?.getChildAt(0)?.id ?: return
+        ) ?: (mViewBind?.root?.getChildAt(0) as? androidx.core.widget.NestedScrollView) ?: return
+
+        val isVisible = isAdContainerVisible(adContainer, scrollView)
+        if (BuildState.debug) "[$source] isAdLoaded=$isAdLoaded, isResumed=$isResumed, isVisible=$isVisible".logd(TAG)
+
+        // 只有在 Fragment 已经 resume (在 ViewPager 中可见) 且视图进入视口时才触发
+        if (!isAdLoaded && isResumed && isVisible) {
+            isAdLoaded = true
+            if (BuildState.debug) "✅ Triggering ad load from: $source".logd(TAG)
+            activity?.loadNative(adContainer, AdPosition.NA_MAIN_TRACKER_MIDDLE, style = NativeAdStyle.CARD_8)
         }
     }
 
