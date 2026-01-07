@@ -22,6 +22,9 @@ android {
         buildConfigField("String", "ADMOB_FULL_NATIVE_ID", "\"${adMobUnitConfig["full_native"]}\"")
         buildConfigField("String", "ADMOB_REWARDED_ID", "\"${adMobUnitConfig["rewarded"]}\"")
         buildConfigField("String", "ADMOB_REWARDED_INTERSTITIAL_ID", "\"${adMobUnitConfig["rewarded_interstitial"]}\"")
+        
+        // 将 AdMob APPLICATION_ID 传递到 AndroidManifest.xml
+        manifestPlaceholders["ADMOB_APPLICATION_ID"] = adMobConfig["applicationId"] as String
     }
 
     buildTypes {

@@ -85,6 +85,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 import net.corekit.core.report.ReportDataManager
 import net.corekit.core.utils.ConfigRemoteManager
 import net.corekit.monetize.ads.AdResult
@@ -94,6 +96,8 @@ import net.corekit.monetize.ads.LaunchAds
 import net.corekit.monetize.ads.SplashBiddingManager
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
+import net.corekit.monetize.ump.UmpConsentController
+import com.daily.health.manager.alarm.PermissionManager
 import kotlin.math.ceil
 import com.healthtracker.framework.R as FrameworkR
 
@@ -111,6 +115,9 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
         get() = InterstitialAds.getInstance().checkAdShowing()
     
     private val startAnimationFlow = MutableStateFlow(false)
+    
+    // 权限管理器
+    private val permissionManager = PermissionManager()
 
 
     // 状态机负责协调动画、权限、前后台状态与跳转
@@ -185,37 +192,65 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
             launchTime = System.currentTimeMillis()
             logEvent("loading_page_show")
             playAnimations()
-            // 启动页不再承载权限流程：直接标记权限流程完成，避免状态机卡住。
-            stateMachine.onPermissionCheckCompleted()
             checkNotificationOpen()
-
-            try {
-                val adJob = async {
-                    initializeAndShowAd()
+            
+            // ========== 并行执行：IP 预取、通知权限、广告加载 ==========
+            val timeout = AdConfigManager.getSplashTimeout()
+            AdLogger.d("[$TAG] 启动页面，超时时长：$timeout s")
+            
+            // 1. IP 国家代码预取（并行）
+            val ipJob = async {
+                try {
+                    UmpConsentController.prefetchCountryCode()
+                } catch (e: Exception) {
+                    AdLogger.e("[$TAG] IP 预取异常: ${e.message}")
                 }
-
-                val timeout = AdConfigManager.getSplashTimeout()
-                AdLogger.d("启动页面，超时时长：$timeout s")
+            }
+            
+            // 2. 通知权限检查（并行）
+            val permissionJob = async {
+                checkNotificationPermissionFlow()
+            }
+            
+            // 3. 广告加载（并行，会被 LaunchAds 内部阻塞直到 cancelInterceptor）
+            val adJob = async {
+                initializeAndShowAd()
+            }
+            
+            try {
+                // 4. 等待权限和 IP 预取完成（广告加载不阻塞，继续在后台）
+                permissionJob.await()
+                ipJob.await()
+                
+                // 5. UMP 同意检查（使用已缓存的 IP 结果）
+                try {
+                    AdLogger.d("[$TAG] 开始 UMP 同意检查")
+                    UmpConsentController.checkAndShowConsentIfNeeded(this@SplashScreen)
+                    AdLogger.d("[$TAG] UMP 同意检查完成")
+                } catch (e: Exception) {
+                    AdLogger.e("[$TAG] UMP 同意检查异常: ${e.message}")
+                }
+                
+                // 6. 放开广告展示阻塞
+                stateMachine.onPermissionCheckCompleted()
+                
+                // 7. 超时任务（UMP 完成后才开始计时，仅针对广告展示阶段）
                 val timeoutJob = async {
                     delay(timeout * 1000L)
                 }
+                
+                // 8. 等待广告完成或超时
                 val timeoutTriggered = select<Boolean> {
-                    adJob.onAwait {
-                        false
-                    }
-                    timeoutJob.onAwait {
-                        true
-                    }
+                    adJob.onAwait { false }
+                    timeoutJob.onAwait { true }
                 }
 
                 if (timeoutTriggered) {
                     "触发超时".logd(TAG)
                     val hasAdLoaded = isAdLoaded
                     if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
-                        // 没有任何广告，执行继续流程
                         if (BuildState.debug) Log.d(TAG, "${timeout}秒超时兜底：无广告，执行继续流程")
                     } else {
-                        // 有广告加载或显示，继续等待广告完成
                         if (BuildState.debug) Log.d(
                             TAG,
                             "${timeout}秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成"
@@ -226,7 +261,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
                     "非超时触发".logd(TAG)
                 }
             } catch (e: Throwable) {
-
+                AdLogger.e("[$TAG] 启动流程异常: ${e.message}")
             } finally {
                 stateMachine.onAdCompleted()
             }
@@ -402,6 +437,30 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
     private fun onAnimationCompleted() {
         if (BuildState.debug) "动画执行完成".logd(TAG)
         stateMachine.onAnimationCompleted()
+    }
+    
+    /**
+     * 检查通知权限流程
+     * 
+     * 在启动页请求通知权限，不阻塞流程
+     */
+    private suspend fun checkNotificationPermissionFlow() {
+        try {
+            suspendCancellableCoroutine<Boolean> { cont ->
+                permissionManager.checkNotificationPermission(
+                    activity = this@SplashScreen,
+                    onGoSetting = {
+                        // 启动页不处理跳转设置的情况，直接完成
+                    }
+                ) {
+                    if (cont.isActive) {
+                        cont.resume(it)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            if (BuildState.debug) "通知权限检查异常: ${e.message}".loge(TAG)
+        }
     }
 
     /**
