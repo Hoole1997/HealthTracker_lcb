@@ -10,6 +10,7 @@ import com.daily.health.manager.face.act.HydrateScreen
 import com.daily.health.manager.face.act.StepCountScreen
 import com.daily.health.manager.utils.loadRewardBidding
 import com.daily.health.manager.utils.showInter
+import net.corekit.monetize.ads.AdPosition
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import com.daily.health.manager.face.tracker.HealthType
@@ -24,7 +25,7 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
     override fun handleBackPress(): Boolean {
 
         
-        showInter {
+        showInter(getBackAdPosition()) {
             // 根据 Activity 类型自动上报返回事件
             trackBackEvent()
             // 显示插屏广告后关闭 Activity
@@ -98,10 +99,64 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
      */
     protected open fun getCurrentHealthType(): HealthType = HealthType.OTHER
 
+    /**
+     * 根据当前Activity和健康类型获取返回时的插屏广告position
+     */
+    protected open fun getBackAdPosition(): String {
+        val healthType = getCurrentHealthType()
+        return when(this) {
+            // 录入页面返回
+            is HealthRecordScreen -> when(healthType) {
+                HealthType.BLOOD_SUGAR -> AdPosition.IV_BLOOD_SUGAR_BACK
+                HealthType.BLOOD_PRESSURE -> AdPosition.IV_BLOOD_PRESSURE_BACK
+                HealthType.CHOLESTEROL -> AdPosition.IV_CHOLESTEROL_BACK
+                HealthType.HEART_RATE -> AdPosition.IV_HEART_RATE_BACK
+                HealthType.BMI -> AdPosition.IV_BMI_BACK
+                else -> AdPosition.IV_BLOOD_SUGAR_BACK
+            }
+            is HydrateScreen -> AdPosition.IV_WATER_BACK
+            is StepCountScreen -> AdPosition.IV_WALK_BACK
+            // 报表页面返回
+            is HealthStatisticsScreen -> when(healthType) {
+                HealthType.BLOOD_SUGAR -> AdPosition.IV_BLOOD_SUGAR_TRACK_BACK
+                HealthType.BLOOD_PRESSURE -> AdPosition.IV_BLOOD_PRESSURE_TRACK_BACK
+                HealthType.CHOLESTEROL -> AdPosition.IV_CHOLESTEROL_TRACK_BACK
+                HealthType.HEART_RATE -> AdPosition.IV_HEART_RATE_TRACK_BACK
+                HealthType.BMI -> AdPosition.IV_BMI_TRACK_BACK
+                HealthType.HYDRATE -> AdPosition.IV_WATER_TRACK_BACK
+                HealthType.WALKING_STEPS -> AdPosition.IV_WALK_TRACK_BACK
+                else -> AdPosition.IV_BLOOD_SUGAR_TRACK_BACK
+            }
+            // 详情页面返回 - 使用报表返回position
+            is HealthDetailScreen -> when(healthType) {
+                HealthType.BLOOD_SUGAR -> AdPosition.IV_BLOOD_SUGAR_TRACK_BACK
+                HealthType.BLOOD_PRESSURE -> AdPosition.IV_BLOOD_PRESSURE_TRACK_BACK
+                HealthType.CHOLESTEROL -> AdPosition.IV_CHOLESTEROL_TRACK_BACK
+                HealthType.HEART_RATE -> AdPosition.IV_HEART_RATE_TRACK_BACK
+                HealthType.BMI -> AdPosition.IV_BMI_TRACK_BACK
+                else -> AdPosition.IV_BLOOD_SUGAR_TRACK_BACK
+            }
+            else -> AdPosition.IV_BLOOD_SUGAR_BACK
+        }
+    }
+
+    /**
+     * 根据当前健康类型获取激励广告position
+     */
+    protected open fun getRewardAdPosition(): String {
+        return when(getCurrentHealthType()) {
+            HealthType.BLOOD_SUGAR -> AdPosition.RV_BLOOD_SUGAR_NOTE
+            HealthType.BLOOD_PRESSURE -> AdPosition.RV_BLOOD_PRESSURE_NOTE
+            HealthType.CHOLESTEROL -> AdPosition.RV_CHOLESTEROL_NOTE
+            HealthType.HEART_RATE -> AdPosition.RV_HEART_RATE_NOTE
+            HealthType.BMI -> AdPosition.RV_BMI_NOTE
+            else -> AdPosition.RV_BLOOD_SUGAR_NOTE
+        }
+    }
 
     protected fun showReword(){
        lifecycleScope.launch {
-           loadRewardBidding {
+           loadRewardBidding(getRewardAdPosition()) {
                if(it){
                    hideMask()
                }

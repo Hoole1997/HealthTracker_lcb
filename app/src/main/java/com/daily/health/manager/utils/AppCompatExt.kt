@@ -32,6 +32,7 @@ fun FragmentActivity.safeLaunch(afterInvoke: () -> Unit) {
 
 fun FragmentActivity.loadBanner(
     container: ViewGroup,
+    position: String,
     condition: () -> Boolean = { true },
     onClose: (() -> Unit)? = null,
     call: (Boolean) -> Unit = {},
@@ -46,7 +47,7 @@ fun FragmentActivity.loadBanner(
             }
 
             when (val result =
-                BannerAds.getInstance().displayAd(this@loadBanner, container, onClick = {
+                BannerAds.getInstance().displayAd(this@loadBanner, container, position, onClick = {
                     App.INSTANCE.isClickAdLeave = true
 
                 }, onClose = onClose)) {
@@ -94,13 +95,14 @@ fun FragmentActivity.loadBanner(
  */
 fun FragmentActivity.loadNative(
     container: ViewGroup,
+    position: String,
     style: NativeAdStyle = NativeAdStyle.STANDARD,
     enableAutoRefresh: Boolean = true,
     condition: () -> Boolean = { true },
     onClick: () -> Unit = {App.INSTANCE.isClickAdLeave = true},
     call: (Boolean) -> Unit = {}
 ) {
-    loadNativeWithManager(container, style, enableAutoRefresh, condition, onClick) { success, _ ->
+    loadNativeWithManager(container, position, style, enableAutoRefresh, condition, onClick) { success, _ ->
         call.invoke(success)
     }
 }
@@ -116,6 +118,7 @@ fun FragmentActivity.loadNative(
  */
 fun FragmentActivity.loadNativeWithManager(
     container: ViewGroup,
+    position: String,
     style: NativeAdStyle = NativeAdStyle.STANDARD,
     enableAutoRefresh: Boolean = true,
     condition: () -> Boolean = { true },
@@ -134,6 +137,7 @@ fun FragmentActivity.loadNativeWithManager(
             val success = NativeAds.getInstance().displayAdInView(
                 context = container.context,
                 container = container,
+                position = position,
                 style = style,
                 onClick = onClick
             )
@@ -152,6 +156,7 @@ fun FragmentActivity.loadNativeWithManager(
                             NativeAds.getInstance().displayAdInView(
                                 context = container.context,
                                 container = container,
+                                position = position,
                                 style = style,
                                 onClick = onClick
                             )
@@ -177,6 +182,7 @@ fun FragmentActivity.loadNativeWithManager(
 
 fun FragmentActivity.loadFullNative(
     container: ViewGroup,
+    position: String,
     style: NativeAdStyle = NativeAdStyle.STANDARD,
     condition: () -> Boolean = { true },
     onClick: () -> Unit = {App.INSTANCE.isClickAdLeave = true},
@@ -196,6 +202,7 @@ fun FragmentActivity.loadFullNative(
                 context = container.context,
                 container = container,
                 this@loadFullNative,
+                position = position,
             )
 
             when(success){
@@ -221,6 +228,7 @@ fun FragmentActivity.loadFullNative(
 
 
 fun FragmentActivity.loadInterstitial(
+    position: String,
     condition: () -> Boolean = { true },
     call: (Boolean) -> Unit
 ) {
@@ -232,7 +240,7 @@ fun FragmentActivity.loadInterstitial(
                 return@launch
             }
 
-            when (val result = InterstitialAds.getInstance().displayAd(this@loadInterstitial)) {
+            when (val result = InterstitialAds.getInstance().displayAd(this@loadInterstitial, position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
                 }
@@ -252,12 +260,12 @@ fun FragmentActivity.loadInterstitial(
     }
 }
 
-fun FragmentActivity.loadRewardBidding(call: (Boolean) -> Unit) {
+fun FragmentActivity.loadRewardBidding(position: String, call: (Boolean) -> Unit) {
     lifecycleScope.launch {
         try {
             // 检查竞价开关，关闭时回退到普通激励广告
             if (!AdConfigManager.isRewardBiddingEnabled()) {
-                when (RewardedAds.getInstance().show(this@loadRewardBidding)) {
+                when (RewardedAds.getInstance().show(this@loadRewardBidding, position)) {
                     is AdResult.Success -> call.invoke(true)
                     is AdResult.Failure -> call.invoke(false)
                     AdResult.Loading -> {}
@@ -265,7 +273,7 @@ fun FragmentActivity.loadRewardBidding(call: (Boolean) -> Unit) {
                 return@launch
             }
 
-            when (val result = RewardBiddingManager.showWithBidding(this@loadRewardBidding)) {
+            when (val result = RewardBiddingManager.showWithBidding(this@loadRewardBidding, position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
                 }
@@ -284,7 +292,7 @@ fun FragmentActivity.loadRewardBidding(call: (Boolean) -> Unit) {
     }
 }
 
-fun FragmentActivity.loadReword(condition: () -> Boolean = { true }, call: (Boolean) -> Unit) {
+fun FragmentActivity.loadReword(position: String, condition: () -> Boolean = { true }, call: (Boolean) -> Unit) {
     lifecycleScope.launch {
         try {
             // 检查条件是否满足
@@ -293,7 +301,7 @@ fun FragmentActivity.loadReword(condition: () -> Boolean = { true }, call: (Bool
                 return@launch
             }
 
-            when (RewardedAds.getInstance().show(this@loadReword)) {
+            when (RewardedAds.getInstance().show(this@loadReword, position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
                 }
@@ -314,8 +322,8 @@ fun FragmentActivity.loadReword(condition: () -> Boolean = { true }, call: (Bool
     }
 }
 
-fun FragmentActivity.showInter(onComplete: () -> Unit) {
-    loadInterstitial {
+fun FragmentActivity.showInter(position: String, onComplete: () -> Unit) {
+    loadInterstitial(position) {
         onComplete.invoke()
     }
 }

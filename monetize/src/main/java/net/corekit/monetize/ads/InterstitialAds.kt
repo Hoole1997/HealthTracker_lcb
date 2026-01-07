@@ -31,7 +31,6 @@ import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
 import net.corekit.monetize.ui.FullScreenNativeAdActivity
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
-import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -134,10 +133,11 @@ class InterstitialAds private constructor() {
     /**
      * 显示广告
      */
-    suspend fun displayAd(activity: Activity, adUnitId: String? = null,ignoreFullNative: Boolean  = false): AdResult<Unit> {
+    suspend fun displayAd(activity: Activity, position: String, adUnitId: String? = null, ignoreFullNative: Boolean = false): AdResult<Unit> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
         return displayAdInternal(
             activity = activity,
+            position = position,
             finalAdUnitId = finalAdUnitId,
             ignoreFullNative = ignoreFullNative,
             chain = interceptorChain,
@@ -145,7 +145,7 @@ class InterstitialAds private constructor() {
         )
     }
 
-    suspend fun displayAdForRewardBidding(activity: Activity, adUnitId: String? = null): AdResult<Unit> {
+    suspend fun displayAdForRewardBidding(activity: Activity, position: String, adUnitId: String? = null): AdResult<Unit> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
 
         val lastInterval = AdConfigManager.getInterstitialConfig().getLastShowInterval()
@@ -154,6 +154,7 @@ class InterstitialAds private constructor() {
 
         return displayAdInternal(
             activity = activity,
+            position = position,
             finalAdUnitId = finalAdUnitId,
             ignoreFullNative = true,
             chain = biddingInterceptorChain,
@@ -163,6 +164,7 @@ class InterstitialAds private constructor() {
 
     private suspend fun displayAdInternal(
         activity: Activity,
+        position: String,
         finalAdUnitId: String,
         ignoreFullNative: Boolean,
         chain: InterceptorChain,
@@ -175,8 +177,6 @@ class InterstitialAds private constructor() {
         // 累积触发统计
         totalShowTriggerCount++
         AdLogger.d("插页广告累积触发展示次数: $totalShowTriggerCount")
-
-        val position = PositionGet.get()
 
         reportAdData(
             eventName = "ad_position",
@@ -216,7 +216,7 @@ class InterstitialAds private constructor() {
         AdLogger.d("当日已展示${todayShowInter}个插页，每显示${interval}个插页将显示原生，下一个是否显示全屏原生${needShowNativeFull}")
 
         if(!ignoreFullNative && needShowNativeFull && FullNativeAds.getInstance().checkCachedAdAvailable()){
-            return FullScreenNativeAdActivity.start(activity,showInterstitial = true)
+            return FullScreenNativeAdActivity.start(activity,position,showInterstitial = true)
         }
 
         return try {

@@ -53,6 +53,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.core.report.ReportDataManager
+import net.corekit.monetize.ads.AdPosition
 import org.koin.android.ext.android.inject
 import kotlin.coroutines.resume
 
@@ -247,7 +248,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
                 homeFragment.highLightComplete.await()
             }
             awaitResumedIfNeeded()
-            loadBanner(mViewBind.adViewContainer, onClose = {
+            loadBanner(mViewBind.adViewContainer, AdPosition.BA_HOME_BOTTOM, onClose = {
                 if (!bannerShowComplete.isCompleted) {
                     bannerShowComplete.complete(true)
                 }

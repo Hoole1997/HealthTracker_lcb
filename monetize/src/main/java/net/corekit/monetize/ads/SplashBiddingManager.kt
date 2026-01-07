@@ -245,14 +245,14 @@ object SplashBiddingManager {
         return when (bidResult) {
             is BidResult.ShowSplash -> {
                 AdLogger.d("[%s] 根据竞价结果展示开屏广告", TAG)
-                LaunchAds.getInstance().displayAd(activity, onLoaded = onAdLoaded)
+                LaunchAds.getInstance().displayAd(activity, AdPosition.SP_APP_START, onLoaded = onAdLoaded)
             }
             is BidResult.ShowInterstitial -> {
                 AdLogger.d("[%s] 根据竞价结果展示插屏广告", TAG)
                 onAdLoaded?.invoke(true)
                 // 等待权限授权完成后再展示插屏广告
                 LaunchAds.getInstance().awaitPermissionReady()
-                InterstitialAds.getInstance().displayAd(activity, ignoreFullNative = true)
+                InterstitialAds.getInstance().displayAd(activity, AdPosition.SP_APP_START, ignoreFullNative = true)
             }
             is BidResult.EnterApp -> {
                 AdLogger.d("[%s] 竞价失败，直接进入APP", TAG)

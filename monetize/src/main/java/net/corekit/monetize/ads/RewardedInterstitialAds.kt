@@ -25,7 +25,6 @@ import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
-import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -118,12 +117,10 @@ class RewardedInterstitialAds private constructor() {
         }
     }
 
-    suspend fun displayAd(activity: Activity, adUnitId: String? = null): AdResult<RewardedAds.RewardOutcome> {
+    suspend fun displayAd(activity: Activity, position: String, adUnitId: String? = null): AdResult<RewardedAds.RewardOutcome> {
         AdsManager.awaitInitialized()
         
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID
-
-        val position = PositionGet.get()
 
         // 每次开始展示前清理状态，避免收益/展示状态污染
         currentAdValue = null

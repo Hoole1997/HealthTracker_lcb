@@ -33,7 +33,6 @@ import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.BannerAdView
-import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -309,9 +308,8 @@ class BannerAds private constructor() {
      * @param container 目标容器
      * @param adUnitId 广告位ID，如果为空则使用默认ID
      */
-    suspend fun displayAd(context: Context, container: ViewGroup, adUnitId: String? = null,onClick:(() -> Unit)? = null,onClose:(() -> Unit)? = null): AdResult<Boolean> {
+    suspend fun displayAd(context: Context, container: ViewGroup, position: String, adUnitId: String? = null, onClick:(() -> Unit)? = null, onClose:(() -> Unit)? = null): AdResult<Boolean> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_BANNER_ID
-        val position = PositionGet.get()
         
         // 累积触发统计
         totalShowTriggerCount++

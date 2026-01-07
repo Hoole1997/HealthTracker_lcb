@@ -58,6 +58,7 @@ import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import com.daily.health.manager.face.tracker.trackPage2DontClick
 import com.daily.health.manager.face.tracker.trackPage2UninstallClick
@@ -96,7 +97,7 @@ class UninstallConfirmActivity : BaseMVVMActivity<BaseViewModel, HtActivityUnins
 
     private fun loadNativeAdIfEnabled() {
         if (AdConfigManager.shouldShowUninstall2Native()) {
-            loadNative(mViewBind.adContainer, NativeAdStyle.CARD_7)
+            loadNative(mViewBind.adContainer, AdPosition.NA_UNINSTALL_2_BOTTOM, NativeAdStyle.CARD_7)
         }
     }
 
@@ -115,7 +116,7 @@ class UninstallConfirmActivity : BaseMVVMActivity<BaseViewModel, HtActivityUnins
         // TODO: 后续可上报到服务器或Analytics
 
         if (AdConfigManager.shouldShowUninstall2Interstitial()) {
-            loadInterstitial {
+            loadInterstitial(position = AdPosition.IV_UNINSTALL_2) {
                 navigateToSystemUninstall()
             }
         } else {

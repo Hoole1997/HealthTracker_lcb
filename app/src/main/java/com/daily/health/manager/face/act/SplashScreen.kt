@@ -95,6 +95,7 @@ import net.corekit.monetize.ads.InterstitialAds
 import net.corekit.monetize.ads.LaunchAds
 import net.corekit.monetize.ads.SplashBiddingManager
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ump.UmpConsentController
 import com.daily.health.manager.alarm.PermissionManager
@@ -374,6 +375,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
                 if (BuildState.debug) "使用传统模式加载开屏广告".logd(TAG)
                 LaunchAds.getInstance().displayAd(
                     activity = this,
+                    position = AdPosition.SP_APP_START,
                     onLoaded = { isSuccess ->
                         isAdLoaded = isSuccess
                     }

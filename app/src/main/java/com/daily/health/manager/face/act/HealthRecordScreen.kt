@@ -62,6 +62,7 @@ import com.daily.health.manager.utils.showInter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.core.context.GlobalContext
 import com.healthtracker.framework.util.getRobotoBold
@@ -256,7 +257,7 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
             addTagIds.addAll(tagIds)
         }
 
-        loadNative(binding.adContainer, style = NativeAdStyle.STANDARD)
+        loadNative(binding.adContainer, AdPosition.NA_NEW_RECORD_BLOOD_PRESSURE_BOTTOM, style = NativeAdStyle.STANDARD)
     }
 
     private fun setupBmi(root: View) {
@@ -455,7 +456,7 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
             addTagIds.addAll(tagIds)
         }
 
-        loadNative(binding.adContainer, style = NativeAdStyle.STANDARD)
+        loadNative(binding.adContainer, AdPosition.NA_NEW_RECORD_BMI_BOTTOM, style = NativeAdStyle.STANDARD)
     }
 
     private fun setupHeartRate(root: View) {
@@ -592,7 +593,7 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
             addTagIds.addAll(tagIds)
         }
 
-        loadNative(binding.adContainer, style = NativeAdStyle.STANDARD)
+        loadNative(binding.adContainer, AdPosition.NA_NEW_RECORD_HEART_RATE_BOTTOM, style = NativeAdStyle.STANDARD)
     }
 
     private fun setupCholesterol(root: View) {
@@ -735,7 +736,7 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
             binding.npvTg.value = it - 1
         }
 
-        loadNative(binding.adContainer, style = NativeAdStyle.STANDARD)
+        loadNative(binding.adContainer, AdPosition.NA_NEW_RECORD_CHOLESTEROL_BOTTOM, style = NativeAdStyle.STANDARD)
     }
 
     enum class RecordType {
@@ -900,7 +901,7 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
         setupBloodSugarSaveButton(binding)
         observeBloodSugarViewModel(binding)
 
-        loadNative(binding.adContainer, style = NativeAdStyle.STANDARD)
+        loadNative(binding.adContainer, AdPosition.NA_NEW_RECORD_BLOOD_SUGAR_BOTTOM, style = NativeAdStyle.STANDARD)
     }
 
     private fun setupBloodSugarRulerView(binding: HtActivityBsRecordBinding) {
@@ -1059,8 +1060,15 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
             RecordType.HEART_RATE -> HealthDetailScreen.DetailType.HEART_RATE
             RecordType.CHOLESTEROL -> HealthDetailScreen.DetailType.CHOLESTEROL
         }
+        val savePosition = when (type) {
+            RecordType.BLOOD_SUGAR -> AdPosition.IV_BLOOD_SUGAR_SAVE
+            RecordType.BLOOD_PRESSURE -> AdPosition.IV_BLOOD_PRESSURE_SAVE
+            RecordType.BMI -> AdPosition.IV_BMI_SAVE
+            RecordType.HEART_RATE -> AdPosition.IV_HEART_RATE_SAVE
+            RecordType.CHOLESTEROL -> AdPosition.IV_CHOLESTEROL_SAVE
+        }
         SaveCompleteDialog.show(supportFragmentManager) {
-            showInter {
+            showInter(savePosition) {
                 HealthDetailScreen.start(this@HealthRecordScreen, detailType, recordId)
                 finish()
             }

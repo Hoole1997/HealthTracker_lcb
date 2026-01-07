@@ -19,6 +19,7 @@ import com.daily.health.manager.face.act.MainScreen
 import com.daily.health.manager.face.chart.HealthLineChartManager
 import com.daily.health.manager.face.viewmodel.TrackerViewModel
 import com.daily.health.manager.utils.loadNative
+import com.daily.health.manager.utils.showInter
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
@@ -28,6 +29,7 @@ import com.healthtracker.framework.ext.invisible
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.visible
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
@@ -84,7 +86,7 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
             if (!isAdLoaded && isVisible) {
                 isAdLoaded = true
                 if(BuildState.debug) "✅ Triggering ad load from: $source".logd(TAG)
-                activity?.loadNative(adContainer, style = NativeAdStyle.CARD_8)
+                activity?.loadNative(adContainer, AdPosition.NA_MAIN_TRACKER_MIDDLE, style = NativeAdStyle.CARD_8)
             }
         }
 
@@ -208,7 +210,9 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
             // Blood Sugar - 点击卡片跳转历史记录
             includeBs.root.clickWithDuration {
                 if(includeBs.chartView.isVisible){
-                    HealthStatisticsScreen.start(requireActivity(), HealthMetric.BLOOD_SUGAR)
+                    requireActivity().showInter(AdPosition.IV_BLOOD_SUGAR_TRACK_ENTER) {
+                        HealthStatisticsScreen.start(requireActivity(), HealthMetric.BLOOD_SUGAR)
+                    }
                 }else{
                     HealthRecordScreen.start(
                         requireActivity(),
@@ -220,7 +224,9 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
             // Blood Pressure
             includeBp.root.clickWithDuration {
                 if(includeBp.chartView.isVisible){
-                    HealthStatisticsScreen.start(requireActivity(), HealthMetric.BLOOD_PRESSURE)
+                    requireActivity().showInter(AdPosition.IV_BLOOD_PRESSURE_TRACK_ENTER) {
+                        HealthStatisticsScreen.start(requireActivity(), HealthMetric.BLOOD_PRESSURE)
+                    }
                 }else{
                     HealthRecordScreen.start(
                         requireActivity(),
@@ -232,7 +238,9 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
             // Heart Rate
             includeHr.root.clickWithDuration {
                 if(includeHr.chartView.isVisible){
-                    HealthStatisticsScreen.start(requireActivity(), HealthMetric.HEART_RATE)
+                    requireActivity().showInter(AdPosition.IV_HEART_RATE_TRACK_ENTER) {
+                        HealthStatisticsScreen.start(requireActivity(), HealthMetric.HEART_RATE)
+                    }
                 }else{
                     HealthRecordScreen.start(
                         requireActivity(),
@@ -244,7 +252,9 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
             // Cholesterol
             includeCho.root.clickWithDuration {
                 if(includeCho.chartView.isVisible){
-                    HealthStatisticsScreen.start(requireActivity(), HealthMetric.CHOLESTEROL)
+                    requireActivity().showInter(AdPosition.IV_CHOLESTEROL_TRACK_ENTER) {
+                        HealthStatisticsScreen.start(requireActivity(), HealthMetric.CHOLESTEROL)
+                    }
                 }else{
                     HealthRecordScreen.start(
                         requireActivity(),
@@ -256,7 +266,9 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
             // BMI
             includeBmi.root.clickWithDuration {
                 if(includeBmi.chartView.isVisible){
-                    HealthStatisticsScreen.start(requireActivity(), HealthMetric.BMI)
+                    requireActivity().showInter(AdPosition.IV_BMI_TRACK_ENTER) {
+                        HealthStatisticsScreen.start(requireActivity(), HealthMetric.BMI)
+                    }
                 }else{
                     HealthRecordScreen.start(
                         requireActivity(),
@@ -267,7 +279,9 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
 
             includeStep.root.clickWithDuration {
                 if (includeStep.chartView.isVisible) {
-                    HealthStatisticsScreen.start(requireActivity(), HealthMetric.STEPS)
+                    requireActivity().showInter(AdPosition.IV_WALK_TRACK_ENTER) {
+                        HealthStatisticsScreen.start(requireActivity(), HealthMetric.STEPS)
+                    }
                 } else {
                     if(requireActivity() is MainScreen){
                         (requireActivity() as MainScreen).checkStepPermissionAndNavigate()
@@ -276,9 +290,10 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
             }
 
             includeHydrate.root.clickWithDuration {
-
                 if (includeHydrate.chartView.isVisible) {
-                    HealthStatisticsScreen.start(requireActivity(), HealthMetric.HYDRATION)
+                    requireActivity().showInter(AdPosition.IV_WATER_TRACK_ENTER) {
+                        HealthStatisticsScreen.start(requireActivity(), HealthMetric.HYDRATION)
+                    }
                 } else {
                     HydrateScreen.start(requireContext())
                 }

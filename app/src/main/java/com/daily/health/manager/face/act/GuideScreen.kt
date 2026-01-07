@@ -31,6 +31,7 @@ import com.zhpan.indicator.enums.IndicatorStyle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.corekit.core.report.ReportDataManager
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
 
@@ -197,6 +198,7 @@ class GuideFragAd : BaseMVVMFragment<BaseViewModel, HtFragmentGuide2Binding>() {
                 val activity = context as GuideScreen
                 activity.loadFullNative(
                     adContainer,
+                    position = AdPosition.NA_NEW_GUIDE_FULL,
                     style = NativeAdStyle.createCustom(
                         net.corekit.monetize.R.layout.layout_fullscreen_native_ad,
                         "full_native"

@@ -33,7 +33,6 @@ import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.NativeAdStyle
 import net.corekit.monetize.ui.NativeAdView
-import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -170,12 +169,12 @@ class NativeAds private constructor() {
     suspend fun displayAdInView(
         context: Context, 
         container: ViewGroup,
+        position: String,
         style: NativeAdStyle = NativeAdStyle.STANDARD,
         adUnitId: String? = null,
         onClick:(() -> Unit)? = null
     ): Boolean {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_NATIVE_ID
-        val position = PositionGet.get()
         
         // 累积触发统计
         totalShowTriggerCount++

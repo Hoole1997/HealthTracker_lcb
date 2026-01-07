@@ -20,6 +20,7 @@ import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 
 /**
@@ -124,7 +125,7 @@ class MedsReminderAdapter(
                     .color(net.corekit.monetize.R.color.white)
                     .show()
                 binding.adContainer.removeAllViews()
-                activity.loadNative(binding.adContainer, style = NativeAdStyle.STANDARD){
+                activity.loadNative(binding.adContainer, AdPosition.NA_MEDS_REMINDER_LIST, style = NativeAdStyle.STANDARD){
                     if(it){
                         android.util.Log.d("MedsReminderAdapter", "Ad placeholder visible at position=$bindingAdapterPosition")
 

@@ -23,11 +23,13 @@ import com.daily.health.manager.face.dialog.ImgGetTypeDialog
 import com.daily.health.manager.face.viewmodel.AddReminderUiState
 import com.daily.health.manager.face.viewmodel.AddReminderViewModel
 import com.daily.health.manager.face.viewmodel.SaveState
+import com.daily.health.manager.utils.showInter
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.hideSoftKeyBoard
 import net.corekit.core.report.ReportDataManager
+import net.corekit.monetize.ads.AdPosition
 
 class AddReminderScreen : BaseInterActivity<AddReminderViewModel, HtActivityAddReminderBinding>(){
 
@@ -226,7 +228,9 @@ class AddReminderScreen : BaseInterActivity<AddReminderViewModel, HtActivityAddR
             }
 
             is SaveState.Success -> {
-                onBackPress()
+                showInter(position = AdPosition.IV_ADD_MEDS_SAVE){
+                    finish()
+                }
             }
 
             is SaveState.Error -> {
@@ -254,4 +258,6 @@ class AddReminderScreen : BaseInterActivity<AddReminderViewModel, HtActivityAddR
 
         }
     }
+
+    override fun getBackAdPosition() = AdPosition.IV_ADD_MEDS_BACK
 }

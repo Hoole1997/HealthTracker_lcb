@@ -11,6 +11,7 @@ import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.gone
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 
 
@@ -71,7 +72,7 @@ class ConfirmDialog(
             }
 
             if(isShowNative){
-                requireActivity().loadNative(adContainer, style = NativeAdStyle.CARD_5)
+                requireActivity().loadNative(adContainer, AdPosition.NA_DETAIL_CONFIRM_DIALOG, style = NativeAdStyle.CARD_5)
             }else{
                 adContainer.gone()
             }

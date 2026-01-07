@@ -36,7 +36,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
-import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
 
 /**
@@ -205,11 +204,11 @@ class FullNativeAds private constructor() {
         context: Context,
         container: ViewGroup,
         lifecycleOwner: LifecycleOwner,
+        position: String,
         adUnitId: String? = null
     ): AdResult<Unit> {
         totalShowTriggerCount++
 
-        val position = PositionGet.get()
         currentPosition = position
         reportAdData(
             eventName = "ad_position",

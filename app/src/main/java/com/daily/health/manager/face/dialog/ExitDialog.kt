@@ -13,6 +13,7 @@ import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 
 class ExitDialog(private val onExit:(() -> Unit)? = null): BaseBottomSheetDialogFragment<HtDialogExitBinding>() {
@@ -51,7 +52,7 @@ class ExitDialog(private val onExit:(() -> Unit)? = null): BaseBottomSheetDialog
                 .show()
 
             if(context is FragmentActivity){
-                (context as FragmentActivity).loadNative(adContainer, style = NativeAdStyle.CARD_3, call = {
+                (context as FragmentActivity).loadNative(adContainer, AdPosition.NA_HOME_EXIT_DIALOG, style = NativeAdStyle.CARD_3, call = {
                     skeleton.hide()
                     if(!it){
                         adContainer.gone()

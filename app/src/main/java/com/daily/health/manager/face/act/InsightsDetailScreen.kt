@@ -47,6 +47,7 @@ import com.daily.health.manager.utils.InsightAssetPreparer
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseViewModel
 import net.corekit.core.report.ReportDataManager
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import java.io.File
 import com.healthtracker.framework.R as FrameworkR
@@ -100,7 +101,7 @@ class InsightsDetailScreen :
                 )
             }
 
-            loadNative(adContainer, style = NativeAdStyle.STANDARD)
+            loadNative(adContainer, AdPosition.NA_INSIGHTS_DETAIL_BOTTOM, style = NativeAdStyle.STANDARD)
         }
     }
 
@@ -171,7 +172,7 @@ class InsightsDetailScreen :
     }
 
 
-
+    override fun getBackAdPosition() = AdPosition.IV_INSIGHTS_DETAILS_BACK
 
 
 }

@@ -34,7 +34,6 @@ import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
-import net.corekit.monetize.util.PositionGet
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
 import kotlin.coroutines.resume
 import kotlin.math.ceil
@@ -141,11 +140,10 @@ class RewardedAds private constructor() {
      */
     suspend fun show(
         activity: Activity,
+        position: String,
         adUnitId: String? = null
     ): AdResult<RewardOutcome> {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_REWARDED_ID
-
-        val position = PositionGet.get()
 
         totalTriggerCount++
         reportAdData(

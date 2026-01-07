@@ -39,7 +39,6 @@ import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.model.PendingShowRequest
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
-import net.corekit.monetize.util.PositionGet
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -277,14 +276,12 @@ class LaunchAds private constructor() {
      * @param activity Activity上下文
      * @param adUnitId 广告位ID，如果为空则使用默认ID
      */
-    suspend fun displayAd(activity: Activity, adUnitId: String = BuildConfig.ADMOB_SPLASH_ID, onLoaded:((isSuc: Boolean)->Unit) ?= null): AdResult<Unit> {
+    suspend fun displayAd(activity: Activity, position: String, adUnitId: String = BuildConfig.ADMOB_SPLASH_ID, onLoaded:((isSuc: Boolean)->Unit) ?= null): AdResult<Unit> {
 
         AdsManager.awaitInitialized()
         // 累积触发广告展示次数统计
         totalShowTriggerCount++
         AdLogger.d("开屏广告累积触发展示次数: $totalShowTriggerCount")
-
-        val position = PositionGet.get()
 
         reportAdData(
             eventName = "ad_position",
@@ -314,6 +311,7 @@ class LaunchAds private constructor() {
                 return if(AdConfigManager.shouldShowInterstitialAfterAppOpenFailure()){
                       AdsManager.Controllers.interstitial.displayAd(
                         activity,
+                        position,
                         BuildConfig.ADMOB_INTERSTITIAL_ID
                     )
                 } else interceptResult
@@ -380,6 +378,7 @@ class LaunchAds private constructor() {
         return if(adResult is AdResult.Failure && AdConfigManager.shouldShowInterstitialAfterAppOpenFailure()){
             AdsManager.Controllers.interstitial.displayAd(
                 activity,
+                position,
                 BuildConfig.ADMOB_INTERSTITIAL_ID
             )
         } else adResult

@@ -56,6 +56,7 @@ import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoRegular
 import com.hjq.toast.Toaster
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 
 class ProfileActivity: BaseInterActivity<BaseViewModel, HtActivityProfileBinding>() {
@@ -88,6 +89,8 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, HtActivityProfileBinding
 
     private var launchMode by mutableIntStateOf(MODE_SETTINGS)
 
+
+    override fun getBackAdPosition() = AdPosition.IV_PROFILE_BACK
 
 
 
@@ -130,7 +133,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, HtActivityProfileBinding
                 )
             }
 
-            loadNative(adContainer, style = NativeAdStyle.CARD_7)
+            loadNative(adContainer, AdPosition.NA_SETTINGS_PROFILE_BOTTOM, style = NativeAdStyle.CARD_7)
         }
     }
 

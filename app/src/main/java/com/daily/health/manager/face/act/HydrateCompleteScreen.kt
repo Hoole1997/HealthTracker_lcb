@@ -7,6 +7,7 @@ import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.databinding.HtActivityHydrateCompleteBinding
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.startActivity
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import com.daily.health.manager.utils.loadNative
 
@@ -31,7 +32,7 @@ class HydrateCompleteScreen : BaseInterActivity<BaseViewModel, HtActivityHydrate
             btnDone.setOnClickListener { finish() }
 
             // 加载原生广告（底部卡片区域）
-            loadNative(adContainer, style = NativeAdStyle.CARD_6)
+            loadNative(adContainer, AdPosition.NA_HYDRATE_COMPLETE_BOTTOM, style = NativeAdStyle.CARD_6)
         }
     }
 }

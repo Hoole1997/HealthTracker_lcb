@@ -15,6 +15,7 @@ import net.corekit.monetize.R
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.AdResult
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.log.AdLogger
 import kotlinx.coroutines.launch
@@ -35,11 +36,12 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
          * @param activity 启动Activity
          * @return AdResult<Unit> 广告显示结果
          */
-        suspend fun start(activity: Activity, showInterstitial: Boolean = true): AdResult<Unit> {
+        suspend fun start(activity: Activity,position:String, showInterstitial: Boolean = true): AdResult<Unit> {
             return suspendCancellableCoroutine { continuation ->
 
                 val intent = Intent(activity, FullScreenNativeAdActivity::class.java)
                 intent.putExtra("showInterstitial", showInterstitial)
+                intent.putExtra("position", position)
                 activity.startActivity(intent)
                 activity.overridePendingTransition(
                     android.R.anim.fade_in,
@@ -73,6 +75,9 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
     private val isShowInterstitial: Boolean
         get() = intent.getBooleanExtra("showInterstitial", true)
 
+    private val position: String
+        get() = intent.getStringExtra("position") ?: ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -99,6 +104,7 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
                     context = this@FullScreenNativeAdActivity,
                     container = findViewById<ViewGroup>(R.id.ads_container),
                     lifecycleOwner = this@FullScreenNativeAdActivity,
+                    position = position,
                     adUnitId = BuildConfig.ADMOB_FULL_NATIVE_ID
                 )) {
                     is AdResult.Success -> {
@@ -149,7 +155,7 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
             try {
                 // 直接显示广告（自动处理加载）
                 when (val result = interstitialController.displayAd(
-                    this@FullScreenNativeAdActivity, BuildConfig.ADMOB_INTERSTITIAL_ID,ignoreFullNative = true
+                    this@FullScreenNativeAdActivity, position, BuildConfig.ADMOB_INTERSTITIAL_ID, ignoreFullNative = true
                 )) {
                     is AdResult.Success -> {
                         call.invoke()

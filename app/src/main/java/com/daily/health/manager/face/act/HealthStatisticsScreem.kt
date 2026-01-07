@@ -12,6 +12,11 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
+import com.daily.health.manager.data.entity.BloodPressureRecord
+import com.daily.health.manager.data.entity.BloodSugarRecord
+import com.daily.health.manager.data.entity.BmiRecord
+import com.daily.health.manager.data.entity.CholesterolRecord
+import com.daily.health.manager.data.entity.HeartRateRecord
 import com.daily.health.manager.data.enums.BloodSugarStatus
 import com.daily.health.manager.data.enums.getStatusStringRes
 import com.daily.health.manager.databinding.HtActivityHealthStatisticsBinding
@@ -144,7 +149,6 @@ class HealthStatisticsScreen :
         setupStatusFilter()
         setupHistoryList()
         setupActions()
-        loadInterstitial {  }
     }
 
     private fun setupToolbar() {
@@ -318,11 +322,11 @@ class HealthStatisticsScreen :
         collectLatest(mViewModel.historyPreview) { records ->
             val items = records.mapNotNull { record ->
                 when (mViewModel.selectedMetricType.value) {
-                    HealthMetric.BLOOD_SUGAR -> (record as? com.daily.health.manager.data.entity.BloodSugarRecord)?.let { BloodSugarHistoryItem(it) }
-                    HealthMetric.BLOOD_PRESSURE -> (record as? com.daily.health.manager.data.entity.BloodPressureRecord)?.let { BloodPressureHistoryItem(it) }
-                    HealthMetric.CHOLESTEROL -> (record as? com.daily.health.manager.data.entity.CholesterolRecord)?.let { CholesterolHistoryItem(it) }
-                    HealthMetric.HEART_RATE -> (record as? com.daily.health.manager.data.entity.HeartRateRecord)?.let { HeartRateHistoryItem(it) }
-                    HealthMetric.BMI -> (record as? com.daily.health.manager.data.entity.BmiRecord)?.let { BmiHistoryItem(it) }
+                    HealthMetric.BLOOD_SUGAR -> (record as? BloodSugarRecord)?.let { BloodSugarHistoryItem(it) }
+                    HealthMetric.BLOOD_PRESSURE -> (record as? BloodPressureRecord)?.let { BloodPressureHistoryItem(it) }
+                    HealthMetric.CHOLESTEROL -> (record as? CholesterolRecord)?.let { CholesterolHistoryItem(it) }
+                    HealthMetric.HEART_RATE -> (record as? HeartRateRecord)?.let { HeartRateHistoryItem(it) }
+                    HealthMetric.BMI -> (record as? BmiRecord)?.let { BmiHistoryItem(it) }
                     else -> null
                 }
             }

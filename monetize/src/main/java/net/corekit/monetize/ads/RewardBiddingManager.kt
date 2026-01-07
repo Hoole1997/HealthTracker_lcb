@@ -267,7 +267,7 @@ object RewardBiddingManager {
         )
     }
 
-    suspend fun showWithBidding(activity: Activity): AdResult<Unit> {
+    suspend fun showWithBidding(activity: Activity, position: String): AdResult<Unit> {
         if (!isBidding.compareAndSet(false, true)) {
             AdLogger.w("[%s] 竞价正在进行中，忽略本次请求", TAG)
             return AdResult.Failure(AdException(-1, "Bidding is in progress"))
@@ -278,7 +278,7 @@ object RewardBiddingManager {
             return when (val winner = bid.winner) {
                 is BidResult.ShowRewarded -> {
                     AdLogger.d("[%s] 根据竞价结果展示激励广告", TAG)
-                    when (val r = RewardedAds.getInstance().show(activity, BuildConfig.ADMOB_REWARDED_ID)) {
+                    when (val r = RewardedAds.getInstance().show(activity, position, BuildConfig.ADMOB_REWARDED_ID)) {
                         is AdResult.Success -> AdResult.Success(Unit)
                         is AdResult.Failure -> r
                         AdResult.Loading -> AdResult.Loading
@@ -287,7 +287,7 @@ object RewardBiddingManager {
 
                 is BidResult.ShowRewardedInterstitial -> {
                     AdLogger.d("[%s] 根据竞价结果展示插页激励广告", TAG)
-                    when (val r = RewardedInterstitialAds.getInstance().displayAd(activity, BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)) {
+                    when (val r = RewardedInterstitialAds.getInstance().displayAd(activity, position, BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)) {
                         is AdResult.Success -> AdResult.Success(Unit)
                         is AdResult.Failure -> AdResult.Failure(r.error)
                         AdResult.Loading -> AdResult.Loading
@@ -297,7 +297,7 @@ object RewardBiddingManager {
                 is BidResult.ShowInterstitial -> {
                     AdLogger.d("[%s] 根据竞价结果展示插屏广告", TAG)
                     AdLogger.d("[%s] 插屏胜出 -> 走竞价插屏入口（跳过cooldown，不更新lastShow/dailyShow）", TAG)
-                    InterstitialAds.getInstance().displayAdForRewardBidding(activity, BuildConfig.ADMOB_INTERSTITIAL_ID)
+                    InterstitialAds.getInstance().displayAdForRewardBidding(activity, position, BuildConfig.ADMOB_INTERSTITIAL_ID)
                 }
 
                 is BidResult.EnterNext -> {

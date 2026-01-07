@@ -56,6 +56,7 @@ import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.LanguageUtils.getLanguageList
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
@@ -107,7 +108,7 @@ class LanguageScreen: BaseMVVMActivity<BaseViewModel, HtActivityLanguageSelectBi
             }
 
             if(AdConfigManager.shouldShowBottomNativeOnLanguageSelection()){
-                loadNative(adContainer, NativeAdStyle.CARD_7)
+                loadNative(adContainer, AdPosition.NA_SETTINGS_LANGUAGE_BOTTOM, NativeAdStyle.CARD_7)
             }
 
         }

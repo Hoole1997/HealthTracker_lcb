@@ -13,6 +13,7 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
@@ -38,7 +39,7 @@ class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, HtActivityAlarmManage
         setupRecyclerViews()
         setupClickListeners()
         observeData()
-        loadNative(mViewBind.adContainer, style = NativeAdStyle.CARD_7)
+        loadNative(mViewBind.adContainer, AdPosition.NA_ALARM_MANAGER_BOTTOM, style = NativeAdStyle.CARD_7)
     }
 
     /**

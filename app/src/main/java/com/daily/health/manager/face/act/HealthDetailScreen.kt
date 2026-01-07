@@ -46,6 +46,7 @@ import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.showToast
 import kotlinx.coroutines.launch
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 import org.koin.core.context.GlobalContext
@@ -227,7 +228,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
 
         setupCommonExpertAdvice(binding.expertAdviceView)
-        loadNative(binding.adContainer, style = NativeAdStyle.CARD_5)
+        loadNative(binding.adContainer, AdPosition.NA_DETAIL_BLOOD_SUGAR_BOTTOM, style = NativeAdStyle.CARD_5)
 
         collectLatest(bsViewModel.bloodSugarRecord) {
             if (it != null) {
@@ -296,7 +297,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
 
         setupCommonExpertAdvice(binding.expertAdviceView)
-        loadNative(binding.adContainer, style = NativeAdStyle.CARD_5)
+        loadNative(binding.adContainer, AdPosition.NA_DETAIL_BLOOD_PRESSURE_BOTTOM, style = NativeAdStyle.CARD_5)
 
         collectLatest(bpViewModel.bloodPressureRecord) { record ->
             record?.let { updateBpUI(binding, it) }
@@ -349,7 +350,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         binding.btnDelete.clickWithDuration { showDeleteConfirmBmi() }
 
         setupCommonExpertAdvice(binding.expertAdviceView)
-        loadNative(binding.adContainer, style = NativeAdStyle.CARD_5)
+        loadNative(binding.adContainer, AdPosition.NA_DETAIL_BMI_BOTTOM, style = NativeAdStyle.CARD_5)
 
         collectLatest(bmiViewModel.bmiRecord) { record ->
             if (record != null) {
@@ -422,7 +423,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         binding.bpmStatusView.setLevels(levels)
 
         setupCommonExpertAdvice(binding.expertAdviceView)
-        loadNative(binding.adContainer, style = NativeAdStyle.CARD_5)
+        loadNative(binding.adContainer, AdPosition.NA_DETAIL_HEART_RATE_BOTTOM, style = NativeAdStyle.CARD_5)
 
         collectLatest(hrViewModel.record) { record ->
             if (record != null) {
@@ -488,7 +489,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         binding.btnDelete.clickWithDuration { showDeleteConfirmCho() }
 
         setupCommonExpertAdvice(binding.expertAdviceView)
-        loadNative(binding.adContainer, style = NativeAdStyle.CARD_5)
+        loadNative(binding.adContainer, AdPosition.NA_DETAIL_CHOLESTEROL_BOTTOM, style = NativeAdStyle.CARD_5)
 
         collectLatest(choViewModel.cholesterolRecord) {
             if (it != null) {
