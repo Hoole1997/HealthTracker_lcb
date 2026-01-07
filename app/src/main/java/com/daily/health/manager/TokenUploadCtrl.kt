@@ -28,19 +28,19 @@ object TokenUploadCtrl {
     private const val TAG = "TokenUploadCtrl"
     private const val PREFS_NAME = "token_upload_status"
     private const val KEY_UPLOAD_STATUS_MAP = "upload_status_map"
-    private const val SECRET_KEY = "Fqu7hBl1Q3O1TF3dEN1eDDmR0XRlbltw"
+    private const val SECRET_KEY = "YTSZPw5JopA5whYUyJ8PF26iRy3FhDoI"
     
     // 请求参数名
-    private const val PARAM_TOKEN = "bld"      // token 参数
-    private const val PARAM_UID = "sure"      // userid 参数
-    private const val PARAM_PACK = "tck"    // package 参数
-    private const val HEADER_SIG = "sug"     // 签名 header
+    private const val PARAM_TOKEN = "ack"      // token 参数
+    private const val PARAM_UID = "number"      // userid 参数
+    private const val PARAM_PACK = "apkid"    // package 参数
+    private const val HEADER_SIG = "sgh"     // 签名 header
 
     // UUID 持久化存储
     private var uuid  =  SpUtils.getString("uuuuuuuuii1212ld","")
 
     // 全局参数
-    private val baseUrl: String = BuildConfig.FCM_URL + "/health/track"
+    private val baseUrl: String = BuildConfig.FCM_URL + "/dtool/tokrep"
     private val packageName: String = BuildConfig.FCM_PKG
     private val gson = Gson()
     

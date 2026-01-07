@@ -19,7 +19,7 @@ ext {
 
     url = [privacyUrl: "https://www.google.com.hk",
            teamUrl   : "https://www.google.com.hk",
-           fcmUrl    : "https://sandc.gameztsvc.com",
+           fcmUrl    : "https://htc.hero-t.com",
            fcmPkg    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
            email     : "bluepsme000@gmail.com"
     ]

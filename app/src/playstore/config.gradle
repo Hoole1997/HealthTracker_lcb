@@ -13,13 +13,13 @@ ext {
     ]
     // 应用版本配置
     app = [applicationId    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
-           show_log   : false,
+           show_log   : true,
            string_fog   : true,
     ]
 
     url = [privacyUrl: "https://hero-t.com/privacy.html",
            teamUrl   : "https://hero-t.com/privacy.html",
-           fcmUrl    : "",
+           fcmUrl    : "https://htc.hero-t.com",
            fcmPkg    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
            email     : "bluepsme000@gmail.com"
     ]
