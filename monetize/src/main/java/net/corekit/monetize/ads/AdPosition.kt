@@ -31,7 +31,9 @@ object AdPosition {
     val IV_WATER_BACK = "IV_Water_back"
     /** 从走路录入新数据界面返回时 */
     val IV_WALK_BACK = "IV_Walk_back"
-    
+    /** 从计步设置界面返回时 */
+    val IV_STEP_SETTING_BACK = "IV_Step_Setting_back"
+
     // ==================== 插屏广告 - 录入页面保存 ====================
     /** 从血糖录入新数据界面点击保存数据时 */
     val IV_BLOOD_SUGAR_SAVE = "IV_BloodSugar_Save"
@@ -43,7 +45,9 @@ object AdPosition {
     val IV_HEART_RATE_SAVE = "IV_HeartRate_Save"
     /** 从体重BMI录入新数据界面点击保存数据时 */
     val IV_BMI_SAVE = "IV_BMI_Save"
-    
+    /** 保存步数目标 */
+    val IV_STEP_GOAL_SAVE = "IV_Step_Goal_Save"
+
     // ==================== 插屏广告 - 药物提醒 ====================
     /** 从添加药物提醒界面返回时 */
     val IV_ADD_MEDS_BACK = "IV_AddMeds_back"
