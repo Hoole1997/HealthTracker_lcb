@@ -364,7 +364,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
             val adResult = if (useBidding) {
                 // 竞价模式：同时请求开屏和插屏，展示eCPM更高的
                 if (BuildState.debug) "使用竞价模式加载广告".logd(TAG)
-                SplashBiddingManager.bidAndShow(
+                SplashBiddingManager.smartBidAndShow(
                     activity = this,
                     onAdLoaded = { isSuccess ->
                         isAdLoaded = isSuccess

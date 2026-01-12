@@ -2,6 +2,7 @@ package net.corekit.monetize.ads
 
 import android.app.Activity
 import android.content.Context
+import android.view.ViewGroup
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -10,7 +11,10 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withTimeoutOrNull
 import net.corekit.monetize.BuildConfig
 import net.corekit.core.report.ReportDataManager
+import net.corekit.monetize.ads.bidding.BiddingPlatformController
+import net.corekit.monetize.ads.bidding.SplashTwoLayerBiddingManager
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.config.BiddingConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import java.util.Locale
 
@@ -286,4 +290,72 @@ object SplashBiddingManager {
     fun shouldUseBidding(): Boolean {
         return AdConfigManager.isSplashBiddingEnabled()
     }
+
+    // ============ 多平台竞价支持 ============
+
+    /**
+     * 检查是否应该使用多平台竞价
+     * 当多平台竞价启用时，使用新的竞价管理器
+     */
+    fun shouldUseMultiPlatformBidding(): Boolean {
+        return BiddingPlatformController.isMultiPlatformBiddingEnabled()
+    }
+
+    /**
+     * 执行多平台竞价流程（预加载 + 竞价 + 展示）
+     * 
+     * @param activity Activity 上下文
+     * @param container TopOn 开屏广告需要的容器（可选）
+     * @param onAdLoaded 广告加载回调
+     * @return 广告展示结果
+     */
+    suspend fun multiPlatformBidAndShow(
+        activity: Activity,
+        container: ViewGroup? = null,
+        onAdLoaded: ((Boolean) -> Unit)? = null
+    ): AdResult<Unit> {
+        AdLogger.d("[$TAG] ========== 开始多平台竞价 ==========")
+        
+        // 1. 执行预加载
+        SplashTwoLayerBiddingManager.preloadAll(activity)
+        
+        // 2. 执行竞价
+        val bidResult = SplashTwoLayerBiddingManager.performTwoLayerBidding(activity)
+        
+        // 3. 检查结果
+        if (bidResult.winner == null) {
+            AdLogger.w("[$TAG] 多平台竞价失败，没有可用广告")
+            onAdLoaded?.invoke(false)
+            return AdResult.Failure(AdException(AdException.ERROR_NOT_LOADED, "多平台竞价失败"))
+        }
+        
+        AdLogger.d("[$TAG] 多平台竞价胜出: %s - %s, eCPM: %.6f USD",
+            bidResult.winner.platform.name,
+            bidResult.winner.winnerType.name,
+            bidResult.winner.ecpm)
+        
+        onAdLoaded?.invoke(true)
+        
+        // 4. 展示广告
+        return SplashTwoLayerBiddingManager.showWinnerAd(activity, container, bidResult)
+    }
+
+    /**
+     * 智能竞价：根据配置自动选择单平台或多平台竞价
+     */
+    suspend fun smartBidAndShow(
+        activity: Activity,
+        container: ViewGroup? = null,
+        onAdLoaded: ((Boolean) -> Unit)? = null
+    ): AdResult<Unit> {
+        // 确保竞价配置已初始化（解决异步初始化时序问题）
+        BiddingConfigManager.ensureInitialized(activity)
+        
+        return if (shouldUseMultiPlatformBidding()) {
+            multiPlatformBidAndShow(activity, container, onAdLoaded)
+        } else {
+            bidAndShow(activity, onAdLoaded)
+        }
+    }
 }
+

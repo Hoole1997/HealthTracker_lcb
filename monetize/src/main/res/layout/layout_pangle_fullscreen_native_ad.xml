@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pangle 全屏原生广告布局 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
+
+        <!-- 媒体内容容器（视频/图片）-->
+        <FrameLayout
+            android:id="@+id/fl_ad_media"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/ads_ll_bottom" />
+
+        <!-- Pangle Ad Logo 容器 -->
+        <FrameLayout
+            android:id="@+id/fl_ad_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/dp_16"
+            android:visibility="gone" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ads_ll_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#66000000"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_16">
+
+            <!-- 顶部区域：图标和标题 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- 应用图标 -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/ads_icon_cv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    app:cardCornerRadius="@dimen/dp_8"
+                    app:cardElevation="0dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ads_iv_icon"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_52"
+                        android:scaleType="centerCrop"
+                        android:src="@android:drawable/ic_menu_info_details" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- 标题和描述区域 -->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/ads_tv_label"
+                            android:layout_width="@dimen/dp_27"
+                            android:layout_height="@dimen/dp_17"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/bg_ad_label_enhanced_gray"
+                            android:gravity="center"
+                            android:text="AD"
+                            android:textColor="#BBBBBB"
+                            android:textSize="@dimen/sp_11" />
+
+                        <!-- 广告标题 -->
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/ads_tv_title"
+                            style="@style/TextViewFont_RobotoBold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_8"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_14"
+                            tools:text="广告标题" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- 广告描述 -->
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/ads_tv_description"
+                        style="@style/TextViewFont_RobotoRegular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="#CCCCCC"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="广告描述" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!-- CTA按钮 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_24"
+                app:cardBackgroundColor="#00DD8B"
+                app:cardCornerRadius="@dimen/dp_40"
+                app:cardElevation="0dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/ads_btn_cta"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="INSTALL" />
+            </androidx.cardview.widget.CardView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </RelativeLayout>
+
+</FrameLayout>

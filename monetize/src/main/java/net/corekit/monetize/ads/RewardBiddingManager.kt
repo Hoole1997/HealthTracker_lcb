@@ -10,6 +10,8 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withTimeoutOrNull
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.bidding.BiddingPlatformController
+import net.corekit.monetize.ads.bidding.RewardTwoLayerBiddingManager
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import java.util.Locale
@@ -307,6 +309,75 @@ object RewardBiddingManager {
             }
         } finally {
             isBidding.set(false)
+        }
+    }
+
+    // ============ 多平台竞价支持 ============
+
+    /**
+     * 检查是否应该使用多平台竞价
+     */
+    fun shouldUseMultiPlatformBidding(): Boolean {
+        return BiddingPlatformController.isMultiPlatformBiddingEnabled()
+    }
+
+    /**
+     * 执行多平台竞价流程（预加载 + 竞价 + 展示）
+     * 
+     * @param activity Activity 上下文
+     * @param position 广告位置标识
+     * @param onRewardEarned 奖励回调
+     * @return 广告展示结果
+     */
+    suspend fun multiPlatformShowWithBidding(
+        activity: Activity,
+        position: String,
+        onRewardEarned: ((Boolean) -> Unit)? = null
+    ): AdResult<Unit> {
+        if (!isBidding.compareAndSet(false, true)) {
+            AdLogger.w("[%s] 多平台竞价正在进行中，忽略本次请求", TAG)
+            return AdResult.Failure(AdException(-1, "Multi-platform bidding is in progress"))
+        }
+
+        try {
+            AdLogger.d("[$TAG] ========== 开始多平台激励竞价 ==========")
+            
+            // 1. 执行预加载
+            RewardTwoLayerBiddingManager.preloadAll(activity)
+            
+            // 2. 执行竞价
+            val bidResult = RewardTwoLayerBiddingManager.performTwoLayerBidding(activity)
+            
+            // 3. 检查结果
+            if (bidResult.winner == null) {
+                AdLogger.w("[$TAG] 多平台激励竞价失败，没有可用广告")
+                return AdResult.Failure(AdException(AdException.ERROR_NOT_LOADED, "多平台激励竞价失败"))
+            }
+            
+            AdLogger.d("[$TAG] 多平台激励竞价胜出: %s - %s, eCPM: %.6f USD",
+                bidResult.winner.platform.name,
+                bidResult.winner.winnerType.name,
+                bidResult.winner.ecpm)
+            
+            // 4. 展示广告
+            return RewardTwoLayerBiddingManager.showWinnerAd(activity, bidResult, onRewardEarned)
+        } finally {
+            isBidding.set(false)
+        }
+    }
+
+    /**
+     * 智能竞价：根据配置自动选择单平台或多平台竞价
+     */
+    suspend fun smartShowWithBidding(
+        activity: Activity,
+        position: String,
+        onRewardEarned: ((Boolean) -> Unit)? = null
+    ): AdResult<Unit> {
+        return if (shouldUseMultiPlatformBidding()) {
+            multiPlatformShowWithBidding(activity, position, onRewardEarned)
+        } else {
+            showWithBidding(activity, position)
         }
     }
 }

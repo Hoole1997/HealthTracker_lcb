@@ -11,6 +11,28 @@ ext {
              ]
 
     ]
+
+    // Pangle配置
+    pangle = [applicationId: "8025677", // Pangle测试应用ID
+              adUnitIds    : [splash      : "890000078",        // 开屏广告测试ID（竖屏）
+                              banner      : "980099802",        // 横幅广告测试ID（320x50）
+                              interstitial: "980088188",       // 插页广告测试ID（竖屏）
+                              native      : "980088216",        // 原生广告测试ID
+                              full_native : "980088216",        // 全屏原生广告测试ID
+                              rewarded    : "980088192"         // 激励视频测试ID（竖屏）
+              ]]
+
+    // TopOn配置
+    topon = [applicationId: "a5aa1f9deda26d",           // TopOn 应用 ID（需替换为实际值）
+             appKey       : "4f7b9ac17decb9babec83aac078742c7",          // TopOn 应用密钥（需替换为实际值）
+             adUnitIds    : [interstitial: "b5baca53984692",  // 插页广告位 ID（需替换为实际值）
+                             rewarded    : "b5b449fb3d89d7",  // 激励广告位 ID
+                             native      : "b5aa1fa2cae775",  // 原生广告位 ID（需替换为实际值）
+                             splash      : "b5f73fe0c5db29",  // 开屏广告位 ID（需替换为实际值）
+                             full_native : "b5aa1fa501d9f6",  // 全屏原生广告位 ID（需替换为实际值）
+                             banner      : "b5baca4f74c3d8"]  // 横幅广告位 ID（需替换为实际值）
+    ]
+    
     // 应用版本配置
     app = [applicationId    : "com.healthtracker.blood.suger.internal",
            show_log   : true,

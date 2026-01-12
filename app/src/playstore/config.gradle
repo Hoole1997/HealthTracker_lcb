@@ -11,6 +11,30 @@ ext {
              ]
 
     ]
+    
+    // Pangle配置（穿山甲）- 来自需求文档 v1.0.6
+    pangle = [applicationId: "8764840",
+              adUnitIds    : [banner      : "",               // 未配置
+                              interstitial: "982706984",      // 插页广告
+                              splash      : "",               // 未配置
+                              native      : "",               // 未配置
+                              full_native : "",               // 未配置
+                              rewarded    : "982706974"       // 激励广告
+              ]
+    ]
+    
+    // TopOn配置 - 来自需求文档 v1.0.6
+    topon = [applicationId: "h1h1rj70betkqo",
+             appKey       : "a57fbca5a6c09228eb3d0b85f839cee21",
+             adUnitIds    : [banner      : "",                  // 未配置
+                             interstitial: "n1h1rj70d91b6q",    // 插页广告
+                             splash      : "n1h1rj70f57asu",    // 开屏广告
+                             native      : "n1h1rj70e3qg3b",    // 原生广告
+                             full_native : "",                  // 未配置
+                             rewarded    : "n1h1rj70csd0l0"     // 激励广告
+             ]
+    ]
+    
     // 应用版本配置
     app = [applicationId    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
            show_log   : true,

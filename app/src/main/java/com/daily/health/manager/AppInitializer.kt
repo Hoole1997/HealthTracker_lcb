@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.LaunchAds
+import net.corekit.monetize.ads.bidding.BiddingInitializer
 
 /**
  * 应用初始化器
@@ -196,6 +197,8 @@ class AppInitializer(
 
             initScope.launch {
                 AdsManager.init(application)
+                // 初始化多平台竞价系统 (内部包含配置加载和 Pangle/TopOn SDK 初始化)
+                BiddingInitializer.initialize(application, R.mipmap.ic_launcher)
             }
 
             initScope.launch {

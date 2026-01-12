@@ -19,6 +19,9 @@ import net.corekit.monetize.ads.NativeAdAutoRefreshManager
 import net.corekit.monetize.ads.NativeAds
 import net.corekit.monetize.ads.RewardBiddingManager
 import net.corekit.monetize.ads.RewardedAds
+import net.corekit.monetize.ads.bidding.BannerSmartBiddingManager
+import net.corekit.monetize.ads.bidding.InterstitialSmartBiddingManager
+import net.corekit.monetize.ads.bidding.NativeSmartBiddingManager
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
 import okio.AsyncTimeout.Companion.condition
@@ -46,11 +49,15 @@ fun FragmentActivity.loadBanner(
                 return@launch
             }
 
+            // 使用智能竞价管理器
             when (val result =
-                BannerAds.getInstance().displayAd(this@loadBanner, container, position, onClick = {
-                    App.INSTANCE.isClickAdLeave = true
-
-                }, onClose = onClose)) {
+                BannerSmartBiddingManager.smartBidAndShow(
+                    activity = this@loadBanner,
+                    container = container,
+                    position = position,
+                    onClick = { App.INSTANCE.isClickAdLeave = true },
+                    onClose = onClose
+                )) {
                 is AdResult.Success -> {
                     val canShow = condition.invoke()
                     container.isVisible = canShow
@@ -134,7 +141,8 @@ fun FragmentActivity.loadNativeWithManager(
                 return@launch
             }
 
-            val success = NativeAds.getInstance().displayAdInView(
+            // 使用智能竞价管理器
+            val success = NativeSmartBiddingManager.smartBidAndShow(
                 context = container.context,
                 container = container,
                 position = position,
@@ -240,7 +248,8 @@ fun FragmentActivity.loadInterstitial(
                 return@launch
             }
 
-            when (val result = InterstitialAds.getInstance().displayAd(this@loadInterstitial, position)) {
+            // 使用智能竞价管理器
+            when (val result = InterstitialSmartBiddingManager.smartBidAndShow(this@loadInterstitial, position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
                 }
@@ -273,7 +282,7 @@ fun FragmentActivity.loadRewardBidding(position: String, call: (Boolean) -> Unit
                 return@launch
             }
 
-            when (val result = RewardBiddingManager.showWithBidding(this@loadRewardBidding, position)) {
+            when (val result = RewardBiddingManager.smartShowWithBidding(this@loadRewardBidding, position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
                 }

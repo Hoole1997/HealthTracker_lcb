@@ -438,6 +438,32 @@ class InterstitialAds private constructor() {
     }
 
     /**
+     * 等待广告加载完成（用于竞价等待逻辑）
+     * 
+     * 由于 InterstitialAds 使用缓存池模式，此方法：
+     * 1. 如果已有缓存，立即返回成功
+     * 2. 否则触发预加载并等待
+     * 
+     * @param context 上下文
+     * @param timeoutMillis 超时时间（毫秒）
+     * @param adUnitId 广告位ID
+     * @return 广告加载结果
+     */
+    suspend fun waitForAd(context: Context, timeoutMillis: Long, adUnitId: String? = null): AdResult<Unit> {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
+        
+        // 如果已有缓存，直接返回成功
+        if (hasCachedAd(finalAdUnitId)) {
+            return AdResult.Success(Unit)
+        }
+        
+        // 没有缓存，尝试在超时内加载一个
+        return kotlinx.coroutines.withTimeoutOrNull(timeoutMillis) {
+            loadInAdvance(context, finalAdUnitId)
+        } ?: AdResult.Failure(createAdException("等待广告加载超时"))
+    }
+
+    /**
      * 显示广告的内部实现
      */
     private suspend fun showAdInternal(activity: Activity, interstitialAd: InterstitialAd, adUnitId: String, recordConfigShow: Boolean, position: String): AdResult<Unit> {

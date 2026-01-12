@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TopOn CARD_8 布局：水平紧凑型 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rect_white_12"
+        android:backgroundTint="#E8E9EE"
+        android:paddingHorizontal="@dimen/dp_12"
+        android:paddingVertical="@dimen/dp_12">
+
+        <!-- 应用图标 -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/ads_icon_cv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ads_content_ll"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ads_iv_icon"
+                android:layout_width="@dimen/dp_56"
+                android:layout_height="@dimen/dp_56"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_info_details" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- 广告内容区域 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ads_content_ll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ads_btn_cta"
+            app:layout_constraintStart_toEndOf="@id/ads_icon_cv"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!-- AD 标签 -->
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/ads_tv_label"
+                    android:layout_width="@dimen/dp_25"
+                    android:layout_height="@dimen/dp_16"
+                    android:background="@drawable/bg_ad_label_enhanced_gray"
+                    android:gravity="center"
+                    android:text="AD"
+                    android:textColor="#07C2FE"
+                    android:textSize="@dimen/sp_12" />
+
+                <!-- 广告标题 -->
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/ads_tv_title"
+                    style="@style/TextViewFont_RobotoBold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_6"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#333"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Test Ads" />
+            </LinearLayout>
+
+            <!-- 广告描述 -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/ads_tv_description"
+                style="@style/TextViewFont_RobotoRegular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="#666666"
+                android:textSize="@dimen/sp_12"
+                tools:text="广告描述" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- CTA按钮 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ads_btn_cta"
+            style="@style/TextViewFont_RobotoBold"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_32"
+            android:background="@drawable/bg_rect_white_8"
+            android:backgroundTint="#07C2FE"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/dp_12"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ads_content_ll"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="INSTALL" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

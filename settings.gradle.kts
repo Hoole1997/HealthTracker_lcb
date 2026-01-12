@@ -19,6 +19,14 @@ dependencyResolutionManagement {
         maven {
             setUrl("https://artifact.bytedance.com/repository/pangle")
         }
+        // Mintegral 仓库 (Pangle 适配器依赖)
+        maven {
+            setUrl("https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea")
+        }
+        // TopOn 仓库
+        maven {
+            setUrl("https://jfrog.anythinktech.com/artifactory/overseas_sdk")
+        }
         maven {
             setUrl("https://jitpack.io")
             maven("https://artifact.bytedance.com/repository/pangle/")
