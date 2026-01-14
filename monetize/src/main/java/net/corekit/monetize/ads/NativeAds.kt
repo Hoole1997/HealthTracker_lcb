@@ -174,6 +174,14 @@ class NativeAds private constructor() {
         adUnitId: String? = null,
         onClick:(() -> Unit)? = null
     ): Boolean {
+        // 检查是否启用多平台竞价（透明切换）
+        if (net.corekit.monetize.ads.bidding.BiddingPlatformController.isMultiPlatformBiddingEnabled()) {
+            AdLogger.d("原生广告启用多平台竞价，自动切换到 smartBidAndShow")
+            return net.corekit.monetize.ads.bidding.NativeSmartBiddingManager.smartBidAndShow(
+                context, container, position, style, onClick
+            )
+        }
+        
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_NATIVE_ID
         
         // 累积触发统计

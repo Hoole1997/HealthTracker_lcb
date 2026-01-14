@@ -3,10 +3,13 @@ package net.corekit.monetize.ads
 import android.app.Activity
 import android.content.Context
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
@@ -322,7 +325,7 @@ object RewardBiddingManager {
     }
 
     /**
-     * 执行多平台竞价流程（预加载 + 竞价 + 展示）
+     * 执行多平台竞价流程（优先使用缓存结果）
      * 
      * @param activity Activity 上下文
      * @param position 广告位置标识
@@ -342,13 +345,38 @@ object RewardBiddingManager {
         try {
             AdLogger.d("[$TAG] ========== 开始多平台激励竞价 ==========")
             
-            // 1. 执行预加载
+            // 1. 优先尝试使用缓存的竞价结果
+            val cachedResult = net.corekit.monetize.ads.bidding.BiddingResultCache.getValidRewardBidResult()
+            if (cachedResult != null && cachedResult.winner != null) {
+                AdLogger.d("[$TAG] 使用缓存的竞价结果: %s - %s, eCPM: %.6f USD",
+                    cachedResult.winner.platform.name,
+                    cachedResult.winner.winnerType.name,
+                    cachedResult.winner.ecpm)
+                
+                // 清空缓存（已使用）
+                net.corekit.monetize.ads.bidding.BiddingResultCache.clearRewardBidResult()
+                
+                // 直接展示广告
+                val showResult = RewardTwoLayerBiddingManager.showWinnerAd(activity, cachedResult, onRewardEarned)
+                
+                // 展示后触发新一轮预加载和竞价（异步）
+                CoroutineScope(Dispatchers.IO).launch {
+                    preloadAndBidInBackground(activity)
+                }
+                
+                return showResult
+            }
+            
+            // 2. 无缓存，执行实时竞价流程
+            AdLogger.d("[$TAG] 无有效缓存，执行实时竞价...")
+            
+            // 执行预加载
             RewardTwoLayerBiddingManager.preloadAll(activity)
             
-            // 2. 执行竞价
+            // 执行竞价
             val bidResult = RewardTwoLayerBiddingManager.performTwoLayerBidding(activity)
             
-            // 3. 检查结果
+            // 检查结果
             if (bidResult.winner == null) {
                 AdLogger.w("[$TAG] 多平台激励竞价失败，没有可用广告")
                 return AdResult.Failure(AdException(AdException.ERROR_NOT_LOADED, "多平台激励竞价失败"))
@@ -359,10 +387,25 @@ object RewardBiddingManager {
                 bidResult.winner.winnerType.name,
                 bidResult.winner.ecpm)
             
-            // 4. 展示广告
+            // 展示广告
             return RewardTwoLayerBiddingManager.showWinnerAd(activity, bidResult, onRewardEarned)
         } finally {
             isBidding.set(false)
+        }
+    }
+    
+    /**
+     * 后台预加载并执行竞价（用于展示后触发下一轮）
+     */
+    private suspend fun preloadAndBidInBackground(context: Context) {
+        try {
+            AdLogger.d("[$TAG] 后台开始预加载和竞价...")
+            RewardTwoLayerBiddingManager.preloadAll(context)
+            val bidResult = RewardTwoLayerBiddingManager.performTwoLayerBidding(context)
+            net.corekit.monetize.ads.bidding.BiddingResultCache.cacheRewardBidResult(bidResult)
+            AdLogger.d("[$TAG] 后台预加载和竞价完成，结果已缓存")
+        } catch (e: Exception) {
+            AdLogger.e("[$TAG] 后台预加载竞价失败: %s", e.message)
         }
     }
 

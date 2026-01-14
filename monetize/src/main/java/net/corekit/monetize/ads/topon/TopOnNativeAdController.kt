@@ -139,59 +139,51 @@ class TopOnNativeAdController private constructor() {
                 override fun onAdVideoProgress(view: TUNativeAdView?, progress: Int) {}
             })
             
-            // 3. 判断渲染模式
-            if (nativeAd.isNativeExpress) {
-                // 模板渲染
-                AdLogger.d("[$TAG] 使用模板渲染 (样式: %s)", style.description)
-                nativeAd.renderAdContainer(nativeAdView, null)
-                nativeAd.prepare(nativeAdView, null)
-            } else {
-                // 自渲染
-                AdLogger.d("[$TAG] 使用自渲染 (样式: %s)", style.description)
-                
-                // 使用 TopOn 专用布局
-                val layoutResId = style.getTopOnLayout()
-                val adView = android.view.LayoutInflater.from(context)
-                    .inflate(layoutResId, null) as android.view.ViewGroup
-                
-                // 获取素材
-                val material = nativeAd.adMaterial
-                
-                // 绑定数据到自定义布局
-                val titleView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_title)
-                val descView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_description)
-                val ctaView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_btn_cta)
-                val iconView = adView.findViewById<android.widget.ImageView>(net.corekit.monetize.R.id.ads_iv_icon)
-                
-                titleView?.text = material?.title ?: "Ad"
-                descView?.text = material?.descriptionText ?: ""
-                ctaView?.text = material?.callToActionText ?: "Install"
-                
-                // 使用 Glide 加载图标
-                material?.iconImageUrl?.let { iconUrl ->
-                    com.bumptech.glide.Glide.with(context)
-                        .load(iconUrl)
-                        .into(iconView)
-                }
-                
-                // 创建 TUNativePrepareInfo
-                val prepareInfo = com.thinkup.nativead.api.TUNativePrepareInfo()
-                titleView?.let { prepareInfo.titleView = it }
-                descView?.let { prepareInfo.descView = it }
-                ctaView?.let { prepareInfo.ctaView = it }
-                iconView?.let { prepareInfo.iconView = it }
-                
-                // 添加可点击视图
-                val clickViews = mutableListOf<android.view.View>()
-                titleView?.let { clickViews.add(it) }
-                ctaView?.let { clickViews.add(it) }
-                iconView?.let { clickViews.add(it) }
-                prepareInfo.clickViewList = clickViews
-                
-                // 渲染
-                nativeAd.renderAdContainer(nativeAdView, adView)
-                nativeAd.prepare(nativeAdView, prepareInfo)
+            // 3. 始终使用自渲染（避免模板渲染高度不可控问题）
+            AdLogger.d("[$TAG] 使用自渲染 (样式: %s)", style.description)
+            
+            // 使用 TopOn 专用布局
+            val layoutResId = style.getTopOnLayout()
+            val adView = android.view.LayoutInflater.from(context)
+                .inflate(layoutResId, null) as android.view.ViewGroup
+            
+            // 获取素材
+            val material = nativeAd.adMaterial
+            
+            // 绑定数据到自定义布局
+            val titleView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_title)
+            val descView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_description)
+            val ctaView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_btn_cta)
+            val iconView = adView.findViewById<android.widget.ImageView>(net.corekit.monetize.R.id.ads_iv_icon)
+            
+            titleView?.text = material?.title ?: "Ad"
+            descView?.text = material?.descriptionText ?: ""
+            ctaView?.text = material?.callToActionText ?: "Install"
+            
+            // 使用 Glide 加载图标
+            material?.iconImageUrl?.let { iconUrl ->
+                com.bumptech.glide.Glide.with(context)
+                    .load(iconUrl)
+                    .into(iconView)
             }
+            
+            // 创建 TUNativePrepareInfo
+            val prepareInfo = com.thinkup.nativead.api.TUNativePrepareInfo()
+            titleView?.let { prepareInfo.titleView = it }
+            descView?.let { prepareInfo.descView = it }
+            ctaView?.let { prepareInfo.ctaView = it }
+            iconView?.let { prepareInfo.iconView = it }
+            
+            // 添加可点击视图
+            val clickViews = mutableListOf<android.view.View>()
+            titleView?.let { clickViews.add(it) }
+            ctaView?.let { clickViews.add(it) }
+            iconView?.let { clickViews.add(it) }
+            prepareInfo.clickViewList = clickViews
+            
+            // 渲染
+            nativeAd.renderAdContainer(nativeAdView, adView)
+            nativeAd.prepare(nativeAdView, prepareInfo)
             
             container.addView(nativeAdView)
             AdLogger.d("[$TAG] TopOn 原生广告渲染成功")
