@@ -200,6 +200,36 @@ object BiddingConfigManager {
         )
     }
 
+    // ==================== 平台级频控 ====================
+
+    /**
+     * 平台级频控是否启用
+     * 默认禁用（追求收入最大化）
+     */
+    fun isPlatformFrequencyEnabled(): Boolean {
+        return getCurrentChannelConfig()?.platformFrequencyEnabled ?: false
+    }
+
+    /**
+     * 获取指定平台和广告类型的频控配置
+     * 
+     * @param platform 平台类型
+     * @param adType 广告类型（如 "splash", "interstitial", "rewarded"）
+     * @return 频控配置，如果未配置则返回 null
+     */
+    fun getPlatformFrequencyConfig(
+        platform: net.corekit.monetize.ads.bidding.BiddingPlatform, 
+        adType: String
+    ): BiddingConfigData.PlatformFrequencyConfig? {
+        val frequencyConfigs = getCurrentChannelConfig()?.platformFrequency ?: return null
+        val platformConfigs = when (platform) {
+            net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB -> frequencyConfigs.admob
+            net.corekit.monetize.ads.bidding.BiddingPlatform.PANGLE -> frequencyConfigs.pangle
+            net.corekit.monetize.ads.bidding.BiddingPlatform.TOPON -> frequencyConfigs.topon
+        }
+        return platformConfigs?.get(adType)
+    }
+
     // ==================== 辅助方法 ====================
 
     /**

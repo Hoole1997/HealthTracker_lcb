@@ -59,50 +59,12 @@ object InterstitialBiddingManager {
         val controller = BiddingPlatformController
         val results = mutableListOf<Pair<BiddingPlatform, Double>>()
         
-        AdLogger.d("[$TAG] 开始执行插页广告竞价, 超时: ${timeoutMillis}ms")
+        AdLogger.d("[$TAG] 开始执行插页广告竞价 (非阻塞模式)")
 
-        // 并行等待各平台加载结果
-        coroutineScope {
-            val jobs = mutableListOf<Deferred<Unit>>()
-
-            // AdMob
-            if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.INTERSTITIAL.toConfigKey())) {
-                jobs += async {
-                    AdLogger.d("[$TAG] 等待 AdMob 加载...")
-                    admobController.waitForAd(context, timeoutMillis)
-                    Unit
-                }
-            }
-
-            // Pangle
-            if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.INTERSTITIAL.toConfigKey())) {
-                jobs += async {
-                    AdLogger.d("[$TAG] 等待 Pangle 加载...")
-                    PangleInterstitialAdController.getInstance().waitForAd(timeoutMillis)
-                    Unit
-                }
-            }
-
-            // TopOn
-            if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.INTERSTITIAL.toConfigKey())) {
-                jobs += async {
-                    AdLogger.d("[$TAG] 等待 TopOn 加载...")
-                    TopOnInterstitialAdController.getInstance().waitForAd(timeoutMillis)
-                    Unit
-                }
-            }
-            
-            // 等待所有任务完成或整体超时
-            try {
-                withTimeoutOrNull(timeoutMillis + 500) {
-                    jobs.awaitAll()
-                }
-            } catch (e: Exception) {
-                AdLogger.w("[$TAG] 竞价等待超时或中断")
-            }
-        }
+        // 优化：竞价只针对当前已 Ready 的广告，消除挂起等待时间
+        // 加载逻辑应由 preloadAll 在前序异步完成
         
-        // 收集结果
+        // AdMob
         if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.INTERSTITIAL.toConfigKey())) {
             val rawEcpm = admobController.getCachedAdPrice(context) ?: 0.0
             val ecpm = controller.getEffectiveEcpm(BiddingPlatform.ADMOB, rawEcpm)

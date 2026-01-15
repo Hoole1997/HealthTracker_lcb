@@ -345,35 +345,8 @@ object RewardBiddingManager {
         try {
             AdLogger.d("[$TAG] ========== 开始多平台激励竞价 ==========")
             
-            // 1. 优先尝试使用缓存的竞价结果
-            val cachedResult = net.corekit.monetize.ads.bidding.BiddingResultCache.getValidRewardBidResult()
-            if (cachedResult != null && cachedResult.winner != null) {
-                AdLogger.d("[$TAG] 使用缓存的竞价结果: %s - %s, eCPM: %.6f USD",
-                    cachedResult.winner.platform.name,
-                    cachedResult.winner.winnerType.name,
-                    cachedResult.winner.ecpm)
-                
-                // 清空缓存（已使用）
-                net.corekit.monetize.ads.bidding.BiddingResultCache.clearRewardBidResult()
-                
-                // 直接展示广告
-                val showResult = RewardTwoLayerBiddingManager.showWinnerAd(activity, cachedResult, onRewardEarned)
-                
-                // 展示后触发新一轮预加载和竞价（异步）
-                CoroutineScope(Dispatchers.IO).launch {
-                    preloadAndBidInBackground(activity)
-                }
-                
-                return showResult
-            }
-            
-            // 2. 无缓存，执行实时竞价流程
-            AdLogger.d("[$TAG] 无有效缓存，执行实时竞价...")
-            
-            // 执行预加载
-            RewardTwoLayerBiddingManager.preloadAll(activity)
-            
-            // 执行竞价
+            // 执行实时竞价（广告已在后台预加载完成）
+            // 竞价逻辑是非阻塞的，仅检查已缓存的广告
             val bidResult = RewardTwoLayerBiddingManager.performTwoLayerBidding(activity)
             
             // 检查结果
@@ -391,21 +364,24 @@ object RewardBiddingManager {
             return RewardTwoLayerBiddingManager.showWinnerAd(activity, bidResult, onRewardEarned)
         } finally {
             isBidding.set(false)
+            
+            // 展示后异步预加载下一轮广告（仅预加载，不竞价）
+            CoroutineScope(Dispatchers.IO).launch {
+                preloadInBackground(activity)
+            }
         }
     }
     
     /**
-     * 后台预加载并执行竞价（用于展示后触发下一轮）
+     * 后台预加载广告（仅预加载，展示时实时竞价）
      */
-    private suspend fun preloadAndBidInBackground(context: Context) {
+    private suspend fun preloadInBackground(context: Context) {
         try {
-            AdLogger.d("[$TAG] 后台开始预加载和竞价...")
+            AdLogger.d("[$TAG] 后台开始预加载广告...")
             RewardTwoLayerBiddingManager.preloadAll(context)
-            val bidResult = RewardTwoLayerBiddingManager.performTwoLayerBidding(context)
-            net.corekit.monetize.ads.bidding.BiddingResultCache.cacheRewardBidResult(bidResult)
-            AdLogger.d("[$TAG] 后台预加载和竞价完成，结果已缓存")
+            AdLogger.d("[$TAG] 后台预加载完成")
         } catch (e: Exception) {
-            AdLogger.e("[$TAG] 后台预加载竞价失败: %s", e.message)
+            AdLogger.e("[$TAG] 后台预加载失败: %s", e.message)
         }
     }
 

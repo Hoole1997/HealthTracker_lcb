@@ -59,48 +59,10 @@ object AppOpenBiddingManager {
         val controller = BiddingPlatformController
         val results = mutableListOf<Pair<BiddingPlatform, Double>>()
         
-        AdLogger.d("[$TAG] 开始执行开屏广告竞价, 超时: ${timeoutMillis}ms")
+        AdLogger.d("[$TAG] 开始执行开屏广告竞价 (非阻塞模式)")
 
-        // 并行等待各平台加载结果
-        coroutineScope {
-            val jobs = mutableListOf<Deferred<Unit>>()
-
-            // AdMob
-            if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.SPLASH.toConfigKey())) {
-                jobs += async {
-                    AdLogger.d("[$TAG] 等待 AdMob 加载...")
-                    admobController.waitForAd(timeoutMillis) // AdMob 内部已实现 waitForAd
-                    Unit
-                }
-            }
-
-            // Pangle
-            if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.SPLASH.toConfigKey())) {
-                jobs += async {
-                    AdLogger.d("[$TAG] 等待 Pangle 加载...")
-                    PangleAppOpenAdController.getInstance().waitForAd(timeoutMillis)
-                    Unit
-                }
-            }
-
-            // TopOn
-            if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.SPLASH.toConfigKey())) {
-                jobs += async {
-                    AdLogger.d("[$TAG] 等待 TopOn 加载...")
-                    TopOnSplashAdController.getInstance().waitForAd(timeoutMillis)
-                    Unit
-                }
-            }
-            
-            // 等待所有任务完成或整体超时（虽然各 wait 内部有超时，这里做兜底）
-            try {
-                withTimeoutOrNull(timeoutMillis + 500) { // 稍微多给一点缓冲
-                    jobs.awaitAll()
-                }
-            } catch (e: Exception) {
-                AdLogger.w("[$TAG] 竞价等待超时或中断")
-            }
-        }
+        // 优化：竞价只针对当前已 Ready 的广告，消除挂起等待时间
+        // 加载逻辑应由 preloadAll 在前序异步完成
         
         // 收集结果
         if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.SPLASH.toConfigKey())) {

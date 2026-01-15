@@ -82,9 +82,7 @@ class TopOnBannerAdController private constructor() {
             val view = TUBannerView(context).apply {  }
             view.setPlacementId(adUnitId)
             bannerView = view
-            val displayMetrics = context.resources.displayMetrics
-            val adWidth = displayMetrics.widthPixels
-            val adHeight = (60 * displayMetrics.density).toInt()
+
             view.setBannerAdListener(object : TUBannerListener {
                 override fun onBannerLoaded() {
                     val loadTime = System.currentTimeMillis() - startTime

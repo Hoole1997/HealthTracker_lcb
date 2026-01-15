@@ -31,6 +31,7 @@ import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
 import net.corekit.monetize.ui.FullScreenNativeAdActivity
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
+import net.corekit.monetize.ads.lifecycle.AdLifecycleGuard
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -68,7 +69,8 @@ class InterstitialAds private constructor() {
     private var isShowing: Boolean = false
     
     companion object {
-        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 2
+        // 插页广告缓存数量：1个足够（全屏广告一次只展示一个）
+        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 1
 
         @Volatile
         private var INSTANCE: InterstitialAds? = null
@@ -173,6 +175,16 @@ class InterstitialAds private constructor() {
         // 每次开始展示前清理状态，避免收益/展示状态污染
         currentAdValue = null
         isShowing = false
+
+        // 生命周期检查（避免后台/锁屏状态展示广告）
+        val lifecycleResult = AdLifecycleGuard.checkImmediate(activity)
+        if (lifecycleResult !is AdLifecycleGuard.CheckResult.Ready) {
+            AdLogger.w("插页广告生命周期检查失败: %s", lifecycleResult)
+            return AdResult.Failure(AdException(
+                code = -400,
+                message = "生命周期检查失败: $lifecycleResult"
+            ))
+        }
 
         // 累积触发统计
         totalShowTriggerCount++

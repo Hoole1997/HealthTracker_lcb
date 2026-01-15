@@ -34,7 +34,7 @@ object SplashTwoLayerBiddingManager {
         AdLogger.d("[$TAG] 两层竞价预加载完成")
     }
 
-    suspend fun performTwoLayerBidding(context: Context): FinalBidResult {
+    suspend fun performTwoLayerBidding(context: Context): FinalBidResult = coroutineScope {
         val startTime = System.currentTimeMillis()
         val platformResults = mutableListOf<PlatformBidResult>()
         
@@ -45,35 +45,34 @@ object SplashTwoLayerBiddingManager {
         val timeoutSeconds = config?.biddingTimeoutSeconds ?: 10 // 默认为 10秒
         val timeoutMillis = timeoutSeconds * 1000L
 
-        // 第一层：各平台开屏广告竞价
-        val splashWinner = AppOpenBiddingManager.performBidding(context, timeoutMillis)
-        if (splashWinner != null) {
-            platformResults.add(splashWinner)
-        }
+        // 并行执行两层竞价（优化：避免串行等待导致耗时翻倍）
+        val splashDeferred = async { AppOpenBiddingManager.performBidding(context, timeoutMillis) }
+        val interstitialDeferred = async { InterstitialBiddingManager.performBidding(context, timeoutMillis) }
         
-        // 第二层：与插页广告竞价
-        val interstitialWinner = InterstitialBiddingManager.performBidding(context, timeoutMillis)
-        if (interstitialWinner != null) {
-            platformResults.add(interstitialWinner)
-        }
+        // 等待两个竞价结果
+        val splashWinner = splashDeferred.await()
+        val interstitialWinner = interstitialDeferred.await()
+        
+        splashWinner?.let { platformResults.add(it) }
+        interstitialWinner?.let { platformResults.add(it) }
         
         val biddingTime = System.currentTimeMillis() - startTime
         
         if (platformResults.isEmpty()) {
             AdLogger.w("[$TAG] 没有可用的广告参与竞价")
-            return FinalBidResult.failed(biddingTime)
-        }
-        
+            FinalBidResult.failed(biddingTime)
+        } else {
         val finalWinner = platformResults.maxByOrNull { it.ecpm }
         AdLogger.d("[$TAG] ============ 两层竞价结束 ============")
         AdLogger.d("[$TAG] 最终胜出: %s - %s, eCPM: %.6f USD", 
             finalWinner?.platform?.name, finalWinner?.winnerType?.name, finalWinner?.ecpm ?: 0.0)
         
-        return FinalBidResult(
+        FinalBidResult(
             winner = finalWinner,
             allResults = platformResults,
             biddingTimeMs = biddingTime
         )
+        }
     }
 
     suspend fun showWinnerAd(

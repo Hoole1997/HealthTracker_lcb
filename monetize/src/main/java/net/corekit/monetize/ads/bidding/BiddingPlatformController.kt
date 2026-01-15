@@ -194,8 +194,8 @@ object BiddingPlatformController {
      */
     private val TEST_MODE_MOCK_ECPM = mapOf(
         BiddingWinner.ADMOB to 0.011,
-        BiddingWinner.PANGLE to 0.017,
-        BiddingWinner.TOPON to 0.018
+        BiddingWinner.PANGLE to 0.018,
+        BiddingWinner.TOPON to 0.016
     )
 
     /**
@@ -218,8 +218,8 @@ object BiddingPlatformController {
             return realEcpm
         }
         
-        // 测试模式：注入 Mock 值
-        val mockEcpm = TEST_MODE_MOCK_ECPM[platform] ?: 0.0
+        // 测试模式：注入 Mock 值（优先使用自定义值）
+        val mockEcpm = customMockEcpm[platform] ?: TEST_MODE_MOCK_ECPM[platform] ?: 0.0
         AdLogger.d("[$TAG] [TestMode] 注入 Mock eCPM: %s = %.6f USD (真实值: %.6f)", 
             platform.name, mockEcpm, realEcpm)
         return mockEcpm
@@ -229,10 +229,10 @@ object BiddingPlatformController {
      * 判断是否处于测试模式
      * 
      * 测试模式下会在真实 eCPM 为 0 时注入 Mock 值
-     * 当前仅在 Debug 构建时启用
+     * 支持调试面板强制开关覆盖
      */
     fun isTestMode(): Boolean {
-        return net.corekit.monetize.BuildConfig.DEBUG
+        return forceTestModeEnabled ?: net.corekit.monetize.BuildConfig.DEBUG
     }
 
     /**
@@ -254,5 +254,30 @@ object BiddingPlatformController {
     fun getMockEcpm(platform: BiddingWinner): Double {
         return customMockEcpm[platform] ?: TEST_MODE_MOCK_ECPM[platform] ?: 0.0
     }
-}
 
+    // ==================== 调试面板支持 ====================
+
+    /**
+     * 强制测试模式开关（用于调试面板）
+     * 优先级高于 BuildConfig.DEBUG
+     */
+    private var forceTestModeEnabled: Boolean? = null
+
+    /**
+     * 设置测试模式（用于调试面板）
+     * 
+     * @param enabled true 强制启用，false 强制禁用，null 恢复默认行为
+     */
+    fun setTestMode(enabled: Boolean?) {
+        forceTestModeEnabled = enabled
+        AdLogger.d("[$TAG] [TestMode] 测试模式已${if (enabled == true) "启用" else if (enabled == false) "禁用" else "恢复默认"}")
+    }
+
+    /**
+     * 清除所有自定义 Mock eCPM 值
+     */
+    fun clearMockEcpm() {
+        customMockEcpm.clear()
+        AdLogger.d("[$TAG] [TestMode] 已清除所有 Mock eCPM 值")
+    }
+}

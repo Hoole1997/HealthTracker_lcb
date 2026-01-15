@@ -31,7 +31,13 @@ data class BiddingConfigData(
         val platforms: PlatformsConfig? = null,
         /** 场景配置 */
         @SerializedName("scene_config")
-        val sceneConfig: Map<String, SceneConfig>? = null
+        val sceneConfig: Map<String, SceneConfig>? = null,
+        /** 平台级频控是否启用（默认禁用，追求收入最大化） */
+        @SerializedName("platform_frequency_enabled")
+        val platformFrequencyEnabled: Boolean = false,
+        /** 平台频控配置 */
+        @SerializedName("platform_frequency")
+        val platformFrequency: PlatformFrequencyConfigs? = null
     )
 
     /**
@@ -89,5 +95,44 @@ data class BiddingConfigData(
         /** 回退广告类型 */
         @SerializedName("fallback_ad_type")
         val fallbackAdType: String = "splash"
+    )
+
+    /**
+     * 平台频控配置集合
+     * 
+     * 结构：平台 → 广告类型 → 配置
+     * 
+     * JSON 示例：
+     * ```json
+     * {
+     *   "admob": {
+     *     "splash": { "max_daily_show": 50, "max_daily_click": 20, "min_show_interval_seconds": 60 },
+     *     "interstitial": { "max_daily_show": 30, "max_daily_click": 15, "min_show_interval_seconds": 120 }
+     *   }
+     * }
+     * ```
+     */
+    data class PlatformFrequencyConfigs(
+        @SerializedName("admob")
+        val admob: Map<String, PlatformFrequencyConfig>? = null,
+        @SerializedName("pangle")
+        val pangle: Map<String, PlatformFrequencyConfig>? = null,
+        @SerializedName("topon")
+        val topon: Map<String, PlatformFrequencyConfig>? = null
+    )
+
+    /**
+     * 单个平台+广告类型的频控配置
+     */
+    data class PlatformFrequencyConfig(
+        /** 每日展示上限 */
+        @SerializedName("max_daily_show")
+        val maxDailyShow: Int = 100,
+        /** 每日点击上限 */
+        @SerializedName("max_daily_click")
+        val maxDailyClick: Int = 50,
+        /** 最小展示间隔（秒），0 表示不限制 */
+        @SerializedName("min_show_interval_seconds")
+        val minShowIntervalSeconds: Int = 0
     )
 }

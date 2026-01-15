@@ -70,7 +70,8 @@ class NativeAds private constructor() {
     companion object {
         private const val TAG = "NativeAds"
         private const val AD_TIMEOUT = 1 * 60 * 60 * 1000L
-        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 2
+        // 原生广告缓存数量：1个（最常见场景只展示一个）
+        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 1
         
         @Volatile
         private var INSTANCE: NativeAds? = null

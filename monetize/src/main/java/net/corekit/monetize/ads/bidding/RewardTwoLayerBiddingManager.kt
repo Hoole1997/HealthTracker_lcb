@@ -8,7 +8,10 @@ import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.RewardedAds
 import net.corekit.monetize.ads.RewardedInterstitialAds
+import net.corekit.monetize.ads.config.BiddingConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
+import net.corekit.monetize.ads.log.BiddingLogger
 import net.corekit.monetize.ads.pangle.PangleInterstitialAdController
 import net.corekit.monetize.ads.pangle.PangleRewardedAdController
 import net.corekit.monetize.ads.topon.TopOnInterstitialAdController
@@ -49,55 +52,236 @@ object RewardTwoLayerBiddingManager {
         AdLogger.d("[$TAG] 两层竞价预加载完成")
     }
 
-    suspend fun performTwoLayerBidding(context: Context): FinalBidResult {
+    suspend fun performTwoLayerBidding(context: Context): FinalBidResult = coroutineScope {
         val controller = BiddingPlatformController
         val startTime = System.currentTimeMillis()
         val platformResults = mutableListOf<PlatformBidResult>()
         
-        AdLogger.d("[$TAG] ============ 开始激励两层竞价 ============")
+        // 收集日志条目
+        val layer1Entries = mutableListOf<BiddingLogger.BiddingEntry>()
+        val layer2Entries = mutableListOf<BiddingLogger.BiddingEntry>()
         
-        // 第一层：各平台激励广告竞价
-        val rewardedWinner = RewardedBiddingManager.performBidding(context)
-        if (rewardedWinner != null) {
-            platformResults.add(rewardedWinner)
-        }
+        // 并行执行各层竞价
+        val rewardedDeferred = async { collectRewardedBidding(context, controller, layer1Entries) }
+        val interstitialDeferred = async { collectInterstitialBidding(context, controller, layer2Entries) }
         
-        // AdMob 插页激励广告
-        if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL.toConfigKey())) {
-            val rawEcpm = rewardedInterstitialController.getCachedAdPrice(context) ?: 0.0
-            val ecpm = controller.getEffectiveEcpm(BiddingPlatform.ADMOB, rawEcpm)
-            if (rewardedInterstitialController.hasCachedAd()) {
-                platformResults.add(PlatformBidResult(
-                    platform = BiddingPlatform.ADMOB,
-                    winnerType = BiddingAdType.REWARDED_INTERSTITIAL,
-                    ecpm = ecpm
-                ))
-                AdLogger.d("[$TAG] AdMob 插页激励 eCPM: %.6f USD", ecpm)
-            }
-        }
+        // AdMob 插页激励广告（归入第一层激励类）
+        val rewardedInterstitialResult = collectRewardedInterstitial(context, controller, layer1Entries)
         
-        // 第二层：与插页广告竞价
-        val interstitialWinner = InterstitialBiddingManager.performBidding(context, PRELOAD_TIMEOUT_MS)
-        if (interstitialWinner != null) {
-            platformResults.add(interstitialWinner)
-        }
+        // 等待异步竞价结果
+        val rewardedWinner = rewardedDeferred.await()
+        val interstitialWinner = interstitialDeferred.await()
+        
+        rewardedWinner?.let { platformResults.add(it) }
+        rewardedInterstitialResult?.let { platformResults.add(it) }
+        interstitialWinner?.let { platformResults.add(it) }
         
         val biddingTime = System.currentTimeMillis() - startTime
+        val finalWinner = platformResults.maxByOrNull { it.ecpm }
         
-        if (platformResults.isEmpty()) {
-            AdLogger.w("[$TAG] 没有可用的广告参与竞价")
-            return FinalBidResult.failed(biddingTime)
+        // 输出统一格式日志
+        val layer1Winner = layer1Entries.filter { it.status == BiddingLogger.EntryStatus.READY }
+            .maxByOrNull { it.ecpm }
+        val layer2Winner = layer2Entries.filter { it.status == BiddingLogger.EntryStatus.READY }
+            .maxByOrNull { it.ecpm }
+        val finalEntry = finalWinner?.let {
+            BiddingLogger.BiddingEntry(it.platform.name, it.winnerType.name, BiddingLogger.EntryStatus.READY, it.ecpm)
         }
         
-        val finalWinner = platformResults.maxByOrNull { it.ecpm }
-        AdLogger.d("[$TAG] ============ 两层竞价结束 ============")
-        AdLogger.d("[$TAG] 最终胜出: %s - %s, eCPM: %.6f USD", 
-            finalWinner?.platform?.name, finalWinner?.winnerType?.name, finalWinner?.ecpm ?: 0.0)
+        BiddingLogger.logTwoLayerBidding(
+            scene = "激励",
+            layer1Name = "激励广告",
+            layer1Entries = layer1Entries,
+            layer1Winner = layer1Winner,
+            layer2Name = "插屏广告",
+            layer2Entries = layer2Entries,
+            layer2Winner = layer2Winner,
+            finalWinner = finalEntry,
+            durationMs = biddingTime
+        )
         
-        return FinalBidResult(
-            winner = finalWinner,
-            allResults = platformResults,
-            biddingTimeMs = biddingTime
+        if (platformResults.isEmpty()) {
+            FinalBidResult.failed(biddingTime)
+        } else {
+            FinalBidResult(
+                winner = finalWinner,
+                allResults = platformResults,
+                biddingTimeMs = biddingTime
+            )
+        }
+    }
+
+    private suspend fun collectRewardedBidding(
+        context: Context,
+        controller: BiddingPlatformController,
+        entries: MutableList<BiddingLogger.BiddingEntry>
+    ): PlatformBidResult? {
+        var winner: PlatformBidResult? = null
+        val results = mutableListOf<Pair<BiddingPlatform, Double>>()
+        
+        // AdMob Rewarded
+        if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.REWARDED.toConfigKey())) {
+            val rawEcpm = rewardedController.getCachedAdPrice(context) ?: 0.0
+            val ecpm = controller.getEffectiveEcpm(BiddingPlatform.ADMOB, rawEcpm)
+            val hasCache = rewardedController.hasCachedAd()
+            val freqInfo = getFrequencyInfo(BiddingPlatform.ADMOB, BiddingAdType.REWARDED)
+            
+            entries.add(BiddingLogger.BiddingEntry(
+                platform = "AdMob",
+                adType = "Rewarded",
+                status = if (hasCache) BiddingLogger.EntryStatus.READY else BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = ecpm,
+                frequencyInfo = freqInfo
+            ))
+            if (hasCache) results.add(BiddingPlatform.ADMOB to ecpm)
+        }
+        
+        // Pangle Rewarded
+        if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.REWARDED.toConfigKey())) {
+            val rawEcpm = PangleRewardedAdController.getInstance().getEcpm()
+            val ecpm = controller.getEffectiveEcpm(BiddingPlatform.PANGLE, rawEcpm)
+            val hasCache = PangleRewardedAdController.getInstance().hasValidCache()
+            val freqInfo = getFrequencyInfo(BiddingPlatform.PANGLE, BiddingAdType.REWARDED)
+            
+            entries.add(BiddingLogger.BiddingEntry(
+                platform = "Pangle",
+                adType = "Rewarded",
+                status = if (hasCache) BiddingLogger.EntryStatus.READY else BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = ecpm,
+                frequencyInfo = freqInfo
+            ))
+            if (hasCache) results.add(BiddingPlatform.PANGLE to ecpm)
+        }
+        
+        // TopOn Rewarded
+        if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.REWARDED.toConfigKey())) {
+            val rawEcpm = TopOnRewardedAdController.getInstance().getEcpm()
+            val ecpm = controller.getEffectiveEcpm(BiddingPlatform.TOPON, rawEcpm)
+            val hasCache = TopOnRewardedAdController.getInstance().hasValidCache()
+            val freqInfo = getFrequencyInfo(BiddingPlatform.TOPON, BiddingAdType.REWARDED)
+            
+            entries.add(BiddingLogger.BiddingEntry(
+                platform = "TopOn",
+                adType = "Rewarded",
+                status = if (hasCache) BiddingLogger.EntryStatus.READY else BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = ecpm,
+                frequencyInfo = freqInfo
+            ))
+            if (hasCache) results.add(BiddingPlatform.TOPON to ecpm)
+        }
+        
+        if (results.isNotEmpty()) {
+            val winnerPair = results.maxByOrNull { it.second }!!
+            winner = PlatformBidResult(winnerPair.first, BiddingAdType.REWARDED, winnerPair.second)
+        }
+        return winner
+    }
+
+    private suspend fun collectRewardedInterstitial(
+        context: Context,
+        controller: BiddingPlatformController,
+        entries: MutableList<BiddingLogger.BiddingEntry>
+    ): PlatformBidResult? {
+        if (!controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL.toConfigKey())) {
+            return null
+        }
+        
+        val rawEcpm = rewardedInterstitialController.getCachedAdPrice(context) ?: 0.0
+        val ecpm = controller.getEffectiveEcpm(BiddingPlatform.ADMOB, rawEcpm)
+        val hasCache = rewardedInterstitialController.hasCachedAd()
+        val freqInfo = getFrequencyInfo(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)
+        
+        entries.add(BiddingLogger.BiddingEntry(
+            platform = "AdMob",
+            adType = "RewardedInter",
+            status = if (hasCache) BiddingLogger.EntryStatus.READY else BiddingLogger.EntryStatus.NO_CACHE,
+            ecpm = ecpm,
+            frequencyInfo = freqInfo
+        ))
+        
+        return if (hasCache) {
+            PlatformBidResult(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL, ecpm)
+        } else null
+    }
+
+    private suspend fun collectInterstitialBidding(
+        context: Context,
+        controller: BiddingPlatformController,
+        entries: MutableList<BiddingLogger.BiddingEntry>
+    ): PlatformBidResult? {
+        var winner: PlatformBidResult? = null
+        val results = mutableListOf<Pair<BiddingPlatform, Double>>()
+        
+        // AdMob
+        if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.INTERSTITIAL.toConfigKey())) {
+            val admobCtrl = AdsManager.Controllers.interstitial
+            val rawEcpm = admobCtrl.getCachedAdPrice(context) ?: 0.0
+            val ecpm = controller.getEffectiveEcpm(BiddingPlatform.ADMOB, rawEcpm)
+            val hasCache = admobCtrl.hasCachedAd()
+            val freqInfo = getFrequencyInfo(BiddingPlatform.ADMOB, BiddingAdType.INTERSTITIAL)
+            
+            entries.add(BiddingLogger.BiddingEntry(
+                platform = "AdMob",
+                adType = "Interstitial",
+                status = if (hasCache) BiddingLogger.EntryStatus.READY else BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = ecpm,
+                frequencyInfo = freqInfo
+            ))
+            if (hasCache) results.add(BiddingPlatform.ADMOB to ecpm)
+        }
+        
+        // Pangle
+        if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.INTERSTITIAL.toConfigKey())) {
+            val rawEcpm = PangleInterstitialAdController.getInstance().getEcpm()
+            val ecpm = controller.getEffectiveEcpm(BiddingPlatform.PANGLE, rawEcpm)
+            val hasCache = PangleInterstitialAdController.getInstance().hasValidCache()
+            val freqInfo = getFrequencyInfo(BiddingPlatform.PANGLE, BiddingAdType.INTERSTITIAL)
+            
+            entries.add(BiddingLogger.BiddingEntry(
+                platform = "Pangle",
+                adType = "Interstitial",
+                status = if (hasCache) BiddingLogger.EntryStatus.READY else BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = ecpm,
+                frequencyInfo = freqInfo
+            ))
+            if (hasCache) results.add(BiddingPlatform.PANGLE to ecpm)
+        }
+        
+        // TopOn
+        if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.INTERSTITIAL.toConfigKey())) {
+            val rawEcpm = TopOnInterstitialAdController.getInstance().getEcpm()
+            val ecpm = controller.getEffectiveEcpm(BiddingPlatform.TOPON, rawEcpm)
+            val hasCache = TopOnInterstitialAdController.getInstance().hasValidCache()
+            val freqInfo = getFrequencyInfo(BiddingPlatform.TOPON, BiddingAdType.INTERSTITIAL)
+            
+            entries.add(BiddingLogger.BiddingEntry(
+                platform = "TopOn",
+                adType = "Interstitial",
+                status = if (hasCache) BiddingLogger.EntryStatus.READY else BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = ecpm,
+                frequencyInfo = freqInfo
+            ))
+            if (hasCache) results.add(BiddingPlatform.TOPON to ecpm)
+        }
+        
+        if (results.isNotEmpty()) {
+            val winnerPair = results.maxByOrNull { it.second }!!
+            winner = PlatformBidResult(winnerPair.first, BiddingAdType.INTERSTITIAL, winnerPair.second)
+        }
+        return winner
+    }
+
+    private fun getFrequencyInfo(platform: BiddingPlatform, adType: BiddingAdType): BiddingLogger.FrequencyInfo? {
+        // 如果频控未启用，返回 null
+        if (!BiddingConfigManager.isPlatformFrequencyEnabled()) return null
+        
+        val config = BiddingConfigManager.getPlatformFrequencyConfig(platform, adType.toConfigKey())
+            ?: return null
+        
+        val dailyShow = PlatformFrequencyManager.getDailyShowCount(platform, adType)
+        return BiddingLogger.FrequencyInfo(
+            dailyShow = dailyShow,
+            maxDailyShow = config.maxDailyShow
         )
     }
 

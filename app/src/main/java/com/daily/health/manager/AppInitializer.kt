@@ -37,6 +37,7 @@ import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.LaunchAds
 import net.corekit.monetize.ads.bidding.BiddingInitializer
+import net.corekit.monetize.ads.lifecycle.AdCacheForegroundObserver
 
 /**
  * 应用初始化器
@@ -362,6 +363,11 @@ class AppInitializer(
             // 监听应用前后台切换，自动启动/管理健康服务
             AppLifecycleManager.addObserver(healthServiceForegroundObserver)
             if(BuildState.debug) "HealthServiceForegroundObserver registered".logd(TAG)
+
+            // ✅ 注册广告缓存前台观察器（方案2）
+            // 监听应用前后台切换，前台返回时自动补充激励广告缓存
+            AppLifecycleManager.addObserver(AdCacheForegroundObserver(application))
+            if(BuildState.debug) "AdCacheForegroundObserver registered".logd(TAG)
 
         } catch (e: Exception) {
             if(BuildState.debug) "Failed to register lifecycle observers: ${e.message}".loge(TAG)
