@@ -19,40 +19,118 @@ object InterstitialBiddingManager {
 
     suspend fun preloadAll(context: Context) = coroutineScope {
         val controller = BiddingPlatformController
+        val entries = java.util.Collections.synchronizedList(mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry>())
         
-        AdLogger.d("[$TAG] 开始并行预加载插页广告")
+        // AdLogger.d("[$TAG] 开始并行预加载插页广告")
         
         val jobs = mutableListOf<Deferred<Unit>>()
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.INTERSTITIAL.toConfigKey())) {
             jobs += async { 
-                withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
-                    admobController.loadInAdvance(context)
-                    Unit
-                } ?: Unit
+                val startTime = System.currentTimeMillis()
+                var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
+                var msg: String? = null
+                
+                try {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        admobController.loadInAdvance(context)
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.SUCCESS
+                        Unit
+                    } ?: run {
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.TIMEOUT
+                    }
+                } catch (e: Exception) {
+                    msg = e.message
+                } finally {
+                    entries.add(net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry(
+                        adType = "Interstitial",
+                        platform = "AdMob",
+                        adUnitId = net.corekit.monetize.BuildConfig.ADMOB_INTERSTITIAL_ID,
+                        status = status,
+                        durationMs = System.currentTimeMillis() - startTime,
+                        message = msg
+                    ))
+                }
             }
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.INTERSTITIAL.toConfigKey())) {
             jobs += async {
-                withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
-                    PangleInterstitialAdController.getInstance().preloadAd(context)
-                    Unit
-                } ?: Unit
+                val startTime = System.currentTimeMillis()
+                var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
+                var ecpm: Double? = null
+                var msg: String? = null
+                
+                try {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        val result = PangleInterstitialAdController.getInstance().preloadAd(context)
+                        if (result is net.corekit.monetize.ads.AdResult.Success) {
+                            status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.SUCCESS
+                            ecpm = PangleInterstitialAdController.getInstance().getEcpm()
+                        } else if (result is net.corekit.monetize.ads.AdResult.Failure) {
+                            msg = result.error.message
+                        }
+                        Unit
+                    } ?: run {
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.TIMEOUT
+                    }
+                } catch (e: Exception) {
+                    msg = e.message
+                } finally {
+                    entries.add(net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry(
+                        adType = "Interstitial",
+                        platform = "Pangle",
+                        adUnitId = net.corekit.monetize.BuildConfig.PANGLE_INTERSTITIAL_ID,
+                        status = status,
+                        durationMs = System.currentTimeMillis() - startTime,
+                        ecpm = ecpm,
+                        message = msg
+                    ))
+                }
             }
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.INTERSTITIAL.toConfigKey())) {
             jobs += async {
-                withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
-                    TopOnInterstitialAdController.getInstance().preloadAd(context)
-                    Unit
-                } ?: Unit
+                val startTime = System.currentTimeMillis()
+                var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
+                var ecpm: Double? = null
+                var msg: String? = null
+                
+                try {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        val result = TopOnInterstitialAdController.getInstance().preloadAd(context)
+                        if (result is net.corekit.monetize.ads.AdResult.Success) {
+                            status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.SUCCESS
+                            ecpm = TopOnInterstitialAdController.getInstance().getEcpm()
+                        } else if (result is net.corekit.monetize.ads.AdResult.Failure) {
+                            msg = result.error.message
+                        }
+                        Unit
+                    } ?: run {
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.TIMEOUT
+                    }
+                } catch (e: Exception) {
+                    msg = e.message
+                } finally {
+                    entries.add(net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry(
+                        adType = "Interstitial",
+                        platform = "TopOn",
+                        adUnitId = net.corekit.monetize.BuildConfig.TOPON_INTERSTITIAL_ID,
+                        status = status,
+                        durationMs = System.currentTimeMillis() - startTime,
+                        ecpm = ecpm,
+                        message = msg
+                    ))
+                }
             }
         }
         
         jobs.awaitAll()
-        AdLogger.d("[$TAG] 插页广告预加载完成")
+        
+        if (entries.isNotEmpty()) {
+            net.corekit.monetize.ads.log.BiddingLogger.logPreload(entries)
+        }
     }
 
     suspend fun performBidding(context: Context, timeoutMillis: Long): PlatformBidResult? {

@@ -86,6 +86,9 @@ class NativeAds private constructor() {
     // 内存缓存池 - 存储预加载的广告
     private val adCachePool = mutableListOf<CachedNativeAd>()
     private val maxCacheSizePerAdUnit = DEFAULT_CACHE_SIZE_PER_AD_UNIT
+
+    // 正在加载中的任务计数
+    private val inflightLoads = mutableMapOf<String, Int>()
     
     // 拦截器链
     private val interceptorChain = InterceptorChain(
@@ -121,7 +124,7 @@ class NativeAds private constructor() {
      * @param context 上下文
      * @param adUnitId 广告位ID，如果为空则使用默认ID
      */
-    suspend fun loadInAdvance(context: Context, adUnitId: String? = null): AdResult<Unit> {
+    suspend fun loadInAdvance(context: Context, adUnitId: String? = null, style: NativeAdStyle = NativeAdStyle.STANDARD): AdResult<Unit> {
         if(!GlobalAdSwitchInterceptor.isGlobalAdEnabled()){
             return AdResult.Failure(
                 AdException(
@@ -130,7 +133,37 @@ class NativeAds private constructor() {
                 ))
         }
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_NATIVE_ID
-        return loadAdToCache(context, finalAdUnitId)
+
+        // 1. 检查是否可加载（防止并发导致的溢出）
+        val canLoad = synchronized(adCachePool) {
+            val currentCount = adCachePool.count { it.adUnitId == finalAdUnitId && !it.isExpired() }
+            val currentInflight = inflightLoads[finalAdUnitId] ?: 0
+            if (currentCount + currentInflight >= maxCacheSizePerAdUnit) {
+                false
+            } else {
+                inflightLoads[finalAdUnitId] = currentInflight + 1
+                true
+            }
+        }
+
+        if (!canLoad) {
+            val currentCount = getCachedAdCount(finalAdUnitId)
+            AdLogger.d("[$TAG] 缓存已满或正在加载中，跳过加载: %s (当前缓存: %d/%d, 正在加载: %d)", 
+                finalAdUnitId, currentCount, maxCacheSizePerAdUnit, inflightLoads[finalAdUnitId] ?: 0)
+            return AdResult.Success(Unit)
+        }
+
+        return try {
+            loadAdToCache(context, finalAdUnitId, style)
+        } finally {
+            // 2. 释放加载中的名额
+            synchronized(adCachePool) {
+                val currentInflight = inflightLoads[finalAdUnitId] ?: 0
+                if (currentInflight > 0) {
+                    inflightLoads[finalAdUnitId] = currentInflight - 1
+                }
+            }
+        }
     }
     
     /**
@@ -460,14 +493,6 @@ class NativeAds private constructor() {
      */
     private suspend fun loadAdToCache(context: Context, adUnitId: String,style: NativeAdStyle = NativeAdStyle.STANDARD): AdResult<Unit> {
         return try {
-            
-            // 检查缓存是否已满
-            val currentAdUnitCount = adCachePool.count { it.adUnitId == adUnitId && !it.isExpired() }
-            if (currentAdUnitCount >= maxCacheSizePerAdUnit) {
-                AdLogger.w("广告位 %s 缓存已满，当前缓存: %d/%d", adUnitId, currentAdUnitCount, maxCacheSizePerAdUnit)
-                return AdResult.Success(Unit)
-            }
-            
             // 加载广告
             val nativeAd = loadAd(context, adUnitId,style)
             if (nativeAd != null) {
@@ -537,6 +562,20 @@ class NativeAds private constructor() {
         return _loadingState.value
     }
     
+    /**
+     * 获取缓存状态
+     */
+    fun getCacheStatus(adUnitId: String? = null): net.corekit.monetize.ads.log.BiddingLogger.CacheEntry {
+        val finalAdUnitId = adUnitId ?: net.corekit.monetize.BuildConfig.ADMOB_NATIVE_ID
+        return net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
+            adType = "Native",
+            platform = "AdMob",
+            adUnitId = finalAdUnitId,
+            currentCount = getCachedAdCount(finalAdUnitId),
+            maxCount = maxCacheSizePerAdUnit
+        )
+    }
+
     /**
      * 销毁广告
      */

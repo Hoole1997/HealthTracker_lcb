@@ -19,40 +19,119 @@ object AppOpenBiddingManager {
 
     suspend fun preloadAll(context: Context) = coroutineScope {
         val controller = BiddingPlatformController
+        val entries = java.util.Collections.synchronizedList(mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry>())
         
-        AdLogger.d("[$TAG] 开始并行预加载开屏广告")
+        // AdLogger.d("[$TAG] 开始并行预加载开屏广告")
         
         val jobs = mutableListOf<Deferred<Unit>>()
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.SPLASH.toConfigKey())) {
             jobs += async { 
-                withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
-                    admobController.loadInAdvance(context)
-                    Unit
-                } ?: Unit
+                val startTime = System.currentTimeMillis()
+                var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
+                var msg: String? = null
+                
+                try {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        admobController.loadInAdvance(context)
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.SUCCESS
+                        Unit
+                    } ?: run {
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.TIMEOUT
+                    }
+                } catch (e: Exception) {
+                    msg = e.message
+                } finally {
+                    entries.add(net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry(
+                        adType = "Splash",
+                        platform = "AdMob",
+                        adUnitId = net.corekit.monetize.BuildConfig.ADMOB_SPLASH_ID,
+                        status = status,
+                        durationMs = System.currentTimeMillis() - startTime,
+                        message = msg
+                    ))
+                }
             }
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.SPLASH.toConfigKey())) {
             jobs += async {
-                withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
-                    PangleAppOpenAdController.getInstance().preloadAd(context)
-                    Unit
-                } ?: Unit
+                val startTime = System.currentTimeMillis()
+                var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
+                var ecpm: Double? = null
+                var msg: String? = null
+                
+                try {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        val result = PangleAppOpenAdController.getInstance().preloadAd(context)
+                        if (result is net.corekit.monetize.ads.AdResult.Success) {
+                            status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.SUCCESS
+                            ecpm = PangleAppOpenAdController.getInstance().getEcpm()
+                        } else if (result is net.corekit.monetize.ads.AdResult.Failure) {
+                            msg = result.error.message
+                        }
+                        Unit
+                    } ?: run {
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.TIMEOUT
+                    }
+                } catch (e: Exception) {
+                    msg = e.message
+                } finally {
+                    entries.add(net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry(
+                        adType = "Splash",
+                        platform = "Pangle",
+                        adUnitId = net.corekit.monetize.BuildConfig.PANGLE_SPLASH_ID,
+                        status = status,
+                        durationMs = System.currentTimeMillis() - startTime,
+                        ecpm = ecpm,
+                        message = msg
+                    ))
+                }
             }
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.SPLASH.toConfigKey())) {
             jobs += async {
-                withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
-                    TopOnSplashAdController.getInstance().preloadAd(context)
-                    Unit
-                } ?: Unit
+                val startTime = System.currentTimeMillis()
+                var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
+                var ecpm: Double? = null
+                var msg: String? = null
+                
+                try {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        val result = TopOnSplashAdController.getInstance().preloadAd(context)
+                        if (result is net.corekit.monetize.ads.AdResult.Success) {
+                            status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.SUCCESS
+                            ecpm = TopOnSplashAdController.getInstance().getEcpm()
+                        } else if (result is net.corekit.monetize.ads.AdResult.Failure) {
+                            msg = result.error.message
+                        }
+                        Unit
+                    } ?: run {
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.TIMEOUT
+                    }
+                } catch (e: Exception) {
+                    msg = e.message
+                } finally {
+                    entries.add(net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry(
+                        adType = "Splash",
+                        platform = "TopOn",
+                        adUnitId = net.corekit.monetize.BuildConfig.TOPON_SPLASH_ID,
+                        status = status,
+                        durationMs = System.currentTimeMillis() - startTime,
+                        ecpm = ecpm,
+                        message = msg
+                    ))
+                }
             }
         }
         
         jobs.awaitAll()
-        AdLogger.d("[$TAG] 开屏广告预加载完成")
+        
+        // 输出汇总日志
+        if (entries.isNotEmpty()) {
+            net.corekit.monetize.ads.log.BiddingLogger.logPreload(entries)
+        }
     }
 
     suspend fun performBidding(context: Context, timeoutMillis: Long): PlatformBidResult? {

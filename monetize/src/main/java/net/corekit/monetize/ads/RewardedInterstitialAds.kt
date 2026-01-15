@@ -31,6 +31,7 @@ import kotlin.math.ceil
 class RewardedInterstitialAds private constructor() {
 
     companion object {
+        private const val TAG = "RewardedInterstitialAds"
         private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 2
 
         @Volatile
@@ -57,6 +58,9 @@ class RewardedInterstitialAds private constructor() {
     private val adCachePool = mutableListOf<CachedRewardedInterstitialAd>()
     private val maxCacheSizePerAdUnit = DEFAULT_CACHE_SIZE_PER_AD_UNIT
 
+    // 正在加载中的任务计数
+    private val inflightLoads = mutableMapOf<String, Int>()
+
     private var totalTriggerCount by DataStoreIntDelegate("rvi_trigger_count", 0)
     private var totalShowCount by DataStoreIntDelegate("rvi_show_count", 0)
     private var totalLoadFailCount by DataStoreIntDelegate("rvi_load_fail_count", 0)
@@ -76,13 +80,22 @@ class RewardedInterstitialAds private constructor() {
         AdsManager.awaitInitialized()
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID
 
-        if (isCacheFull(finalAdUnitId)) {
-            AdLogger.d(
-                "插页激励广告缓存已满，广告位ID: %s，当前缓存: %d/%d",
-                finalAdUnitId,
-                getCachedAdCount(finalAdUnitId),
-                maxCacheSizePerAdUnit
-            )
+        // 1. 检查是否可加载（防止并发导致的溢出）
+        val canLoad = synchronized(cacheLock) {
+            val currentCount = adCachePool.count { it.adUnitId == finalAdUnitId && !it.isExpired() }
+            val currentInflight = inflightLoads[finalAdUnitId] ?: 0
+            if (currentCount + currentInflight >= maxCacheSizePerAdUnit) {
+                false
+            } else {
+                inflightLoads[finalAdUnitId] = currentInflight + 1
+                true
+            }
+        }
+
+        if (!canLoad) {
+            val currentCount = getCachedAdCount(finalAdUnitId)
+            AdLogger.d("[$TAG] 缓存已满或正在加载中，跳过加载: %s (当前缓存: %d/%d, 正在加载: %d)", 
+                finalAdUnitId, currentCount, maxCacheSizePerAdUnit, inflightLoads[finalAdUnitId] ?: 0)
             return AdResult.Success(Unit)
         }
 
@@ -114,6 +127,14 @@ class RewardedInterstitialAds private constructor() {
         } catch (e: Exception) {
             AdLogger.e("插页激励广告加载异常", e)
             AdResult.Failure(createAdException("加载异常: ${e.message}", e))
+        } finally {
+            // 2. 释放加载中的名额
+            synchronized(cacheLock) {
+                val currentInflight = inflightLoads[finalAdUnitId] ?: 0
+                if (currentInflight > 0) {
+                    inflightLoads[finalAdUnitId] = currentInflight - 1
+                }
+            }
         }
     }
 
@@ -468,6 +489,19 @@ class RewardedInterstitialAds private constructor() {
             code = 0,
             message = message,
             cause = cause
+        )
+    }
+    /**
+     * 获取缓存状态
+     */
+    fun getCacheStatus(adUnitId: String? = null): net.corekit.monetize.ads.log.BiddingLogger.CacheEntry {
+        val finalAdUnitId = adUnitId ?: net.corekit.monetize.BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID
+        return net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
+            adType = "RewardedInterstitial",
+            platform = "AdMob",
+            adUnitId = finalAdUnitId,
+            currentCount = getCachedAdCount(finalAdUnitId),
+            maxCount = maxCacheSizePerAdUnit
         )
     }
 }

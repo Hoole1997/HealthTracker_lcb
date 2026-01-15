@@ -298,4 +298,119 @@ object BiddingLogger {
         }
         Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════╝")
     }
+    /**
+     * 预加载日志条目
+     */
+    data class PreloadEntry(
+        val adType: String,
+        val platform: String,
+        val adUnitId: String? = null,
+        val status: LoadStatus,
+        val durationMs: Long,
+        val ecpm: Double? = null,
+        val message: String? = null
+    )
+
+    enum class LoadStatus(val display: String) {
+        SUCCESS("✅ 成功"),
+        FAILURE("❌ 失败"),
+        TIMEOUT("⏱️ 超时"),
+        SKIPPED("⏭️ 跳过")
+    }
+
+    /**
+     * 输出预加载日志表格
+     */
+    fun logPreload(entries: List<PreloadEntry>) {
+        if (!AdLogger.isLogEnabled()) return
+        if (entries.isEmpty()) return // 不输出空表格
+
+        val tag = "AdPreload"
+        
+        Log.d(TAG, "[$tag] ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗")
+        Log.d(TAG, "[$tag] ║                                   📥 启动预加载摘要                                               ║")
+        Log.d(TAG, "[$tag] ╠══════════════════════════════════════════════════════════════════════════════════════════════════╣")
+        Log.d(TAG, "[$tag] ║ 广告类型       │ 平台     │ 状态     │ 耗时    │ eCPM       │ 广告ID")
+        Log.d(TAG, "[$tag] ║────────────────┼──────────┼──────────┼─────────┼────────────┼─────────────────────────────────────")
+
+        entries.forEach { entry ->
+            val ecpmStr = entry.ecpm?.let { "\$${String.format("%.4f", it)}" } ?: "-"
+            val adIdShort = entry.adUnitId?.let { 
+                if (it.length > 30) "...${it.takeLast(25)}" else it 
+            } ?: "-"
+            
+            Log.d(TAG, "[$tag] ║ ${entry.adType.padEnd(14)} │ ${entry.platform.padEnd(8)} │ ${entry.status.display.padEnd(8)} │ ${entry.durationMs}ms".padEnd(60) + "│ ${ecpmStr.padEnd(10)} │ $adIdShort")
+        }
+        Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝")
+    }
+
+    /**
+     * 配置条目
+     */
+    data class ConfigEntry(
+        val platform: String,
+        val adType: String,
+        val enabled: Boolean,
+        val frequencyLimit: String?,
+        val configSource: String  // "remote", "default", "asset"
+    )
+
+    /**
+     * 输出竞价配置表格
+     */
+    fun logBiddingConfig(entries: List<ConfigEntry>, configSource: String) {
+        if (!AdLogger.isLogEnabled()) return
+        if (entries.isEmpty()) return
+        
+        val tag = "AdConfig"
+        
+        Log.d(TAG, "[$tag] ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗")
+        Log.d(TAG, "[$tag] ║                             ⚙️ 竞价配置状态 ($configSource)                                        ║")
+        Log.d(TAG, "[$tag] ╠══════════════════════════════════════════════════════════════════════════════════════════════════╣")
+        Log.d(TAG, "[$tag] ║ 平台         │ 广告类型       │ 启用     │ 频控限制          │ 配置来源")
+        Log.d(TAG, "[$tag] ║──────────────┼────────────────┼──────────┼───────────────────┼──────────────────────────")
+        
+        entries.forEach { entry ->
+            val enabledStr = if (entry.enabled) "✅ 启用" else "❌ 禁用"
+            val freqStr = entry.frequencyLimit ?: "-"
+            
+            Log.d(TAG, "[$tag] ║ ${entry.platform.padEnd(12)} │ ${entry.adType.padEnd(14)} │ ${enabledStr.padEnd(8)} │ ${freqStr.padEnd(17)} │ ${entry.configSource}")
+        }
+        Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝")
+    }
+
+    /**
+     * 缓存状态条目
+     */
+    data class CacheEntry(
+        val adType: String,
+        val platform: String,
+        val adUnitId: String,
+        val currentCount: Int,
+        val maxCount: Int
+    )
+
+    /**
+     * 输出各平台广告缓存状态表格
+     */
+    fun logCacheStatus(entries: List<CacheEntry>) {
+        if (!AdLogger.isLogEnabled()) return
+        if (entries.isEmpty()) return
+        
+        val tag = "AdCache"
+        
+        Log.d(TAG, "[$tag] ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗")
+        Log.d(TAG, "[$tag] ║                                   📦 平台缓存状态摘要                                             ║")
+        Log.d(TAG, "[$tag] ╠══════════════════════════════════════════════════════════════════════════════════════════════════╣")
+        Log.d(TAG, "[$tag] ║ 广告类型       │ 平台     │ 缓存数量   │ 广告位ID")
+        Log.d(TAG, "[$tag] ║────────────────┼──────────┼────────────┼─────────────────────────────────────────────────────────")
+        
+        entries.forEach { entry ->
+            val cacheStr = "${entry.currentCount}/${entry.maxCount}"
+            val adIdShort = if (entry.adUnitId.length > 50) "...${entry.adUnitId.takeLast(45)}" else entry.adUnitId
+            
+            Log.d(TAG, "[$tag] ║ ${entry.adType.padEnd(14)} │ ${entry.platform.padEnd(8)} │ ${cacheStr.padEnd(10)} │ $adIdShort")
+        }
+        Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝")
+    }
 }

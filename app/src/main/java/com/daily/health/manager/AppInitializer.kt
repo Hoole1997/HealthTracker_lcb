@@ -198,8 +198,8 @@ class AppInitializer(
 
             initScope.launch {
                 AdsManager.init(application)
-                // 初始化多平台竞价系统 (内部包含配置加载和 Pangle/TopOn SDK 初始化)
-                BiddingInitializer.initialize(application, R.mipmap.ic_launcher)
+                // 启动广告预加载（包含多平台初始化）
+                AdsManager.startAdPreloading(application)
             }
 
             initScope.launch {

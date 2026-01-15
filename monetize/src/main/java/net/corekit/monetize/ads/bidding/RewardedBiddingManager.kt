@@ -19,6 +19,7 @@ object RewardedBiddingManager {
 
     suspend fun preloadAll(context: Context) = coroutineScope {
         val controller = BiddingPlatformController
+        val entries = java.util.Collections.synchronizedList(mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry>())
         
         AdLogger.d("[$TAG] 开始并行预加载激励广告")
         
@@ -26,33 +27,88 @@ object RewardedBiddingManager {
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.REWARDED.toConfigKey())) {
             jobs += async { 
-                withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
-                    admobController.load(context)
-                    Unit
-                } ?: Unit
+                val startTime = System.currentTimeMillis()
+                var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
+                try {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        admobController.load(context)
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.SUCCESS
+                        Unit
+                    } ?: run {
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.TIMEOUT
+                    }
+                } catch (e: Exception) {
+                    AdLogger.e("[$TAG] AdMob预加载异常: ${e.message}")
+                } finally {
+                    entries.add(net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry(
+                        adType = "Rewarded",
+                        platform = "AdMob",
+                        adUnitId = net.corekit.monetize.BuildConfig.ADMOB_REWARDED_ID,
+                        status = status,
+                        durationMs = System.currentTimeMillis() - startTime
+                    ))
+                }
             }
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.REWARDED.toConfigKey())) {
             jobs += async {
-                withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
-                    PangleRewardedAdController.getInstance().preloadAd(context)
-                    Unit
-                } ?: Unit
+                val startTime = System.currentTimeMillis()
+                var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
+                try {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        PangleRewardedAdController.getInstance().preloadAd(context)
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.SUCCESS
+                        Unit
+                    } ?: run {
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.TIMEOUT
+                    }
+                } catch (e: Exception) {
+                    AdLogger.e("[$TAG] Pangle预加载异常: ${e.message}")
+                } finally {
+                    entries.add(net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry(
+                        adType = "Rewarded",
+                        platform = "Pangle",
+                        adUnitId = net.corekit.monetize.BuildConfig.PANGLE_REWARDED_ID,
+                        status = status,
+                        durationMs = System.currentTimeMillis() - startTime
+                    ))
+                }
             }
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.REWARDED.toConfigKey())) {
             jobs += async {
-                withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
-                    TopOnRewardedAdController.getInstance().preloadAd(context)
-                    Unit
-                } ?: Unit
+                val startTime = System.currentTimeMillis()
+                var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
+                try {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        TopOnRewardedAdController.getInstance().preloadAd(context)
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.SUCCESS
+                        Unit
+                    } ?: run {
+                        status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.TIMEOUT
+                    }
+                } catch (e: Exception) {
+                    AdLogger.e("[$TAG] TopOn预加载异常: ${e.message}")
+                } finally {
+                    entries.add(net.corekit.monetize.ads.log.BiddingLogger.PreloadEntry(
+                        adType = "Rewarded",
+                        platform = "TopOn",
+                        adUnitId = net.corekit.monetize.BuildConfig.TOPON_REWARDED_ID,
+                        status = status,
+                        durationMs = System.currentTimeMillis() - startTime
+                    ))
+                }
             }
         }
         
         jobs.awaitAll()
         AdLogger.d("[$TAG] 激励广告预加载完成")
+        
+        if (entries.isNotEmpty()) {
+            net.corekit.monetize.ads.log.BiddingLogger.logPreload(entries)
+        }
     }
 
     suspend fun performBidding(context: Context): PlatformBidResult? {
