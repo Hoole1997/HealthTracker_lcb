@@ -57,80 +57,98 @@ object AppOpenBiddingManager {
 
     suspend fun performBidding(context: Context, timeoutMillis: Long): PlatformBidResult? {
         val controller = BiddingPlatformController
+        val startTime = System.currentTimeMillis()
         val results = mutableListOf<Pair<BiddingPlatform, Double>>()
+        val entries = mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry>()
         
-        AdLogger.d("[$TAG] 开始执行开屏广告竞价 (非阻塞模式)")
-
-        // 优化：竞价只针对当前已 Ready 的广告，消除挂起等待时间
-        // 加载逻辑应由 preloadAll 在前序异步完成
-        
-        // 收集结果
+        // 收集各平台竞价结果
         if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.SPLASH.toConfigKey())) {
             val rawEcpm = admobController.getCachedAdPrice(context) ?: 0.0
             val ecpm = controller.getEffectiveEcpm(BiddingPlatform.ADMOB, rawEcpm)
-            if (admobController.hasCachedAd()) {
-                results.add(BiddingPlatform.ADMOB to ecpm)
-                AdLogger.d("[$TAG] AdMob eCPM: %.6f USD", ecpm)
-            }
+            val hasCache = admobController.hasCachedAd()
+            val freqInfo = getFrequencyInfo(BiddingPlatform.ADMOB, BiddingAdType.SPLASH)
+            
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry(
+                platform = "AdMob",
+                adType = "Splash",
+                status = if (hasCache) net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.READY 
+                        else net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = ecpm,
+                frequencyInfo = freqInfo
+            ))
+            if (hasCache) results.add(BiddingPlatform.ADMOB to ecpm)
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.SPLASH.toConfigKey())) {
             val rawEcpm = PangleAppOpenAdController.getInstance().getEcpm()
             val ecpm = controller.getEffectiveEcpm(BiddingPlatform.PANGLE, rawEcpm)
-            if (PangleAppOpenAdController.getInstance().hasValidCache()) {
-                results.add(BiddingPlatform.PANGLE to ecpm)
-                AdLogger.d("[$TAG] Pangle eCPM: %.6f USD", ecpm)
-            }
+            val hasCache = PangleAppOpenAdController.getInstance().hasValidCache()
+            val freqInfo = getFrequencyInfo(BiddingPlatform.PANGLE, BiddingAdType.SPLASH)
+            
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry(
+                platform = "Pangle",
+                adType = "Splash",
+                status = if (hasCache) net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.READY 
+                        else net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = ecpm,
+                frequencyInfo = freqInfo
+            ))
+            if (hasCache) results.add(BiddingPlatform.PANGLE to ecpm)
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.SPLASH.toConfigKey())) {
             val rawEcpm = TopOnSplashAdController.getInstance().getEcpm()
             val ecpm = controller.getEffectiveEcpm(BiddingPlatform.TOPON, rawEcpm)
-            if (TopOnSplashAdController.getInstance().hasValidCache()) {
-                results.add(BiddingPlatform.TOPON to ecpm)
-            }
+            val hasCache = TopOnSplashAdController.getInstance().hasValidCache()
+            val freqInfo = getFrequencyInfo(BiddingPlatform.TOPON, BiddingAdType.SPLASH)
+            
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry(
+                platform = "TopOn",
+                adType = "Splash",
+                status = if (hasCache) net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.READY 
+                        else net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = ecpm,
+                frequencyInfo = freqInfo
+            ))
+            if (hasCache) results.add(BiddingPlatform.TOPON to ecpm)
         }
         
-        // 生成格式化日志
-        val admobEnabled = controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.SPLASH.toConfigKey())
-        val pangleEnabled = controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.SPLASH.toConfigKey())
-        val toponEnabled = controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.SPLASH.toConfigKey())
+        val biddingTime = System.currentTimeMillis() - startTime
         
-        val admobEcpm = results.find { it.first == BiddingPlatform.ADMOB }?.second ?: 0.0
-        val pangleEcpm = results.find { it.first == BiddingPlatform.PANGLE }?.second ?: 0.0
-        val toponEcpm = results.find { it.first == BiddingPlatform.TOPON }?.second ?: 0.0
-        
-        if (results.isEmpty()) {
-            AdLogger.d("[$TAG] ╔══════════════════════════════════════════════════════════════")
-            AdLogger.d("[$TAG] ║ 开屏广告竞价")
-            AdLogger.d("[$TAG] ╠══════════════════════════════════════════════════════════════")
-            AdLogger.d("[$TAG] ║ ❌ 没有可用的开屏广告参与竞价")
-            AdLogger.d("[$TAG] ╚══════════════════════════════════════════════════════════════")
-            return null
+        // 确定胜出者
+        val winner = results.maxByOrNull { it.second }
+        val winnerEntry = winner?.let { w ->
+            entries.find { it.platform == w.first.name.replaceFirstChar { c -> c.uppercase() } || 
+                          it.platform.equals(w.first.name, ignoreCase = true) }
         }
         
-        val winner = results.maxByOrNull { it.second }!!
+        // 使用统一格式输出日志
+        net.corekit.monetize.ads.log.BiddingLogger.logSingleLayerBidding(
+            scene = "开屏",
+            entries = entries,
+            winner = winnerEntry,
+            durationMs = biddingTime
+        )
         
-        AdLogger.d("[$TAG] ╔══════════════════════════════════════════════════════════════")
-        AdLogger.d("[$TAG] ║ 开屏广告竞价")
-        AdLogger.d("[$TAG] ╠══════════════════════════════════════════════════════════════")
-        AdLogger.d("[$TAG] ║ 平台状态:")
-        AdLogger.d("[$TAG] ║   • AdMob:   %s", if (admobEnabled) "✅ 启用" else "❌ 禁用")
-        AdLogger.d("[$TAG] ║   • Pangle:  %s", if (pangleEnabled) "✅ 启用" else "❌ 禁用")
-        AdLogger.d("[$TAG] ║   • TopOn:   %s", if (toponEnabled) "✅ 启用" else "❌ 禁用")
-        AdLogger.d("[$TAG] ╟──────────────────────────────────────────────────────────────")
-        AdLogger.d("[$TAG] ║ eCPM 报价:")
-        AdLogger.d("[$TAG] ║   • AdMob:   %.8f 美元", admobEcpm)
-        AdLogger.d("[$TAG] ║   • Pangle:  %.8f 美元", pangleEcpm)
-        AdLogger.d("[$TAG] ║   • TopOn:   %.8f 美元", toponEcpm)
-        AdLogger.d("[$TAG] ╟──────────────────────────────────────────────────────────────")
-        AdLogger.d("[$TAG] ║ ✅ 竞价胜出: %s (eCPM: %.8f 美元)", winner.first.name, winner.second)
-        AdLogger.d("[$TAG] ╚══════════════════════════════════════════════════════════════")
+        return winner?.let {
+            PlatformBidResult(
+                platform = it.first,
+                winnerType = BiddingAdType.SPLASH,
+                ecpm = it.second
+            )
+        }
+    }
+
+    private fun getFrequencyInfo(platform: BiddingPlatform, adType: BiddingAdType): net.corekit.monetize.ads.log.BiddingLogger.FrequencyInfo? {
+        if (!net.corekit.monetize.ads.config.BiddingConfigManager.isPlatformFrequencyEnabled()) return null
         
-        return PlatformBidResult(
-            platform = winner.first,
-            winnerType = BiddingAdType.SPLASH,
-            ecpm = winner.second
+        val config = net.corekit.monetize.ads.config.BiddingConfigManager.getPlatformFrequencyConfig(platform, adType.toConfigKey())
+            ?: return null
+        
+        val dailyShow = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.getDailyShowCount(platform, adType)
+        return net.corekit.monetize.ads.log.BiddingLogger.FrequencyInfo(
+            dailyShow = dailyShow,
+            maxDailyShow = config.maxDailyShow
         )
     }
 

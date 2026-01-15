@@ -68,11 +68,6 @@ object BannerBiddingManager {
 
     /**
      * 执行 Banner 广告竞价
-     * 
-     * @param admobLoadResult AdMob 加载结果（用于判断是否加载成功）
-     * @param pangleLoadResult Pangle 加载结果
-     * @param toponLoadResult TopOn 加载结果
-     * @return 竞价胜出的平台
      */
     fun performBidding(
         admobLoadResult: AdResult<*>? = null,
@@ -80,6 +75,8 @@ object BannerBiddingManager {
         toponLoadResult: AdResult<*>? = null
     ): BiddingWinner {
         val controller = BiddingPlatformController
+        val startTime = System.currentTimeMillis()
+        val entries = mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry>()
         
         // 获取各平台的启用状态
         val admobEnabled = controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.BANNER.toConfigKey())
@@ -88,7 +85,7 @@ object BannerBiddingManager {
         
         // 获取各平台原始收益
         val admobRawEcpm = if (admobEnabled && admobLoadResult is AdResult.Success<*>) {
-            DEFAULT_ADMOB_ECPM // AdMob Banner 无法实时获取 eCPM，使用默认值
+            DEFAULT_ADMOB_ECPM
         } else 0.0
         
         val pangleRawEcpm = if (pangleEnabled && pangleLoadResult is AdResult.Success<*>) {
@@ -104,6 +101,43 @@ object BannerBiddingManager {
         val pangleEffectiveEcpm = if (pangleEnabled) controller.getEffectiveEcpm(BiddingPlatform.PANGLE, pangleRawEcpm) else 0.0
         val toponEffectiveEcpm = if (toponEnabled) controller.getEffectiveEcpm(BiddingPlatform.TOPON, toponRawEcpm) else 0.0
         
+        // 收集日志条目
+        if (admobEnabled) {
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry(
+                platform = "AdMob",
+                adType = "Banner",
+                status = if (admobLoadResult is AdResult.Success<*>) 
+                        net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.READY 
+                        else net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = admobEffectiveEcpm,
+                frequencyInfo = getFrequencyInfo(BiddingPlatform.ADMOB, BiddingAdType.BANNER)
+            ))
+        }
+        
+        if (pangleEnabled) {
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry(
+                platform = "Pangle",
+                adType = "Banner",
+                status = if (pangleLoadResult is AdResult.Success<*>) 
+                        net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.READY 
+                        else net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = pangleEffectiveEcpm,
+                frequencyInfo = getFrequencyInfo(BiddingPlatform.PANGLE, BiddingAdType.BANNER)
+            ))
+        }
+        
+        if (toponEnabled) {
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry(
+                platform = "TopOn",
+                adType = "Banner",
+                status = if (toponLoadResult is AdResult.Success<*>) 
+                        net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.READY 
+                        else net.corekit.monetize.ads.log.BiddingLogger.EntryStatus.NO_CACHE,
+                ecpm = toponEffectiveEcpm,
+                frequencyInfo = getFrequencyInfo(BiddingPlatform.TOPON, BiddingAdType.BANNER)
+            ))
+        }
+        
         // 只在启用的平台中选择胜出者
         val winner = when {
             admobEnabled && admobEffectiveEcpm >= pangleEffectiveEcpm && admobEffectiveEcpm >= toponEffectiveEcpm -> BiddingWinner.ADMOB
@@ -111,7 +145,7 @@ object BannerBiddingManager {
             toponEnabled -> BiddingWinner.TOPON
             admobEnabled -> BiddingWinner.ADMOB
             pangleEnabled -> BiddingWinner.PANGLE
-            else -> BiddingWinner.ADMOB // 默认
+            else -> BiddingWinner.ADMOB
         }
         
         val winnerEcpm = when(winner) {
@@ -120,24 +154,20 @@ object BannerBiddingManager {
             BiddingWinner.TOPON -> toponEffectiveEcpm
         }
         
-        // 生成格式化的竞价日志
-        AdLogger.d("[$TAG] ╔══════════════════════════════════════════════════════════════")
-        AdLogger.d("[$TAG] ║ Banner 广告竞价")
-        AdLogger.d("[$TAG] ╠══════════════════════════════════════════════════════════════")
-        AdLogger.d("[$TAG] ║ 平台状态:")
-        AdLogger.d("[$TAG] ║   • AdMob:   %s", if (admobEnabled) "✅ 启用" else "❌ 禁用")
-        AdLogger.d("[$TAG] ║   • Pangle:  %s", if (pangleEnabled) "✅ 启用" else "❌ 禁用")
-        AdLogger.d("[$TAG] ║   • TopOn:   %s", if (toponEnabled) "✅ 启用" else "❌ 禁用")
-        AdLogger.d("[$TAG] ╟──────────────────────────────────────────────────────────────")
-        AdLogger.d("[$TAG] ║ eCPM 报价:")
-        AdLogger.d("[$TAG] ║   • AdMob:   %.8f 美元", admobEffectiveEcpm)
-        AdLogger.d("[$TAG] ║   • Pangle:  %.8f 美元", pangleEffectiveEcpm)
-        AdLogger.d("[$TAG] ║   • TopOn:   %.8f 美元", toponEffectiveEcpm)
-        AdLogger.d("[$TAG] ╟──────────────────────────────────────────────────────────────")
-        AdLogger.d("[$TAG] ║ ✅ 竞价胜出: %s (eCPM: %.8f 美元)", winner.name, winnerEcpm)
-        AdLogger.d("[$TAG] ╚══════════════════════════════════════════════════════════════")
+        val biddingTime = System.currentTimeMillis() - startTime
         
-        // 生成单行日志用于上报
+        // 确定胜出条目
+        val winnerEntry = entries.find { it.platform.equals(winner.name, ignoreCase = true) }
+        
+        // 使用统一格式输出日志
+        net.corekit.monetize.ads.log.BiddingLogger.logSingleLayerBidding(
+            scene = "Banner",
+            entries = entries,
+            winner = winnerEntry,
+            durationMs = biddingTime
+        )
+        
+        // 上报竞价数据
         val biddingLog = String.format(
             Locale.US,
             "Banner竞价结果 -> AdMob: %.8f 美元%s, Pangle: %.8f 美元%s, TopOn: %.8f 美元%s, 胜出: %s",
@@ -147,7 +177,6 @@ object BannerBiddingManager {
             winner.name
         )
         
-        // 上报竞价数据
         ReportDataManager.reportDataByName(
             reporterName = "ThinkingData",
             eventName = "bidding",
@@ -155,6 +184,19 @@ object BannerBiddingManager {
         )
         
         return winner
+    }
+
+    private fun getFrequencyInfo(platform: BiddingPlatform, adType: BiddingAdType): net.corekit.monetize.ads.log.BiddingLogger.FrequencyInfo? {
+        if (!net.corekit.monetize.ads.config.BiddingConfigManager.isPlatformFrequencyEnabled()) return null
+        
+        val config = net.corekit.monetize.ads.config.BiddingConfigManager.getPlatformFrequencyConfig(platform, adType.toConfigKey())
+            ?: return null
+        
+        val dailyShow = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.getDailyShowCount(platform, adType)
+        return net.corekit.monetize.ads.log.BiddingLogger.FrequencyInfo(
+            dailyShow = dailyShow,
+            maxDailyShow = config.maxDailyShow
+        )
     }
 
     /**
