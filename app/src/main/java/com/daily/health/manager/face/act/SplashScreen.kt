@@ -160,6 +160,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
     override fun getVMModelClass() = SplashViewModel::class.java
     private var launchTime = 0L
     override fun initView(savedInstanceState: Bundle?) {
+        LaunchAds.getInstance().resetInterceptor()
         mViewBind.composeView.setViewCompositionStrategy(
             ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
         )

@@ -8,11 +8,11 @@ import net.corekit.monetize.ads.pangle.PangleInterstitialAdController
 import net.corekit.monetize.ads.topon.TopOnInterstitialAdController
 
 /**
- * 插页广告竞价管理器
+ * 插页广告预加载管理器
  */
-object InterstitialBiddingManager {
+object InterstitialPreloadManager {
 
-    private const val TAG = "InterstitialBidding"
+    private const val TAG = "InterstitialPreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
 
     private val admobController get() = AdsManager.Controllers.interstitial

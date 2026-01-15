@@ -2,6 +2,7 @@ package net.corekit.monetize.ads.topon
 
 import android.content.Context
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.thinkup.nativead.api.TUNative
 import com.thinkup.nativead.api.TUNativeAdView
 import com.thinkup.nativead.api.TUNativeEventListener
@@ -155,6 +156,7 @@ class TopOnNativeAdController private constructor() {
             val descView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_description)
             val ctaView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_btn_cta)
             val iconView = adView.findViewById<android.widget.ImageView>(net.corekit.monetize.R.id.ads_iv_icon)
+            val mediaContainer = adView.findViewById<FrameLayout>(net.corekit.monetize.R.id.fl_ad_media)
             
             titleView?.text = material?.title ?: "Ad"
             descView?.text = material?.descriptionText ?: ""

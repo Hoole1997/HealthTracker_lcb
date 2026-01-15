@@ -18,11 +18,12 @@ import net.corekit.monetize.ads.topon.TopOnInterstitialAdController
 import net.corekit.monetize.ads.topon.TopOnRewardedAdController
 
 /**
- * 激励广告两层竞价管理器
+ * 激励广告两层预加载管理器
+ * (包含展示时竞价逻辑)
  */
-object RewardTwoLayerBiddingManager {
+object RewardTwoLayerPreloadManager {
 
-    private const val TAG = "RewardTwoLayer"
+    private const val TAG = "RewardTwoLayerPreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
     private const val SHOW_TIMEOUT_MS = 60000L
 
@@ -31,11 +32,11 @@ object RewardTwoLayerBiddingManager {
 
     suspend fun preloadAll(context: Context) = coroutineScope {
         val controller = BiddingPlatformController
-        AdLogger.d("[$TAG] 开始两层竞价预加载")
+        AdLogger.d("[$TAG] 开始两层预加载")
         
         val jobs = mutableListOf<Deferred<Unit>>()
         
-        jobs += async { RewardedBiddingManager.preloadAll(context) }
+        jobs += async { RewardedPreloadManager.preloadAll(context) }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL.toConfigKey())) {
             jobs += async {
@@ -46,10 +47,10 @@ object RewardTwoLayerBiddingManager {
             }
         }
         
-        jobs += async { InterstitialBiddingManager.preloadAll(context) }
+        jobs += async { InterstitialPreloadManager.preloadAll(context) }
         
         jobs.awaitAll()
-        AdLogger.d("[$TAG] 两层竞价预加载完成")
+        AdLogger.d("[$TAG] 两层预加载完成")
     }
 
     suspend fun performTwoLayerBidding(context: Context): FinalBidResult = coroutineScope {
@@ -374,12 +375,12 @@ object RewardTwoLayerBiddingManager {
     fun hasReadyAd(): Boolean {
         val controller = BiddingPlatformController
         
-        if (RewardedBiddingManager.hasReadyAd()) return true
+        if (RewardedPreloadManager.hasReadyAd()) return true
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL.toConfigKey())
             && rewardedInterstitialController.hasCachedAd()) return true
         
-        if (InterstitialBiddingManager.hasReadyAd()) return true
+        if (InterstitialPreloadManager.hasReadyAd()) return true
         
         return false
     }

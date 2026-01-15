@@ -8,11 +8,11 @@ import net.corekit.monetize.ads.pangle.PangleAppOpenAdController
 import net.corekit.monetize.ads.topon.TopOnSplashAdController
 
 /**
- * 开屏/App Open 广告竞价管理器
+ * 开屏/App Open 广告预加载管理器
  */
-object AppOpenBiddingManager {
+object AppOpenPreloadManager {
 
-    private const val TAG = "AppOpenBidding"
+    private const val TAG = "AppOpenPreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
 
     private val admobController get() = AdsManager.Controllers.appOpen

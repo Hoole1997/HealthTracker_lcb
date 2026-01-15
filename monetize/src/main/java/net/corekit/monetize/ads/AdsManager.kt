@@ -134,18 +134,18 @@ object AdsManager {
             
             // 2. 并行触发所有类型的预加载
             launch { 
-                net.corekit.monetize.ads.bidding.AppOpenBiddingManager.preloadAll(context) 
+                net.corekit.monetize.ads.bidding.AppOpenPreloadManager.preloadAll(context) 
             }
-            // 注意: InterstitialBiddingManager 已在 RewardTwoLayerBiddingManager 内部调用，此处不重复调用
+            // 注意: InterstitialPreloadManager 已在 RewardTwoLayerPreloadManager 内部调用，此处不重复调用
             launch { 
-                net.corekit.monetize.ads.bidding.NativeBiddingManager.preloadAll(context) 
+                net.corekit.monetize.ads.bidding.NativePreloadManager.preloadAll(context) 
             }
             launch { 
-                net.corekit.monetize.ads.bidding.BannerBiddingManager.preloadAll(context) 
+                net.corekit.monetize.ads.bidding.BannerPreloadManager.preloadAll(context) 
             }
             // 激励广告（包含插页广告预加载）
             launch {
-                net.corekit.monetize.ads.bidding.RewardTwoLayerBiddingManager.preloadAll(context)
+                net.corekit.monetize.ads.bidding.RewardTwoLayerPreloadManager.preloadAll(context)
             }
 
             // 延迟打印缓存状态摘要，给预加载留出处理时间

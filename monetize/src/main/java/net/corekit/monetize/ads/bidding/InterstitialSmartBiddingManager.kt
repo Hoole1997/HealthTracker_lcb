@@ -58,10 +58,10 @@ object InterstitialSmartBiddingManager {
         val timeoutMillis = timeoutSeconds * 1000L
 
         // 1. 并行预加载
-        InterstitialBiddingManager.preloadAll(activity)
+        InterstitialPreloadManager.preloadAll(activity)
 
         // 2. 执行竞价（内部已包含等待逻辑）
-        val bidResult = InterstitialBiddingManager.performBidding(activity, timeoutMillis)
+        val bidResult = InterstitialPreloadManager.performBidding(activity, timeoutMillis)
 
         if (bidResult == null) {
             AdLogger.w("[$TAG] 多平台竞价失败，没有可用广告")
@@ -89,11 +89,19 @@ object InterstitialSmartBiddingManager {
             }
             BiddingPlatform.PANGLE -> {
                 AdLogger.d("[$TAG] 展示 Pangle 插页广告")
-                PangleInterstitialAdController.getInstance().showAd(activity)
+                val result = PangleInterstitialAdController.getInstance().showAd(activity)
+                if (result is AdResult.Success) {
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
+                }
+                result
             }
             BiddingPlatform.TOPON -> {
                 AdLogger.d("[$TAG] 展示 TopOn 插页广告")
-                TopOnInterstitialAdController.getInstance().showAd(activity)
+                val result = TopOnInterstitialAdController.getInstance().showAd(activity)
+                if (result is AdResult.Success) {
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
+                }
+                result
             }
         }
     }

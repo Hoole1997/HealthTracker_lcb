@@ -32,7 +32,7 @@ class RewardedInterstitialAds private constructor() {
 
     companion object {
         private const val TAG = "RewardedInterstitialAds"
-        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 2
+        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 1
 
         @Volatile
         private var INSTANCE: RewardedInterstitialAds? = null

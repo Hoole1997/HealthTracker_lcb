@@ -93,7 +93,8 @@ object BannerSmartBiddingManager {
         }
 
         // 2. 执行竞价
-        val winner = BannerBiddingManager.performBidding(
+        val winner = BannerPreloadManager.performBidding(
+            context = activity,
             admobLoadResult = admobResult,
             pangleLoadResult = pangleResult,
             toponLoadResult = toponResult
@@ -125,6 +126,7 @@ object BannerSmartBiddingManager {
                 AdLogger.d("[$TAG] 展示 Pangle Banner 广告")
                 val success = PangleBannerAdController.getInstance().renderToContainer(container)
                 if (success) {
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.BANNER)
                     AdResult.Success(false) // Pangle Banner 非折叠式
                 } else {
                     AdLogger.w("[$TAG] Pangle Banner 渲染失败，回退到 AdMob")
@@ -135,6 +137,7 @@ object BannerSmartBiddingManager {
                 AdLogger.d("[$TAG] 展示 TopOn Banner 广告")
                 val success = TopOnBannerAdController.getInstance().renderToContainer(container)
                 if (success) {
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.BANNER)
                     AdResult.Success(false) // TopOn Banner 非折叠式
                 } else {
                     AdLogger.w("[$TAG] TopOn Banner 渲染失败，回退到 AdMob")

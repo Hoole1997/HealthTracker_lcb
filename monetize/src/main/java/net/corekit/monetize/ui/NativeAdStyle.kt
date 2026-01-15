@@ -1,5 +1,7 @@
 package net.corekit.monetize.ui
 
+import net.corekit.monetize.R
+
 /**
  * 原生广告样式模型类
  * 定义不同的原生广告布局样式，支持动态自定义
@@ -14,15 +16,15 @@ data class NativeAdStyle(
      */
     fun getPangleLayout(): Int {
         return when (this) {
-            STANDARD -> net.corekit.monetize.R.layout.layout_pangle_native_ads
-            CARD -> net.corekit.monetize.R.layout.layout_pangle_native_ad_card
-            CARD_3 -> net.corekit.monetize.R.layout.layout_pangle_native_ad_card3
-            CARD_4 -> net.corekit.monetize.R.layout.layout_pangle_native_ad_card4
-            CARD_5 -> net.corekit.monetize.R.layout.layout_pangle_native_ad_card5
-            CARD_6 -> net.corekit.monetize.R.layout.layout_pangle_native_ad_card6
-            CARD_7 -> net.corekit.monetize.R.layout.layout_pangle_native_ad_card7
-            CARD_8 -> net.corekit.monetize.R.layout.layout_pangle_native_ad_card8
-            else -> net.corekit.monetize.R.layout.layout_pangle_native_ads
+            STANDARD -> R.layout.layout_pangle_native_ads
+            CARD -> R.layout.layout_pangle_native_ad_card
+            CARD_3 -> R.layout.layout_pangle_native_ad_card3
+            CARD_4 -> R.layout.layout_pangle_native_ad_card4
+            CARD_5 -> R.layout.layout_pangle_native_ad_card5
+            CARD_6 -> R.layout.layout_pangle_native_ad_card6
+            CARD_7 -> R.layout.layout_pangle_native_ad_card7
+            CARD_8 -> R.layout.layout_pangle_native_ad_card8
+            else -> R.layout.layout_pangle_native_ads
         }
     }
     
@@ -31,15 +33,15 @@ data class NativeAdStyle(
      */
     fun getTopOnLayout(): Int {
         return when (this) {
-            STANDARD -> net.corekit.monetize.R.layout.layout_topon_native_ads
-            CARD -> net.corekit.monetize.R.layout.layout_topon_native_ad_card
-            CARD_3 -> net.corekit.monetize.R.layout.layout_topon_native_ad_card3
-            CARD_4 -> net.corekit.monetize.R.layout.layout_topon_native_ad_card4
-            CARD_5 -> net.corekit.monetize.R.layout.layout_topon_native_ad_card5
-            CARD_6 -> net.corekit.monetize.R.layout.layout_topon_native_ad_card6
-            CARD_7 -> net.corekit.monetize.R.layout.layout_topon_native_ad_card7
-            CARD_8 -> net.corekit.monetize.R.layout.layout_topon_native_ad_card8
-            else -> net.corekit.monetize.R.layout.layout_topon_native_ads
+            STANDARD -> R.layout.layout_topon_native_ads
+            CARD -> R.layout.layout_topon_native_ad_card
+            CARD_3 -> R.layout.layout_topon_native_ad_card3
+            CARD_4 -> R.layout.layout_topon_native_ad_card4
+            CARD_5 -> R.layout.layout_topon_native_ad_card5
+            CARD_6 -> R.layout.layout_topon_native_ad_card6
+            CARD_7 -> R.layout.layout_topon_native_ad_card7
+            CARD_8 -> R.layout.layout_topon_native_ad_card8
+            else -> R.layout.layout_topon_native_ads
         }
     }
     
@@ -48,7 +50,7 @@ data class NativeAdStyle(
          * 标准样式：水平布局，图标+标题+描述+按钮
          */
         val STANDARD = NativeAdStyle(
-            layoutResId = net.corekit.monetize.R.layout.layout_native_ads,
+            layoutResId = R.layout.layout_native_ads,
             description = "normal",
         )
         
@@ -56,7 +58,7 @@ data class NativeAdStyle(
          * 卡片样式：垂直布局，更适合大尺寸展示
          */
         val CARD = NativeAdStyle(
-            layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card,
+            layoutResId = R.layout.layout_native_ad_card,
             description = "card",
         )
 
@@ -64,7 +66,7 @@ data class NativeAdStyle(
          * 卡片样式3：包含媒体区域
          */
         val CARD_3 = NativeAdStyle(
-            layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card3,
+            layoutResId = R.layout.layout_native_ad_card3,
             description = "card3",
         )
 
@@ -72,7 +74,7 @@ data class NativeAdStyle(
          * 卡片样式4：大媒体区域 + 居中图标
          */
         val CARD_4 = NativeAdStyle(
-            layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card4,
+            layoutResId = R.layout.layout_native_ad_card4,
             description = "card4",
         )
 
@@ -80,7 +82,7 @@ data class NativeAdStyle(
          * 卡片样式5：包含星级评分
          */
         val CARD_5 = NativeAdStyle(
-            layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card5,
+            layoutResId = R.layout.layout_native_ad_card5,
             description = "card5",
         )
 
@@ -88,7 +90,7 @@ data class NativeAdStyle(
          * 卡片样式6：浅蓝背景 + 星级评分
          */
         val CARD_6 = NativeAdStyle(
-            layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card6,
+            layoutResId = R.layout.layout_native_ad_card6,
             description = "card6",
         )
 
@@ -96,7 +98,7 @@ data class NativeAdStyle(
          * 卡片样式7：带角标AD标签
          */
         val CARD_7 = NativeAdStyle(
-            layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card7,
+            layoutResId = R.layout.layout_native_ad_card7,
             description = "card7",
         )
 
@@ -104,7 +106,7 @@ data class NativeAdStyle(
          * 卡片样式8：水平紧凑型
          */
         val CARD_8 = NativeAdStyle(
-            layoutResId = net.corekit.monetize.R.layout.layout_native_ad_card8,
+            layoutResId = R.layout.layout_native_ad_card8,
             description = "card8",
         )
         

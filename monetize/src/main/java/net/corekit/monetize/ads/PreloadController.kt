@@ -254,4 +254,132 @@ object PreloadController {
             BiddingWinner.TOPON -> preloadTopOn(context)
         }
     }
+
+    /**
+     * 预加载特定平台的特定广告类型（精细化预加载）
+     * 
+     * @param context 上下文
+     * @param platform 平台
+     * @param adType 广告类型
+     */
+    fun preloadPlatformAdType(context: Context, platform: BiddingWinner, adType: net.corekit.monetize.ads.bidding.BiddingAdType) {
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            when (platform) {
+                BiddingWinner.ADMOB -> preloadAdMobAdType(context, adType)
+                BiddingWinner.PANGLE -> preloadPangleAdType(context, adType)
+                BiddingWinner.TOPON -> preloadTopOnAdType(context, adType)
+            }
+        }
+    }
+
+    private suspend fun preloadAdMobAdType(context: Context, adType: net.corekit.monetize.ads.bidding.BiddingAdType) {
+        try {
+            when (adType) {
+                net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH -> {
+                    AdLogger.d("[$TAG] [AdMob] 定向预加载开屏广告")
+                    LaunchAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_SPLASH_ID)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL -> {
+                    AdLogger.d("[$TAG] [AdMob] 定向预加载插页广告")
+                    InterstitialAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_INTERSTITIAL_ID)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE -> {
+                    AdLogger.d("[$TAG] [AdMob] 定向预加载原生广告")
+                    NativeAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_NATIVE_ID)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.FULL_NATIVE -> {
+                    AdLogger.d("[$TAG] [AdMob] 定向预加载全屏原生广告")
+                    FullNativeAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_FULL_NATIVE_ID)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.BANNER -> {
+                    AdLogger.d("[$TAG] [AdMob] 定向预加载Banner广告")
+                    BannerAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_BANNER_ID)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.REWARDED -> {
+                    AdLogger.d("[$TAG] [AdMob] 定向预加载激励广告")
+                    RewardedAds.getInstance().load(context, BuildConfig.ADMOB_REWARDED_ID)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.REWARDED_INTERSTITIAL -> {
+                    AdLogger.d("[$TAG] [AdMob] 定向预加载插页激励广告")
+                    RewardedInterstitialAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)
+                }
+            }
+        } catch (e: Exception) {
+            AdLogger.e("[$TAG] [AdMob] 定向预加载 ${adType.name} 失败", e)
+        }
+    }
+
+    private suspend fun preloadPangleAdType(context: Context, adType: net.corekit.monetize.ads.bidding.BiddingAdType) {
+        try {
+            PangleManager.initialize(context)
+            when (adType) {
+                net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH -> {
+                    AdLogger.d("[$TAG] [Pangle] 定向预加载开屏广告")
+                    PangleAppOpenAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL -> {
+                    AdLogger.d("[$TAG] [Pangle] 定向预加载插页广告")
+                    PangleInterstitialAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE -> {
+                    AdLogger.d("[$TAG] [Pangle] 定向预加载原生广告")
+                    PangleNativeAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.FULL_NATIVE -> {
+                    AdLogger.d("[$TAG] [Pangle] 定向预加载全屏原生广告")
+                    PangleFullScreenNativeAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.BANNER -> {
+                    AdLogger.d("[$TAG] [Pangle] 定向预加载Banner广告")
+                    PangleBannerAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.REWARDED -> {
+                    AdLogger.d("[$TAG] [Pangle] 定向预加载激励广告")
+                    PangleRewardedAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.REWARDED_INTERSTITIAL -> {
+                    AdLogger.d("[$TAG] [Pangle] 暂不支持插页激励广告")
+                }
+            }
+        } catch (e: Exception) {
+            AdLogger.e("[$TAG] [Pangle] 定向预加载 ${adType.name} 失败", e)
+        }
+    }
+
+    private suspend fun preloadTopOnAdType(context: Context, adType: net.corekit.monetize.ads.bidding.BiddingAdType) {
+        try {
+            TopOnManager.initialize(context)
+            when (adType) {
+                net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH -> {
+                    AdLogger.d("[$TAG] [TopOn] 定向预加载开屏广告")
+                    TopOnSplashAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL -> {
+                    AdLogger.d("[$TAG] [TopOn] 定向预加载插页广告")
+                    TopOnInterstitialAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE -> {
+                    AdLogger.d("[$TAG] [TopOn] 定向预加载原生广告")
+                    TopOnNativeAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.FULL_NATIVE -> {
+                    AdLogger.d("[$TAG] [TopOn] 定向预加载全屏原生广告")
+                    TopOnFullScreenNativeAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.BANNER -> {
+                    AdLogger.d("[$TAG] [TopOn] 定向预加载Banner广告")
+                    TopOnBannerAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.REWARDED -> {
+                    AdLogger.d("[$TAG] [TopOn] 定向预加载激励广告")
+                    TopOnRewardedAdController.getInstance().preloadAd(context)
+                }
+                net.corekit.monetize.ads.bidding.BiddingAdType.REWARDED_INTERSTITIAL -> {
+                    AdLogger.d("[$TAG] [TopOn] 暂不支持插页激励广告")
+                }
+            }
+        } catch (e: Exception) {
+            AdLogger.e("[$TAG] [TopOn] 定向预加载 ${adType.name} 失败", e)
+        }
+    }
 }

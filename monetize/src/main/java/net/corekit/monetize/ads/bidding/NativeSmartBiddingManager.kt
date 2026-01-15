@@ -97,7 +97,7 @@ object NativeSmartBiddingManager {
         }
 
         // 2. 执行竞价
-        val winner = NativeBiddingManager.performBidding(
+        val winner = NativePreloadManager.performBidding(
             admobLoadResult = admobResult,
             pangleLoadResult = pangleResult,
             toponLoadResult = toponResult
@@ -123,13 +123,14 @@ object NativeSmartBiddingManager {
         return when (winner) {
             BiddingWinner.ADMOB -> {
                 AdLogger.d("[$TAG] 展示 AdMob Native 广告")
-                NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick)
+                NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick, bypassBidding = true)
             }
             BiddingWinner.PANGLE -> {
                 AdLogger.d("[$TAG] 展示 Pangle Native 广告")
                 val success = PangleNativeAdController.getInstance().renderToContainer(context, container, style)
                 if (success) {
                     AdLogger.d("[$TAG] Pangle Native 渲染成功")
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(context, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE)
                     true
                 } else {
                     AdLogger.w("[$TAG] Pangle Native 渲染失败，回退到 AdMob")
@@ -141,6 +142,7 @@ object NativeSmartBiddingManager {
                 val success = TopOnNativeAdController.getInstance().renderToContainer(context, container, style)
                 if (success) {
                     AdLogger.d("[$TAG] TopOn Native 渲染成功")
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(context, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE)
                     true
                 } else {
                     AdLogger.w("[$TAG] TopOn Native 渲染失败，回退到 AdMob")

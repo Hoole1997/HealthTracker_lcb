@@ -8,13 +8,13 @@ import net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdController
 import net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController
 
 /**
- * 全屏原生广告竞价管理器
+ * 全屏原生广告预加载管理器
  * 
  * 注意：AdMob 全屏原生广告当前不支持精确 eCPM 获取，使用默认值参与竞价
  */
-object FullScreenNativeBiddingManager {
+object FullScreenNativePreloadManager {
 
-    private const val TAG = "FullNativeBidding"
+    private const val TAG = "FullNativePreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
     private const val DEFAULT_ADMOB_ECPM = 1.0
 

@@ -11,13 +11,13 @@ import net.corekit.monetize.ads.topon.TopOnBannerAdController
 import java.util.Locale
 
 /**
- * Banner 广告竞价管理器
+ * Banner 广告预加载管理器
  * 
- * 支持 AdMob、Pangle、TopOn 三个平台的 Banner 广告竞价
+ * 支持 AdMob、Pangle、TopOn 三个平台的 Banner 广告预加载
  */
-object BannerBiddingManager {
+object BannerPreloadManager {
 
-    private const val TAG = "BannerBidding"
+    private const val TAG = "BannerPreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
     private const val DEFAULT_ADMOB_ECPM = 0.001 // AdMob Banner 使用默认较低值
 
@@ -147,7 +147,8 @@ object BannerBiddingManager {
     /**
      * 执行 Banner 广告竞价
      */
-    fun performBidding(
+    suspend fun performBidding(
+        context: android.content.Context,
         admobLoadResult: AdResult<*>? = null,
         pangleLoadResult: AdResult<*>? = null,
         toponLoadResult: AdResult<*>? = null
@@ -161,9 +162,9 @@ object BannerBiddingManager {
         val pangleEnabled = controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.BANNER.toConfigKey())
         val toponEnabled = controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.BANNER.toConfigKey())
         
-        // 获取各平台原始收益
+        // 获取各平台原始收益（通过反射获取 AdMob 真实 eCPM）
         val admobRawEcpm = if (admobEnabled && admobLoadResult is AdResult.Success<*>) {
-            DEFAULT_ADMOB_ECPM
+            admobController.getCachedAdPrice(context) ?: DEFAULT_ADMOB_ECPM
         } else 0.0
         
         val pangleRawEcpm = if (pangleEnabled && pangleLoadResult is AdResult.Success<*>) {

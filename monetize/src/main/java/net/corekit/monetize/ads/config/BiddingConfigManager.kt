@@ -308,39 +308,53 @@ object BiddingConfigManager {
     }
 
     /**
-     * 打印当前配置（仅 Debug 模式）
+     * 打印当前配置（表格化输出）
      */
     private fun logCurrentConfig() {
         val config = getCurrentChannelConfig() ?: return
         
-        AdLogger.d("[$TAG] ╔══════════════════════════════════════════════════════════════")
-        AdLogger.d("[$TAG] ║ 当前竞价配置")
-        AdLogger.d("[$TAG] ╠══════════════════════════════════════════════════════════════")
-        
-        try {
-            AdLogger.d("[$TAG] ║ 渠道: %s", ChannelUserController.getCurrentChannel().value)
-        } catch (e: Exception) {
-            AdLogger.d("[$TAG] ║ 渠道: unknown")
+        // 收集所有配置条目
+        val entries = mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.ConfigEntry>()
+        val adTypes = listOf("splash", "interstitial", "native", "banner", "rewarded", "rewarded_interstitial", "full_native")
+
+        // 收集 AdMob, Pangle, TopOn
+        val platformEnums = listOf(
+            net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB,
+            net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE,
+            net.corekit.monetize.ads.bidding.BiddingWinner.TOPON
+        )
+
+        platformEnums.forEach { platform ->
+            adTypes.forEach { adType ->
+                val enabled = BiddingPlatformController.isAdTypeEnabled(platform, adType)
+                val isBidding = BiddingPlatformController.shouldParticipateInBidding(platform, adType)
+                
+                // 获取频控信息
+                val freqConfig = getPlatformFrequencyConfig(
+                    when(platform) {
+                        net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB -> net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB
+                        net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE -> net.corekit.monetize.ads.bidding.BiddingPlatform.PANGLE
+                        net.corekit.monetize.ads.bidding.BiddingWinner.TOPON -> net.corekit.monetize.ads.bidding.BiddingPlatform.TOPON
+                    }, 
+                    adType
+                )
+                val freqStr = freqConfig?.let { "Daily:${it.maxDailyShow}" }
+                
+                entries.add(net.corekit.monetize.ads.log.BiddingLogger.ConfigEntry(
+                    platform = platform.name,
+                    adType = adType,
+                    enabled = enabled,
+                    isBidding = isBidding,
+                    frequencyLimit = freqStr,
+                    configSource = if (configData?.natural != null) "Remote/Local" else "Default"
+                ))
+            }
         }
         
-        AdLogger.d("[$TAG] ║ 竞价开关: %s", if (config.biddingEnabled == 1) "开启" else "关闭")
-        AdLogger.d("[$TAG] ║ 两层竞价: %s", if (config.twoLayerBiddingEnabled == 1) "开启" else "关闭")
-        AdLogger.d("[$TAG] ║ 超时时间: %d 秒", config.biddingTimeoutSeconds)
-        AdLogger.d("[$TAG] ╟──────────────────────────────────────────────────────────────")
-        AdLogger.d("[$TAG] ║ 平台配置:")
-        
-        config.platforms?.let { platforms ->
-            AdLogger.d("[$TAG] ║   • AdMob:  %s (优先级: %d)", 
-                if (platforms.admob?.enabled == 1) "✅" else "❌", 
-                platforms.admob?.priority ?: 99)
-            AdLogger.d("[$TAG] ║   • Pangle: %s (优先级: %d)", 
-                if (platforms.pangle?.enabled == 1) "✅" else "❌", 
-                platforms.pangle?.priority ?: 99)
-            AdLogger.d("[$TAG] ║   • TopOn:  %s (优先级: %d)", 
-                if (platforms.topon?.enabled == 1) "✅" else "❌", 
-                platforms.topon?.priority ?: 99)
-        }
-        
-        AdLogger.d("[$TAG] ╚══════════════════════════════════════════════════════════════")
+        // 调用 Logger 输出
+        net.corekit.monetize.ads.log.BiddingLogger.logAllConfigs(
+            entries, 
+            configSource = if (!biddingConfigJsonFromRemote.isNullOrEmpty()) "Remote" else "Local/Default"
+        )
     }
 }

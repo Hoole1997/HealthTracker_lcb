@@ -193,9 +193,9 @@ object BiddingPlatformController {
      * 用于在测试广告 ID 返回 0 eCPM 时提供模拟值以验证竞价逻辑
      */
     private val TEST_MODE_MOCK_ECPM = mapOf(
-        BiddingWinner.ADMOB to 0.011,
+        BiddingWinner.ADMOB to 0.010,
         BiddingWinner.PANGLE to 0.018,
-        BiddingWinner.TOPON to 0.016
+        BiddingWinner.TOPON to 0.019
     )
 
     /**
@@ -208,8 +208,11 @@ object BiddingPlatformController {
      * @return 有效的 eCPM 值（真实值或 Mock 值）
      */
     fun getEffectiveEcpm(platform: BiddingWinner, realEcpm: Double): Double {
-        // 真实值有效时直接使用
-        if (realEcpm > 0) {
+        // 定义占位符阈值：低于此值的 eCPM 被视为占位符，需要在测试模式下注入 Mock
+        val placeholderThreshold = 0.005
+        
+        // 真实值有效时（高于占位符阈值）直接使用
+        if (realEcpm >= placeholderThreshold) {
             return realEcpm
         }
         

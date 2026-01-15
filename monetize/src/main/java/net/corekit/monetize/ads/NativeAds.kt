@@ -206,10 +206,11 @@ class NativeAds private constructor() {
         position: String,
         style: NativeAdStyle = NativeAdStyle.STANDARD,
         adUnitId: String? = null,
-        onClick:(() -> Unit)? = null
+        onClick:(() -> Unit)? = null,
+        bypassBidding: Boolean = false
     ): Boolean {
         // 检查是否启用多平台竞价（透明切换）
-        if (net.corekit.monetize.ads.bidding.BiddingPlatformController.isMultiPlatformBiddingEnabled()) {
+        if (!bypassBidding && net.corekit.monetize.ads.bidding.BiddingPlatformController.isMultiPlatformBiddingEnabled()) {
             AdLogger.d("原生广告启用多平台竞价，自动切换到 smartBidAndShow")
             return net.corekit.monetize.ads.bidding.NativeSmartBiddingManager.smartBidAndShow(
                 context, container, position, style, onClick
@@ -329,7 +330,7 @@ class NativeAds private constructor() {
 
                             // 异步预加载下一个广告到缓存（如果缓存未满）
                             if (!isCacheFull(finalAdUnitId)) {
-                                PreloadController.preload(context)
+                                PreloadController.preloadPlatformAdType(context, net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB, net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE)
                             }
                         }
 

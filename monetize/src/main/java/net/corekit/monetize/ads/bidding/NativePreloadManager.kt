@@ -12,13 +12,13 @@ import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
 import java.util.Locale
 
 /**
- * 原生广告竞价管理器
+ * 原生广告预加载管理器
  * 
- * 支持 AdMob、Pangle、TopOn 三个平台的原生广告竞价
+ * 支持 AdMob、Pangle、TopOn 三个平台的原生广告预加载
  */
-object NativeBiddingManager {
+object NativePreloadManager {
 
-    private const val TAG = "NativeBidding"
+    private const val TAG = "NativePreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
 
     private val admobController get() = AdsManager.Controllers.native

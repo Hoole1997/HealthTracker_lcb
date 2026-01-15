@@ -674,7 +674,7 @@ class LaunchAds private constructor() {
                     // 异步预加载下一个广告到缓存（如果缓存未满）
                     if (!isCacheFull(adUnitId)) {
                         AdLogger.d("开屏开始异步预加载下一个广告，广告位ID: %s", adUnitId)
-                        PreloadController.preload(activity)
+                        PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB, net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH)
                     }
                 }
 

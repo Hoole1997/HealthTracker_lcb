@@ -12,7 +12,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import net.corekit.monetize.BuildConfig
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.bidding.BiddingPlatformController
-import net.corekit.monetize.ads.bidding.SplashTwoLayerBiddingManager
+import net.corekit.monetize.ads.bidding.SplashTwoLayerPreloadManager
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.config.BiddingConfigManager
 import net.corekit.monetize.ads.log.AdLogger
@@ -317,10 +317,10 @@ object SplashBiddingManager {
         AdLogger.d("[$TAG] ========== 开始多平台竞价 ==========")
         
         // 1. 执行预加载
-        SplashTwoLayerBiddingManager.preloadAll(activity)
+        SplashTwoLayerPreloadManager.preloadAll(activity)
         
         // 2. 执行竞价
-        val bidResult = SplashTwoLayerBiddingManager.performTwoLayerBidding(activity)
+        val bidResult = SplashTwoLayerPreloadManager.performTwoLayerBidding(activity)
         
         // 3. 检查结果
         if (bidResult.winner == null) {
@@ -337,7 +337,7 @@ object SplashBiddingManager {
         onAdLoaded?.invoke(true)
         
         // 4. 展示广告
-        return SplashTwoLayerBiddingManager.showWinnerAd(activity, container, bidResult)
+        return SplashTwoLayerPreloadManager.showWinnerAd(activity, container, bidResult)
     }
 
     /**

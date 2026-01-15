@@ -15,7 +15,7 @@ import net.corekit.monetize.ads.LaunchAds
 import net.corekit.monetize.ads.RewardedAds
 import net.corekit.monetize.ads.bidding.BiddingPlatformController
 import net.corekit.monetize.ads.bidding.BiddingWinner
-import net.corekit.monetize.ads.bidding.SplashTwoLayerBiddingManager
+import net.corekit.monetize.ads.bidding.SplashTwoLayerPreloadManager
 import net.corekit.monetize.ads.config.BiddingConfigManager
 import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
@@ -240,7 +240,7 @@ object AdDebugPanel {
         Toast.makeText(activity, "正在触发开屏竞价...", Toast.LENGTH_SHORT).show()
         scope.launch {
             try {
-                val result = SplashTwoLayerBiddingManager.performTwoLayerBidding(activity)
+                val result = SplashTwoLayerPreloadManager.performTwoLayerBidding(activity)
                 withContext(Dispatchers.Main) {
                     val winner = result.winner
                     val message = if (winner != null) {

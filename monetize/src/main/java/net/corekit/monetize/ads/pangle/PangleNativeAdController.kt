@@ -8,6 +8,7 @@ import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAdLoadListener
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeRequest
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.R
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
@@ -22,10 +23,10 @@ class PangleNativeAdController private constructor() {
 
     companion object {
         private const val TAG = "PangleNative"
-        
+
         @Volatile
         private var instance: PangleNativeAdController? = null
-        
+
         fun getInstance(): PangleNativeAdController {
             return instance ?: synchronized(this) {
                 instance ?: PangleNativeAdController().also { instance = it }
@@ -44,22 +45,22 @@ class PangleNativeAdController private constructor() {
             AdLogger.d("[$TAG] 原生广告 ID 未配置，跳过加载")
             return AdResult.Failure(AdException(AdException.ERROR_INVALID_REQUEST, "原生广告 ID 未配置"))
         }
-        
+
         if (!PangleManager.isReady()) {
             val initResult = PangleManager.initialize(context)
             if (initResult is AdResult.Failure) return initResult
         }
-        
+
         if (hasValidCache()) {
             AdLogger.d("[$TAG] 已有有效缓存，跳过加载")
             return AdResult.Success(Unit)
         }
-        
+
         if (!isLoading.compareAndSet(false, true)) {
             AdLogger.d("[$TAG] 正在加载中，跳过重复请求")
             return AdResult.Success(Unit)
         }
-        
+
         return try {
             loadAd(context)
         } finally {
@@ -67,13 +68,13 @@ class PangleNativeAdController private constructor() {
         }
     }
 
-    private suspend fun loadAd(context: Context): AdResult<Unit> = 
+    private suspend fun loadAd(context: Context): AdResult<Unit> =
         suspendCancellableCoroutine { continuation ->
             val adUnitId = BuildConfig.PANGLE_NATIVE_ID
             val startTime = System.currentTimeMillis()
-            
+
             AdLogger.d("[$TAG] 开始加载原生广告, ID: %s", adUnitId)
-            
+
             PAGNativeAd.loadAd(adUnitId, PAGNativeRequest(), object : PAGNativeAdLoadListener {
                 override fun onAdLoaded(ad: PAGNativeAd) {
                     val loadTime = System.currentTimeMillis() - startTime
@@ -82,7 +83,7 @@ class PangleNativeAdController private constructor() {
                     cachedEcpm = try {
                         ad.mediaExtraInfo?.get("price")?.toString()?.toDoubleOrNull() ?: 0.0
                     } catch (e: Exception) { 0.0 }
-                    
+
                     AdLogger.d("[$TAG] ✅ 原生广告加载成功, 耗时: %d ms, eCPM: %.6f USD", loadTime, cachedEcpm)
                     if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
                 }
@@ -106,26 +107,27 @@ class PangleNativeAdController private constructor() {
      * @param style 可选的布局样式（默认 STANDARD）
      */
     fun renderToContainer(
-        context: Context, 
+        context: Context,
         container: ViewGroup,
         style: net.corekit.monetize.ui.NativeAdStyle = net.corekit.monetize.ui.NativeAdStyle.STANDARD
     ): Boolean {
         val ad = cachedAd ?: return false
         val data = ad.nativeAdData ?: return false
-        
+
         try {
             container.removeAllViews()
-            
+
             // 1. 使用 Pangle 专用布局
             val layoutResId = style.getPangleLayout()
             val adView = android.view.LayoutInflater.from(context)
                 .inflate(layoutResId, container, false) as android.view.ViewGroup
-            
+
             // 2. 绑定广告数据（使用 AdMob 的标准 View ID）
             val titleView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_title)
             val descView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_description)
             val ctaView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_btn_cta)
             val iconView = adView.findViewById<android.widget.ImageView>(net.corekit.monetize.R.id.ads_iv_icon)
+            val mediaContainer = adView.findViewById<FrameLayout>(net.corekit.monetize.R.id.fl_ad_media)
             
             titleView?.text = data.title ?: "Ad"
             descView?.text = data.description ?: ""

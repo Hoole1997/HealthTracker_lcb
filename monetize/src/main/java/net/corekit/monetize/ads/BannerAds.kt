@@ -145,6 +145,49 @@ class BannerAds private constructor() {
             }
         }
     }
+
+    /**
+     * 查看缓存中的广告（不移除）
+     */
+    private fun peekCachedAd(adUnitId: String? = null): BannerAd? {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_BANNER_ID
+        synchronized(adCachePool) {
+            return adCachePool.firstOrNull { it.adUnitId == finalAdUnitId && !it.isExpired() }?.ad
+        }
+    }
+
+    /**
+     * 获取当前缓存广告的价格（用于竞价）
+     * 如果缓存不存在则返回null
+     * @param context 上下文
+     * @param adUnitId 广告位ID，如果为空则使用默认ID
+     * @return 广告价格（已除以1000000转换为美元），如果获取失败返回null
+     */
+    suspend fun getCachedAdPrice(context: Context, adUnitId: String? = null): Double? {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_BANNER_ID
+
+        // 尝试从缓存获取广告（不移除）
+        val cachedAd = peekCachedAd(finalAdUnitId)
+
+        if (cachedAd == null) {
+            AdLogger.w("[竞价] 获取Banner广告价格失败：缓存为空")
+            return null
+        }
+
+        // 使用反射获取价格（避免主线程执行反射）
+        val adValue = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+            net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil.getRevenueByPath(cachedAd)
+        }
+
+        return if (adValue != null) {
+            val price = adValue.valueMicros / 1_000_000.0
+            AdLogger.d("[竞价] 获取Banner广告价格成功: %.6f %s (精度: %s)", price, adValue.currencyCode, adValue.precisionType)
+            price
+        } else {
+            AdLogger.w("[竞价] 获取Banner广告价格失败：反射获取AdValue为空")
+            null
+        }
+    }
     
     /**
      * 获取指定广告位的缓存数量
@@ -473,7 +516,7 @@ class BannerAds private constructor() {
                 if (success) {
                     AdConfigManager.getBannerConfig().recordShow()
                     if (!isCacheFull(finalAdUnitId)) {
-                        PreloadController.preload(context)
+                        PreloadController.preloadPlatformAdType(context, net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB, net.corekit.monetize.ads.bidding.BiddingAdType.BANNER)
                     }
                     AdResult.Success(ad.isCollapsible())
                 } else {

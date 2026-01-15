@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.bidding.BiddingPlatformController
-import net.corekit.monetize.ads.bidding.RewardTwoLayerBiddingManager
+import net.corekit.monetize.ads.bidding.RewardTwoLayerPreloadManager
 import net.corekit.monetize.ads.log.AdLogger
 
 /**
@@ -48,7 +48,7 @@ class AdCacheForegroundObserver(
         
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                RewardTwoLayerBiddingManager.preloadAll(context)
+                RewardTwoLayerPreloadManager.preloadAll(context)
                 AdLogger.d("[$TAG] 前台预加载完成")
             } catch (e: Exception) {
                 AdLogger.e("[$TAG] 前台预加载失败: ${e.message}")

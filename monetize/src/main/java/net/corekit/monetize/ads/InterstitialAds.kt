@@ -614,7 +614,7 @@ class InterstitialAds private constructor() {
 
                     // 异步预加载下一个广告到缓存（如果缓存未满）
                     if (!isCacheFull(adUnitId)) {
-                        PreloadController.preload(activity)
+                        PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
                     }
                 }
 

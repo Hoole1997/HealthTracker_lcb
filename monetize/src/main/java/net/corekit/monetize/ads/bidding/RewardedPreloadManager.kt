@@ -8,11 +8,11 @@ import net.corekit.monetize.ads.pangle.PangleRewardedAdController
 import net.corekit.monetize.ads.topon.TopOnRewardedAdController
 
 /**
- * 激励广告竞价管理器
+ * 激励广告预加载管理器
  */
-object RewardedBiddingManager {
+object RewardedPreloadManager {
 
-    private const val TAG = "RewardedBidding"
+    private const val TAG = "RewardedPreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
 
     private val admobController get() = RewardedAds.getInstance()

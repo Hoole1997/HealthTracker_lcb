@@ -14,7 +14,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.bidding.BiddingPlatformController
-import net.corekit.monetize.ads.bidding.RewardTwoLayerBiddingManager
+import net.corekit.monetize.ads.bidding.RewardTwoLayerPreloadManager
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import java.util.Locale
@@ -347,7 +347,7 @@ object RewardBiddingManager {
             
             // 执行实时竞价（广告已在后台预加载完成）
             // 竞价逻辑是非阻塞的，仅检查已缓存的广告
-            val bidResult = RewardTwoLayerBiddingManager.performTwoLayerBidding(activity)
+            val bidResult = RewardTwoLayerPreloadManager.performTwoLayerBidding(activity)
             
             // 检查结果
             if (bidResult.winner == null) {
@@ -361,7 +361,7 @@ object RewardBiddingManager {
                 bidResult.winner.ecpm)
             
             // 展示广告
-            return RewardTwoLayerBiddingManager.showWinnerAd(activity, bidResult, onRewardEarned)
+            return RewardTwoLayerPreloadManager.showWinnerAd(activity, bidResult, onRewardEarned)
         } finally {
             isBidding.set(false)
             
@@ -378,7 +378,7 @@ object RewardBiddingManager {
     private suspend fun preloadInBackground(context: Context) {
         try {
             AdLogger.d("[$TAG] 后台开始预加载广告...")
-            RewardTwoLayerBiddingManager.preloadAll(context)
+            RewardTwoLayerPreloadManager.preloadAll(context)
             AdLogger.d("[$TAG] 后台预加载完成")
         } catch (e: Exception) {
             AdLogger.e("[$TAG] 后台预加载失败: %s", e.message)

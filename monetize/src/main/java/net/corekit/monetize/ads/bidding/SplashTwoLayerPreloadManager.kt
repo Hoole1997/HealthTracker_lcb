@@ -14,24 +14,25 @@ import net.corekit.monetize.ads.topon.TopOnInterstitialAdController
 import net.corekit.monetize.ads.topon.TopOnSplashAdController
 
 /**
- * 开屏两层竞价管理器
+ * 开屏两层预加载管理器
+ * (包含展示时竞价逻辑)
  */
-object SplashTwoLayerBiddingManager {
+object SplashTwoLayerPreloadManager {
 
-    private const val TAG = "SplashTwoLayer"
+    private const val TAG = "SplashTwoLayerPreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
     private const val SHOW_TIMEOUT_MS = 60000L
 
     suspend fun preloadAll(context: Context) = coroutineScope {
-        AdLogger.d("[$TAG] 开始两层竞价预加载")
+        AdLogger.d("[$TAG] 开始两层预加载")
         
         val jobs = mutableListOf<Deferred<Unit>>()
         
-        jobs += async { AppOpenBiddingManager.preloadAll(context) }
-        jobs += async { InterstitialBiddingManager.preloadAll(context) }
+        jobs += async { AppOpenPreloadManager.preloadAll(context) }
+        jobs += async { InterstitialPreloadManager.preloadAll(context) }
         
         jobs.awaitAll()
-        AdLogger.d("[$TAG] 两层竞价预加载完成")
+        AdLogger.d("[$TAG] 两层预加载完成")
     }
 
     suspend fun performTwoLayerBidding(context: Context): FinalBidResult = coroutineScope {
@@ -46,8 +47,8 @@ object SplashTwoLayerBiddingManager {
         val timeoutMillis = timeoutSeconds * 1000L
 
         // 并行执行两层竞价（优化：避免串行等待导致耗时翻倍）
-        val splashDeferred = async { AppOpenBiddingManager.performBidding(context, timeoutMillis) }
-        val interstitialDeferred = async { InterstitialBiddingManager.performBidding(context, timeoutMillis) }
+        val splashDeferred = async { AppOpenPreloadManager.performBidding(context, timeoutMillis) }
+        val interstitialDeferred = async { InterstitialPreloadManager.performBidding(context, timeoutMillis) }
         
         // 等待两个竞价结果
         val splashWinner = splashDeferred.await()
@@ -87,6 +88,9 @@ object SplashTwoLayerBiddingManager {
         
         AdLogger.d("[$TAG] 展示胜出广告: %s - %s", winner.platform.name, winner.winnerType.name)
         
+        // 等待权限授权完成（避免权限流程未结束就弹广告）
+        AdsManager.Controllers.appOpen.awaitPermissionReady()
+        
         return withTimeoutOrNull(SHOW_TIMEOUT_MS) {
             when (winner.winnerType) {
                 BiddingAdType.SPLASH -> showSplashAd(activity, container, winner.platform, onDismiss)
@@ -109,11 +113,19 @@ object SplashTwoLayerBiddingManager {
                 showResult
             }
             BiddingPlatform.PANGLE -> {
-                PangleAppOpenAdController.getInstance().showAd(activity, onDismiss = onDismiss)
+                val result = PangleAppOpenAdController.getInstance().showAd(activity, onDismiss = onDismiss)
+                if (result is AdResult.Success) {
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH)
+                }
+                result
             }
             BiddingPlatform.TOPON -> {
                 if (container != null) {
-                    TopOnSplashAdController.getInstance().showAd(activity, container, null, onDismiss)
+                    val result = TopOnSplashAdController.getInstance().showAd(activity, container, null, onDismiss)
+                    if (result is AdResult.Success) {
+                        net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH)
+                    }
+                    result
                 } else {
                     AdResult.Failure(AdException(AdException.ERROR_INVALID_REQUEST, "TopOn 开屏广告需要 container"))
                 }
@@ -133,15 +145,23 @@ object SplashTwoLayerBiddingManager {
                 showResult
             }
             BiddingPlatform.PANGLE -> {
-                PangleInterstitialAdController.getInstance().showAd(activity, onDismiss)
+                val result = PangleInterstitialAdController.getInstance().showAd(activity, onDismiss)
+                if (result is AdResult.Success) {
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
+                }
+                result
             }
             BiddingPlatform.TOPON -> {
-                TopOnInterstitialAdController.getInstance().showAd(activity, onDismiss)
+                val result = TopOnInterstitialAdController.getInstance().showAd(activity, onDismiss)
+                if (result is AdResult.Success) {
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
+                }
+                result
             }
         }
     }
 
     fun hasReadyAd(): Boolean {
-        return AppOpenBiddingManager.hasReadyAd() || InterstitialBiddingManager.hasReadyAd()
+        return AppOpenPreloadManager.hasReadyAd() || InterstitialPreloadManager.hasReadyAd()
     }
 }

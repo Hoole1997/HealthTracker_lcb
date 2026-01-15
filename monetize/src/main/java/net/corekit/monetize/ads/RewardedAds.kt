@@ -45,7 +45,7 @@ class RewardedAds private constructor() {
 
     companion object {
         private const val TAG = "RewardedAds"
-        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 2
+        private const val DEFAULT_CACHE_SIZE_PER_AD_UNIT = 1
 
         @Volatile
         private var INSTANCE: RewardedAds? = null
@@ -347,7 +347,7 @@ class RewardedAds private constructor() {
                     // 异步预加载下一个广告到缓存（如果缓存未满）
                     if (!isCacheFull(finalAdUnitId)) {
                         AdLogger.d("开屏开始异步预加载下一个广告，广告位ID: %s", finalAdUnitId)
-                        PreloadController.preload(activity)
+                        PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB, net.corekit.monetize.ads.bidding.BiddingAdType.REWARDED)
                     }
                 }
 

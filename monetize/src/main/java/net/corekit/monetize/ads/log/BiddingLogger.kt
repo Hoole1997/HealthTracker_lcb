@@ -6,17 +6,6 @@ import android.util.Log
  * 竞价专用日志工具
  * 
  * 提供表格格式的竞价结果输出，便于 Logcat 调试
- * 
- * 使用示例：
- * ```kotlin
- * val entries = listOf(
- *     BiddingLogEntry("AdMob", "Splash", "✓ 成功", "$4.80"),
- *     BiddingLogEntry("TopOn", "Splash", "✓ 成功", "$3.50"),
- *     BiddingLogEntry("Pangle", "Splash", "✗ 超时", "--")
- * )
- * BiddingLogger.logBiddingTable("SplashBidding", entries)
- * BiddingLogger.logWinner("SplashBidding", "AdMob", "Splash", 4.80)
- * ```
  */
 object BiddingLogger {
 
@@ -34,20 +23,6 @@ object BiddingLogger {
 
     /**
      * 输出竞价结果表格
-     * 
-     * 输出格式：
-     * ```
-     * ┌──────────┬──────────────┬──────────┬───────────┐
-     * │ 平台      │ 广告类型      │ 状态      │ eCPM      │
-     * ├──────────┼──────────────┼──────────┼───────────┤
-     * │ AdMob    │ Splash       │ ✓ 成功   │ $4.80     │
-     * │ TopOn    │ Splash       │ ✓ 成功   │ $3.50     │
-     * │ Pangle   │ Splash       │ ✗ 超时   │ --        │
-     * └──────────┴──────────────┴──────────┴───────────┘
-     * ```
-     * 
-     * @param tag 日志标签（如 "SplashBidding"）
-     * @param entries 竞价条目列表
      */
     fun logBiddingTable(tag: String, entries: List<BiddingLogEntry>) {
         if (!AdLogger.isLogEnabled()) return
@@ -77,11 +52,6 @@ object BiddingLogger {
 
     /**
      * 输出竞价胜出者
-     * 
-     * @param tag 日志标签
-     * @param platform 胜出平台
-     * @param adType 胜出广告类型
-     * @param ecpm eCPM 值
      */
     fun logWinner(tag: String, platform: String, adType: String, ecpm: Double) {
         if (!AdLogger.isLogEnabled()) return
@@ -90,9 +60,6 @@ object BiddingLogger {
 
     /**
      * 输出竞价失败
-     * 
-     * @param tag 日志标签
-     * @param reason 失败原因
      */
     fun logBiddingFailed(tag: String, reason: String) {
         if (!AdLogger.isLogEnabled()) return
@@ -101,10 +68,6 @@ object BiddingLogger {
 
     /**
      * 输出竞价开始
-     * 
-     * @param tag 日志标签
-     * @param platforms 参与竞价的平台列表
-     * @param timeoutMs 超时时间（毫秒）
      */
     fun logBiddingStart(tag: String, platforms: List<String>, timeoutMs: Long) {
         if (!AdLogger.isLogEnabled()) return
@@ -113,9 +76,6 @@ object BiddingLogger {
 
     /**
      * 输出竞价结束
-     * 
-     * @param tag 日志标签
-     * @param durationMs 耗时（毫秒）
      */
     fun logBiddingEnd(tag: String, durationMs: Long) {
         if (!AdLogger.isLogEnabled()) return
@@ -124,12 +84,6 @@ object BiddingLogger {
 
     /**
      * 输出平台加载状态
-     * 
-     * @param tag 日志标签
-     * @param platform 平台名称
-     * @param success 是否成功
-     * @param ecpm eCPM（成功时提供）
-     * @param errorMsg 错误信息（失败时提供）
      */
     fun logPlatformResult(
         tag: String,
@@ -298,6 +252,7 @@ object BiddingLogger {
         }
         Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════╝")
     }
+
     /**
      * 预加载日志条目
      */
@@ -351,30 +306,32 @@ object BiddingLogger {
         val platform: String,
         val adType: String,
         val enabled: Boolean,
+        val isBidding: Boolean,
         val frequencyLimit: String?,
         val configSource: String  // "remote", "default", "asset"
     )
 
     /**
-     * 输出竞价配置表格
+     * 输出广告全量配置表格
      */
-    fun logBiddingConfig(entries: List<ConfigEntry>, configSource: String) {
+    fun logAllConfigs(entries: List<ConfigEntry>, configSource: String) {
         if (!AdLogger.isLogEnabled()) return
         if (entries.isEmpty()) return
         
         val tag = "AdConfig"
         
         Log.d(TAG, "[$tag] ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗")
-        Log.d(TAG, "[$tag] ║                             ⚙️ 竞价配置状态 ($configSource)                                        ║")
+        Log.d(TAG, "[$tag] ║                             ⚙️ 广告配置总览 ($configSource)                                        ║")
         Log.d(TAG, "[$tag] ╠══════════════════════════════════════════════════════════════════════════════════════════════════╣")
-        Log.d(TAG, "[$tag] ║ 平台         │ 广告类型       │ 启用     │ 频控限制          │ 配置来源")
-        Log.d(TAG, "[$tag] ║──────────────┼────────────────┼──────────┼───────────────────┼──────────────────────────")
+        Log.d(TAG, "[$tag] ║ 平台         │ 广告类型       │ 启用     │ 参与竞价 │ 频控限制          │ 配置来源")
+        Log.d(TAG, "[$tag] ║──────────────┼────────────────┼──────────┼──────────┼───────────────────┼──────────────────────────")
         
         entries.forEach { entry ->
-            val enabledStr = if (entry.enabled) "✅ 启用" else "❌ 禁用"
+            val enabledStr = if (entry.enabled) "✅" else "❌"
+            val biddingStr = if (entry.isBidding) "✅" else "❌"
             val freqStr = entry.frequencyLimit ?: "-"
             
-            Log.d(TAG, "[$tag] ║ ${entry.platform.padEnd(12)} │ ${entry.adType.padEnd(14)} │ ${enabledStr.padEnd(8)} │ ${freqStr.padEnd(17)} │ ${entry.configSource}")
+            Log.d(TAG, "[$tag] ║ ${entry.platform.padEnd(12)} │ ${entry.adType.padEnd(14)} │ ${enabledStr.padEnd(8)} │ ${biddingStr.padEnd(8)} │ ${freqStr.padEnd(17)} │ ${entry.configSource}")
         }
         Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝")
     }
@@ -410,6 +367,40 @@ object BiddingLogger {
             val adIdShort = if (entry.adUnitId.length > 50) "...${entry.adUnitId.takeLast(45)}" else entry.adUnitId
             
             Log.d(TAG, "[$tag] ║ ${entry.adType.padEnd(14)} │ ${entry.platform.padEnd(8)} │ ${cacheStr.padEnd(10)} │ $adIdShort")
+        }
+        Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝")
+    }
+
+    /**
+     * SDK 初始化状态条目
+     */
+    data class SdkInitEntry(
+        val platform: String,
+        val isSuccess: Boolean,
+        val durationMs: Long,
+        val errorMessage: String? = null
+    )
+
+    /**
+     * 输出 SDK 初始化状态表格
+     */
+    fun logSdkInitStatus(entries: List<SdkInitEntry>) {
+        if (!AdLogger.isLogEnabled()) return
+        if (entries.isEmpty()) return
+        
+        val tag = "AdSdkInit"
+        
+        Log.d(TAG, "[$tag] ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗")
+        Log.d(TAG, "[$tag] ║                                   🚀 SDK 初始化状态报告                                           ║")
+        Log.d(TAG, "[$tag] ╠══════════════════════════════════════════════════════════════════════════════════════════════════╣")
+        Log.d(TAG, "[$tag] ║ 平台         │ 状态     │ 耗时        │ 备注")
+        Log.d(TAG, "[$tag] ║──────────────┼──────────┼─────────────┼─────────────────────────────────────────────────────────")
+        
+        entries.forEach { entry ->
+            val statusStr = if (entry.isSuccess) "✅ 成功" else "❌ 失败"
+            val errorStr = entry.errorMessage ?: "-"
+            
+            Log.d(TAG, "[$tag] ║ ${entry.platform.padEnd(12)} │ ${statusStr.padEnd(8)} │ ${entry.durationMs}ms".padEnd(42) + "│ $errorStr")
         }
         Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝")
     }

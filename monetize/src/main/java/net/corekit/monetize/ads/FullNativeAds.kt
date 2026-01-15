@@ -531,7 +531,7 @@ class FullNativeAds private constructor() {
 
                             AdConfigManager.getFullscreenNativeConfig().recordShow()
                             if (!isCacheFull(adUnitId)) {
-                                PreloadController.preload(context)
+                                PreloadController.preloadPlatformAdType(context, net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB, net.corekit.monetize.ads.bidding.BiddingAdType.FULL_NATIVE)
                             }
                             AdLogger.d("全屏原生广告显示成功")
                         }
