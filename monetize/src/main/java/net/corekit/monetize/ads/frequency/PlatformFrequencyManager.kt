@@ -115,18 +115,19 @@ object PlatformFrequencyManager {
             return true
         }
         
-        // 1. 检查每日展示上限
         val dailyShow = getDailyShowCount(platform, adType)
+        val dailyClick = getDailyClickCount(platform, adType)
+        
+        // 1. 检查每日展示上限
         if (dailyShow >= config.maxDailyShow) {
-            AdLogger.d("[$TAG] %s 平台 %s 每日展示超限: %d/%d", 
+            AdLogger.logW(TAG, "频控拦截 | 平台: %s | 类型: %s | 原因: 展示次数超限 (%d/%d)", 
                 platform.name, adType.name, dailyShow, config.maxDailyShow)
             return false
         }
         
         // 2. 检查每日点击上限
-        val dailyClick = getDailyClickCount(platform, adType)
         if (dailyClick >= config.maxDailyClick) {
-            AdLogger.d("[$TAG] %s 平台 %s 每日点击超限: %d/%d", 
+            AdLogger.logW(TAG, "频控拦截 | 平台: %s | 类型: %s | 原因: 点击次数超限 (%d/%d)", 
                 platform.name, adType.name, dailyClick, config.maxDailyClick)
             return false
         }
@@ -137,12 +138,16 @@ object PlatformFrequencyManager {
             if (lastShowTime > 0) {
                 val intervalSeconds = (System.currentTimeMillis() - lastShowTime) / 1000
                 if (intervalSeconds < config.minShowIntervalSeconds) {
-                    AdLogger.d("[$TAG] %s 平台 %s 展示间隔不足: %ds < %ds", 
+                    AdLogger.logW(TAG, "频控拦截 | 平台: %s | 类型: %s | 原因: 展示间隔不足 (%ds < %ds)", 
                         platform.name, adType.name, intervalSeconds, config.minShowIntervalSeconds)
                     return false
                 }
             }
         }
+        
+        // 频控检查通过，输出详细状态（仅在 verbose 模式）
+        AdLogger.verbose(TAG, "频控检查通过 | 平台: %s | 类型: %s | 展示: %d/%d | 点击: %d/%d",
+            platform.name, adType.name, dailyShow, config.maxDailyShow, dailyClick, config.maxDailyClick)
         
         return true
     }
@@ -166,7 +171,13 @@ object PlatformFrequencyManager {
             ?.putLong(timeKey, System.currentTimeMillis())
             ?.apply()
         
-        AdLogger.d("[$TAG] 记录 %s 平台 %s 展示: %d", platform.name, adType.name, currentCount + 1)
+        // 获取配置以显示上限
+        val adTypeStr = adType.name.lowercase()
+        val config = BiddingConfigManager.getPlatformFrequencyConfig(platform, adTypeStr)
+        val maxShow = config?.maxDailyShow ?: 0
+        
+        AdLogger.logD(TAG, "记录展示 | 平台: %s | 类型: %s | 今日展示: %d/%d", 
+            platform.name, adType.name, currentCount + 1, maxShow)
     }
 
     /**
@@ -179,7 +190,13 @@ object PlatformFrequencyManager {
         val currentCount = sharedPreferences?.getInt(key, 0) ?: 0
         sharedPreferences?.edit()?.putInt(key, currentCount + 1)?.apply()
         
-        AdLogger.d("[$TAG] 记录 %s 平台 %s 点击: %d", platform.name, adType.name, currentCount + 1)
+        // 获取配置以显示上限
+        val adTypeStr = adType.name.lowercase()
+        val config = BiddingConfigManager.getPlatformFrequencyConfig(platform, adTypeStr)
+        val maxClick = config?.maxDailyClick ?: 0
+        
+        AdLogger.logD(TAG, "记录点击 | 平台: %s | 类型: %s | 今日点击: %d/%d", 
+            platform.name, adType.name, currentCount + 1, maxClick)
     }
 
     /**

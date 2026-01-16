@@ -25,7 +25,7 @@ object RewardedPreloadManager {
         
         val jobs = mutableListOf<Deferred<Unit>>()
         
-        if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.REWARDED.toConfigKey())) {
+        if (controller.shouldParticipateInPreload(BiddingPlatform.ADMOB, BiddingAdType.REWARDED.toConfigKey())) {
             jobs += async { 
                 val startTime = System.currentTimeMillis()
                 var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
@@ -51,7 +51,7 @@ object RewardedPreloadManager {
             }
         }
         
-        if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.REWARDED.toConfigKey())) {
+        if (controller.shouldParticipateInPreload(BiddingPlatform.PANGLE, BiddingAdType.REWARDED.toConfigKey())) {
             jobs += async {
                 val startTime = System.currentTimeMillis()
                 var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE
@@ -77,7 +77,7 @@ object RewardedPreloadManager {
             }
         }
         
-        if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.REWARDED.toConfigKey())) {
+        if (controller.shouldParticipateInPreload(BiddingPlatform.TOPON, BiddingAdType.REWARDED.toConfigKey())) {
             jobs += async {
                 val startTime = System.currentTimeMillis()
                 var status = net.corekit.monetize.ads.log.BiddingLogger.LoadStatus.FAILURE

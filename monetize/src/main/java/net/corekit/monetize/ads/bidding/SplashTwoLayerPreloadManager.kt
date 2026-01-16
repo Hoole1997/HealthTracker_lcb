@@ -7,6 +7,7 @@ import kotlinx.coroutines.*
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.AdsManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.pangle.PangleAppOpenAdController
 import net.corekit.monetize.ads.pangle.PangleInterstitialAdController
@@ -83,21 +84,28 @@ object SplashTwoLayerPreloadManager {
         onDismiss: (() -> Unit)? = null
     ): AdResult<Unit> {
         val winner = result.winner ?: return AdResult.Failure(
-            AdException(AdException.ERROR_NOT_LOADED, "没有胜出的广告")
+            AdException(AdException.ERROR_NOT_LOADED, "No winning ad")
         )
         
-        AdLogger.d("[$TAG] 展示胜出广告: %s - %s", winner.platform.name, winner.winnerType.name)
+        AdLogger.d("[$TAG] Show winning ad: %s - %s", winner.platform.name, winner.winnerType.name)
         
         // 等待权限授权完成（避免权限流程未结束就弹广告）
         AdsManager.Controllers.appOpen.awaitPermissionReady()
         
         return withTimeoutOrNull(SHOW_TIMEOUT_MS) {
-            when (winner.winnerType) {
+            val showResult = when (winner.winnerType) {
                 BiddingAdType.SPLASH -> showSplashAd(activity, container, winner.platform, onDismiss)
                 BiddingAdType.INTERSTITIAL -> showInterstitialAd(activity, winner.platform, onDismiss)
-                else -> AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "不支持的广告类型"))
+                else -> AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "Unsupported ad type"))
             }
-        } ?: AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "展示广告超时"))
+            
+            // Record platform frequency on successful show
+            if (showResult is AdResult.Success) {
+                PlatformFrequencyManager.recordShow(winner.platform, winner.winnerType)
+            }
+            
+            showResult
+        } ?: AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "Ad show timeout"))
     }
 
     private suspend fun showSplashAd(

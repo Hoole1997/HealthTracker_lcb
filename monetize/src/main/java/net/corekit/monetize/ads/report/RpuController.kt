@@ -21,7 +21,7 @@ import java.io.IOException
  */
 @SuppressLint("StaticFieldLeak")
 object RpuController {
-    private const val TAG = "RPU配置"
+    private const val TAG = "RpuConfig"
     private const val CONFIG_FILE_NAME = "rpu_config.json"
     private const val REMOTE_CONFIG_KEY = "adtarget_total_revenue"
     

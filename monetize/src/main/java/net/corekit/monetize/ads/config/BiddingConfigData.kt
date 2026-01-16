@@ -11,7 +11,13 @@ data class BiddingConfigData(
     @SerializedName("free_user")
     val natural: ChannelBiddingConfig? = null,
     @SerializedName("premium_user")
-    val paid: ChannelBiddingConfig? = null
+    val paid: ChannelBiddingConfig? = null,
+    /** 平台级频控是否启用（全局配置，不区分渠道） */
+    @SerializedName("platform_frequency_enabled")
+    val platformFrequencyEnabled: Boolean = false,
+    /** 平台频控配置（全局配置，不区分渠道） */
+    @SerializedName("platform_frequency")
+    val platformFrequency: PlatformFrequencyConfigs? = null
 ) {
     /**
      * 渠道竞价配置

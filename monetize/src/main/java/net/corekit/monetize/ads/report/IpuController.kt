@@ -22,7 +22,7 @@ import java.io.IOException
  */
 @SuppressLint("StaticFieldLeak")
 object IpuController {
-    private const val TAG = "IPU配置"
+    private const val TAG = "IpuConfig"
     private const val CONFIG_FILE_NAME = "ipu_config.json"
     private const val REMOTE_CONFIG_KEY = "AD_Count2"
     

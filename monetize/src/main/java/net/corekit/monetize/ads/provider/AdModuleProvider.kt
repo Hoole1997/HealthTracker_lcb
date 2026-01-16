@@ -8,6 +8,7 @@ import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.report.IpuController
 import net.corekit.monetize.ads.report.RpuController
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
 
 /**
@@ -31,6 +32,9 @@ class AdModuleProvider : ContentProvider() {
             try {
                 // 初始化广告配置控制器
                 AdConfigManager.initialize(ctx)
+
+                // 初始化平台级频控管理器
+                PlatformFrequencyManager.initialize(ctx)
 
                 // 初始化IPU上报控制器
                 IpuController.initialize(ctx)

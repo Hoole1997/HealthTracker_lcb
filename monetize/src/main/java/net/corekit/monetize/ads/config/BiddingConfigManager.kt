@@ -203,15 +203,15 @@ object BiddingConfigManager {
     // ==================== 平台级频控 ====================
 
     /**
-     * 平台级频控是否启用
+     * 平台级频控是否启用（全局配置，不区分渠道）
      * 默认禁用（追求收入最大化）
      */
     fun isPlatformFrequencyEnabled(): Boolean {
-        return getCurrentChannelConfig()?.platformFrequencyEnabled ?: false
+        return configData?.platformFrequencyEnabled ?: false
     }
 
     /**
-     * 获取指定平台和广告类型的频控配置
+     * 获取指定平台和广告类型的频控配置（全局配置，不区分渠道）
      * 
      * @param platform 平台类型
      * @param adType 广告类型（如 "splash", "interstitial", "rewarded"）
@@ -221,7 +221,7 @@ object BiddingConfigManager {
         platform: net.corekit.monetize.ads.bidding.BiddingPlatform, 
         adType: String
     ): BiddingConfigData.PlatformFrequencyConfig? {
-        val frequencyConfigs = getCurrentChannelConfig()?.platformFrequency ?: return null
+        val frequencyConfigs = configData?.platformFrequency ?: return null
         val platformConfigs = when (platform) {
             net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB -> frequencyConfigs.admob
             net.corekit.monetize.ads.bidding.BiddingPlatform.PANGLE -> frequencyConfigs.pangle

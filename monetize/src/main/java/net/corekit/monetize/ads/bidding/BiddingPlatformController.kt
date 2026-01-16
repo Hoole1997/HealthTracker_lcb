@@ -2,6 +2,7 @@ package net.corekit.monetize.ads.bidding
 
 import net.corekit.core.controller.ChannelUserController
 import net.corekit.monetize.ads.config.BiddingConfigData
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
 
 /**
@@ -69,22 +70,19 @@ object BiddingPlatformController {
     }
 
     /**
-     * 判断平台的某广告类型是否参与竞价
+     * 判断平台的某广告类型是否参与预加载（不检查频控）
      * 
-     * 需要满足以下条件：
-     * 1. 平台已启用
-     * 2. 该广告类型已配置有效的广告 ID
-     * 3. 配置中该广告类型允许参与竞价
+     * 用于预加载阶段，允许广告预先缓存好，不受频控限制
+     * 频控检查在展示/竞价阶段进行
      */
-    fun shouldParticipateInBidding(platform: BiddingWinner, adType: String): Boolean {
+    fun shouldParticipateInPreload(platform: BiddingWinner, adType: String): Boolean {
         // 1. 检查平台是否启用
         if (!isPlatformEnabled(platform)) {
             return false
         }
         
-        // 2. 检查是否有有效的广告 ID（空 ID 不参与竞价）
+        // 2. 检查是否有有效的广告 ID（空 ID 不参与预加载）
         if (!AdIdHelper.hasValidAdId(platform, adType)) {
-            AdLogger.d("[$TAG] %s 平台的 %s 广告 ID 未配置，不参与竞价", platform.name, adType)
             return false
         }
         
@@ -92,12 +90,40 @@ object BiddingPlatformController {
         val platformConfig = getPlatformConfig(platform)
         val adTypeConfig = platformConfig?.adTypes?.get(adType)
         
-        // 如果没有配置，默认参与竞价
+        // 如果没有配置，默认参与
         if (adTypeConfig == null) {
             return true
         }
         
         return adTypeConfig.enabled == 1 && adTypeConfig.participateBidding == 1
+    }
+
+    /**
+     * 判断平台的某广告类型是否参与竞价（包含频控检查）
+     * 
+     * 需要满足以下条件：
+     * 1. 平台已启用
+     * 2. 该广告类型已配置有效的广告 ID
+     * 3. 配置中该广告类型允许参与竞价
+     * 4. 平台级频控允许
+     */
+    fun shouldParticipateInBidding(platform: BiddingWinner, adType: String): Boolean {
+        // 1-3. 基础检查（复用预加载检查）
+        if (!shouldParticipateInPreload(platform, adType)) {
+            return false
+        }
+        
+        // 4. 检查平台级频控（仅在竞价时检查，预加载时不检查）
+        val biddingPlatform = platform.toBiddingPlatform()
+        val biddingAdType = BiddingAdType.fromConfigKey(adType)
+        if (biddingPlatform != null && biddingAdType != null) {
+            if (!PlatformFrequencyManager.canParticipate(biddingPlatform, biddingAdType)) {
+                AdLogger.d("[$TAG] %s %s frequency limit reached, skip bidding", platform.name, adType)
+                return false
+            }
+        }
+        
+        return true
     }
 
     /**
@@ -281,6 +307,15 @@ object BiddingPlatformController {
      */
     fun clearMockEcpm() {
         customMockEcpm.clear()
-        AdLogger.d("[$TAG] [TestMode] 已清除所有 Mock eCPM 值")
+        AdLogger.d("[$TAG] [TestMode] Mock eCPM values cleared")
     }
+}
+
+/**
+ * BiddingWinner to BiddingPlatform conversion
+ */
+internal fun BiddingWinner.toBiddingPlatform(): BiddingPlatform = when (this) {
+    BiddingWinner.ADMOB -> BiddingPlatform.ADMOB
+    BiddingWinner.PANGLE -> BiddingPlatform.PANGLE
+    BiddingWinner.TOPON -> BiddingPlatform.TOPON
 }

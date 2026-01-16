@@ -11,6 +11,7 @@ import net.corekit.monetize.ads.config.BiddingConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.pangle.PangleBannerAdController
 import net.corekit.monetize.ads.topon.TopOnBannerAdController
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 
 /**
  * Banner 广告智能竞价管理器
@@ -117,7 +118,7 @@ object BannerSmartBiddingManager {
         onClick: (() -> Unit)?,
         onClose: (() -> Unit)?
     ): AdResult<Boolean> {
-        return when (winner) {
+        val result = when (winner) {
             BiddingWinner.ADMOB -> {
                 AdLogger.d("[$TAG] 展示 AdMob Banner 广告")
                 BannerAds.getInstance().displayAd(activity, container, position, onClick = onClick, onClose = onClose)
@@ -145,5 +146,12 @@ object BannerSmartBiddingManager {
                 }
             }
         }
+        
+        // Record platform frequency on successful show
+        if (result is AdResult.Success) {
+            PlatformFrequencyManager.recordShow(winner.toBiddingPlatform(), BiddingAdType.BANNER)
+        }
+        
+        return result
     }
 }

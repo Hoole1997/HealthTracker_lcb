@@ -38,7 +38,8 @@ object RewardTwoLayerPreloadManager {
         
         jobs += async { RewardedPreloadManager.preloadAll(context) }
         
-        if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL.toConfigKey())) {
+        // 预加载时使用 shouldParticipateInPreload（不检查频控）
+        if (controller.shouldParticipateInPreload(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL.toConfigKey())) {
             jobs += async {
                 withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
                     rewardedInterstitialController.loadInAdvance(context)
@@ -51,6 +52,42 @@ object RewardTwoLayerPreloadManager {
         
         jobs.awaitAll()
         AdLogger.d("[$TAG] 两层预加载完成")
+    }
+
+    /**
+     * 定向预加载：根据消耗的广告类型补充缓存
+     * 
+     * @param consumedAdType 刚被消耗的广告类型
+     */
+    suspend fun preloadByConsumedType(context: Context, consumedAdType: BiddingAdType) = coroutineScope {
+        AdLogger.d("[$TAG] 定向预加载 | 消耗类型: %s", consumedAdType.name)
+        
+        when (consumedAdType) {
+            BiddingAdType.REWARDED -> {
+                // 消耗了激励广告，只补充激励广告缓存
+                RewardedPreloadManager.preloadAll(context)
+            }
+            BiddingAdType.REWARDED_INTERSTITIAL -> {
+                // 消耗了插页激励广告，只补充插页激励广告缓存
+                val controller = BiddingPlatformController
+                if (controller.shouldParticipateInPreload(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL.toConfigKey())) {
+                    withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                        rewardedInterstitialController.loadInAdvance(context)
+                        Unit
+                    }
+                }
+            }
+            BiddingAdType.INTERSTITIAL -> {
+                // 消耗了插屏广告，只补充插屏广告缓存
+                InterstitialPreloadManager.preloadAll(context)
+            }
+            else -> {
+                // 其他类型，预加载所有
+                preloadAll(context)
+            }
+        }
+        
+        AdLogger.d("[$TAG] 定向预加载完成 | 类型: %s", consumedAdType.name)
     }
 
     suspend fun performTwoLayerBidding(context: Context): FinalBidResult = coroutineScope {
@@ -293,24 +330,27 @@ object RewardTwoLayerPreloadManager {
         onDismiss: (() -> Unit)? = null
     ): AdResult<Unit> {
         val winner = result.winner ?: return AdResult.Failure(
-            AdException(AdException.ERROR_NOT_LOADED, "没有胜出的广告")
+            AdException(AdException.ERROR_NOT_LOADED, "No winning ad")
         )
         
-        AdLogger.d("[$TAG] 展示胜出广告: %s - %s", winner.platform.name, winner.winnerType.name)
+        AdLogger.d("[$TAG] Show winning ad: %s - %s", winner.platform.name, winner.winnerType.name)
+        
+        // 在展示前记录频控（而非广告关闭后）
+        PlatformFrequencyManager.recordShow(winner.platform, winner.winnerType)
         
         return withTimeoutOrNull(SHOW_TIMEOUT_MS) {
             when (winner.winnerType) {
                 BiddingAdType.REWARDED -> showRewardedAd(activity, winner.platform, onRewardEarned, onDismiss)
                 BiddingAdType.REWARDED_INTERSTITIAL -> {
-                    val showResult = rewardedInterstitialController.displayAd(activity, "bidding")
-                    if (showResult is AdResult.Success) {
-                        onRewardEarned?.invoke(true) // 插页激励通常直接给奖励
+                    val result = rewardedInterstitialController.displayAd(activity, "bidding")
+                    if (result is AdResult.Success) {
+                        onRewardEarned?.invoke(true)
                     }
                     onDismiss?.invoke()
                     
-                    when (showResult) {
+                    when (result) {
                         is AdResult.Success -> AdResult.Success(Unit)
-                        is AdResult.Failure -> AdResult.Failure(showResult.error)
+                        is AdResult.Failure -> AdResult.Failure(result.error)
                         else -> AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "Unknown show result"))
                     }
                 }
@@ -318,9 +358,9 @@ object RewardTwoLayerPreloadManager {
                     onRewardEarned?.invoke(false)
                     showInterstitialAd(activity, winner.platform, onDismiss)
                 }
-                else -> AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "不支持的广告类型"))
+                else -> AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "Unsupported ad type"))
             }
-        } ?: AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "展示广告超时"))
+        } ?: AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "Ad show timeout"))
     }
 
     private suspend fun showRewardedAd(

@@ -11,6 +11,7 @@ import net.corekit.monetize.ads.config.BiddingConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.pangle.PangleNativeAdController
 import net.corekit.monetize.ads.topon.TopOnNativeAdController
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ui.NativeAdStyle
 
 /**
@@ -45,7 +46,7 @@ object NativeSmartBiddingManager {
 
         // 检查是否启用多平台竞价
         if (!BiddingPlatformController.isMultiPlatformBiddingEnabled()) {
-            AdLogger.d("[$TAG] 多平台竞价未启用，使用 AdMob 直接展示")
+            AdLogger.logD(TAG, "多平台竞价未启用 | 使用 AdMob 直接展示")
             return NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick)
         }
 
@@ -62,7 +63,7 @@ object NativeSmartBiddingManager {
         style: NativeAdStyle,
         onClick: (() -> Unit)?
     ): Boolean {
-        AdLogger.d("[$TAG] ========== 开始原生广告多平台竞价 ==========")
+        AdLogger.logD(TAG, "开始多平台竞价 | 位置: %s | 样式: %s", position, style.description)
 
         val controller = BiddingPlatformController
         val admobEnabled = controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.NATIVE.toConfigKey())
@@ -72,13 +73,13 @@ object NativeSmartBiddingManager {
         val toponEnabled = controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.NATIVE.toConfigKey()) && isStandardStyle
         
         if (!isStandardStyle) {
-            AdLogger.d("[$TAG] 非 STANDARD 样式 (%s)，TopOn Native 不参与竞价", style.description)
+            AdLogger.logD(TAG, "TopOn 不参与竞价 | 原因: 非 STANDARD 样式 (%s)", style.description)
         }
 
         // 1. 并行加载各平台广告
         val (admobResult, pangleResult, toponResult) = coroutineScope {
             val admobDeferred = if (admobEnabled) async {
-                AdLogger.d("[$TAG] 加载 AdMob Native...")
+                AdLogger.logD(TAG, "加载中 | 平台: AdMob")
                 runCatching { 
                     NativeAds.getInstance().loadInAdvance(context)
                     AdResult.Success(Unit) 
@@ -86,12 +87,12 @@ object NativeSmartBiddingManager {
             } else null
 
             val pangleDeferred = if (pangleEnabled) async {
-                AdLogger.d("[$TAG] 加载 Pangle Native...")
+                AdLogger.logD(TAG, "加载中 | 平台: Pangle")
                 PangleNativeAdController.getInstance().preloadAd(context)
             } else null
 
             val toponDeferred = if (toponEnabled) async {
-                AdLogger.d("[$TAG] 加载 TopOn Native...")
+                AdLogger.logD(TAG, "加载中 | 平台: TopOn")
                 TopOnNativeAdController.getInstance().preloadAd(context)
             } else null
 
@@ -110,7 +111,7 @@ object NativeSmartBiddingManager {
             style = style
         )
 
-        AdLogger.d("[$TAG] 竞价胜出: %s", winner.name)
+        AdLogger.logD(TAG, "竞价胜出 | 平台: %s", winner.name)
 
         // 3. 展示胜出平台的广告
         return showWinnerAd(context, container, position, style, winner, onClick)
@@ -127,35 +128,42 @@ object NativeSmartBiddingManager {
         winner: BiddingWinner,
         onClick: (() -> Unit)?
     ): Boolean {
-        return when (winner) {
+        val success = when (winner) {
             BiddingWinner.ADMOB -> {
-                AdLogger.d("[$TAG] 展示 AdMob Native 广告")
+                AdLogger.logD(TAG, "展示广告 | 平台: AdMob")
                 NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick, bypassBidding = true)
             }
             BiddingWinner.PANGLE -> {
-                AdLogger.d("[$TAG] 展示 Pangle Native 广告")
-                val success = PangleNativeAdController.getInstance().renderToContainer(context, container, style)
-                if (success) {
-                    AdLogger.d("[$TAG] Pangle Native 渲染成功")
+                AdLogger.logD(TAG, "展示广告 | 平台: Pangle")
+                val renderSuccess = PangleNativeAdController.getInstance().renderToContainer(context, container, style)
+                if (renderSuccess) {
+                    AdLogger.logD(TAG, "渲染成功 | 平台: Pangle")
                     net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(context, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE)
                     true
                 } else {
-                    AdLogger.w("[$TAG] Pangle Native 渲染失败，回退到 AdMob")
+                    AdLogger.logW(TAG, "渲染失败 | 平台: Pangle | 回退到 AdMob")
                     NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick)
                 }
             }
             BiddingWinner.TOPON -> {
-                AdLogger.d("[$TAG] 展示 TopOn Native 广告")
-                val success = TopOnNativeAdController.getInstance().renderToContainer(context, container, style)
-                if (success) {
-                    AdLogger.d("[$TAG] TopOn Native 渲染成功")
+                AdLogger.logD(TAG, "展示广告 | 平台: TopOn")
+                val renderSuccess = TopOnNativeAdController.getInstance().renderToContainer(context, container, style)
+                if (renderSuccess) {
+                    AdLogger.logD(TAG, "渲染成功 | 平台: TopOn")
                     net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(context, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE)
                     true
                 } else {
-                    AdLogger.w("[$TAG] TopOn Native 渲染失败，回退到 AdMob")
+                    AdLogger.logW(TAG, "渲染失败 | 平台: TopOn | 回退到 AdMob")
                     NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick)
                 }
             }
         }
+        
+        // Record platform frequency on successful show
+        if (success) {
+            PlatformFrequencyManager.recordShow(winner.toBiddingPlatform(), BiddingAdType.NATIVE)
+        }
+        
+        return success
     }
 }

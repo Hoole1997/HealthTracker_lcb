@@ -9,6 +9,7 @@ import net.corekit.monetize.ads.config.BiddingConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.pangle.PangleInterstitialAdController
 import net.corekit.monetize.ads.topon.TopOnInterstitialAdController
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 
 /**
  * 插页广告智能竞价管理器
@@ -82,27 +83,34 @@ object InterstitialSmartBiddingManager {
         bidResult: PlatformBidResult,
         position: String
     ): AdResult<Unit> {
-        return when (bidResult.platform) {
+        val result = when (bidResult.platform) {
             BiddingPlatform.ADMOB -> {
                 AdLogger.d("[$TAG] 展示 AdMob 插页广告")
                 InterstitialAds.getInstance().displayAd(activity, position)
             }
             BiddingPlatform.PANGLE -> {
                 AdLogger.d("[$TAG] 展示 Pangle 插页广告")
-                val result = PangleInterstitialAdController.getInstance().showAd(activity)
-                if (result is AdResult.Success) {
+                val showResult = PangleInterstitialAdController.getInstance().showAd(activity)
+                if (showResult is AdResult.Success) {
                     net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
                 }
-                result
+                showResult
             }
             BiddingPlatform.TOPON -> {
                 AdLogger.d("[$TAG] 展示 TopOn 插页广告")
-                val result = TopOnInterstitialAdController.getInstance().showAd(activity)
-                if (result is AdResult.Success) {
+                val showResult = TopOnInterstitialAdController.getInstance().showAd(activity)
+                if (showResult is AdResult.Success) {
                     net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
                 }
-                result
+                showResult
             }
         }
+        
+        // Record platform frequency on successful show
+        if (result is AdResult.Success) {
+            PlatformFrequencyManager.recordShow(bidResult.platform, BiddingAdType.INTERSTITIAL)
+        }
+        
+        return result
     }
 }

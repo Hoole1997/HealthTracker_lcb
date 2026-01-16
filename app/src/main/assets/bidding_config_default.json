@@ -1,4 +1,32 @@
 {
+    "platform_frequency_enabled": true,
+    "platform_frequency": {
+        "admob": {
+            "splash": { "max_daily_show": 50, "max_daily_click": 10, "min_show_interval_seconds": 30 },
+            "interstitial": { "max_daily_show": 30, "max_daily_click": 8, "min_show_interval_seconds": 60 },
+            "rewarded": { "max_daily_show": 20, "max_daily_click": 5, "min_show_interval_seconds": 30 },
+            "rewarded_interstitial": { "max_daily_show": 20, "max_daily_click": 5, "min_show_interval_seconds": 30 },
+            "native": { "max_daily_show": 100, "max_daily_click": 20, "min_show_interval_seconds": 10 },
+            "full_native": { "max_daily_show": 50, "max_daily_click": 10, "min_show_interval_seconds": 30 },
+            "banner": { "max_daily_show": 200, "max_daily_click": 30, "min_show_interval_seconds": 5 }
+        },
+        "pangle": {
+            "splash": { "max_daily_show": 50, "max_daily_click": 10, "min_show_interval_seconds": 30 },
+            "interstitial": { "max_daily_show": 30, "max_daily_click": 8, "min_show_interval_seconds": 60 },
+            "rewarded": { "max_daily_show": 20, "max_daily_click": 5, "min_show_interval_seconds": 30 },
+            "native": { "max_daily_show": 100, "max_daily_click": 20, "min_show_interval_seconds": 10 },
+            "full_native": { "max_daily_show": 50, "max_daily_click": 10, "min_show_interval_seconds": 30 },
+            "banner": { "max_daily_show": 200, "max_daily_click": 30, "min_show_interval_seconds": 5 }
+        },
+        "topon": {
+            "splash": { "max_daily_show": 50, "max_daily_click": 10, "min_show_interval_seconds": 30 },
+            "interstitial": { "max_daily_show": 30, "max_daily_click": 8, "min_show_interval_seconds": 60 },
+            "rewarded": { "max_daily_show": 20, "max_daily_click": 5, "min_show_interval_seconds": 30 },
+            "native": { "max_daily_show": 100, "max_daily_click": 20, "min_show_interval_seconds": 10 },
+            "full_native": { "max_daily_show": 50, "max_daily_click": 10, "min_show_interval_seconds": 30 },
+            "banner": { "max_daily_show": 200, "max_daily_click": 30, "min_show_interval_seconds": 5 }
+        }
+    },
     "free_user": {
         "bidding_enabled": 1,
         "two_layer_bidding_enabled": 1,

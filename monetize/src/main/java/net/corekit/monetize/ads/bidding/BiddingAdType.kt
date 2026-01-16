@@ -24,6 +24,15 @@ enum class BiddingAdType {
     /**
      * 转换为配置文件 key 字符串
      */
-    fun toConfigKey(): String = name.lowercase()
+    fun toConfigKey(): String = name.lowercase();
+
+    companion object {
+        /**
+         * 从配置文件 key 字符串解析
+         */
+        fun fromConfigKey(key: String): BiddingAdType? {
+            return entries.find { it.name.equals(key, ignoreCase = true) }
+        }
+    }
 }
 

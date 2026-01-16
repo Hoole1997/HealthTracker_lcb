@@ -141,11 +141,13 @@ object BiddingLogger {
     }
 
     /**
-     * 频控信息
+     * 频控信息（增强版，包含点击次数）
      */
     data class FrequencyInfo(
         val dailyShow: Int,
         val maxDailyShow: Int,
+        val dailyClick: Int = 0,
+        val maxDailyClick: Int = 0,
         val isIntervalOk: Boolean = true,
         val currentIntervalSec: Int? = null,
         val minIntervalSec: Int? = null
@@ -153,10 +155,32 @@ object BiddingLogger {
         fun toDisplayString(): String {
             return when {
                 !isIntervalOk && currentIntervalSec != null && minIntervalSec != null ->
-                    "⏳ 间隔 (${currentIntervalSec}s < ${minIntervalSec}s)"
-                dailyShow >= maxDailyShow -> "✗ 超限 ($dailyShow/$maxDailyShow)"
+                    "⏳ 间隔不足 (${currentIntervalSec}s < ${minIntervalSec}s)"
+                dailyShow >= maxDailyShow -> "✗ 展示超限 ($dailyShow/$maxDailyShow)"
+                dailyClick >= maxDailyClick && maxDailyClick > 0 -> "✗ 点击超限 ($dailyClick/$maxDailyClick)"
                 maxDailyShow > 0 -> "✓ 可用 ($dailyShow/$maxDailyShow)"
                 else -> "- 未配置"
+            }
+        }
+        
+        /**
+         * 详细显示（包含展示和点击）
+         */
+        fun toDetailString(): String {
+            return when {
+                maxDailyShow <= 0 -> "- 未配置"
+                else -> {
+                    val showStr = "展示:$dailyShow/$maxDailyShow"
+                    val clickStr = if (maxDailyClick > 0) " 点击:$dailyClick/$maxDailyClick" else ""
+                    val intervalStr = if (!isIntervalOk) " ⏳间隔不足" else ""
+                    val statusIcon = when {
+                        dailyShow >= maxDailyShow -> "✗"
+                        dailyClick >= maxDailyClick && maxDailyClick > 0 -> "✗"
+                        !isIntervalOk -> "⏳"
+                        else -> "✓"
+                    }
+                    "$statusIcon $showStr$clickStr$intervalStr"
+                }
             }
         }
     }
@@ -227,6 +251,7 @@ object BiddingLogger {
 
     /**
      * 输出单层竞价日志（带频控）
+     * 根据 AdLogger.verboseMode 决定输出简化版还是详细版
      */
     fun logSingleLayerBidding(
         scene: String,
@@ -235,7 +260,64 @@ object BiddingLogger {
         durationMs: Long
     ) {
         if (!AdLogger.isLogEnabled()) return
-
+        
+        if (AdLogger.verboseMode) {
+            logSingleLayerBiddingVerbose(scene, entries, winner, durationMs)
+        } else {
+            logSingleLayerBiddingSimple(scene, entries, winner, durationMs)
+        }
+    }
+    
+    /**
+     * 简化版单层竞价日志
+     */
+    private fun logSingleLayerBiddingSimple(
+        scene: String,
+        entries: List<BiddingEntry>,
+        winner: BiddingEntry?,
+        durationMs: Long
+    ) {
+        val tag = "Bidding"
+        
+        // 构建参与平台状态
+        val platformStatus = entries.joinToString(", ") { entry ->
+            val statusIcon = when (entry.status) {
+                EntryStatus.READY -> "✓"
+                EntryStatus.NO_CACHE -> "✗"
+                EntryStatus.TIMEOUT -> "⏱"
+                EntryStatus.DISABLED -> "-"
+                EntryStatus.FREQ_LIMITED -> "⛔"
+            }
+            "${entry.platform}($statusIcon)"
+        }
+        
+        // 构建 eCPM 信息
+        val ecpmInfo = entries.filter { it.status == EntryStatus.READY }
+            .joinToString(", ") { "${it.platform}=\$${String.format("%.4f", it.ecpm)}" }
+        
+        Log.d(TAG, "[$tag] ═══════════ ${scene}广告竞价 ═══════════")
+        Log.d(TAG, "[$tag] 参与平台: $platformStatus")
+        if (ecpmInfo.isNotEmpty()) {
+            Log.d(TAG, "[$tag] eCPM: $ecpmInfo")
+        }
+        if (winner != null) {
+            val freqInfo = winner.frequencyInfo?.toDisplayString() ?: ""
+            Log.d(TAG, "[$tag] ⭐ 胜出: ${winner.platform} - ${winner.adType} | eCPM: \$${String.format("%.4f", winner.ecpm)} | 耗时: ${durationMs}ms${if (freqInfo.isNotEmpty()) " | 频控: $freqInfo" else ""}")
+        } else {
+            Log.w(TAG, "[$tag] ❌ 竞价失败，无可用广告 | 耗时: ${durationMs}ms")
+        }
+        Log.d(TAG, "[$tag] ════════════════════════════════════")
+    }
+    
+    /**
+     * 详细版单层竞价日志（表格格式）
+     */
+    private fun logSingleLayerBiddingVerbose(
+        scene: String,
+        entries: List<BiddingEntry>,
+        winner: BiddingEntry?,
+        durationMs: Long
+    ) {
         val tag = "${scene}Bidding"
         
         Log.d(TAG, "[$tag] ╔══════════════════════════════════════════════════════════════════════════════╗")

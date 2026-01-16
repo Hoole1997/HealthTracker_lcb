@@ -21,7 +21,7 @@ import java.io.IOException
  */
 @SuppressLint("StaticFieldLeak")
 object FpuController {
-    private const val TAG = "FPU配置"
+    private const val TAG = "FpuConfig"
     private const val CONFIG_FILE_NAME = "fpu_config.json"
     private const val REMOTE_CONFIG_KEY = "adfill_target_fpu"
     

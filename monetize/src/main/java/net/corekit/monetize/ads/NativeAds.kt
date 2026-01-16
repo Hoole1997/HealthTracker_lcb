@@ -148,8 +148,8 @@ class NativeAds private constructor() {
 
         if (!canLoad) {
             val currentCount = getCachedAdCount(finalAdUnitId)
-            AdLogger.d("[$TAG] 缓存已满或正在加载中，跳过加载: %s (当前缓存: %d/%d, 正在加载: %d)", 
-                finalAdUnitId, currentCount, maxCacheSizePerAdUnit, inflightLoads[finalAdUnitId] ?: 0)
+            AdLogger.logD(TAG, "跳过加载 | 原因: 缓存已满或加载中 | 缓存: %d/%d | 加载中: %d", 
+                currentCount, maxCacheSizePerAdUnit, inflightLoads[finalAdUnitId] ?: 0)
             return AdResult.Success(Unit)
         }
 
@@ -179,13 +179,13 @@ class NativeAds private constructor() {
         
         // 2. 如果缓存为空，立即加载并缓存一个广告
         if (cachedAd == null) {
-            AdLogger.d("缓存为空，立即加载原生广告，广告位ID: %s", finalAdUnitId)
+            AdLogger.logD(TAG, "缓存未命中 | 触发即时加载")
             loadAdToCache(context, finalAdUnitId,style)
             cachedAd = getCachedAd(finalAdUnitId)
         }
         
         return if (cachedAd != null) {
-            AdLogger.d("使用缓存中的原生广告，广告位ID: %s", finalAdUnitId)
+            AdLogger.logD(TAG, "缓存命中 | 返回缓存广告")
             AdResult.Success(cachedAd.ad)
         } else {
             AdResult.Failure(createAdException("广告加载失败"))
@@ -211,7 +211,7 @@ class NativeAds private constructor() {
     ): Boolean {
         // 检查是否启用多平台竞价（透明切换）
         if (!bypassBidding && net.corekit.monetize.ads.bidding.BiddingPlatformController.isMultiPlatformBiddingEnabled()) {
-            AdLogger.d("原生广告启用多平台竞价，自动切换到 smartBidAndShow")
+            AdLogger.logD(TAG, "启用多平台竞价 | 切换到 SmartBidding")
             return net.corekit.monetize.ads.bidding.NativeSmartBiddingManager.smartBidAndShow(
                 context, container, position, style, onClick
             )
@@ -221,7 +221,7 @@ class NativeAds private constructor() {
         
         // 累积触发统计
         totalShowTriggerCount++
-        AdLogger.d("原生广告累积触发展示次数: $totalShowTriggerCount")
+        AdLogger.logD(TAG, "展示触发 | 位置: %s | 累计触发: %d", position, totalShowTriggerCount)
         
         reportAdData(
             eventName = "ad_position",
@@ -238,7 +238,7 @@ class NativeAds private constructor() {
             is AdResult.Failure -> {
                 // 累积展示失败次数统计
                 totalShowFailCount++
-                AdLogger.d("原生广告累积展示失败次数: $totalShowFailCount")
+                AdLogger.logW(TAG, "展示失败 | 位置: %s | 原因: 拦截器拦截 | 累计失败: %d", position, totalShowFailCount)
                 
                 reportAdData(
                     eventName = "ad_show_fail",
@@ -300,7 +300,7 @@ class NativeAds private constructor() {
                             // 累积点击统计
                             totalClickCount++
                             onClick?.invoke()
-                            AdLogger.d("原生广告累积点击次数: $totalClickCount")
+                            AdLogger.logD(TAG, "用户点击 | 位置: %s | 累计点击: %d", position, totalClickCount)
 
                             AdConfigManager.getNativeConfig().recordClick()
 
@@ -319,11 +319,9 @@ class NativeAds private constructor() {
                         }
 
                         override fun onAdImpression() {
-                            AdLogger.d("原生广告展示完成")
-
                             // 累积展示统计
                             totalShowCount++
-                            AdLogger.d("原生广告累积展示次数: $totalShowCount")
+                            AdLogger.logD(TAG, "展示成功 | 平台: AdMob | 位置: %s | 累计展示: %d", position, totalShowCount)
 
                             // 记录展示
                             AdConfigManager.getNativeConfig().recordShow()
@@ -363,7 +361,7 @@ class NativeAds private constructor() {
                 is AdResult.Failure -> {
                     // 累积展示失败次数统计
                     totalShowFailCount++
-                    AdLogger.d("原生广告累积展示失败次数: $totalShowFailCount")
+                    AdLogger.logW(TAG, "展示失败 | 位置: %s | 原因: %s | 累计失败: %d", position, result.error.message, totalShowFailCount)
                     
                     reportAdData(
                         eventName = "ad_show_fail",
@@ -375,10 +373,6 @@ class NativeAds private constructor() {
                         ),
                         style
                     )
-                    
-                    // 显示错误视图
-//                    container.removeAllViews()
-//                    container.addView(nativeAdView.createErrorView(context, result.error.message))
                     false
                 }
                 AdResult.Loading -> {
@@ -389,7 +383,7 @@ class NativeAds private constructor() {
         } catch (e: Exception) {
             // 累积展示失败次数统计
             totalShowFailCount++
-            AdLogger.d("原生广告累积展示失败次数: $totalShowFailCount")
+            AdLogger.logE(TAG, "展示异常 | 位置: %s | 原因: %s | 累计失败: %d", position, e.message, totalShowFailCount)
             
             reportAdData(
                 eventName = "ad_show_fail",
@@ -401,8 +395,6 @@ class NativeAds private constructor() {
                 ),
                 style
             )
-            
-            AdLogger.e("显示原生广告失败", e)
 //            container.removeAllViews()
 //            container.addView(nativeAdView.createErrorView(context, "广告显示异常"))
             false
@@ -415,7 +407,7 @@ class NativeAds private constructor() {
     private suspend fun loadAd(context: Context, adUnitId: String,style: NativeAdStyle = NativeAdStyle.STANDARD): NativeAd? {
         // 累积加载次数统计
         totalLoadCount++
-        AdLogger.d("原生广告累积加载次数: $totalLoadCount")
+        AdLogger.logD(TAG, "开始加载 | 平台: AdMob | 累计加载: %d", totalLoadCount)
         
         reportAdData(
             eventName = "ad_start_load",
