@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAd
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAdLoadListener
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeRequest
+import com.healthtracker.framework.ext.visible
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.R
@@ -122,11 +123,12 @@ class PangleNativeAdController private constructor() {
             val adView = android.view.LayoutInflater.from(context)
                 .inflate(layoutResId, container, false) as android.view.ViewGroup
 
-            // 2. 绑定广告数据（使用 AdMob 的标准 View ID）
+            // 2. 绑定广告数据
             val titleView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_title)
             val descView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_description)
             val ctaView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_btn_cta)
             val iconView = adView.findViewById<android.widget.ImageView>(net.corekit.monetize.R.id.ads_iv_icon)
+            val logoContainer = adView.findViewById<FrameLayout>(net.corekit.monetize.R.id.fl_ad_logo)
             val mediaContainer = adView.findViewById<FrameLayout>(net.corekit.monetize.R.id.fl_ad_media)
             
             titleView?.text = data.title ?: "Ad"
@@ -140,24 +142,46 @@ class PangleNativeAdController private constructor() {
                     .into(iconView)
             }
             
-            // 4. 添加到容器
+            // 4. 处理 Pangle Ad Logo（合规要求）
+            logoContainer?.let { container ->
+                container.removeAllViews()
+                data.adLogoView?.let { logoView ->
+                    container.addView(logoView)
+                    container.visible()
+                }
+            }
+
+            mediaContainer?.let {container ->
+                container.removeAllViews()
+                data.mediaView?.let {mediaView ->
+                    container.addView(mediaView)
+                    container.visible()
+                }
+
+            }
+            
+            // 5. 添加到容器
             container.addView(adView)
             
-            // 5. 构建 PAGViewBinder（关键步骤！）
+            // 6. 构建 PAGViewBinder（关键步骤！）
             val binder = com.bytedance.sdk.openadsdk.api.nativeAd.PAGViewBinder.Builder(container)
                 .titleTextView(titleView)
                 .descriptionTextView(descView)
                 .iconImageView(iconView)
+                .logoViewGroup(logoContainer)  // 修复: 添加 Logo 容器绑定
+                .mediaContentViewGroup(mediaContainer)
                 .build()
             
-            // 6. 准备可点击视图列表
+            // 7. 准备可点击视图列表（包含所有可交互元素）
             val clickViews = java.util.ArrayList<android.view.View>().apply {
                 titleView?.let { add(it) }
+                descView?.let { add(it) }  // 修复: 添加描述区域到点击列表
                 ctaView?.let { add(it) }
                 iconView?.let { add(it) }
+                mediaContainer?.let { add(it) }
             }
             
-            // 7. 注册视图交互
+            // 8. 注册视图交互
             ad.registerViewForInteraction(
                 binder,
                 clickViews,

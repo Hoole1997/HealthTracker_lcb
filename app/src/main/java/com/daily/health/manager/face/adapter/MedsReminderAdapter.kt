@@ -125,7 +125,7 @@ class MedsReminderAdapter(
                     .color(net.corekit.monetize.R.color.white)
                     .show()
                 binding.adContainer.removeAllViews()
-                activity.loadNative(binding.adContainer, AdPosition.NA_MEDS_REMINDER_LIST, style = NativeAdStyle.STANDARD){
+                activity.loadNative(binding.adContainer, AdPosition.NA_MEDS_REMINDER_LIST, style = NativeAdStyle.CARD_8){
                     if(it){
                         android.util.Log.d("MedsReminderAdapter", "Ad placeholder visible at position=$bindingAdapterPosition")
 

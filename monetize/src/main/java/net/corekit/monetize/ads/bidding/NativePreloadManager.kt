@@ -9,6 +9,7 @@ import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.pangle.PangleNativeAdController
 import net.corekit.monetize.ads.topon.TopOnNativeAdController
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
+import net.corekit.monetize.ui.NativeAdStyle
 import java.util.Locale
 
 /**
@@ -152,7 +153,8 @@ object NativePreloadManager {
         pangleLoadResult: AdResult<*>? = null,
         toponLoadResult: AdResult<*>? = null,
         pangleAdUnitId: String? = null,
-        toponPlacementId: String? = null
+        toponPlacementId: String? = null,
+        style: NativeAdStyle = NativeAdStyle.STANDARD
     ): BiddingWinner {
         val controller = BiddingPlatformController
         val startTime = System.currentTimeMillis()
@@ -161,7 +163,9 @@ object NativePreloadManager {
         // 获取各平台的启用状态
         val admobEnabled = controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.NATIVE.toConfigKey())
         val pangleEnabled = controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.NATIVE.toConfigKey())
-        val toponEnabled = controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.NATIVE.toConfigKey())
+        // TopOn 原生广告仅在 STANDARD 样式时参与竞价（因为 TopOn 需要在加载时指定尺寸，简化为仅支持 Normal）
+        val isStandardStyle = style == NativeAdStyle.STANDARD
+        val toponEnabled = controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.NATIVE.toConfigKey()) && isStandardStyle
         
         // 获取 AdMob 收益
         val admobValueUsd = if (admobEnabled && admobLoadResult is AdResult.Success<*>) {

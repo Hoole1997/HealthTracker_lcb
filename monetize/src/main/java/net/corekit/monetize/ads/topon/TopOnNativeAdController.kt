@@ -1,8 +1,15 @@
 package net.corekit.monetize.ads.topon
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
+import android.content.res.Resources
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
+import com.healthtracker.framework.ext.dp2px
+import com.healthtracker.framework.util.ScreenUtil
 import com.thinkup.nativead.api.TUNative
 import com.thinkup.nativead.api.TUNativeAdView
 import com.thinkup.nativead.api.TUNativeEventListener
@@ -10,6 +17,7 @@ import com.thinkup.nativead.api.TUNativeNetworkListener
 import com.thinkup.nativead.api.NativeAd
 import com.thinkup.core.api.TUAdInfo
 import com.thinkup.core.api.AdError
+import com.thinkup.core.api.TUAdConst
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.AdException
@@ -43,7 +51,7 @@ class TopOnNativeAdController private constructor() {
     private val isLoading = AtomicBoolean(false)
     private var loadTimestamp: Long = 0
     private val cacheExpireTime = 60 * 60 * 1000L
-
+    private val nativeAdView = ToponNativeAdView()
     suspend fun preloadAd(context: Context): AdResult<Unit> {
         if (!AdIdHelper.hasTopOnNativeId()) {
             AdLogger.d("[$TAG] 原生广告 ID 未配置，跳过加载")
@@ -101,10 +109,20 @@ class TopOnNativeAdController private constructor() {
             })
             
             nativeAd = ad
+            ad.setLocalExtra(getAdSize(context))
             ad.makeAdRequest()
         }
 
     fun getCachedNativeAd(): NativeAd? = cachedNativeAd
+
+    private fun getAdSize(context: Context): Map<String, Int>{
+        val widthPixels = ScreenUtil.screenWidth()
+
+        return mutableMapOf<String,Int>().apply {
+            this[TUAdConst.KEY.AD_WIDTH] = widthPixels
+            this[TUAdConst.KEY.AD_HEIGHT] = (widthPixels / 4f).toInt()
+        }
+    }
 
     /**
      * 将广告渲染到容器中
@@ -118,11 +136,18 @@ class TopOnNativeAdController private constructor() {
     ): Boolean {
         val nativeAd = cachedNativeAd ?: return false
         
+        // 修复: 确保使用 Activity Context (Pangle 等平台要求)
+        val activityContext = getActivityContext(context)
+        if (activityContext == null) {
+            AdLogger.w("[$TAG] 无法获取 Activity Context，尝试使用原始 Context")
+        }
+        val renderContext = activityContext ?: context
+        
         try {
             container.removeAllViews()
             
-            // 1. 创建 TUNativeAdView
-            val nativeAdView = TUNativeAdView(context)
+            // 1. 创建 TUNativeAdView (使用 Activity Context)
+//            val nativeAdView = TUNativeAdView(renderContext)
             
             // 2. 设置事件监听
             nativeAd.setNativeEventListener(object : TUNativeEventListener {
@@ -142,52 +167,8 @@ class TopOnNativeAdController private constructor() {
             
             // 3. 始终使用自渲染（避免模板渲染高度不可控问题）
             AdLogger.d("[$TAG] 使用自渲染 (样式: %s)", style.description)
-            
-            // 使用 TopOn 专用布局
-            val layoutResId = style.getTopOnLayout()
-            val adView = android.view.LayoutInflater.from(context)
-                .inflate(layoutResId, null) as android.view.ViewGroup
-            
-            // 获取素材
-            val material = nativeAd.adMaterial
-            
-            // 绑定数据到自定义布局
-            val titleView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_title)
-            val descView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_tv_description)
-            val ctaView = adView.findViewById<android.widget.TextView>(net.corekit.monetize.R.id.ads_btn_cta)
-            val iconView = adView.findViewById<android.widget.ImageView>(net.corekit.monetize.R.id.ads_iv_icon)
-            val mediaContainer = adView.findViewById<FrameLayout>(net.corekit.monetize.R.id.fl_ad_media)
-            
-            titleView?.text = material?.title ?: "Ad"
-            descView?.text = material?.descriptionText ?: ""
-            ctaView?.text = material?.callToActionText ?: "Install"
-            
-            // 使用 Glide 加载图标
-            material?.iconImageUrl?.let { iconUrl ->
-                com.bumptech.glide.Glide.with(context)
-                    .load(iconUrl)
-                    .into(iconView)
-            }
-            
-            // 创建 TUNativePrepareInfo
-            val prepareInfo = com.thinkup.nativead.api.TUNativePrepareInfo()
-            titleView?.let { prepareInfo.titleView = it }
-            descView?.let { prepareInfo.descView = it }
-            ctaView?.let { prepareInfo.ctaView = it }
-            iconView?.let { prepareInfo.iconView = it }
-            
-            // 添加可点击视图
-            val clickViews = mutableListOf<android.view.View>()
-            titleView?.let { clickViews.add(it) }
-            ctaView?.let { clickViews.add(it) }
-            iconView?.let { clickViews.add(it) }
-            prepareInfo.clickViewList = clickViews
-            
-            // 渲染
-            nativeAd.renderAdContainer(nativeAdView, adView)
-            nativeAd.prepare(nativeAdView, prepareInfo)
-            
-            container.addView(nativeAdView)
+
+            nativeAdView.bindNativeAdToContainer(context, container, nativeAd, style)
             AdLogger.d("[$TAG] TopOn 原生广告渲染成功")
             return true
         } catch (e: Exception) {
@@ -221,5 +202,20 @@ class TopOnNativeAdController private constructor() {
         cachedNativeAd = null
         cachedEcpm = 0.0
         loadTimestamp = 0
+    }
+    
+    /**
+     * 从 Context 中获取 Activity
+     * Pangle 等广告平台要求使用 Activity Context 创建广告视图
+     */
+    private fun getActivityContext(context: Context): Activity? {
+        var ctx = context
+        while (ctx is ContextWrapper) {
+            if (ctx is Activity) {
+                return ctx
+            }
+            ctx = ctx.baseContext
+        }
+        return null
     }
 }

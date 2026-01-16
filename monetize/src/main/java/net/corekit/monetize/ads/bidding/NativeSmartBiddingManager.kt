@@ -67,7 +67,13 @@ object NativeSmartBiddingManager {
         val controller = BiddingPlatformController
         val admobEnabled = controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.NATIVE.toConfigKey())
         val pangleEnabled = controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.NATIVE.toConfigKey())
-        val toponEnabled = controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.NATIVE.toConfigKey())
+        // TopOn 原生广告仅在 STANDARD 样式时参与竞价（因为 TopOn 需要在加载时指定尺寸，不同尺寸需要不同缓存，简化为仅支持 Normal）
+        val isStandardStyle = style == NativeAdStyle.STANDARD
+        val toponEnabled = controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.NATIVE.toConfigKey()) && isStandardStyle
+        
+        if (!isStandardStyle) {
+            AdLogger.d("[$TAG] 非 STANDARD 样式 (%s)，TopOn Native 不参与竞价", style.description)
+        }
 
         // 1. 并行加载各平台广告
         val (admobResult, pangleResult, toponResult) = coroutineScope {
@@ -96,11 +102,12 @@ object NativeSmartBiddingManager {
             )
         }
 
-        // 2. 执行竞价
+        // 2. 执行竞价（传入 style 参数，用于判断 TopOn 是否参与）
         val winner = NativePreloadManager.performBidding(
             admobLoadResult = admobResult,
             pangleLoadResult = pangleResult,
-            toponLoadResult = toponResult
+            toponLoadResult = toponResult,
+            style = style
         )
 
         AdLogger.d("[$TAG] 竞价胜出: %s", winner.name)

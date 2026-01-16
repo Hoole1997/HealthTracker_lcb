@@ -107,7 +107,8 @@ val adClasses = arrayOf(
     AudienceNetworkActivity::class.java,
     TTAppOpenAdActivity::class.java,
     TTAdActivity::class.java,
-    GuideScreen::class.java
+    GuideScreen::class.java,
+    sg.bigo.ads.api.AdActivity::class.java,
 )
 
 fun getTodayStart(): Date {

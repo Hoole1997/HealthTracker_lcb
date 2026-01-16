@@ -16,14 +16,11 @@ data class NativeAdStyle(
      */
     fun getPangleLayout(): Int {
         return when (this) {
-            STANDARD -> R.layout.layout_pangle_native_ads
             CARD -> R.layout.layout_pangle_native_ad_card
             CARD_3 -> R.layout.layout_pangle_native_ad_card3
             CARD_4 -> R.layout.layout_pangle_native_ad_card4
-            CARD_5 -> R.layout.layout_pangle_native_ad_card5
-            CARD_6 -> R.layout.layout_pangle_native_ad_card6
             CARD_7 -> R.layout.layout_pangle_native_ad_card7
-            CARD_8 -> R.layout.layout_pangle_native_ad_card8
+            CARD_5,CARD_8 -> R.layout.layout_pangle_native_ad_card8
             else -> R.layout.layout_pangle_native_ads
         }
     }
@@ -33,14 +30,11 @@ data class NativeAdStyle(
      */
     fun getTopOnLayout(): Int {
         return when (this) {
-            STANDARD -> R.layout.layout_topon_native_ads
             CARD -> R.layout.layout_topon_native_ad_card
             CARD_3 -> R.layout.layout_topon_native_ad_card3
             CARD_4 -> R.layout.layout_topon_native_ad_card4
-            CARD_5 -> R.layout.layout_topon_native_ad_card5
-            CARD_6 -> R.layout.layout_topon_native_ad_card6
             CARD_7 -> R.layout.layout_topon_native_ad_card7
-            CARD_8 -> R.layout.layout_topon_native_ad_card8
+            CARD_5,CARD_8 -> R.layout.layout_topon_native_ad_card8
             else -> R.layout.layout_topon_native_ads
         }
     }

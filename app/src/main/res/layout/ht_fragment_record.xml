@@ -113,7 +113,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/dp_12"
-                app:layout_constraintTop_toBottomOf="@id/include_bs" />
+                app:layout_constraintTop_toBottomOf="@id/include_bs"
+                android:background="@drawable/bg_rect_white_12"
+                android:backgroundTint="#E8E9EE"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

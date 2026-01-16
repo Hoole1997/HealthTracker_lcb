@@ -9,29 +9,20 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_rect_white_12"
-        android:backgroundTint="#E8E9EE"
         android:paddingHorizontal="@dimen/dp_12"
         android:paddingVertical="@dimen/dp_12">
 
         <!-- 应用图标 -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/ads_icon_cv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/dp_8"
-            app:cardElevation="0dp"
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/ads_iv_icon"
+            android:layout_width="@dimen/dp_56"
+            android:layout_height="@dimen/dp_56"
+            app:round="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/ads_content_ll"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ads_iv_icon"
-                android:layout_width="@dimen/dp_56"
-                android:layout_height="@dimen/dp_56"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_info_details" />
-        </androidx.cardview.widget.CardView>
+            android:src="@android:drawable/ic_menu_info_details" />
 
         <!-- 广告内容区域 -->
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -43,7 +34,7 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ads_btn_cta"
-            app:layout_constraintStart_toEndOf="@id/ads_icon_cv"
+            app:layout_constraintStart_toEndOf="@id/ads_iv_icon"
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
@@ -109,15 +100,15 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="INSTALL" />
 
-        <!-- Pangle Ad Logo 容器 -->
-        <FrameLayout
-            android:id="@+id/fl_ad_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Pangle Ad Logo 容器 -->
+    <FrameLayout
+        android:id="@+id/fl_ad_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="end"
+        android:visibility="gone"/>
 
 </FrameLayout>
