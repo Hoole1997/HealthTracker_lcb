@@ -189,6 +189,18 @@ object AdsManager {
                 if (net.corekit.monetize.ads.pangle.PangleRewardedAdController.getInstance().hasValidCache()) 1 else 0, 1
             ))
         }
+        if (AdIdHelper.hasPangleNativeId()) {
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
+                "Native", "Pangle", net.corekit.monetize.BuildConfig.PANGLE_NATIVE_ID,
+                if (net.corekit.monetize.ads.pangle.PangleNativeAdController.getInstance().hasValidCache()) 1 else 0, 1
+            ))
+        }
+        if (AdIdHelper.hasPangleBannerId()) {
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
+                "Banner", "Pangle", net.corekit.monetize.BuildConfig.PANGLE_BANNER_ID,
+                if (net.corekit.monetize.ads.pangle.PangleBannerAdController.getInstance().hasValidCache()) 1 else 0, 1
+            ))
+        }
         
         // 3. TopOn 状态
         if (AdIdHelper.hasTopOnSplashId()) {
@@ -207,6 +219,18 @@ object AdsManager {
             entries.add(net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
                 "Rewarded", "TopOn", net.corekit.monetize.BuildConfig.TOPON_REWARDED_ID,
                 if (net.corekit.monetize.ads.topon.TopOnRewardedAdController.getInstance().hasValidCache()) 1 else 0, 1
+            ))
+        }
+        if (AdIdHelper.hasTopOnNativeId()) {
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
+                "Native", "TopOn", net.corekit.monetize.BuildConfig.TOPON_NATIVE_ID,
+                if (net.corekit.monetize.ads.topon.TopOnNativeAdController.getInstance().hasValidCache()) 1 else 0, 1
+            ))
+        }
+        if (AdIdHelper.hasTopOnBannerId()) {
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
+                "Banner", "TopOn", net.corekit.monetize.BuildConfig.TOPON_BANNER_ID,
+                if (net.corekit.monetize.ads.topon.TopOnBannerAdController.getInstance().hasValidCache()) 1 else 0, 1
             ))
         }
         
