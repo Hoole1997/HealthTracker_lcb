@@ -18,7 +18,7 @@
             android:exported="false" />
         
         <activity
-            android:name=".ui.FullScreenNativeAdActivity"
+            android:name=".ui.AdmobFullScreenNativeAdActivity"
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.NativeFullScreen" />

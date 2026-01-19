@@ -166,6 +166,7 @@ object AdsManager {
         entries.add(Controllers.appOpen.getCacheStatus())
         entries.add(Controllers.interstitial.getCacheStatus())
         entries.add(Controllers.native.getCacheStatus())
+        entries.add(Controllers.fullScreenNative.getCacheStatus())
         entries.add(Controllers.banner.getCacheStatus())
         entries.add(RewardedAds.getInstance().getCacheStatus())
         entries.add(RewardedInterstitialAds.getInstance().getCacheStatus())
@@ -201,6 +202,12 @@ object AdsManager {
                 if (net.corekit.monetize.ads.pangle.PangleBannerAdController.getInstance().hasValidCache()) 1 else 0, 1
             ))
         }
+        if (AdIdHelper.hasPangleFullNativeId()) {
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
+                "FullNative", "Pangle", net.corekit.monetize.BuildConfig.PANGLE_FULL_NATIVE_ID,
+                if (net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdController.getInstance().hasValidCache()) 1 else 0, 1
+            ))
+        }
         
         // 3. TopOn 状态
         if (AdIdHelper.hasTopOnSplashId()) {
@@ -231,6 +238,12 @@ object AdsManager {
             entries.add(net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
                 "Banner", "TopOn", net.corekit.monetize.BuildConfig.TOPON_BANNER_ID,
                 if (net.corekit.monetize.ads.topon.TopOnBannerAdController.getInstance().hasValidCache()) 1 else 0, 1
+            ))
+        }
+        if (AdIdHelper.hasTopOnFullNativeId()) {
+            entries.add(net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
+                "FullNative", "TopOn", net.corekit.monetize.BuildConfig.TOPON_FULL_NATIVE_ID,
+                if (net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController.getInstance().hasValidCache()) 1 else 0, 1
             ))
         }
         

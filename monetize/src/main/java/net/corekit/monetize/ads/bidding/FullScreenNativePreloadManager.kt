@@ -16,7 +16,6 @@ object FullScreenNativePreloadManager {
 
     private const val TAG = "FullNativePreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
-    private const val DEFAULT_ADMOB_ECPM = 1.0
 
     private val admobController get() = AdsManager.Controllers.fullScreenNative
 
@@ -66,26 +65,31 @@ object FullScreenNativePreloadManager {
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE.toConfigKey())) {
             if (admobController.checkCachedAdAvailable()) {
-                results.add(BiddingPlatform.ADMOB to DEFAULT_ADMOB_ECPM)
-                AdLogger.d("[$TAG] AdMob 全屏原生广告可用 (使用默认 eCPM: %.2f USD)", DEFAULT_ADMOB_ECPM)
+                val ecpm = admobController.getCachedAdPrice(context) ?: 0.0
+                results.add(BiddingPlatform.ADMOB to ecpm)
+                AdLogger.d("[$TAG] AdMob 全屏原生广告可用 (eCPM: %.6f USD)", ecpm)
             }
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE.toConfigKey())) {
-            val rawEcpm = PangleFullScreenNativeAdController.getInstance().getEcpm()
-            val ecpm = controller.getEffectiveEcpm(BiddingPlatform.PANGLE, rawEcpm)
             if (PangleFullScreenNativeAdController.getInstance().hasValidCache()) {
+                val rawEcpm = PangleFullScreenNativeAdController.getInstance().getEcpm()
+                val ecpm = controller.getEffectiveEcpm(BiddingPlatform.PANGLE, rawEcpm)
                 results.add(BiddingPlatform.PANGLE to ecpm)
-                AdLogger.d("[$TAG] Pangle eCPM: %.6f USD", ecpm)
+                AdLogger.d("[$TAG] Pangle 全屏原生广告可用 (eCPM: %.6f USD)", ecpm)
+            } else {
+                AdLogger.d("[$TAG] Pangle 全屏原生广告缓存无效，跳过竞价")
             }
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE.toConfigKey())) {
-            val rawEcpm = TopOnFullScreenNativeAdController.getInstance().getEcpm()
-            val ecpm = controller.getEffectiveEcpm(BiddingPlatform.TOPON, rawEcpm)
             if (TopOnFullScreenNativeAdController.getInstance().hasValidCache()) {
+                val rawEcpm = TopOnFullScreenNativeAdController.getInstance().getEcpm()
+                val ecpm = controller.getEffectiveEcpm(BiddingPlatform.TOPON, rawEcpm)
                 results.add(BiddingPlatform.TOPON to ecpm)
-                AdLogger.d("[$TAG] TopOn eCPM: %.6f USD", ecpm)
+                AdLogger.d("[$TAG] TopOn 全屏原生广告可用 (eCPM: %.6f USD)", ecpm)
+            } else {
+                AdLogger.d("[$TAG] TopOn 全屏原生广告缓存无效，跳过竞价")
             }
         }
         

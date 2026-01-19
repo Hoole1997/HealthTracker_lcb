@@ -1,7 +1,6 @@
 package net.corekit.monetize.ads.ext
 
 import android.app.Activity
-import android.content.Context
 import android.view.ViewGroup
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
@@ -12,6 +11,7 @@ import net.corekit.monetize.ads.bidding.*
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.pangle.*
 import net.corekit.monetize.ads.topon.*
+
 
 /**
  * 广告统一展示扩展
@@ -74,7 +74,7 @@ object AdShowExt {
 
     // ============ 插页广告 ============
 
-    private suspend fun showInterstitialAd(
+    suspend fun showInterstitialAd(
         activity: Activity,
         platform: BiddingPlatform,
         onDismiss: (() -> Unit)?
@@ -91,6 +91,40 @@ object AdShowExt {
             BiddingPlatform.TOPON -> {
                 TopOnInterstitialAdController.getInstance().showAd(activity, onDismiss)
             }
+        }
+    }
+
+    /**
+     * 展示插页广告（支持忽略全屏原生触发）
+     * 用于全屏原生广告 Activity 内部展示插页时避免循环触发
+     */
+    suspend fun showInterstitialAd(
+        activity: Activity,
+        ignoreFullNative: Boolean = false
+    ): AdResult<Unit> {
+        // 使用智能竞价或直接 AdMob
+        return if (BiddingPlatformController.isMultiPlatformBiddingEnabled()) {
+            // 多平台竞价时，直接展示竞价胜出的插页（不再触发全屏原生）
+            val bidResult = InterstitialPreloadManager.performBidding(activity, 8000L)
+            if (bidResult != null) {
+                when (bidResult.platform) {
+                    BiddingPlatform.ADMOB -> {
+                        AdsManager.Controllers.interstitial.displayAd(activity, "fullnative_interstitial", ignoreFullNative = true)
+                    }
+                    BiddingPlatform.PANGLE -> {
+                        PangleInterstitialAdController.getInstance().showAd(activity, null)
+                    }
+                    BiddingPlatform.TOPON -> {
+                        TopOnInterstitialAdController.getInstance().showAd(activity, null)
+                    }
+                }
+            } else {
+                // 没有可用广告时使用 AdMob 兜底
+                AdsManager.Controllers.interstitial.displayAd(activity, "fullnative_interstitial", ignoreFullNative = true)
+            }
+        } else {
+            // 单平台模式直接使用 AdMob
+            AdsManager.Controllers.interstitial.displayAd(activity, "fullnative_interstitial", ignoreFullNative = true)
         }
     }
 
@@ -232,4 +266,5 @@ object AdShowExt {
             }
         }
     }
+
 }

@@ -29,7 +29,7 @@ import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
-import net.corekit.monetize.ui.FullScreenNativeAdActivity
+import net.corekit.monetize.ui.AdmobFullScreenNativeAdActivity
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import net.corekit.monetize.ads.lifecycle.AdLifecycleGuard
 import kotlin.coroutines.resume
@@ -258,7 +258,7 @@ class InterstitialAds private constructor() {
         AdLogger.d("当日已展示${todayShowInter}个插页，每显示${interval}个插页将显示原生，下一个是否显示全屏原生${needShowNativeFull}")
 
         if(!ignoreFullNative && needShowNativeFull && FullNativeAds.getInstance().checkCachedAdAvailable()){
-            return FullScreenNativeAdActivity.start(activity,position,showInterstitial = true)
+            return AdmobFullScreenNativeAdActivity.start(activity,position,showInterstitial = true)
         }
 
         return try {

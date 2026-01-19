@@ -1,6 +1,8 @@
 package net.corekit.monetize.ads.topon
 
 import android.content.Context
+import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import com.thinkup.nativead.api.TUNative
 import com.thinkup.nativead.api.TUNativeNetworkListener
 import com.thinkup.nativead.api.NativeAd
@@ -14,6 +16,9 @@ import net.corekit.monetize.ads.AdErrorCode
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
+import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.interceptor.GlobalAdSwitchInterceptor
+import net.corekit.monetize.ads.interceptor.InterceptorChain
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import java.util.concurrent.atomic.AtomicBoolean
@@ -99,8 +104,20 @@ class TopOnFullScreenNativeAdController private constructor() {
                     
                     // 尝试获取加载成功的广告源
                     // 修复：此时 ad 变量在对象构造中不可用，使用 nativeAd 属性
-                    val networkName = nativeAd?.checkValidAdCaches()?.firstOrNull()?.networkName
+                    val validAdCache = nativeAd?.checkValidAdCaches()?.firstOrNull()
+                    val networkName = validAdCache?.networkName
                     val loadedSource = if (networkName.isNullOrEmpty()) "TopOn" else networkName
+                    
+                    // 获取并缓存 eCPM
+                    // TopOn ecpm is Double in recent SDKs or we assume it is correct type matching the field in SDK
+                    val ecpmValue = validAdCache?.ecpm
+                    cachedEcpm = try {
+                         ecpmValue?.toDouble() ?: 0.0
+                    } catch (e: Exception) {
+                         // compatible if it's string
+                         ecpmValue.toString().toDoubleOrNull() ?: 0.0
+                    }
+                    AdLogger.d("[$TAG] TopOn eCPM: %.6f USD", cachedEcpm)
 
                     reportAdData(
                         "ad_loaded",
@@ -175,5 +192,127 @@ class TopOnFullScreenNativeAdController private constructor() {
         val data = mutableMapOf<String, Any>("ad_platform" to "TopOn", "ad_format" to "FullNative")
         data.putAll(params)
         ReportDataManager.reportData(eventName, data)
+    }
+
+    private var totalShowTriggerCount by DataStoreIntDelegate("topon_fn_show_trigger_count", 0)
+    private var totalShowFailCount by DataStoreIntDelegate("topon_fn_show_fail_count", 0)
+    private var totalCloseCount by DataStoreIntDelegate("topon_fn_close_count", 0)
+    private var isShowing = false
+    private val nativeAdView = ToponFullScreenNativeAdView()
+
+    private val interceptorChain = InterceptorChain(
+        listOf(GlobalAdSwitchInterceptor())
+    )
+
+    fun closeEvent(
+        adUnitId: String = "",
+        adSource: String? = "TopOn",
+        valueUsd: Double? = null,
+        currencyCode: String? = null
+    ) {
+        isShowing = false
+        totalCloseCount++
+        val params: Map<String, Any> = mapOf(
+            "ad_unit_name" to adUnitId,
+            "position" to "",
+            "number" to totalCloseCount,
+            "ad_source" to (adSource ?: "TopOn"),
+            "value" to (valueUsd ?: 0.0),
+            "currency" to (currencyCode ?: "USD")
+        )
+        reportAdData(
+            eventName = "ad_close",
+            params = params
+        )
+    }
+
+    suspend fun showAdInContainer(
+        context: Context,
+        container: ViewGroup,
+        lifecycleOwner: LifecycleOwner,
+        adUnitId: String? = null
+    ): AdResult<Unit> {
+        val finalAdUnitId = adUnitId ?: BuildConfig.TOPON_FULL_NATIVE_ID
+
+        totalShowTriggerCount++
+        reportAdData(
+            eventName = "ad_position",
+            params = mapOf(
+                "ad_unit_name" to finalAdUnitId,
+                "position" to "",
+                "number" to totalShowTriggerCount
+            )
+        )
+
+        when (val interceptResult = interceptorChain.intercept(context, AdConfigManager.getFullscreenNativeConfig())) {
+            is AdResult.Failure -> {
+                totalShowFailCount++
+                reportAdData(
+                    eventName = "ad_show_fail",
+                    params = mapOf(
+                        "ad_unit_name" to finalAdUnitId,
+                        "position" to "",
+                        "number" to totalShowFailCount,
+                        "reason" to interceptResult.error.message.orEmpty()
+                    )
+                )
+                return AdResult.Failure(interceptResult.error)
+            }
+            else -> Unit
+        }
+
+        return try {
+            val nativeAd = cachedNativeAd
+            if (nativeAd == null || !hasValidCache()) {
+                totalShowFailCount++
+                reportAdData(
+                    eventName = "ad_show_fail",
+                    params = mapOf(
+                        "ad_unit_name" to finalAdUnitId,
+                        "position" to "",
+                        "number" to totalShowFailCount,
+                        "reason" to "no_valid_cache"
+                    )
+                )
+                return AdResult.Failure(AdException(AdException.ERROR_NOT_LOADED, "TopOn 全屏原生广告无可用缓存"))
+            }
+
+            val bindSuccess = nativeAdView.bindFullScreenNativeAdToContainer(
+                context = context,
+                container = container,
+                nativeAd = nativeAd,
+                lifecycleOwner = lifecycleOwner
+            )
+
+            if (bindSuccess) {
+                isShowing = true
+                clearCache()
+                AdResult.Success(Unit)
+            } else {
+                totalShowFailCount++
+                reportAdData(
+                    eventName = "ad_show_fail",
+                    params = mapOf(
+                        "ad_unit_name" to finalAdUnitId,
+                        "position" to "",
+                        "number" to totalShowFailCount,
+                        "reason" to "bind_failed"
+                    )
+                )
+                AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "TopOn 全屏原生广告绑定失败"))
+            }
+        } catch (e: Exception) {
+            totalShowFailCount++
+            reportAdData(
+                eventName = "ad_show_fail",
+                params = mapOf(
+                    "ad_unit_name" to finalAdUnitId,
+                    "position" to "",
+                    "number" to totalShowFailCount,
+                    "reason" to (e.message ?: "unknown")
+                )
+            )
+            AdResult.Failure(AdException(AdException.ERROR_INTERNAL, e.message ?: "展示异常"))
+        }
     }
 }

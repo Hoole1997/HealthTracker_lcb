@@ -15,7 +15,6 @@ import net.corekit.monetize.R
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.AdResult
-import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ads.FullNativeAds
 import net.corekit.monetize.ads.log.AdLogger
 import kotlinx.coroutines.launch
@@ -26,7 +25,7 @@ import kotlin.coroutines.resume
  * 全屏原生广告Activity
  * 展示全屏的原生广告内容，通常用于应用启动或重要操作前
  */
-class FullScreenNativeAdActivity : AppCompatActivity() {
+class AdmobFullScreenNativeAdActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "FullScreenNativeAdActivity"
@@ -39,7 +38,7 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
         suspend fun start(activity: Activity,position:String, showInterstitial: Boolean = true): AdResult<Unit> {
             return suspendCancellableCoroutine { continuation ->
 
-                val intent = Intent(activity, FullScreenNativeAdActivity::class.java)
+                val intent = Intent(activity, AdmobFullScreenNativeAdActivity::class.java)
                 intent.putExtra("showInterstitial", showInterstitial)
                 intent.putExtra("position", position)
                 activity.startActivity(intent)
@@ -49,7 +48,7 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
                 )
 
                 // 存储continuation以便在Activity中调用
-                FullScreenNativeAdActivity.continuation = continuation
+                AdmobFullScreenNativeAdActivity.continuation = continuation
             }
         }
 
@@ -101,9 +100,9 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 when (val result = fullScreenNativeController.displayAdInView(
-                    context = this@FullScreenNativeAdActivity,
+                    context = this@AdmobFullScreenNativeAdActivity,
                     container = findViewById<ViewGroup>(R.id.ads_container),
-                    lifecycleOwner = this@FullScreenNativeAdActivity,
+                    lifecycleOwner = this@AdmobFullScreenNativeAdActivity,
                     position = position,
                     adUnitId = BuildConfig.ADMOB_FULL_NATIVE_ID
                 )) {
@@ -112,7 +111,8 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
                             isVisible = true
                             findViewById<View>(R.id.ads_btn_close).setOnClickListener {
                                 FullNativeAds.getInstance().triggerCloseEvent(
-                                    adUnitId = BuildConfig.ADMOB_FULL_NATIVE_ID
+                                    adUnitId = BuildConfig.ADMOB_FULL_NATIVE_ID,
+                                    position = position
                                 )
                                 closeAdAndFinish()
                             }
@@ -155,7 +155,7 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
             try {
                 // 直接显示广告（自动处理加载）
                 when (val result = interstitialController.displayAd(
-                    this@FullScreenNativeAdActivity, position, BuildConfig.ADMOB_INTERSTITIAL_ID, ignoreFullNative = true
+                    this@AdmobFullScreenNativeAdActivity, position, BuildConfig.ADMOB_INTERSTITIAL_ID, ignoreFullNative = true
                 )) {
                     is AdResult.Success -> {
                         call.invoke()

@@ -10,6 +10,11 @@ import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.pangle.PangleInterstitialAdController
 import net.corekit.monetize.ads.topon.TopOnInterstitialAdController
 import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
+import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.FullNativeAds
+import net.corekit.monetize.ui.AdmobFullScreenNativeAdActivity
+import net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdActivity
+import net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdActivity
 
 /**
  * 插页广告智能竞价管理器
@@ -76,6 +81,18 @@ object InterstitialSmartBiddingManager {
     }
 
     /**
+     * 检查是否需要展示全屏原生广告
+     * 触发条件：每展示 N 个插页广告后展示一次全屏原生
+     */
+    private fun checkNeedShowFullNative(): Boolean {
+        val interval = AdConfigManager.getFullscreenNativeAfterInterstitialCount()
+        val todayShowInter = AdConfigManager.getInterstitialConfig().getDailyShowCount()
+        val needShow = interval > 0 && todayShowInter > 0 && todayShowInter % interval == 0
+        AdLogger.d("[$TAG] 全屏原生触发检查: 今日插页展示=$todayShowInter, 间隔=$interval, 需要展示=$needShow")
+        return needShow
+    }
+
+    /**
      * 展示竞价胜出的广告
      */
     private suspend fun showWinnerAd(
@@ -83,10 +100,17 @@ object InterstitialSmartBiddingManager {
         bidResult: PlatformBidResult,
         position: String
     ): AdResult<Unit> {
+        // 检查是否需要展示全屏原生广告（在任何平台插页展示前）
+        if (checkNeedShowFullNative() && FullScreenNativeBiddingManager.hasAnyReadyAd()) {
+            AdLogger.d("[$TAG] 触发全屏原生竞价展示")
+            return showFullNativeThenInterstitial(activity, bidResult, position)
+        }
+
         val result = when (bidResult.platform) {
             BiddingPlatform.ADMOB -> {
                 AdLogger.d("[$TAG] 展示 AdMob 插页广告")
-                InterstitialAds.getInstance().displayAd(activity, position)
+                // 已在 showWinnerAd 中检查过全屏原生，避免重复检查
+                InterstitialAds.getInstance().displayAd(activity, position, ignoreFullNative = true)
             }
             BiddingPlatform.PANGLE -> {
                 AdLogger.d("[$TAG] 展示 Pangle 插页广告")
@@ -107,6 +131,88 @@ object InterstitialSmartBiddingManager {
         }
         
         // Record platform frequency on successful show
+        if (result is AdResult.Success) {
+            PlatformFrequencyManager.recordShow(bidResult.platform, BiddingAdType.INTERSTITIAL)
+        }
+        
+        return result
+    }
+
+    /**
+     * 先展示全屏原生广告竞价胜出者，然后展示插页广告
+     */
+    private suspend fun showFullNativeThenInterstitial(
+        activity: Activity,
+        interstitialBidResult: PlatformBidResult,
+        position: String
+    ): AdResult<Unit> {
+        // 1. 执行全屏原生竞价
+        val fullNativeWinner = FullScreenNativeBiddingManager.bidding(activity)
+        AdLogger.d("[$TAG] 全屏原生竞价胜出: ${fullNativeWinner.name}")
+
+        // 2. 根据胜出平台启动对应的全屏原生广告 Activity（内部会展示插页）
+        return when (fullNativeWinner) {
+            BiddingWinner.ADMOB -> {
+                if (FullNativeAds.getInstance().checkCachedAdAvailable()) {
+                    AdLogger.d("[$TAG] 展示 AdMob 全屏原生 + 插页")
+                    AdmobFullScreenNativeAdActivity.start(activity, position, showInterstitial = true)
+                } else {
+                    AdLogger.w("[$TAG] AdMob 全屏原生无缓存，回退展示插页")
+                    showInterstitialOnly(activity, interstitialBidResult, position)
+                }
+            }
+            BiddingWinner.PANGLE -> {
+                if (net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdController.getInstance().hasValidCache()) {
+                    AdLogger.d("[$TAG] 展示 Pangle 全屏原生 + 插页")
+                    PangleFullScreenNativeAdActivity.start(activity, position, showInterstitial = true)
+                } else {
+                    AdLogger.w("[$TAG] Pangle 全屏原生无缓存，回退展示插页")
+                    showInterstitialOnly(activity, interstitialBidResult, position)
+                }
+            }
+            BiddingWinner.TOPON -> {
+                if (net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController.getInstance().hasValidCache()) {
+                    AdLogger.d("[$TAG] 展示 TopOn 全屏原生 + 插页")
+                    TopOnFullScreenNativeAdActivity.start(activity, position, showInterstitial = true)
+                } else {
+                    AdLogger.w("[$TAG] TopOn 全屏原生无缓存，回退展示插页")
+                    showInterstitialOnly(activity, interstitialBidResult, position)
+                }
+            }
+        }
+    }
+
+    /**
+     * 仅展示插页广告（不触发全屏原生）
+     */
+    private suspend fun showInterstitialOnly(
+        activity: Activity,
+        bidResult: PlatformBidResult,
+        position: String
+    ): AdResult<Unit> {
+        val result = when (bidResult.platform) {
+            BiddingPlatform.ADMOB -> {
+                AdLogger.d("[$TAG] 展示 AdMob 插页广告")
+                InterstitialAds.getInstance().displayAd(activity, position, ignoreFullNative = true)
+            }
+            BiddingPlatform.PANGLE -> {
+                AdLogger.d("[$TAG] 展示 Pangle 插页广告")
+                val showResult = PangleInterstitialAdController.getInstance().showAd(activity)
+                if (showResult is AdResult.Success) {
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, BiddingWinner.PANGLE, BiddingAdType.INTERSTITIAL)
+                }
+                showResult
+            }
+            BiddingPlatform.TOPON -> {
+                AdLogger.d("[$TAG] 展示 TopOn 插页广告")
+                val showResult = TopOnInterstitialAdController.getInstance().showAd(activity)
+                if (showResult is AdResult.Success) {
+                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, BiddingWinner.TOPON, BiddingAdType.INTERSTITIAL)
+                }
+                showResult
+            }
+        }
+        
         if (result is AdResult.Success) {
             PlatformFrequencyManager.recordShow(bidResult.platform, BiddingAdType.INTERSTITIAL)
         }
