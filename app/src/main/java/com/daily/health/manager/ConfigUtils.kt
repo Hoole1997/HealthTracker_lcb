@@ -45,6 +45,6 @@ fun saveShowGuideHr() = SpUtils.putBoolean(KEY_HAS_SHOW_GUIDE_HR,true)
 fun hasShowGuideHr() = SpUtils.getBoolean(KEY_HAS_SHOW_GUIDE_HR,false)
 
 
-fun hasShowAllGuide() = hasShowGuideBp() && hasShowGuideBs() && hasShowGuideHr()
+fun hasShowAllGuide() = hasShowGuideBs()
 
 
