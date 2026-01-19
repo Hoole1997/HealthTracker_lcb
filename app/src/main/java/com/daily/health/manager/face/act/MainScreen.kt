@@ -17,6 +17,7 @@ import com.android.common.weather.util.TemperaturePreferences
 import com.android.common.weather.util.WeatherIconMapper
 import com.daily.health.manager.App
 import com.daily.health.manager.R
+import com.daily.health.manager.ad.FullScreenNativeAdTestEntry
 import com.daily.health.manager.alarm.PermissionManager
 import com.daily.health.manager.config.models.PushMessage
 import com.daily.health.manager.data.utils.DateTimeUtils
@@ -220,7 +221,8 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             }
 
             ivRemind.clickWithDuration {
-                startActivity<AlarmManageScreen>()
+//                startActivity<AlarmManageScreen>()
+                FullScreenNativeAdTestEntry.showAuto(this@MainScreen, lifecycleScope, "test_position")
             }
 
             setupBottomNavBar()

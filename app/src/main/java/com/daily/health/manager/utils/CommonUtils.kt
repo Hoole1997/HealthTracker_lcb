@@ -20,7 +20,7 @@ import com.daily.health.manager.face.act.SplashScreen
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils
-import net.corekit.monetize.ui.FullScreenNativeAdActivity
+import net.corekit.monetize.ui.AdmobFullScreenNativeAdActivity
 import java.util.Calendar
 import java.util.Date
 
@@ -103,7 +103,7 @@ fun isAdPage(activity: Activity?) = activity?.run {
 
 val adClasses = arrayOf(
     AdActivity::class.java,
-    FullScreenNativeAdActivity::class.java,
+    AdmobFullScreenNativeAdActivity::class.java,
     AudienceNetworkActivity::class.java,
     TTAppOpenAdActivity::class.java,
     TTAdActivity::class.java,

@@ -27,6 +27,10 @@ dependencyResolutionManagement {
         maven {
             setUrl("https://jfrog.anythinktech.com/artifactory/overseas_sdk")
         }
+        //Ironsource
+        maven {
+            setUrl("https://android-sdk.is.com/")
+        }
         maven {
             setUrl("https://jitpack.io")
             maven("https://artifact.bytedance.com/repository/pangle/")

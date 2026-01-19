@@ -18,12 +18,8 @@ import com.daily.health.manager.data.enums.BsUnit
 import com.daily.health.manager.databinding.HtFragmentHomeBinding
 import com.daily.health.manager.hasAddProfile
 import com.daily.health.manager.hasShowAllGuide
-import com.daily.health.manager.hasShowGuideBp
 import com.daily.health.manager.hasShowGuideBs
-import com.daily.health.manager.hasShowGuideHr
-import com.daily.health.manager.saveShowGuideBp
 import com.daily.health.manager.saveShowGuideBs
-import com.daily.health.manager.saveShowGuideHr
 import com.daily.health.manager.face.act.HealthRecordScreen
 import com.daily.health.manager.face.act.HistoryRecordScreen
 import com.daily.health.manager.face.act.HydrateScreen
@@ -375,56 +371,7 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             return false
         }
 
-        if (guideBs()) {
-            return true
-        }
-        if (guideBp()) {
-            return true
-        }
-
-        if (guideHr()) {
-            return true
-        }
-        return false
-
-    }
-
-    private fun guideBp(): Boolean {
-        if (hasShowGuideBp()) {
-            return false
-        }
-        HighlightPro.with(this)
-            .setHighlightParameter {
-                HighlightParameter.Builder()
-                    .setHighlightViewId(R.id.cl_blood_pressure)
-                    .setTipsViewId(R.layout.ht_layout_guide_bp)
-                    .setHighlightShape(RectShape(4f.dp, 4f.dp, 12f))
-                    .setHighlightHorizontalPadding(0f.dp)
-                    .setConstraints(Constraints.StartToStartOfHighlight + Constraints.TopToBottomOfHighlight + Constraints.EndToEndOfHighlight)
-                    .setMarginOffset(MarginOffset(start = 7.dp, top = 16.dp, end = 16.dp))
-                    .build()
-            }
-            .setOnMaskViewClickCallback { index ->
-                //do something
-                isHeighLightLeave = true
-                HealthRecordScreen.start(
-                    requireActivity(),
-                    HealthRecordScreen.RecordType.BLOOD_PRESSURE
-                )
-                reportGuide(6)
-            }
-            .setOnShowCallback {
-                isShowHighligh = true
-                saveShowGuideBp()
-            }
-            .setOnDismissCallback {
-                isShowHighligh = false
-                onGuideDismissed()
-            }
-            .show()
-
-        return true
-
+        return guideBs()
     }
 
     private fun onGuideDismissed() {
@@ -468,41 +415,6 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             .setOnShowCallback {
                 isShowHighligh = true
                 saveShowGuideBs()
-            }
-            .setOnDismissCallback {
-                isShowHighligh = false
-                onGuideDismissed()
-            }
-            .show()
-
-        return true
-
-    }
-
-    private fun guideHr(): Boolean {
-        if (hasShowGuideHr()) {
-            return false
-        }
-        HighlightPro.with(this)
-            .setHighlightParameter {
-                HighlightParameter.Builder()
-                    .setHighlightViewId(R.id.cl_heart_rate)
-                    .setTipsViewId(R.layout.ht_layout_guide_hr)
-                    .setHighlightShape(RectShape(4f.dp, 4f.dp, 12f))
-                    .setHighlightHorizontalPadding(0f.dp)
-                    .setConstraints(Constraints.StartToStartOfHighlight + Constraints.TopToBottomOfHighlight + Constraints.EndToEndOfHighlight)
-                    .setMarginOffset(MarginOffset(start = 7.dp, top = 16.dp, end = 16.dp))
-                    .build()
-            }
-            .setOnMaskViewClickCallback { index ->
-                //do something
-                isHeighLightLeave = true
-                navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
-                reportGuide(8)
-            }
-            .setOnShowCallback {
-                isShowHighligh = true
-                saveShowGuideHr()
             }
             .setOnDismissCallback {
                 isShowHighligh = false
