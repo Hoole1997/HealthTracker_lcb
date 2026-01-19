@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ht_wind_speed">Rüzgar Hızı</string>
+    <string name="ht_hum">Nem</string>
+    <string name="ht_daily_5_days">5 Günlük Tahmin</string>
+    <string name="ht_more_details">Daha Fazla Detay</string>
+    <string name="ht_humidity">Nem</string>
+    <string name="ht_uv_index">UV İndeksi</string>
+    <string name="ht_pressure">Basınç</string>
+    <string name="ht_visibility">Görüş Mesafesi</string>
+    <string name="ht_sunrise">Gün Doğumu</string>
+    <string name="ht_sunset">Gün Batımı</string>
+    <string name="ht_precip">Yağış</string>
+    <string name="ht_temperature_high">Yüksek: %d°</string>
+    <string name="ht_temperature_low">Düşük: %d°</string>
+
+    <string name="ht_weather_sunny">Güneşli</string>
+    <string name="ht_weather_mostly_sunny">Çoğunlukla Güneşli</string>
+    <string name="ht_weather_partly_sunny">Kısmen Güneşli</string>
+    <string name="ht_weather_intermittent_clouds">Aralıklı Bulutlu</string>
+    <string name="ht_weather_hazy_sunshine">Puslu Güneş</string>
+    <string name="ht_weather_mostly_cloudy">Çoğunlukla Bulutlu</string>
+    <string name="ht_weather_cloudy">Bulutlu</string>
+    <string name="ht_weather_overcast">Kapalı</string>
+    <string name="ht_weather_fog">Sis</string>
+    <string name="ht_weather_showers">Sağanak</string>
+    <string name="ht_weather_mostly_cloudy_w_showers">Bulutlu ve Sağanaklı</string>
+    <string name="ht_weather_partly_sunny_w_showers">Kısmen Güneşli ve Sağanaklı</string>
+    <string name="ht_weather_t_storms">Fırtına</string>
+    <string name="ht_weather_mostly_cloudy_w_t_storms">Bulutlu ve Fırtınalı</string>
+    <string name="ht_weather_partly_sunny_w_t_storms">Kısmen Güneşli ve Fırtınalı</string>
+    <string name="ht_weather_rain">Yağmur</string>
+    <string name="ht_weather_flurries">Kar Yağışı</string>
+    <string name="ht_weather_mostly_cloudy_w_flurries">Bulutlu ve Kar Yağışlı</string>
+    <string name="ht_weather_partly_sunny_w_flurries">Kısmen Güneşli ve Kar Yağışlı</string>
+    <string name="ht_weather_snow">Kar</string>
+    <string name="ht_weather_mostly_cloudy_w_snow">Bulutlu ve Karlı</string>
+    <string name="ht_weather_ice">Buz</string>
+    <string name="ht_weather_sleet">Karla Karışık Yağmur</string>
+    <string name="ht_weather_freezing_rain">Dondurucu Yağmur</string>
+    <string name="ht_weather_rain_and_snow">Yağmur ve Kar</string>
+    <string name="ht_weather_hot">Sıcak</string>
+    <string name="ht_weather_cold">Soğuk</string>
+    <string name="ht_weather_windy">Rüzgarlı</string>
+    <string name="ht_weather_clear">Açık</string>
+    <string name="ht_weather_mostly_clear">Çoğunlukla Açık</string>
+    <string name="ht_weather_partly_cloudy">Kısmen Bulutlu</string>
+    <string name="ht_weather_hazy_moonlight">Puslu Ay Işığı</string>
+    <string name="ht_weather_partly_cloudy_w_showers">Kısmen Bulutlu ve Sağanaklı</string>
+    <string name="ht_weather_partly_cloudy_w_t_storms">Kısmen Bulutlu ve Fırtınalı</string>
+    <string name="ht_weather_unknown">Bilinmiyor</string>
+    <string name="ht_search">Ara</string>
+    <string name="ht_current_location">Mevcut Konum</string>
+
+    <string-array name="ht_week_simple">
+        <item>Paz</item>
+        <item>Pzt</item>
+        <item>Sal</item>
+        <item>Çar</item>
+        <item>Per</item>
+        <item>Cum</item>
+        <item>Cmt</item>
+    </string-array>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ht_earthquake_title">Deprem Hızlı Uyarı</string>
+    <string name="ht_focal_depth">Odak Derinliği</string>
+    <string name="ht_tsunami_threat">Tsunami Tehdidi</string>
+    <string name="ht_usgs_warning">USGS Uyarısı</string>
+    <string name="ht_origin_time">Başlangıç Zamanı</string>
+    <string name="ht_magnitude_type">Büyüklük Tipi</string>
+    <string name="ht_mww">mww</string>
+    <string name="ht_data_status">Veri Durumu</string>
+    <string name="ht_reviewed">İncelendi</string>
+</resources>

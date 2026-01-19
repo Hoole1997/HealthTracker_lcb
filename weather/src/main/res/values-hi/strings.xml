@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ht_wind_speed">हवा की गति</string>
+    <string name="ht_hum">नमी</string>
+    <string name="ht_daily_5_days">5-दिन का पूर्वानुमान</string>
+    <string name="ht_more_details">अधिक विवरण</string>
+    <string name="ht_humidity">आर्द्रता</string>
+    <string name="ht_uv_index">UV इंडेक्स</string>
+    <string name="ht_pressure">दबाव</string>
+    <string name="ht_visibility">दृश्यता</string>
+    <string name="ht_sunrise">सूर्योदय</string>
+    <string name="ht_sunset">सूर्यास्त</string>
+    <string name="ht_precip">वर्षा</string>
+    <string name="ht_temperature_high">उच्च: %d°</string>
+    <string name="ht_temperature_low">निम्न: %d°</string>
+
+    <string name="ht_weather_sunny">धूप</string>
+    <string name="ht_weather_mostly_sunny">अधिकतर धूप</string>
+    <string name="ht_weather_partly_sunny">आंशिक धूप</string>
+    <string name="ht_weather_intermittent_clouds">रुक-रुक कर बादल</string>
+    <string name="ht_weather_hazy_sunshine">धुंधली धूप</string>
+    <string name="ht_weather_mostly_cloudy">अधिकतर बादल</string>
+    <string name="ht_weather_cloudy">बादल</string>
+    <string name="ht_weather_overcast">घने बादल</string>
+    <string name="ht_weather_fog">कोहरा</string>
+    <string name="ht_weather_showers">बौछारें</string>
+    <string name="ht_weather_mostly_cloudy_w_showers">बादल के साथ बौछारें</string>
+    <string name="ht_weather_partly_sunny_w_showers">आंशिक धूप के साथ बौछारें</string>
+    <string name="ht_weather_t_storms">तूफान</string>
+    <string name="ht_weather_mostly_cloudy_w_t_storms">बादल के साथ तूफान</string>
+    <string name="ht_weather_partly_sunny_w_t_storms">आंशिक धूप के साथ तूफान</string>
+    <string name="ht_weather_rain">बारिश</string>
+    <string name="ht_weather_flurries">हिमपात</string>
+    <string name="ht_weather_mostly_cloudy_w_flurries">बादल के साथ हिमपात</string>
+    <string name="ht_weather_partly_sunny_w_flurries">आंशिक धूप के साथ हिमपात</string>
+    <string name="ht_weather_snow">बर्फ</string>
+    <string name="ht_weather_mostly_cloudy_w_snow">बादल के साथ बर्फ</string>
+    <string name="ht_weather_ice">बर्फ</string>
+    <string name="ht_weather_sleet">ओले</string>
+    <string name="ht_weather_freezing_rain">जमाने वाली बारिश</string>
+    <string name="ht_weather_rain_and_snow">बारिश और बर्फ</string>
+    <string name="ht_weather_hot">गर्म</string>
+    <string name="ht_weather_cold">ठंडा</string>
+    <string name="ht_weather_windy">तेज हवा</string>
+    <string name="ht_weather_clear">साफ</string>
+    <string name="ht_weather_mostly_clear">अधिकतर साफ</string>
+    <string name="ht_weather_partly_cloudy">आंशिक बादल</string>
+    <string name="ht_weather_hazy_moonlight">धुंधली चांदनी</string>
+    <string name="ht_weather_partly_cloudy_w_showers">आंशिक बादल के साथ बौछारें</string>
+    <string name="ht_weather_partly_cloudy_w_t_storms">आंशिक बादल के साथ तूफान</string>
+    <string name="ht_weather_unknown">अज्ञात</string>
+    <string name="ht_search">खोजें</string>
+    <string name="ht_current_location">वर्तमान स्थान</string>
+
+    <string-array name="ht_week_simple">
+        <item>रवि</item>
+        <item>सोम</item>
+        <item>मंगल</item>
+        <item>बुध</item>
+        <item>गुरु</item>
+        <item>शुक्र</item>
+        <item>शनि</item>
+    </string-array>
+</resources>

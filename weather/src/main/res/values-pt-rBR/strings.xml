@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ht_wind_speed">Velocidade do Vento</string>
+    <string name="ht_hum">Umid</string>
+    <string name="ht_daily_5_days">Previsão de 5 Dias</string>
+    <string name="ht_more_details">Mais Detalhes</string>
+    <string name="ht_humidity">Umidade</string>
+    <string name="ht_uv_index">Índice UV</string>
+    <string name="ht_pressure">Pressão</string>
+    <string name="ht_visibility">Visibilidade</string>
+    <string name="ht_sunrise">Nascer do Sol</string>
+    <string name="ht_sunset">Pôr do Sol</string>
+    <string name="ht_precip">Precipitação</string>
+    <string name="ht_temperature_high">Máx: %d°</string>
+    <string name="ht_temperature_low">Mín: %d°</string>
+
+    <!-- Weather Descriptions -->
+    <string name="ht_weather_sunny">Ensolarado</string>
+    <string name="ht_weather_mostly_sunny">Predominantemente Ensolarado</string>
+    <string name="ht_weather_partly_sunny">Parcialmente Ensolarado</string>
+    <string name="ht_weather_intermittent_clouds">Nuvens Intermitentes</string>
+    <string name="ht_weather_hazy_sunshine">Sol com Neblina</string>
+    <string name="ht_weather_mostly_cloudy">Predominantemente Nublado</string>
+    <string name="ht_weather_cloudy">Nublado</string>
+    <string name="ht_weather_overcast">Encoberto</string>
+    <string name="ht_weather_fog">Nevoeiro</string>
+    <string name="ht_weather_showers">Pancadas de Chuva</string>
+    <string name="ht_weather_mostly_cloudy_w_showers">Nublado com Pancadas</string>
+    <string name="ht_weather_partly_sunny_w_showers">Parcialmente Ensolarado com Pancadas</string>
+    <string name="ht_weather_t_storms">Tempestades</string>
+    <string name="ht_weather_mostly_cloudy_w_t_storms">Nublado com Tempestades</string>
+    <string name="ht_weather_partly_sunny_w_t_storms">Parcialmente Ensolarado com Tempestades</string>
+    <string name="ht_weather_rain">Chuva</string>
+    <string name="ht_weather_flurries">Rajadas de Neve</string>
+    <string name="ht_weather_mostly_cloudy_w_flurries">Nublado com Rajadas de Neve</string>
+    <string name="ht_weather_partly_sunny_w_flurries">Parcialmente Ensolarado com Rajadas</string>
+    <string name="ht_weather_snow">Neve</string>
+    <string name="ht_weather_mostly_cloudy_w_snow">Nublado com Neve</string>
+    <string name="ht_weather_ice">Gelo</string>
+    <string name="ht_weather_sleet">Granizo</string>
+    <string name="ht_weather_freezing_rain">Chuva Congelante</string>
+    <string name="ht_weather_rain_and_snow">Chuva e Neve</string>
+    <string name="ht_weather_hot">Quente</string>
+    <string name="ht_weather_cold">Frio</string>
+    <string name="ht_weather_windy">Ventoso</string>
+    <string name="ht_weather_clear">Limpo</string>
+    <string name="ht_weather_mostly_clear">Predominantemente Limpo</string>
+    <string name="ht_weather_partly_cloudy">Parcialmente Nublado</string>
+    <string name="ht_weather_hazy_moonlight">Luar com Neblina</string>
+    <string name="ht_weather_partly_cloudy_w_showers">Parcialmente Nublado com Pancadas</string>
+    <string name="ht_weather_partly_cloudy_w_t_storms">Parcialmente Nublado com Tempestades</string>
+    <string name="ht_weather_unknown">Desconhecido</string>
+    <string name="ht_search">Buscar</string>
+    <string name="ht_current_location">Localização Atual</string>
+
+    <string-array name="ht_week_simple">
+        <item>Dom</item>
+        <item>Seg</item>
+        <item>Ter</item>
+        <item>Qua</item>
+        <item>Qui</item>
+        <item>Sex</item>
+        <item>Sáb</item>
+    </string-array>
+</resources>

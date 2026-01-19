@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ht_earthquake_title">Alerta Rápida de Terremoto</string>
+    <string name="ht_focal_depth">Profundidad Focal</string>
+    <string name="ht_tsunami_threat">Amenaza de Tsunami</string>
+    <string name="ht_usgs_warning">Aviso USGS</string>
+    <string name="ht_origin_time">Hora de Origen</string>
+    <string name="ht_magnitude_type">Tipo de Magnitud</string>
+    <string name="ht_mww">mww</string>
+    <string name="ht_data_status">Estado de Datos</string>
+    <string name="ht_reviewed">Revisado</string>
+</resources>

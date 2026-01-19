@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ht_earthquake_title">भूकंप त्वरित अलर्ट</string>
+    <string name="ht_focal_depth">केंद्र गहराई</string>
+    <string name="ht_tsunami_threat">सुनामी का खतरा</string>
+    <string name="ht_usgs_warning">USGS चेतावनी</string>
+    <string name="ht_origin_time">उत्पत्ति का समय</string>
+    <string name="ht_magnitude_type">तीव्रता प्रकार</string>
+    <string name="ht_mww">mww</string>
+    <string name="ht_data_status">डेटा स्थिति</string>
+    <string name="ht_reviewed">समीक्षित</string>
+</resources>

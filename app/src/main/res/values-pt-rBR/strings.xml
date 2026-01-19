@@ -1,0 +1,793 @@
+<resources>
+    <string name="app_name">Glicemia &amp; Saúde</string>
+    <string name="ht_meds_manager">Gerenciador de Medicamentos</string>
+    <string name="ht_blood_suger">Glicemia</string>
+    <string name="ht_blood_pressure">Pressão Arterial</string>
+    <string name="ht_home">Início</string>
+    <string name="ht_meds">Medicamentos</string>
+    <string name="ht_insights">Análises</string>
+    <string name="ht_tracker">Rastreador</string>
+    <string name="ht_settings">Configurações</string>
+    <string name="ht_record_now">Registrar Agora</string>
+    <string name="ht_loading">Carregando...</string>
+    <string name="ht_history">Histórico</string>
+    <string name="ht_click_to_record">Toque para registrar</string>
+    <string name="ht_new_record">Novo Registro</string>
+    <string name="ht_edit_record">Editar Registro</string>
+    <string name="ht_status">Status</string>
+    <string name="ht_text_default">Padrão</string>
+
+    <!-- 血糖等级 -->
+    <string name="ht_blood_sugar_level_low">Baixo</string>
+    <string name="ht_blood_sugar_level_normal">Normal</string>
+    <string name="ht_blood_sugar_level_prediabetes">Pré-diabetes</string>
+    <string name="ht_blood_sugar_level_diabetes">Diabetes</string>
+
+    <!-- 总胆固醇风险等级 -->
+    <string name="ht_cholesterol_level_normal">Normal</string>
+    <string name="ht_cholesterol_level_normal_desc">CT &lt; 200; Não-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
+    <string name="ht_cholesterol_level_near_optimal">Quase Ideal</string>
+    <string name="ht_cholesterol_level_near_optimal_desc">CT &lt; 200; Não-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_borderline">Limítrofe</string>
+    <string name="ht_cholesterol_level_borderline_desc">CT 200~239; Não-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_high">Alto</string>
+    <string name="ht_cholesterol_level_high_desc">CT ≥ 240; Não-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_very_high">Muito Alto</string>
+    <string name="ht_cholesterol_level_very_high_desc">CT ≥ 240; Não-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_unknown">Desconhecido</string>
+    <string name="ht_cholesterol_level_unknown_desc">Dados insuficientes para determinar o nível de colesterol</string>
+    <string name="ht_cholesterol_total_label">Colesterol Total</string>
+    <string name="ht_cholesterol_hdl_label">HDL</string>
+    <string name="ht_cholesterol_ldl_label">LDL</string>
+    <string name="ht_cholesterol_tg_label">TG</string>
+    <string name="ht_cholesterol_total_placeholder">--</string>
+
+    <!-- 血压等级 -->
+    <string name="ht_blood_pressure_level_low">Hipotensão</string>
+    <string name="ht_blood_pressure_level_normal">Normal</string>
+    <string name="ht_blood_pressure_level_elevated">Elevada</string>
+    <string name="ht_blood_pressure_level_high_stage_1">Hipertensão Estágio 1</string>
+    <string name="ht_blood_pressure_level_high_stage_2">Hipertensão Estágio 2</string>
+    <string name="ht_blood_pressure_level_hypertensive_crisis">Crise Hipertensiva</string>
+
+    <!-- 血压范围描述 - 状态显示用（缩写） -->
+    <string name="ht_blood_pressure_range_low_short">SIS %1$s ou DIA %2$s</string>
+    <string name="ht_blood_pressure_range_normal_short">SIS %1$s e DIA %2$s</string>
+    <string name="ht_blood_pressure_range_elevated_short">SIS %1$s e DIA %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_1_short">SIS %1$s ou DIA %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_2_short">SIS %1$s ou DIA %2$s</string>
+    <string name="ht_blood_pressure_range_hypertensive_crisis_short">SIS %1$s ou DIA %2$s</string>
+
+    <!-- 血压范围描述 - 列表视图用（全写） -->
+    <string name="ht_blood_pressure_range_low_full">Sistólica %1$s ou Diastólica %2$s</string>
+    <string name="ht_blood_pressure_range_normal_full">Sistólica %1$s e Diastólica %2$s</string>
+    <string name="ht_blood_pressure_range_elevated_full">Sistólica %1$s e Diastólica %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_1_full">Sistólica %1$s ou Diastólica %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_2_full">Sistólica %1$s ou Diastólica %2$s</string>
+    <string name="ht_blood_pressure_range_hypertensive_crisis_full">Sistólica %1$s ou Diastólica %2$s</string>
+
+    <!-- 闹钟通知相关字符串 -->
+    <string name="ht_notification_channel_alarm_name">Lembrete de Saúde</string>
+    <string name="ht_notification_channel_alarm_description">Notificações de lembrete de monitoramento de saúde</string>
+
+    <!-- 血糖提醒通知 -->
+    <string name="ht_alarm_blood_sugar_title">Lembrete de Glicemia</string>
+    <string name="ht_alarm_blood_sugar_content">Hora de registrar sua glicemia!</string>
+
+    <!-- 血压提醒通知 -->
+    <string name="ht_alarm_blood_pressure_title">Lembrete de Pressão Arterial</string>
+    <string name="ht_alarm_blood_pressure_content">Hora de registrar sua pressão arterial!</string>
+
+    <!-- 默认健康提醒 -->
+    <string name="ht_alarm_default_title">Lembrete de Saúde</string>
+    <string name="ht_alarm_default_content">Por favor, monitore sua saúde no horário</string>
+
+    <!-- 血糖测量状态 -->
+    <string name="ht_blood_sugar_status_default">Padrão</string>
+    <string name="ht_blood_sugar_status_fasting">Jejum</string>
+    <string name="ht_blood_sugar_status_before_meal">Antes da refeição</string>
+    <string name="ht_blood_sugar_status_bedtime">Antes de dormir</string>
+    <string name="ht_blood_sugar_status_after_exercise">Após exercício</string>
+    <string name="ht_blood_sugar_status_one_hour_after_meal">1h após refeição</string>
+    <string name="ht_blood_sugar_status_before_exercise">Antes do exercício</string>
+    <string name="ht_blood_sugar_status_two_hours_after_meal">2h após refeição</string>
+
+    <!-- 按钮和操作 -->
+    <string name="ht_save">Salvar</string>
+    <string name="ht_save_changes">Salvar Alterações</string>
+    <string name="ht_cancel">Cancelar</string>
+    <string name="ht_saving">Salvando...</string>
+    <string name="ht_save_failed">Falha ao salvar, tente novamente</string>
+    <string name="ht_date_time"><![CDATA[Data e Hora]]></string>
+    <string name="ht_label">Rótulo</string>
+
+    <!-- 相对时间显示 -->
+    <string name="ht_latest">Mais recente</string>
+    <string name="ht_just_now">Agora mesmo</string>
+    <string name="ht_seconds_ago">%d segundos atrás</string>
+    <string name="ht_minutes_ago">%d minutos atrás</string>
+    <string name="ht_hours_ago">%d horas atrás</string>
+    <string name="ht_days_ago">%d dias atrás</string>
+    <string name="ht_systolic">Sistólica</string>
+    <string name="ht_diastolic">Diastólica</string>
+    <string name="ht_pulse">Pulso</string>
+    <string name="ht_type">Tipo</string>
+    <string name="ht_bp_range_des">De acordo com as últimas diretrizes da AHA (American Heart Association)</string>
+    <string name="ht_cholesterol_range_des">CT: Colesterol Total\nHDL: Lipoproteína de Alta Densidade\nLDL: Lipoproteína de Baixa Densidade\nTG: Triglicerídeos\nNão-HDL: Lipoproteína Não de Alta Densidade\n\nDe acordo com as diretrizes da Cleveland Clinic.</string>
+    <string name="ht_got_it">Entendi</string>
+    <string name="ht_details">Detalhes</string>
+    <string name="ht_all_types">Todos os Tipos</string>
+    <string name="ht_no_records">Sem Registros</string>
+    <string name="ht_load_fail_please_try_again">Falha ao carregar, tente novamente</string>
+    <string name="ht_try_again">Tentar novamente</string>
+    <string name="ht_delete_record_remind_title">Excluir este registro?</string>
+    <string name="ht_tips">Dicas</string>
+    <string name="ht_delete_tips_content">Tem certeza que deseja excluir este item?</string>
+    <string name="ht_confirm">Confirmar</string>
+    <string name="ht_delete_record_remind">Não pode ser recuperado após a exclusão</string>
+    <string name="ht_add_record">Adicionar Registro</string>
+
+    <string name="ht_assistant_answer">Responder</string>
+    <string name="ht_assistant_neglect">Ignorar</string>
+    <string name="ht_alarm_management">Gerenciar Alarmes</string>
+    <string name="ht_step_stats_max_title">Máximo</string>
+    <string name="ht_step_stats_min_title">Mínimo</string>
+    <string name="ht_step_stats_avg_title">Média</string>
+
+    <string-array name="ht_blood_sugar_labels">
+        <item>Animado</item>
+        <item>Após cardio</item>
+        <item>Desanimado</item>
+        <item>Calmo</item>
+        <item>Após musculação</item>
+        <item>Após treino intenso</item>
+        <item>Em dieta</item>
+        <item>Após beber</item>
+    </string-array>
+
+    <string-array name="ht_blood_pressure_labels">
+        <item>Esquerdo</item>
+        <item>Direito</item>
+        <item>Após medicação</item>
+        <item>Após caminhada</item>
+        <item>Antes da refeição</item>
+        <item>Após refeição</item>
+        <item>Sentado</item>
+        <item>Deitado</item>
+        <item>Período menstrual</item>
+    </string-array>
+
+    <!-- BMI classification names (8 levels) -->
+    <string-array name="ht_bmi_level_names">
+        <item>Magreza Grau III</item>
+        <item>Magreza Grau II</item>
+        <item>Magreza Grau I</item>
+        <item>Normal</item>
+        <item>Sobrepeso</item>
+        <item>Obesidade Grau I</item>
+        <item>Obesidade Grau II</item>
+        <item>Obesidade Grau III</item>
+    </string-array>
+
+    <!-- BMI classification names (single items for mapping) -->
+    <string name="ht_bmi_level_very_severely_underweight">Magreza Grau III</string>
+    <string name="ht_bmi_level_severely_underweight">Magreza Grau II</string>
+    <string name="ht_bmi_level_underweight">Magreza Grau I</string>
+    <string name="ht_bmi_level_normal">Normal</string>
+    <string name="ht_bmi_level_overweight">Sobrepeso</string>
+    <string name="ht_bmi_level_obesity_class_1">Obesidade Grau I</string>
+    <string name="ht_bmi_level_obesity_class_2">Obesidade Grau II</string>
+    <string name="ht_bmi_level_obesity_class_3">Obesidade Grau III</string>
+
+    <!-- BMI record tag labels -->
+    <string-array name="ht_bmi_labels">
+        <item>Animado</item>
+        <item>Após cardio</item>
+        <item>Desanimado</item>
+        <item>Calmo</item>
+        <item>Após musculação</item>
+        <item>Após treino intenso</item>
+        <item>Em dieta</item>
+        <item>Após beber</item>
+    </string-array>
+
+    <!-- 血糖等级专家建议文案数组 -->
+    <string-array name="ht_bs_level_expert_advice">
+        <!-- 低血糖建议 -->
+        <item>Seu nível de glicemia está &lt;font color="#3489FE"&gt;&lt;b&gt;baixo&lt;/b&gt;&lt;/font&gt;, também conhecido como hipoglicemia. É importante agir imediatamente para elevar sua glicemia. Aqui estão algumas sugestões simples: &lt;br&gt;&lt;b&gt;Consuma uma fonte de glicose de ação rápida:&lt;/b&gt;&lt;br&gt; Consuma de 15 a 20 gramas de carboidratos de ação rápida para elevar sua glicemia rapidamente. Exemplos incluem tabletes ou gel de glicose, suco de fruta, refrigerante comum ou uma pequena porção de passas. &lt;br&gt;&lt;b&gt;Verifique sua glicemia após 15 minutos:&lt;/b&gt;&lt;br&gt; Se ainda estiver baixa, repita o processo. &lt;br&gt;&lt;b&gt;Faça um lanche ou refeição equilibrada:&lt;/b&gt;&lt;br&gt; Quando sua glicemia subir, é importante estabilizá-la com um lanche ou refeição equilibrada contendo proteínas, carboidratos complexos e gorduras saudáveis. Boas opções incluem biscoitos integrais com pasta de amendoim, um pequeno sanduíche ou uma fruta com um punhado de castanhas. &lt;br&gt;&lt;b&gt;Consulte seu médico:&lt;/b&gt;&lt;br&gt; Se você frequentemente experimenta baixa glicemia, é importante discutir isso com seu médico.</item>
+
+        <!-- 正常血糖建议 -->
+        <item>Para ajudar a controlar seus níveis de glicemia e mantê-los dentro da faixa &lt;font color="#02BC77"&gt;&lt;b&gt;normal&lt;/b&gt;&lt;/font&gt;, aqui estão algumas sugestões simples: &lt;br&gt;&lt;b&gt;Siga uma dieta equilibrada e saudável:&lt;/b&gt;&lt;br&gt; Opte por uma dieta equilibrada que inclua uma variedade de frutas, vegetais, grãos integrais, proteínas magras e gorduras saudáveis. Limite a ingestão de alimentos açucarados e processados. Concentre-se no controle de porções e considere trabalhar com um nutricionista. &lt;br&gt;&lt;b&gt;Pratique atividade física regular:&lt;/b&gt;&lt;br&gt; O exercício regular pode ajudar a melhorar a sensibilidade à insulina e regular os níveis de glicemia. Procure pelo menos 150 minutos de atividade aeróbica de intensidade moderada por semana. &lt;br&gt;&lt;b&gt;Monitore seus níveis de glicemia:&lt;/b&gt;&lt;br&gt; Verifique regularmente seus níveis de glicemia conforme orientação do seu médico.</item>
+
+        <!-- 糖尿病前期建议 -->
+        <item>Controlar o &lt;font color="#FFB901"&gt;&lt;b&gt;pré-diabetes&lt;/b&gt;&lt;/font&gt; é essencial para prevenir ou retardar o início do diabetes. Aqui estão algumas sugestões simples: &lt;br&gt;&lt;b&gt;Faça mudanças na dieta:&lt;/b&gt;&lt;br&gt; Adote uma dieta equilibrada e nutritiva para ajudar a controlar seus níveis de glicemia. Concentre-se em consumir alimentos integrais, incluindo frutas, vegetais, grãos integrais, proteínas magras e gorduras saudáveis. Limite a ingestão de alimentos processados, bebidas açucaradas e carboidratos refinados. &lt;br&gt;&lt;b&gt;Aumente a ingestão de fibras:&lt;/b&gt;&lt;br&gt; Inclua alimentos ricos em fibras em sua dieta, como grãos integrais, legumes, vegetais e frutas. A fibra ajuda a regular os níveis de glicemia. &lt;br&gt;&lt;b&gt;Gerencie o estresse:&lt;/b&gt;&lt;br&gt; O estresse crônico pode afetar os níveis de glicemia e a saúde geral. Encontre maneiras saudáveis de gerenciar o estresse.</item>
+
+        <!-- 糖尿病建议 -->
+        <item>Quando você tem &lt;font color="#FA0202"&gt;&lt;b&gt;diabetes&lt;/b&gt;&lt;/font&gt;, é crucial gerenciar sua condição de forma eficaz para manter níveis estáveis de glicemia e prevenir complicações. &lt;br&gt;&lt;b&gt;Mantenha consultas médicas regulares:&lt;/b&gt;&lt;br&gt; Visite regularmente seu médico para monitorar seu diabetes e receber os cuidados médicos necessários. Essas consultas podem incluir check-ups de rotina, exames de sangue, exames oftalmológicos e exames dos pés. &lt;br&gt;&lt;b&gt;Mantenha um diário de controle do diabetes:&lt;/b&gt;&lt;br&gt; Mantenha um diário para acompanhar suas atividades diárias, refeições, leituras de glicemia, doses de medicamentos e quaisquer sintomas ou padrões notáveis. &lt;br&gt;&lt;b&gt;Planeje-se para dias de doença:&lt;/b&gt;&lt;br&gt; Doenças ou infecções podem afetar os níveis de glicemia e exigir ajustes no seu plano de controle do diabetes.</item>
+    </string-array>
+
+    <string-array name="ht_bp_level_expert_advice">
+        <!-- Low Blood Pressure -->
+        <item>
+            <![CDATA[
+            Sua leitura de pressão arterial de <font color="#3487FC"><b>%1$d/%2$d</b></font> está <font color="#3487FC"><b>baixa</b></font>, aqui estão algumas sugestões a considerar:
+
+            <br><b>Mantenha-se hidratado:</b><br>
+            Beba água adequada ao longo do dia para ajudar a manter o volume sanguíneo e prevenir desidratação.
+
+            <br><b>Aumente a ingestão de sal:</b><br>
+            Consuma uma quantidade ligeiramente maior de sal, mas dentro dos limites recomendados, pois o sal pode ajudar a reter líquidos e elevar a pressão arterial.
+
+            <br><b>Use meias de compressão:</b><br>
+            Meias de compressão podem ajudar a melhorar a circulação e prevenir o acúmulo de sangue nas pernas.
+
+            <br><b>Faça refeições pequenas e frequentes:</b><br>
+            Em vez de grandes refeições, opte por refeições menores e mais frequentes ao longo do dia.
+
+            <br><b>Evite mudanças bruscas de posição:</b><br>
+            Evite levantar-se muito rapidamente de uma posição sentada ou deitada.
+            ]]>
+        </item>
+
+        <!-- Normal Blood Pressure -->
+        <item>
+            <![CDATA[
+            Sua leitura de pressão arterial de <font color="#05BA7B"><b>%1$d/%2$d</b></font> está dentro da <font color="#05BA7B"><b>faixa normal</b></font>, o que é ótimo para seu coração e saúde geral. Aqui estão algumas sugestões para mantê-la:
+
+            <br><b>Alimente-se de forma saudável:</b><br>
+            Mantenha uma dieta equilibrada rica em frutas, vegetais, proteínas magras e grãos integrais.
+
+            <br><b>Mantenha-se ativo:</b><br>
+            Exercite-se regularmente (pelo menos 150 minutos de atividade moderada por semana).
+
+            <br><b>Controle o sódio:</b><br>
+            Limite a ingestão de sódio e alimentos processados para prevenir aumentos futuros.
+
+            <br><b>Gerencie o estresse:</b><br>
+            Pratique técnicas de relaxamento como meditação, yoga ou respiração profunda.
+
+            <br><b>Check-ups de rotina:</b><br>
+            Agende check-ups regulares de saúde para acompanhar sua pressão arterial.
+            ]]>
+        </item>
+
+        <!-- Elevated Blood Pressure -->
+        <item>
+            <![CDATA[
+            Sua leitura de pressão arterial de <font color="#FFE902"><b>%1$d/%2$d</b></font> está <font color="#FFE902"><b>elevada</b></font>, o que significa que você corre risco de desenvolver hipertensão se não fizer mudanças no estilo de vida. Aqui estão algumas sugestões:
+
+            <br><b>Reduza o sal:</b><br>
+            Diminua alimentos salgados e com alto teor de sódio.
+
+            <br><b>Aumente a atividade:</b><br>
+            Adicione mais exercícios físicos, como caminhada, ciclismo ou natação.
+
+            <br><b>Mantenha o peso:</b><br>
+            Mantenha um peso corporal saudável, pois mesmo pequenas mudanças ajudam.
+
+            <br><b>Limite estimulantes:</b><br>
+            Reduza o consumo de álcool e cafeína para evitar picos.
+
+            <br><b>Monitore regularmente:</b><br>
+            Verifique sua pressão arterial frequentemente para detectar mudanças cedo.
+            ]]>
+        </item>
+
+        <!-- Stage 1 Hypertension -->
+        <item>
+            <![CDATA[
+            Sua leitura de pressão arterial de <font color="#FFB909"><b>%1$d/%2$d</b></font> está na <font color="#FFB909"><b>Hipertensão Estágio 1</b></font>. Mudanças no estilo de vida são cruciais para prevenir progressão. Aqui estão algumas sugestões:
+
+            <br><b>Adote a dieta DASH:</b><br>
+            Concentre-se em alimentos frescos com baixo teor de sódio e evite refeições processadas.
+
+            <br><b>Mantenha-se ativo diariamente:</b><br>
+            Pratique exercícios regulares e reduza o tempo sentado.
+
+            <br><b>Pare de fumar:</b><br>
+            Evite o tabaco, pois ele eleva a pressão arterial e danifica os vasos.
+
+            <br><b>Melhore o sono:</b><br>
+            Procure 7–9 horas de descanso de qualidade por noite.
+
+            <br><b>Consulte um médico:</b><br>
+            Busque orientação médica para determinar se é necessário medicamento.
+            ]]>
+        </item>
+
+        <!-- Stage 2 Hypertension -->
+        <item>
+            <![CDATA[
+            Sua leitura de pressão arterial de <font color="#FF8000"><b>%1$d/%2$d</b></font> está na <font color="#FF8000"><b>Hipertensão Estágio 2</b></font>, o que aumenta significativamente seu risco de infarto e AVC. Aqui estão algumas sugestões:
+
+            <br><b>Siga o tratamento:</b><br>
+            Trabalhe com seu médico, incluindo possível medicação.
+
+            <br><b>Controle rigoroso da dieta:</b><br>
+            Limite sal, frituras e bebidas açucaradas.
+
+            <br><b>Exercite-se com segurança:</b><br>
+            Mantenha-se ativo, mas evite treinos intensos sem liberação médica.
+
+            <br><b>Gerenciamento do estresse:</b><br>
+            Use técnicas de relaxamento e garanta um bom sono.
+
+            <br><b>Monitoramento em casa:</b><br>
+            Meça a pressão arterial diariamente e relate picos ao seu médico.
+            ]]>
+        </item>
+
+        <!-- Hypertensive Crisis -->
+        <item>
+            <![CDATA[
+            Sua leitura de pressão arterial de <font color="#FB0301"><b>%1$d/%2$d</b></font> indica uma <font color="#FB0301"><b>Crise Hipertensiva</b></font>, que é uma emergência médica. Aqui estão algumas ações imediatas:
+
+            <br><b>Busque ajuda de emergência:</b><br>
+            Ligue para serviços de emergência ou vá ao pronto-socorro imediatamente.
+
+            <br><b>Tome medicamentos:</b><br>
+            Use medicamentos prescritos exatamente conforme orientado.
+
+            <br><b>Fique calmo:</b><br>
+            Sente-se quieto e evite atividade física enquanto aguarda ajuda.
+
+            <br><b>Evite automedicação:</b><br>
+            Não use remédios sem prescrição.
+
+            <br><b>Mantenha registros:</b><br>
+            Leve leituras recentes e informações de medicamentos para sua equipe médica.
+            ]]>
+        </item>
+    </string-array>
+
+    <string-array name="ht_week_simple">
+        <item>Dom</item>
+        <item>Seg</item>
+        <item>Ter</item>
+        <item>Qua</item>
+        <item>Qui</item>
+        <item>Sex</item>
+        <item>Sáb</item>
+    </string-array>
+    <string-array name="ht_week_full">
+        <item>Domingo</item>
+        <item>Segunda-feira</item>
+        <item>Terça-feira</item>
+        <item>Quarta-feira</item>
+        <item>Quinta-feira</item>
+        <item>Sexta-feira</item>
+        <item>Sábado</item>
+    </string-array>
+
+    <string name="ht_every_weekday">Todos os dias úteis</string>
+    <string name="ht_every_weekend">Todo fim de semana</string>
+    <string name="ht_everyday">Todos os dias</string>
+    <string name="ht_once">Uma vez</string>
+    <string name="ht_meds_remind_empty">Toque no botão abaixo para \nadicionar seus lembretes</string>
+    <string name="ht_add">Adicionar</string>
+    <string name="ht_add_reminder">Adicionar Lembrete</string>
+    <string name="ht_medication_name">Nome do Medicamento</string>
+    <string name="ht_enter_medication_name">Digite o Nome do Medicamento</string>
+    <string name="ht_number_of_daily_doses">Número de Doses Diárias:</string>
+    <string name="ht_notes">Observações</string>
+    <string name="ht_hint_meds_notes">Instruções: Após as refeições, 3x ao dia.</string>
+    <string name="ht_sync_with_calendar">Sincronizar com Calendário</string>
+    <string name="ht_take_now">Tomar agora</string>
+    <string name="ht_view_now">Ver agora</string>
+    <string name="ht_edit">Editar</string>
+    <string name="ht_delete">Excluir</string>
+
+    <!-- 药物提醒通知相关字符串 -->
+    <string name="ht_medication_reminder_title">🔔 Lembrete de Medicamento</string>
+    <string name="ht_medication_reminder_content">Hora do seu medicamento, tome no horário e cuide-se.</string>
+
+    <!-- 通知权限相关字符串 -->
+    <string name="ht_turn_on">Ativar</string>
+    <string name="ht_notification_permission_title">Mantenha-se no caminho com suas metas de saúde</string>
+    <string name="ht_notification_permission_des">Ative as notificações para receber lembretes oportunos de ingestão de água, medicamentos e atividades. Nunca perca um hábito saudável!</string>
+    <string name="ht_close">Fechar</string>
+    <string name="ht_medication_name_temp">💊 %1$s</string>
+    <string name="ht_meds_notes_temp">📝 %1$s</string>
+    <string name="ht_snooze_5_minutes">5 minutos depois</string>
+    <string name="ht_snooze_10_minutes">10 minutos depois</string>
+    <string name="ht_snooze_15_minutes">15 minutos depois</string>
+    <string name="ht_snooze_30_minutes">30 minutos depois</string>
+    <string name="ht_take_medication_now">Tomar agora</string>
+    <string name="ht_every_day_temp">⏰ Todo dia às %1$s</string>
+    <string name="ht_now_time_temp">📱 Agora são %1$s"</string>
+    <string name="ht_have_reader_privacy">Li a <font color="#02BC77">Política de Privacidade</font></string>
+    <string name="ht_choose_your_gender">Escolha seu gênero</string>
+    <string name="ht_please_choose_your_gender">Por favor, escolha seu gênero</string>
+    <string name="ht_txt_profile_des">Isso será usado para gerar seus dados personalizados</string>
+    <string name="ht_male">Masculino</string>
+    <string name="ht_female">Feminino</string>
+    <string name="ht_choose_your_age">escolha sua idade</string>
+    <string name="ht_please_choose_your_age">Por favor, escolha sua idade</string>
+    <string name="ht_text_continue">Continuar</string>
+    <string name="ht_take_a_photo">Tirar uma Foto</string>
+    <string name="ht_choose_from_photos">Escolher das fotos</string>
+    <string name="ht_please_select">Por favor, selecione</string>
+    <string name="ht_confirm_delete_title">Excluir rótulo</string>
+    <string name="ht_confirm_delete_message">Tem certeza que deseja excluir este rótulo?</string>
+    <string name="ht_temp_age">Idade : %1$s</string>
+    <string name="ht_enter_new_label">Digite novo rótulo</string>
+    <string name="ht_add_label">Adicionar rótulo</string>
+    <string name="ht_weight">Peso</string>
+    <string name="ht_height">Altura</string>
+    <string name="ht_create_label_failed">Falha ao criar rótulo</string>
+    <string name="ht_heart_rate">Frequência Cardíaca</string>
+    <string name="ht_heart_rate_detail_description">A frequência cardíaca reflete sua resposta cardiovascular. Acompanhe tendências de longo prazo e consulte seu médico para leituras anormais.</string>
+    <string name="ht_record_time_placeholder">--</string>
+    <string name="ht_heart_rate_no_tags">Sem rótulos</string>
+    <string name="ht_record_not_ready">Registro está carregando</string>
+    <string name="ht_delete_record_failed">Falha ao excluir registro</string>
+    <string name="ht_heart_rate_record_deleted">Registro excluído</string>
+    <string name="ht_blood_sugar_record_deleted">Registro de glicemia excluído</string>
+    <string name="ht_bpm">BPM</string>
+    <string name="ht_cholesterol">Colesterol</string>
+    <string name="ht_weight_and_bmi"><![CDATA[Peso & IMC]]></string>
+
+    <string name="ht_value_with_unit">%1$s %2$s</string>
+
+    <!-- Heart rate -->
+    <string name="ht_heart_rate_status_slow">Lenta</string>
+    <string name="ht_heart_rate_status_normal">Normal</string>
+    <string name="ht_heart_rate_status_fast">Rápida</string>
+    <string name="ht_heart_rate_desc_slow">Frequência cardíaca em repouso &lt; 60 BPM</string>
+    <string name="ht_heart_rate_desc_normal">Frequência cardíaca em repouso 60–100 BPM</string>
+    <string name="ht_heart_rate_desc_fast">Frequência cardíaca em repouso &gt;100 BPM</string>
+    <string name="ht_total_cholesterol">Colesterol Total %1$s</string>
+    <string name="ht_hdl">HDL</string>
+    <string name="ht_ldl">LDL</string>
+    <string name="ht_tg">TG</string>
+    <string name="ht_non_hdl">Não-HDL</string>
+    <string name="ht_tc_hdl">CT/HDL</string>
+    <string name="ht_ldl_hdl">LDL/HDL</string>
+    <string name="ht_result">Resultado</string>
+    <string name="ht_exclusive_advice">Conselho Exclusivo</string>
+    <string name="ht_bmi">IMC</string>
+    <string name="ht_watch_ads_to_see_exclusive_advice">Assista anúncios para ver conselhos exclusivos.</string>
+    <string name="ht_get_exclusive_tips">Obter Dicas Exclusivas</string>
+    <string name="ht_kindly_note">Atenção</string>
+    <string name="ht_your_health_data_requires">Seus dados de saúde requerem atenção. Desbloqueie recomendações profissionais personalizadas adaptadas às suas medições</string>
+    <string name="ht_free_unlock">Desbloquear Grátis</string>
+    <string name="ht_guide_title_1">Saúde da Pressão Arterial</string>
+    <string name="ht_guide_title_2">Domine as Tendências de Pressão Arterial</string>
+    <string name="ht_guide_1_des">Registre dados de pressão arterial a qualquer momento</string>
+    <string name="ht_guide_2_des">Gráficos de dados claros à primeira vista</string>
+    <string name="ht_guide_3_des">Somos projetados para rastreamento diário pessoal de pressão arterial e não oferecemos aconselhamento médico profissional.
+Para orientação de saúde profissional e diagnóstico, encorajamos fortemente que consulte um profissional de saúde qualificado ou instituição médica.</string>
+    <string name="ht_disclaimers">Isenções de Responsabilidade</string>
+    <string name="ht_skip">Pular</string>
+    <string name="ht_next">Próximo</string>
+    <string name="ht_start_health_journey">Comece sua Jornada de Saúde!</string>
+    <string name="ht_guide_bp_des">Clique para adicionar sua primeira leitura de Pressão Arterial agora.</string>
+    <string name="ht_guide_bs_des">Clique para adicionar sua primeira leitura de Glicemia agora.</string>
+    <string name="ht_guide_hr_des">Clique para adicionar sua primeira leitura de Frequência Cardíaca agora.</string>
+    <string name="ht_target_range">Faixa Alvo</string>
+    <string name="ht_target_range_temp">Faixa Alvo(%1$s)</string>
+    <string name="ht_reset">Redefinir</string>
+
+    <string-array name="ht_heart_rate_labels">
+        <item>Estado animado</item>
+        <item>Depressão</item>
+        <item>Calmo</item>
+        <item>Após exercício intenso</item>
+        <item>Após exercício aeróbico</item>
+        <item>Após exercício anaeróbico</item>
+        <item>Em dieta</item>
+        <item>Após beber</item>
+    </string-array>
+
+    <!-- 心率等级专家建议文案数组 -->
+    <string-array name="ht_hr_level_expert_advice">
+        <!-- 低心率建议 -->
+        <item>
+            <![CDATA[
+            Sua frequência cardíaca está <font color="#FFB901"><b>abaixo da faixa normal</b></font>. Isso pode fazer você sentir cansaço, tontura ou vertigem. Aqui estão cinco sugestões a considerar:
+
+            <br><b>Monitore os Sintomas:</b><br>
+            Preste atenção a tonturas, desmaios ou fadiga incomum. Se ocorrerem frequentemente, procure ajuda médica.
+
+            <br><b>Limite Certos Medicamentos:</b><br>
+            Alguns medicamentos (como betabloqueadores) podem diminuir a frequência cardíaca. Consulte seu médico se suspeitar que sua prescrição está contribuindo.
+
+            <br><b>Mantenha-se Ativo com Segurança:</b><br>
+            Exercícios leves como caminhada ou yoga podem ajudar a manter a circulação sem sobrecarregar o coração.
+
+            <br><b>Tenha uma Dieta Equilibrada:</b><br>
+            Garanta ingestão suficiente de nutrientes como potássio e magnésio, que ajudam a regular o ritmo cardíaco.
+
+            <br><b>Consulte um Médico:</b><br>
+            Frequência cardíaca baixa persistente pode exigir avaliação profissional.
+            ]]>
+        </item>
+
+        <!-- 正常心率建议 -->
+        <item>
+            <![CDATA[
+            Sua frequência cardíaca está dentro da <font color="#02BC77"><b>faixa normal</b></font>. Este é um bom sinal para seu sistema cardiovascular. Aqui estão cinco sugestões para manter uma boa saúde cardíaca:
+
+            <br><b>Mantenha-se Hidratado:</b><br>
+            Beba água suficiente diariamente para apoiar a circulação e a função cardíaca geral.
+
+            <br><b>Exercite-se Regularmente:</b><br>
+            Pratique pelo menos 150 minutos de atividade aeróbica moderada por semana, como caminhada rápida ou natação.
+
+            <br><b>Coma Alimentos Saudáveis para o Coração:</b><br>
+            Escolha mais frutas, vegetais, grãos integrais, proteínas magras e gorduras saudáveis como azeite de oliva.
+
+            <br><b>Gerencie o Estresse:</b><br>
+            Pratique técnicas de relaxamento como meditação, respiração profunda ou alongamentos leves.
+
+            <br><b>Agende Check-ups Regulares:</b><br>
+            Mesmo se sua frequência cardíaca estiver normal, exames de rotina ajudam a detectar problemas potenciais cedo.
+            ]]>
+        </item>
+
+        <!-- 高心率建议 -->
+        <item>
+            <![CDATA[
+            Sua frequência cardíaca está <font color="#FA0202"><b>acima da faixa normal</b></font>. Se persistir, pode aumentar o risco de problemas cardíacos. Aqui estão cinco sugestões:
+
+            <br><b>Evite Estimulantes:</b><br>
+            Limite cafeína, álcool e nicotina, que podem elevar a frequência cardíaca.
+
+            <br><b>Pratique Gerenciamento do Estresse:</b><br>
+            Alto estresse e ansiedade podem desencadear batimentos cardíacos rápidos. Use mindfulness, meditação ou exercícios de respiração.
+
+            <br><b>Mantenha-se Fisicamente Ativo:</b><br>
+            Exercícios moderados e consistentes ajudam a fortalecer o coração e regular o ritmo.
+
+            <br><b>Mantenha um Peso Saudável:</b><br>
+            Peso extra faz seu coração trabalhar mais. Adote uma dieta equilibrada e atividade regular.
+
+            <br><b>Busque Avaliação Médica:</b><br>
+            Frequência cardíaca alta persistente, especialmente em repouso, deve ser avaliada por um profissional de saúde.
+            ]]>
+        </item>
+    </string-array>
+
+    <!-- BMI 等级专家建议文案数组 -->
+    <string-array name="ht_bmi_level_expert_advice">
+        <!-- 严重体重过轻 -->
+        <item>Seu peso corporal está criticamente baixo e representa um sério risco à sua saúde. Ação imediata é necessária para restaurar um peso saudável. &lt;br&gt;&lt;b&gt;Consulta Médica Urgente:&lt;/b&gt;&lt;br&gt; Procure orientação imediata de um médico ou nutricionista para descartar condições subjacentes. &lt;br&gt;&lt;b&gt;Plano Nutricional Estruturado:&lt;/b&gt;&lt;br&gt; Siga uma dieta hipercalórica e rica em nutrientes sob supervisão profissional. &lt;br&gt;&lt;b&gt;Monitore o Progresso:&lt;/b&gt;&lt;br&gt; Acompanhe o ganho de peso semanalmente para garantir que está se movendo para uma faixa mais saudável. &lt;br&gt;&lt;b&gt;Treinamento de Força:&lt;/b&gt;&lt;br&gt; Incorpore exercícios leves de resistência para construir massa muscular com segurança.</item>
+
+        <!-- 中度体重过轻 -->
+        <item>Seu peso está moderadamente abaixo do ideal. É importante abordar isso para apoiar as funções essenciais do seu corpo e sistema imunológico. &lt;br&gt;&lt;b&gt;Consulte um Profissional:&lt;/b&gt;&lt;br&gt; Consulte um profissional de saúde para uma estratégia personalizada de ganho de peso. &lt;br&gt;&lt;b&gt;Aumente a Ingestão Calórica:&lt;/b&gt;&lt;br&gt; Faça refeições frequentes e ricas em calorias com equilíbrio de proteínas, gorduras saudáveis e carboidratos complexos. &lt;br&gt;&lt;b&gt;Foque na Densidade Nutricional:&lt;/b&gt;&lt;br&gt; Escolha alimentos como nozes, abacates, leite integral e carnes magras. &lt;br&gt;&lt;b&gt;Lanches Saudáveis:&lt;/b&gt;&lt;br&gt; Adicione 2-3 lanches nutritivos entre suas refeições principais.</item>
+
+        <!-- 轻度体重过轻 -->
+        <item>Você está levemente abaixo do peso. Ganhar alguns quilos ajudará você a alcançar melhores níveis de energia e saúde a longo prazo. &lt;br&gt;&lt;b&gt;Ênfase em Dieta Equilibrada:&lt;/b&gt;&lt;br&gt; Priorize alimentos integrais ricos em energia em vez de opções processadas. &lt;br&gt;&lt;b&gt;Exercícios de Fortalecimento:&lt;/b&gt;&lt;br&gt; Pratique musculação para construir músculos, não apenas gordura. &lt;br&gt;&lt;b&gt;Horário de Alimentação Consistente:&lt;/b&gt;&lt;br&gt; Nunca pule refeições e tenha um café da manhã substancial. &lt;br&gt;&lt;b&gt;Check-up Médico:&lt;/b&gt;&lt;br&gt; Um check-up rápido pode confirmar que não há problemas médicos causando baixo peso.</item>
+
+        <!-- 正常范围 -->
+        <item>Parabéns! Seu peso está dentro da faixa saudável. Mantenha excelentes hábitos para o bem-estar ao longo da vida. &lt;br&gt;&lt;b&gt;Consistência é a Chave:&lt;/b&gt;&lt;br&gt; Continue com sua dieta equilibrada e atividade física regular. &lt;br&gt;&lt;b&gt;Exercícios Variados:&lt;/b&gt;&lt;br&gt; Combine cardio, treinamento de força e exercícios de flexibilidade. &lt;br&gt;&lt;b&gt;Alimentação Consciente:&lt;/b&gt;&lt;br&gt; Preste atenção aos sinais de fome e saciedade para manter seu peso naturalmente. &lt;br&gt;&lt;b&gt;Check-ups Regulares:&lt;/b&gt;&lt;br&gt; Continue com exames de saúde anuais para monitorar sua saúde geral.</item>
+
+        <!-- 超重 -->
+        <item>Você está na faixa de sobrepeso. Tomar medidas moderadas agora pode prevenir riscos à saúde e ajudá-lo a se sentir mais energizado. &lt;br&gt;&lt;b&gt;Controle de Porções:&lt;/b&gt;&lt;br&gt; Comece reduzindo ligeiramente o tamanho das porções, especialmente para alimentos hipercalóricos. &lt;br&gt;&lt;b&gt;Aumente a Atividade Diária:&lt;/b&gt;&lt;br&gt; Procure 30 minutos de exercício moderado como caminhada rápida na maioria dos dias. &lt;br&gt;&lt;b&gt;Limite Bebidas Açucaradas:&lt;/b&gt;&lt;br&gt; Substitua refrigerantes e sucos açucarados por água ou chá de ervas. &lt;br&gt;&lt;b&gt;Defina uma Pequena Meta:&lt;/b&gt;&lt;br&gt; Procure perder 5-10% do seu peso atual para benefícios significativos à saúde.</item>
+
+        <!-- 肥胖一级 -->
+        <item>Seu IMC indica Obesidade Classe I, o que aumenta os riscos à saúde. Um plano estruturado é recomendado para seu bem-estar. &lt;br&gt;&lt;b&gt;Orientação Médica:&lt;/b&gt;&lt;br&gt; Consulte seu médico para criar um plano seguro e eficaz de perda de peso. &lt;br&gt;&lt;b&gt;Reformulação Alimentar:&lt;/b&gt;&lt;br&gt; Trabalhe com um nutricionista para criar um déficit calórico sustentável. &lt;br&gt;&lt;b&gt;Rotina Regular de Exercícios:&lt;/b&gt;&lt;br&gt; Estabeleça uma rotina consistente de mais de 150 minutos de exercício moderado por semana. &lt;br&gt;&lt;b&gt;Mudanças Comportamentais:&lt;/b&gt;&lt;br&gt; Identifique e aborde gatilhos para comer em excesso.</item>
+
+        <!-- 肥胖二级 -->
+        <item>Seu IMC indica Obesidade Classe II, uma condição séria de saúde. Intervenção proativa e gerenciada é crucial. &lt;br&gt;&lt;b&gt;Suporte Médico Abrangente:&lt;/b&gt;&lt;br&gt; Procure ajuda de uma clínica de controle de peso ou endocrinologista. &lt;br&gt;&lt;b&gt;Explore Todas as Opções:&lt;/b&gt;&lt;br&gt; Discuta tratamentos médicos, incluindo medicamentos prescritos ou cirurgia bariátrica, com seu médico. &lt;br&gt;&lt;b&gt;Adesão Rigorosa:&lt;/b&gt;&lt;br&gt; Siga meticulosamente os planos dietéticos e de exercícios definidos pela sua equipe de saúde. &lt;br&gt;&lt;b&gt;Monitore Comorbidades:&lt;/b&gt;&lt;br&gt; Faça check-ups regulares para condições como pressão alta e diabetes.</item>
+
+        <!-- 肥胖三级 -->
+        <item>Seu IMC indica Obesidade Classe III (Grave), que representa riscos graves e imediatos à saúde. Tratamento médico urgente é necessário. &lt;br&gt;&lt;b&gt;Cuidado Especializado Imediato:&lt;/b&gt;&lt;br&gt; Esta é uma emergência médica; você deve estar sob cuidados de um especialista em medicina da obesidade. &lt;br&gt;&lt;b&gt;Programa de Tratamento Estruturado:&lt;/b&gt;&lt;br&gt; Inscreva-se em um programa intensivo de perda de peso supervisionado por médicos. &lt;br&gt;&lt;b&gt;Avaliação Cirúrgica:&lt;/b&gt;&lt;br&gt; Discuta a cirurgia bariátrica como uma opção de tratamento potencialmente salvadora. &lt;br&gt;&lt;b&gt;Priorize a Mobilidade:&lt;/b&gt;&lt;br&gt; Concentre-se em movimentos seguros e suaves para manter a mobilidade e apoiar o tratamento sob orientação.</item>
+    </string-array>
+
+    <!-- 胆固醇等级专家建议文案数组 -->
+    <string-array name="ht_cholesterol_level_expert_advice">
+        <!-- UNKNOWN - 数据不足 -->
+        <item>Dados insuficientes para avaliar o nível de colesterol. Por favor, certifique-se de ter medições completas de colesterol incluindo HDL, LDL, Colesterol Total e Triglicerídeos. &lt;br&gt;&lt;b&gt;Teste Completo:&lt;/b&gt;&lt;br&gt; Faça um teste completo de perfil lipídico com seu médico. &lt;br&gt;&lt;b&gt;Acompanhe Seus Dados:&lt;/b&gt;&lt;br&gt; Mantenha registros regulares de todas as medições de colesterol. &lt;br&gt;&lt;b&gt;Consulte Profissional:&lt;/b&gt;&lt;br&gt; Discuta sua saúde do colesterol com um médico ou nutricionista.</item>
+
+        <!-- NORMAL - 正常 -->
+        <item>Seu nível de colesterol está dentro da faixa normal. Este é um bom sinal para seu coração e vasos sanguíneos. Aqui estão cinco sugestões para continuar mantendo sua saúde cardiovascular: &lt;br&gt;&lt;b&gt;Tenha uma Dieta Equilibrada:&lt;/b&gt;&lt;br&gt; Concentre-se em grãos integrais, vegetais frescos, frutas, proteína magra e gorduras saudáveis. &lt;br&gt;&lt;b&gt;Mantenha-se Fisicamente Ativo:&lt;/b&gt;&lt;br&gt; Procure pelo menos 150 minutos de exercício aeróbico moderado por semana. &lt;br&gt;&lt;b&gt;Mantenha Peso Saudável:&lt;/b&gt;&lt;br&gt; Mantenha seu índice de massa corporal (IMC) em uma faixa saudável. &lt;br&gt;&lt;b&gt;Evite Fumo e Excesso de Álcool:&lt;/b&gt;&lt;br&gt; Ambos podem afetar negativamente o colesterol e a saúde cardíaca. &lt;br&gt;&lt;b&gt;Check-ups de Rotina:&lt;/b&gt;&lt;br&gt; Continue com exames de saúde regulares para garantir que o colesterol permaneça estável.</item>
+
+        <!-- NEAR_OPTIMAL - 接近理想 -->
+        <item>Seu nível de colesterol está quase ideal, mas há riscos menores que devem ser gerenciados. Aqui estão cinco sugestões para ajudar a prevenir aumentos: &lt;br&gt;&lt;b&gt;Adote Alimentação Saudável para o Coração:&lt;/b&gt;&lt;br&gt; Adicione mais vegetais, frutas, nozes e grãos integrais, limitando gorduras saturadas. &lt;br&gt;&lt;b&gt;Mantenha-se Ativo:&lt;/b&gt;&lt;br&gt; Atividade física regular, como caminhada rápida, ciclismo ou natação, ajuda a manter o equilíbrio. &lt;br&gt;&lt;b&gt;Monitore o Colesterol:&lt;/b&gt;&lt;br&gt; Acompanhe seu colesterol com testes periódicos para detectar mudanças precoces. &lt;br&gt;&lt;b&gt;Gerencie o Estresse:&lt;/b&gt;&lt;br&gt; Pratique técnicas de relaxamento para reduzir o estresse, que pode afetar os níveis de colesterol. &lt;br&gt;&lt;b&gt;Limite Alimentos Processados:&lt;/b&gt;&lt;br&gt; Reduza a ingestão de fast foods, frituras e lanches açucarados.</item>
+
+        <!-- BORDERLINE - 临界偏高 -->
+        <item>Seu nível de colesterol está limítrofe alto. Isso indica que você pode enfrentar riscos maiores se nenhuma ação for tomada. Aqui estão cinco sugestões: &lt;br&gt;&lt;b&gt;Reduza Alimentos Gordurosos:&lt;/b&gt;&lt;br&gt; Limite carne vermelha, frituras e laticínios integrais. &lt;br&gt;&lt;b&gt;Aumente a Ingestão de Fibras:&lt;/b&gt;&lt;br&gt; Escolha aveia, feijões e frutas para ajudar a baixar o colesterol LDL. &lt;br&gt;&lt;b&gt;Pare de Fumar:&lt;/b&gt;&lt;br&gt; Fumar diminui o HDL ("bom" colesterol) e danifica os vasos sanguíneos. &lt;br&gt;&lt;b&gt;Exercite-se Regularmente:&lt;/b&gt;&lt;br&gt; Procure pelo menos 30 minutos de atividade na maioria dos dias da semana. &lt;br&gt;&lt;b&gt;Agende Testes de Acompanhamento:&lt;/b&gt;&lt;br&gt; Monitoramento regular ajuda a acompanhar mudanças no colesterol.</item>
+
+        <!-- HIGH - 高风险 -->
+        <item>Seu nível de colesterol está alto, o que aumenta seu risco de doenças cardíacas e AVC. Aqui estão cinco sugestões importantes: &lt;br&gt;&lt;b&gt;Consulte um Médico:&lt;/b&gt;&lt;br&gt; Obtenha orientação profissional para determinar se medicação é necessária. &lt;br&gt;&lt;b&gt;Adote uma Dieta Inteligente para o Coração:&lt;/b&gt;&lt;br&gt; Priorize vegetais, frutas, grãos integrais, peixes e gorduras saudáveis como azeite de oliva. &lt;br&gt;&lt;b&gt;Aumente a Atividade Diária:&lt;/b&gt;&lt;br&gt; Incorpore mais exercícios em sua rotina, como caminhada, corrida ou ciclismo. &lt;br&gt;&lt;b&gt;Limite Hábitos Não Saudáveis:&lt;/b&gt;&lt;br&gt; Reduza o álcool, evite fumar e minimize alimentos processados. &lt;br&gt;&lt;b&gt;Monitore Regularmente:&lt;/b&gt;&lt;br&gt; Continue verificando os níveis de colesterol para acompanhar melhorias após mudanças no estilo de vida.</item>
+
+        <!-- VERY_HIGH - 极高风险 -->
+        <item>Seu nível de colesterol está muito alto e representa um sério risco ao seu coração e saúde geral. Ação imediata é necessária. Aqui estão cinco sugestões urgentes: &lt;br&gt;&lt;b&gt;Procure Atenção Médica:&lt;/b&gt;&lt;br&gt; Consulte seu médico prontamente para avaliação e tratamento. &lt;br&gt;&lt;b&gt;Siga o Tratamento Prescrito:&lt;/b&gt;&lt;br&gt; Tome medicamentos para baixar o colesterol exatamente conforme instruído, se prescritos. &lt;br&gt;&lt;b&gt;Adote uma Dieta Rigorosa:&lt;/b&gt;&lt;br&gt; Evite alimentos gordurosos, fritos e processados; priorize refeições saudáveis para o coração. &lt;br&gt;&lt;b&gt;Ajustes no Estilo de Vida:&lt;/b&gt;&lt;br&gt; Pare de fumar, evite álcool e gerencie o estresse cuidadosamente. &lt;br&gt;&lt;b&gt;Monitoramento Frequente:&lt;/b&gt;&lt;br&gt; Faça testes de colesterol com mais frequência para garantir que o tratamento está sendo eficaz.</item>
+    </string-array>
+
+    <!-- 血糖目标范围设置 -->
+    <string name="ht_please_input_complete_data">Por favor, insira dados completos</string>
+    <string name="ht_range_order_error">Os valores da faixa devem estar em ordem crescente</string>
+    <string name="ht_range_bounds_error">Os valores da faixa estão fora dos limites aceitáveis</string>
+    <string name="ht_reset_all_ranges_confirm">Redefinir todas as faixas alvo para valores padrão?</string>
+    <string name="ht_reset_success">Redefinição bem-sucedida</string>
+    <string name="ht_save_success">Salvo com sucesso</string>
+
+    <!-- 健康服务通知渠道 -->
+    <string name="ht_health_service_channel_name">Serviço de Monitoramento de Saúde</string>
+    <string name="ht_health_service_channel_description">Exibe notificação persistente para registro rápido de dados de saúde</string>
+
+    <!-- 自定义推送通知渠道 -->
+    <string name="ht_custom_notification_channel_name">Alertas de Saúde</string>
+    <string name="ht_custom_notification_channel_description">Lembretes de glicemia, pressão arterial, frequência cardíaca e mais</string>
+    <string name="ht_exit">Sair</string>
+    <string name="ht_are_you_sure_exit">Tem certeza que deseja sair do aplicativo?</string>
+    <string name="ht_health_statistics">Estatísticas de Saúde</string>
+    <string name="ht__7_days">7 Dias</string>
+    <string name="ht__1_month">1 Mês</string>
+    <string name="ht__3_month">3 Meses</string>
+    <string name="ht_select">Selecionar</string>
+    <string name="ht_summary">Resumo</string>
+    <string name="ht_avg">Média</string>
+    <string name="ht_min">Mín</string>
+    <string name="ht_max">Máx</string>
+    <string name="ht_all_history">Todo histórico</string>
+    <string name="ht_health_tips">Dicas de saúde</string>
+    <string name="ht_no_date">Sem data</string>
+    <string name="ht_add_now">Adicionar agora</string>
+
+    <!-- 补水 -->
+    <string name="ht_hydrate">Hidratação</string>
+    <string name="ht_walking">Caminhada</string>
+    <string name="ht_walking_steps">Passos de Caminhada</string>
+    <string name="ht_drink_btn_format">Beber %d %s</string>
+    <string name="ht_hydrate_cup_count_format">Você bebeu %d copos de água hoje</string>
+    <string name="ht_hydrate_complete_message">Parabéns! Você completou sua meta de água!</string>
+    <string name="ht_done">Concluído</string>
+    <string name="ht_hydrate_empty_record">Ainda não há registro de ingestão de água.</string>
+    <string name="ht_daily_water_intake">Ingestão Diária de Água</string>
+    <string name="ht_cup_size">Tamanho do Copo</string>
+    <string name="ht_fl_oz">fl oz</string>
+    <string name="ht_ml">ML</string>
+    <string name="ht_hydration_reminder_time">Horário do Lembrete de Hidratação</string>
+    <string name="ht_hydration_reminder_edit">Editar</string>
+    <string name="ht_hydrate_reminder_delete_confirm_message">Tem certeza que deseja excluir este alarme?</string>
+    <string name="ht_coming_soon_title">Em Breve!</string>
+    <string name="ht_coming_soon_message">Você é um viajante do tempo! Este dia ainda não chegou. Por favor, selecione uma data anterior ou volte para hoje.</string>
+    <string name="ht_back_to_today">VOLTAR PARA HOJE</string>
+    <string name="ht_hydrate_reminder_exist">O horário do lembrete já foi definido.</string>
+    <string name="ht_hydrate_reminder_empty_message">Você ainda não definiu nenhum lembrete de água. Comece a criar seu hábito de hidratação adicionando seu primeiro lembrete!</string>
+    <!-- Hydration alarm -->
+    <string name="ht_alarm_hydration_content">Hora de beber água!</string>
+    <string name="ht_drink_now">Ver Agora</string>
+    <string name="ht_medication_notification_title_with_time">%1$s às %2$s</string>
+    <string name="ht_hydrate_quick_add">Adicionar Rápido</string>
+    <string name="ht_step_count">Contagem de Passos</string>
+    <string name="ht_today">Hoje</string>
+    <string name="ht_unit_km">km</string>
+    <string name="ht_kcal">Kcal</string>
+    <string name="ht_today_s_goal">Meta de hoje</string>
+    <string name="ht_step_goal">Meta de Passos</string>
+    <string name="ht_enable_step_count">Permissão de atividade física necessária</string>
+    <string name="ht_allow">Permitir</string>
+    <string name="ht_without_this_authorization_step_count_will_not_work">Sem esta autorização, o recurso de contagem de passos <font color="#02BC77">não funcionará</font></string>
+
+    <!-- Blood Pressure Health Tips -->
+    <string-array name="ht_health_tips_blood_pressure_titles">
+        <item>Mantenha Sua Pressão Perfeita</item>
+        <item>Mova-se pelo Seu Coração</item>
+        <item>Relaxe para o Bem-Estar</item>
+    </string-array>
+    <string-array name="ht_health_tips_blood_pressure_texts">
+        <item>Fique atento à ingestão de sal e inclua alimentos ricos em potássio como bananas para ajudar a manter uma pressão arterial saudável.</item>
+        <item>Caminhadas regulares e exercícios leves são ótimas maneiras de manter seus vasos sanguíneos flexíveis e sua pressão sob controle.</item>
+        <item>Gerenciar o estresse através de respiração profunda ou meditação pode impactar positivamente seus níveis de pressão arterial.</item>
+    </string-array>
+
+    <!-- Blood Sugar Health Tips -->
+    <string-array name="ht_health_tips_blood_sugar_titles">
+        <item>Equilibre Seu Prato</item>
+        <item>Escolha Carboidratos Inteligentes</item>
+        <item>Mantenha-se Ativo Todo Dia</item>
+    </string-array>
+    <string-array name="ht_health_tips_blood_sugar_texts">
+        <item>Preencha metade do seu prato com vegetais não amiláceos para ajudar a manter seus níveis de glicemia estáveis após as refeições.</item>
+        <item>Opte por grãos integrais como aveia em vez de refinados para fornecer energia estável e evitar picos de açúcar.</item>
+        <item>Uma curta caminhada após as refeições pode ajudar significativamente seu corpo a gerenciar a glicemia de forma mais eficaz.</item>
+    </string-array>
+
+    <!-- Cholesterol Health Tips -->
+    <string-array name="ht_health_tips_cholesterol_titles">
+        <item>Ame Suas Gorduras</item>
+        <item>Aumente as Fibras</item>
+        <item>Mova-se pelos Seus Números</item>
+    </string-array>
+    <string-array name="ht_health_tips_cholesterol_texts">
+        <item>Escolha gorduras saudáveis para o coração de abacates, nozes e azeite de oliva para ajudar a apoiar níveis saudáveis de colesterol.</item>
+        <item>Alimentos ricos em fibras solúveis, como maçãs e aveia, podem ajudar seu corpo a gerenciar o colesterol LDL ("ruim").</item>
+        <item>Atividade física regular é um fator chave para aumentar o colesterol HDL ("bom") e diminuir o LDL.</item>
+    </string-array>
+
+    <!-- Heart Rate Health Tips -->
+    <string-array name="ht_health_tips_heart_rate_titles">
+        <item>Encontre Sua Calma</item>
+        <item>Hidrate-se, Estabilize Seu Batimento</item>
+        <item>Consistência é a Chave</item>
+    </string-array>
+    <string-array name="ht_health_tips_heart_rate_texts">
+        <item>Práticas como meditação e respiração profunda podem ajudar a diminuir sua frequência cardíaca em repouso ao longo do tempo.</item>
+        <item>A desidratação pode fazer seu coração trabalhar mais. Beber água suficiente ajuda a manter uma frequência cardíaca normal.</item>
+        <item>Exercícios regulares e moderados fortalecem o músculo cardíaco, ajudando-o a bombear de forma mais eficiente em repouso.</item>
+    </string-array>
+
+    <!-- BMI Health Tips -->
+    <string-array name="ht_health_tips_bmi_titles">
+        <item>Faça Cada Mordida Nutritiva</item>
+        <item>Construa uma Rotina Sustentável</item>
+        <item>Ouça Seu Corpo</item>
+    </string-array>
+    <string-array name="ht_health_tips_bmi_texts">
+        <item>Foque em uma dieta equilibrada rica em alimentos integrais para se sentir satisfeito e apoiar um peso saudável.</item>
+        <item>Encontre atividades físicas que você goste, tornando mais fácil manter-se ativo e gerenciar seu peso a longo prazo.</item>
+        <item>Preste atenção aos sinais de fome e saciedade para evitar comer demais e manter um equilíbrio saudável.</item>
+    </string-array>
+
+    <!-- Steps Health Tips -->
+    <string-array name="ht_health_tips_steps_titles">
+        <item>Aumente Seus Passos Diários</item>
+        <item>Divida Seu Dia</item>
+        <item>Torne a Caminhada uma Alegria</item>
+    </string-array>
+    <string-array name="ht_health_tips_steps_texts">
+        <item>Procure uma contagem diária consistente de passos. Mesmo pequenos aumentos contribuem para melhor saúde cardiovascular.</item>
+        <item>Defina um lembrete para levantar e caminhar por alguns minutos a cada hora para manter seu metabolismo ativo.</item>
+        <item>Caminhe com um amigo, ouça um podcast ou explore um novo parque para tornar seus passos agradáveis.</item>
+    </string-array>
+
+    <!-- Hydration Health Tips -->
+    <string-array name="ht_health_tips_hydration_titles">
+        <item>Comece Seu Dia com Água</item>
+        <item>Sempre Mantenha uma Garrafa por Perto</item>
+        <item>Coma Sua Água</item>
+    </string-array>
+    <string-array name="ht_health_tips_hydration_texts">
+        <item>Beba um copo de água logo pela manhã para iniciar a hidratação e seu metabolismo.</item>
+        <item>Ter água visível e ao alcance torna mais provável que você beba ao longo do dia.</item>
+        <item>Aproveite frutas e vegetais com alto teor de água, como melancia e pepino, para ajudá-lo a se manter hidratado.</item>
+    </string-array>
+
+    <string name="ht_go_to_set">IR PARA CONFIGURAR</string>
+    <string name="ht_choose_language">Escolher Idioma</string>
+    <string name="ht_language">Idioma</string>
+    <string name="ht_unit_settings">Configurações de Unidade</string>
+    <string name="ht_target_range_settings">Configurações de Faixa Alvo</string>
+    <string name="ht_personal_info">Informações pessoais</string>
+    <string name="ht_feedback">Feedback</string>
+    <string name="ht_privacy_policy">Política de Privacidade</string>
+    <string name="ht_terms_of_service">Termos de Serviço</string>
+    <string name="ht_settings_section_tracking_and_targets">Rastreamento e Metas</string>
+    <string name="ht_settings_section_preferences">Preferências</string>
+    <string name="ht_settings_section_help_and_feedback">Ajuda e Feedback</string>
+    <string name="ht_settings_section_legal_and_policies">Legal e Políticas</string>
+    <string name="ht_settings_version_format">Versão %1$s</string>
+    <string name="ht_bill_ad_loading">Carregando anúncio…</string>
+
+    <string name="ht_please_tell_more">Por favor, conte-nos mais detalhes para que possamos localizar e resolver seu problema mais rapidamente</string>
+    <string name="ht_upload_screenshots">Enviar Capturas de Tela</string>
+    <string name="ht_btn_submit">Enviar</string>
+    <string name="ht_feedback_email_title">Feedback %s</string>
+    <string name="ht_feedback_sending_failed">Falha no envio, verifique seu aplicativo de e-mail.</string>
+    <string name="ht_max_upload_photos">Você pode enviar até %d fotos</string>
+    <string name="ht_feedback_submitted">Enviado com sucesso</string>
+    <string name="ht_last_measurement">Última Medição: %1$s</string>
+    <string name="shortcut_uninstall_short">Desinstalar</string>
+
+    <!-- Uninstall Intercept Strings -->
+    <string name="ht_uninstall_lose_access_title">Se você desinstalar este APP, perderá acesso aos seguintes recursos:</string>
+    <string name="ht_uninstall_feature_blood_sugar">Rastreamento de Glicemia e Pressão</string>
+    <string name="ht_uninstall_feature_trend">Análise de Tendências de Dados de Saúde</string>
+    <string name="ht_uninstall_feature_reminder">Lembretes de Medicamentos e Saúde</string>
+    <string name="ht_uninstall_feature_insights">Insights de Saúde e Dicas Personalizadas</string>
+    <string name="ht_uninstall_btn_dont_uninstall">Não desinstalar ainda</string>
+    <string name="ht_uninstall_btn_uninstall">Desinstalar</string>
+    <string name="ht_uninstall_reason_title">Por que desinstalar %1$s?</string>
+    <string name="ht_uninstall_reason_difficult">Difícil de usar</string>
+    <string name="ht_uninstall_reason_too_many_ads">Muitos anúncios</string>
+    <string name="ht_uninstall_reason_poor_experience">Experiência de usuário ruim</string>
+    <string name="ht_uninstall_reason_similar_installed">Produtos similares foram instalados</string>
+    <string name="ht_uninstall_reason_unable_meet_demand">Não atende às necessidades</string>
+    <string name="ht_uninstall_reason_others">Outros</string>
+    <string name="ht_uninstall_reason_hint">Por favor, insira o motivo pelo qual está desinstalando %1$s</string>
+
+</resources>

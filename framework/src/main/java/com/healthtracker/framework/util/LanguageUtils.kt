@@ -29,16 +29,16 @@ object LanguageUtils {
 
     val LanguageMap = listOf(
         LangBean("en", "English", "en"),
-//        LangBean("es", "Español", "es"),
-//        LangBean("pt_BR", "Português", "pt", ""),
+        LangBean("es", "Español", "es"),  // 西班牙语
+        LangBean("pt_BR", "Português (Brasil)", "pt", "BR"),  // 巴西葡萄牙语
 //        LangBean("de", "Deutsch", "de"),
 //        LangBean("fr", "Français", "fr"),
 //        LangBean("id", "Indonesian", "in", "ID"),   // 印度尼西亚语
 //        LangBean("it", "Italiano", "it"),   // 	意大利语
         LangBean("ja", "日本語", "ja"),
         LangBean("ko", "한국어", "ko"),
-//        LangBean("hi", "हिंदी", "hi", "IN"),    // 印度语
-//        LangBean("tr", "Türkçe", "tr"), // 土耳其
+        LangBean("hi", "हिंदी", "hi", "IN"),  // 印地语
+        LangBean("tr", "Türkçe", "tr"),  // 土耳其语
 //        LangBean("ru", "Русский", "ru"), // 俄语
 //        LangBean("th", "ไทย", "th"), // 泰语
 //        LangBean("tl", "Filipino", "fil", "PH"), // 菲律宾语

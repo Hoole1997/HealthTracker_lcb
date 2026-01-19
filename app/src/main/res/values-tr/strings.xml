@@ -1,0 +1,417 @@
+<resources>
+    <string name="app_name">Kan Şekeri &amp; Sağlık</string>
+    <string name="ht_meds_manager">İlaç Yöneticisi</string>
+    <string name="ht_blood_suger">Kan Şekeri</string>
+    <string name="ht_blood_pressure">Tansiyon</string>
+    <string name="ht_home">Ana Sayfa</string>
+    <string name="ht_meds">İlaçlar</string>
+    <string name="ht_insights">Analizler</string>
+    <string name="ht_tracker">Takipçi</string>
+    <string name="ht_settings">Ayarlar</string>
+    <string name="ht_record_now">Şimdi Kaydet</string>
+    <string name="ht_loading">Yükleniyor...</string>
+    <string name="ht_history">Geçmiş</string>
+    <string name="ht_click_to_record">Kaydetmek için dokunun</string>
+    <string name="ht_new_record">Yeni Kayıt</string>
+    <string name="ht_edit_record">Kaydı Düzenle</string>
+    <string name="ht_status">Durum</string>
+    <string name="ht_text_default">Varsayılan</string>
+
+    <string name="ht_blood_sugar_level_low">Düşük</string>
+    <string name="ht_blood_sugar_level_normal">Normal</string>
+    <string name="ht_blood_sugar_level_prediabetes">Pre-diyabet</string>
+    <string name="ht_blood_sugar_level_diabetes">Diyabet</string>
+
+    <string name="ht_cholesterol_level_normal">Normal</string>
+    <string name="ht_cholesterol_level_normal_desc">TK &lt; 200; HDL-dışı &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
+    <string name="ht_cholesterol_level_near_optimal">Neredeyse İdeal</string>
+    <string name="ht_cholesterol_level_near_optimal_desc">TK &lt; 200; HDL-dışı &lt; 130; LDL 100~129; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_borderline">Sınırda</string>
+    <string name="ht_cholesterol_level_borderline_desc">TK 200~239; HDL-dışı 130~159; LDL 130~159; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_high">Yüksek</string>
+    <string name="ht_cholesterol_level_high_desc">TK ≥ 240; HDL-dışı ≥ 130; LDL 160~189; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_very_high">Çok Yüksek</string>
+    <string name="ht_cholesterol_level_very_high_desc">TK ≥ 240; HDL-dışı ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_unknown">Bilinmiyor</string>
+    <string name="ht_cholesterol_level_unknown_desc">Kolesterol seviyesini belirlemek için yetersiz veri</string>
+    <string name="ht_cholesterol_total_label">Toplam Kolesterol</string>
+    <string name="ht_cholesterol_hdl_label">HDL</string>
+    <string name="ht_cholesterol_ldl_label">LDL</string>
+    <string name="ht_cholesterol_tg_label">TG</string>
+    <string name="ht_cholesterol_total_placeholder">--</string>
+
+    <string name="ht_blood_pressure_level_low">Düşük Tansiyon</string>
+    <string name="ht_blood_pressure_level_normal">Normal</string>
+    <string name="ht_blood_pressure_level_elevated">Yüksek</string>
+    <string name="ht_blood_pressure_level_high_stage_1">Hipertansiyon Aşama 1</string>
+    <string name="ht_blood_pressure_level_high_stage_2">Hipertansiyon Aşama 2</string>
+    <string name="ht_blood_pressure_level_hypertensive_crisis">Hipertansif Kriz</string>
+
+    <string name="ht_blood_pressure_range_low_short">SİS %1$s veya DİA %2$s</string>
+    <string name="ht_blood_pressure_range_normal_short">SİS %1$s ve DİA %2$s</string>
+    <string name="ht_blood_pressure_range_elevated_short">SİS %1$s ve DİA %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_1_short">SİS %1$s veya DİA %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_2_short">SİS %1$s veya DİA %2$s</string>
+    <string name="ht_blood_pressure_range_hypertensive_crisis_short">SİS %1$s veya DİA %2$s</string>
+
+    <string name="ht_blood_pressure_range_low_full">Sistolik %1$s veya Diastolik %2$s</string>
+    <string name="ht_blood_pressure_range_normal_full">Sistolik %1$s ve Diastolik %2$s</string>
+    <string name="ht_blood_pressure_range_elevated_full">Sistolik %1$s ve Diastolik %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_1_full">Sistolik %1$s veya Diastolik %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_2_full">Sistolik %1$s veya Diastolik %2$s</string>
+    <string name="ht_blood_pressure_range_hypertensive_crisis_full">Sistolik %1$s veya Diastolik %2$s</string>
+
+    <string name="ht_notification_channel_alarm_name">Sağlık Hatırlatıcısı</string>
+    <string name="ht_notification_channel_alarm_description">Sağlık izleme hatırlatma bildirimleri</string>
+
+    <string name="ht_alarm_blood_sugar_title">Kan Şekeri Hatırlatıcısı</string>
+    <string name="ht_alarm_blood_sugar_content">Kan şekerinizi kaydetme zamanı!</string>
+
+    <string name="ht_alarm_blood_pressure_title">Tansiyon Hatırlatıcısı</string>
+    <string name="ht_alarm_blood_pressure_content">Tansiyonunuzu kaydetme zamanı!</string>
+
+    <string name="ht_alarm_default_title">Sağlık Hatırlatıcısı</string>
+    <string name="ht_alarm_default_content">Lütfen sağlığınızı zamanında izleyin</string>
+
+    <string name="ht_blood_sugar_status_default">Varsayılan</string>
+    <string name="ht_blood_sugar_status_fasting">Aç Karnına</string>
+    <string name="ht_blood_sugar_status_before_meal">Yemekten önce</string>
+    <string name="ht_blood_sugar_status_bedtime">Yatmadan önce</string>
+    <string name="ht_blood_sugar_status_after_exercise">Egzersizden sonra</string>
+    <string name="ht_blood_sugar_status_one_hour_after_meal">Yemekten 1 saat sonra</string>
+    <string name="ht_blood_sugar_status_before_exercise">Egzersizden önce</string>
+    <string name="ht_blood_sugar_status_two_hours_after_meal">Yemekten 2 saat sonra</string>
+
+    <string name="ht_save">Kaydet</string>
+    <string name="ht_save_changes">Değişiklikleri Kaydet</string>
+    <string name="ht_cancel">İptal</string>
+    <string name="ht_saving">Kaydediliyor...</string>
+    <string name="ht_save_failed">Kaydetme başarısız, lütfen tekrar deneyin</string>
+    <string name="ht_date_time"><![CDATA[Tarih ve Saat]]></string>
+    <string name="ht_label">Etiket</string>
+
+    <string name="ht_latest">En Son</string>
+    <string name="ht_just_now">Az önce</string>
+    <string name="ht_seconds_ago">%d saniye önce</string>
+    <string name="ht_minutes_ago">%d dakika önce</string>
+    <string name="ht_hours_ago">%d saat önce</string>
+    <string name="ht_days_ago">%d gün önce</string>
+    <string name="ht_systolic">Sistolik</string>
+    <string name="ht_diastolic">Diastolik</string>
+    <string name="ht_pulse">Nabız</string>
+    <string name="ht_type">Tür</string>
+    <string name="ht_bp_range_des">AHA (Amerikan Kalp Derneği) en son kılavuzlarına göre</string>
+    <string name="ht_cholesterol_range_des">TK: Toplam Kolesterol\nHDL: Yüksek Yoğunluklu Lipoprotein\nLDL: Düşük Yoğunluklu Lipoprotein\nTG: Trigliseritler\nHDL-dışı: HDL Olmayan Lipoprotein\n\nCleveland Clinic kılavuzlarına göre.</string>
+    <string name="ht_got_it">Anladım</string>
+    <string name="ht_details">Ayrıntılar</string>
+    <string name="ht_all_types">Tüm Türler</string>
+    <string name="ht_no_records">Kayıt Yok</string>
+    <string name="ht_load_fail_please_try_again">Yükleme başarısız, lütfen tekrar deneyin</string>
+    <string name="ht_try_again">Tekrar dene</string>
+    <string name="ht_delete_record_remind_title">Bu kaydı silinsin mi?</string>
+    <string name="ht_tips">İpuçları</string>
+    <string name="ht_delete_tips_content">Bu öğeyi silmek istediğinizden emin misiniz?</string>
+    <string name="ht_confirm">Onayla</string>
+    <string name="ht_delete_record_remind">Silindikten sonra kurtarılamaz</string>
+    <string name="ht_add_record">Kayıt Ekle</string>
+
+    <string name="ht_assistant_answer">Cevapla</string>
+    <string name="ht_assistant_neglect">Yoksay</string>
+    <string name="ht_alarm_management">Alarm Yönetimi</string>
+    <string name="ht_step_stats_max_title">Maksimum</string>
+    <string name="ht_step_stats_min_title">Minimum</string>
+    <string name="ht_step_stats_avg_title">Ortalama</string>
+
+    <string-array name="ht_blood_sugar_labels">
+        <item>Heyecanlı</item>
+        <item>Kardiyodan sonra</item>
+        <item>Üzgün</item>
+        <item>Sakin</item>
+        <item>Ağırlık antrenmanından sonra</item>
+        <item>Yoğun egzersizden sonra</item>
+        <item>Diyette</item>
+        <item>İçtikten sonra</item>
+    </string-array>
+
+    <string-array name="ht_blood_pressure_labels">
+        <item>Sol</item>
+        <item>Sağ</item>
+        <item>İlaçtan sonra</item>
+        <item>Yürüyüşten sonra</item>
+        <item>Yemekten önce</item>
+        <item>Yemekten sonra</item>
+        <item>Oturarak</item>
+        <item>Yatarak</item>
+        <item>Adet dönemi</item>
+    </string-array>
+
+    <string-array name="ht_bmi_level_names">
+        <item>Çok Düşük Kilolu</item>
+        <item>Ciddi Düşük Kilolu</item>
+        <item>Düşük Kilolu</item>
+        <item>Normal</item>
+        <item>Fazla Kilolu</item>
+        <item>Obezite Sınıf I</item>
+        <item>Obezite Sınıf II</item>
+        <item>Obezite Sınıf III</item>
+    </string-array>
+
+    <string name="ht_bmi_level_very_severely_underweight">Çok Düşük Kilolu</string>
+    <string name="ht_bmi_level_severely_underweight">Ciddi Düşük Kilolu</string>
+    <string name="ht_bmi_level_underweight">Düşük Kilolu</string>
+    <string name="ht_bmi_level_normal">Normal</string>
+    <string name="ht_bmi_level_overweight">Fazla Kilolu</string>
+    <string name="ht_bmi_level_obesity_class_1">Obezite Sınıf I</string>
+    <string name="ht_bmi_level_obesity_class_2">Obezite Sınıf II</string>
+    <string name="ht_bmi_level_obesity_class_3">Obezite Sınıf III</string>
+
+    <string-array name="ht_bmi_labels">
+        <item>Heyecanlı</item>
+        <item>Kardiyodan sonra</item>
+        <item>Üzgün</item>
+        <item>Sakin</item>
+        <item>Ağırlık antrenmanından sonra</item>
+        <item>Yoğun egzersizden sonra</item>
+        <item>Diyette</item>
+        <item>İçtikten sonra</item>
+    </string-array>
+
+    <string-array name="ht_week_simple">
+        <item>Paz</item>
+        <item>Pzt</item>
+        <item>Sal</item>
+        <item>Çar</item>
+        <item>Per</item>
+        <item>Cum</item>
+        <item>Cmt</item>
+    </string-array>
+    <string-array name="ht_week_full">
+        <item>Pazar</item>
+        <item>Pazartesi</item>
+        <item>Salı</item>
+        <item>Çarşamba</item>
+        <item>Perşembe</item>
+        <item>Cuma</item>
+        <item>Cumartesi</item>
+    </string-array>
+
+    <string name="ht_every_weekday">Her hafta içi</string>
+    <string name="ht_every_weekend">Her hafta sonu</string>
+    <string name="ht_everyday">Her gün</string>
+    <string name="ht_once">Bir kez</string>
+    <string name="ht_meds_remind_empty">Hatırlatıcılarınızı eklemek için \naşağıdaki düğmeye dokunun</string>
+    <string name="ht_add">Ekle</string>
+    <string name="ht_add_reminder">Hatırlatıcı Ekle</string>
+    <string name="ht_medication_name">İlaç Adı</string>
+    <string name="ht_enter_medication_name">İlaç Adını Girin</string>
+    <string name="ht_number_of_daily_doses">Günlük Doz Sayısı:</string>
+    <string name="ht_notes">Notlar</string>
+    <string name="ht_hint_meds_notes">Talimatlar: Yemeklerden sonra, günde 3 kez.</string>
+    <string name="ht_sync_with_calendar">Takvimle Senkronize Et</string>
+    <string name="ht_take_now">Şimdi al</string>
+    <string name="ht_view_now">Şimdi gör</string>
+    <string name="ht_edit">Düzenle</string>
+    <string name="ht_delete">Sil</string>
+
+    <string name="ht_medication_reminder_title">🔔 İlaç Hatırlatıcısı</string>
+    <string name="ht_medication_reminder_content">İlacınızı alma zamanı, lütfen zamanında alın ve kendinize iyi bakın.</string>
+
+    <string name="ht_turn_on">Aç</string>
+    <string name="ht_notification_permission_title">Sağlık hedeflerinizi takip edin</string>
+    <string name="ht_notification_permission_des">Su, ilaç ve aktiviteler için zamanında hatırlatmalar almak için bildirimleri etkinleştirin. Sağlıklı bir alışkanlığı asla kaçırmayın!</string>
+    <string name="ht_close">Kapat</string>
+    <string name="ht_medication_name_temp">💊 %1$s</string>
+    <string name="ht_meds_notes_temp">📝 %1$s</string>
+    <string name="ht_snooze_5_minutes">5 dakika sonra</string>
+    <string name="ht_snooze_10_minutes">10 dakika sonra</string>
+    <string name="ht_snooze_15_minutes">15 dakika sonra</string>
+    <string name="ht_snooze_30_minutes">30 dakika sonra</string>
+    <string name="ht_take_medication_now">Şimdi al</string>
+    <string name="ht_every_day_temp">⏰ Her gün saat %1$s</string>
+    <string name="ht_now_time_temp">📱 Şu an saat %1$s"</string>
+    <string name="ht_have_reader_privacy"><font color="#02BC77">Gizlilik Politikası</font>nı okudum</string>
+    <string name="ht_choose_your_gender">Cinsiyetinizi seçin</string>
+    <string name="ht_please_choose_your_gender">Lütfen cinsiyetinizi seçin</string>
+    <string name="ht_txt_profile_des">Bu, kişiselleştirilmiş verilerinizi oluşturmak için kullanılacaktır</string>
+    <string name="ht_male">Erkek</string>
+    <string name="ht_female">Kadın</string>
+    <string name="ht_choose_your_age">yaşınızı seçin</string>
+    <string name="ht_please_choose_your_age">Lütfen yaşınızı seçin</string>
+    <string name="ht_text_continue">Devam</string>
+    <string name="ht_take_a_photo">Fotoğraf Çek</string>
+    <string name="ht_choose_from_photos">Fotoğraflardan seç</string>
+    <string name="ht_please_select">Lütfen seçin</string>
+    <string name="ht_confirm_delete_title">Etiketi sil</string>
+    <string name="ht_confirm_delete_message">Bu etiketi silmek istediğinizden emin misiniz?</string>
+    <string name="ht_temp_age">Yaş : %1$s</string>
+    <string name="ht_enter_new_label">Yeni etiket girin</string>
+    <string name="ht_add_label">Etiket ekle</string>
+    <string name="ht_weight">Kilo</string>
+    <string name="ht_height">Boy</string>
+    <string name="ht_create_label_failed">Etiket oluşturma başarısız</string>
+    <string name="ht_heart_rate">Kalp Atış Hızı</string>
+    <string name="ht_heart_rate_detail_description">Kalp atış hızı kardiyovasküler yanıtınızı yansıtır. Uzun vadeli eğilimleri takip edin ve anormal okumalar için doktorunuza danışın.</string>
+    <string name="ht_record_time_placeholder">--</string>
+    <string name="ht_heart_rate_no_tags">Etiket yok</string>
+    <string name="ht_record_not_ready">Kayıt yükleniyor</string>
+    <string name="ht_delete_record_failed">Kayıt silme başarısız</string>
+    <string name="ht_heart_rate_record_deleted">Kayıt silindi</string>
+    <string name="ht_blood_sugar_record_deleted">Kan şekeri kaydı silindi</string>
+    <string name="ht_bpm">BPM</string>
+    <string name="ht_cholesterol">Kolesterol</string>
+    <string name="ht_weight_and_bmi"><![CDATA[Kilo & VKİ]]></string>
+    <string name="ht_value_with_unit">%1$s %2$s</string>
+
+    <string name="ht_heart_rate_status_slow">Yavaş</string>
+    <string name="ht_heart_rate_status_normal">Normal</string>
+    <string name="ht_heart_rate_status_fast">Hızlı</string>
+    <string name="ht_heart_rate_desc_slow">Dinlenme kalp atış hızı &lt; 60 BPM</string>
+    <string name="ht_heart_rate_desc_normal">Dinlenme kalp atış hızı 60–100 BPM</string>
+    <string name="ht_heart_rate_desc_fast">Dinlenme kalp atış hızı &gt;100 BPM</string>
+    <string name="ht_total_cholesterol">Toplam Kolesterol %1$s</string>
+    <string name="ht_hdl">HDL</string>
+    <string name="ht_ldl">LDL</string>
+    <string name="ht_tg">TG</string>
+    <string name="ht_non_hdl">HDL-dışı</string>
+    <string name="ht_tc_hdl">TK/HDL</string>
+    <string name="ht_ldl_hdl">LDL/HDL</string>
+    <string name="ht_result">Sonuç</string>
+    <string name="ht_exclusive_advice">Özel Tavsiye</string>
+    <string name="ht_bmi">VKİ</string>
+    <string name="ht_watch_ads_to_see_exclusive_advice">Özel tavsiye görmek için reklam izleyin.</string>
+    <string name="ht_get_exclusive_tips">Özel İpuçları Alın</string>
+    <string name="ht_kindly_note">Lütfen Dikkat</string>
+    <string name="ht_your_health_data_requires">Sağlık verileriniz dikkat gerektiriyor. Ölçümlerinize özel kişiselleştirilmiş profesyonel önerilerin kilidini açın</string>
+    <string name="ht_free_unlock">Ücretsiz Aç</string>
+    <string name="ht_guide_title_1">Tansiyon Sağlığı</string>
+    <string name="ht_guide_title_2">Tansiyon Trendlerinde Ustalaşın</string>
+    <string name="ht_guide_1_des">İstediğiniz zaman tansiyon verilerini kaydedin</string>
+    <string name="ht_guide_2_des">Veri grafikleri bir bakışta netleşir</string>
+    <string name="ht_guide_3_des">Günlük kişisel tansiyon takibi için tasarlandık ve profesyonel tıbbi tavsiye sunmuyoruz.
+Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti sağlayıcısına danışmanızı şiddetle tavsiye ediyoruz.</string>
+    <string name="ht_disclaimers">Sorumluluk Reddi</string>
+    <string name="ht_skip">Atla</string>
+    <string name="ht_next">İleri</string>
+    <string name="ht_start_health_journey">Sağlık Yolculuğunuzu Başlatın!</string>
+    <string name="ht_guide_bp_des">İlk Tansiyon okumanızı eklemek için şimdi tıklayın.</string>
+    <string name="ht_guide_bs_des">İlk Kan Şekeri okumanızı eklemek için şimdi tıklayın.</string>
+    <string name="ht_guide_hr_des">İlk Kalp Atış Hızı okumanızı eklemek için şimdi tıklayın.</string>
+    <string name="ht_target_range">Hedef Aralık</string>
+    <string name="ht_target_range_temp">Hedef Aralık(%1$s)</string>
+    <string name="ht_reset">Sıfırla</string>
+
+    <string-array name="ht_heart_rate_labels">
+        <item>Heyecanlı</item>
+        <item>Üzgün</item>
+        <item>Sakin</item>
+        <item>Yoğun egzersizden sonra</item>
+        <item>Aerobik egzersizden sonra</item>
+        <item>Anaerobik egzersizden sonra</item>
+        <item>Diyette</item>
+        <item>İçtikten sonra</item>
+    </string-array>
+
+    <string name="ht_please_input_complete_data">Lütfen tam veri girin</string>
+    <string name="ht_range_order_error">Aralık değerleri artan sırada olmalıdır</string>
+    <string name="ht_range_bounds_error">Aralık değerleri kabul edilebilir sınırların dışında</string>
+    <string name="ht_reset_all_ranges_confirm">Tüm hedef aralıkları varsayılan değerlere sıfırlansın mı?</string>
+    <string name="ht_reset_success">Sıfırlama başarılı</string>
+    <string name="ht_save_success">Başarıyla kaydedildi</string>
+
+    <string name="ht_health_service_channel_name">Sağlık İzleme Hizmeti</string>
+    <string name="ht_health_service_channel_description">Hızlı sağlık verisi kaydı için kalıcı bildirim görüntüler</string>
+    <string name="ht_custom_notification_channel_name">Sağlık Uyarıları</string>
+    <string name="ht_custom_notification_channel_description">Kan şekeri, tansiyon, kalp atış hızı ve daha fazlası için hatırlatmalar</string>
+    <string name="ht_exit">Çıkış</string>
+    <string name="ht_are_you_sure_exit">Uygulamadan çıkmak istediğinizden emin misiniz?</string>
+    <string name="ht_health_statistics">Sağlık İstatistikleri</string>
+    <string name="ht__7_days">7 Gün</string>
+    <string name="ht__1_month">1 Ay</string>
+    <string name="ht__3_month">3 Ay</string>
+    <string name="ht_select">Seç</string>
+    <string name="ht_summary">Özet</string>
+    <string name="ht_avg">Ort</string>
+    <string name="ht_min">Min</string>
+    <string name="ht_max">Maks</string>
+    <string name="ht_all_history">Tüm geçmiş</string>
+    <string name="ht_health_tips">Sağlık ipuçları</string>
+    <string name="ht_no_date">Tarih yok</string>
+    <string name="ht_add_now">Şimdi ekle</string>
+
+    <string name="ht_hydrate">Hidrasyon</string>
+    <string name="ht_walking">Yürüyüş</string>
+    <string name="ht_walking_steps">Yürüyüş Adımları</string>
+    <string name="ht_drink_btn_format">%d %s iç</string>
+    <string name="ht_hydrate_cup_count_format">Bugün %d bardak su içtiniz</string>
+    <string name="ht_hydrate_complete_message">Tebrikler! Su hedefinizi tamamladınız!</string>
+    <string name="ht_done">Tamam</string>
+    <string name="ht_hydrate_empty_record">Henüz su içme kaydı yok.</string>
+    <string name="ht_daily_water_intake">Günlük Su Alımı</string>
+    <string name="ht_cup_size">Bardak Boyutu</string>
+    <string name="ht_fl_oz">fl oz</string>
+    <string name="ht_ml">ML</string>
+    <string name="ht_hydration_reminder_time">Hidrasyon Hatırlatma Saati</string>
+    <string name="ht_hydration_reminder_edit">Düzenle</string>
+    <string name="ht_hydrate_reminder_delete_confirm_message">Bu alarmı silmek istediğinizden emin misiniz?</string>
+    <string name="ht_coming_soon_title">Yakında!</string>
+    <string name="ht_coming_soon_message">Bir zaman yolcususunuz! Bu gün henüz gelmedi. Lütfen önceki bir tarih seçin veya bugüne dönün.</string>
+    <string name="ht_back_to_today">BUGÜNE DÖN</string>
+    <string name="ht_hydrate_reminder_exist">Hatırlatma saati zaten ayarlandı.</string>
+    <string name="ht_hydrate_reminder_empty_message">Henüz su hatırlatıcısı ayarlamadınız. İlk hatırlatıcınızı ekleyerek hidrasyon alışkanlığınızı oluşturmaya başlayın!</string>
+    <string name="ht_alarm_hydration_content">Su içme zamanı!</string>
+    <string name="ht_drink_now">Şimdi Gör</string>
+    <string name="ht_medication_notification_title_with_time">%1$s saat %2$s</string>
+    <string name="ht_hydrate_quick_add">Hızlı Ekle</string>
+    <string name="ht_step_count">Adım Sayısı</string>
+    <string name="ht_today">Bugün</string>
+    <string name="ht_unit_km">km</string>
+    <string name="ht_kcal">Kcal</string>
+    <string name="ht_today_s_goal">Bugünün hedefi</string>
+    <string name="ht_step_goal">Adım Hedefi</string>
+    <string name="ht_enable_step_count">Fiziksel aktivite izni gerekli</string>
+    <string name="ht_allow">İzin Ver</string>
+    <string name="ht_without_this_authorization_step_count_will_not_work">Bu yetkilendirme olmadan, adım sayma özelliği <font color="#02BC77">çalışmayacaktır</font></string>
+
+    <string name="ht_go_to_set">AYARLA</string>
+    <string name="ht_choose_language">Dil Seç</string>
+    <string name="ht_language">Dil</string>
+    <string name="ht_unit_settings">Birim Ayarları</string>
+    <string name="ht_target_range_settings">Hedef Aralık Ayarları</string>
+    <string name="ht_personal_info">Kişisel bilgi</string>
+    <string name="ht_feedback">Geri Bildirim</string>
+    <string name="ht_privacy_policy">Gizlilik Politikası</string>
+    <string name="ht_terms_of_service">Hizmet Şartları</string>
+    <string name="ht_settings_section_tracking_and_targets">Takip ve Hedefler</string>
+    <string name="ht_settings_section_preferences">Tercihler</string>
+    <string name="ht_settings_section_help_and_feedback">Yardım ve Geri Bildirim</string>
+    <string name="ht_settings_section_legal_and_policies">Yasal ve Politikalar</string>
+    <string name="ht_settings_version_format">Sürüm %1$s</string>
+    <string name="ht_bill_ad_loading">Reklam yükleniyor…</string>
+
+    <string name="ht_please_tell_more">Lütfen sorununuzu daha hızlı bulup çözmemiz için bize daha fazla ayrıntı verin</string>
+    <string name="ht_upload_screenshots">Ekran Görüntülerini Yükle</string>
+    <string name="ht_btn_submit">Gönder</string>
+    <string name="ht_feedback_email_title">%s Geri Bildirimi</string>
+    <string name="ht_feedback_sending_failed">Gönderme başarısız, lütfen e-posta uygulamanızı kontrol edin.</string>
+    <string name="ht_max_upload_photos">En fazla %d fotoğraf yükleyebilirsiniz</string>
+    <string name="ht_feedback_submitted">Başarıyla gönderildi</string>
+    <string name="ht_last_measurement">Son Ölçüm: %1$s</string>
+    <string name="shortcut_uninstall_short">Kaldır</string>
+
+    <string name="ht_uninstall_lose_access_title">Bu uygulamayı kaldırırsanız, aşağıdaki özelliklere erişiminizi kaybedersiniz:</string>
+    <string name="ht_uninstall_feature_blood_sugar">Kan Şekeri ve Tansiyon Takibi</string>
+    <string name="ht_uninstall_feature_trend">Sağlık Verisi Trend Analizi</string>
+    <string name="ht_uninstall_feature_reminder">İlaç ve Sağlık Hatırlatıcıları</string>
+    <string name="ht_uninstall_feature_insights">Sağlık Analizleri ve Kişiselleştirilmiş İpuçları</string>
+    <string name="ht_uninstall_btn_dont_uninstall">Henüz kaldırma</string>
+    <string name="ht_uninstall_btn_uninstall">Kaldır</string>
+    <string name="ht_uninstall_reason_title">%1$s\'ı neden kaldırıyorsunuz?</string>
+    <string name="ht_uninstall_reason_difficult">Kullanımı zor</string>
+    <string name="ht_uninstall_reason_too_many_ads">Çok fazla reklam</string>
+    <string name="ht_uninstall_reason_poor_experience">Kötü kullanıcı deneyimi</string>
+    <string name="ht_uninstall_reason_similar_installed">Benzer ürünler yüklü</string>
+    <string name="ht_uninstall_reason_unable_meet_demand">İhtiyaçları karşılayamıyor</string>
+    <string name="ht_uninstall_reason_others">Diğer</string>
+    <string name="ht_uninstall_reason_hint">Lütfen %1$s\'ı neden kaldırdığınızı belirtin</string>
+
+</resources>

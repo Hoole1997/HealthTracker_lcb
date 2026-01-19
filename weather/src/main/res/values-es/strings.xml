@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ht_wind_speed">Velocidad del Viento</string>
+    <string name="ht_hum">Hum</string>
+    <string name="ht_daily_5_days">Pronóstico de 5 Días</string>
+    <string name="ht_more_details">Más Detalles</string>
+    <string name="ht_humidity">Humedad</string>
+    <string name="ht_uv_index">Índice UV</string>
+    <string name="ht_pressure">Presión</string>
+    <string name="ht_visibility">Visibilidad</string>
+    <string name="ht_sunrise">Amanecer</string>
+    <string name="ht_sunset">Atardecer</string>
+    <string name="ht_precip">Precipitación</string>
+    <string name="ht_temperature_high">Máx: %d°</string>
+    <string name="ht_temperature_low">Mín: %d°</string>
+
+    <!-- Weather Descriptions -->
+    <string name="ht_weather_sunny">Soleado</string>
+    <string name="ht_weather_mostly_sunny">Mayormente Soleado</string>
+    <string name="ht_weather_partly_sunny">Parcialmente Soleado</string>
+    <string name="ht_weather_intermittent_clouds">Nubes Intermitentes</string>
+    <string name="ht_weather_hazy_sunshine">Sol con Neblina</string>
+    <string name="ht_weather_mostly_cloudy">Mayormente Nublado</string>
+    <string name="ht_weather_cloudy">Nublado</string>
+    <string name="ht_weather_overcast">Cubierto</string>
+    <string name="ht_weather_fog">Niebla</string>
+    <string name="ht_weather_showers">Chubascos</string>
+    <string name="ht_weather_mostly_cloudy_w_showers">Nublado con Chubascos</string>
+    <string name="ht_weather_partly_sunny_w_showers">Parcialmente Soleado con Chubascos</string>
+    <string name="ht_weather_t_storms">Tormentas</string>
+    <string name="ht_weather_mostly_cloudy_w_t_storms">Nublado con Tormentas</string>
+    <string name="ht_weather_partly_sunny_w_t_storms">Parcialmente Soleado con Tormentas</string>
+    <string name="ht_weather_rain">Lluvia</string>
+    <string name="ht_weather_flurries">Ráfagas de Nieve</string>
+    <string name="ht_weather_mostly_cloudy_w_flurries">Nublado con Ráfagas</string>
+    <string name="ht_weather_partly_sunny_w_flurries">Parcialmente Soleado con Ráfagas</string>
+    <string name="ht_weather_snow">Nieve</string>
+    <string name="ht_weather_mostly_cloudy_w_snow">Nublado con Nieve</string>
+    <string name="ht_weather_ice">Hielo</string>
+    <string name="ht_weather_sleet">Aguanieve</string>
+    <string name="ht_weather_freezing_rain">Lluvia Helada</string>
+    <string name="ht_weather_rain_and_snow">Lluvia y Nieve</string>
+    <string name="ht_weather_hot">Caluroso</string>
+    <string name="ht_weather_cold">Frío</string>
+    <string name="ht_weather_windy">Ventoso</string>
+    <string name="ht_weather_clear">Despejado</string>
+    <string name="ht_weather_mostly_clear">Mayormente Despejado</string>
+    <string name="ht_weather_partly_cloudy">Parcialmente Nublado</string>
+    <string name="ht_weather_hazy_moonlight">Luna con Neblina</string>
+    <string name="ht_weather_partly_cloudy_w_showers">Parcialmente Nublado con Chubascos</string>
+    <string name="ht_weather_partly_cloudy_w_t_storms">Parcialmente Nublado con Tormentas</string>
+    <string name="ht_weather_unknown">Desconocido</string>
+    <string name="ht_search">Buscar</string>
+    <string name="ht_current_location">Ubicación Actual</string>
+
+    <string-array name="ht_week_simple">
+        <item>Dom</item>
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mié</item>
+        <item>Jue</item>
+        <item>Vie</item>
+        <item>Sáb</item>
+    </string-array>
+</resources>
