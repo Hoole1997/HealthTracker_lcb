@@ -167,10 +167,7 @@ class LaunchAds private constructor() {
     suspend fun loadInAdvance(context: Context, adUnitId: String? = null): AdResult<Unit> {
         if(!GlobalAdSwitchInterceptor.isGlobalAdEnabled()){
             return AdResult.Failure(
-                AdException(
-                    code = -100,
-                    message = "开屏全局广告已关闭，中断加载"
-                ))
+                AdErrorCode.GLOBAL_AD_DISABLED.toAdException())
         }
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_SPLASH_ID
 
@@ -225,15 +222,15 @@ class LaunchAds private constructor() {
         }
 
         if (deferred == null) {
-            return AdResult.Failure(AdException(AdException.ERROR_NOT_LOADED, "没有正在进行的加载请求且无缓存"))
+            return AdResult.Failure(AdErrorCode.AD_NOT_READY.toAdException())
         }
 
         return try {
             withTimeoutOrNull(timeoutMillis) {
                 deferred.await()
-            } ?: AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "等待广告加载超时"))
+            } ?: AdResult.Failure(AdErrorCode.AD_LOAD_TIMEOUT.toAdException())
         } catch (e: Exception) {
-            AdResult.Failure(createAdException("等待被中断", e))
+            AdResult.Failure(AdErrorCode.AD_LOAD_INTERRUPTED.toAdException(e))
         }
     }
 
@@ -324,7 +321,7 @@ class LaunchAds private constructor() {
                 AppOpenAd.load(adRequest, loadCallback)
             }
         } catch (e: Exception) {
-            deferred.complete(AdResult.Failure(createAdException("加载异常", e)))
+            deferred.complete(AdResult.Failure(AdErrorCode.AD_LOAD_EXCEPTION.toAdException(e)))
             synchronized(this) {
                 if (loadingDeferred == deferred) {
                     loadingDeferred = null
@@ -352,11 +349,11 @@ class LaunchAds private constructor() {
                 }
                 AdResult.Success(Unit)
             } else {
-                AdResult.Failure(createAdException("广告加载失败"))
+                AdResult.Failure(AdErrorCode.AD_LOAD_FAILED.toAdException())
             }
         } catch (e: Exception) {
             AdLogger.e("开屏loadAdToCache异常", e)
-            AdResult.Failure(AdException(0, "加载异常: ${e.message}", e))
+            AdResult.Failure(AdErrorCode.AD_LOAD_EXCEPTION.toAdException(e))
         }
     }
     
@@ -428,7 +425,7 @@ class LaunchAds private constructor() {
                 if(BuildState.debug) "开屏拦截等待结束".logd("PermissionManager")
                 if(activity.isFinishing || activity.isDestroyed ){
                     AdLogger.d("页面${activity.javaClass.simpleName}，已关闭")
-                   return AdResult.Failure(createAdException("activity is finish"))
+                   return AdResult.Failure(AdErrorCode.ACTIVITY_FINISHING.toAdException())
                 }
 
                 if(activity is LifecycleOwner){
@@ -457,11 +454,11 @@ class LaunchAds private constructor() {
 
             } else {
                 onLoaded?.invoke(false)
-                AdResult.Failure(createAdException("广告加载失败"))
+                AdResult.Failure(AdErrorCode.AD_LOAD_FAILED.toAdException())
             }
         } catch (e: Exception) {
             AdLogger.e("显示开屏广告异常", e)
-            AdResult.Failure(createAdException("显示广告异常: ${e.message}", e))
+            AdResult.Failure(AdErrorCode.AD_SHOW_EXCEPTION.toAdException(e))
         }
 
         return if(adResult is AdResult.Failure && AdConfigManager.shouldShowInterstitialAfterAppOpenFailure()){
@@ -627,7 +624,7 @@ class LaunchAds private constructor() {
                         )
                     )
                     appOpenAd.destroy()
-                    val result = AdResult.Failure(createAdException("显示失败: ${fullScreenContentError.message}"))
+                    val result = AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("Show failed: ${fullScreenContentError.message}"))
                     if (continuation.isActive) {
                         continuation.resume(result)
                     }

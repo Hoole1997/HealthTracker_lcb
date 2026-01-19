@@ -14,6 +14,7 @@ import net.corekit.core.ads.RevenueInfo
 import net.corekit.core.ext.DataStoreIntDelegate
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.AdErrorCode
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
@@ -63,10 +64,7 @@ class PangleRewardedAdController private constructor() {
         if (!AdIdHelper.hasPangleRewardedId()) {
             AdLogger.d("[$TAG] 激励广告 ID 未配置，跳过加载")
             return AdResult.Failure(
-                AdException(
-                    AdException.ERROR_INVALID_REQUEST,
-                    "激励广告 ID 未配置"
-                )
+                AdErrorCode.REWARDED_AD_ID_NOT_CONFIGURED.toAdException()
             )
         }
 

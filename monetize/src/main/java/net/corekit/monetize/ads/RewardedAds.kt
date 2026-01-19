@@ -140,11 +140,11 @@ class RewardedAds private constructor() {
                 }
                 AdResult.Success(Unit)
             } else {
-                AdResult.Failure(createAdException("激励广告加载失败"))
+                AdResult.Failure(AdErrorCode.AD_LOAD_FAILED.toAdException())
             }
         } catch (e: Exception) {
             AdLogger.e("激励广告加载异常", e)
-            AdResult.Failure(createAdException("加载异常: ${e.message}", e))
+            AdResult.Failure(AdErrorCode.AD_LOAD_EXCEPTION.toAdException(e))
         } finally {
             // 2. 释放加载中的名额
             synchronized(cacheLock) {
@@ -193,7 +193,7 @@ class RewardedAds private constructor() {
                 if (!loadingShown) {
                     ADLoadingDialog.hide()
                 }
-                val error = createAdException("激励广告缓存为空")
+                val error = AdErrorCode.AD_CACHE_NOT_AVAILABLE.toAdException()
                 AdResult.Failure(error)
             }
 
@@ -203,7 +203,7 @@ class RewardedAds private constructor() {
            if(adHolder != null){
                if(activity.isFinishing || activity.isDestroyed){
                    AdLogger.d("页面${activity.javaClass.simpleName}，已关闭")
-                   return AdResult.Failure(createAdException("activity is finish"))
+                   return AdResult.Failure(AdErrorCode.ACTIVITY_FINISHING.toAdException())
                }
 
                if(activity is LifecycleOwner){
@@ -211,7 +211,7 @@ class RewardedAds private constructor() {
                    if(!isResume){
                        if(AppLifecycleManager.isForeground()){
                            AdLogger.d("跳转到了其他页面，不在展示激励广告")
-                           return AdResult.Failure(createAdException("leave reward activity"))
+                           return AdResult.Failure(AdErrorCode.ACTIVITY_NOT_RESUMED.toAdException())
                        }
                        AdLogger.d(" Activity ${activity.javaClass.simpleName} not in RESUMED state (current: ${activity.lifecycle.currentState}), waiting for resume...")
                        return suspendCancellableCoroutine { continuation ->
@@ -234,7 +234,7 @@ class RewardedAds private constructor() {
 
                result
            }else{
-               AdResult.Failure(createAdException("广告加载失败"))
+               AdResult.Failure(AdErrorCode.AD_LOAD_FAILED.toAdException())
            }
 
 
@@ -242,7 +242,7 @@ class RewardedAds private constructor() {
 
 
         } catch (e: Exception) {
-            val error = createAdException("展示异常: ${e.message}", e)
+            val error = AdErrorCode.AD_SHOW_EXCEPTION.toAdException(e)
             AdResult.Failure(error)
         }finally {
             ADLoadingDialog.hide()
@@ -321,7 +321,7 @@ class RewardedAds private constructor() {
                 override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
                     totalShowFailCount++
                     AdLogger.e("激励广告展示失败: %s", fullScreenContentError.message)
-                    val error = createAdException("show failed: ${fullScreenContentError.message}")
+                    val error = AdErrorCode.AD_SHOW_FAILED.toAdException("show failed: ${fullScreenContentError.message}")
                     reportAdData(
                         "ad_show_fail",
                         mapOf(

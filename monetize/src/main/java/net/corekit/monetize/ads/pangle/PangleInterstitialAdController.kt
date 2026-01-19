@@ -15,6 +15,7 @@ import net.corekit.core.ads.RevenueInfo
 import net.corekit.core.ext.DataStoreIntDelegate
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.AdErrorCode
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
@@ -102,9 +103,9 @@ class PangleInterstitialAdController private constructor() {
         return try {
             withTimeoutOrNull(timeoutMillis) {
                 deferred.await()
-            } ?: AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "等待广告加载超时"))
+            } ?: AdResult.Failure(AdErrorCode.AD_LOAD_TIMEOUT.toAdException())
         } catch (e: Exception) {
-            AdResult.Failure(AdException(0, "等待被中断", e))
+            AdResult.Failure(AdErrorCode.AD_LOAD_INTERRUPTED.toAdException(e))
         }
     }
 
@@ -116,10 +117,7 @@ class PangleInterstitialAdController private constructor() {
         if (!AdIdHelper.hasPangleInterstitialId()) {
             AdLogger.d("[$TAG] 插页广告 ID 未配置，跳过加载")
             return AdResult.Failure(
-                AdException(
-                    AdException.ERROR_INVALID_REQUEST,
-                    "插页广告 ID 未配置"
-                )
+                AdErrorCode.INTERSTITIAL_AD_ID_NOT_CONFIGURED.toAdException()
             )
         }
 

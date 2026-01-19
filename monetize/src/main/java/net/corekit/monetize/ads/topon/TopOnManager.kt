@@ -4,6 +4,7 @@ import android.content.Context
 import com.thinkup.core.api.TUSDK
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.AdErrorCode
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
@@ -32,7 +33,7 @@ object TopOnManager {
     suspend fun initialize(context: Context): AdResult<Unit> {
         if (!AdIdHelper.hasTopOnAppId()) {
             AdLogger.w("[$TAG] TopOn App ID/Key 未配置，跳过初始化")
-            return AdResult.Failure(AdException(AdException.ERROR_INVALID_REQUEST, "TopOn App ID/Key 未配置"))
+            return AdResult.Failure(AdErrorCode.TOPON_APP_ID_NOT_CONFIGURED.toAdException())
         }
         
         if (isInitialized) {
@@ -54,7 +55,7 @@ object TopOnManager {
         } catch (e: Exception) {
             isInitializing = false
             AdLogger.e("[$TAG] TopOn SDK 初始化异常", e)
-            AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "TopOn SDK 初始化异常: ${e.message}", e))
+            AdResult.Failure(AdErrorCode.SDK_INIT_EXCEPTION.toAdException(e))
         }
     }
 
@@ -81,7 +82,7 @@ object TopOnManager {
             } catch (e: Exception) {
                 AdLogger.e("[$TAG] ❌ TopOn SDK 初始化失败", e)
                 if (continuation.isActive) {
-                    continuation.resume(AdResult.Failure(AdException(AdException.ERROR_INTERNAL, e.message ?: "初始化失败")))
+                    continuation.resume(AdResult.Failure(AdErrorCode.SDK_INIT_FAILED.toAdException()))
                 }
             }
         }
@@ -100,7 +101,7 @@ object TopOnManager {
                     if (isInitialized) {
                         continuation.resume(AdResult.Success(Unit))
                     } else {
-                        continuation.resume(AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "TopOn SDK 初始化超时")))
+                        continuation.resume(AdResult.Failure(AdErrorCode.SDK_INIT_TIMEOUT.toAdException()))
                     }
                 }
             }.start()

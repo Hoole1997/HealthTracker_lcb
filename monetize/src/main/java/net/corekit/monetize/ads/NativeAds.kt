@@ -127,10 +127,7 @@ class NativeAds private constructor() {
     suspend fun loadInAdvance(context: Context, adUnitId: String? = null, style: NativeAdStyle = NativeAdStyle.STANDARD): AdResult<Unit> {
         if(!GlobalAdSwitchInterceptor.isGlobalAdEnabled()){
             return AdResult.Failure(
-                AdException(
-                    code = -100,
-                    message = "开屏全局广告已关闭，中断加载"
-                ))
+                AdErrorCode.GLOBAL_AD_DISABLED.toAdException())
         }
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_NATIVE_ID
 
@@ -496,11 +493,11 @@ class NativeAds private constructor() {
                 }
                 AdResult.Success(Unit)
             } else {
-                AdResult.Failure(createAdException("广告加载失败"))
+                AdResult.Failure(AdErrorCode.AD_LOAD_FAILED.toAdException())
             }
         } catch (e: Exception) {
             AdLogger.e("原生loadAdToCache异常", e)
-            AdResult.Failure(AdException(0, "加载异常: ${e.message}", e))
+            AdResult.Failure(AdErrorCode.AD_LOAD_EXCEPTION.toAdException(e))
         }
     }
     

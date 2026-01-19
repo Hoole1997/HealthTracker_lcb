@@ -37,6 +37,12 @@ data class AdException(
         const val ERROR_AD_EXPIRED = 1006
         const val ERROR_AD_ALREADY_SHOWING = 1007
         const val ERROR_NOT_LOADED = 1008
+        
+        /**
+         * 从 AdErrorCode 创建 AdException
+         */
+        fun from(errorCode: AdErrorCode, cause: Throwable? = null) = 
+            errorCode.toAdException(cause)
     }
 }
 

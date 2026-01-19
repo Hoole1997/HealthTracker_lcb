@@ -17,6 +17,7 @@ import net.corekit.core.ads.RevenueInfo
 import net.corekit.core.ext.DataStoreIntDelegate
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.AdErrorCode
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
@@ -66,10 +67,7 @@ class TopOnSplashAdController private constructor() {
         if (!AdIdHelper.hasTopOnSplashId()) {
             AdLogger.d("[$TAG] 开屏广告 ID 未配置，跳过加载")
             return AdResult.Failure(
-                AdException(
-                    AdException.ERROR_INVALID_REQUEST,
-                    "开屏广告 ID 未配置"
-                )
+                AdErrorCode.SPLASH_AD_ID_NOT_CONFIGURED.toAdException()
             )
         }
 
@@ -125,9 +123,9 @@ class TopOnSplashAdController private constructor() {
         return try {
             withTimeoutOrNull(timeoutMillis) {
                 deferred.await()
-            } ?: AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "等待广告加载超时"))
+            } ?: AdResult.Failure(AdErrorCode.AD_LOAD_TIMEOUT.toAdException())
         } catch (e: Exception) {
-            AdResult.Failure(createAdException("等待被中断", e))
+            AdResult.Failure(AdErrorCode.AD_LOAD_INTERRUPTED.toAdException(e))
         }
     }
 

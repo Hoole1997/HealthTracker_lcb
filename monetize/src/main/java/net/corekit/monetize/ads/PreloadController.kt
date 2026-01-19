@@ -9,8 +9,8 @@ import net.corekit.monetize.ads.pangle.*
 import net.corekit.monetize.ads.topon.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 
 /**
@@ -21,6 +21,9 @@ import kotlinx.coroutines.launch
 object PreloadController {
 
     private const val TAG = "PreloadController"
+    
+    // 使用单例作用域，便于统一管理和取消
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
      * 预加载所有平台广告
@@ -48,64 +51,65 @@ object PreloadController {
      * 仅预加载 AdMob 广告（原有逻辑）
      */
     private fun preloadAdMob(context: Context) {
-        MainScope().launch {
+        val appContext = context.applicationContext
+        scope.launch(Dispatchers.Main) {
             try {
                 AdLogger.d("[$TAG] [AdMob] 开屏开始异步预加载，广告位ID: %s", BuildConfig.ADMOB_SPLASH_ID)
-                LaunchAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_SPLASH_ID)
+                LaunchAds.getInstance().loadInAdvance(appContext, BuildConfig.ADMOB_SPLASH_ID)
             } catch (e: Exception) {
                 AdLogger.e("[$TAG] [AdMob] 开屏异步预加载广告失败", e)
             }
         }
 
-        MainScope().launch {
+        scope.launch(Dispatchers.Main) {
             try {
                 AdLogger.d("[$TAG] [AdMob] 插页开始异步预加载，广告位ID: %s", BuildConfig.ADMOB_INTERSTITIAL_ID)
-                InterstitialAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_INTERSTITIAL_ID)
+                InterstitialAds.getInstance().loadInAdvance(appContext, BuildConfig.ADMOB_INTERSTITIAL_ID)
             } catch (e: Exception) {
                 AdLogger.e("[$TAG] [AdMob] 插页异步预加载广告失败", e)
             }
         }
 
-        MainScope().launch {
+        scope.launch(Dispatchers.Main) {
             try {
                 AdLogger.d("[$TAG] [AdMob] Banner开始异步预加载，广告位ID: %s", BuildConfig.ADMOB_BANNER_ID)
-                BannerAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_BANNER_ID)
+                BannerAds.getInstance().loadInAdvance(appContext, BuildConfig.ADMOB_BANNER_ID)
             } catch (e: Exception) {
                 AdLogger.e("[$TAG] [AdMob] Banner异步预加载广告失败", e)
             }
         }
 
-        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+        scope.launch {
             try {
                 AdLogger.d("[$TAG] [AdMob] 原生开始异步预加载，广告位ID: %s", BuildConfig.ADMOB_NATIVE_ID)
-                NativeAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_NATIVE_ID)
+                NativeAds.getInstance().loadInAdvance(appContext, BuildConfig.ADMOB_NATIVE_ID)
             } catch (e: Exception) {
                 AdLogger.e("[$TAG] [AdMob] 原生异步预加载广告失败", e)
             }
         }
 
-        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+        scope.launch {
             try {
                 AdLogger.d("[$TAG] [AdMob] 全屏原生开始异步预加载，广告位ID: %s", BuildConfig.ADMOB_FULL_NATIVE_ID)
-                FullNativeAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_FULL_NATIVE_ID)
+                FullNativeAds.getInstance().loadInAdvance(appContext, BuildConfig.ADMOB_FULL_NATIVE_ID)
             } catch (e: Exception) {
                 AdLogger.e("[$TAG] [AdMob] 全屏原生异步预加载广告失败", e)
             }
         }
 
-        MainScope().launch {
+        scope.launch(Dispatchers.Main) {
             try {
                 AdLogger.d("[$TAG] [AdMob] 激励开始异步预加载，广告位ID: %s", BuildConfig.ADMOB_REWARDED_ID)
-                RewardedAds.getInstance().load(context, BuildConfig.ADMOB_REWARDED_ID)
+                RewardedAds.getInstance().load(appContext, BuildConfig.ADMOB_REWARDED_ID)
             } catch (e: Exception) {
                 AdLogger.e("[$TAG] [AdMob] 激励异步预加载广告失败", e)
             }
         }
 
-        MainScope().launch {
+        scope.launch(Dispatchers.Main) {
             try {
                 AdLogger.d("[$TAG] [AdMob] 插页激励开始异步预加载，广告位ID: %s", BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)
-                RewardedInterstitialAds.getInstance().loadInAdvance(context, BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)
+                RewardedInterstitialAds.getInstance().loadInAdvance(appContext, BuildConfig.ADMOB_REWARDED_INTERSTITIAL_ID)
             } catch (e: Exception) {
                 AdLogger.e("[$TAG] [AdMob] 插页激励异步预加载广告失败", e)
             }
@@ -116,17 +120,18 @@ object PreloadController {
      * 预加载 Pangle 广告
      */
     private fun preloadPangle(context: Context) {
-        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+        val appContext = context.applicationContext
+        scope.launch {
             try {
                 AdLogger.d("[$TAG] [Pangle] 开始初始化并预加载")
                 
                 // 初始化 Pangle SDK
-                PangleManager.initialize(context)
+                PangleManager.initialize(appContext)
                 
                 // 并行预加载各类型广告
                 launch {
                     try {
-                        PangleAppOpenAdController.getInstance().preloadAd(context)
+                        PangleAppOpenAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [Pangle] 开屏广告预加载失败", e)
                     }
@@ -134,7 +139,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        PangleInterstitialAdController.getInstance().preloadAd(context)
+                        PangleInterstitialAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [Pangle] 插页广告预加载失败", e)
                     }
@@ -142,7 +147,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        PangleRewardedAdController.getInstance().preloadAd(context)
+                        PangleRewardedAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [Pangle] 激励广告预加载失败", e)
                     }
@@ -150,7 +155,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        PangleNativeAdController.getInstance().preloadAd(context)
+                        PangleNativeAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [Pangle] 原生广告预加载失败", e)
                     }
@@ -158,7 +163,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        PangleFullScreenNativeAdController.getInstance().preloadAd(context)
+                        PangleFullScreenNativeAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [Pangle] 全屏原生广告预加载失败", e)
                     }
@@ -166,7 +171,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        PangleBannerAdController.getInstance().preloadAd(context)
+                        PangleBannerAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [Pangle] Banner广告预加载失败", e)
                     }
@@ -182,17 +187,18 @@ object PreloadController {
      * 预加载 TopOn 广告
      */
     private fun preloadTopOn(context: Context) {
-        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+        val appContext = context.applicationContext
+        scope.launch {
             try {
                 AdLogger.d("[$TAG] [TopOn] 开始初始化并预加载")
                 
                 // 初始化 TopOn SDK
-                TopOnManager.initialize(context)
+                TopOnManager.initialize(appContext)
                 
                 // 并行预加载各类型广告
                 launch {
                     try {
-                        TopOnSplashAdController.getInstance().preloadAd(context)
+                        TopOnSplashAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [TopOn] 开屏广告预加载失败", e)
                     }
@@ -200,7 +206,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        TopOnInterstitialAdController.getInstance().preloadAd(context)
+                        TopOnInterstitialAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [TopOn] 插页广告预加载失败", e)
                     }
@@ -208,7 +214,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        TopOnRewardedAdController.getInstance().preloadAd(context)
+                        TopOnRewardedAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [TopOn] 激励广告预加载失败", e)
                     }
@@ -216,7 +222,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        TopOnNativeAdController.getInstance().preloadAd(context)
+                        TopOnNativeAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [TopOn] 原生广告预加载失败", e)
                     }
@@ -224,7 +230,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        TopOnFullScreenNativeAdController.getInstance().preloadAd(context)
+                        TopOnFullScreenNativeAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [TopOn] 全屏原生广告预加载失败", e)
                     }
@@ -232,7 +238,7 @@ object PreloadController {
                 
                 launch {
                     try {
-                        TopOnBannerAdController.getInstance().preloadAd(context)
+                        TopOnBannerAdController.getInstance().preloadAd(appContext)
                     } catch (e: Exception) {
                         AdLogger.e("[$TAG] [TopOn] Banner广告预加载失败", e)
                     }
@@ -263,11 +269,12 @@ object PreloadController {
      * @param adType 广告类型
      */
     fun preloadPlatformAdType(context: Context, platform: BiddingWinner, adType: net.corekit.monetize.ads.bidding.BiddingAdType) {
-        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+        val appContext = context.applicationContext
+        scope.launch {
             when (platform) {
-                BiddingWinner.ADMOB -> preloadAdMobAdType(context, adType)
-                BiddingWinner.PANGLE -> preloadPangleAdType(context, adType)
-                BiddingWinner.TOPON -> preloadTopOnAdType(context, adType)
+                BiddingWinner.ADMOB -> preloadAdMobAdType(appContext, adType)
+                BiddingWinner.PANGLE -> preloadPangleAdType(appContext, adType)
+                BiddingWinner.TOPON -> preloadTopOnAdType(appContext, adType)
             }
         }
     }
@@ -381,5 +388,14 @@ object PreloadController {
         } catch (e: Exception) {
             AdLogger.e("[$TAG] [TopOn] 定向预加载 ${adType.name} 失败", e)
         }
+    }
+
+    /**
+     * 取消所有预加载任务
+     * 在用户登出、隐私协议撤回等场景调用
+     */
+    fun cancelAll() {
+        scope.coroutineContext.cancelChildren()
+        AdLogger.d("[$TAG] 所有预加载任务已取消")
     }
 }

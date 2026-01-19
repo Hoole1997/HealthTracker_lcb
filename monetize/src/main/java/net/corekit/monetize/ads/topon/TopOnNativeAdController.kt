@@ -14,6 +14,7 @@ import com.thinkup.nativead.api.TUNative
 import com.thinkup.nativead.api.TUNativeAdView
 import com.thinkup.nativead.api.TUNativeEventListener
 import com.thinkup.nativead.api.TUNativeNetworkListener
+import net.corekit.monetize.ads.AdErrorCode
 import com.thinkup.nativead.api.NativeAd
 import com.thinkup.core.api.TUAdInfo
 import com.thinkup.core.api.AdError
@@ -74,10 +75,7 @@ class TopOnNativeAdController private constructor() {
         if (!AdIdHelper.hasTopOnNativeId()) {
             AdLogger.d("[$TAG] 原生广告 ID 未配置，跳过加载")
             return AdResult.Failure(
-                AdException(
-                    AdException.ERROR_INVALID_REQUEST,
-                    "原生广告 ID 未配置"
-                )
+                AdErrorCode.NATIVE_AD_ID_NOT_CONFIGURED.toAdException()
             )
         }
 
@@ -334,10 +332,12 @@ class TopOnNativeAdController private constructor() {
     }
 
     fun clearCache() {
+        // TopOn NativeAd SDK 无显式 destroy 方法，置空引用让 GC 回收
         nativeAd = null
         cachedNativeAd = null
         cachedEcpm = 0.0
         loadTimestamp = 0
+        AdLogger.d("[$TAG] 原生广告缓存已清理")
     }
 
     private fun reportAdData(eventName: String, params: Map<String, Any>) {

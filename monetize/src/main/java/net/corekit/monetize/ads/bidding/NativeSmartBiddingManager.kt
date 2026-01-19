@@ -63,6 +63,7 @@ object NativeSmartBiddingManager {
         style: NativeAdStyle,
         onClick: (() -> Unit)?
     ): Boolean {
+        AdLogger.d("[$TAG] ========== 开始原生广告多平台竞价 ==========")
         AdLogger.logD(TAG, "开始多平台竞价 | 位置: %s | 样式: %s", position, style.description)
 
         val controller = BiddingPlatformController

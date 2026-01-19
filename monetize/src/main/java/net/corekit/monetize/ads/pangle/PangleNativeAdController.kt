@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAd
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAdLoadListener
+import net.corekit.monetize.ads.AdErrorCode
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeRequest
 import com.healthtracker.framework.ext.visible
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -66,10 +67,7 @@ class PangleNativeAdController private constructor() {
         if (!AdIdHelper.hasPangleNativeId()) {
             AdLogger.d("[$TAG] 原生广告 ID 未配置，跳过加载")
             return AdResult.Failure(
-                AdException(
-                    AdException.ERROR_INVALID_REQUEST,
-                    "原生广告 ID 未配置"
-                )
+                AdErrorCode.NATIVE_AD_ID_NOT_CONFIGURED.toAdException()
             )
         }
 
@@ -370,9 +368,11 @@ class PangleNativeAdController private constructor() {
     }
 
     fun clearCache() {
+        // Pangle PAGNativeAd SDK 无显式 destroy 方法，置空引用让 GC 回收
         cachedAd = null
         cachedEcpm = 0.0
         loadTimestamp = 0
+        AdLogger.d("[$TAG] Pangle 原生广告缓存已清理")
     }
 
     /**

@@ -9,6 +9,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.core.ext.DataStoreIntDelegate
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.AdErrorCode
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
@@ -51,10 +52,7 @@ class TopOnFullScreenNativeAdController private constructor() {
         if (!AdIdHelper.hasTopOnFullNativeId()) {
             AdLogger.d("[$TAG] 全屏原生广告 ID 未配置，跳过加载")
             return AdResult.Failure(
-                AdException(
-                    AdException.ERROR_INVALID_REQUEST,
-                    "全屏原生广告 ID 未配置"
-                )
+                AdErrorCode.FULL_NATIVE_AD_ID_NOT_CONFIGURED.toAdException()
             )
         }
 
@@ -158,10 +156,12 @@ class TopOnFullScreenNativeAdController private constructor() {
     }
 
     fun clearCache() {
+        // TopOn NativeAd SDK 无显式 destroy 方法，置空引用让 GC 回收
         nativeAd = null
         cachedNativeAd = null
         cachedEcpm = 0.0
         loadTimestamp = 0
+        AdLogger.d("[$TAG] 全屏原生广告缓存已清理")
     }
 
     private fun reportAdData(eventName: String, params: Map<String, Any>) {

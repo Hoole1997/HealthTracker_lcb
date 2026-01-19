@@ -6,6 +6,7 @@ import com.bytedance.sdk.openadsdk.api.init.PAGConfig
 import com.bytedance.sdk.openadsdk.api.init.PAGSdk
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.AdErrorCode
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
@@ -37,7 +38,7 @@ object PangleManager {
         // 检查是否有有效的 App ID
         if (!AdIdHelper.hasPangleAppId()) {
             AdLogger.w("[$TAG] Pangle App ID 未配置，跳过初始化")
-            return AdResult.Failure(AdException(AdException.ERROR_INVALID_REQUEST, "Pangle App ID 未配置"))
+            return AdResult.Failure(AdErrorCode.PANGLE_APP_ID_NOT_CONFIGURED.toAdException())
         }
         
         // 已初始化，直接返回成功
@@ -61,7 +62,7 @@ object PangleManager {
         } catch (e: Exception) {
             isInitializing = false
             AdLogger.e("[$TAG] Pangle SDK 初始化异常", e)
-            AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "Pangle SDK 初始化异常: ${e.message}", e))
+            AdResult.Failure(AdErrorCode.SDK_INIT_EXCEPTION.toAdException(e))
         }
     }
 
@@ -91,7 +92,7 @@ object PangleManager {
                 override fun fail(code: Int, message: String?) {
                     AdLogger.e("[$TAG] ❌ Pangle SDK 初始化失败: code=%d, message=%s", code, message)
                     if (continuation.isActive) {
-                        continuation.resume(AdResult.Failure(AdException(code, message ?: "初始化失败")))
+                        continuation.resume(AdResult.Failure(AdErrorCode.SDK_INIT_FAILED.toAdException()))
                     }
                 }
             })
@@ -114,7 +115,7 @@ object PangleManager {
                     if (isInitialized) {
                         continuation.resume(AdResult.Success(Unit))
                     } else {
-                        continuation.resume(AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "Pangle SDK 初始化超时")))
+                        continuation.resume(AdResult.Failure(AdErrorCode.SDK_INIT_TIMEOUT.toAdException()))
                     }
                 }
             }.start()

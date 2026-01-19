@@ -127,10 +127,7 @@ class InterstitialAds private constructor() {
     suspend fun loadInAdvance(context: Context, adUnitId: String? = null): AdResult<Unit> {
         if(!GlobalAdSwitchInterceptor.isGlobalAdEnabled()){
             return AdResult.Failure(
-                AdException(
-                    code = -100,
-                    message = "开屏全局广告已关闭，中断加载"
-                ))
+                AdErrorCode.GLOBAL_AD_DISABLED.toAdException())
         }
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
         
@@ -214,9 +211,8 @@ class InterstitialAds private constructor() {
         val lifecycleResult = AdLifecycleGuard.checkImmediate(activity)
         if (lifecycleResult !is AdLifecycleGuard.CheckResult.Ready) {
             AdLogger.w("插页广告生命周期检查失败: %s", lifecycleResult)
-            return AdResult.Failure(AdException(
-                code = -400,
-                message = "生命周期检查失败: $lifecycleResult"
+            return AdResult.Failure(AdErrorCode.LIFECYCLE_CHECK_FAILED.toAdException(
+                message = "Lifecycle check failed: $lifecycleResult"
             ))
         }
 
@@ -287,11 +283,11 @@ class InterstitialAds private constructor() {
 
                 result
             } else {
-                AdResult.Failure(createAdException("广告加载失败"))
+                AdResult.Failure(AdErrorCode.AD_LOAD_FAILED.toAdException())
             }
         } catch (e: Exception) {
             AdLogger.e("显示插页广告异常", e)
-            AdResult.Failure(createAdException("显示广告异常: ${e.message}", e))
+            AdResult.Failure(AdErrorCode.AD_SHOW_EXCEPTION.toAdException(e))
         } finally {
             ADLoadingDialog.hide()
         }
@@ -382,11 +378,11 @@ class InterstitialAds private constructor() {
                 }
                 AdResult.Success(Unit)
             } else {
-                AdResult.Failure(createAdException("广告加载失败"))
+                AdResult.Failure(AdErrorCode.AD_LOAD_FAILED.toAdException())
             }
         } catch (e: Exception) {
             AdLogger.e("插页loadAdToCache异常", e)
-            AdResult.Failure(AdException(0, "加载异常: ${e.message}", e))
+            AdResult.Failure(AdErrorCode.AD_LOAD_EXCEPTION.toAdException(e))
         }
     }
 
@@ -498,7 +494,7 @@ class InterstitialAds private constructor() {
         // 没有缓存，尝试在超时内加载一个
         return kotlinx.coroutines.withTimeoutOrNull(timeoutMillis) {
             loadInAdvance(context, finalAdUnitId)
-        } ?: AdResult.Failure(createAdException("等待广告加载超时"))
+        } ?: AdResult.Failure(AdErrorCode.AD_LOAD_TIMEOUT.toAdException())
     }
 
     /**
@@ -559,7 +555,9 @@ class InterstitialAds private constructor() {
                     )
                     interstitialAd.destroy()
 
-                    val result = AdResult.Failure(createAdException("显示失败: ${fullScreenContentError.message}"))
+                    val result = AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException(
+                        message = "Show failed: ${fullScreenContentError.message}"
+                    ))
                     if (continuation.isActive) {
                         continuation.resume(result)
                     }
