@@ -43,6 +43,8 @@ class PangleNativeAdController private constructor() {
 
     // 当前广告展示位置
     private var currentPosition: String = ""
+    // 当前广告源 (默认 Pangle)
+    private var currentAdSource: String = "Pangle"
 
     companion object {
         private const val TAG = "PangleNative"
@@ -201,6 +203,11 @@ class PangleNativeAdController private constructor() {
         val data = ad.nativeAdData ?: return false
         val adUnitId = BuildConfig.PANGLE_NATIVE_ID
         currentPosition = position
+        
+        // 获取真实广告源 (尝试从 winEcpm 中获取)
+        // 注意：如果编译失败，说明 SDK 版本不包含此字段，回退到 "Pangle"
+        val adnName = ad.pagRevenueInfo?.winEcpm?.adnName
+        currentAdSource = if (adnName.isNullOrEmpty()) "Pangle" else adnName
 
         // 累积触发统计
         totalShowTriggerCount++
@@ -302,7 +309,7 @@ class PangleNativeAdController private constructor() {
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,
                     "number" to totalShowCount,
-                    "ad_source" to "Pangle",
+                    "ad_source" to currentAdSource,
                     "value" to cachedEcpm,
                     "currency" to "USD"
                 )
@@ -353,7 +360,7 @@ class PangleNativeAdController private constructor() {
                 "ad_unit_name" to BuildConfig.PANGLE_NATIVE_ID,
                 "position" to currentPosition,
                 "number" to totalClickCount,
-                "ad_source" to "Pangle",
+                "ad_source" to currentAdSource,
                 "value" to cachedEcpm,
                 "currency" to "USD"
             )
