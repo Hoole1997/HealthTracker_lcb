@@ -46,6 +46,7 @@ class PangleInterstitialAdController private constructor() {
 
     // 当前广告展示位置（用于埋点）
     private var currentPosition: String = ""
+    private var currentAdSource: String = "Pangle"
 
     companion object {
         private const val TAG = "PangleInterstitial"
@@ -283,6 +284,9 @@ class PangleInterstitialAdController private constructor() {
         val adUnitId = BuildConfig.PANGLE_INTERSTITIAL_ID
         currentPosition = position
 
+        val adnName = ad?.pagRevenueInfo?.winEcpm?.adnName
+        currentAdSource = if (adnName.isNullOrEmpty()) "Pangle" else adnName
+
         // 累积触发统计
         totalShowTriggerCount++
         reportAdData(
@@ -335,7 +339,7 @@ class PangleInterstitialAdController private constructor() {
                         "ad_unit_name" to adUnitId,
                         "position" to currentPosition,
                         "number" to totalShowCount,
-                        "ad_source" to "Pangle",
+                        "ad_source" to currentAdSource,
                         "value" to cachedEcpm,
                         "currency" to "USD"
                     )
@@ -367,7 +371,7 @@ class PangleInterstitialAdController private constructor() {
                         "ad_unit_name" to adUnitId,
                         "position" to currentPosition,
                         "number" to totalClickCount,
-                        "ad_source" to "Pangle",
+                        "ad_source" to currentAdSource,
                         "value" to cachedEcpm,
                         "currency" to "USD"
                     )

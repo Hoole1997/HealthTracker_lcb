@@ -43,6 +43,7 @@ class TopOnBannerAdController private constructor() {
     private var totalShowFailCount by DataStoreIntDelegate("topon_ba_show_fail_count", 0)
     private var totalClickCount by DataStoreIntDelegate("topon_ba_click_count", 0)
     private var currentPosition: String = ""
+    private var currentAdSource: String = "TopOn"
 
     companion object {
         private const val TAG = "TopOnBanner"
@@ -119,12 +120,16 @@ class TopOnBannerAdController private constructor() {
                     
                     AdLogger.d("[$TAG] ✅ Banner 广告加载成功, 耗时: %d ms, eCPM: %.6f USD", loadTime, cachedEcpm)
                     totalLoadSucCount++
+                    // 尝试获取加载成功的广告源
+                    val networkName = view.checkValidAdCaches()?.firstOrNull()?.networkName
+                    val loadedSource = if (networkName.isNullOrEmpty()) "TopOn" else networkName
+
                     reportAdData(
                         "ad_loaded",
                         mapOf(
                             "ad_unit_name" to adUnitId,
                             "number" to totalLoadSucCount,
-                            "ad_source" to "TopOn",
+                            "ad_source" to loadedSource,
                             "pass_time" to ceil(loadTime / 1000.0).toInt()
                         )
                     )
@@ -169,7 +174,7 @@ class TopOnBannerAdController private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to currentPosition,
                             "number" to totalClickCount,
-                            "ad_source" to "TopOn",
+                            "ad_source" to currentAdSource,
                             "value" to cachedEcpm,
                             "currency" to "USD"
                         )
@@ -179,6 +184,7 @@ class TopOnBannerAdController private constructor() {
                 override fun onBannerShow(info: TUAdInfo?) {
                     AdLogger.d("[$TAG] Banner 广告已展示")
                     cachedEcpm = parseEcpm(info?.ecpmLevel)
+                    currentAdSource = info?.networkName ?: "TopOn"
                     totalShowCount++
                     val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
                     reportAdData(
@@ -187,7 +193,7 @@ class TopOnBannerAdController private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to currentPosition,
                             "number" to totalShowCount,
-                            "ad_source" to "TopOn",
+                            "ad_source" to currentAdSource,
                             "value" to cachedEcpm,
                             "currency" to "USD"
                         )
@@ -198,7 +204,7 @@ class TopOnBannerAdController private constructor() {
                                 value = cachedEcpm,
                                 currencyCode = "USD"
                             ),
-                            adRevenueNetwork = "TopOn",
+                            adRevenueNetwork = currentAdSource,
                             adRevenueUnit = adUnitId,
                             adRevenuePlacement = currentPosition,
                             adFormat = "Banner"

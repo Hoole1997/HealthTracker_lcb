@@ -40,6 +40,7 @@ class PangleBannerAdController private constructor() {
     private var totalShowFailCount by DataStoreIntDelegate("pangle_ba_show_fail_count", 0)
 
     private var currentPosition: String = ""
+    private var currentAdSource: String = "Pangle"
 
     companion object {
         private const val TAG = "PangleBanner"
@@ -175,6 +176,9 @@ class PangleBannerAdController private constructor() {
         val adUnitId = BuildConfig.PANGLE_BANNER_ID
         currentPosition = position
 
+        val adnName = ad.pagRevenueInfo?.winEcpm?.adnName
+        currentAdSource = if (adnName.isNullOrEmpty()) "Pangle" else adnName
+
         totalShowTriggerCount++
         reportAdData(
             "ad_position",
@@ -204,7 +208,7 @@ class PangleBannerAdController private constructor() {
                         "ad_unit_name" to adUnitId,
                         "position" to currentPosition,
                         "number" to totalShowCount,
-                        "ad_source" to "Pangle",
+                        "ad_source" to currentAdSource,
                         "value" to cachedEcpm,
                         "currency" to "USD"
                     )

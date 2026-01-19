@@ -4,6 +4,7 @@ import android.content.Context
 import com.thinkup.nativead.api.TUNative
 import com.thinkup.nativead.api.TUNativeNetworkListener
 import com.thinkup.nativead.api.NativeAd
+import com.thinkup.core.api.TUAdInfo
 import com.thinkup.core.api.AdError
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.core.ext.DataStoreIntDelegate
@@ -95,12 +96,18 @@ class TopOnFullScreenNativeAdController private constructor() {
                     cachedNativeAd = nativeAd?.nativeAd
                     AdLogger.d("[$TAG] ✅ 全屏原生广告加载成功, 耗时: %d ms", loadTime)
                     totalLoadSucCount++
+                    
+                    // 尝试获取加载成功的广告源
+                    // 修复：此时 ad 变量在对象构造中不可用，使用 nativeAd 属性
+                    val networkName = nativeAd?.checkValidAdCaches()?.firstOrNull()?.networkName
+                    val loadedSource = if (networkName.isNullOrEmpty()) "TopOn" else networkName
+
                     reportAdData(
                         "ad_loaded",
                         mapOf(
                             "ad_unit_name" to adUnitId,
                             "number" to totalLoadSucCount,
-                            "ad_source" to "TopOn",
+                            "ad_source" to loadedSource,
                             "pass_time" to ceil(loadTime / 1000.0).toInt()
                         )
                     )

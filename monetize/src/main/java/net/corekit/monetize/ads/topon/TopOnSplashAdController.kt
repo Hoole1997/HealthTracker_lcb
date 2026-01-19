@@ -43,6 +43,7 @@ class TopOnSplashAdController private constructor() {
     private var totalClickCount by DataStoreIntDelegate("topon_sp_click_count", 0)
     private var totalCloseCount by DataStoreIntDelegate("topon_sp_close_count", 0)
     private var currentPosition: String = "Splash"
+    private var currentAdSource: String = "TopOn"
 
     companion object {
         private const val TAG = "TopOnSplash"
@@ -164,12 +165,17 @@ class TopOnSplashAdController private constructor() {
                         )
 
                         totalLoadSucCount++
+                        
+                        // 尝试获取加载成功的广告源
+                        val networkName = currentAd?.checkValidAdCaches()?.firstOrNull()?.networkName
+                        val loadedSource = if (networkName.isNullOrEmpty()) "TopOn" else networkName
+
                         reportAdData(
                             "ad_loaded",
                             mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "number" to totalLoadSucCount,
-                                "ad_source" to "TopOn",
+                                "ad_source" to loadedSource,
                                 "pass_time" to ceil(loadTime / 1000.0).toInt()
                             )
                         )
@@ -263,6 +269,9 @@ class TopOnSplashAdController private constructor() {
                     override fun onAdShow(info: TUAdInfo?) {
                         AdLogger.d("[$TAG] 开屏广告已展示")
                         cachedEcpm = parseEcpm(info?.ecpmLevel)
+                        
+                        currentAdSource = info?.networkName ?: "TopOn"
+                        
                         totalShowCount++
                         val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
                         reportAdData(
@@ -271,7 +280,7 @@ class TopOnSplashAdController private constructor() {
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
                                 "number" to totalShowCount,
-                                "ad_source" to "TopOn",
+                                "ad_source" to currentAdSource,
                                 "value" to cachedEcpm,
                                 "currency" to "USD"
                             )
@@ -282,7 +291,7 @@ class TopOnSplashAdController private constructor() {
                                     value = cachedEcpm,
                                     currencyCode = "USD"
                                 ),
-                                adRevenueNetwork = "TopOn",
+                                adRevenueNetwork = currentAdSource,
                                 adRevenueUnit = adUnitId,
                                 adRevenuePlacement = currentPosition,
                                 adFormat = "Splash"
@@ -301,7 +310,7 @@ class TopOnSplashAdController private constructor() {
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
                                 "number" to totalClickCount,
-                                "ad_source" to "TopOn",
+                                "ad_source" to currentAdSource,
                                 "value" to cachedEcpm,
                                 "currency" to "USD"
                             )
@@ -317,7 +326,7 @@ class TopOnSplashAdController private constructor() {
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
                                 "number" to totalCloseCount,
-                                "ad_source" to "TopOn",
+                                "ad_source" to currentAdSource,
                                 "value" to cachedEcpm,
                                 "currency" to "USD"
                             )

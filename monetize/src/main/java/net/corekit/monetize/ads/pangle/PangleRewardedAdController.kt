@@ -40,6 +40,7 @@ class PangleRewardedAdController private constructor() {
     private var totalClickCount by DataStoreIntDelegate("pangle_rv_click_count", 0)
     private var totalCloseCount by DataStoreIntDelegate("pangle_rv_close_count", 0)
     private var currentPosition: String = ""
+    private var currentAdSource: String = "Pangle"
 
     companion object {
         private const val TAG = "PangleRewarded"
@@ -178,6 +179,9 @@ class PangleRewardedAdController private constructor() {
         val adUnitId = BuildConfig.PANGLE_REWARDED_ID
         currentPosition = position
 
+        val adnName = ad?.pagRevenueInfo?.winEcpm?.adnName
+        currentAdSource = if (adnName.isNullOrEmpty()) "Pangle" else adnName
+
         totalShowTriggerCount++
         reportAdData(
             "ad_position",
@@ -226,7 +230,7 @@ class PangleRewardedAdController private constructor() {
                         "ad_unit_name" to adUnitId,
                         "position" to currentPosition,
                         "number" to totalShowCount,
-                        "ad_source" to "Pangle",
+                        "ad_source" to currentAdSource,
                         "value" to cachedEcpm,
                         "currency" to "USD"
                     )
@@ -256,7 +260,7 @@ class PangleRewardedAdController private constructor() {
                         "ad_unit_name" to adUnitId,
                         "position" to currentPosition,
                         "number" to totalClickCount,
-                        "ad_source" to "Pangle",
+                        "ad_source" to currentAdSource,
                         "value" to cachedEcpm,
                         "currency" to "USD"
                     )

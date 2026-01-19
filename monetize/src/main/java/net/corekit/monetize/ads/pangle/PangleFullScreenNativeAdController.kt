@@ -13,6 +13,11 @@ import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
+import net.corekit.monetize.ads.report.IpuController
+import net.corekit.monetize.ads.report.RpuController
+import net.corekit.core.ads.RevenueAdData
+import net.corekit.core.ads.RevenueAdManager
+import net.corekit.core.ads.RevenueInfo
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resume
 import kotlin.math.ceil
@@ -99,18 +104,18 @@ class PangleFullScreenNativeAdController private constructor() {
                         0.0
                     }
 
-                    AdLogger.d(
-                        "[$TAG] ✅ 全屏原生广告加载成功, 耗时: %d ms, eCPM: %.6f USD",
-                        loadTime,
-                        cachedEcpm
-                    )
+                    AdLogger.d("[$TAG] ✅ 全屏原生广告加载成功, 耗时: %d ms, ecpm: %.6f", loadTime, cachedEcpm)
+
+                    val adnName = ad.pagRevenueInfo?.winEcpm?.adnName
+                    val loadedSource = if (adnName.isNullOrEmpty()) "Pangle" else adnName
+
                     totalLoadSucCount++
                     reportAdData(
                         "ad_loaded",
                         mapOf(
                             "ad_unit_name" to adUnitId,
                             "number" to totalLoadSucCount,
-                            "ad_source" to "Pangle",
+                            "ad_source" to loadedSource,
                             "pass_time" to ceil(loadTime / 1000.0).toInt()
                         )
                     )

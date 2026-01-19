@@ -41,6 +41,7 @@ class TopOnInterstitialAdController private constructor() {
     private var totalClickCount by DataStoreIntDelegate("topon_it_click_count", 0)
     private var totalCloseCount by DataStoreIntDelegate("topon_it_close_count", 0)
     private var currentPosition: String = ""
+    private var currentAdSource: String = "TopOn"
 
     companion object {
         private const val TAG = "TopOnInterstitial"
@@ -155,12 +156,17 @@ class TopOnInterstitialAdController private constructor() {
                         AdLogger.d("[$TAG] ✅ 插页广告加载成功, 耗时: %d ms, eCPM: %.6f USD", loadTime, cachedEcpm)
 
                         totalLoadSucCount++
+                        
+                        // 尝试获取加载成功的广告源
+                        val networkName = ad.checkValidAdCaches()?.firstOrNull()?.networkName
+                        val loadedSource = if (networkName.isNullOrEmpty()) "TopOn" else networkName
+
                         reportAdData(
                             "ad_loaded",
                             mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "number" to totalLoadSucCount,
-                                "ad_source" to "TopOn",
+                                "ad_source" to loadedSource,
                                 "pass_time" to ceil(loadTime / 1000.0).toInt()
                             )
                         )
@@ -227,7 +233,7 @@ class TopOnInterstitialAdController private constructor() {
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
                                 "number" to totalClickCount,
-                                "ad_source" to "TopOn",
+                                "ad_source" to currentAdSource,
                                 "value" to cachedEcpm,
                                 "currency" to "USD"
                             )
@@ -237,6 +243,9 @@ class TopOnInterstitialAdController private constructor() {
                     override fun onInterstitialAdShow(info: TUAdInfo?) {
                         AdLogger.d("[$TAG] 插页广告已展示")
                         cachedEcpm = parseEcpm(info?.ecpmLevel)
+                        
+                        currentAdSource = info?.networkName ?: "TopOn"
+                        
                         totalShowCount++
                         val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
                         reportAdData(
@@ -245,7 +254,7 @@ class TopOnInterstitialAdController private constructor() {
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
                                 "number" to totalShowCount,
-                                "ad_source" to "TopOn",
+                                "ad_source" to currentAdSource,
                                 "value" to cachedEcpm,
                                 "currency" to "USD"
                             )
@@ -256,7 +265,7 @@ class TopOnInterstitialAdController private constructor() {
                                     value = cachedEcpm,
                                     currencyCode = "USD"
                                 ),
-                                adRevenueNetwork = "TopOn",
+                                adRevenueNetwork = currentAdSource,
                                 adRevenueUnit = adUnitId,
                                 adRevenuePlacement = currentPosition,
                                 adFormat = "Interstitial"
@@ -275,7 +284,7 @@ class TopOnInterstitialAdController private constructor() {
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
                                 "number" to totalCloseCount,
-                                "ad_source" to "TopOn",
+                                "ad_source" to currentAdSource,
                                 "value" to cachedEcpm,
                                 "currency" to "USD"
                             )
