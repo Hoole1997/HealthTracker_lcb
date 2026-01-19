@@ -148,9 +148,13 @@ class TopOnInterstitialAdController private constructor() {
                     override fun onInterstitialAdLoaded() {
                         val loadTime = System.currentTimeMillis() - startTime
                         loadTimestamp = System.currentTimeMillis()
-                        // 注意：TopOn 在加载时不提供 eCPM，需在展示回调 (onShow) 中获取
-                        // 此处尝试从 isAdReady 状态获取，如无法获取则保留 0.0 待 onShow 时更新
-                        AdLogger.d("[$TAG] ✅ 插页广告加载成功, 耗时: %d ms", loadTime)
+                        
+                        // 尝试使用 checkValidAdCaches 获取 eCPM
+                        cachedEcpm = try {
+                            ad.checkValidAdCaches()?.firstOrNull()?.publisherRevenue?.toDouble() ?: 0.0
+                        } catch (e: Exception) { 0.0 }
+                        
+                        AdLogger.d("[$TAG] ✅ 插页广告加载成功, 耗时: %d ms, eCPM: %.6f USD", loadTime, cachedEcpm)
 
                         totalLoadSucCount++
                         reportAdData(

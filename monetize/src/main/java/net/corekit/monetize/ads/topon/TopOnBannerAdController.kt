@@ -113,8 +113,13 @@ class TopOnBannerAdController private constructor() {
                 override fun onBannerLoaded() {
                     val loadTime = System.currentTimeMillis() - startTime
                     loadTimestamp = System.currentTimeMillis()
-                    // 注意：TopOn 在加载时不提供 eCPM，需在展示回调 (onBannerShow) 中获取
-                    AdLogger.d("[$TAG] ✅ Banner 广告加载成功, 耗时: %d ms", loadTime)
+                    
+                    // 尝试使用 checkValidAdCaches 获取 eCPM
+                    cachedEcpm = try {
+                        view.checkValidAdCaches()?.firstOrNull()?.publisherRevenue?.toDouble() ?: 0.0
+                    } catch (e: Exception) { 0.0 }
+                    
+                    AdLogger.d("[$TAG] ✅ Banner 广告加载成功, 耗时: %d ms, eCPM: %.6f USD", loadTime, cachedEcpm)
                     totalLoadSucCount++
                     reportAdData(
                         "ad_loaded",

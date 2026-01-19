@@ -167,9 +167,9 @@ object NativePreloadManager {
         val isStandardStyle = style == NativeAdStyle.STANDARD
         val toponEnabled = controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.NATIVE.toConfigKey()) && isStandardStyle
         
-        // 获取 AdMob 收益
+        // 获取 AdMob 收益 (使用 peekCachedAd 避免 Pop 导致缓存丢失)
         val admobValueUsd = if (admobEnabled && admobLoadResult is AdResult.Success<*>) {
-            admobController.retrieveCurrentAd()?.let { ad ->
+            admobController.peekCachedAd()?.let { ad ->
                 AdmobNextGenReflectionUtil.getRevenueByPath(ad)?.valueMicros?.toDouble()?.div(1_000_000.0)
             } ?: 0.0
         } else 0.0

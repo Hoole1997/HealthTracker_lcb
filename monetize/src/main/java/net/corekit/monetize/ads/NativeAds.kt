@@ -535,7 +535,19 @@ class NativeAds private constructor() {
     }
     
     /**
-     * 获取当前加载的广告数据
+     * 读取缓存广告 (Peek 语义，不删除)
+     * 仅供竞价使用，确保比价和展示使用同一个广告实例
+     */
+    fun peekCachedAd(adUnitId: String? = null): NativeAd? {
+        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_NATIVE_ID
+        synchronized(adCachePool) {
+            return adCachePool.firstOrNull { it.adUnitId == finalAdUnitId && !it.isExpired() }?.ad
+        }
+    }
+
+    /**
+     * 获取当前加载的广告数据 (Pop 语义，会从缓存移除)
+     * 仅供展示时使用
      */
     fun retrieveCurrentAd(): NativeAd? {
         return getCachedAd(BuildConfig.ADMOB_NATIVE_ID)?.ad
