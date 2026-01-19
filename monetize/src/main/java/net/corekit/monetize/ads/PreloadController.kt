@@ -48,13 +48,12 @@ object PreloadController {
         preloadJob = scope.launch(Dispatchers.Main) {
             delay(PRELOAD_DEBOUNCE_DELAY)
             
-            // --- 生命周期检查 ---
-            if (!checkLifecycle(context)) return@launch
+            // 使用 ApplicationContext 进行检查，确保预加载只受应用级生命周期（前后台）影响，
+            // 而不受触发该请求的 Activity 销毁（如 B 页面退出）影响。
+            val appContext = context.applicationContext
+            if (!checkLifecycle(appContext)) return@launch
             
             AdLogger.d("[$TAG] 开始多平台广告预加载 (Debounced)")
-            
-            // 使用 ApplicationContext 防止泄漏（虽然上层可能传了 Activity，但存储/长耗时操作应用 AppContext）
-            val appContext = context.applicationContext
             
             // AdMob 预加载
             preloadAdMob(appContext)
@@ -278,13 +277,14 @@ object PreloadController {
      * 预加载特定平台广告
      */
     fun preloadPlatform(context: Context, platform: BiddingWinner) {
+        val appContext = context.applicationContext
         scope.launch {
-            if (!checkLifecycle(context)) return@launch
+            if (!checkLifecycle(appContext)) return@launch
             
             when (platform) {
-                BiddingWinner.ADMOB -> preloadAdMob(context)
-                BiddingWinner.PANGLE -> preloadPangle(context)
-                BiddingWinner.TOPON -> preloadTopOn(context)
+                BiddingWinner.ADMOB -> preloadAdMob(appContext)
+                BiddingWinner.PANGLE -> preloadPangle(appContext)
+                BiddingWinner.TOPON -> preloadTopOn(appContext)
             }
         }
     }
@@ -299,7 +299,7 @@ object PreloadController {
     fun preloadPlatformAdType(context: Context, platform: BiddingWinner, adType: net.corekit.monetize.ads.bidding.BiddingAdType) {
         val appContext = context.applicationContext
         scope.launch {
-            if (!checkLifecycle(context)) return@launch
+            if (!checkLifecycle(appContext)) return@launch
 
             when (platform) {
                 BiddingWinner.ADMOB -> preloadAdMobAdType(appContext, adType)
@@ -432,9 +432,13 @@ object PreloadController {
                 return false
             }
         } else {
-            // 2. 如果是 Application Context，检查应用前后台状态
+            // 2. 如果是 Application Context，检查应用前后台状态及锁屏状态
             if (AppLifecycleManager.isBackground()) {
                 AdLogger.w("[$TAG] 预加载取消: 应用在后台")
+                return false
+            }
+            if (AppLifecycleManager.isScreenLock()) {
+                AdLogger.w("[$TAG] 预加载取消: 屏幕已锁定")
                 return false
             }
         }
