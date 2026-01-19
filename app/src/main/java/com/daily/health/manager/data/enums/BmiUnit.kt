@@ -2,8 +2,9 @@ package com.daily.health.manager.data.enums
 
 import com.daily.health.manager.App
 import com.daily.health.manager.R
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import com.healthtracker.framework.util.SpUtils
-import java.util.Locale
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -153,7 +154,7 @@ enum class BmiUnit(
             return if (decimalPlaces <= 0) {
                 value.roundToInt().toString()
             } else {
-                String.format(Locale.ROOT, "%.${decimalPlaces}f", value)
+                NumberFormatter.formatNumber(value.toDouble(), LanguageUtils.getAppLocale(App.INSTANCE), decimalPlaces)
             }
         }
 

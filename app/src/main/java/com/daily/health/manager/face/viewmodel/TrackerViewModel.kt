@@ -26,6 +26,7 @@ import com.daily.health.manager.util.ChartConfigHelper
 import com.daily.health.manager.util.ChartPalette
 import com.daily.health.manager.util.LineStyle
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.util.LanguageUtils
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -90,7 +91,7 @@ class TrackerViewModel(
     private val weekLabels: List<String> = App.INSTANCE.resources
         .getStringArray(R.array.ht_week_simple)
         .toList()
-    private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
+    private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(LanguageUtils.getAppLocale(App.INSTANCE)))
     private val _stepChartState = MutableStateFlow(ChartUiState())
     val stepChartState: StateFlow<ChartUiState> = _stepChartState
     private val _hydrateChartState = MutableStateFlow(ChartUiState())

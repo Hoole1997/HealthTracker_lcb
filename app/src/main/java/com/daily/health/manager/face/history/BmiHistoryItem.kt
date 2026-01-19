@@ -4,7 +4,10 @@ import android.content.Context
 import com.daily.health.manager.R
 import com.daily.health.manager.data.entity.BmiRecord
 import com.daily.health.manager.data.enums.BMIEnum
+import com.daily.health.manager.App
 import com.daily.health.manager.data.enums.BmiUnit
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import java.util.Date
 
 /**
@@ -20,7 +23,7 @@ class BmiHistoryItem(private val record: BmiRecord) : HistoryRecordItem() {
     override fun getPrimaryValue(): String {
         // 计算并显示 BMI 值（与详情页格式一致）
         val bmi = calculateBmi()
-        return String.format("%.1f", bmi)
+        return NumberFormatter.formatNumber(bmi.toDouble(), LanguageUtils.getAppLocale(App.INSTANCE), 1)
     }
 
     override fun getSecondaryValue(): String? {

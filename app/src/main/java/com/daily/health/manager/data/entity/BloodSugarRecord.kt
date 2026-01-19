@@ -4,7 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.daily.health.manager.data.enums.BsUnit
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import java.util.Date
+import java.util.Locale
 
 /**
  * 血糖记录数据实体
@@ -109,7 +112,7 @@ data class LocalEntity01(
      */
     fun getFormattedDisplayValue(): String {
         val displayValue = getDisplayGlucoseValue()
-        return String.format(java.util.Locale.ROOT, "%.1f", displayValue)
+        return NumberFormatter.formatNumber(displayValue, LanguageUtils.mapAppLocale() ?: Locale.getDefault(), 1)
     }
 
     /**

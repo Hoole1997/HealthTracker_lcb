@@ -6,7 +6,6 @@ import com.daily.health.manager.data.entity.BloodSugarRecord
 import com.daily.health.manager.data.enums.BloodSugarStatus
 import com.daily.health.manager.data.enums.BloodSugarLevel
 import com.daily.health.manager.data.enums.getStatusStringRes
-import java.text.DecimalFormat
 import java.util.Date
 
 /**
@@ -14,8 +13,6 @@ import java.util.Date
  * 包装BloodSugarRecord并实现统一的显示接口
  */
 class BloodSugarHistoryItem(private val record: BloodSugarRecord) : HistoryRecordItem() {
-    
-    private val decimalFormat = DecimalFormat("#.#")
     
     override fun getId(): Long = record.id
     

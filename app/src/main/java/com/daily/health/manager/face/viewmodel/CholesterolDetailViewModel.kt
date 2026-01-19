@@ -9,7 +9,10 @@ import com.daily.health.manager.face.chart.ChartSeriesIds
 import com.daily.health.manager.face.chart.ChartUiState
 import com.daily.health.manager.util.ChartPalette
 import com.daily.health.manager.util.LineStyle
+import com.daily.health.manager.App
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -119,7 +122,7 @@ class CholesterolDetailViewModel(
      */
     fun getTcHdlRatio(): String {
         val ratio = _cholesterolRecord.value?.tcHdlRatio
-        return ratio?.let { String.format(Locale.getDefault(),"%.2f", it) } ?: "--"
+        return ratio?.let { NumberFormatter.formatNumber(it.toDouble(), LanguageUtils.getAppLocale(App.INSTANCE), 2) } ?: "--"
     }
 
     /**
@@ -127,7 +130,7 @@ class CholesterolDetailViewModel(
      */
     fun getLdlHdlRatio(): String {
         val ratio = _cholesterolRecord.value?.ldlHdlRatio
-        return ratio?.let { String.format(Locale.getDefault(),"%.2f", it) } ?: "--"
+        return ratio?.let { NumberFormatter.formatNumber(it.toDouble(), LanguageUtils.getAppLocale(App.INSTANCE), 2) } ?: "--"
     }
 
     /**

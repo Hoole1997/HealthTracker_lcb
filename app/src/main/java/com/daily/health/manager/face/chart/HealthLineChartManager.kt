@@ -24,7 +24,10 @@ import com.patrykandpatrick.vico.core.common.Position
 import com.patrykandpatrick.vico.views.cartesian.CartesianChartView
 import com.patrykandpatrick.vico.views.cartesian.ScrollHandler
 import com.patrykandpatrick.vico.views.cartesian.ZoomHandler
+import com.daily.health.manager.App
+import com.healthtracker.framework.util.LanguageUtils
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -277,7 +280,7 @@ class HealthLineChartManager(
         forceInteger: Boolean
     ): CartesianValueFormatter {
         if (forceInteger) {
-            return CartesianValueFormatter.decimal(DecimalFormat("#"))
+            return CartesianValueFormatter.decimal(DecimalFormat("#", DecimalFormatSymbols(LanguageUtils.getAppLocale(App.INSTANCE))))
         }
 
         val steps = (DEFAULT_AXIS_STEPS - 1).coerceAtLeast(1)
@@ -299,7 +302,7 @@ class HealthLineChartManager(
             }
         }
 
-        return CartesianValueFormatter.decimal(DecimalFormat(pattern))
+        return CartesianValueFormatter.decimal(DecimalFormat(pattern, DecimalFormatSymbols(LanguageUtils.getAppLocale(App.INSTANCE))))
     }
 
     private fun createBottomAxisFormatter(): CartesianValueFormatter =

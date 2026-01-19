@@ -47,6 +47,8 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.showToast
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import com.daily.health.manager.face.viewmodel.BsRecordViewModel
 import com.daily.health.manager.face.viewmodel.BmiRecordViewModel
 import com.daily.health.manager.face.viewmodel.BpRecordViewModel
@@ -677,11 +679,11 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
         binding.dateTimeSelectionView.setLabelVisible(false)
 
         fun formatCholesterolValue(value: Float): String {
-            return String.format(Locale.getDefault(), "%.0f", value)
+            return NumberFormatter.formatNumber(value.toDouble(), LanguageUtils.getAppLocale(this@HealthRecordScreen), 0)
         }
 
         fun formatRatioValue(value: Float): String {
-            return String.format(Locale.getDefault(), "%.2f", value)
+            return NumberFormatter.formatNumber(value.toDouble(), LanguageUtils.getAppLocale(this@HealthRecordScreen), 2)
         }
 
         fun updateLsvCurrentIndex(riskLevel: CholesterolLevel) {

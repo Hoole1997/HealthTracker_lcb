@@ -28,7 +28,7 @@ import kotlin.math.roundToInt
 class StepCountViewModel : BaseViewModel() {
     private val repo = StepRepository.get(App.INSTANCE)
 
-    private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
+    private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(LanguageUtils.getAppLocale(App.INSTANCE)))
 
     companion object {
         private const val DEFAULT_GOAL_STEPS = 6000

@@ -302,7 +302,7 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
                 null
             }
         }
-        val displayText = totalValue?.let { String.format(Locale.getDefault(), "%.0f", it) } ?: "--"
+        val displayText = totalValue?.let { NumberFormatter.formatNumber(it.toDouble(), LanguageUtils.mapAppLocale() ?: Locale.getDefault(), 0) } ?: "--"
         mViewBind?.tvLatestCholesterolValue?.text = displayText
     }
 

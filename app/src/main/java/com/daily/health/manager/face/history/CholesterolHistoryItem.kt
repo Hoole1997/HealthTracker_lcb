@@ -2,8 +2,10 @@ package com.daily.health.manager.face.history
 
 import android.content.Context
 import com.daily.health.manager.data.entity.CholesterolRecord
+import com.daily.health.manager.App
 import com.daily.health.manager.data.enums.CholesterolLevel
-import java.text.DecimalFormat
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import java.util.Date
 
 /**
@@ -11,8 +13,6 @@ import java.util.Date
  * 包装 CholesterolRecord 并实现统一的显示接口
  */
 class CholesterolHistoryItem(private val record: CholesterolRecord) : HistoryRecordItem() {
-
-    private val decimalFormat = DecimalFormat("#.##")
 
     override fun getId(): Long = record.id
 
@@ -73,7 +73,7 @@ class CholesterolHistoryItem(private val record: CholesterolRecord) : HistoryRec
     fun getHdlValue(): String = record.hdl.toString()
     fun getLdlValue(): String = record.ldl.toString()
     fun getTgValue(): String = record.triglyceride.toString()
-    fun getNonHdlValue(): String = decimalFormat.format(record.nonHdl)
-    fun getTcHdlRatioValue(): String = decimalFormat.format(record.tcHdlRatio)
-    fun getLdlHdlRatioValue(): String = decimalFormat.format(record.ldlHdlRatio)
+    fun getNonHdlValue(): String = NumberFormatter.formatNumber(record.nonHdl.toDouble(), LanguageUtils.getAppLocale(App.INSTANCE), 2)
+    fun getTcHdlRatioValue(): String = NumberFormatter.formatNumber(record.tcHdlRatio.toDouble(), LanguageUtils.getAppLocale(App.INSTANCE), 2)
+    fun getLdlHdlRatioValue(): String = NumberFormatter.formatNumber(record.ldlHdlRatio.toDouble(), LanguageUtils.getAppLocale(App.INSTANCE), 2)
 }

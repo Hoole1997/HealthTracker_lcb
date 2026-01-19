@@ -45,6 +45,8 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.showToast
+import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import kotlinx.coroutines.launch
 import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
@@ -382,7 +384,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         binding.tvHeightValue.text = displayHeight
 
         val bmi = bmiViewModel.calculateBmi()
-        binding.tvBmiValue.text = bmi?.let { String.format("%.1f", it) } ?: "--"
+        binding.tvBmiValue.text = bmi?.let { NumberFormatter.formatNumber(it.toDouble(), LanguageUtils.getAppLocale(this), 1) } ?: "--"
 
         val recordTime = bmiViewModel.getRecordTime()
         binding.tvTime.text = recordTime?.let { dateFormatBmi.format(it) } ?: ""

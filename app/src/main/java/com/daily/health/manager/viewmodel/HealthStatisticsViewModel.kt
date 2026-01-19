@@ -36,6 +36,7 @@ import com.daily.health.manager.util.LineStyle
 import com.daily.health.manager.viewmodel.HealthStatisticsViewModel.StatsUiState.Companion.KEY_SELECTED_STATUS
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.util.LanguageUtils
+import com.healthtracker.framework.util.NumberFormatter
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
@@ -105,7 +106,7 @@ class HealthStatisticsViewModel(
         }
     }
 
-    private val stepKiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(Locale.US))
+    private val stepKiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(LanguageUtils.getAppLocale(App.INSTANCE)))
     private val dateFormatter = SimpleDateFormat("MMM dd, yyyy", LanguageUtils.getAppLocale(App.INSTANCE))
     private val labelFormatter = SimpleDateFormat("M/d", LanguageUtils.getAppLocale(App.INSTANCE))
 
@@ -592,7 +593,7 @@ class HealthStatisticsViewModel(
         }
     }
 
-    private fun formatValue(source: Double) = String.format(Locale.getDefault(),"%.1f",source)
+    private fun formatValue(source: Double) = NumberFormatter.formatNumber(source, LanguageUtils.getAppLocale(App.INSTANCE), 1)
 
     private fun roundToSingleDecimal(value: Double): Float {
         return ((value * 10).roundToInt() / 10f)
