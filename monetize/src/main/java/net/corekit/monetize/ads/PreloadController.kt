@@ -12,6 +12,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import android.app.Activity
+import com.healthtracker.framework.lifecycle.AppLifecycleManager
+import net.corekit.monetize.ads.lifecycle.AdLifecycleGuard
 
 /**
  * 广告预加载控制器
@@ -22,8 +27,14 @@ object PreloadController {
 
     private const val TAG = "PreloadController"
     
+
     // 使用单例作用域，便于统一管理和取消
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    
+    // 预加载防抖 Job
+    private var preloadJob: Job? = null
+    // 防抖延迟时间 (ms)
+    private const val PRELOAD_DEBOUNCE_DELAY = 1000L
 
     /**
      * 预加载所有平台广告
@@ -31,19 +42,32 @@ object PreloadController {
      * 根据 BiddingPlatformController 配置决定加载哪些平台
      */
     fun preload(context: Context) {
-        AdLogger.d("[$TAG] 开始多平台广告预加载")
+        // 防抖处理：取消上一次未执行的任务
+        preloadJob?.cancel()
         
-        // AdMob 预加载
-        preloadAdMob(context)
-        
-        // Pangle 预加载（如果启用）
-        if (BiddingPlatformController.isPlatformEnabled(BiddingWinner.PANGLE)) {
-            preloadPangle(context)
-        }
-        
-        // TopOn 预加载（如果启用）
-        if (BiddingPlatformController.isPlatformEnabled(BiddingWinner.TOPON)) {
-            preloadTopOn(context)
+        preloadJob = scope.launch(Dispatchers.Main) {
+            delay(PRELOAD_DEBOUNCE_DELAY)
+            
+            // --- 生命周期检查 ---
+            if (!checkLifecycle(context)) return@launch
+            
+            AdLogger.d("[$TAG] 开始多平台广告预加载 (Debounced)")
+            
+            // 使用 ApplicationContext 防止泄漏（虽然上层可能传了 Activity，但存储/长耗时操作应用 AppContext）
+            val appContext = context.applicationContext
+            
+            // AdMob 预加载
+            preloadAdMob(appContext)
+            
+            // Pangle 预加载（如果启用）
+            if (BiddingPlatformController.isPlatformEnabled(BiddingWinner.PANGLE)) {
+                preloadPangle(appContext)
+            }
+            
+            // TopOn 预加载（如果启用）
+            if (BiddingPlatformController.isPlatformEnabled(BiddingWinner.TOPON)) {
+                preloadTopOn(appContext)
+            }
         }
     }
 
@@ -254,10 +278,14 @@ object PreloadController {
      * 预加载特定平台广告
      */
     fun preloadPlatform(context: Context, platform: BiddingWinner) {
-        when (platform) {
-            BiddingWinner.ADMOB -> preloadAdMob(context)
-            BiddingWinner.PANGLE -> preloadPangle(context)
-            BiddingWinner.TOPON -> preloadTopOn(context)
+        scope.launch {
+            if (!checkLifecycle(context)) return@launch
+            
+            when (platform) {
+                BiddingWinner.ADMOB -> preloadAdMob(context)
+                BiddingWinner.PANGLE -> preloadPangle(context)
+                BiddingWinner.TOPON -> preloadTopOn(context)
+            }
         }
     }
 
@@ -271,6 +299,8 @@ object PreloadController {
     fun preloadPlatformAdType(context: Context, platform: BiddingWinner, adType: net.corekit.monetize.ads.bidding.BiddingAdType) {
         val appContext = context.applicationContext
         scope.launch {
+            if (!checkLifecycle(context)) return@launch
+
             when (platform) {
                 BiddingWinner.ADMOB -> preloadAdMobAdType(appContext, adType)
                 BiddingWinner.PANGLE -> preloadPangleAdType(appContext, adType)
@@ -388,6 +418,27 @@ object PreloadController {
         } catch (e: Exception) {
             AdLogger.e("[$TAG] [TopOn] 定向预加载 ${adType.name} 失败", e)
         }
+    }
+
+    /**
+     * 检查生命周期状态
+     */
+    private fun checkLifecycle(context: Context): Boolean {
+        // 1. 如果是 Activity Context，检查 Activity 状态
+        if (context is Activity) {
+            val lifecycleResult = AdLifecycleGuard.checkImmediate(context)
+            if (lifecycleResult !is AdLifecycleGuard.CheckResult.Ready) {
+                AdLogger.w("[$TAG] 预加载取消: 页面状态不满足 ($lifecycleResult)")
+                return false
+            }
+        } else {
+            // 2. 如果是 Application Context，检查应用前后台状态
+            if (AppLifecycleManager.isBackground()) {
+                AdLogger.w("[$TAG] 预加载取消: 应用在后台")
+                return false
+            }
+        }
+        return true
     }
 
     /**
