@@ -11,25 +11,44 @@ import com.thinkup.core.api.AdError
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
+import net.corekit.core.ads.RevenueAdData
+import net.corekit.core.ads.RevenueAdManager
+import net.corekit.core.ads.RevenueInfo
+import net.corekit.core.ext.DataStoreIntDelegate
+import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
 import net.corekit.monetize.ads.log.AdLogger
+import net.corekit.monetize.ads.report.FpuController
+import net.corekit.monetize.ads.report.IpuController
+import net.corekit.monetize.ads.report.RpuController
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resume
+import kotlin.math.ceil
 
 /**
  * TopOn 开屏广告控制器
  */
 class TopOnSplashAdController private constructor() {
 
+    private var totalLoadCount by DataStoreIntDelegate("topon_sp_load_count", 0)
+    private var totalLoadSucCount by DataStoreIntDelegate("topon_sp_load_suc_count", 0)
+    private var totalLoadFailCount by DataStoreIntDelegate("topon_sp_load_fail_count", 0)
+    private var totalShowTriggerCount by DataStoreIntDelegate("topon_sp_show_trigger_count", 0)
+    private var totalShowCount by DataStoreIntDelegate("topon_sp_show_count", 0)
+    private var totalShowFailCount by DataStoreIntDelegate("topon_sp_show_fail_count", 0)
+    private var totalClickCount by DataStoreIntDelegate("topon_sp_click_count", 0)
+    private var totalCloseCount by DataStoreIntDelegate("topon_sp_close_count", 0)
+    private var currentPosition: String = "Splash"
+
     companion object {
         private const val TAG = "TopOnSplash"
-        
+
         @Volatile
         private var instance: TopOnSplashAdController? = null
-        
+
         fun getInstance(): TopOnSplashAdController {
             return instance ?: synchronized(this) {
                 instance ?: TopOnSplashAdController().also { instance = it }
@@ -46,24 +65,29 @@ class TopOnSplashAdController private constructor() {
     suspend fun preloadAd(context: Context): AdResult<Unit> {
         if (!AdIdHelper.hasTopOnSplashId()) {
             AdLogger.d("[$TAG] 开屏广告 ID 未配置，跳过加载")
-            return AdResult.Failure(AdException(AdException.ERROR_INVALID_REQUEST, "开屏广告 ID 未配置"))
+            return AdResult.Failure(
+                AdException(
+                    AdException.ERROR_INVALID_REQUEST,
+                    "开屏广告 ID 未配置"
+                )
+            )
         }
-        
+
         if (!TopOnManager.isReady()) {
             val initResult = TopOnManager.initialize(context)
             if (initResult is AdResult.Failure) return initResult
         }
-        
+
         if (hasValidCache()) {
             AdLogger.d("[$TAG] 已有有效缓存，跳过加载")
             return AdResult.Success(Unit)
         }
-        
+
         if (!isLoading.compareAndSet(false, true)) {
             AdLogger.d("[$TAG] 正在加载中，跳过重复请求")
             return AdResult.Success(Unit)
         }
-        
+
         return try {
             loadAd(context)
         } finally {
@@ -90,7 +114,12 @@ class TopOnSplashAdController private constructor() {
         }
 
         if (deferred == null) {
-            return AdResult.Failure(AdException(AdException.ERROR_NOT_LOADED, "没有正在进行的加载请求且无缓存"))
+            return AdResult.Failure(
+                AdException(
+                    AdException.ERROR_NOT_LOADED,
+                    "没有正在进行的加载请求且无缓存"
+                )
+            )
         }
 
         return try {
@@ -103,7 +132,10 @@ class TopOnSplashAdController private constructor() {
     }
 
     private suspend fun loadAd(context: Context): AdResult<Unit> {
-        // 创建新的 deferred
+        totalLoadCount++
+        val adUnitId = BuildConfig.TOPON_SPLASH_ID
+        reportAdData("ad_start_load", mapOf("ad_unit_name" to adUnitId, "number" to totalLoadCount))
+
         val deferred = CompletableDeferred<AdResult<Unit>>()
         synchronized(this) {
             loadingDeferred = deferred
@@ -111,91 +143,190 @@ class TopOnSplashAdController private constructor() {
 
         return try {
             suspendCancellableCoroutine { continuation ->
-                val adUnitId = BuildConfig.TOPON_SPLASH_ID
                 val startTime = System.currentTimeMillis()
-                
+
                 AdLogger.d("[$TAG] 开始加载开屏广告, ID: %s", adUnitId)
-                
+
                 val ad = TUSplashAd(context, adUnitId, object : TUSplashAdListener {
                     override fun onAdLoaded(isTimeout: Boolean) {
                         val loadTime = System.currentTimeMillis() - startTime
                         loadTimestamp = System.currentTimeMillis()
-                        AdLogger.d("[$TAG] ✅ 开屏广告加载成功, 耗时: %d ms, isTimeout: %s", loadTime, isTimeout)
-                        
-                        // 完成 deferred
+                        // 注意：TopOn 在加载时不提供 eCPM，需在展示回调 (onAdShow) 中获取
+                        AdLogger.d(
+                            "[$TAG] ✅ 开屏广告加载成功, 耗时: %d ms, isTimeout: %s",
+                            loadTime,
+                            isTimeout
+                        )
+
+                        totalLoadSucCount++
+                        reportAdData(
+                            "ad_loaded",
+                            mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadSucCount,
+                                "ad_source" to "TopOn",
+                                "pass_time" to ceil(loadTime / 1000.0).toInt()
+                            )
+                        )
+                        FpuController.onAdFill("SP")
+
                         deferred.complete(AdResult.Success(Unit))
                         synchronized(this@TopOnSplashAdController) {
-                            if (loadingDeferred == deferred) {
-                                loadingDeferred = null
-                            }
+                            if (loadingDeferred == deferred) loadingDeferred = null
                         }
-
                         if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
                     }
-    
+
                     override fun onAdLoadTimeout() {
                         val loadTime = System.currentTimeMillis() - startTime
                         AdLogger.e("[$TAG] ❌ 开屏广告加载超时, 耗时: %d ms", loadTime)
-                        
-                        // 失败 deferred
-                        deferred.complete(AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "加载超时")))
-                        synchronized(this@TopOnSplashAdController) {
-                            if (loadingDeferred == deferred) {
-                                loadingDeferred = null
-                            }
-                        }
 
-                        if (continuation.isActive) {
-                            continuation.resume(AdResult.Failure(AdException(AdException.ERROR_TIMEOUT, "加载超时")))
+                        totalLoadFailCount++
+                        reportAdData(
+                            "ad_load_fail",
+                            mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadFailCount,
+                                "ad_source" to "TopOn",
+                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                                "reason" to "加载超时"
+                            )
+                        )
+
+                        deferred.complete(
+                            AdResult.Failure(
+                                AdException(
+                                    AdException.ERROR_TIMEOUT,
+                                    "加载超时"
+                                )
+                            )
+                        )
+                        synchronized(this@TopOnSplashAdController) {
+                            if (loadingDeferred == deferred) loadingDeferred = null
                         }
+                        if (continuation.isActive) continuation.resume(
+                            AdResult.Failure(
+                                AdException(
+                                    AdException.ERROR_TIMEOUT,
+                                    "加载超时"
+                                )
+                            )
+                        )
                     }
-    
+
                     override fun onNoAdError(error: AdError?) {
                         val loadTime = System.currentTimeMillis() - startTime
-                        AdLogger.e("[$TAG] ❌ 开屏广告加载失败, 耗时: %d ms, error: %s", loadTime, error?.fullErrorInfo)
-                        
-                        // 失败 deferred
-                        deferred.complete(AdResult.Failure(AdException(
-                            parseErrorCode(error?.code),
-                            error?.desc ?: "加载失败"
-                        )))
-                        synchronized(this@TopOnSplashAdController) {
-                            if (loadingDeferred == deferred) {
-                                loadingDeferred = null
-                            }
-                        }
+                        AdLogger.e(
+                            "[$TAG] ❌ 开屏广告加载失败, 耗时: %d ms, error: %s",
+                            loadTime,
+                            error?.fullErrorInfo
+                        )
 
-                        if (continuation.isActive) {
-                            continuation.resume(AdResult.Failure(AdException(
-                                parseErrorCode(error?.code),
-                                error?.desc ?: "加载失败"
-                            )))
+                        totalLoadFailCount++
+                        reportAdData(
+                            "ad_load_fail",
+                            mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadFailCount,
+                                "ad_source" to "TopOn",
+                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                                "reason" to (error?.desc ?: "code=${error?.code}")
+                            )
+                        )
+
+                        deferred.complete(
+                            AdResult.Failure(
+                                AdException(
+                                    parseErrorCode(error?.code),
+                                    error?.desc ?: "加载失败"
+                                )
+                            )
+                        )
+                        synchronized(this@TopOnSplashAdController) {
+                            if (loadingDeferred == deferred) loadingDeferred = null
                         }
+                        if (continuation.isActive) continuation.resume(
+                            AdResult.Failure(
+                                AdException(
+                                    parseErrorCode(error?.code),
+                                    error?.desc ?: "加载失败"
+                                )
+                            )
+                        )
                     }
-    
+
                     override fun onAdShow(info: TUAdInfo?) {
                         AdLogger.d("[$TAG] 开屏广告已展示")
                         cachedEcpm = parseEcpm(info?.ecpmLevel)
+                        totalShowCount++
+                        val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
+                        reportAdData(
+                            "ad_impression",
+                            mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "position" to currentPosition,
+                                "number" to totalShowCount,
+                                "ad_source" to "TopOn",
+                                "value" to cachedEcpm,
+                                "currency" to "USD"
+                            )
+                        )
+                        RevenueAdManager.reportAdRevenue(
+                            RevenueAdData(
+                                revenue = RevenueInfo(
+                                    value = cachedEcpm,
+                                    currencyCode = "USD"
+                                ),
+                                adRevenueNetwork = "TopOn",
+                                adRevenueUnit = adUnitId,
+                                adRevenuePlacement = currentPosition,
+                                adFormat = "Splash"
+                            )
+                        )
+                        IpuController.onAdImpression("SP", ecpmMicros)
+                        RpuController.onAdRevenue("SP", ecpmMicros)
                     }
-    
+
                     override fun onAdClick(info: TUAdInfo?) {
                         AdLogger.d("[$TAG] 开屏广告被点击")
+                        totalClickCount++
+                        reportAdData(
+                            "ad_click",
+                            mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "position" to currentPosition,
+                                "number" to totalClickCount,
+                                "ad_source" to "TopOn",
+                                "value" to cachedEcpm,
+                                "currency" to "USD"
+                            )
+                        )
                     }
-    
+
                     override fun onAdDismiss(info: TUAdInfo?, extraInfo: TUSplashAdExtraInfo?) {
                         AdLogger.d("[$TAG] 开屏广告已关闭")
+                        totalCloseCount++
+                        reportAdData(
+                            "ad_close",
+                            mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "position" to currentPosition,
+                                "number" to totalCloseCount,
+                                "ad_source" to "TopOn",
+                                "value" to cachedEcpm,
+                                "currency" to "USD"
+                            )
+                        )
                     }
                 }, 5000)
-                
+
                 splashAd = ad
                 ad.loadAd()
             }
         } catch (e: Exception) {
             deferred.complete(AdResult.Failure(createAdException("加载异常", e)))
             synchronized(this) {
-                if (loadingDeferred == deferred) {
-                    loadingDeferred = null
-                }
+                if (loadingDeferred == deferred) loadingDeferred = null
             }
             throw e
         }
@@ -212,24 +343,52 @@ class TopOnSplashAdController private constructor() {
         onDismiss: (() -> Unit)? = null
     ): AdResult<Unit> = suspendCancellableCoroutine { continuation ->
         val ad = splashAd
-        
+        val adUnitId = BuildConfig.TOPON_SPLASH_ID
+
+        totalShowTriggerCount++
+        reportAdData(
+            "ad_position",
+            mapOf(
+                "ad_unit_name" to adUnitId,
+                "position" to currentPosition,
+                "number" to totalShowTriggerCount
+            )
+        )
+
         if (ad == null || !ad.isAdReady) {
             AdLogger.w("[$TAG] 没有可用的缓存广告")
+            totalShowFailCount++
+            reportAdData(
+                "ad_show_fail",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to currentPosition,
+                    "number" to totalShowFailCount,
+                    "reason" to "没有可用的缓存广告"
+                )
+            )
             onLoaded?.invoke(false)
-            if (continuation.isActive) continuation.resume(AdResult.Failure(AdException(AdException.ERROR_NOT_LOADED, "没有可用的缓存广告")))
+            if (continuation.isActive) continuation.resume(
+                AdResult.Failure(
+                    AdException(
+                        AdException.ERROR_NOT_LOADED,
+                        "没有可用的缓存广告"
+                    )
+                )
+            )
             return@suspendCancellableCoroutine
         }
-        
+
         onLoaded?.invoke(true)
         AdLogger.d("[$TAG] 准备展示开屏广告")
-        
+
         ad.setAdListener(object : TUSplashAdListener {
             override fun onAdLoaded(isTimeout: Boolean) {}
             override fun onAdLoadTimeout() {}
             override fun onNoAdError(error: AdError?) {}
             override fun onAdShow(info: TUAdInfo?) {}
             override fun onAdClick(info: TUAdInfo?) {}
-            
+
             override fun onAdDismiss(info: TUAdInfo?, extraInfo: TUSplashAdExtraInfo?) {
                 AdLogger.d("[$TAG] 开屏广告已关闭")
                 clearCache()
@@ -237,7 +396,7 @@ class TopOnSplashAdController private constructor() {
                 if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
             }
         })
-        
+
         ad.show(activity, container)
     }
 
@@ -265,5 +424,15 @@ class TopOnSplashAdController private constructor() {
         splashAd = null
         cachedEcpm = 0.0
         loadTimestamp = 0
+    }
+
+    private fun reportAdData(eventName: String, params: Map<String, Any>) {
+        val data = mutableMapOf<String, Any>("ad_platform" to "TopOn", "ad_format" to "Splash")
+        data.putAll(params)
+        if (eventName == "ad_impression") ReportDataManager.reportDataByName(
+            "ThinkingData",
+            eventName,
+            data
+        ) else ReportDataManager.reportData(eventName, data)
     }
 }
