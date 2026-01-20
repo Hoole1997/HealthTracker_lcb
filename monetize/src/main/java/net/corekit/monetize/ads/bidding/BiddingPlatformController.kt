@@ -215,23 +215,31 @@ object BiddingPlatformController {
     // ==================== 测试模式支持 ====================
 
     /**
-     * 测试模式 Mock eCPM 值 (USD)
-     * 用于在测试广告 ID 返回 0 eCPM 时提供模拟值以验证竞价逻辑
+     * 测试模式 Mock eCPM 随机范围 (USD)
+     * 用于在测试广告 ID 返回 0 eCPM 时提供随机模拟值以验证竞价逻辑
      */
-    private val TEST_MODE_MOCK_ECPM = mapOf(
-        BiddingWinner.ADMOB to 0.010,
-        BiddingWinner.PANGLE to 0.018,
-        BiddingWinner.TOPON to 0.019
-    )
+    private const val MOCK_ECPM_MIN = 0.005
+    private const val MOCK_ECPM_MAX = 0.050
+
+    private val random = java.util.Random()
+
+    /**
+     * 生成随机 Mock eCPM 值
+     * 
+     * @return 在 [MOCK_ECPM_MIN, MOCK_ECPM_MAX] 区间内的随机 eCPM 值
+     */
+    private fun generateRandomMockEcpm(): Double {
+        return MOCK_ECPM_MIN + random.nextDouble() * (MOCK_ECPM_MAX - MOCK_ECPM_MIN)
+    }
 
     /**
      * 获取用于竞价的有效 eCPM 值
      * 
-     * 测试模式下，如果真实值为 0，则返回 Mock 值以便验证竞价逻辑
+     * 测试模式下，如果真实值为 0，则返回随机 Mock 值以便验证竞价逻辑
      * 
      * @param platform 平台类型
      * @param realEcpm 从 SDK 获取的真实 eCPM 值
-     * @return 有效的 eCPM 值（真实值或 Mock 值）
+     * @return 有效的 eCPM 值（真实值或随机 Mock 值）
      */
     fun getEffectiveEcpm(platform: BiddingWinner, realEcpm: Double): Double {
         // 定义占位符阈值：低于此值的 eCPM 被视为占位符，需要在测试模式下注入 Mock
@@ -247,9 +255,9 @@ object BiddingPlatformController {
             return realEcpm
         }
         
-        // 测试模式：注入 Mock 值（优先使用自定义值）
-        val mockEcpm = customMockEcpm[platform] ?: TEST_MODE_MOCK_ECPM[platform] ?: 0.0
-        AdLogger.d("[$TAG] [TestMode] 注入 Mock eCPM: %s = %.6f USD (真实值: %.6f)", 
+        // 测试模式：优先使用自定义 Mock 值，否则生成随机值
+        val mockEcpm = customMockEcpm[platform] ?: generateRandomMockEcpm()
+        AdLogger.d("[$TAG] [TestMode] 注入随机 Mock eCPM: %s = %.6f USD (真实值: %.6f)", 
             platform.name, mockEcpm, realEcpm)
         return mockEcpm
     }
@@ -257,7 +265,7 @@ object BiddingPlatformController {
     /**
      * 判断是否处于测试模式
      * 
-     * 测试模式下会在真实 eCPM 为 0 时注入 Mock 值
+     * 测试模式下会在真实 eCPM 为 0 时注入随机 Mock 值
      * 支持调试面板强制开关覆盖
      */
     fun isTestMode(): Boolean {
@@ -268,6 +276,7 @@ object BiddingPlatformController {
      * 更新 Mock eCPM 值（用于测试不同竞价场景）
      * 
      * 注意：此方法仅在测试模式下有效
+     * 设置后该平台将使用固定值而非随机值，直到调用 clearMockEcpm
      */
     private val customMockEcpm = mutableMapOf<BiddingWinner, Double>()
     
@@ -277,11 +286,12 @@ object BiddingPlatformController {
             return
         }
         customMockEcpm[platform] = ecpm
-        AdLogger.d("[$TAG] [TestMode] 设置 %s Mock eCPM = %.6f USD", platform.name, ecpm)
+        AdLogger.d("[$TAG] [TestMode] 设置 %s 固定 Mock eCPM = %.6f USD (覆盖随机)", platform.name, ecpm)
     }
     
     fun getMockEcpm(platform: BiddingWinner): Double {
-        return customMockEcpm[platform] ?: TEST_MODE_MOCK_ECPM[platform] ?: 0.0
+        // 如果有自定义值则返回，否则生成随机值
+        return customMockEcpm[platform] ?: generateRandomMockEcpm()
     }
 
     // ==================== 调试面板支持 ====================
