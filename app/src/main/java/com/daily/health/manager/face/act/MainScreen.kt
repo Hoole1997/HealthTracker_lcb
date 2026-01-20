@@ -221,8 +221,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             }
 
             ivRemind.clickWithDuration {
-//                startActivity<AlarmManageScreen>()
-                FullScreenNativeAdTestEntry.showAuto(this@MainScreen, lifecycleScope, "test_position")
+                startActivity<AlarmManageScreen>()
             }
 
             setupBottomNavBar()
