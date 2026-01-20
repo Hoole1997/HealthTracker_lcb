@@ -16,6 +16,7 @@ import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.bidding.BiddingPlatformController
 import net.corekit.monetize.ads.bidding.RewardTwoLayerPreloadManager
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.config.BiddingConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
@@ -45,7 +46,7 @@ object RewardBiddingManager {
 
     suspend fun loadWithBidding(context: Context): BidLoadResult = coroutineScope {
         val startTime = System.currentTimeMillis()
-        val timeoutMs = AdConfigManager.getRewardBiddingTimeoutMs()
+        val timeoutMs = BiddingConfigManager.getBiddingTimeoutMs("reward")
 
         AdLogger.d("[%s] ========== 开始激励三方竞价加载 ==========", TAG)
         AdLogger.d("[%s] 超时时间: %d ms", TAG, timeoutMs)
@@ -110,7 +111,7 @@ object RewardBiddingManager {
             }
         }
 
-        val results = withTimeoutOrNull(timeoutMs) {
+        val results = withTimeoutOrNull<Triple<Boolean, Boolean, Boolean>>(timeoutMs) {
             val r = rewardedDeferred.await()
             val ri = rewardedInterstitialDeferred.await()
             val i = interstitialDeferred.await()
@@ -119,9 +120,7 @@ object RewardBiddingManager {
 
         val loadTimeMs = System.currentTimeMillis() - startTime
 
-        val (rewardedLoaded, rewardedInterstitialLoaded, interstitialLoaded) = if (results != null) {
-            results
-        } else {
+        val (rewardedLoaded, rewardedInterstitialLoaded, interstitialLoaded) = results ?: run {
             AdLogger.w("[%s] 竞价加载超时（%d ms），检查当前缓存状态", TAG, loadTimeMs)
             rewardedDeferred.cancel()
             rewardedInterstitialDeferred.cancel()

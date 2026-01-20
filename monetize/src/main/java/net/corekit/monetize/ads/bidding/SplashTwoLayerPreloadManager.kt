@@ -7,6 +7,7 @@ import kotlinx.coroutines.*
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.AdsManager
+import net.corekit.monetize.ads.config.BiddingConfigManager
 import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.pangle.PangleAppOpenAdController
@@ -42,10 +43,8 @@ object SplashTwoLayerPreloadManager {
         
         AdLogger.d("[$TAG] ============ 开始两层竞价 ============")
         
-        // 获取当前渠道的竞价配置超时时间 (单位：秒 -> 毫秒)
-        val config = BiddingPlatformController.getCurrentChannelConfig()
-        val timeoutSeconds = config?.biddingTimeoutSeconds ?: 10 // 默认为 10秒
-        val timeoutMillis = timeoutSeconds * 1000L
+        // 获取开屏场景的竞价超时时间
+        val timeoutMillis = BiddingConfigManager.getBiddingTimeoutMs("splash")
 
         // 并行执行两层竞价（优化：避免串行等待导致耗时翻倍）
         val splashDeferred = async { AppOpenPreloadManager.performBidding(context, timeoutMillis) }

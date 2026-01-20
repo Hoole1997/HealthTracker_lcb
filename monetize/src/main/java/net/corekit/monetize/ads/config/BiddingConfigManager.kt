@@ -135,10 +135,25 @@ object BiddingConfigManager {
     }
 
     /**
-     * 获取竞价超时时间（毫秒）
+     * 获取指定场景的竞价超时时间（毫秒）
+     * 
+     * 逻辑：优先取场景配置中的超时，其次取渠道全局超时，最后使用 10s 兜底
+     * 
+     * @param scene 场景标识（如 "splash", "reward"），为 null 则仅检查全局配置
      */
-    fun getBiddingTimeoutMs(): Long {
-        return (getCurrentChannelConfig()?.biddingTimeoutSeconds ?: 10) * 1000L
+    fun getBiddingTimeoutMs(scene: String? = null): Long {
+        val channelConfig = getCurrentChannelConfig() ?: return 10000L
+        
+        // 1. 优先取场景独立超时
+        if (scene != null) {
+            val sceneTimeout = channelConfig.sceneConfig?.get(scene)?.timeoutSeconds
+            if (sceneTimeout != null) {
+                return sceneTimeout * 1000L
+            }
+        }
+        
+        // 2. 取渠道全局超时
+        return (channelConfig.biddingTimeoutSeconds) * 1000L
     }
 
     // ==================== 平台配置 ====================
@@ -282,15 +297,17 @@ object BiddingConfigManager {
         val platformsConfig = BiddingConfigData.PlatformsConfig(admobConfig, pangleConfig, toponConfig)
         
         val defaultSceneConfig = mapOf(
-            "splash_scene" to BiddingConfigData.SceneConfig(
+            "splash" to BiddingConfigData.SceneConfig(
                 biddingMode = "two_layer",
                 internalBiddingTypes = listOf("splash", "interstitial"),
+                timeoutSeconds = 5, // 开屏场景默认 5s 快速响应
                 fallbackPlatform = "admob",
                 fallbackAdType = "splash"
             ),
-            "reward_scene" to BiddingConfigData.SceneConfig(
+            "reward" to BiddingConfigData.SceneConfig(
                 biddingMode = "two_layer",
                 internalBiddingTypes = listOf("rewarded", "rewarded_interstitial", "interstitial"),
+                timeoutSeconds = 10,
                 fallbackPlatform = "admob",
                 fallbackAdType = "rewarded"
             )

@@ -65,7 +65,7 @@ object SplashBiddingManager {
      */
     suspend fun loadWithBidding(context: Context): BidLoadResult = coroutineScope {
         val startTime = System.currentTimeMillis()
-        val timeoutMs = AdConfigManager.getSplashTimeout() * 1000L
+        val timeoutMs = BiddingConfigManager.getBiddingTimeoutMs("splash")
 
         AdLogger.d("[%s] ========== 开始竞价加载 ==========", TAG)
         AdLogger.d("[%s] 超时时间: %d 秒", TAG, timeoutMs / 1000)

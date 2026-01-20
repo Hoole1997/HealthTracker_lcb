@@ -95,6 +95,9 @@ data class BiddingConfigData(
         /** 平台内竞价的广告类型列表 */
         @SerializedName("internal_bidding_types")
         val internalBiddingTypes: List<String>? = null,
+        /** 竞价超时时间（秒），若为 null 则使用全局超时 */
+        @SerializedName("timeout_seconds")
+        val timeoutSeconds: Int? = null,
         /** 回退平台 */
         @SerializedName("fallback_platform")
         val fallbackPlatform: String = "admob",

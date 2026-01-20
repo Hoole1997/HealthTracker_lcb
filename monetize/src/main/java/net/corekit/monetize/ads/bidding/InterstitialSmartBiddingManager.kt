@@ -58,10 +58,8 @@ object InterstitialSmartBiddingManager {
     ): AdResult<Unit> {
         AdLogger.d("[$TAG] ========== 开始插页广告多平台竞价 ==========")
 
-        // 获取超时配置
-        val config = BiddingPlatformController.getCurrentChannelConfig()
-        val timeoutSeconds = config?.biddingTimeoutSeconds ?: 10
-        val timeoutMillis = timeoutSeconds * 1000L
+        // 获取插页广告场景的竞价超时时间
+        val timeoutMillis = BiddingConfigManager.getBiddingTimeoutMs("interstitial")
 
         // 1. 并行预加载
         InterstitialPreloadManager.preloadAll(activity)
