@@ -1,5 +1,6 @@
 package net.corekit.monetize.ads.bidding
 
+import com.healthtracker.framework.BuildState
 import net.corekit.core.controller.ChannelUserController
 import net.corekit.monetize.ads.config.BiddingConfigData
 import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
@@ -70,42 +71,59 @@ object BiddingPlatformController {
     }
 
     /**
-     * 判断平台的某广告类型是否参与预加载（不检查频控）
+     * 判断平台的某广告类型是否参与预加载（不检查频控和竞价配置）
      * 
-     * 用于预加载阶段，允许广告预先缓存好，不受频控限制
-     * 频控检查在展示/竞价阶段进行
+     * 用于预加载阶段，允许广告预先缓存好，不受频控限制。
+     * 即使 participate_bidding=0，也允许预加载（可作为兜底广告）。
+     * 
+     * 判断条件：
+     * 1. 平台已启用（platforms.xxx.enabled = 1）
+     * 2. 有有效的广告 ID
+     * 3. 广告类型已启用（ad_types.xxx.enabled = 1）
+     * 
+     * 注意：如果配置缺失，默认不参与（安全优先）
      */
     fun shouldParticipateInPreload(platform: BiddingWinner, adType: String): Boolean {
         // 1. 检查平台是否启用
         if (!isPlatformEnabled(platform)) {
+            AdLogger.d("[$TAG] %s 平台未启用，跳过预加载", platform.name)
             return false
         }
         
         // 2. 检查是否有有效的广告 ID（空 ID 不参与预加载）
         if (!AdIdHelper.hasValidAdId(platform, adType)) {
+            AdLogger.d("[$TAG] %s %s 无有效广告ID，跳过预加载", platform.name, adType)
             return false
         }
         
-        // 3. 检查配置中是否允许参与竞价
+        // 3. 检查广告类型配置
         val platformConfig = getPlatformConfig(platform)
         val adTypeConfig = platformConfig?.adTypes?.get(adType)
         
-        // 如果没有配置，默认参与
+        // 如果没有配置，默认不参与（安全优先，避免未配置的广告类型意外加载）
         if (adTypeConfig == null) {
-            return true
+            AdLogger.d("[$TAG] %s %s 无广告类型配置，跳过预加载", platform.name, adType)
+            return false
         }
         
-        return adTypeConfig.enabled == 1 && adTypeConfig.participateBidding == 1
+        // 4. 检查广告类型是否启用（不检查 participate_bidding，允许预加载作为兜底）
+        if (adTypeConfig.enabled != 1) {
+            AdLogger.d("[$TAG] %s %s 广告类型未启用 (enabled=0)，跳过预加载", platform.name, adType)
+            return false
+        }
+        
+        return true
     }
 
     /**
-     * 判断平台的某广告类型是否参与竞价（包含频控检查）
+     * 判断平台的某广告类型是否参与竞价（包含竞价配置和频控检查）
      * 
      * 需要满足以下条件：
-     * 1. 平台已启用
+     * 1. 平台已启用（platforms.xxx.enabled = 1）
      * 2. 该广告类型已配置有效的广告 ID
-     * 3. 配置中该广告类型允许参与竞价
-     * 4. 平台级频控允许
+     * 3. 广告类型已启用（ad_types.xxx.enabled = 1）
+     * 4. 广告类型参与竞价（ad_types.xxx.participate_bidding = 1）
+     * 5. 平台级频控允许
      */
     fun shouldParticipateInBidding(platform: BiddingWinner, adType: String): Boolean {
         // 1-3. 基础检查（复用预加载检查）
@@ -113,7 +131,15 @@ object BiddingPlatformController {
             return false
         }
         
-        // 4. 检查平台级频控（仅在竞价时检查，预加载时不检查）
+        // 4. 检查是否参与竞价
+        val platformConfig = getPlatformConfig(platform)
+        val adTypeConfig = platformConfig?.adTypes?.get(adType)
+        if (adTypeConfig?.participateBidding != 1) {
+            AdLogger.d("[$TAG] %s %s 不参与竞价 (participate_bidding=0)，跳过竞价", platform.name, adType)
+            return false
+        }
+        
+        // 5. 检查平台级频控（仅在竞价时检查，预加载时不检查）
         val biddingPlatform = platform.toBiddingPlatform()
         val biddingAdType = BiddingAdType.fromConfigKey(adType)
         if (biddingPlatform != null && biddingAdType != null) {
@@ -269,7 +295,7 @@ object BiddingPlatformController {
      * 支持调试面板强制开关覆盖
      */
     fun isTestMode(): Boolean {
-        return forceTestModeEnabled ?: net.corekit.monetize.BuildConfig.DEBUG
+        return forceTestModeEnabled ?: BuildState.debug
     }
 
     /**

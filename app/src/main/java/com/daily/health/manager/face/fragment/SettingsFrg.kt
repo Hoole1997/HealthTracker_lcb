@@ -49,6 +49,7 @@ import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
+import net.corekit.monetize.ui.debug.AdDebugPanel
 
 class SettingsFrg : BaseMVVMFragment<BaseViewModel, HtFragmentSettingsBinding>() {
 
@@ -119,6 +120,10 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, HtFragmentSettingsBinding>()
             SettingsAction.TermsOfService -> {
                 MobileAds.openAdInspector { }
             }
+
+            SettingsAction.AdDebugPanel -> {
+                AdDebugPanel.showDebugDialog(requireActivity())
+            }
         }
     }
 }
@@ -132,7 +137,8 @@ private enum class SettingsAction {
     Feedback,
     Disclaimers,
     PrivacyPolicy,
-    TermsOfService
+    TermsOfService,
+    AdDebugPanel
 }
 
 @Immutable
@@ -169,6 +175,15 @@ private fun SettingsScreen(
         SettingsItemUi(SettingsAction.PrivacyPolicy, R.string.ht_privacy_policy, R.drawable.ht_ic_setting_privacy, isLegal = true),
 //        SettingsItemUi(SettingsAction.TermsOfService, R.string.ht_terms_of_service, R.drawable.ht_ic_setting_terms, isLegal = true)
     )
+
+    // 开发者工具（仅 DEBUG 版本显示）
+    val developerItems = if (BuildConfig.DEBUG) {
+        listOf(
+            SettingsItemUi(SettingsAction.AdDebugPanel, R.string.ht_ad_debug_panel, R.drawable.ht_ic_setting)
+        )
+    } else {
+        emptyList()
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -215,6 +230,19 @@ private fun SettingsScreen(
                 chevronTint = chevronTint,
                 onAction = onAction
             )
+        }
+        // 开发者工具 section（仅 DEBUG 版本显示）
+        if (developerItems.isNotEmpty()) {
+            item {
+                SettingsSection(
+                    titleRes = R.string.ht_settings_section_developer,
+                    items = developerItems,
+                    iconTintCore = iconTintCore,
+                    iconTintLegal = iconTintLegal,
+                    chevronTint = chevronTint,
+                    onAction = onAction
+                )
+            }
         }
         item {
             Spacer(modifier = Modifier.height(8.dp))

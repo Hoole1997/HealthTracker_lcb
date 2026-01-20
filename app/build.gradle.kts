@@ -37,8 +37,8 @@ android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        versionCode = 5
-        versionName = "1.0.5"
+        versionCode = 6
+        versionName = "1.0.6"
         buildConfig {
             boolean("showLog", showLog)
         }
@@ -264,7 +264,7 @@ class BuildConfigFieldsBuilder {
 val enableActivityGuard = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
 
 actGuard {
-    isEnable = enableActivityGuard
+    isEnable = false
     whiteClassList = hashSetOf(
         "androidx.core.content.FileProvider",
         "org.koin.*",

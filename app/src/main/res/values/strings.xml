@@ -1358,6 +1358,8 @@ healthcare provider or medical institution.</string>
     <string name="ht_settings_section_preferences">Preferences</string>
     <string name="ht_settings_section_help_and_feedback">Help &amp; Feedback</string>
     <string name="ht_settings_section_legal_and_policies">Legal &amp; Policies</string>
+    <string name="ht_settings_section_developer">Developer Tools</string>
+    <string name="ht_ad_debug_panel">Ad Debug Panel</string>
     <string name="ht_settings_version_format">Version %1$s</string>
     <string name="ht_bill_ad_loading">AD loading…</string>
 

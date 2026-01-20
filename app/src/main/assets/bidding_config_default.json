@@ -153,19 +153,122 @@
         "bidding_enabled": 1,
         "two_layer_bidding_enabled": 1,
         "bidding_timeout_seconds": 10,
-        "platforms": {
-            "admob": {
-                "enabled": 1,
-                "priority": 1
+      "platforms": {
+        "admob": {
+          "enabled": 1,
+          "priority": 1,
+          "ad_types": {
+            "splash": {
+              "enabled": 1,
+              "participate_bidding": 1
             },
-            "pangle": {
-                "enabled": 1,
-                "priority": 2
+            "interstitial": {
+              "enabled": 1,
+              "participate_bidding": 1
             },
-            "topon": {
-                "enabled": 1,
-                "priority": 3
+            "rewarded": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "rewarded_interstitial": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "native": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "full_native": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "banner": {
+              "enabled": 1,
+              "participate_bidding": 1
             }
+          }
+        },
+        "pangle": {
+          "enabled": 1,
+          "priority": 2,
+          "ad_types": {
+            "splash": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "interstitial": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "rewarded": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "native": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "full_native": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "banner": {
+              "enabled": 1,
+              "participate_bidding": 1
+            }
+          }
+        },
+        "topon": {
+          "enabled": 1,
+          "priority": 3,
+          "ad_types": {
+            "splash": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "interstitial": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "rewarded": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "native": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "full_native": {
+              "enabled": 1,
+              "participate_bidding": 1
+            },
+            "banner": {
+              "enabled": 1,
+              "participate_bidding": 1
+            }
+          }
         }
+      },
+      "scene_config": {
+        "splash": {
+          "bidding_mode": "two_layer",
+          "internal_bidding_types": [
+            "splash",
+            "interstitial"
+          ],
+          "fallback_platform": "admob",
+          "fallback_ad_type": "splash"
+        },
+        "reward": {
+          "bidding_mode": "two_layer",
+          "internal_bidding_types": [
+            "rewarded",
+            "rewarded_interstitial",
+            "interstitial"
+          ],
+          "fallback_platform": "admob",
+          "fallback_ad_type": "rewarded"
+        }
+      }
     }
 }
