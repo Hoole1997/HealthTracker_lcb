@@ -32,7 +32,13 @@ object RewardTwoLayerPreloadManager {
 
     suspend fun preloadAll(context: Context) = coroutineScope {
         val controller = BiddingPlatformController
-        AdLogger.d("[$TAG] 开始两层预加载")
+        
+        // 获取激励场景的竞价模式
+        val biddingMode = BiddingConfigManager.getSceneBiddingMode("reward")
+        val isTwoLayer = biddingMode == "two_layer"
+        val modeCn = if (isTwoLayer) "两层" else "单层"
+        
+        AdLogger.d("[$TAG] 开始${modeCn}预加载")
         
         val jobs = mutableListOf<Deferred<Unit>>()
         
@@ -48,10 +54,12 @@ object RewardTwoLayerPreloadManager {
             }
         }
         
-        jobs += async { InterstitialPreloadManager.preloadAll(context) }
+        if (isTwoLayer) {
+            jobs += async { InterstitialPreloadManager.preloadAll(context) }
+        }
         
         jobs.awaitAll()
-        AdLogger.d("[$TAG] 两层预加载完成")
+        AdLogger.d("[$TAG] ${modeCn}预加载完成 (Mode: $biddingMode)")
     }
 
     /**
@@ -95,20 +103,31 @@ object RewardTwoLayerPreloadManager {
         val startTime = System.currentTimeMillis()
         val platformResults = mutableListOf<PlatformBidResult>()
         
+        // A simple way to check the bidding mode
+        val biddingMode = BiddingConfigManager.getSceneBiddingMode("reward")
+        val isTwoLayer = biddingMode == "two_layer"
+        AdLogger.d("[$TAG] 竞价模式: $biddingMode")
+        
         // 收集日志条目
         val layer1Entries = mutableListOf<BiddingLogger.BiddingEntry>()
         val layer2Entries = mutableListOf<BiddingLogger.BiddingEntry>()
         
         // 并行执行各层竞价
         val rewardedDeferred = async { collectRewardedBidding(context, controller, layer1Entries) }
-        val interstitialDeferred = async { collectInterstitialBidding(context, controller, layer2Entries) }
+        
+        // 仅在 Two-Layer 模式下请求插屏
+        val interstitialDeferred = if (isTwoLayer) {
+            async { collectInterstitialBidding(context, controller, layer2Entries) }
+        } else {
+            null
+        }
         
         // AdMob 插页激励广告（归入第一层激励类）
         val rewardedInterstitialResult = collectRewardedInterstitial(context, controller, layer1Entries)
         
         // 等待异步竞价结果
         val rewardedWinner = rewardedDeferred.await()
-        val interstitialWinner = interstitialDeferred.await()
+        val interstitialWinner = interstitialDeferred?.await()
         
         rewardedWinner?.let { platformResults.add(it) }
         rewardedInterstitialResult?.let { platformResults.add(it) }

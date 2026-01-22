@@ -3,6 +3,7 @@ package net.corekit.monetize.ads.config
 import android.annotation.SuppressLint
 import android.content.Context
 import com.google.gson.Gson
+import com.healthtracker.framework.BuildState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -10,7 +11,6 @@ import net.corekit.core.controller.ChannelUserController
 import net.corekit.core.ext.DataStoreStringDelegate
 import net.corekit.core.utils.ConfigRemoteManager
 import net.corekit.monetize.ads.bidding.BiddingPlatformController
-import net.corekit.monetize.ads.bidding.BiddingWinner
 import net.corekit.monetize.ads.log.AdLogger
 
 /**
@@ -102,8 +102,10 @@ object BiddingConfigManager {
                         configData = remoteConfig
                         biddingConfigJsonFromRemote = remoteJson
                         BiddingPlatformController.setConfigData(configData)
-                        AdLogger.d("[$TAG] 远程竞价配置更新成功")
-                        logCurrentConfig()
+                        if(BuildState.debug){
+                            AdLogger.d("[$TAG] 远程竞价配置更新成功")
+                            logCurrentConfig()
+                        }
                     } else {
                         AdLogger.w("[$TAG] 远程竞价配置格式无效")
                     }
@@ -156,63 +158,15 @@ object BiddingConfigManager {
         return (channelConfig.biddingTimeoutSeconds) * 1000L
     }
 
-    // ==================== 平台配置 ====================
-
     /**
-     * 判断平台是否启用
-     */
-    fun isPlatformEnabled(platform: BiddingWinner): Boolean {
-        return BiddingPlatformController.isPlatformEnabled(platform)
-    }
-
-    /**
-     * 判断平台的某广告类型是否启用
-     */
-    fun isAdTypeEnabled(platform: BiddingWinner, adType: String): Boolean {
-        return BiddingPlatformController.isAdTypeEnabled(platform, adType)
-    }
-
-    /**
-     * 判断平台的某广告类型是否参与竞价
-     */
-    fun shouldParticipateInBidding(platform: BiddingWinner, adType: String): Boolean {
-        return BiddingPlatformController.shouldParticipateInBidding(platform, adType)
-    }
-
-    /**
-     * 获取平台优先级（eCPM 相同时使用）
-     */
-    fun getPlatformPriority(platform: BiddingWinner): Int {
-        return BiddingPlatformController.getPlatformPriority(platform)
-    }
-
-    // ==================== 场景配置 ====================
-
-    /**
-     * 获取场景的竞价模式
+     * 获取指定场景的竞价模式
+     *
+     * @param scene 场景标识（如 "splash", "reward"）
+     * @return 竞价模式 "two_layer" 或 "single"
      */
     fun getSceneBiddingMode(scene: String): String {
-        return getCurrentChannelConfig()?.sceneConfig?.get(scene)?.biddingMode ?: "two_layer"
-    }
-
-    /**
-     * 获取场景的平台内竞价广告类型列表
-     */
-    fun getInternalBiddingTypes(scene: String): List<String> {
-        return getCurrentChannelConfig()?.sceneConfig?.get(scene)?.internalBiddingTypes 
-            ?: listOf("splash", "interstitial")
-    }
-
-    /**
-     * 获取场景的回退配置
-     * @return Pair<回退平台, 回退广告类型>
-     */
-    fun getFallbackConfig(scene: String): Pair<String, String> {
-        val sceneConfig = getCurrentChannelConfig()?.sceneConfig?.get(scene)
-        return Pair(
-            sceneConfig?.fallbackPlatform ?: "admob",
-            sceneConfig?.fallbackAdType ?: "splash"
-        )
+        val channelConfig = getCurrentChannelConfig()
+        return channelConfig?.sceneConfig?.get(scene)?.biddingMode ?: "two_layer"
     }
 
     // ==================== 平台级频控 ====================
@@ -347,15 +301,23 @@ object BiddingConfigManager {
                 val isBidding = BiddingPlatformController.shouldParticipateInBidding(platform, adType)
                 
                 // 获取频控信息
-                val freqConfig = getPlatformFrequencyConfig(
-                    when(platform) {
-                        net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB -> net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB
-                        net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE -> net.corekit.monetize.ads.bidding.BiddingPlatform.PANGLE
-                        net.corekit.monetize.ads.bidding.BiddingWinner.TOPON -> net.corekit.monetize.ads.bidding.BiddingPlatform.TOPON
-                    }, 
-                    adType
-                )
-                val freqStr = freqConfig?.let { "Daily:${it.maxDailyShow}" }
+                val biddingPlatform = when(platform) {
+                    net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB -> net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB
+                    net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE -> net.corekit.monetize.ads.bidding.BiddingPlatform.PANGLE
+                    net.corekit.monetize.ads.bidding.BiddingWinner.TOPON -> net.corekit.monetize.ads.bidding.BiddingPlatform.TOPON
+                }
+                val biddingAdType = try {
+                    net.corekit.monetize.ads.bidding.BiddingAdType.valueOf(adType.uppercase())
+                } catch (e: Exception) { null }
+                
+                val freqConfig = getPlatformFrequencyConfig(biddingPlatform, adType)
+                val freqStr = if (freqConfig != null && biddingAdType != null) {
+                    val currentShow = net.corekit.monetize.ads.frequency.PlatformFrequencyManager
+                        .getDailyShowCount(biddingPlatform, biddingAdType)
+                    "Daily:$currentShow/${freqConfig.maxDailyShow}"
+                } else {
+                    freqConfig?.let { "Daily:-/${it.maxDailyShow}" }
+                }
                 
                 entries.add(net.corekit.monetize.ads.log.BiddingLogger.ConfigEntry(
                     platform = platform.name,

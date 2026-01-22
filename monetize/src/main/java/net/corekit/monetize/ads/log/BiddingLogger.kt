@@ -405,15 +405,15 @@ object BiddingLogger {
         Log.d(TAG, "[$tag] ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗")
         Log.d(TAG, "[$tag] ║                             ⚙️ 广告配置总览 ($configSource)                                        ║")
         Log.d(TAG, "[$tag] ╠══════════════════════════════════════════════════════════════════════════════════════════════════╣")
-        Log.d(TAG, "[$tag] ║ 平台         │ 广告类型       │ 启用     │ 参与竞价 │ 频控限制          │ 配置来源")
-        Log.d(TAG, "[$tag] ║──────────────┼────────────────┼──────────┼──────────┼───────────────────┼──────────────────────────")
+        Log.d(TAG, "[$tag] ║ 平台          │ 广告类型                  │ 启用       │ 参与竞价   │ 频控限制            │ 配置来源")
+        Log.d(TAG, "[$tag] ║──────────────┼──────────────────────────┼───────────┼───────────┼───────────────────┼──────────────────────────")
         
         entries.forEach { entry ->
             val enabledStr = if (entry.enabled) "✅" else "❌"
             val biddingStr = if (entry.isBidding) "✅" else "❌"
             val freqStr = entry.frequencyLimit ?: "-"
             
-            Log.d(TAG, "[$tag] ║ ${entry.platform.padEnd(12)} │ ${entry.adType.padEnd(14)} │ ${enabledStr.padEnd(8)} │ ${biddingStr.padEnd(8)} │ ${freqStr.padEnd(17)} │ ${entry.configSource}")
+            Log.d(TAG, "[$tag] ║ ${entry.platform.padEnd(12)} │ ${entry.adType.padEnd(24)} │ ${enabledStr.padEnd(8)} │ ${biddingStr.padEnd(8)} │ ${freqStr.padEnd(17)} │ ${entry.configSource}")
         }
         Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝")
     }

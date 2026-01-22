@@ -62,9 +62,22 @@ object ConfigRemoteManager {
                     "New config fetched and activated successfully".logd(TAG)
                     try {
                         if(BuildState.debug){
-                            for ((k, v) in firebaseRemoteConfig.all) {
-                                "$k:${v?.asString()}".logd(TAG)
+                            val json = org.json.JSONObject()
+                            firebaseRemoteConfig.all.forEach { (key, value) ->
+                                val stringValue = value.asString()
+                                try {
+                                    if (stringValue.trim().startsWith("{")) {
+                                        json.put(key, org.json.JSONObject(stringValue))
+                                    } else if (stringValue.trim().startsWith("[")) {
+                                        json.put(key, org.json.JSONArray(stringValue))
+                                    } else {
+                                        json.put(key, stringValue)
+                                    }
+                                } catch (e: Exception) {
+                                    json.put(key, stringValue)
+                                }
                             }
+                            "Remote Config Values:\n${json.toString(2)}".logd(TAG)
                         }
                     } catch (_: Throwable) {
                     }

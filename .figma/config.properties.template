@@ -1,0 +1,15 @@
+# Figma Personal Access Token Configuration
+# Get your token from: https://www.figma.com/developers/api#access-tokens
+#
+# Instructions:
+# 1. Copy this file to config.properties (same directory)
+# 2. Replace YOUR_FIGMA_PERSONAL_ACCESS_TOKEN with your actual token
+# 3. Optionally add your Figma project URLs for quick reference
+# 4. Never commit config.properties to git (already in .gitignore)
+
+figma.token=YOUR_FIGMA_PERSONAL_ACCESS_TOKEN
+
+# Optional: Preset Figma project URLs (for quick reference)
+# figma.project.main=https://www.figma.com/file/ABC123/HealthTracker-Main
+# figma.project.components=https://www.figma.com/file/DEF456/HealthTracker-Components
+# figma.project.icons=https://www.figma.com/file/GHI789/HealthTracker-Icons

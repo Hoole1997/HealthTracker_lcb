@@ -26,33 +26,53 @@ object SplashTwoLayerPreloadManager {
     private const val SHOW_TIMEOUT_MS = 60000L
 
     suspend fun preloadAll(context: Context) = coroutineScope {
-        AdLogger.d("[$TAG] 开始两层预加载")
+        // 根据竞价模式决定预加载内容
+        val biddingMode = BiddingConfigManager.getSceneBiddingMode("splash")
+        val isTwoLayer = biddingMode == "two_layer"
+        val modeCn = if (isTwoLayer) "两层" else "单层"
+
+        AdLogger.d("[$TAG] 开始${modeCn}预加载")
         
         val jobs = mutableListOf<Deferred<Unit>>()
         
         jobs += async { AppOpenPreloadManager.preloadAll(context) }
-        jobs += async { InterstitialPreloadManager.preloadAll(context) }
+        
+        if (isTwoLayer) {
+            jobs += async { InterstitialPreloadManager.preloadAll(context) }
+        }
         
         jobs.awaitAll()
-        AdLogger.d("[$TAG] 两层预加载完成")
+        AdLogger.d("[$TAG] ${modeCn}预加载完成 (Mode: $biddingMode)")
     }
 
     suspend fun performTwoLayerBidding(context: Context): FinalBidResult = coroutineScope {
         val startTime = System.currentTimeMillis()
         val platformResults = mutableListOf<PlatformBidResult>()
         
-        AdLogger.d("[$TAG] ============ 开始两层竞价 ============")
-        
         // 获取开屏场景的竞价超时时间
         val timeoutMillis = BiddingConfigManager.getBiddingTimeoutMs("splash")
+        
+        // 获取开屏场景的竞价模式
+        val biddingMode = BiddingConfigManager.getSceneBiddingMode("splash")
+        val isTwoLayer = biddingMode == "two_layer"
+        val modeCn = if (isTwoLayer) "两层" else "单层"
+        
+        AdLogger.d("[$TAG] ============ 开始${modeCn}竞价 ============")
+        AdLogger.d("[$TAG] 竞价模式: $biddingMode")
 
-        // 并行执行两层竞价（优化：避免串行等待导致耗时翻倍）
+        // 并行执行竞价（优化：避免串行等待导致耗时翻倍）
         val splashDeferred = async { AppOpenPreloadManager.performBidding(context, timeoutMillis) }
-        val interstitialDeferred = async { InterstitialPreloadManager.performBidding(context, timeoutMillis) }
+        
+        // 仅在 Two-Layer 模式下请求插屏
+        val interstitialDeferred = if (isTwoLayer) {
+            async { InterstitialPreloadManager.performBidding(context, timeoutMillis) }
+        } else {
+            null
+        }
         
         // 等待两个竞价结果
         val splashWinner = splashDeferred.await()
-        val interstitialWinner = interstitialDeferred.await()
+        val interstitialWinner = interstitialDeferred?.await()
         
         splashWinner?.let { platformResults.add(it) }
         interstitialWinner?.let { platformResults.add(it) }
@@ -64,7 +84,7 @@ object SplashTwoLayerPreloadManager {
             FinalBidResult.failed(biddingTime)
         } else {
         val finalWinner = platformResults.maxByOrNull { it.ecpm }
-        AdLogger.d("[$TAG] ============ 两层竞价结束 ============")
+        AdLogger.d("[$TAG] ============ ${modeCn}竞价结束 ============")
         AdLogger.d("[$TAG] 最终胜出: %s - %s, eCPM: %.6f USD", 
             finalWinner?.platform?.name, finalWinner?.winnerType?.name, finalWinner?.ecpm ?: 0.0)
         
