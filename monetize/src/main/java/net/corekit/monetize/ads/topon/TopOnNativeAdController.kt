@@ -29,7 +29,10 @@ import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.bidding.BiddingPlatform
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.report.IpuController
@@ -283,6 +286,7 @@ class TopOnNativeAdController private constructor() {
                     AdLogger.d("[$TAG] TopOn 原生广告被点击")
                     totalClickCount++
                     AdConfigManager.getNativeConfig().recordClick()
+                    PlatformFrequencyManager.recordClick(BiddingPlatform.TOPON, BiddingAdType.NATIVE)
                     reportAdData(
                         "ad_click",
                         mapOf(

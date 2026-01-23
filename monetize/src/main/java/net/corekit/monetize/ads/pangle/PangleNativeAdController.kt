@@ -20,6 +20,10 @@ import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
 import net.corekit.monetize.ads.log.AdLogger
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.bidding.BiddingPlatform
+import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.report.IpuController
 import net.corekit.monetize.ads.report.RpuController
@@ -354,6 +358,8 @@ class PangleNativeAdController private constructor() {
      */
     fun reportClick() {
         totalClickCount++
+        AdConfigManager.getNativeConfig().recordClick()
+        PlatformFrequencyManager.recordClick(BiddingPlatform.PANGLE, BiddingAdType.NATIVE)
         reportAdData(
             eventName = "ad_click",
             params = mapOf(
