@@ -346,7 +346,6 @@ class RewardedAds private constructor() {
                 override fun onAdImpression() {
                     super.onAdImpression()
                     AdLogger.d("激励广告曝光完成")
-                    totalShowCount++
                     // 异步预加载下一个广告到缓存（如果缓存未满）
                     if (!isCacheFull(finalAdUnitId)) {
                         AdLogger.d("开屏开始异步预加载下一个广告，广告位ID: %s", finalAdUnitId)
@@ -361,10 +360,10 @@ class RewardedAds private constructor() {
                     // 累积点击统计
                     totalClickCount++
                     AdLogger.d("激励广告累积点击次数: $totalClickCount")
- 
+
                     AdConfigManager.getRewardedConfig().recordClick()
                     PlatformFrequencyManager.recordClick(BiddingPlatform.ADMOB, BiddingAdType.REWARDED)
- 
+
                     reportAdData(
                         eventName = "ad_click",
                         params = mapOf(

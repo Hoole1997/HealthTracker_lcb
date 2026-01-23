@@ -233,7 +233,8 @@ class LaunchAds private constructor() {
                 deferred.await()
             } ?: AdResult.Failure(AdErrorCode.AD_LOAD_TIMEOUT.toAdException())
         } catch (e: Exception) {
-            deferred.complete(AdResult.Failure(AdErrorCode.AD_LOAD_INTERRUPTED.toAdException(e)))
+            @Suppress("UNCHECKED_CAST")
+            (deferred as? CompletableDeferred<AdResult<Unit>>)?.complete(AdResult.Failure(AdErrorCode.AD_LOAD_INTERRUPTED.toAdException(e)))
             synchronized(this) {
                 if (loadingDeferred == deferred) {
                     loadingDeferred = null
@@ -246,6 +247,103 @@ class LaunchAds private constructor() {
     suspend fun checkInterceptor(context: Context) = interceptorChain.intercept(context,
         AdConfigManager.getAppOpenConfig())
     
+    /**
+     * 基础广告加载方法（可复用）
+     */
+    private suspend fun loadAd(context: Context, adUnitId: String): AppOpenAd? {
+        // 累积加载次数统计
+        totalLoadCount++
+        AdLogger.d("开屏广告累积加载次数: $totalLoadCount")
+        
+        // 创建新的 deferred
+        val deferred = CompletableDeferred<AdResult<Unit>>()
+        synchronized(this) {
+            loadingDeferred = deferred
+        }
+
+        reportAdData(
+            eventName = "ad_start_load",
+            params = mapOf(
+                "ad_unit_name" to adUnitId,
+                "number" to totalLoadCount
+            )
+        )
+        
+        return try {
+            suspendCancellableCoroutine { continuation ->
+                val startTime = System.currentTimeMillis()
+    
+                val adRequest = AdRequest.Builder(adUnitId)
+                    .build()
+    
+                val loadCallback = object : AdLoadCallback<AppOpenAd> {
+                    override fun onAdLoaded(ad: AppOpenAd) {
+                        val loadTime = System.currentTimeMillis() - startTime
+                        AdLogger.d("开屏广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
+                        totalLoadSucCount++
+                        
+                        // 完成 deferred
+                        deferred.complete(AdResult.Success(Unit))
+                        synchronized(this@LaunchAds) {
+                            if (loadingDeferred == deferred) {
+                                loadingDeferred = null
+                            }
+                        }
+
+                        reportAdData(
+                            eventName = "ad_loaded",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadSucCount,
+                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "pass_time" to ceil(loadTime / 1000.0).toInt()
+                            )
+                        )
+                        FpuController.onAdFill("SP")
+                        if (continuation.isActive) continuation.resume(ad)
+                    }
+    
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        totalLoadFailCount++
+                        val loadTime = System.currentTimeMillis() - startTime
+                        AdLogger.e("开屏广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, loadAdError.message)
+                        
+                        // 失败 deferred
+                        deferred.complete(AdResult.Failure(AdException(loadAdError.code.ordinal, loadAdError.message)))
+                        synchronized(this@LaunchAds) {
+                            if (loadingDeferred == deferred) {
+                                loadingDeferred = null
+                            }
+                        }
+
+                        reportAdData(
+                            eventName = "ad_load_fail",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadFailCount,
+                                "ad_source" to (loadAdError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                                "reason" to loadAdError.message
+                            )
+                        )
+                        if (continuation.isActive) continuation.resume(null)
+                    }
+                }
+    
+                // 启动广告加载
+                AppOpenAd.load(adRequest, loadCallback)
+            }
+        } catch (e: Exception) {
+            deferred.complete(AdResult.Failure(AdErrorCode.AD_LOAD_EXCEPTION.toAdException(e)))
+            synchronized(this) {
+                if (loadingDeferred == deferred) {
+                    loadingDeferred = null
+                }
+            }
+            null
+        }
+    }
+
     /**
      * 加载广告到缓存
      */
