@@ -24,7 +24,10 @@ import net.corekit.core.ads.RevenueInfo
 import net.corekit.core.ext.DataStoreIntDelegate
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.bidding.BiddingPlatform
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.interceptor.ClickLimitInterceptor
 import net.corekit.monetize.ads.interceptor.GlobalAdSwitchInterceptor
 import net.corekit.monetize.ads.interceptor.InterceptorChain
@@ -463,6 +466,7 @@ class BannerAds private constructor() {
                         AdLogger.d("Banner广告累积点击次数: $totalClickCount")
 
                         AdConfigManager.getBannerConfig().recordClick()
+                        PlatformFrequencyManager.recordClick(BiddingPlatform.ADMOB, BiddingAdType.BANNER)
 
                         reportAdData(
                             eventName = "ad_click",

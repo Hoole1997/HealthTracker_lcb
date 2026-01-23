@@ -147,6 +147,7 @@ object NativePreloadManager {
 
     /**
      * 执行原生广告竞价
+     * @return 竞价胜出平台，如果没有平台参与竞价则返回 null
      */
     fun performBidding(
         admobLoadResult: AdResult<*>? = null,
@@ -155,7 +156,7 @@ object NativePreloadManager {
         pangleAdUnitId: String? = null,
         toponPlacementId: String? = null,
         style: NativeAdStyle = NativeAdStyle.STANDARD
-    ): BiddingWinner {
+    ): BiddingWinner? {
         val controller = BiddingPlatformController
         val startTime = System.currentTimeMillis()
         val entries = mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry>()
@@ -226,26 +227,30 @@ object NativePreloadManager {
             ))
         }
         
-        // 只在启用的平台中选择胜出者
-        val winner = when {
+        // 只在启用的平台中选择胜出者，无可用平台时返回 null
+        val winner: BiddingWinner? = when {
             admobEnabled && admobEffectiveEcpm >= pangleEffectiveEcpm && admobEffectiveEcpm >= toponEffectiveEcpm -> BiddingWinner.ADMOB
             pangleEnabled && pangleEffectiveEcpm >= toponEffectiveEcpm && pangleEffectiveEcpm >= admobEffectiveEcpm -> BiddingWinner.PANGLE
             toponEnabled -> BiddingWinner.TOPON
             admobEnabled -> BiddingWinner.ADMOB
             pangleEnabled -> BiddingWinner.PANGLE
-            else -> BiddingWinner.ADMOB
+            else -> {
+                AdLogger.logW(TAG, "所有平台均不参与竞价，不展示广告")
+                null
+            }
         }
         
         val winnerEcpm = when(winner) {
             BiddingWinner.ADMOB -> admobEffectiveEcpm
             BiddingWinner.PANGLE -> pangleEffectiveEcpm
             BiddingWinner.TOPON -> toponEffectiveEcpm
+            null -> 0.0
         }
         
         val biddingTime = System.currentTimeMillis() - startTime
         
         // 确定胜出条目
-        val winnerEntry = entries.find { it.platform.equals(winner.name, ignoreCase = true) }
+        val winnerEntry = winner?.let { w -> entries.find { it.platform.equals(w.name, ignoreCase = true) } }
         
         // 使用统一格式输出日志
         net.corekit.monetize.ads.log.BiddingLogger.logSingleLayerBidding(
@@ -262,7 +267,7 @@ object NativePreloadManager {
             admobEffectiveEcpm, if (admobEnabled) "" else "(禁用)",
             pangleEffectiveEcpm, if (pangleEnabled) "" else "(禁用)",
             toponEffectiveEcpm, if (toponEnabled) "" else "(禁用)",
-            winner.name
+            winner?.name ?: "无"
         )
         
         ReportDataManager.reportDataByName(

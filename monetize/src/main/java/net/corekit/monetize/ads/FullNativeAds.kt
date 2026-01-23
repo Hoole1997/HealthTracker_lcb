@@ -18,7 +18,10 @@ import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.report.IpuController
 import net.corekit.monetize.ads.report.RpuController
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.bidding.BiddingPlatform
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.interceptor.ClickLimitInterceptor
 import net.corekit.monetize.ads.interceptor.GlobalAdSwitchInterceptor
 import net.corekit.monetize.ads.interceptor.InterceptorChain
@@ -546,6 +549,7 @@ class FullNativeAds private constructor() {
                             AdLogger.d("全屏原生广告累积点击次数: $totalClickCount")
 
                             AdConfigManager.getFullscreenNativeConfig().recordClick()
+                            PlatformFrequencyManager.recordClick(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE)
 
                             reportAdData(
                                 eventName = "ad_click",

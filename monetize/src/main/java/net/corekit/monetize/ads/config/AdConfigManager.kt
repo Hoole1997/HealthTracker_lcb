@@ -25,6 +25,8 @@ object AdConfigManager {
     private const val CONFIG_KEY_BANNER = "banner"
     private const val CONFIG_KEY_APP_OPEN = "app_open"
     private const val CONFIG_KEY_FULLSCREEN_NATIVE = "fullscreen_native"
+    private const val CONFIG_KEY_REWARDED = "rewarded"
+    private const val CONFIG_KEY_REWARDED_INTERSTITIAL = "rewarded_interstitial"
 
     private var adConfigJsonFromRemote by DataStoreStringDelegate("pdf_b8j2n6w9", "")
 
@@ -154,6 +156,20 @@ object AdConfigManager {
      */
     fun getFullscreenNativeConfig(): AdConfig {
         return createFullscreenNativeConfig()
+    }
+
+    /**
+     * 获取激励广告配置
+     */
+    fun getRewardedConfig(): AdConfig {
+        return createRewardedConfig()
+    }
+
+    /**
+     * 获取插页激励广告配置
+     */
+    fun getRewardedInterstitialConfig(): AdConfig {
+        return createRewardedInterstitialConfig()
     }
 
     /**
@@ -432,6 +448,38 @@ object AdConfigManager {
             .setMaxDailyShow(channelConfig.native.maxDailyShow)
             .setMaxDailyClick(channelConfig.native.maxDailyClick)
             .setMinInterval(channelConfig.native.minInterval.toLong())
+            .build()
+    }
+
+    /**
+     * 创建激励广告配置（根据当前渠道）
+     * 使用与插页广告相同的频控策略
+     */
+    private fun createRewardedConfig(): AdConfig {
+        val config = checkNotNull(configData) { "请先调用 initialize 初始化配置" }
+        val ctx = checkNotNull(context) { "Context 未初始化" }
+        val channelConfig = getCurrentChannelConfig(config)
+
+        return AdConfig.Builder(ctx, CONFIG_KEY_REWARDED)
+            .setMaxDailyShow(channelConfig.interstitial.maxDailyShow)
+            .setMaxDailyClick(channelConfig.interstitial.maxDailyClick)
+            .setMinInterval(channelConfig.interstitial.minInterval.toLong())
+            .build()
+    }
+
+    /**
+     * 创建插页激励广告配置（根据当前渠道）
+     * 使用与插页广告相同的频控策略
+     */
+    private fun createRewardedInterstitialConfig(): AdConfig {
+        val config = checkNotNull(configData) { "请先调用 initialize 初始化配置" }
+        val ctx = checkNotNull(context) { "Context 未初始化" }
+        val channelConfig = getCurrentChannelConfig(config)
+
+        return AdConfig.Builder(ctx, CONFIG_KEY_REWARDED_INTERSTITIAL)
+            .setMaxDailyShow(channelConfig.interstitial.maxDailyShow)
+            .setMaxDailyClick(channelConfig.interstitial.maxDailyClick)
+            .setMinInterval(channelConfig.interstitial.minInterval.toLong())
             .build()
     }
 

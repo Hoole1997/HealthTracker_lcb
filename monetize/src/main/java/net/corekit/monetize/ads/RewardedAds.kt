@@ -30,11 +30,14 @@ import net.corekit.core.ads.RevenueInfo
 import net.corekit.core.ext.DataStoreIntDelegate
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.bidding.BiddingPlatform
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
-import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
+import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import kotlin.coroutines.resume
 import kotlin.math.ceil
 
@@ -353,14 +356,15 @@ class RewardedAds private constructor() {
 
                 override fun onAdClicked() {
                     super.onAdClicked()
-                    AdLogger.d("原生广告被点击")
+                    AdLogger.d("激励广告被点击")
 
                     // 累积点击统计
                     totalClickCount++
-                    AdLogger.d("原生广告累积点击次数: $totalClickCount")
-
-                    AdConfigManager.getNativeConfig().recordClick()
-
+                    AdLogger.d("激励广告累积点击次数: $totalClickCount")
+ 
+                    AdConfigManager.getRewardedConfig().recordClick()
+                    PlatformFrequencyManager.recordClick(BiddingPlatform.ADMOB, BiddingAdType.REWARDED)
+ 
                     reportAdData(
                         eventName = "ad_click",
                         params = mapOf(

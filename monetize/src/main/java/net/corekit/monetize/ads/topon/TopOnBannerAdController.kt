@@ -22,6 +22,7 @@ import net.corekit.monetize.ads.AdErrorCode
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
+import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.report.IpuController
@@ -168,6 +169,7 @@ class TopOnBannerAdController private constructor() {
                 override fun onBannerClicked(info: TUAdInfo?) {
                     AdLogger.d("[$TAG] Banner 广告被点击")
                     totalClickCount++
+                    AdConfigManager.getBannerConfig().recordClick()
                     reportAdData(
                         "ad_click",
                         mapOf(

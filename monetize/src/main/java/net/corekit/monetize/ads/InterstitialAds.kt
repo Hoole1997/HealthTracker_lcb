@@ -20,7 +20,10 @@ import net.corekit.core.ads.RevenueInfo
 import net.corekit.core.ext.DataStoreIntDelegate
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.bidding.BiddingPlatform
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.interceptor.ClickLimitInterceptor
 import net.corekit.monetize.ads.interceptor.GlobalAdSwitchInterceptor
 import net.corekit.monetize.ads.interceptor.InterceptorChain
@@ -423,7 +426,7 @@ class InterstitialAds private constructor() {
      * @return 缓存的广告对象，如果不存在或已过期返回null
      */
     fun peekCachedAd(adUnitId: String? = null): InterstitialAd? {
-        val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_INTERSTITIAL_ID
+        val finalAdUnitId = adUnitId ?: net.corekit.monetize.BuildConfig.ADMOB_INTERSTITIAL_ID
         synchronized(adCachePool) {
             return adCachePool.firstOrNull { it.adUnitId == finalAdUnitId && !it.isExpired() }?.ad
         }
@@ -585,6 +588,7 @@ class InterstitialAds private constructor() {
                     AdLogger.d("插页广告累积点击次数: $totalClickCount")
                     
                     AdConfigManager.getInterstitialConfig().recordClick()
+                    PlatformFrequencyManager.recordClick(BiddingPlatform.ADMOB, BiddingAdType.INTERSTITIAL)
                     
                     reportAdData(
                         eventName = "ad_click",

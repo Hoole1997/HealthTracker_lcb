@@ -25,7 +25,10 @@ import net.corekit.monetize.ads.report.RpuController
 import net.corekit.core.ads.RevenueAdData
 import net.corekit.core.ads.RevenueAdManager
 import net.corekit.core.ads.RevenueInfo
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.bidding.BiddingPlatform
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.interceptor.ClickLimitInterceptor
 import net.corekit.monetize.ads.interceptor.GlobalAdSwitchInterceptor
 import net.corekit.monetize.ads.interceptor.InterceptorChain
@@ -365,6 +368,7 @@ class PangleFullScreenNativeAdController private constructor() {
                 AdLogger.d("Pangle全屏原生广告被点击")
                 totalClickCount++
                 AdConfigManager.getFullscreenNativeConfig().recordClick()
+                PlatformFrequencyManager.recordClick(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE)
                 reportAdData(
                     eventName = "ad_click",
                     params = mapOf<String, Any>(

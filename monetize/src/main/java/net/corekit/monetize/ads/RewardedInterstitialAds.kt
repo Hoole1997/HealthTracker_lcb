@@ -12,6 +12,7 @@ import com.google.android.libraries.ads.mobile.sdk.rewardedinterstitial.Rewarded
 import com.google.android.libraries.ads.mobile.sdk.rewardedinterstitial.RewardedInterstitialAdEventCallback
 import net.corekit.monetize.ads.report.IpuController
 import net.corekit.monetize.ads.report.RpuController
+import net.corekit.monetize.ads.report.FpuController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -21,8 +22,11 @@ import net.corekit.core.ads.RevenueInfo
 import net.corekit.core.ext.DataStoreIntDelegate
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.bidding.BiddingPlatform
+import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
-import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import kotlin.coroutines.resume
@@ -394,6 +398,8 @@ class RewardedInterstitialAds private constructor() {
                 override fun onAdClicked() {
                     super.onAdClicked()
                     totalClickCount++
+                    AdConfigManager.getRewardedInterstitialConfig().recordClick()
+                    PlatformFrequencyManager.recordClick(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)
                     AdLogger.d("插页激励广告被点击，总点击次数: %d", totalClickCount)
 
                     reportAdData(

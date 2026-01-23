@@ -37,7 +37,11 @@ object PlatformFrequencyManager {
     private var sharedPreferences: SharedPreferences? = null
     
     // 日期格式化器（用于生成每日唯一 key）
-    private val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.US)
+    private val dateFormat = ThreadLocal.withInitial { SimpleDateFormat("yyyyMMdd", Locale.US) }
+
+    private fun getDateFormat(): SimpleDateFormat {
+        return dateFormat.get() ?: SimpleDateFormat("yyyyMMdd", Locale.US).also { dateFormat.set(it) }
+    }
 
     /**
      * 初始化（需在 Application 中调用）
@@ -78,7 +82,7 @@ object PlatformFrequencyManager {
     private fun getDateNDaysAgo(n: Int): String {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, -n)
-        return dateFormat.format(calendar.time)
+        return getDateFormat().format(calendar.time)
     }
 
     /**
@@ -269,7 +273,7 @@ object PlatformFrequencyManager {
      * 生成每日唯一 key
      */
     private fun getDailyKey(platform: BiddingPlatform, adType: BiddingAdType, type: String): String {
-        val today = dateFormat.format(Date())
+        val today = getDateFormat().format(Date())
         return "pf_${platform.name.lowercase()}_${adType.name.lowercase()}_${type}_$today"
     }
 

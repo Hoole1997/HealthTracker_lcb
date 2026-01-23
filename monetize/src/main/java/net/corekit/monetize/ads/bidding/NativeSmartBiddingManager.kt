@@ -112,6 +112,12 @@ object NativeSmartBiddingManager {
             style = style
         )
 
+        // 如果没有平台参与竞价，返回 false 不展示广告
+        if (winner == null) {
+            AdLogger.logW(TAG, "竞价失败 | 无可用平台参与竞价，不展示广告")
+            return false
+        }
+
         AdLogger.logD(TAG, "竞价胜出 | 平台: %s", winner.name)
 
         // 3. 展示胜出平台的广告
