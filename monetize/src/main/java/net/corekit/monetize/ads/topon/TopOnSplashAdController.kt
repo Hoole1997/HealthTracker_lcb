@@ -356,6 +356,7 @@ class TopOnSplashAdController private constructor() {
         activity: Activity,
         container: ViewGroup,
         onLoaded: ((Boolean) -> Unit)? = null,
+        onShow: (() -> Unit)? = null,
         onDismiss: (() -> Unit)? = null
     ): AdResult<Unit> = suspendCancellableCoroutine { continuation ->
         val ad = splashAd
@@ -402,7 +403,10 @@ class TopOnSplashAdController private constructor() {
             override fun onAdLoaded(isTimeout: Boolean) {}
             override fun onAdLoadTimeout() {}
             override fun onNoAdError(error: AdError?) {}
-            override fun onAdShow(info: TUAdInfo?) {}
+            override fun onAdShow(info: TUAdInfo?) {
+                AdLogger.d("[$TAG] 开屏广告已展示")
+                onShow?.invoke()
+            }
             override fun onAdClick(info: TUAdInfo?) {}
 
             override fun onAdDismiss(info: TUAdInfo?, extraInfo: TUSplashAdExtraInfo?) {

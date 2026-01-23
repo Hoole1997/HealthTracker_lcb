@@ -7,5 +7,6 @@ data class PendingShowRequest<T>(
     val ad: T,
     val adUnitId: String,
     val position: String,
-    val continuation: CancellableContinuation<AdResult<Unit>>
+    val continuation: CancellableContinuation<AdResult<Unit>>,
+    val onShow: (() -> Unit)? = null
 )

@@ -113,14 +113,17 @@ object SplashTwoLayerPreloadManager {
         
         return withTimeoutOrNull(SHOW_TIMEOUT_MS) {
             val showResult = when (winner.winnerType) {
-                BiddingAdType.SPLASH -> showSplashAd(activity, container, winner.platform, onDismiss)
-                BiddingAdType.INTERSTITIAL -> showInterstitialAd(activity, winner.platform, onDismiss)
+                BiddingAdType.SPLASH -> showSplashAd(activity, container, winner.platform, onDismiss) {
+                    PlatformFrequencyManager.recordShow(winner.platform, winner.winnerType)
+                }
+                BiddingAdType.INTERSTITIAL -> {
+                    val result = showInterstitialAd(activity, winner.platform, onDismiss)
+                    if (result is AdResult.Success) {
+                        PlatformFrequencyManager.recordShow(winner.platform, winner.winnerType)
+                    }
+                    result
+                }
                 else -> AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "Unsupported ad type"))
-            }
-            
-            // Record platform frequency on successful show
-            if (showResult is AdResult.Success) {
-                PlatformFrequencyManager.recordShow(winner.platform, winner.winnerType)
             }
             
             showResult
@@ -131,16 +134,17 @@ object SplashTwoLayerPreloadManager {
         activity: Activity,
         container: ViewGroup?,
         platform: BiddingPlatform,
-        onDismiss: (() -> Unit)?
+        onDismiss: (() -> Unit)?,
+        onShow: () -> Unit
     ): AdResult<Unit> {
         return when (platform) {
             BiddingPlatform.ADMOB -> {
-                val showResult = AdsManager.Controllers.appOpen.displayAd(activity, "bidding") { _ -> }
+                val showResult = AdsManager.Controllers.appOpen.displayAd(activity, "bidding", onShow = onShow, onLoaded = { _ -> })
                 onDismiss?.invoke()
                 showResult
             }
             BiddingPlatform.PANGLE -> {
-                val result = PangleAppOpenAdController.getInstance().showAd(activity, onDismiss = onDismiss)
+                val result = PangleAppOpenAdController.getInstance().showAd(activity, onDismiss = onDismiss, onShow = onShow)
                 if (result is AdResult.Success) {
                     net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH)
                 }
@@ -148,7 +152,7 @@ object SplashTwoLayerPreloadManager {
             }
             BiddingPlatform.TOPON -> {
                 if (container != null) {
-                    val result = TopOnSplashAdController.getInstance().showAd(activity, container, null, onDismiss)
+                    val result = TopOnSplashAdController.getInstance().showAd(activity, container, null, onShow, onDismiss)
                     if (result is AdResult.Success) {
                         net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH)
                     }

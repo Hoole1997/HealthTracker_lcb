@@ -362,7 +362,7 @@ class LaunchAds private constructor() {
      * @param activity Activity上下文
      * @param adUnitId 广告位ID，如果为空则使用默认ID
      */
-    suspend fun displayAd(activity: Activity, position: String, adUnitId: String = BuildConfig.ADMOB_SPLASH_ID, onLoaded:((isSuc: Boolean)->Unit) ?= null): AdResult<Unit> {
+    suspend fun displayAd(activity: Activity, position: String, adUnitId: String = BuildConfig.ADMOB_SPLASH_ID, onLoaded:((isSuc: Boolean)->Unit) ?= null, onShow: (() -> Unit)? = null): AdResult<Unit> {
 
         AdsManager.awaitInitialized()
         // 累积触发广告展示次数统计
@@ -435,7 +435,7 @@ class LaunchAds private constructor() {
                         return suspendCancellableCoroutine { continuation ->
                             val observer = ResumeLifecycleObserver(activity,activity)
                             pendingRequest = PendingShowRequest(
-                                cachedAd.ad,finalAdUnitId,position,continuation
+                                cachedAd.ad,finalAdUnitId,position,continuation, onShow
                             )
                             activity.lifecycle.addObserver(observer)
                             continuation.invokeOnCancellation {
@@ -448,7 +448,7 @@ class LaunchAds private constructor() {
                 }
 
                 // 3. 显示广告
-                val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId, position)
+                val result = showAdInternal(activity, cachedAd.ad, finalAdUnitId, position, onShow)
 
                 result
 
@@ -558,7 +558,7 @@ class LaunchAds private constructor() {
     /**
      * 显示广告的内部实现
      */
-    private suspend fun showAdInternal(activity: Activity, appOpenAd: AppOpenAd, adUnitId: String, position: String): AdResult<Unit> {
+    private suspend fun showAdInternal(activity: Activity, appOpenAd: AppOpenAd, adUnitId: String, position: String, onShow: (() -> Unit)? = null): AdResult<Unit> {
         return suspendCancellableCoroutine { continuation ->
             // 临时变量保存收益数据
             var currentAdValue: AdValue? = null
@@ -636,6 +636,7 @@ class LaunchAds private constructor() {
                     // 累积展示统计
                     totalShowCount++
                     AdLogger.d("开屏广告累积展示次数: $totalShowCount")
+                    onShow?.invoke()
 
                     AdConfigManager.getAppOpenConfig().recordShow()
                 }
@@ -793,7 +794,7 @@ class LaunchAds private constructor() {
 
                         lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) -> {
                             withContext(Dispatchers.Main.immediate){
-                                showAdInternal(activity,pending.ad,pending.adUnitId,pending.position)
+                                showAdInternal(activity,pending.ad,pending.adUnitId,pending.position, pending.onShow)
                             }
                         }
 
@@ -815,7 +816,13 @@ class LaunchAds private constructor() {
 
         override fun onDestroy(owner: LifecycleOwner) {
             super.onDestroy(owner)
-            pendingRequest?.ad?.adEventCallback = null
+            if (pendingRequest != null) {
+                AdLogger.d("[OpenAd] Activity destroyed while waiting for resume, cancelling pending request")
+                if (pendingRequest?.continuation?.isActive == true) {
+                    pendingRequest?.continuation?.resume(AdResult.Failure(createAdException("Activity destroyed")))
+                }
+                pendingRequest = null
+            }
             lifecycleOwner.lifecycle.removeObserver(this)
         }
     }

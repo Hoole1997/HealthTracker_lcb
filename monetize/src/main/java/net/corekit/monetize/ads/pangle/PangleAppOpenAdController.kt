@@ -264,6 +264,7 @@ class PangleAppOpenAdController private constructor() {
         activity: Activity,
         position: String = "",
         onLoaded: ((Boolean) -> Unit)? = null,
+        onShow: (() -> Unit)? = null,
         onDismiss: (() -> Unit)? = null
     ): AdResult<Unit> = suspendCancellableCoroutine { continuation ->
         val ad = cachedAd
@@ -315,6 +316,7 @@ class PangleAppOpenAdController private constructor() {
             override fun onAdShowed() {
                 AdLogger.d("[$TAG] 开屏广告已展示")
                 totalShowCount++
+                onShow?.invoke()
 
                 val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
 

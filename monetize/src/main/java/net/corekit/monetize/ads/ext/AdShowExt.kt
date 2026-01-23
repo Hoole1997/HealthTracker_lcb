@@ -55,7 +55,7 @@ object AdShowExt {
     ): AdResult<Unit> {
         return when (platform) {
             BiddingPlatform.ADMOB -> {
-                AdsManager.Controllers.appOpen.displayAd(activity, "bidding") { _ -> }
+                AdsManager.Controllers.appOpen.displayAd(activity, "bidding", onLoaded = { _ -> })
                 onDismiss?.invoke()
                 AdResult.Success(Unit)
             }
