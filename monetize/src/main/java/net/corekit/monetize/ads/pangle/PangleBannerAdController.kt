@@ -92,8 +92,28 @@ class PangleBannerAdController private constructor() {
     }
 
     private suspend fun loadAd(context: Context): AdResult<Unit> {
-        totalLoadCount++
         val adUnitId = BuildConfig.PANGLE_BANNER_ID
+        
+        // 频控前置检查（只检查配额，不检查间隔）
+        val (canLoad, reason) = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.canLoadAd(
+            net.corekit.monetize.ads.bidding.BiddingPlatform.PANGLE, 
+            net.corekit.monetize.ads.bidding.BiddingAdType.BANNER
+        )
+        if (!canLoad) {
+            val statusLog = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.getFrequencyStatusLog(
+                net.corekit.monetize.ads.bidding.BiddingPlatform.PANGLE, 
+                net.corekit.monetize.ads.bidding.BiddingAdType.BANNER
+            )
+            AdLogger.w("[$TAG] 加载跳过 | 平台: Pangle | 类型: Banner | 原因: $reason | $statusLog")
+            reportAdData("ad_load_skipped", mapOf(
+                "ad_unit_name" to adUnitId,
+                "reason" to (reason ?: "unknown"),
+                "platform" to "Pangle"
+            ))
+            return AdResult.Failure(AdErrorCode.AD_LOAD_SKIPPED.toAdException(reason ?: "frequency_limit"))
+        }
+        
+        totalLoadCount++
 
         reportAdData("ad_start_load", mapOf("ad_unit_name" to adUnitId, "number" to totalLoadCount))
 
@@ -188,6 +208,23 @@ class PangleBannerAdController private constructor() {
                 "number" to totalShowTriggerCount
             )
         )
+
+        if (!net.corekit.monetize.ads.frequency.PlatformFrequencyManager.canParticipate(
+                net.corekit.monetize.ads.bidding.BiddingPlatform.PANGLE,
+                net.corekit.monetize.ads.bidding.BiddingAdType.BANNER
+            )
+        ) {
+            totalShowFailCount++
+            reportAdData(
+                "ad_show_fail", mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to currentPosition,
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit"
+                )
+            )
+            return false
+        }
 
         try {
             val bannerView = ad.bannerView

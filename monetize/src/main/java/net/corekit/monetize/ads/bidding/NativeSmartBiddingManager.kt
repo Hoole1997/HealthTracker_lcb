@@ -109,7 +109,10 @@ object NativeSmartBiddingManager {
             admobLoadResult = admobResult,
             pangleLoadResult = pangleResult,
             toponLoadResult = toponResult,
-            style = style
+            style = style,
+            admobEnabled = admobEnabled,
+            pangleEnabled = pangleEnabled,
+            toponEnabled = toponEnabled
         )
 
         // 如果没有平台参与竞价，返回 false 不展示广告
@@ -149,7 +152,7 @@ object NativeSmartBiddingManager {
                     true
                 } else {
                     AdLogger.logW(TAG, "渲染失败 | 平台: Pangle | 回退到 AdMob")
-                    NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick)
+                    NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick, bypassBidding = true)
                 }
             }
             BiddingWinner.TOPON -> {
@@ -161,7 +164,7 @@ object NativeSmartBiddingManager {
                     true
                 } else {
                     AdLogger.logW(TAG, "渲染失败 | 平台: TopOn | 回退到 AdMob")
-                    NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick)
+                    NativeAds.getInstance().displayAdInView(context, container, position, style, onClick = onClick, bypassBidding = true)
                 }
             }
         }

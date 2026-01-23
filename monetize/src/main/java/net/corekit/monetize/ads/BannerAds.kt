@@ -246,6 +246,19 @@ class BannerAds private constructor() {
      * @param adUnitId 广告单元id
      */
     private suspend fun loadAdInternal(context: Context, adUnitId: String): BannerAd? {
+        // 频控前置检查（只检查配额，不检查间隔）
+        val (canLoad, reason) = PlatformFrequencyManager.canLoadAd(BiddingPlatform.ADMOB, BiddingAdType.BANNER)
+        if (!canLoad) {
+            val statusLog = PlatformFrequencyManager.getFrequencyStatusLog(BiddingPlatform.ADMOB, BiddingAdType.BANNER)
+            AdLogger.w("[$TAG] 加载跳过 | 平台: AdMob | 类型: Banner | 原因: $reason | $statusLog")
+            reportAdData("ad_load_skipped", mapOf(
+                "ad_unit_name" to adUnitId,
+                "reason" to (reason ?: "unknown"),
+                "platform" to "Admob"
+            ))
+            return null
+        }
+        
         // 累积加载次数统计
         totalLoadCount++
         AdLogger.d("Banner广告累积加载次数: $totalLoadCount")
@@ -394,6 +407,23 @@ class BannerAds private constructor() {
                 "number" to totalShowTriggerCount
             )
         )
+
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.ADMOB, BiddingAdType.BANNER)) {
+            totalShowFailCount++
+            AdLogger.w("Banner展示失败 | 位置: %s | 原因: 平台频控拦截 | 累计失败: %d", position, totalShowFailCount)
+
+            reportAdData(
+                eventName = "ad_show_fail",
+                params = mapOf(
+                    "ad_unit_name" to finalAdUnitId,
+                    "position" to position,
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit"
+                )
+            )
+
+            return AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("platform_frequency_limit"))
+        }
         
         // 拦截器检查
         when (val interceptResult = interceptorChain.intercept(context, AdConfigManager.getBannerConfig())) {

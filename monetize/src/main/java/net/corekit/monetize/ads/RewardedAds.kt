@@ -179,6 +179,20 @@ class RewardedAds private constructor() {
             )
         )
 
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.ADMOB, BiddingAdType.REWARDED)) {
+            totalShowFailCount++
+            reportAdData(
+                "ad_show_fail",
+                mapOf(
+                    "ad_unit_name" to finalAdUnitId,
+                    "position" to position,
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit"
+                )
+            )
+            return AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("platform_frequency_limit"))
+        }
+
        val adResult = try {
             var cachedAd = getCachedAd(finalAdUnitId)
             var loadingShown = false
@@ -414,6 +428,32 @@ class RewardedAds private constructor() {
 
     private suspend fun loadInternal(context: Context, adUnitId: String): RewardedAd? =
         suspendCancellableCoroutine { continuation ->
+            // 频控前置检查（只检查配额，不检查间隔）
+            // 注意：这里是在协程内，但为了安全起见使用同步调用，或者如果 canLoadAd 内部只是简单的内存检查也可以
+            val (canLoad, reason) = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.canLoadAd(
+                net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB, 
+                net.corekit.monetize.ads.bidding.BiddingAdType.REWARDED
+            )
+            
+            if (!canLoad) {
+                val statusLog = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.getFrequencyStatusLog(
+                    net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB, 
+                    net.corekit.monetize.ads.bidding.BiddingAdType.REWARDED
+                )
+                AdLogger.w("[$TAG] 加载跳过 | 平台: AdMob | 类型: Rewarded | 原因: $reason | $statusLog")
+                // 这里 reportAdData 是私有的，需要通过 companion object 或者 inner class 访问吗？ 
+                // loadInternal 是成员方法，可以直接调用 reportAdData
+                // 但是它在 suspendCancellableCoroutine 内部，this 可能是 continuation
+                // 所以需要用 this@RewardedAds.reportAdData 或者直接调用成员方法（如果在 lambda 作用域内）
+                
+                // 由于 loadInternal 是 `= suspendCancellableCoroutine`, 这里的上下文是 lambda
+                // 我们可以直接调用 reportAdData 因为它在 RewardedAds 类中
+                
+                // 但要小心 suspendCancellableCoroutine 需要 resume
+                continuation.resume(null)
+                return@suspendCancellableCoroutine
+            }
+
             val startTime = System.currentTimeMillis()
             val adRequest = AdRequest.Builder(adUnitId)
                 .build()

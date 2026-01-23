@@ -27,6 +27,7 @@ enum class AdErrorCode(val code: Int, val defaultMessage: String) {
     AD_LOAD_INTERRUPTED(3003, "Ad load interrupted"),
     AD_LOAD_EXCEPTION(3004, "Ad load exception"),
     NO_FILL(3010, "No ad fill"),
+    AD_LOAD_SKIPPED(3020, "Ad load skipped"),
     
     // 竞价错误 (4xxx)
     BIDDING_ALL_FAILED(4001, "All platforms failed in bidding"),

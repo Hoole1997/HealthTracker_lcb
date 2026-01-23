@@ -155,43 +155,49 @@ object NativePreloadManager {
         toponLoadResult: AdResult<*>? = null,
         pangleAdUnitId: String? = null,
         toponPlacementId: String? = null,
-        style: NativeAdStyle = NativeAdStyle.STANDARD
+        style: NativeAdStyle = NativeAdStyle.STANDARD,
+        // 添加可选参数，允许外部传入启用状态
+        admobEnabled: Boolean? = null,
+        pangleEnabled: Boolean? = null,
+        toponEnabled: Boolean? = null
     ): BiddingWinner? {
         val controller = BiddingPlatformController
         val startTime = System.currentTimeMillis()
         val entries = mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry>()
         
-        // 获取各平台的启用状态
-        val admobEnabled = controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.NATIVE.toConfigKey())
-        val pangleEnabled = controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.NATIVE.toConfigKey())
-        // TopOn 原生广告仅在 STANDARD 样式时参与竞价（因为 TopOn 需要在加载时指定尺寸，简化为仅支持 Normal）
+        // 获取各平台的启用状态 (如果外部未传入，则查询控制器，可能会重复打印日志)
+        // NativeSmartBiddingManager 会传入这些参数以避免重复检查
+        val finalAdmobEnabled = admobEnabled ?: controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.NATIVE.toConfigKey())
+        val finalPangleEnabled = pangleEnabled ?: controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.NATIVE.toConfigKey())
+        
+        // TopOn 原生广告仅在 STANDARD 样式时参与竞价
         val isStandardStyle = style == NativeAdStyle.STANDARD
-        val toponEnabled = controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.NATIVE.toConfigKey()) && isStandardStyle
+        val finalToponEnabled = toponEnabled ?: (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.NATIVE.toConfigKey()) && isStandardStyle)
         
         // 获取 AdMob 收益 (使用 peekCachedAd 避免 Pop 导致缓存丢失)
-        val admobValueUsd = if (admobEnabled && admobLoadResult is AdResult.Success<*>) {
+        val admobValueUsd = if (finalAdmobEnabled && admobLoadResult is AdResult.Success<*>) {
             admobController.peekCachedAd()?.let { ad ->
                 AdmobNextGenReflectionUtil.getRevenueByPath(ad)?.valueMicros?.toDouble()?.div(1_000_000.0)
             } ?: 0.0
         } else 0.0
         
         // 获取 Pangle 收益
-        val pangleValueUsd = if (pangleEnabled && pangleLoadResult is AdResult.Success<*>) {
+        val pangleValueUsd = if (finalPangleEnabled && pangleLoadResult is AdResult.Success<*>) {
             pangleController.getEcpm()
         } else 0.0
         
         // 获取 TopOn 收益
-        val toponValueUsd = if (toponEnabled && toponLoadResult is AdResult.Success<*>) {
+        val toponValueUsd = if (finalToponEnabled && toponLoadResult is AdResult.Success<*>) {
             toponController.getEcpm()
         } else 0.0
         
         // 应用测试模式的 mock eCPM
-        val admobEffectiveEcpm = if (admobEnabled) controller.getEffectiveEcpm(BiddingPlatform.ADMOB, admobValueUsd) else 0.0
-        val pangleEffectiveEcpm = if (pangleEnabled) controller.getEffectiveEcpm(BiddingPlatform.PANGLE, pangleValueUsd) else 0.0
-        val toponEffectiveEcpm = if (toponEnabled) controller.getEffectiveEcpm(BiddingPlatform.TOPON, toponValueUsd) else 0.0
+        val admobEffectiveEcpm = if (finalAdmobEnabled) controller.getEffectiveEcpm(BiddingPlatform.ADMOB, admobValueUsd) else 0.0
+        val pangleEffectiveEcpm = if (finalPangleEnabled) controller.getEffectiveEcpm(BiddingPlatform.PANGLE, pangleValueUsd) else 0.0
+        val toponEffectiveEcpm = if (finalToponEnabled) controller.getEffectiveEcpm(BiddingPlatform.TOPON, toponValueUsd) else 0.0
         
         // 收集日志条目
-        if (admobEnabled) {
+        if (finalAdmobEnabled) {
             entries.add(net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry(
                 platform = "AdMob",
                 adType = "Native",
@@ -203,7 +209,7 @@ object NativePreloadManager {
             ))
         }
         
-        if (pangleEnabled) {
+        if (finalPangleEnabled) {
             entries.add(net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry(
                 platform = "Pangle",
                 adType = "Native",
@@ -215,7 +221,7 @@ object NativePreloadManager {
             ))
         }
         
-        if (toponEnabled) {
+        if (finalToponEnabled) {
             entries.add(net.corekit.monetize.ads.log.BiddingLogger.BiddingEntry(
                 platform = "TopOn",
                 adType = "Native",
@@ -229,11 +235,11 @@ object NativePreloadManager {
         
         // 只在启用的平台中选择胜出者，无可用平台时返回 null
         val winner: BiddingWinner? = when {
-            admobEnabled && admobEffectiveEcpm >= pangleEffectiveEcpm && admobEffectiveEcpm >= toponEffectiveEcpm -> BiddingWinner.ADMOB
-            pangleEnabled && pangleEffectiveEcpm >= toponEffectiveEcpm && pangleEffectiveEcpm >= admobEffectiveEcpm -> BiddingWinner.PANGLE
-            toponEnabled -> BiddingWinner.TOPON
-            admobEnabled -> BiddingWinner.ADMOB
-            pangleEnabled -> BiddingWinner.PANGLE
+            finalAdmobEnabled && admobEffectiveEcpm >= pangleEffectiveEcpm && admobEffectiveEcpm >= toponEffectiveEcpm -> BiddingWinner.ADMOB
+            finalPangleEnabled && pangleEffectiveEcpm >= toponEffectiveEcpm && pangleEffectiveEcpm >= admobEffectiveEcpm -> BiddingWinner.PANGLE
+            finalToponEnabled -> BiddingWinner.TOPON
+            finalAdmobEnabled -> BiddingWinner.ADMOB
+            finalPangleEnabled -> BiddingWinner.PANGLE
             else -> {
                 AdLogger.logW(TAG, "所有平台均不参与竞价，不展示广告")
                 null
@@ -264,9 +270,9 @@ object NativePreloadManager {
         val biddingLog = String.format(
             Locale.US,
             "原生竞价结果 -> AdMob: %.8f 美元%s, Pangle: %.8f 美元%s, TopOn: %.8f 美元%s, 胜出: %s",
-            admobEffectiveEcpm, if (admobEnabled) "" else "(禁用)",
-            pangleEffectiveEcpm, if (pangleEnabled) "" else "(禁用)",
-            toponEffectiveEcpm, if (toponEnabled) "" else "(禁用)",
+            admobEffectiveEcpm, if (finalAdmobEnabled) "" else "(禁用)",
+            pangleEffectiveEcpm, if (finalPangleEnabled) "" else "(禁用)",
+            toponEffectiveEcpm, if (finalToponEnabled) "" else "(禁用)",
             winner?.name ?: "无"
         )
         

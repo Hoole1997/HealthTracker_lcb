@@ -136,6 +136,21 @@ class PangleAppOpenAdController private constructor() {
     }
 
     private suspend fun loadAd(context: Context): AdResult<Unit> {
+        val adUnitId = BuildConfig.PANGLE_SPLASH_ID
+        
+        // 频控前置检查（只检查配额，不检查间隔）
+        val (canLoad, reason) = PlatformFrequencyManager.canLoadAd(BiddingPlatform.PANGLE, BiddingAdType.SPLASH)
+        if (!canLoad) {
+            val statusLog = PlatformFrequencyManager.getFrequencyStatusLog(BiddingPlatform.PANGLE, BiddingAdType.SPLASH)
+            AdLogger.w("[$TAG] 加载跳过 | 平台: Pangle | 类型: Splash | 原因: $reason | $statusLog")
+            reportAdData("ad_load_skipped", mapOf(
+                "ad_unit_name" to adUnitId,
+                "reason" to (reason ?: "unknown"),
+                "platform" to "Pangle"
+            ))
+            return AdResult.Failure(AdErrorCode.AD_LOAD_SKIPPED.toAdException(reason ?: "frequency_limit"))
+        }
+        
         // 创建新的 deferred
         val deferred = CompletableDeferred<AdResult<Unit>>()
         synchronized(this) {
@@ -144,7 +159,6 @@ class PangleAppOpenAdController private constructor() {
 
         // 累积加载次数统计
         totalLoadCount++
-        val adUnitId = BuildConfig.PANGLE_SPLASH_ID
 
         reportAdData(
             eventName = "ad_start_load",
@@ -288,6 +302,24 @@ class PangleAppOpenAdController private constructor() {
                 "number" to totalShowTriggerCount
             )
         )
+
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.PANGLE, BiddingAdType.SPLASH)) {
+            totalShowFailCount++
+            reportAdData(
+                eventName = "ad_show_fail",
+                params = mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to position,
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit"
+                )
+            )
+            onLoaded?.invoke(false)
+            if (continuation.isActive) continuation.resume(
+                AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("platform_frequency_limit"))
+            )
+            return@suspendCancellableCoroutine
+        }
 
         if (ad == null || !hasValidCache()) {
             AdLogger.w("[$TAG] 没有可用的缓存广告")

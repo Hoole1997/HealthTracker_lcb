@@ -172,6 +172,20 @@ class RewardedInterstitialAds private constructor() {
             )
         )
 
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)) {
+            totalShowFailCount++
+            reportAdData(
+                "ad_show_fail",
+                mapOf(
+                    "ad_unit_name" to finalAdUnitId,
+                    "position" to position,
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit"
+                )
+            )
+            return AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("platform_frequency_limit"))
+        }
+
         return try {
             var cachedAd = getCachedAd(finalAdUnitId)
             var loadingShown = false
@@ -237,6 +251,15 @@ class RewardedInterstitialAds private constructor() {
 
     private suspend fun loadInternal(context: Context, adUnitId: String): RewardedInterstitialAd? =
         suspendCancellableCoroutine { continuation ->
+            // 频控前置检查
+            val (canLoad, reason) = PlatformFrequencyManager.canLoadAd(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)
+            if (!canLoad) {
+                val statusLog = PlatformFrequencyManager.getFrequencyStatusLog(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)
+                AdLogger.w("[$TAG] 加载跳过 | 平台: AdMob | 类型: RewardedInterstitial | 原因: $reason | $statusLog")
+                continuation.resume(null)
+                return@suspendCancellableCoroutine
+            }
+            
             totalLoadCount++
             val startTime = System.currentTimeMillis()
             val adRequest = AdRequest.Builder(adUnitId).build()

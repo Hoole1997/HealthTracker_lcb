@@ -161,6 +161,20 @@ class PangleFullScreenNativeAdController private constructor() {
             params = posParams
         )
 
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE)) {
+            totalShowFailCount++
+            reportAdData(
+                eventName = "ad_show_fail",
+                params = mapOf(
+                    "ad_unit_name" to finalAdUnitId,
+                    "position" to "",
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit"
+                )
+            )
+            return AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "platform_frequency_limit"))
+        }
+
         when (val interceptResult = interceptorChain.intercept(context, AdConfigManager.getFullscreenNativeConfig())) {
             is AdResult.Failure -> {
                 totalShowFailCount++
@@ -458,6 +472,19 @@ class PangleFullScreenNativeAdController private constructor() {
     }
 
     private suspend fun loadAd(context: Context, adUnitId: String): PAGNativeAd? {
+        // 频控前置检查（只检查配额，不检查间隔）
+        val (canLoad, reason) = PlatformFrequencyManager.canLoadAd(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE)
+        if (!canLoad) {
+            val statusLog = PlatformFrequencyManager.getFrequencyStatusLog(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE)
+            AdLogger.w("[$TAG] 加载跳过 | 平台: Pangle | 类型: FullNative | 原因: $reason | $statusLog")
+            reportAdData("ad_load_skipped", mapOf(
+                "ad_unit_name" to adUnitId,
+                "reason" to (reason ?: "unknown"),
+                "platform" to "Pangle"
+            ))
+            return null
+        }
+        
         totalLoadCount++
         reportAdData(
             eventName = "ad_start_load",

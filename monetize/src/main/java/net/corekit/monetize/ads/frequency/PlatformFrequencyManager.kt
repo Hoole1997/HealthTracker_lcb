@@ -157,6 +157,71 @@ object PlatformFrequencyManager {
     }
 
     /**
+     * 检查平台是否可加载广告（用于预加载阶段）
+     * 
+     * 与 canParticipate 的区别：
+     * - 只检查展示/点击配额上限
+     * - 不检查展示间隔（间隔检查在展示阶段进行）
+     * 
+     * 这样设计的原因：
+     * 广告缓存应该提前准备好，间隔冷却期间也可以加载，
+     * 避免冷却结束后才开始加载导致用户等待。
+     * 
+     * @param platform 平台类型
+     * @param adType 广告类型
+     * @return Pair<是否可加载, 拒绝原因(可空)>
+     */
+    fun canLoadAd(platform: BiddingPlatform, adType: BiddingAdType): Pair<Boolean, String?> {
+        // 频控未启用时，所有平台都可加载
+        if (!isEnabled()) {
+            return true to null
+        }
+        
+        val adTypeStr = adType.name.lowercase()
+        val config = BiddingConfigManager.getPlatformFrequencyConfig(platform, adTypeStr)
+        if (config == null) {
+            // 无配置时默认可加载
+            return true to null
+        }
+        
+        val dailyShow = getDailyShowCount(platform, adType)
+        val dailyClick = getDailyClickCount(platform, adType)
+        
+        // 1. 检查每日展示上限
+        if (dailyShow >= config.maxDailyShow) {
+            return false to "show_limit_reached"
+        }
+        
+        // 2. 检查每日点击上限
+        if (dailyClick >= config.maxDailyClick) {
+            return false to "click_limit_reached"
+        }
+        
+        // 注意：加载阶段不检查展示间隔
+        return true to null
+    }
+
+    /**
+     * 获取频控状态详情（用于日志输出）
+     * 
+     * @return 格式化字符串，包含展示配额、点击配额、当前计数
+     */
+    fun getFrequencyStatusLog(platform: BiddingPlatform, adType: BiddingAdType): String {
+        val adTypeStr = adType.name.lowercase()
+        val config = BiddingConfigManager.getPlatformFrequencyConfig(platform, adTypeStr)
+        val dailyShow = getDailyShowCount(platform, adType)
+        val dailyClick = getDailyClickCount(platform, adType)
+        
+        val maxShow = config?.maxDailyShow ?: -1
+        val maxClick = config?.maxDailyClick ?: -1
+        
+        return buildString {
+            append("展示: $dailyShow/$maxShow")
+            append(" | 点击: $dailyClick/$maxClick")
+        }
+    }
+
+    /**
      * 记录平台展示
      * 同时记录展示次数和上次展示时间
      */

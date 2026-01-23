@@ -85,8 +85,28 @@ class TopOnFullScreenNativeAdController private constructor() {
     }
 
     private suspend fun loadAd(context: Context): AdResult<Unit> {
-        totalLoadCount++
         val adUnitId = BuildConfig.TOPON_FULL_NATIVE_ID
+        
+        // 频控前置检查（只检查配额，不检查间隔）
+        val (canLoad, reason) = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.canLoadAd(
+            net.corekit.monetize.ads.bidding.BiddingPlatform.TOPON, 
+            net.corekit.monetize.ads.bidding.BiddingAdType.FULL_NATIVE
+        )
+        if (!canLoad) {
+            val statusLog = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.getFrequencyStatusLog(
+                net.corekit.monetize.ads.bidding.BiddingPlatform.TOPON, 
+                net.corekit.monetize.ads.bidding.BiddingAdType.FULL_NATIVE
+            )
+            AdLogger.w("[$TAG] 加载跳过 | 平台: TopOn | 类型: FullNative | 原因: $reason | $statusLog")
+            reportAdData("ad_load_skipped", mapOf(
+                "ad_unit_name" to adUnitId,
+                "reason" to (reason ?: "unknown"),
+                "platform" to "TopOn"
+            ))
+            return AdResult.Failure(AdErrorCode.AD_LOAD_SKIPPED.toAdException(reason ?: "frequency_limit"))
+        }
+        
+        totalLoadCount++
         reportAdData("ad_start_load", mapOf("ad_unit_name" to adUnitId, "number" to totalLoadCount))
 
         return suspendCancellableCoroutine { continuation ->
@@ -243,6 +263,24 @@ class TopOnFullScreenNativeAdController private constructor() {
                 "number" to totalShowTriggerCount
             )
         )
+
+        if (!net.corekit.monetize.ads.frequency.PlatformFrequencyManager.canParticipate(
+                net.corekit.monetize.ads.bidding.BiddingPlatform.TOPON,
+                net.corekit.monetize.ads.bidding.BiddingAdType.FULL_NATIVE
+            )
+        ) {
+            totalShowFailCount++
+            reportAdData(
+                eventName = "ad_show_fail",
+                params = mapOf(
+                    "ad_unit_name" to finalAdUnitId,
+                    "position" to "",
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit"
+                )
+            )
+            return AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "platform_frequency_limit"))
+        }
 
         when (val interceptResult = interceptorChain.intercept(context, AdConfigManager.getFullscreenNativeConfig())) {
             is AdResult.Failure -> {

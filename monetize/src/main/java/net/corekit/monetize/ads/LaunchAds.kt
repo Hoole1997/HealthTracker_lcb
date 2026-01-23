@@ -251,6 +251,25 @@ class LaunchAds private constructor() {
      * 基础广告加载方法（可复用）
      */
     private suspend fun loadAd(context: Context, adUnitId: String): AppOpenAd? {
+        // 频控前置检查（只检查配额，不检查间隔）
+        val (canLoad, reason) = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.canLoadAd(
+            net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB, 
+            net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH
+        )
+        if (!canLoad) {
+            val statusLog = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.getFrequencyStatusLog(
+                net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB, 
+                net.corekit.monetize.ads.bidding.BiddingAdType.SPLASH
+            )
+            AdLogger.w("[$TAG] 加载跳过 | 平台: AdMob | 类型: Splash | 原因: $reason | $statusLog")
+            reportAdData("ad_load_skipped", mapOf(
+                "ad_unit_name" to adUnitId,
+                "reason" to (reason ?: "unknown"),
+                "platform" to "Admob"
+            ))
+            return null
+        }
+        
         // 累积加载次数统计
         totalLoadCount++
         AdLogger.d("开屏广告累积加载次数: $totalLoadCount")
@@ -387,6 +406,22 @@ class LaunchAds private constructor() {
                 "number" to totalShowTriggerCount
             )
         )
+
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.ADMOB, BiddingAdType.SPLASH)) {
+            totalShowFailCount++
+            AdLogger.w("开屏广告展示失败 | 位置: %s | 原因: 平台频控拦截 | 累计失败: %d", position, totalShowFailCount)
+            onLoaded?.invoke(false)
+            reportAdData(
+                eventName = "ad_show_fail",
+                params = mapOf(
+                    "ad_unit_name" to (adUnitId ?: ""),
+                    "position" to position,
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit",
+                )
+            )
+            return AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("platform_frequency_limit"))
+        }
         
         // 拦截器检查
         when (val interceptResult = interceptorChain.intercept(activity, AdConfigManager.getAppOpenConfig())) {

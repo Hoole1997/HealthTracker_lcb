@@ -221,6 +221,23 @@ class FullNativeAds private constructor() {
                 "number" to totalShowTriggerCount
             )
         )
+
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE)) {
+            totalShowFailCount++
+            AdLogger.w("全屏原生广告展示失败 | 位置: %s | 原因: 平台频控拦截 | 累计失败: %d", position, totalShowFailCount)
+
+            reportAdData(
+                eventName = "ad_show_fail",
+                params = mapOf(
+                    "ad_unit_name" to adUnitId.orEmpty(),
+                    "position" to position,
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit"
+                )
+            )
+
+            return AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("platform_frequency_limit"))
+        }
         // 拦截器检查
         when (val interceptResult =
             interceptorChain.intercept(context, AdConfigManager.getFullscreenNativeConfig())) {
@@ -474,6 +491,19 @@ class FullNativeAds private constructor() {
      * @param adUnitId 广告位ID
      */
     private suspend fun loadAd(context: Context, adUnitId: String): NativeAd? {
+        // 频控前置检查（只检查配额，不检查间隔）
+        val (canLoad, reason) = PlatformFrequencyManager.canLoadAd(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE)
+        if (!canLoad) {
+            val statusLog = PlatformFrequencyManager.getFrequencyStatusLog(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE)
+            AdLogger.w("[$TAG] 加载跳过 | 平台: AdMob | 类型: FullNative | 原因: $reason | $statusLog")
+            reportAdData("ad_load_skipped", mapOf(
+                "ad_unit_name" to adUnitId,
+                "reason" to (reason ?: "unknown"),
+                "platform" to "Admob"
+            ))
+            return null
+        }
+        
         // 累积加载次数统计
         totalLoadCount++
         AdLogger.d("全屏原生广告累积加载次数: $totalLoadCount")
