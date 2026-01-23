@@ -284,6 +284,33 @@ object BiddingConfigManager {
     private fun logCurrentConfig() {
         val config = getCurrentChannelConfig() ?: return
         
+        // 1. 打印应用级频控配置 (App-Level)
+        val appEntries = mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.AppConfigEntry>()
+        val adConfigManager = net.corekit.monetize.ads.config.AdConfigManager
+        
+        // 收集各广告类型的应用级配置
+        val configs = mapOf(
+            "splash" to adConfigManager.getAppOpenConfig(),
+            "interstitial" to adConfigManager.getInterstitialConfig(),
+            "native" to adConfigManager.getNativeConfig(),
+            "banner" to adConfigManager.getBannerConfig(),
+            "rewarded" to adConfigManager.getRewardedConfig(),
+            "rewarded_interstitial" to adConfigManager.getRewardedInterstitialConfig(),
+            "full_native" to adConfigManager.getFullscreenNativeConfig()
+        )
+        
+        configs.forEach { (adType, adConfig) ->
+            appEntries.add(net.corekit.monetize.ads.log.BiddingLogger.AppConfigEntry(
+                adType = adType,
+                showStatus = "${adConfig.getDailyShowCount()}/${adConfig.getMaxDailyShow()}",
+                clickStatus = "${adConfig.getDailyClickCount()}/${adConfig.getMaxDailyClick()}",
+                intervalSec = adConfig.getMinInterval()
+            ))
+        }
+        
+        net.corekit.monetize.ads.log.BiddingLogger.logAppLevelConfigs(appEntries)
+        
+        // 2. 打印平台级配置 (Platform-Level)
         // 收集所有配置条目
         val entries = mutableListOf<net.corekit.monetize.ads.log.BiddingLogger.ConfigEntry>()
         val adTypes = listOf("splash", "interstitial", "native", "banner", "rewarded", "rewarded_interstitial", "full_native")
@@ -314,9 +341,18 @@ object BiddingConfigManager {
                 val freqStr = if (freqConfig != null && biddingAdType != null) {
                     val currentShow = net.corekit.monetize.ads.frequency.PlatformFrequencyManager
                         .getDailyShowCount(biddingPlatform, biddingAdType)
-                    "Daily:$currentShow/${freqConfig.maxDailyShow}"
+                    val currentClick = net.corekit.monetize.ads.frequency.PlatformFrequencyManager
+                        .getDailyClickCount(biddingPlatform, biddingAdType)
+                    
+                    val showStr = "Show:$currentShow/${freqConfig.maxDailyShow}"
+                    val clickStr = if (freqConfig.maxDailyClick > 0) " Click:$currentClick/${freqConfig.maxDailyClick}" else ""
+                    
+                    "$showStr$clickStr"
                 } else {
-                    freqConfig?.let { "Daily:-/${it.maxDailyShow}" }
+                    freqConfig?.let { 
+                        val clickStr = if (it.maxDailyClick > 0) " Click:-/${it.maxDailyClick}" else ""
+                        "Show:-/${it.maxDailyShow}$clickStr" 
+                    }
                 }
                 
                 entries.add(net.corekit.monetize.ads.log.BiddingLogger.ConfigEntry(
@@ -324,16 +360,12 @@ object BiddingConfigManager {
                     adType = adType,
                     enabled = enabled,
                     isBidding = isBidding,
-                    frequencyLimit = freqStr,
-                    configSource = if (configData?.natural != null) "Remote/Local" else "Default"
+                    frequencyLimit = freqStr
                 ))
             }
         }
         
         // 调用 Logger 输出
-        net.corekit.monetize.ads.log.BiddingLogger.logAllConfigs(
-            entries, 
-            configSource = if (!biddingConfigJsonFromRemote.isNullOrEmpty()) "Remote" else "Local/Default"
-        )
+        net.corekit.monetize.ads.log.BiddingLogger.logAllConfigs(entries)
     }
 }

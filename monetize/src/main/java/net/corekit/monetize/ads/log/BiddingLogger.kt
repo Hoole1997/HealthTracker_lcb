@@ -382,6 +382,38 @@ object BiddingLogger {
     }
 
     /**
+     * 应用级配置条目
+     */
+    data class AppConfigEntry(
+        val adType: String,
+        val showStatus: String,   // "5/50"
+        val clickStatus: String,  // "0/10"
+        val intervalSec: Long
+    )
+
+    /**
+     * 输出应用级配置表格
+     */
+    fun logAppLevelConfigs(entries: List<AppConfigEntry>) {
+        if (!AdLogger.isLogEnabled()) return
+        if (entries.isEmpty()) return
+        
+        val tag = "AdAppConfig"
+        
+        Log.d(TAG, "[$tag] ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗")
+        Log.d(TAG, "[$tag] ║                             📱 应用级频控总览                                                      ║")
+        Log.d(TAG, "[$tag] ╠══════════════════════════════════════════════════════════════════════════════════════════════════╣")
+        Log.d(TAG, "[$tag] ║ 广告类型                  │ 展示配额   │ 点击配额   │ 最小间隔")
+        Log.d(TAG, "[$tag] ║──────────────────────────┼────────────┼────────────┼──────────")
+        
+        entries.forEach { entry ->
+            val intervalStr = "${entry.intervalSec}s"
+            Log.d(TAG, "[$tag] ║ ${entry.adType.padEnd(24)} │ ${entry.showStatus.padEnd(10)} │ ${entry.clickStatus.padEnd(10)} │ $intervalStr")
+        }
+        Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝")
+    }
+
+    /**
      * 配置条目
      */
     data class ConfigEntry(
@@ -389,31 +421,30 @@ object BiddingLogger {
         val adType: String,
         val enabled: Boolean,
         val isBidding: Boolean,
-        val frequencyLimit: String?,
-        val configSource: String  // "remote", "default", "asset"
+        val frequencyLimit: String?
     )
 
     /**
      * 输出广告全量配置表格
      */
-    fun logAllConfigs(entries: List<ConfigEntry>, configSource: String) {
+    fun logAllConfigs(entries: List<ConfigEntry>) {
         if (!AdLogger.isLogEnabled()) return
         if (entries.isEmpty()) return
         
         val tag = "AdConfig"
         
         Log.d(TAG, "[$tag] ╔══════════════════════════════════════════════════════════════════════════════════════════════════╗")
-        Log.d(TAG, "[$tag] ║                             ⚙️ 广告配置总览 ($configSource)                                        ║")
+        Log.d(TAG, "[$tag] ║                             ⚙️ 广告配置总览                                                         ║")
         Log.d(TAG, "[$tag] ╠══════════════════════════════════════════════════════════════════════════════════════════════════╣")
-        Log.d(TAG, "[$tag] ║ 平台          │ 广告类型                  │ 启用       │ 参与竞价   │ 频控限制            │ 配置来源")
-        Log.d(TAG, "[$tag] ║──────────────┼──────────────────────────┼───────────┼───────────┼───────────────────┼──────────────────────────")
+        Log.d(TAG, "[$tag] ║ 平台          │ 广告类型                  │ 启用       │ 参与竞价   │ 频控限制 (Show | Click)      ")
+        Log.d(TAG, "[$tag] ║──────────────┼──────────────────────────┼───────────┼───────────┼──────────────────────────────")
         
         entries.forEach { entry ->
             val enabledStr = if (entry.enabled) "✅" else "❌"
             val biddingStr = if (entry.isBidding) "✅" else "❌"
             val freqStr = entry.frequencyLimit ?: "-"
             
-            Log.d(TAG, "[$tag] ║ ${entry.platform.padEnd(12)} │ ${entry.adType.padEnd(24)} │ ${enabledStr.padEnd(8)} │ ${biddingStr.padEnd(8)} │ ${freqStr.padEnd(17)} │ ${entry.configSource}")
+            Log.d(TAG, "[$tag] ║ ${entry.platform.padEnd(12)} │ ${entry.adType.padEnd(24)} │ ${enabledStr.padEnd(8)} │ ${biddingStr.padEnd(8)} │ ${freqStr}")
         }
         Log.d(TAG, "[$tag] ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝")
     }
