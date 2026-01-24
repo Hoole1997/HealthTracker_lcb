@@ -475,7 +475,7 @@ class TopOnFullScreenNativeAdController private constructor() {
                 )
 
                 // TopOn 的 revenueValue 已经是美元，不需要转换
-                val revenueUsd = revenueValue.toLong()
+                val revenueUsd = (revenueValue * 1_000_000).toLong()
                 IpuController.onAdImpression("FullNa", revenueUsd)
                 RpuController.onAdRevenue("FullNa", revenueUsd)
 

@@ -206,7 +206,7 @@ class TopOnBannerAdController private constructor() {
                     cachedEcpm =   info?.publisherRevenue ?: info?.ecpm ?: 0.0
                     currentAdSource = info?.networkName ?: "TopOn"
                     totalShowCount++
-                    val ecpmMicros = cachedEcpm .toLong()
+                    val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
                     reportAdData(
                         "ad_impression",
                         mapOf(
