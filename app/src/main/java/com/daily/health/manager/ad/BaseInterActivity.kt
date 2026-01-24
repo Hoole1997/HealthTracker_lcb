@@ -157,9 +157,7 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
     protected fun showReword(){
        lifecycleScope.launch {
            loadRewardBidding(getRewardAdPosition()) {
-               if(it){
-                   hideMask()
-               }
+               hideMask()
            }
        }
     }

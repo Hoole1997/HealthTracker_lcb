@@ -286,12 +286,11 @@ class TopOnSplashAdController private constructor() {
 
                     override fun onAdShow(info: TUAdInfo?) {
                         AdLogger.d("[$TAG] 开屏广告已展示")
-                        cachedEcpm = parseEcpm(info?.ecpmLevel)
-                        
+                        cachedEcpm = info?.publisherRevenue ?: info?.ecpm ?: 0.0
                         currentAdSource = info?.networkName ?: "TopOn"
                         
                         totalShowCount++
-                        val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
+                        val ecpmMicros = cachedEcpm.toLong()
                         reportAdData(
                             "ad_impression",
                             mapOf(

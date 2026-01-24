@@ -2,6 +2,8 @@ package net.corekit.monetize.ads.pangle
 
 import android.app.Activity
 import android.content.Context
+import com.bytedance.sdk.openadsdk.api.model.PAGAdEcpmInfo
+import com.bytedance.sdk.openadsdk.api.model.PAGRevenueInfo
 import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAd
 import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAdInteractionListener
 import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAdLoadListener
@@ -20,6 +22,7 @@ import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
 import net.corekit.monetize.ads.bidding.BiddingAdType
 import net.corekit.monetize.ads.bidding.BiddingPlatform
+import net.corekit.monetize.ads.bidding.BiddingWinner
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
@@ -43,8 +46,7 @@ class PangleRewardedAdController private constructor() {
     private var totalShowFailCount by DataStoreIntDelegate("pangle_rv_show_fail_count", 0)
     private var totalClickCount by DataStoreIntDelegate("pangle_rv_click_count", 0)
     private var totalCloseCount by DataStoreIntDelegate("pangle_rv_close_count", 0)
-    private var currentPosition: String = ""
-    private var currentAdSource: String = "Pangle"
+    private var totalRewardEarnedCount by DataStoreIntDelegate("pangle_rewarded_ad_total_reward_earned", 0)
 
     companion object {
         private const val TAG = "PangleRewarded"
@@ -60,7 +62,6 @@ class PangleRewardedAdController private constructor() {
     }
 
     private var cachedAd: PAGRewardedAd? = null
-    private var cachedEcpm: Double = 0.0
     private val isLoading = AtomicBoolean(false)
     private var loadTimestamp: Long = 0
     private val cacheExpireTime = 60 * 60 * 1000L
@@ -127,19 +128,10 @@ class PangleRewardedAdController private constructor() {
                         val loadTime = System.currentTimeMillis() - startTime
                         cachedAd = ad
                         loadTimestamp = System.currentTimeMillis()
-                        cachedEcpm = try {
-                            // 优先使用官方推荐的 pagRevenueInfo API
-                            (ad.pagRevenueInfo?.winEcpm?.revenue as? Number)?.toDouble()
-                                ?: ad.mediaExtraInfo?.get("price")?.toString()?.toDoubleOrNull()
-                                ?: 0.0
-                        } catch (e: Exception) {
-                            0.0
-                        }
 
                         AdLogger.d(
-                            "[$TAG] ✅ 激励广告加载成功, 耗时: %d ms, eCPM: %.6f USD",
-                            loadTime,
-                            cachedEcpm
+                            "[$TAG] ✅ 激励广告加载成功, 耗时: %d ms",
+                            loadTime
                         )
                         totalLoadSucCount++
                         reportAdData(
@@ -195,10 +187,13 @@ class PangleRewardedAdController private constructor() {
     ): AdResult<Unit> = suspendCancellableCoroutine { continuation ->
         val ad = cachedAd
         val adUnitId = BuildConfig.PANGLE_REWARDED_ID
-        currentPosition = position
 
+        val pagRevenueInfo: PAGRevenueInfo? = ad?.pagRevenueInfo
+        val ecpmInfo: PAGAdEcpmInfo? = pagRevenueInfo?.showEcpm
+        val currentCurrency = ecpmInfo?.currency ?: "USD"
+        val ecpmMicros = ecpmInfo?.revenue?.toDoubleOrNull() ?: 0.0
         val adnName = ad?.pagRevenueInfo?.winEcpm?.adnName
-        currentAdSource = if (adnName.isNullOrEmpty()) "Pangle" else adnName
+        var currentAdSource = if (adnName.isNullOrEmpty()) "Pangle" else adnName
 
         totalShowTriggerCount++
         reportAdData(
@@ -258,33 +253,37 @@ class PangleRewardedAdController private constructor() {
         ad.setAdInteractionListener(object : PAGRewardedAdInteractionListener {
             override fun onAdShowed() {
                 AdLogger.d("[$TAG] 激励广告已展示")
+
+                // Pangle 的 revenue 本身就是美元，直接使用
+
                 totalShowCount++
-                val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
+                PlatformFrequencyManager.recordShow(BiddingWinner.PANGLE, BiddingAdType.REWARDED)
+                AdConfigManager.getRewardedConfig().recordShow()
                 reportAdData(
-                    "ad_impression",
-                    mapOf(
+                    eventName = "ad_impression",
+                    params = mapOf(
                         "ad_unit_name" to adUnitId,
-                        "position" to currentPosition,
+                        "position" to adUnitId,
                         "number" to totalShowCount,
                         "ad_source" to currentAdSource,
-                        "value" to cachedEcpm,
-                        "currency" to "USD"
+                        "value" to ecpmMicros,
+                        "currency" to currentCurrency
                     )
                 )
                 RevenueAdManager.reportAdRevenue(
                     RevenueAdData(
                         revenue = RevenueInfo(
-                            value = cachedEcpm,
-                            currencyCode = "USD"
+                            value = ecpmMicros,
+                            currencyCode = currentCurrency
                         ),
-                        adRevenueNetwork = "Pangle",
+                        adRevenueNetwork = currentAdSource,
                         adRevenueUnit = adUnitId,
-                        adRevenuePlacement = currentPosition,
+                        adRevenuePlacement = position,
                         adFormat = "Rewarded"
                     )
                 )
-                IpuController.onAdImpression("RV", ecpmMicros)
-                RpuController.onAdRevenue("RV", ecpmMicros)
+                IpuController.onAdImpression("RV", ecpmMicros.toLong())
+                RpuController.onAdRevenue("RV", ecpmMicros.toLong())
             }
 
             override fun onAdClicked() {
@@ -293,14 +292,14 @@ class PangleRewardedAdController private constructor() {
                 AdConfigManager.getRewardedConfig().recordClick()
                 PlatformFrequencyManager.recordClick(BiddingPlatform.PANGLE, BiddingAdType.REWARDED)
                 reportAdData(
-                    "ad_click",
-                    mapOf(
+                    eventName = "ad_click",
+                    params = mapOf(
                         "ad_unit_name" to adUnitId,
-                        "position" to currentPosition,
+                        "position" to position,
                         "number" to totalClickCount,
                         "ad_source" to currentAdSource,
-                        "value" to cachedEcpm,
-                        "currency" to "USD"
+                        "value" to ecpmMicros,
+                        "currency" to currentCurrency
                     )
                 )
             }
@@ -312,11 +311,11 @@ class PangleRewardedAdController private constructor() {
                     "ad_close",
                     mapOf(
                         "ad_unit_name" to adUnitId,
-                        "position" to currentPosition,
+                        "position" to position,
                         "number" to totalCloseCount,
-                        "ad_source" to "Pangle",
-                        "value" to cachedEcpm,
-                        "currency" to "USD"
+                        "ad_source" to currentAdSource,
+                        "value" to ecpmMicros,
+                        "currency" to currentCurrency
                     )
                 )
                 clearCache()
@@ -327,6 +326,18 @@ class PangleRewardedAdController private constructor() {
 
             override fun onUserEarnedReward(rewardItem: PAGRewardItem) {
                 hasEarnedReward = true
+                totalRewardEarnedCount++
+                reportAdData(
+                    eventName = "ad_reward_earned",
+                    params = mapOf(
+                        "ad_unit_name" to adUnitId,
+                        "position" to position,
+                        "number" to totalRewardEarnedCount,
+                        "reward_name" to rewardItem.rewardName,
+                        "reward_amount" to rewardItem.rewardAmount,
+                        "ad_source" to currentAdSource
+                    )
+                )
                 AdLogger.d(
                     "[$TAG] 用户获得奖励: %s x %d",
                     rewardItem.rewardName,
@@ -342,7 +353,7 @@ class PangleRewardedAdController private constructor() {
         ad.show(activity)
     }
 
-    fun getEcpm(): Double = if (hasValidCache()) cachedEcpm else 0.0
+    fun getEcpm(): Double = if (hasValidCache()) cachedAd?.pagRevenueInfo?.showEcpm?.revenue?.toDoubleOrNull() ?: 0.0 else 0.0
 
     fun hasValidCache(): Boolean {
         if (cachedAd == null) return false
@@ -351,7 +362,6 @@ class PangleRewardedAdController private constructor() {
 
     fun clearCache() {
         cachedAd = null
-        cachedEcpm = 0.0
         loadTimestamp = 0
     }
 

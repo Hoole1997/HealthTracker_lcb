@@ -32,6 +32,7 @@ import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.ads.bidding.BiddingAdType
 import net.corekit.monetize.ads.bidding.BiddingPlatform
+import net.corekit.monetize.ads.bidding.BiddingWinner
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
@@ -304,6 +305,8 @@ class RewardedAds private constructor() {
                 }
                 override fun onAdShowedFullScreenContent() {
                     totalShowCount++
+                    PlatformFrequencyManager.recordShow(BiddingWinner.ADMOB, BiddingAdType.REWARDED)
+                    AdConfigManager.getRewardedConfig().recordShow()
                     AdLogger.d("激励广告展示成功，总展示次数: %d", totalShowCount)
                 }
 

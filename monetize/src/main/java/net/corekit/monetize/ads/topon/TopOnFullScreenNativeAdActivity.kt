@@ -1,5 +1,6 @@
 package net.corekit.monetize.ads.topon
 
+import ads_mobile_sdk.po
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
@@ -84,13 +85,14 @@ class TopOnFullScreenNativeAdActivity : AppCompatActivity() {
                     context = this@TopOnFullScreenNativeAdActivity,
                     container = findViewById(R.id.adContainer),
                     lifecycleOwner = this@TopOnFullScreenNativeAdActivity,
-                    adUnitId = BuildConfig.TOPON_FULL_NATIVE_ID
+                    position,
+                    placementId = BuildConfig.TOPON_FULL_NATIVE_ID
                 )) {
                     is AdResult.Success -> {
                         findViewById<View>(R.id.rl_top_buttons)?.apply {
                             isVisible = true
                             findViewById<View>(R.id.btn_close)?.setOnClickListener {
-                                TopOnFullScreenNativeAdController.getInstance().closeEvent(adUnitId = BuildConfig.TOPON_FULL_NATIVE_ID)
+                                TopOnFullScreenNativeAdController.getInstance().closeEvent(placementId = BuildConfig.TOPON_FULL_NATIVE_ID,position = position)
                                 closeAdAndFinish()
                             }
                         }
@@ -166,4 +168,6 @@ class TopOnFullScreenNativeAdActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // 禁用返回键
     }
+
+
 }

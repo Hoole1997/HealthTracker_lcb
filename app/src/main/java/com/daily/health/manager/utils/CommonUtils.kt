@@ -20,6 +20,8 @@ import com.daily.health.manager.face.act.SplashScreen
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils
+import net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdActivity
+import net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdActivity
 import net.corekit.monetize.ui.AdmobFullScreenNativeAdActivity
 import java.util.Calendar
 import java.util.Date
@@ -109,6 +111,8 @@ val adClasses = arrayOf(
     TTAdActivity::class.java,
     GuideScreen::class.java,
     sg.bigo.ads.api.AdActivity::class.java,
+    PangleFullScreenNativeAdActivity::class.java,
+    TopOnFullScreenNativeAdActivity::class.java
 )
 
 fun getTodayStart(): Date {

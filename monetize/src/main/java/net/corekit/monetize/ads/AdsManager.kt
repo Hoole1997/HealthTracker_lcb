@@ -243,7 +243,7 @@ object AdsManager {
         if (AdIdHelper.hasTopOnFullNativeId()) {
             entries.add(net.corekit.monetize.ads.log.BiddingLogger.CacheEntry(
                 "FullNative", "TopOn", net.corekit.monetize.BuildConfig.TOPON_FULL_NATIVE_ID,
-                if (net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController.getInstance().hasValidCache()) 1 else 0, 1
+                if (net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController.getInstance().hasCachedAd()) 1 else 0, 1
             ))
         }
         

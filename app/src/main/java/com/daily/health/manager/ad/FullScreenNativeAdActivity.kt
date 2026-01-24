@@ -203,11 +203,11 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
 
     private fun showTopOnAd(container: ViewGroup): AdResult<Unit> {
         val controller = TopOnFullScreenNativeAdController.getInstance()
-        if (!controller.hasValidCache()) {
+        if (!controller.hasCachedAd()) {
             return AdResult.Failure(AdException(-1, "TopOn 无缓存广告"))
         }
 
-        val nativeAd = controller.getCachedNativeAd() ?: return AdResult.Failure(
+        val nativeAd = controller.getCurrentAd()?.nativeAd ?: return AdResult.Failure(
             AdException(-1, "TopOn 获取缓存广告失败")
         )
 

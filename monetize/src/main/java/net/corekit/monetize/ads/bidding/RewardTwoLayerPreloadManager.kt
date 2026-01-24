@@ -63,20 +63,31 @@ object RewardTwoLayerPreloadManager {
     }
 
     /**
-     * 定向预加载：根据消耗的广告类型补充缓存
+     * 定向预加载：根据消耗的广告类型和平台补充缓存
      * 
      * @param consumedAdType 刚被消耗的广告类型
+     * @param consumedPlatform 刚被消耗的广告平台（可选，传入时只补充该平台）
      */
-    suspend fun preloadByConsumedType(context: Context, consumedAdType: BiddingAdType) = coroutineScope {
-        AdLogger.d("[$TAG] 定向预加载 | 消耗类型: %s", consumedAdType.name)
+    suspend fun preloadByConsumedType(
+        context: Context, 
+        consumedAdType: BiddingAdType,
+        consumedPlatform: BiddingPlatform? = null
+    ) = coroutineScope {
+        val platformInfo = consumedPlatform?.name ?: "ALL"
+        AdLogger.d("[$TAG] 定向预加载 | 消耗类型: %s | 消耗平台: %s", consumedAdType.name, platformInfo)
         
         when (consumedAdType) {
             BiddingAdType.REWARDED -> {
-                // 消耗了激励广告，只补充激励广告缓存
-                RewardedPreloadManager.preloadAll(context)
+                if (consumedPlatform != null) {
+                    // 只补充消耗平台的激励广告缓存
+                    RewardedPreloadManager.preloadByPlatform(context, consumedPlatform)
+                } else {
+                    // 未指定平台，补充所有平台的激励广告缓存
+                    RewardedPreloadManager.preloadAll(context)
+                }
             }
             BiddingAdType.REWARDED_INTERSTITIAL -> {
-                // 消耗了插页激励广告，只补充插页激励广告缓存
+                // 消耗了插页激励广告，只补充插页激励广告缓存（仅 AdMob 支持）
                 val controller = BiddingPlatformController
                 if (controller.shouldParticipateInPreload(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL.toConfigKey())) {
                     withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
@@ -86,8 +97,13 @@ object RewardTwoLayerPreloadManager {
                 }
             }
             BiddingAdType.INTERSTITIAL -> {
-                // 消耗了插屏广告，只补充插屏广告缓存
-                InterstitialPreloadManager.preloadAll(context)
+                if (consumedPlatform != null) {
+                    // 只补充消耗平台的插屏广告缓存
+                    InterstitialPreloadManager.preloadByPlatform(context, consumedPlatform)
+                } else {
+                    // 未指定平台，补充所有平台的插屏广告缓存
+                    InterstitialPreloadManager.preloadAll(context)
+                }
             }
             else -> {
                 // 其他类型，预加载所有
@@ -95,7 +111,7 @@ object RewardTwoLayerPreloadManager {
             }
         }
         
-        AdLogger.d("[$TAG] 定向预加载完成 | 类型: %s", consumedAdType.name)
+        AdLogger.d("[$TAG] 定向预加载完成 | 类型: %s | 平台: %s", consumedAdType.name, platformInfo)
     }
 
     suspend fun performTwoLayerBidding(context: Context): FinalBidResult = coroutineScope {
@@ -353,9 +369,6 @@ object RewardTwoLayerPreloadManager {
         )
         
         AdLogger.d("[$TAG] Show winning ad: %s - %s", winner.platform.name, winner.winnerType.name)
-        
-        // 在展示前记录频控（而非广告关闭后）
-        PlatformFrequencyManager.recordShow(winner.platform, winner.winnerType)
         
         return withTimeoutOrNull(SHOW_TIMEOUT_MS) {
             when (winner.winnerType) {

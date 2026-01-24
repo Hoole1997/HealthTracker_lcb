@@ -282,7 +282,7 @@ class TopOnNativeAdController private constructor() {
                     currentAdSource = info?.networkName ?: "TopOn"
                     
                     totalShowCount++
-                    val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
+                    val ecpmMicros = cachedEcpm.toLong()
                     reportAdData(
                         "ad_impression",
                         mapOf(

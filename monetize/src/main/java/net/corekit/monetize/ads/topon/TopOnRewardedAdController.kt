@@ -2,10 +2,16 @@ package net.corekit.monetize.ads.topon
 
 import android.app.Activity
 import android.content.Context
+import com.healthtracker.framework.BuildState
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.logi
+import com.healthtracker.framework.ext.logw
 import com.thinkup.rewardvideo.api.TURewardVideoAd
 import com.thinkup.rewardvideo.api.TURewardVideoListener
 import com.thinkup.core.api.TUAdInfo
 import com.thinkup.core.api.AdError
+import com.thinkup.core.api.TUAdRevenueListener
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.core.ads.RevenueAdData
 import net.corekit.core.ads.RevenueAdManager
@@ -19,6 +25,7 @@ import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.bidding.AdIdHelper
 import net.corekit.monetize.ads.bidding.BiddingAdType
 import net.corekit.monetize.ads.bidding.BiddingPlatform
+import net.corekit.monetize.ads.bidding.BiddingWinner
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
@@ -63,6 +70,7 @@ class TopOnRewardedAdController private constructor() {
     private val isLoading = AtomicBoolean(false)
     private var loadTimestamp: Long = 0
     private val cacheExpireTime = 60 * 60 * 1000L
+    private val adUnitId: String get() = BuildConfig.TOPON_REWARDED_ID
 
     suspend fun preloadAd(context: Context): AdResult<Unit> {
         if (!AdIdHelper.hasTopOnRewardedId()) {
@@ -95,8 +103,6 @@ class TopOnRewardedAdController private constructor() {
     }
 
     private suspend fun loadAd(context: Context): AdResult<Unit> {
-        val adUnitId = BuildConfig.TOPON_REWARDED_ID
-        
         // 频控前置检查（只检查配额，不检查间隔）
         val (canLoad, reason) = PlatformFrequencyManager.canLoadAd(BiddingPlatform.TOPON, BiddingAdType.REWARDED)
         if (!canLoad) {
@@ -121,156 +127,7 @@ class TopOnRewardedAdController private constructor() {
             val ad = TURewardVideoAd(context, adUnitId)
             rewardedAd = ad
 
-            ad.setAdListener(object : TURewardVideoListener {
-                override fun onRewardedVideoAdLoaded() {
-                    val loadTime = System.currentTimeMillis() - startTime
-                    loadTimestamp = System.currentTimeMillis()
-                    
-                    // 尝试使用 checkValidAdCaches 获取 eCPM
-                    cachedEcpm = try {
-                        ad.checkValidAdCaches()?.firstOrNull()?.publisherRevenue?.toDouble() ?: 0.0
-                    } catch (e: Exception) { 0.0 }
-                    
-                    AdLogger.d("[$TAG] ✅ 激励广告加载成功, 耗时: %d ms, eCPM: %.6f USD", loadTime, cachedEcpm)
-                    
-                    totalLoadSucCount++
-                    
-                    // 尝试获取加载成功的广告源
-                    val networkName = ad.checkValidAdCaches()?.firstOrNull()?.networkName
-                    val loadedSource = if (networkName.isNullOrEmpty()) "TopOn" else networkName
-
-                    reportAdData(
-                        "ad_loaded",
-                        mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "number" to totalLoadSucCount,
-                            "ad_source" to loadedSource,
-                            "pass_time" to ceil(loadTime / 1000.0).toInt()
-                        )
-                    )
-                    FpuController.onAdFill("RW")
-                    if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
-                }
-
-                override fun onRewardedVideoAdFailed(error: AdError?) {
-                    val loadTime = System.currentTimeMillis() - startTime
-                    AdLogger.e(
-                        "[$TAG] ❌ 激励广告加载失败, 耗时: %d ms, error: %s",
-                        loadTime,
-                        error?.fullErrorInfo
-                    )
-                    totalLoadFailCount++
-                    reportAdData(
-                        "ad_load_fail",
-                        mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "number" to totalLoadFailCount,
-                            "ad_source" to "TopOn",
-                            "pass_time" to ceil(loadTime / 1000.0).toInt(),
-                            "reason" to (error?.desc ?: "code=${error?.code}")
-                        )
-                    )
-                    if (continuation.isActive) continuation.resume(
-                        AdResult.Failure(
-                            AdException(
-                                error?.code?.toIntOrNull() ?: AdException.ERROR_INTERNAL,
-                                error?.desc ?: "加载失败"
-                            )
-                        )
-                    )
-                }
-
-                override fun onRewardedVideoAdPlayStart(info: TUAdInfo?) {
-                    AdLogger.d("[$TAG] 激励广告开始播放")
-                    cachedEcpm = parseEcpm(info?.ecpmLevel)
-                    
-                    currentAdSource = info?.networkName ?: "TopOn"
-                    
-                    totalShowCount++
-                    val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
-                    reportAdData(
-                        "ad_impression",
-                        mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "position" to currentPosition,
-                            "number" to totalShowCount,
-                            "ad_source" to currentAdSource,
-                            "value" to cachedEcpm,
-                            "currency" to "USD"
-                        )
-                    )
-                    RevenueAdManager.reportAdRevenue(
-                        RevenueAdData(
-                            revenue = RevenueInfo(
-                                value = cachedEcpm,
-                                currencyCode = "USD"
-                            ),
-                            adRevenueNetwork = currentAdSource,
-                            adRevenueUnit = adUnitId,
-                            adRevenuePlacement = currentPosition,
-                            adFormat = "Rewarded"
-                        )
-                    )
-                    IpuController.onAdImpression("RW", ecpmMicros)
-                    RpuController.onAdRevenue("RW", ecpmMicros)
-                }
-
-                override fun onRewardedVideoAdPlayEnd(info: TUAdInfo?) {
-                    AdLogger.d("[$TAG] 激励广告播放结束")
-                }
-
-                override fun onRewardedVideoAdPlayFailed(error: AdError?, info: TUAdInfo?) {
-                    AdLogger.e("[$TAG] 激励广告播放失败: %s", error?.fullErrorInfo)
-                    totalShowFailCount++
-                    reportAdData(
-                        "ad_show_fail",
-                        mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "position" to currentPosition,
-                            "number" to totalShowFailCount,
-                            "reason" to (error?.fullErrorInfo ?: "play_failed")
-                        )
-                    )
-                }
-
-                override fun onRewardedVideoAdClosed(info: TUAdInfo?) {
-                    AdLogger.d("[$TAG] 激励广告已关闭")
-                    totalCloseCount++
-                    reportAdData(
-                        "ad_close",
-                        mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "position" to currentPosition,
-                            "number" to totalCloseCount,
-                            "ad_source" to currentAdSource,
-                            "value" to cachedEcpm,
-                            "currency" to "USD"
-                        )
-                    )
-                }
-
-                override fun onRewardedVideoAdPlayClicked(info: TUAdInfo?) {
-                    AdLogger.d("[$TAG] 激励广告被点击")
-                    totalClickCount++
-                    AdConfigManager.getRewardedConfig().recordClick()
-                    PlatformFrequencyManager.recordClick(BiddingPlatform.TOPON, BiddingAdType.REWARDED)
-                    reportAdData(
-                        "ad_click",
-                        mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "position" to currentPosition,
-                            "number" to totalClickCount,
-                            "ad_source" to currentAdSource,
-                            "value" to cachedEcpm,
-                            "currency" to "USD"
-                        )
-                    )
-                }
-
-                override fun onReward(info: TUAdInfo?) {
-                    AdLogger.d("[$TAG] 用户获得奖励")
-                }
-            })
+            ad.setAdListener(LoadAdListener(startTime, continuation))
 
             ad.load()
         }
@@ -296,23 +153,7 @@ class TopOnRewardedAdController private constructor() {
             )
         )
 
-        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.TOPON, BiddingAdType.REWARDED)) {
-            totalShowFailCount++
-            reportAdData(
-                "ad_show_fail",
-                mapOf(
-                    "ad_unit_name" to adUnitId,
-                    "position" to position,
-                    "number" to totalShowFailCount,
-                    "reason" to "platform_frequency_limit"
-                )
-            )
-            onRewardEarned?.invoke(false)
-            if (continuation.isActive) continuation.resume(
-                AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("platform_frequency_limit"))
-            )
-            return@suspendCancellableCoroutine
-        }
+
 
         if (ad == null || !ad.isAdReady) {
             AdLogger.w("[$TAG] 没有可用的缓存广告")
@@ -338,30 +179,11 @@ class TopOnRewardedAdController private constructor() {
             return@suspendCancellableCoroutine
         }
 
-        var hasEarnedReward = false
         AdLogger.d("[$TAG] 准备展示激励广告")
 
-        ad.setAdListener(object : TURewardVideoListener {
-            override fun onRewardedVideoAdLoaded() {}
-            override fun onRewardedVideoAdFailed(error: AdError?) {}
-            override fun onRewardedVideoAdPlayStart(info: TUAdInfo?) {}
-            override fun onRewardedVideoAdPlayEnd(info: TUAdInfo?) {}
-            override fun onRewardedVideoAdPlayFailed(error: AdError?, info: TUAdInfo?) {}
-            override fun onRewardedVideoAdPlayClicked(info: TUAdInfo?) {}
-
-            override fun onReward(info: TUAdInfo?) {
-                hasEarnedReward = true
-                AdLogger.d("[$TAG] 用户获得奖励")
-            }
-
-            override fun onRewardedVideoAdClosed(info: TUAdInfo?) {
-                AdLogger.d("[$TAG] 激励广告已关闭, 是否获得奖励: %s", hasEarnedReward)
-                clearCache()
-                onRewardEarned?.invoke(hasEarnedReward)
-                onDismiss?.invoke()
-                if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
-            }
-        })
+        val listener = ShowAdListener(continuation, onRewardEarned, onDismiss)
+        ad.setAdListener(listener)
+        ad.setAdRevenueListener(listener)
 
         ad.show(activity)
     }
@@ -380,13 +202,6 @@ class TopOnRewardedAdController private constructor() {
         loadTimestamp = 0
     }
 
-    private fun parseEcpm(ecpmLevel: Any?): Double {
-        return when (ecpmLevel) {
-            is Number -> ecpmLevel.toDouble()
-            is String -> ecpmLevel.toDoubleOrNull() ?: 0.0
-            else -> 0.0
-        }
-    }
 
     private fun reportAdData(eventName: String, params: Map<String, Any>) {
         val data = mutableMapOf<String, Any>("ad_platform" to "TopOn", "ad_format" to "Rewarded")
@@ -396,5 +211,191 @@ class TopOnRewardedAdController private constructor() {
             eventName,
             data
         ) else ReportDataManager.reportData(eventName, data)
+    }
+
+    /**
+     * 加载阶段监听器 - 处理加载成功/失败埋点，展示相关回调空实现
+     */
+    private inner class LoadAdListener(
+        private val startTime: Long,
+        private val continuation: CancellableContinuation<AdResult<Unit>>
+    ) : TURewardVideoListener {
+        
+        override fun onRewardedVideoAdLoaded() {
+            loadTimestamp = System.currentTimeMillis()
+            val loadTime = loadTimestamp - startTime
+            val ad = rewardedAd ?: return
+            
+            cachedEcpm = try {
+                ad.checkValidAdCaches()?.firstOrNull()?.publisherRevenue?.toDouble() ?: 0.0
+            } catch (e: Exception) { 0.0 }
+            
+            AdLogger.d("[$TAG] ✅ 激励广告加载成功, 耗时: %d ms, eCPM: %.6f USD", loadTime, cachedEcpm)
+            totalLoadSucCount++
+            
+            val networkName = ad.checkValidAdCaches()?.firstOrNull()?.networkName
+            val loadedSource = if (networkName.isNullOrEmpty()) "TopOn" else networkName
+
+            reportAdData(
+                "ad_loaded",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "number" to totalLoadSucCount,
+                    "ad_source" to loadedSource,
+                    "pass_time" to ceil(loadTime / 1000.0).toInt()
+                )
+            )
+            FpuController.onAdFill("RW")
+            if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
+        }
+
+        override fun onRewardedVideoAdFailed(error: AdError?) {
+            val loadTime = System.currentTimeMillis() - startTime
+            AdLogger.e("[$TAG] ❌ 激励广告加载失败, 耗时: %d ms, error: %s", loadTime, error?.fullErrorInfo)
+            totalLoadFailCount++
+            reportAdData(
+                "ad_load_fail",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "number" to totalLoadFailCount,
+                    "ad_source" to "TopOn",
+                    "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                    "reason" to (error?.desc ?: "code=${error?.code}")
+                )
+            )
+            if (continuation.isActive) continuation.resume(
+                AdResult.Failure(
+                    AdException(
+                        error?.code?.toIntOrNull() ?: AdException.ERROR_INTERNAL,
+                        error?.desc ?: "加载失败"
+                    )
+                )
+            )
+        }
+
+        // 展示相关回调 - 空实现，由 ShowAdListener 处理
+        override fun onRewardedVideoAdPlayStart(info: TUAdInfo?) {}
+        override fun onRewardedVideoAdPlayEnd(info: TUAdInfo?) {}
+        override fun onRewardedVideoAdPlayFailed(error: AdError?, info: TUAdInfo?) {}
+        override fun onRewardedVideoAdPlayClicked(info: TUAdInfo?) {}
+        override fun onRewardedVideoAdClosed(info: TUAdInfo?) {}
+        override fun onReward(info: TUAdInfo?) {}
+    }
+
+    /**
+     * 展示阶段监听器 - 处理展示/点击/关闭/奖励埋点，加载相关回调空实现
+     */
+    private inner class ShowAdListener(
+        private val continuation: CancellableContinuation<AdResult<Unit>>,
+        private val onRewardEarned: ((Boolean) -> Unit)?,
+        private val onDismiss: (() -> Unit)?
+    ) : TURewardVideoListener, TUAdRevenueListener {
+        
+        private var hasEarnedReward = false
+
+        // 加载相关回调 - 空实现，由 LoadAdListener 处理
+        override fun onRewardedVideoAdLoaded() {}
+        override fun onRewardedVideoAdFailed(error: AdError?) {}
+
+        override fun onRewardedVideoAdPlayStart(info: TUAdInfo?) {
+            AdLogger.d("[$TAG] 激励广告开始播放")
+            cachedEcpm = info?.publisherRevenue ?:0.0
+            currentAdSource = info?.networkName ?: "TopOn"
+            
+            totalShowCount++
+            PlatformFrequencyManager.recordShow(BiddingWinner.TOPON, BiddingAdType.REWARDED)
+            AdConfigManager.getRewardedConfig().recordShow()
+            reportAdData(
+                "ad_impression",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to currentPosition,
+                    "number" to totalShowCount,
+                    "ad_source" to currentAdSource,
+                    "currency" to "USD"
+                )
+            )
+
+        }
+
+        override fun onRewardedVideoAdPlayEnd(info: TUAdInfo?) {
+            AdLogger.d("[$TAG] 激励广告播放结束")
+        }
+
+        override fun onRewardedVideoAdPlayFailed(error: AdError?, info: TUAdInfo?) {
+            AdLogger.e("[$TAG] 激励广告播放失败: %s", error?.fullErrorInfo)
+            totalShowFailCount++
+            reportAdData(
+                "ad_show_fail",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to currentPosition,
+                    "number" to totalShowFailCount,
+                    "reason" to (error?.fullErrorInfo ?: "play_failed")
+                )
+            )
+        }
+
+        override fun onRewardedVideoAdPlayClicked(info: TUAdInfo?) {
+            AdLogger.d("[$TAG] 激励广告被点击")
+            totalClickCount++
+            AdConfigManager.getRewardedConfig().recordClick()
+            PlatformFrequencyManager.recordClick(BiddingPlatform.TOPON, BiddingAdType.REWARDED)
+            reportAdData(
+                "ad_click",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to currentPosition,
+                    "number" to totalClickCount,
+                    "ad_source" to currentAdSource,
+                    "currency" to "USD"
+                )
+            )
+        }
+
+        override fun onReward(info: TUAdInfo?) {
+            hasEarnedReward = true
+            AdLogger.d("[$TAG] 用户获得奖励")
+        }
+
+        override fun onRewardedVideoAdClosed(info: TUAdInfo?) {
+            AdLogger.d("[$TAG] 激励广告已关闭, 是否获得奖励: %s", hasEarnedReward)
+            totalCloseCount++
+            reportAdData(
+                "ad_close",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to currentPosition,
+                    "number" to totalCloseCount,
+                    "ad_source" to currentAdSource,
+                    "currency" to "USD"
+                )
+            )
+            clearCache()
+            onRewardEarned?.invoke(hasEarnedReward)
+            onDismiss?.invoke()
+            if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
+        }
+
+        override fun onAdRevenuePaid(adInfo: TUAdInfo?) {
+            val revenueValue = adInfo?.publisherRevenue ?: 0.0
+            val ecpmUsd =  revenueValue.toLong()
+            "Topon 激励上报 ecpm = $ecpmUsd".logd("###############")
+            RevenueAdManager.reportAdRevenue(
+                RevenueAdData(
+                    revenue = RevenueInfo(
+                        value = revenueValue,
+                        currencyCode = "USD"
+                    ),
+                    adRevenueNetwork = currentAdSource,
+                    adRevenueUnit = adUnitId,
+                    adRevenuePlacement = currentPosition,
+                    adFormat = "Rewarded"
+                )
+            )
+            //Topon返回的是美元，转成long类型后永远都是 0
+            IpuController.onAdImpression("RW", ecpmUsd)
+            RpuController.onAdRevenue("RW", ecpmUsd)
+        }
     }
 }

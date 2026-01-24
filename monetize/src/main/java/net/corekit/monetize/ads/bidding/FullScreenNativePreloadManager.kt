@@ -83,7 +83,7 @@ object FullScreenNativePreloadManager {
         }
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE.toConfigKey())) {
-            if (TopOnFullScreenNativeAdController.getInstance().hasValidCache()) {
+            if (TopOnFullScreenNativeAdController.getInstance().hasCachedAd()) {
                 val rawEcpm = TopOnFullScreenNativeAdController.getInstance().getEcpm()
                 val ecpm = controller.getEffectiveEcpm(BiddingPlatform.TOPON, rawEcpm)
                 results.add(BiddingPlatform.TOPON to ecpm)
@@ -118,7 +118,7 @@ object FullScreenNativePreloadManager {
             && PangleFullScreenNativeAdController.getInstance().hasValidCache()) return true
         
         if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE.toConfigKey())
-            && TopOnFullScreenNativeAdController.getInstance().hasValidCache()) return true
+            && TopOnFullScreenNativeAdController.getInstance().hasCachedAd()) return true
         
         return false
     }

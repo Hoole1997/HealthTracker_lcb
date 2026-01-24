@@ -169,7 +169,7 @@ object InterstitialSmartBiddingManager {
                 }
             }
             BiddingWinner.TOPON -> {
-                if (net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController.getInstance().hasValidCache()) {
+                if (net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController.getInstance().hasCachedAd()) {
                     AdLogger.d("[$TAG] 展示 TopOn 全屏原生 + 插页")
                     TopOnFullScreenNativeAdActivity.start(activity, position, showInterstitial = true)
                 } else {

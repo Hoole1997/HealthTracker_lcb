@@ -53,7 +53,7 @@ object FullScreenNativeBiddingManager {
             val rawEcpm = PangleFullScreenNativeAdController.getInstance().getEcpm()
             BiddingPlatformController.getEffectiveEcpm(BiddingPlatform.PANGLE, rawEcpm)
         } else 0.0
-        val toponEcpm = if (TopOnFullScreenNativeAdController.getInstance().hasValidCache()) {
+        val toponEcpm = if (TopOnFullScreenNativeAdController.getInstance().hasCachedAd()) {
             val rawEcpm = TopOnFullScreenNativeAdController.getInstance().getEcpm()
             BiddingPlatformController.getEffectiveEcpm(BiddingPlatform.TOPON, rawEcpm)
         } else 0.0
@@ -100,7 +100,7 @@ object FullScreenNativeBiddingManager {
         }
 
         if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE.toConfigKey())) {
-            if (TopOnFullScreenNativeAdController.getInstance().hasValidCache()) {
+            if (TopOnFullScreenNativeAdController.getInstance().hasCachedAd()) {
                 val ecpm = TopOnFullScreenNativeAdController.getInstance().getEcpm()
                 results.add(BiddingPlatform.TOPON to ecpm)
             }
@@ -128,7 +128,7 @@ object FullScreenNativeBiddingManager {
             controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE.toConfigKey()) 
                 && PangleFullScreenNativeAdController.getInstance().hasValidCache() -> BiddingWinner.PANGLE
             controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE.toConfigKey()) 
-                && TopOnFullScreenNativeAdController.getInstance().hasValidCache() -> BiddingWinner.TOPON
+                && TopOnFullScreenNativeAdController.getInstance().hasCachedAd() -> BiddingWinner.TOPON
             else -> BiddingWinner.ADMOB // 最终兜底
         }
     }

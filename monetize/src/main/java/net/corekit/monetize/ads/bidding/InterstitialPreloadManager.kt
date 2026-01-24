@@ -229,6 +229,63 @@ object InterstitialPreloadManager {
         )
     }
 
+    /**
+     * 按平台定向预加载：只加载指定平台的插页广告
+     * 
+     * @param platform 需要补货的平台
+     */
+    suspend fun preloadByPlatform(context: Context, platform: BiddingPlatform) = coroutineScope {
+        val controller = BiddingPlatformController
+        val startTime = System.currentTimeMillis()
+        
+        AdLogger.d("[$TAG] 定向预加载插页广告 | 平台: %s", platform.name)
+        
+        val result = when (platform) {
+            BiddingPlatform.ADMOB -> {
+                if (controller.shouldParticipateInBidding(BiddingPlatform.ADMOB, BiddingAdType.INTERSTITIAL.toConfigKey())) {
+                    try {
+                        withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                            admobController.loadInAdvance(context)
+                            "SUCCESS"
+                        } ?: "TIMEOUT"
+                    } catch (e: Exception) {
+                        AdLogger.e("[$TAG] AdMob定向预加载异常: ${e.message}")
+                        "FAILURE"
+                    }
+                } else "SKIPPED"
+            }
+            BiddingPlatform.PANGLE -> {
+                if (controller.shouldParticipateInBidding(BiddingPlatform.PANGLE, BiddingAdType.INTERSTITIAL.toConfigKey())) {
+                    try {
+                        withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                            PangleInterstitialAdController.getInstance().preloadAd(context)
+                            "SUCCESS"
+                        } ?: "TIMEOUT"
+                    } catch (e: Exception) {
+                        AdLogger.e("[$TAG] Pangle定向预加载异常: ${e.message}")
+                        "FAILURE"
+                    }
+                } else "SKIPPED"
+            }
+            BiddingPlatform.TOPON -> {
+                if (controller.shouldParticipateInBidding(BiddingPlatform.TOPON, BiddingAdType.INTERSTITIAL.toConfigKey())) {
+                    try {
+                        withTimeoutOrNull(PRELOAD_TIMEOUT_MS) {
+                            TopOnInterstitialAdController.getInstance().preloadAd(context)
+                            "SUCCESS"
+                        } ?: "TIMEOUT"
+                    } catch (e: Exception) {
+                        AdLogger.e("[$TAG] TopOn定向预加载异常: ${e.message}")
+                        "FAILURE"
+                    }
+                } else "SKIPPED"
+            }
+        }
+        
+        val duration = System.currentTimeMillis() - startTime
+        AdLogger.d("[$TAG] 定向预加载完成 | 平台: %s | 结果: %s | 耗时: %d ms", platform.name, result, duration)
+    }
+
     fun hasReadyAd(): Boolean {
         val controller = BiddingPlatformController
         

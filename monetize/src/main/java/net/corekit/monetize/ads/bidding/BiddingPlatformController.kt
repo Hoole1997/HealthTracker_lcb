@@ -244,8 +244,8 @@ object BiddingPlatformController {
      * 测试模式 Mock eCPM 随机范围 (USD)
      * 用于在测试广告 ID 返回 0 eCPM 时提供随机模拟值以验证竞价逻辑
      */
-    private const val MOCK_ECPM_MIN = 0.005
-    private const val MOCK_ECPM_MAX = 0.050
+    private const val MOCK_ECPM_MIN = 0.001
+    private const val MOCK_ECPM_MAX = 0.005
 
     private val random = java.util.Random()
 

@@ -203,10 +203,10 @@ class TopOnBannerAdController private constructor() {
 
                 override fun onBannerShow(info: TUAdInfo?) {
                     AdLogger.d("[$TAG] Banner 广告已展示")
-                    cachedEcpm = parseEcpm(info?.ecpmLevel)
+                    cachedEcpm =   info?.publisherRevenue ?: info?.ecpm ?: 0.0
                     currentAdSource = info?.networkName ?: "TopOn"
                     totalShowCount++
-                    val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
+                    val ecpmMicros = cachedEcpm .toLong()
                     reportAdData(
                         "ad_impression",
                         mapOf(
@@ -337,14 +337,6 @@ class TopOnBannerAdController private constructor() {
 
     private fun parseErrorCode(code: String?): Int {
         return code?.toIntOrNull() ?: AdException.ERROR_INTERNAL
-    }
-
-    private fun parseEcpm(ecpmLevel: Any?): Double {
-        return when (ecpmLevel) {
-            is Number -> ecpmLevel.toDouble()
-            is String -> ecpmLevel.toDoubleOrNull() ?: 0.0
-            else -> 0.0
-        }
     }
 
     fun getEcpm(): Double = if (hasValidCache()) cachedEcpm else 0.0

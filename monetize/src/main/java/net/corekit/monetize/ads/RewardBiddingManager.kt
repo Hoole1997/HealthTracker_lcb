@@ -361,10 +361,11 @@ object RewardBiddingManager {
             
             // 展示广告
             val consumedAdType = bidResult.winner.winnerType
+            val consumedPlatform = bidResult.winner.platform
             return RewardTwoLayerPreloadManager.showWinnerAd(activity, bidResult, onRewardEarned).also {
-                // 展示后异步定向预加载消耗的广告类型（在 also 块中确保能获取到 consumedAdType）
+                // 展示后异步定向预加载消耗的广告类型和平台（在 also 块中确保能获取到 consumedAdType 和 consumedPlatform）
                 CoroutineScope(Dispatchers.IO).launch {
-                    preloadByConsumedType(activity, consumedAdType)
+                    preloadByConsumedType(activity, consumedAdType, consumedPlatform)
                 }
             }
         } finally {
@@ -373,12 +374,16 @@ object RewardBiddingManager {
     }
     
     /**
-     * 定向预加载：根据消耗的广告类型补充缓存
+     * 定向预加载：根据消耗的广告类型和平台补充缓存
      */
-    private suspend fun preloadByConsumedType(context: Context, consumedAdType: net.corekit.monetize.ads.bidding.BiddingAdType) {
+    private suspend fun preloadByConsumedType(
+        context: Context, 
+        consumedAdType: net.corekit.monetize.ads.bidding.BiddingAdType,
+        consumedPlatform: net.corekit.monetize.ads.bidding.BiddingPlatform
+    ) {
         try {
-            AdLogger.d("[$TAG] 后台定向预加载 | 消耗类型: %s", consumedAdType.name)
-            RewardTwoLayerPreloadManager.preloadByConsumedType(context, consumedAdType)
+            AdLogger.d("[$TAG] 后台定向预加载 | 消耗类型: %s | 消耗平台: %s", consumedAdType.name, consumedPlatform.name)
+            RewardTwoLayerPreloadManager.preloadByConsumedType(context, consumedAdType, consumedPlatform)
             AdLogger.d("[$TAG] 后台定向预加载完成")
         } catch (e: Exception) {
             AdLogger.e("[$TAG] 后台预加载失败: %s", e.message)

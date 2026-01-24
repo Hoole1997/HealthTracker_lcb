@@ -136,4 +136,18 @@ class ToponFullScreenNativeAdView {
         container.addView(nativeAdView)
         AdLogger.d("[$TAG] 自渲染广告绑定完成")
     }
+
+    /**
+     * 创建加载视图
+     */
+    fun createFullScreenLoadingView(context: Context, container: ViewGroup) {
+        try {
+            container.removeAllViews()
+            val loadingView = LayoutInflater.from(context)
+                .inflate(R.layout.layout_fullscreen_loading, container, false)
+            container.addView(loadingView)
+        } catch (e: Exception) {
+            AdLogger.e("TopOn全屏原生加载视图创建失败", e)
+        }
+    }
 }
