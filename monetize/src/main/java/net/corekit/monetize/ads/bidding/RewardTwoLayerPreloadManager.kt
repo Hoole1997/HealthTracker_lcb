@@ -128,21 +128,34 @@ object RewardTwoLayerPreloadManager {
         val layer1Entries = mutableListOf<BiddingLogger.BiddingEntry>()
         val layer2Entries = mutableListOf<BiddingLogger.BiddingEntry>()
         
-        // 并行执行各层竞价
-        val rewardedDeferred = async { collectRewardedBidding(context, controller, layer1Entries) }
+        // 获取场景允许参与竞价的广告类型
+        val allowedTypes = BiddingConfigManager.getSceneInternalBiddingTypes("reward")
+            ?: listOf("rewarded") // 默认只允许 rewarded
+        AdLogger.d("[$TAG] 允许的广告类型: $allowedTypes")
         
-        // 仅在 Two-Layer 模式下请求插屏
-        val interstitialDeferred = if (isTwoLayer) {
+        // 并行执行各层竞价（只有配置中包含的类型才参与）
+        val rewardedDeferred = if (allowedTypes.contains("rewarded")) {
+            async { collectRewardedBidding(context, controller, layer1Entries) }
+        } else {
+            null
+        }
+        
+        // 仅在 Two-Layer 模式下且配置包含 interstitial 才请求插屏
+        val interstitialDeferred = if (isTwoLayer && allowedTypes.contains("interstitial")) {
             async { collectInterstitialBidding(context, controller, layer2Entries) }
         } else {
             null
         }
         
-        // AdMob 插页激励广告（归入第一层激励类）
-        val rewardedInterstitialResult = collectRewardedInterstitial(context, controller, layer1Entries)
+        // AdMob 插页激励广告：只有配置中包含 rewarded_interstitial 才参与竞价
+        val rewardedInterstitialResult = if (allowedTypes.contains("rewarded_interstitial")) {
+            collectRewardedInterstitial(context, controller, layer1Entries)
+        } else {
+            null
+        }
         
         // 等待异步竞价结果
-        val rewardedWinner = rewardedDeferred.await()
+        val rewardedWinner = rewardedDeferred?.await()
         val interstitialWinner = interstitialDeferred?.await()
         
         rewardedWinner?.let { platformResults.add(it) }
@@ -161,17 +174,28 @@ object RewardTwoLayerPreloadManager {
             BiddingLogger.BiddingEntry(it.platform.name, it.winnerType.name, BiddingLogger.EntryStatus.READY, it.ecpm)
         }
         
-        BiddingLogger.logTwoLayerBidding(
-            scene = "激励",
-            layer1Name = "激励广告",
-            layer1Entries = layer1Entries,
-            layer1Winner = layer1Winner,
-            layer2Name = "插屏广告",
-            layer2Entries = layer2Entries,
-            layer2Winner = layer2Winner,
-            finalWinner = finalEntry,
-            durationMs = biddingTime
-        )
+        // 根据竞价模式输出不同格式的日志
+        if (isTwoLayer) {
+            BiddingLogger.logTwoLayerBidding(
+                scene = "激励",
+                layer1Name = "激励广告",
+                layer1Entries = layer1Entries,
+                layer1Winner = layer1Winner,
+                layer2Name = "插屏广告",
+                layer2Entries = layer2Entries,
+                layer2Winner = layer2Winner,
+                finalWinner = finalEntry,
+                durationMs = biddingTime
+            )
+        } else {
+            // single 模式：显示单层竞价日志
+            BiddingLogger.logSingleLayerBidding(
+                scene = "激励",
+                entries = layer1Entries,
+                winner = finalEntry,
+                durationMs = biddingTime
+            )
+        }
         
         if (platformResults.isEmpty()) {
             FinalBidResult.failed(biddingTime)

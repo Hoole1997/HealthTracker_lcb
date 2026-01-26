@@ -169,6 +169,18 @@ object BiddingConfigManager {
         return channelConfig?.sceneConfig?.get(scene)?.biddingMode ?: "two_layer"
     }
 
+    /**
+     * 获取指定场景允许参与竞价的广告类型列表
+     *
+     * @param scene 场景标识（如 "splash", "reward"）
+     * @return 允许的广告类型列表，如 ["rewarded", "rewarded_interstitial"]
+     *         如果未配置则返回 null
+     */
+    fun getSceneInternalBiddingTypes(scene: String): List<String>? {
+        val channelConfig = getCurrentChannelConfig()
+        return channelConfig?.sceneConfig?.get(scene)?.internalBiddingTypes
+    }
+
     // ==================== 平台级频控 ====================
 
     /**

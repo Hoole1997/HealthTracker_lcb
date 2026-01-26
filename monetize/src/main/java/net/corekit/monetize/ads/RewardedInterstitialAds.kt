@@ -325,7 +325,8 @@ class RewardedInterstitialAds private constructor() {
                     super.onAdPaid(value)
                     currentAdValue = value
                     AdLogger.d("插页激励广告收益回调: value=%d, currency=%s", value.valueMicros, value.currencyCode)
-
+                    AdConfigManager.getRewardedInterstitialConfig().recordShow()
+                    PlatformFrequencyManager.recordShow(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)
                     reportRevenue(ad, adUnitId, value)
 
                     reportAdData(
