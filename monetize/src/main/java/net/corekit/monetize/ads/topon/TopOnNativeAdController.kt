@@ -53,8 +53,11 @@ class TopOnNativeAdController private constructor() {
     private var totalShowCount by DataStoreIntDelegate("topon_na_show_count", 0)
     private var totalShowFailCount by DataStoreIntDelegate("topon_na_show_fail_count", 0)
     private var totalClickCount by DataStoreIntDelegate("topon_na_click_count", 0)
+    private var totalCloseCount by DataStoreIntDelegate("topon_na_close_count", 0)
     private var currentPosition: String = ""
     private var currentAdSource: String = "TopOn"
+    // 当前广告容器引用（用于点击超限时移除广告）
+    private var currentContainer: ViewGroup? = null
 
     companion object {
         private const val TAG = "TopOnNative"
@@ -249,6 +252,9 @@ class TopOnNativeAdController private constructor() {
             return false
         }
 
+        // 保存容器引用，用于点击超限时移除广告
+        currentContainer = container
+
         val nativeAd = cachedNativeAd
         if (nativeAd == null) {
             totalShowFailCount++
@@ -311,8 +317,9 @@ class TopOnNativeAdController private constructor() {
                 }
 
                 override fun onAdClicked(view: TUNativeAdView?, info: TUAdInfo?) {
-                    AdLogger.d("[$TAG] TopOn 原生广告被点击")
                     totalClickCount++
+                    AdLogger.logD(TAG, "用户点击 | 位置: %s | 累计点击: %d", currentPosition, totalClickCount)
+                    
                     AdConfigManager.getNativeConfig().recordClick()
                     PlatformFrequencyManager.recordClick(BiddingPlatform.TOPON, BiddingAdType.NATIVE)
                     reportAdData(
@@ -326,6 +333,12 @@ class TopOnNativeAdController private constructor() {
                             "currency" to "USD"
                         )
                     )
+                    
+                    // 检查点击是否达到配额上限，达限则移除广告
+                    if (PlatformFrequencyManager.isClickLimitReached(BiddingPlatform.TOPON, BiddingAdType.NATIVE)) {
+                        AdLogger.logW(TAG, "点击达到配额上限，移除正在展示的广告 | 位置: %s", currentPosition)
+                        removeCurrentAd()
+                    }
                 }
 
                 override fun onAdVideoStart(view: TUNativeAdView?) {}
@@ -381,6 +394,25 @@ class TopOnNativeAdController private constructor() {
         cachedEcpm = 0.0
         loadTimestamp = 0
         AdLogger.d("[$TAG] 原生广告缓存已清理")
+    }
+
+    /**
+     * 移除当前展示的广告
+     * 
+     * 用于点击达到配额上限时，主动移除正在展示的原生广告
+     * 防止用户继续点击导致点击次数超出配额限制
+     */
+    fun removeCurrentAd() {
+        try {
+            currentContainer?.let { container ->
+                container.removeAllViews()
+                AdLogger.logD(TAG, "已移除广告视图 | 位置: %s", currentPosition)
+            }
+            currentContainer = null
+            clearCache()
+        } catch (e: Exception) {
+            AdLogger.e("[$TAG] 移除广告视图失败", e)
+        }
     }
 
     private fun reportAdData(eventName: String, params: Map<String, Any>) {

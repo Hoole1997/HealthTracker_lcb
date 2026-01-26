@@ -48,6 +48,7 @@ class TopOnBannerAdController private constructor() {
     private var totalClickCount by DataStoreIntDelegate("topon_ba_click_count", 0)
     private var currentPosition: String = ""
     private var currentAdSource: String = "TopOn"
+    private var currentContainer: ViewGroup? = null
 
     companion object {
         private const val TAG = "TopOnBanner"
@@ -199,6 +200,12 @@ class TopOnBannerAdController private constructor() {
                             "currency" to "USD"
                         )
                     )
+
+                    // 检查点击是否达到限额，达限则移除广告
+                    if (PlatformFrequencyManager.isClickLimitReached(BiddingPlatform.TOPON, BiddingAdType.BANNER)) {
+                        AdLogger.logW(TAG, "点击达到配额上限，移除正在展示的广告 | 位置: %s", currentPosition)
+                        removeCurrentAd()
+                    }
                 }
 
                 override fun onBannerShow(info: TUAdInfo?) {
@@ -266,6 +273,7 @@ class TopOnBannerAdController private constructor() {
     fun renderToContainer(container: ViewGroup, position: String = ""): Boolean {
         val adUnitId = BuildConfig.TOPON_BANNER_ID
         currentPosition = position
+        currentContainer = container
 
         totalShowTriggerCount++
         reportAdData(
@@ -351,6 +359,23 @@ class TopOnBannerAdController private constructor() {
         bannerView = null
         cachedEcpm = 0.0
         loadTimestamp = 0
+        currentContainer = null
+    }
+
+    /**
+     * 移除当前展示的广告并销毁缓存
+     */
+    fun removeCurrentAd() {
+        try {
+            currentContainer?.let { container ->
+                container.removeAllViews()
+                AdLogger.logD(TAG, "已移除广告视图 | 位置: %s", currentPosition)
+            }
+            currentContainer = null
+            clearCache()
+        } catch (e: Exception) {
+            AdLogger.e("[$TAG] 移除广告视图失败", e)
+        }
     }
 
     private fun reportAdData(eventName: String, params: Map<String, Any>) {

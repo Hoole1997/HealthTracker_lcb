@@ -3,7 +3,9 @@ package net.corekit.monetize.ads.pangle
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.bytedance.sdk.openadsdk.api.model.PAGErrorModel
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAd
+import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAdInteractionCallback
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeAdLoadListener
 import net.corekit.monetize.ads.AdErrorCode
 import com.bytedance.sdk.openadsdk.api.nativeAd.PAGNativeRequest
@@ -33,6 +35,8 @@ import kotlin.math.ceil
 
 /**
  * Pangle 原生广告控制器
+ * 
+ * 参考 ReMax 实现，使用 PAGNativeAdInteractionCallback 获取准确的展示/点击/关闭回调
  */
 class PangleNativeAdController private constructor() {
 
@@ -44,11 +48,17 @@ class PangleNativeAdController private constructor() {
     private var totalShowCount by DataStoreIntDelegate("pangle_na_show_count", 0)
     private var totalShowFailCount by DataStoreIntDelegate("pangle_na_show_fail_count", 0)
     private var totalClickCount by DataStoreIntDelegate("pangle_na_click_count", 0)
+    private var totalCloseCount by DataStoreIntDelegate("pangle_na_close_count", 0)
 
     // 当前广告展示位置
     private var currentPosition: String = ""
     // 当前广告源 (默认 Pangle)
     private var currentAdSource: String = "Pangle"
+    // 当前展示收益（从 showEcpm 获取，比 winEcpm 更准确）
+    private var currentEcpmValue: Double = 0.0
+    private var currentCurrency: String = "USD"
+    // 当前广告容器引用（用于点击超限时移除广告）
+    private var currentContainer: ViewGroup? = null
 
     companion object {
         private const val TAG = "PangleNative"
@@ -252,6 +262,9 @@ class PangleNativeAdController private constructor() {
             return false
         }
 
+        // 保存容器引用，用于点击超限时移除广告
+        currentContainer = container
+
         try {
             container.removeAllViews()
 
@@ -324,43 +337,114 @@ class PangleNativeAdController private constructor() {
                 mediaContainer?.let { add(it) }
             }
 
-            // 8. 注册视图交互
+            // 8. 注册视图交互，使用 PAGNativeAdInteractionCallback 获取准确的展示/点击回调
             ad.registerViewForInteraction(
                 binder,
                 clickViews,
-                null
+                object : PAGNativeAdInteractionCallback() {
+                    override fun onAdShowed() {
+                        AdLogger.logD(TAG, "广告展示 | 位置: %s", currentPosition)
+                        
+                        // 使用 showEcpm 获取更准确的展示收益（而非加载时的 winEcpm）
+                        val showEcpm = ad.pagRevenueInfo?.showEcpm
+                        currentEcpmValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                        currentCurrency = showEcpm?.currency ?: "USD"
+                        currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: "Pangle"
+                        
+                        totalShowCount++
+                        AdConfigManager.getNativeConfig().recordShow()
+                        
+                        val ecpmMicros = (currentEcpmValue * 1_000_000).toLong()
+                        
+                        reportAdData(
+                            eventName = "ad_impression",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "position" to currentPosition,
+                                "number" to totalShowCount,
+                                "ad_source" to currentAdSource,
+                                "value" to currentEcpmValue,
+                                "currency" to currentCurrency
+                            )
+                        )
+                        
+                        val adRevenueData = RevenueAdData(
+                            revenue = RevenueInfo(
+                                value = currentEcpmValue,
+                                currencyCode = currentCurrency
+                            ),
+                            adRevenueNetwork = currentAdSource,
+                            adRevenueUnit = adUnitId,
+                            adRevenuePlacement = currentPosition,
+                            adFormat = "Native"
+                        )
+                        RevenueAdManager.reportAdRevenue(adRevenueData)
+                        
+                        IpuController.onAdImpression("NA", ecpmMicros)
+                        RpuController.onAdRevenue("NA", ecpmMicros)
+                    }
+                    
+                    override fun onAdClicked() {
+                        totalClickCount++
+                        AdLogger.logD(TAG, "用户点击 | 位置: %s | 累计点击: %d", currentPosition, totalClickCount)
+                        
+                        AdConfigManager.getNativeConfig().recordClick()
+                        PlatformFrequencyManager.recordClick(BiddingPlatform.PANGLE, BiddingAdType.NATIVE)
+                        
+                        reportAdData(
+                            eventName = "ad_click",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "position" to currentPosition,
+                                "number" to totalClickCount,
+                                "ad_source" to currentAdSource,
+                                "value" to currentEcpmValue,
+                                "currency" to currentCurrency
+                            )
+                        )
+                        
+                        // 检查点击是否达到配额上限，达限则移除广告
+                        if (PlatformFrequencyManager.isClickLimitReached(BiddingPlatform.PANGLE, BiddingAdType.NATIVE)) {
+                            AdLogger.logW(TAG, "点击达到配额上限，移除正在展示的广告 | 位置: %s", currentPosition)
+                            removeCurrentAd()
+                        }
+                    }
+                    
+                    override fun onAdDismissed() {
+                        totalCloseCount++
+                        AdLogger.logD(TAG, "广告关闭 | 位置: %s | 累计关闭: %d", currentPosition, totalCloseCount)
+                        
+                        reportAdData(
+                            eventName = "ad_close",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "position" to currentPosition,
+                                "number" to totalCloseCount,
+                                "ad_source" to currentAdSource,
+                                "value" to currentEcpmValue,
+                                "currency" to currentCurrency
+                            )
+                        )
+                    }
+                    
+                    override fun onAdShowFailed(error: PAGErrorModel) {
+                        totalShowFailCount++
+                        AdLogger.logE(TAG, "广告展示失败 | 位置: %s | code: %d | message: %s", 
+                            currentPosition, error.errorCode, error.errorMessage)
+                        
+                        reportAdData(
+                            eventName = "ad_show_fail",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "position" to currentPosition,
+                                "number" to totalShowFailCount,
+                                "reason" to (error.errorMessage ?: "code=${error.errorCode}"),
+                                "ad_source" to currentAdSource
+                            )
+                        )
+                    }
+                }
             )
-
-            // 上报展示事件
-            totalShowCount++
-            val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
-
-            reportAdData(
-                eventName = "ad_impression",
-                params = mapOf(
-                    "ad_unit_name" to adUnitId,
-                    "position" to currentPosition,
-                    "number" to totalShowCount,
-                    "ad_source" to currentAdSource,
-                    "value" to cachedEcpm,
-                    "currency" to "USD"
-                )
-            )
-
-            val adRevenueData = RevenueAdData(
-                revenue = RevenueInfo(
-                    value = cachedEcpm,
-                    currencyCode = "USD"
-                ),
-                adRevenueNetwork = "Pangle",
-                adRevenueUnit = adUnitId,
-                adRevenuePlacement = currentPosition,
-                adFormat = "Native"
-            )
-            RevenueAdManager.reportAdRevenue(adRevenueData)
-
-            IpuController.onAdImpression("NA", ecpmMicros)
-            RpuController.onAdRevenue("NA", ecpmMicros)
 
             AdLogger.d("[$TAG] Pangle 原生广告渲染成功 (样式: %s)", style.description)
             return true
@@ -382,10 +466,13 @@ class PangleNativeAdController private constructor() {
     }
 
     /**
-     * 上报点击事件（供外部调用）
+     * 上报点击事件（供外部手动调用，回调模式下通常不需要）
+     * @deprecated 使用 PAGNativeAdInteractionCallback.onAdClicked 回调代替
      */
+    @Deprecated("使用 PAGNativeAdInteractionCallback 回调模式，点击事件自动上报")
     fun reportClick() {
         totalClickCount++
+        AdLogger.logD(TAG, "用户点击(手动) | 位置: %s | 累计点击: %d", currentPosition, totalClickCount)
         AdConfigManager.getNativeConfig().recordClick()
         PlatformFrequencyManager.recordClick(BiddingPlatform.PANGLE, BiddingAdType.NATIVE)
         reportAdData(
@@ -395,8 +482,8 @@ class PangleNativeAdController private constructor() {
                 "position" to currentPosition,
                 "number" to totalClickCount,
                 "ad_source" to currentAdSource,
-                "value" to cachedEcpm,
-                "currency" to "USD"
+                "value" to currentEcpmValue,
+                "currency" to currentCurrency
             )
         )
     }
@@ -414,6 +501,25 @@ class PangleNativeAdController private constructor() {
         cachedEcpm = 0.0
         loadTimestamp = 0
         AdLogger.d("[$TAG] Pangle 原生广告缓存已清理")
+    }
+
+    /**
+     * 移除当前展示的广告
+     * 
+     * 用于点击达到配额上限时，主动移除正在展示的原生广告
+     * 防止用户继续点击导致点击次数超出配额限制
+     */
+    fun removeCurrentAd() {
+        try {
+            currentContainer?.let { container ->
+                container.removeAllViews()
+                AdLogger.logD(TAG, "已移除广告视图 | 位置: %s", currentPosition)
+            }
+            currentContainer = null
+            clearCache()
+        } catch (e: Exception) {
+            AdLogger.e("[$TAG] 移除广告视图失败", e)
+        }
     }
 
     /**

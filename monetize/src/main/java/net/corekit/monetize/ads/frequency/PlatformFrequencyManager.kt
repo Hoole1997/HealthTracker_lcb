@@ -300,6 +300,24 @@ object PlatformFrequencyManager {
     }
 
     /**
+     * 检查平台点击是否已达到配额上限
+     * 
+     * @param platform 平台类型
+     * @param adType 广告类型
+     * @return true 表示点击已达上限，应移除广告
+     */
+    fun isClickLimitReached(platform: BiddingPlatform, adType: BiddingAdType): Boolean {
+        if (!isEnabled()) return false
+        
+        val adTypeStr = adType.name.lowercase()
+        val config = BiddingConfigManager.getPlatformFrequencyConfig(platform, adTypeStr)
+            ?: return false  // 无配置时不限制
+        
+        val dailyClick = getDailyClickCount(platform, adType)
+        return dailyClick >= config.maxDailyClick
+    }
+
+    /**
      * 获取所有平台的频控状态（用于调试面板）
      */
     fun getAllPlatformStatus(): Map<String, PlatformFrequencyStatus> {

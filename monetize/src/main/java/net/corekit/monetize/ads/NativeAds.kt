@@ -335,6 +335,12 @@ class NativeAds private constructor() {
                                 ),
                                 style
                             )
+                            
+                            // 检查点击是否达到配额上限，达限则移除广告
+                            if (PlatformFrequencyManager.isClickLimitReached(BiddingPlatform.ADMOB, BiddingAdType.NATIVE)) {
+                                AdLogger.logW(TAG, "点击达到配额上限，移除正在展示的广告 | 位置: %s", position)
+                                container.removeAllViews()
+                            }
                         }
 
                         override fun onAdImpression() {
