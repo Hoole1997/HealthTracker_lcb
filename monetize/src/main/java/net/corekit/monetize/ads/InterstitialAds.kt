@@ -277,8 +277,38 @@ class InterstitialAds private constructor() {
         val needShowNativeFull = interval > 0 && todayShowInter > 0 && todayShowInter % interval == 0
         AdLogger.d("当日已展示${todayShowInter}个插页，每显示${interval}个插页将显示原生，下一个是否显示全屏原生${needShowNativeFull}")
 
-        if(!ignoreFullNative && needShowNativeFull && FullNativeAds.getInstance().checkCachedAdAvailable()){
-            return AdmobFullScreenNativeAdActivity.start(activity,position,showInterstitial = true)
+        if(!ignoreFullNative && needShowNativeFull && net.corekit.monetize.ads.bidding.FullScreenNativeBiddingManager.hasAnyReadyAd()){
+            // 执行全屏原生竞价
+            val fullNativeWinner = net.corekit.monetize.ads.bidding.FullScreenNativeBiddingManager.bidding(activity)
+            AdLogger.d("全屏原生竞价胜出: ${fullNativeWinner.name}")
+            
+            // 根据胜出平台启动对应的全屏原生 Activity（传递 ADMOB 作为插页平台，因为这是 AdMob 单平台入口）
+            return when (fullNativeWinner) {
+                net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB -> {
+                    if (FullNativeAds.getInstance().checkCachedAdAvailable()) {
+                        AdmobFullScreenNativeAdActivity.start(activity, position, showInterstitial = true, interstitialPlatform = net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB)
+                    } else {
+                        AdLogger.w("AdMob 全屏原生无缓存，放弃全屏原生展示，继续展示插页")
+                        displayAdInternal(activity, position, finalAdUnitId, ignoreFullNative = true, chain, recordConfigShow)
+                    }
+                }
+                net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE -> {
+                    if (net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdController.getInstance().hasValidCache()) {
+                        net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdActivity.start(activity, position, showInterstitial = true, interstitialPlatform = net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB)
+                    } else {
+                        AdLogger.w("Pangle 全屏原生无缓存，放弃全屏原生展示，继续展示插页")
+                        displayAdInternal(activity, position, finalAdUnitId, ignoreFullNative = true, chain, recordConfigShow)
+                    }
+                }
+                net.corekit.monetize.ads.bidding.BiddingWinner.TOPON -> {
+                    if (net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController.getInstance().hasCachedAd()) {
+                        net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdActivity.start(activity, position, showInterstitial = true, interstitialPlatform = net.corekit.monetize.ads.bidding.BiddingPlatform.ADMOB)
+                    } else {
+                        AdLogger.w("TopOn 全屏原生无缓存，放弃全屏原生展示，继续展示插页")
+                        displayAdInternal(activity, position, finalAdUnitId, ignoreFullNative = true, chain, recordConfigShow)
+                    }
+                }
+            }
         }
 
         return try {
@@ -603,6 +633,7 @@ class InterstitialAds private constructor() {
 
                     if (recordConfigShow) {
                         AdConfigManager.getInterstitialConfig().recordShow()
+                        PlatformFrequencyManager.recordShow(BiddingPlatform.ADMOB, BiddingAdType.INTERSTITIAL)
                         AdLogger.d("插页广告recordShow: 已更新dailyShow与lastShow")
                     } else {
                         AdLogger.d("[RewardBidding] 竞价插屏recordShow: 已跳过（不更新dailyShow与lastShow）")

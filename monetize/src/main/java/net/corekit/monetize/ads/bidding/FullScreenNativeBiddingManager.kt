@@ -34,9 +34,14 @@ object FullScreenNativeBiddingManager {
         val startTime = System.currentTimeMillis()
         AdLogger.d("[$TAG] 开始全屏原生广告竞价...")
 
-        // 1. 并行预加载（带超时保护）
-        withTimeoutOrNull(BIDDING_TIMEOUT_MS) {
-            FullScreenNativePreloadManager.preloadAll(context)
+        // 1. 如果已有可用缓存，跳过预加载；否则并行预加载（带超时保护）
+        if (!FullScreenNativePreloadManager.hasReadyAd()) {
+            AdLogger.d("[$TAG] 无可用缓存，开始预加载...")
+            withTimeoutOrNull(BIDDING_TIMEOUT_MS) {
+                FullScreenNativePreloadManager.preloadAll(context)
+            }
+        } else {
+            AdLogger.d("[$TAG] 已有可用缓存，跳过预加载直接竞价")
         }
 
         // 2. 执行竞价获取结果

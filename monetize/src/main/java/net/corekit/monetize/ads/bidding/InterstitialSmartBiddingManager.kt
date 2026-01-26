@@ -128,10 +128,10 @@ object InterstitialSmartBiddingManager {
             }
         }
         
-        // Record platform frequency on successful show
-        if (result is AdResult.Success) {
-            PlatformFrequencyManager.recordShow(bidResult.platform, BiddingAdType.INTERSTITIAL)
-        }
+//        // Record platform frequency on successful show
+//        if (result is AdResult.Success) {
+//            PlatformFrequencyManager.recordShow(bidResult.platform, BiddingAdType.INTERSTITIAL)
+//        }
         
         return result
     }
@@ -148,12 +148,12 @@ object InterstitialSmartBiddingManager {
         val fullNativeWinner = FullScreenNativeBiddingManager.bidding(activity)
         AdLogger.d("[$TAG] 全屏原生竞价胜出: ${fullNativeWinner.name}")
 
-        // 2. 根据胜出平台启动对应的全屏原生广告 Activity（内部会展示插页）
+        // 2. 根据胜出平台启动对应的全屏原生广告 Activity（传递插页竞价结果）
         return when (fullNativeWinner) {
             BiddingWinner.ADMOB -> {
                 if (FullNativeAds.getInstance().checkCachedAdAvailable()) {
-                    AdLogger.d("[$TAG] 展示 AdMob 全屏原生 + 插页")
-                    AdmobFullScreenNativeAdActivity.start(activity, position, showInterstitial = true)
+                    AdLogger.d("[$TAG] 展示 AdMob 全屏原生 + 插页(${interstitialBidResult.platform})")
+                    AdmobFullScreenNativeAdActivity.start(activity, position, showInterstitial = true, interstitialPlatform = interstitialBidResult.platform)
                 } else {
                     AdLogger.w("[$TAG] AdMob 全屏原生无缓存，回退展示插页")
                     showInterstitialOnly(activity, interstitialBidResult, position)
@@ -161,8 +161,8 @@ object InterstitialSmartBiddingManager {
             }
             BiddingWinner.PANGLE -> {
                 if (net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdController.getInstance().hasValidCache()) {
-                    AdLogger.d("[$TAG] 展示 Pangle 全屏原生 + 插页")
-                    PangleFullScreenNativeAdActivity.start(activity, position, showInterstitial = true)
+                    AdLogger.d("[$TAG] 展示 Pangle 全屏原生 + 插页(${interstitialBidResult.platform})")
+                    PangleFullScreenNativeAdActivity.start(activity, position, showInterstitial = true, interstitialPlatform = interstitialBidResult.platform)
                 } else {
                     AdLogger.w("[$TAG] Pangle 全屏原生无缓存，回退展示插页")
                     showInterstitialOnly(activity, interstitialBidResult, position)
@@ -170,8 +170,8 @@ object InterstitialSmartBiddingManager {
             }
             BiddingWinner.TOPON -> {
                 if (net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController.getInstance().hasCachedAd()) {
-                    AdLogger.d("[$TAG] 展示 TopOn 全屏原生 + 插页")
-                    TopOnFullScreenNativeAdActivity.start(activity, position, showInterstitial = true)
+                    AdLogger.d("[$TAG] 展示 TopOn 全屏原生 + 插页(${interstitialBidResult.platform})")
+                    TopOnFullScreenNativeAdActivity.start(activity, position, showInterstitial = true, interstitialPlatform = interstitialBidResult.platform)
                 } else {
                     AdLogger.w("[$TAG] TopOn 全屏原生无缓存，回退展示插页")
                     showInterstitialOnly(activity, interstitialBidResult, position)
@@ -196,24 +196,24 @@ object InterstitialSmartBiddingManager {
             BiddingPlatform.PANGLE -> {
                 AdLogger.d("[$TAG] 展示 Pangle 插页广告")
                 val showResult = PangleInterstitialAdController.getInstance().showAd(activity)
-                if (showResult is AdResult.Success) {
-                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, BiddingWinner.PANGLE, BiddingAdType.INTERSTITIAL)
-                }
+//                if (showResult is AdResult.Success) {
+//                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, BiddingWinner.PANGLE, BiddingAdType.INTERSTITIAL)
+//                }
                 showResult
             }
             BiddingPlatform.TOPON -> {
                 AdLogger.d("[$TAG] 展示 TopOn 插页广告")
                 val showResult = TopOnInterstitialAdController.getInstance().showAd(activity)
-                if (showResult is AdResult.Success) {
-                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, BiddingWinner.TOPON, BiddingAdType.INTERSTITIAL)
-                }
+//                if (showResult is AdResult.Success) {
+//                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, BiddingWinner.TOPON, BiddingAdType.INTERSTITIAL)
+//                }
                 showResult
             }
         }
         
-        if (result is AdResult.Success) {
-            PlatformFrequencyManager.recordShow(bidResult.platform, BiddingAdType.INTERSTITIAL)
-        }
+//        if (result is AdResult.Success) {
+//            PlatformFrequencyManager.recordShow(bidResult.platform, BiddingAdType.INTERSTITIAL)
+//        }
         
         return result
     }

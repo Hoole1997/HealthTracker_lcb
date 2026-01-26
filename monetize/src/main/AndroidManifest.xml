@@ -22,6 +22,18 @@
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.NativeFullScreen" />
+        
+        <activity
+            android:name=".ads.pangle.PangleFullScreenNativeAdActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:theme="@style/Theme.NativeFullScreen" />
+        
+        <activity
+            android:name=".ads.topon.TopOnFullScreenNativeAdActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:theme="@style/Theme.NativeFullScreen" />
     </application>
 
 </manifest>

@@ -6,6 +6,7 @@ import com.thinkup.interstitial.api.TUInterstitial
 import com.thinkup.interstitial.api.TUInterstitialListener
 import com.thinkup.core.api.TUAdInfo
 import com.thinkup.core.api.AdError
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
@@ -161,160 +162,7 @@ class TopOnInterstitialAdController private constructor() {
                 val ad = TUInterstitial(context, adUnitId)
                 interstitialAd = ad
 
-                ad.setAdListener(object : TUInterstitialListener {
-                    override fun onInterstitialAdLoaded() {
-                        val loadTime = System.currentTimeMillis() - startTime
-                        loadTimestamp = System.currentTimeMillis()
-                        
-                        // 尝试使用 checkValidAdCaches 获取 eCPM
-                        cachedEcpm = try {
-                            ad.checkValidAdCaches()?.firstOrNull()?.publisherRevenue?.toDouble() ?: 0.0
-                        } catch (e: Exception) { 0.0 }
-                        
-                        AdLogger.d("[$TAG] ✅ 插页广告加载成功, 耗时: %d ms, eCPM: %.6f USD", loadTime, cachedEcpm)
-
-                        totalLoadSucCount++
-                        
-                        // 尝试获取加载成功的广告源
-                        val networkName = ad.checkValidAdCaches()?.firstOrNull()?.networkName
-                        val loadedSource = if (networkName.isNullOrEmpty()) "TopOn" else networkName
-
-                        reportAdData(
-                            "ad_loaded",
-                            mapOf(
-                                "ad_unit_name" to adUnitId,
-                                "number" to totalLoadSucCount,
-                                "ad_source" to loadedSource,
-                                "pass_time" to ceil(loadTime / 1000.0).toInt()
-                            )
-                        )
-                        FpuController.onAdFill("IT")
-
-                        deferred.complete(AdResult.Success(Unit))
-                        synchronized(this@TopOnInterstitialAdController) {
-                            if (loadingDeferred == deferred) loadingDeferred = null
-                        }
-
-                        if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
-                    }
-
-                    override fun onInterstitialAdLoadFail(error: AdError?) {
-                        val loadTime = System.currentTimeMillis() - startTime
-                        AdLogger.e(
-                            "[$TAG] ❌ 插页广告加载失败, 耗时: %d ms, error: %s",
-                            loadTime,
-                            error?.fullErrorInfo
-                        )
-
-                        totalLoadFailCount++
-                        reportAdData(
-                            "ad_load_fail",
-                            mapOf(
-                                "ad_unit_name" to adUnitId,
-                                "number" to totalLoadFailCount,
-                                "ad_source" to "TopOn",
-                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
-                                "reason" to (error?.desc ?: "code=${error?.code}")
-                            )
-                        )
-
-                        deferred.complete(
-                            AdResult.Failure(
-                                AdException(
-                                    parseErrorCode(error?.code),
-                                    error?.desc ?: "加载失败"
-                                )
-                            )
-                        )
-                        synchronized(this@TopOnInterstitialAdController) {
-                            if (loadingDeferred == deferred) loadingDeferred = null
-                        }
-
-                        if (continuation.isActive) {
-                            continuation.resume(
-                                AdResult.Failure(
-                                    AdException(
-                                        parseErrorCode(error?.code),
-                                        error?.desc ?: "加载失败"
-                                    )
-                                )
-                            )
-                        }
-                    }
-
-                    override fun onInterstitialAdClicked(info: TUAdInfo?) {
-                        AdLogger.d("[$TAG] 插页广告被点击")
-                        totalClickCount++
-                        AdConfigManager.getInterstitialConfig().recordClick()
-                        PlatformFrequencyManager.recordClick(BiddingPlatform.TOPON, BiddingAdType.INTERSTITIAL)
-                        reportAdData(
-                            "ad_click",
-                            mapOf(
-                                "ad_unit_name" to adUnitId,
-                                "position" to currentPosition,
-                                "number" to totalClickCount,
-                                "ad_source" to currentAdSource,
-                                "value" to cachedEcpm,
-                                "currency" to "USD"
-                            )
-                        )
-                    }
-
-                    override fun onInterstitialAdShow(info: TUAdInfo?) {
-                        AdLogger.d("[$TAG] 插页广告已展示")
-                        cachedEcpm = parseEcpm(info?.ecpmLevel)
-                        
-                        currentAdSource = info?.networkName ?: "TopOn"
-                        
-                        totalShowCount++
-                        val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
-                        reportAdData(
-                            "ad_impression",
-                            mapOf(
-                                "ad_unit_name" to adUnitId,
-                                "position" to currentPosition,
-                                "number" to totalShowCount,
-                                "ad_source" to currentAdSource,
-                                "value" to cachedEcpm,
-                                "currency" to "USD"
-                            )
-                        )
-                        RevenueAdManager.reportAdRevenue(
-                            RevenueAdData(
-                                revenue = RevenueInfo(
-                                    value = cachedEcpm,
-                                    currencyCode = "USD"
-                                ),
-                                adRevenueNetwork = currentAdSource,
-                                adRevenueUnit = adUnitId,
-                                adRevenuePlacement = currentPosition,
-                                adFormat = "Interstitial"
-                            )
-                        )
-                        IpuController.onAdImpression("IT", ecpmMicros)
-                        RpuController.onAdRevenue("IT", ecpmMicros)
-                    }
-
-                    override fun onInterstitialAdClose(info: TUAdInfo?) {
-                        AdLogger.d("[$TAG] 插页广告已关闭")
-                        totalCloseCount++
-                        reportAdData(
-                            "ad_close",
-                            mapOf(
-                                "ad_unit_name" to adUnitId,
-                                "position" to currentPosition,
-                                "number" to totalCloseCount,
-                                "ad_source" to currentAdSource,
-                                "value" to cachedEcpm,
-                                "currency" to "USD"
-                            )
-                        )
-                    }
-
-                    override fun onInterstitialAdVideoStart(info: TUAdInfo?) {}
-                    override fun onInterstitialAdVideoEnd(info: TUAdInfo?) {}
-                    override fun onInterstitialAdVideoError(error: AdError?) {}
-                })
+                ad.setAdListener(LoadAdListener(startTime, deferred, continuation))
 
                 ad.load()
             }
@@ -388,22 +236,7 @@ class TopOnInterstitialAdController private constructor() {
 
         AdLogger.d("[$TAG] 准备展示插页广告")
 
-        ad.setAdListener(object : TUInterstitialListener {
-            override fun onInterstitialAdLoaded() {}
-            override fun onInterstitialAdLoadFail(error: AdError?) {}
-            override fun onInterstitialAdClicked(info: TUAdInfo?) {}
-            override fun onInterstitialAdShow(info: TUAdInfo?) {}
-            override fun onInterstitialAdVideoStart(info: TUAdInfo?) {}
-            override fun onInterstitialAdVideoEnd(info: TUAdInfo?) {}
-            override fun onInterstitialAdVideoError(error: AdError?) {}
-
-            override fun onInterstitialAdClose(info: TUAdInfo?) {
-                AdLogger.d("[$TAG] 插页广告已关闭")
-                clearCache()
-                onDismiss?.invoke()
-                if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
-            }
-        })
+        ad.setAdListener(ShowAdListener(continuation, onDismiss))
 
         ad.show(activity)
     }
@@ -443,5 +276,191 @@ class TopOnInterstitialAdController private constructor() {
             eventName,
             data
         ) else ReportDataManager.reportData(eventName, data)
+    }
+
+    /**
+     * 加载阶段监听器 - 处理加载成功/失败埋点，展示相关回调空实现
+     */
+    private inner class LoadAdListener(
+        private val startTime: Long,
+        private val deferred: CompletableDeferred<AdResult<Unit>>,
+        private val continuation: CancellableContinuation<AdResult<Unit>>
+    ) : TUInterstitialListener {
+        
+        private val adUnitId: String get() = BuildConfig.TOPON_INTERSTITIAL_ID
+        
+        override fun onInterstitialAdLoaded() {
+            val loadTime = System.currentTimeMillis() - startTime
+            loadTimestamp = System.currentTimeMillis()
+            val ad = interstitialAd ?: return
+            
+            // 尝试使用 checkValidAdCaches 获取 eCPM
+            cachedEcpm = try {
+                ad.checkValidAdCaches()?.firstOrNull()?.publisherRevenue?.toDouble() ?: 0.0
+            } catch (e: Exception) { 0.0 }
+            
+            AdLogger.d("[$TAG] ✅ 插页广告加载成功, 耗时: %d ms, eCPM: %.6f USD", loadTime, cachedEcpm)
+
+            totalLoadSucCount++
+            
+            // 尝试获取加载成功的广告源
+            val networkName = ad.checkValidAdCaches()?.firstOrNull()?.networkName
+            val loadedSource = if (networkName.isNullOrEmpty()) "TopOn" else networkName
+
+            reportAdData(
+                "ad_loaded",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "number" to totalLoadSucCount,
+                    "ad_source" to loadedSource,
+                    "pass_time" to ceil(loadTime / 1000.0).toInt()
+                )
+            )
+            FpuController.onAdFill("IT")
+
+            deferred.complete(AdResult.Success(Unit))
+            synchronized(this@TopOnInterstitialAdController) {
+                if (loadingDeferred == deferred) loadingDeferred = null
+            }
+
+            if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
+        }
+
+        override fun onInterstitialAdLoadFail(error: AdError?) {
+            val loadTime = System.currentTimeMillis() - startTime
+            AdLogger.e(
+                "[$TAG] ❌ 插页广告加载失败, 耗时: %d ms, error: %s",
+                loadTime,
+                error?.fullErrorInfo
+            )
+
+            totalLoadFailCount++
+            reportAdData(
+                "ad_load_fail",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "number" to totalLoadFailCount,
+                    "ad_source" to "TopOn",
+                    "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                    "reason" to (error?.desc ?: "code=${error?.code}")
+                )
+            )
+
+            val failure = AdResult.Failure(
+                AdException(
+                    parseErrorCode(error?.code),
+                    error?.desc ?: "加载失败"
+                )
+            )
+            deferred.complete(failure)
+            synchronized(this@TopOnInterstitialAdController) {
+                if (loadingDeferred == deferred) loadingDeferred = null
+            }
+
+            if (continuation.isActive) continuation.resume(failure)
+        }
+
+        // 展示相关回调 - 空实现，由 ShowAdListener 处理
+        override fun onInterstitialAdShow(info: TUAdInfo?) {}
+        override fun onInterstitialAdClicked(info: TUAdInfo?) {}
+        override fun onInterstitialAdClose(info: TUAdInfo?) {}
+        override fun onInterstitialAdVideoStart(info: TUAdInfo?) {}
+        override fun onInterstitialAdVideoEnd(info: TUAdInfo?) {}
+        override fun onInterstitialAdVideoError(error: AdError?) {}
+    }
+
+    /**
+     * 展示阶段监听器 - 处理展示/点击/关闭埋点，加载相关回调空实现
+     */
+    private inner class ShowAdListener(
+        private val continuation: CancellableContinuation<AdResult<Unit>>,
+        private val onDismiss: (() -> Unit)?
+    ) : TUInterstitialListener {
+        
+        private val adUnitId: String get() = BuildConfig.TOPON_INTERSTITIAL_ID
+
+        // 加载相关回调 - 空实现，由 LoadAdListener 处理
+        override fun onInterstitialAdLoaded() {}
+        override fun onInterstitialAdLoadFail(error: AdError?) {}
+
+        override fun onInterstitialAdShow(info: TUAdInfo?) {
+            AdLogger.d("[$TAG] 插页广告已展示")
+            cachedEcpm = parseEcpm(info?.ecpmLevel)
+            
+            currentAdSource = info?.networkName ?: "TopOn"
+            
+            // 应用级展示记录（用于全屏原生触发判断等）
+            AdConfigManager.getInterstitialConfig().recordShow()
+            PlatformFrequencyManager.recordShow(BiddingPlatform.TOPON, BiddingAdType.INTERSTITIAL)
+            
+            totalShowCount++
+            val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
+            reportAdData(
+                "ad_impression",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to currentPosition,
+                    "number" to totalShowCount,
+                    "ad_source" to currentAdSource,
+                    "value" to cachedEcpm,
+                    "currency" to "USD"
+                )
+            )
+            RevenueAdManager.reportAdRevenue(
+                RevenueAdData(
+                    revenue = RevenueInfo(
+                        value = cachedEcpm,
+                        currencyCode = "USD"
+                    ),
+                    adRevenueNetwork = currentAdSource,
+                    adRevenueUnit = adUnitId,
+                    adRevenuePlacement = currentPosition,
+                    adFormat = "Interstitial"
+                )
+            )
+            IpuController.onAdImpression("IT", ecpmMicros)
+            RpuController.onAdRevenue("IT", ecpmMicros)
+        }
+
+        override fun onInterstitialAdClicked(info: TUAdInfo?) {
+            AdLogger.d("[$TAG] 插页广告被点击")
+            totalClickCount++
+            AdConfigManager.getInterstitialConfig().recordClick()
+            PlatformFrequencyManager.recordClick(BiddingPlatform.TOPON, BiddingAdType.INTERSTITIAL)
+            reportAdData(
+                "ad_click",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to currentPosition,
+                    "number" to totalClickCount,
+                    "ad_source" to currentAdSource,
+                    "value" to cachedEcpm,
+                    "currency" to "USD"
+                )
+            )
+        }
+
+        override fun onInterstitialAdClose(info: TUAdInfo?) {
+            AdLogger.d("[$TAG] 插页广告已关闭")
+            totalCloseCount++
+            reportAdData(
+                "ad_close",
+                mapOf(
+                    "ad_unit_name" to adUnitId,
+                    "position" to currentPosition,
+                    "number" to totalCloseCount,
+                    "ad_source" to currentAdSource,
+                    "value" to cachedEcpm,
+                    "currency" to "USD"
+                )
+            )
+            clearCache()
+            onDismiss?.invoke()
+            if (continuation.isActive) continuation.resume(AdResult.Success(Unit))
+        }
+
+        override fun onInterstitialAdVideoStart(info: TUAdInfo?) {}
+        override fun onInterstitialAdVideoEnd(info: TUAdInfo?) {}
+        override fun onInterstitialAdVideoError(error: AdError?) {}
     }
 }

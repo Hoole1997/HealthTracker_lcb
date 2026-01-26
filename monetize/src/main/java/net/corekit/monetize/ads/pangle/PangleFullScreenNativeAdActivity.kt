@@ -17,8 +17,11 @@ import net.corekit.monetize.BuildConfig
 import net.corekit.monetize.R
 import net.corekit.monetize.ads.AdException
 import net.corekit.monetize.ads.AdResult
-import net.corekit.monetize.ads.ext.AdShowExt
+import net.corekit.monetize.ads.AdsManager
+import net.corekit.monetize.ads.bidding.BiddingPlatform
 import net.corekit.monetize.ads.log.AdLogger
+import net.corekit.monetize.ads.topon.TopOnInterstitialAdController
+
 
 /**
  * Pangle全屏原生广告展示页
@@ -28,12 +31,19 @@ class PangleFullScreenNativeAdActivity : AppCompatActivity() {
     companion object {
         private const val EXTRA_SHOW_INTERSTITIAL = "showInterstitial"
         private const val EXTRA_POSITION = "position"
+        private const val EXTRA_INTERSTITIAL_PLATFORM = "interstitialPlatform"
 
-        suspend fun start(activity: Activity, position: String, showInterstitial: Boolean = true): AdResult<Unit> {
+        suspend fun start(
+            activity: Activity, 
+            position: String, 
+            showInterstitial: Boolean = true,
+            interstitialPlatform: BiddingPlatform? = null
+        ): AdResult<Unit> {
             return suspendCancellableCoroutine { continuation ->
                 val intent = Intent(activity, PangleFullScreenNativeAdActivity::class.java)
                 intent.putExtra(EXTRA_SHOW_INTERSTITIAL, showInterstitial)
                 intent.putExtra(EXTRA_POSITION, position)
+                interstitialPlatform?.let { intent.putExtra(EXTRA_INTERSTITIAL_PLATFORM, it.name) }
                 activity.startActivity(intent)
                 activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                 this.continuation = continuation
@@ -58,6 +68,14 @@ class PangleFullScreenNativeAdActivity : AppCompatActivity() {
 
     private val shouldShowInterstitial: Boolean
         get() = intent.getBooleanExtra(EXTRA_SHOW_INTERSTITIAL, true)
+
+    private val position: String
+        get() = intent.getStringExtra(EXTRA_POSITION) ?: ""
+
+    private val interstitialPlatform: BiddingPlatform?
+        get() = intent.getStringExtra(EXTRA_INTERSTITIAL_PLATFORM)?.let { 
+            try { BiddingPlatform.valueOf(it) } catch (e: Exception) { null }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,15 +140,44 @@ class PangleFullScreenNativeAdActivity : AppCompatActivity() {
     private fun showInterstitialAd(onFinished: () -> Unit) {
         lifecycleScope.launch {
             try {
-                when (val result =  AdShowExt.showInterstitialAd(
-                    activity = this@PangleFullScreenNativeAdActivity,
-                    ignoreFullNative = true
-                )) {
+                // 根据传入的平台直接展示对应插页广告，避免重复竞价
+                val result = when (interstitialPlatform) {
+                    BiddingPlatform.ADMOB -> {
+                        AdsManager.Controllers.interstitial.displayAd(
+                            this@PangleFullScreenNativeAdActivity, 
+                            position, 
+                            ignoreFullNative = true
+                        )
+                    }
+                    BiddingPlatform.PANGLE -> {
+                        PangleInterstitialAdController.getInstance().showAd(
+                            this@PangleFullScreenNativeAdActivity, 
+                            null, 
+                            position
+                        )
+                    }
+                    BiddingPlatform.TOPON -> {
+                        TopOnInterstitialAdController.getInstance().showAd(
+                            this@PangleFullScreenNativeAdActivity, 
+                            null, 
+                            position
+                        )
+                    }
+                    null -> {
+                        // 未指定平台时使用同平台插页（Pangle）
+                        PangleInterstitialAdController.getInstance().showAd(
+                            this@PangleFullScreenNativeAdActivity, 
+                            null, 
+                            position
+                        )
+                    }
+                }
+                when (result) {
                     is AdResult.Success, is AdResult.Failure -> onFinished()
                     AdResult.Loading -> Unit
                 }
-                onFinished()
             } catch (e: Exception) {
+                AdLogger.e("展示插页广告异常: ${e.message}")
                 onFinished()
             }
         }

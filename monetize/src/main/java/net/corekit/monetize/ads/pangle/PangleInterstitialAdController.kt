@@ -363,6 +363,11 @@ class PangleInterstitialAdController private constructor() {
         ad.setAdInteractionListener(object : PAGInterstitialAdInteractionListener {
             override fun onAdShowed() {
                 AdLogger.d("[$TAG] 插页广告已展示")
+                
+                // 应用级展示记录（用于全屏原生触发判断等）
+                AdConfigManager.getInterstitialConfig().recordShow()
+                PlatformFrequencyManager.recordShow(BiddingPlatform.PANGLE, BiddingAdType.INTERSTITIAL)
+                
                 totalShowCount++
 
                 // 在 paid 回调才上报 ad_impression，这里先上报收益
