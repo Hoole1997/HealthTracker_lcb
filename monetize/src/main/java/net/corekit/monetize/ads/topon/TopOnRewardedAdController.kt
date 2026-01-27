@@ -299,7 +299,7 @@ class TopOnRewardedAdController private constructor() {
 
         override fun onRewardedVideoAdPlayStart(info: TUAdInfo?) {
             AdLogger.d("[$TAG] 激励广告开始播放")
-            cachedEcpm = info?.publisherRevenue ?:0.0
+            cachedEcpm = info?.publisherRevenue ?: info?.ecpm ?: 0.0
             currentAdSource = info?.networkName ?: "TopOn"
             
             totalShowCount++

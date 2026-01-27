@@ -385,7 +385,7 @@ class TopOnInterstitialAdController private constructor() {
 
         override fun onInterstitialAdShow(info: TUAdInfo?) {
             AdLogger.d("[$TAG] 插页广告已展示")
-            cachedEcpm = parseEcpm(info?.ecpmLevel)
+            cachedEcpm = info?.publisherRevenue ?: info?.ecpm ?: 0.0
             
             currentAdSource = info?.networkName ?: "TopOn"
             

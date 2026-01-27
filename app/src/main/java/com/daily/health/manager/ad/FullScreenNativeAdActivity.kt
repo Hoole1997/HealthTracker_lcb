@@ -26,6 +26,8 @@ import net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdView
 import net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdController
 import net.corekit.monetize.ads.topon.ToponFullScreenNativeAdView
 import net.corekit.monetize.ui.FullScreenNativeAdView
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 
 /**
  * 全屏原生广告展示页面
@@ -152,6 +154,18 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
 
     private fun showAdMobAd(container: ViewGroup): AdResult<Unit> {
         val controller = AdsManager.Controllers.fullScreenNative
+        
+        // 平台级频控检查
+        val freqEnabled = PlatformFrequencyManager.isEnabled()
+        val freqShowCount = PlatformFrequencyManager.getDailyShowCount(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE)
+        val freqClickCount = PlatformFrequencyManager.getDailyClickCount(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE)
+        AdLogger.d("[$TAG] AdMob频控检查 | 频控启用: %b | 当前展示: %d | 当前点击: %d", freqEnabled, freqShowCount, freqClickCount)
+        
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE)) {
+            AdLogger.w("[$TAG] AdMob平台频控拦截 | 当前展示: %d | 当前点击: %d", freqShowCount, freqClickCount)
+            return AdResult.Failure(AdException(-1, "AdMob 平台频控拦截"))
+        }
+        
         if (!controller.checkCachedAdAvailable()) {
             return AdResult.Failure(AdException(-1, "AdMob 无缓存广告"))
         }
@@ -176,6 +190,18 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
 
     private fun showPangleAd(container: ViewGroup): AdResult<Unit> {
         val controller = PangleFullScreenNativeAdController.getInstance()
+        
+        // 平台级频控检查
+        val freqEnabled = PlatformFrequencyManager.isEnabled()
+        val freqShowCount = PlatformFrequencyManager.getDailyShowCount(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE)
+        val freqClickCount = PlatformFrequencyManager.getDailyClickCount(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE)
+        AdLogger.d("[$TAG] Pangle频控检查 | 频控启用: %b | 当前展示: %d | 当前点击: %d", freqEnabled, freqShowCount, freqClickCount)
+        
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE)) {
+            AdLogger.w("[$TAG] Pangle平台频控拦截 | 当前展示: %d | 当前点击: %d", freqShowCount, freqClickCount)
+            return AdResult.Failure(AdException(-1, "Pangle 平台频控拦截"))
+        }
+        
         if (!controller.hasValidCache()) {
             return AdResult.Failure(AdException(-1, "Pangle 无缓存广告"))
         }
@@ -203,6 +229,18 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
 
     private fun showTopOnAd(container: ViewGroup): AdResult<Unit> {
         val controller = TopOnFullScreenNativeAdController.getInstance()
+        
+        // 平台级频控检查
+        val freqEnabled = PlatformFrequencyManager.isEnabled()
+        val freqShowCount = PlatformFrequencyManager.getDailyShowCount(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE)
+        val freqClickCount = PlatformFrequencyManager.getDailyClickCount(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE)
+        AdLogger.d("[$TAG] TopOn频控检查 | 频控启用: %b | 当前展示: %d | 当前点击: %d", freqEnabled, freqShowCount, freqClickCount)
+        
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE)) {
+            AdLogger.w("[$TAG] TopOn平台频控拦截 | 当前展示: %d | 当前点击: %d", freqShowCount, freqClickCount)
+            return AdResult.Failure(AdException(-1, "TopOn 平台频控拦截"))
+        }
+        
         if (!controller.hasCachedAd()) {
             return AdResult.Failure(AdException(-1, "TopOn 无缓存广告"))
         }
@@ -220,10 +258,14 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
             lifecycleOwner = this
         )
 
-        return if (success) {
-            AdResult.Success(Unit)
+        if (success) {
+            // 记录展示到平台频控
+            PlatformFrequencyManager.recordShow(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE)
+            AdLogger.d("[$TAG] TopOn记录展示 | 平台当日展示: %d", 
+                PlatformFrequencyManager.getDailyShowCount(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE))
+            return AdResult.Success(Unit)
         } else {
-            AdResult.Failure(AdException(-1, "TopOn 绑定视图失败"))
+            return AdResult.Failure(AdException(-1, "TopOn 绑定视图失败"))
         }
     }
 

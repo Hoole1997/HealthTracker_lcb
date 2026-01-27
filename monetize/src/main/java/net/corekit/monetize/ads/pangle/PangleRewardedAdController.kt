@@ -282,8 +282,9 @@ class PangleRewardedAdController private constructor() {
                         adFormat = "Rewarded"
                     )
                 )
-                IpuController.onAdImpression("RV", ecpmMicros.toLong())
-                RpuController.onAdRevenue("RV", ecpmMicros.toLong())
+                val revenueMicros = (ecpmMicros * 1_000_000).toLong()
+                IpuController.onAdImpression("RV", revenueMicros)
+                RpuController.onAdRevenue("RV", revenueMicros)
             }
 
             override fun onAdClicked() {

@@ -233,7 +233,10 @@ class PangleFullScreenNativeAdController private constructor() {
                                 isShowing = true
 
                                 totalShowCount++
+                                // 记录展示（应用级 + 平台级）
                                 AdConfigManager.getFullscreenNativeConfig().recordShow()
+                                PlatformFrequencyManager.recordShow(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE)
+                                AdLogger.d("[$TAG] 记录展示 | 平台当日展示: %d", PlatformFrequencyManager.getDailyShowCount(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE))
 
                                 val impressionParams: Map<String, Any> = mapOf(
                                     "ad_unit_name" to finalAdUnitId,
@@ -258,7 +261,7 @@ class PangleFullScreenNativeAdController private constructor() {
                                         ecpmAdUnitId = currentRevenueAdUnit
                                     )
                                     // Pangle 的 revenue 本身就是美元，直接使用
-                                    val revenueUsd = ecpmInfo?.revenue?.toDoubleOrNull()?.toLong() ?: 0L
+                                    val revenueUsd =  (revenueUsd * 1_000_000).toLong()
                                     IpuController.onAdImpression("FullNa", revenueUsd)
                                     RpuController.onAdRevenue("FullNa", revenueUsd)
                                     AdLogger.d(

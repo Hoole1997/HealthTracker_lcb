@@ -19,7 +19,7 @@ object BannerPreloadManager {
 
     private const val TAG = "BannerPreload"
     private const val PRELOAD_TIMEOUT_MS = 15000L
-    private const val DEFAULT_ADMOB_ECPM = 0.001 // AdMob Banner 使用默认较低值
+    private const val DEFAULT_ADMOB_ECPM = 0.0 // AdMob Banner 使用默认较低值
 
     private val admobController get() = AdsManager.Controllers.banner
     private val pangleController get() = PangleBannerAdController.getInstance()

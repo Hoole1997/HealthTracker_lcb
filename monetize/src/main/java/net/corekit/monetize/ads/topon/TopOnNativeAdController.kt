@@ -282,8 +282,7 @@ class TopOnNativeAdController private constructor() {
             nativeAd.setNativeEventListener(object : TUNativeEventListener {
                 override fun onAdImpressed(view: TUNativeAdView?, info: TUAdInfo?) {
                     AdLogger.d("[$TAG] TopOn 原生广告已展示")
-                    cachedEcpm = parseEcpm(info?.ecpmLevel)
-                    
+                    cachedEcpm = info?.publisherRevenue ?: info?.ecpm ?: 0.0
                     // 获取展示的广告源
                     currentAdSource = info?.networkName ?: "TopOn"
                     

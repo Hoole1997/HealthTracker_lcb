@@ -241,7 +241,7 @@ class PangleBannerAdController private constructor() {
                         AdLogger.logD(TAG, "广告展示 | 位置: %s", currentPosition)
                         
                         val showEcpm = ad.pagRevenueInfo?.showEcpm
-                        currentEcpmValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                        currentEcpmValue = showEcpm?.revenue?.toDoubleOrNull() ?: 0.0
                         currentCurrency = showEcpm?.currency ?: "USD"
                         currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: "Pangle"
                         

@@ -133,4 +133,5 @@ dependencies {
     api("com.thinkup.sdk:adapter-tpn-mintegral:6.5.16.1")
     api("com.mbridge.msdk.oversea:mbridge_android_sdk:16.9.91")
     api("com.thinkup.sdk:tramini-plugin-tpn:6.5.16")
+    api("com.thinkup.sdk:adapter-tpn-ironsource:8.10.0.1.0")
 }

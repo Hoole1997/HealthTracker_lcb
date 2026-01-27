@@ -34,6 +34,9 @@ import net.corekit.monetize.ads.interceptor.InterceptorChain
 import net.corekit.monetize.ads.interceptor.ShowCountLimitInterceptor
 import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
 import net.corekit.monetize.ads.log.AdLogger
+import net.corekit.monetize.ads.bidding.BiddingAdType
+import net.corekit.monetize.ads.bidding.BiddingPlatform
+import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.report.IpuController
 import net.corekit.monetize.ads.report.RpuController
@@ -150,10 +153,33 @@ class TopOnFullScreenNativeAdController private constructor() {
             )
         )
 
-        // 拦截器检查
+        // 平台级频控检查（基于 BiddingConfigManager 的 platform_frequency 配置）
+        val freqEnabled = PlatformFrequencyManager.isEnabled()
+        val freqShowCount = PlatformFrequencyManager.getDailyShowCount(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE)
+        val freqClickCount = PlatformFrequencyManager.getDailyClickCount(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE)
+        AdLogger.d("[$TAG] 频控检查开始 | 位置: %s | 频控启用: %b | 当前展示: %d | 当前点击: %d", 
+            position, freqEnabled, freqShowCount, freqClickCount)
+        
+        if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE)) {
+            totalShowFailCount++
+            AdLogger.w("[$TAG] 平台频控拦截 | 位置: %s | 当前展示: %d | 当前点击: %d", position, freqShowCount, freqClickCount)
+            reportAdData(
+                eventName = "ad_show_fail",
+                params = mapOf(
+                    "ad_unit_name" to finalPlacementId,
+                    "position" to position,
+                    "number" to totalShowFailCount,
+                    "reason" to "platform_frequency_limit"
+                )
+            )
+            return AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "platform_frequency_limit"))
+        }
+
+        // 应用级拦截器检查（基于 AdConfigManager 的广告类型级配置）
         when (val interceptResult = interceptorChain.intercept(context, AdConfigManager.getFullscreenNativeConfig())) {
             is AdResult.Failure -> {
                 totalShowFailCount++
+                AdLogger.w("[$TAG] 应用级拦截器检查失败: %s", interceptResult.error.message)
                 reportAdData(
                     eventName = "ad_show_fail",
                     params = mapOf(
@@ -456,8 +482,10 @@ class TopOnFullScreenNativeAdController private constructor() {
                 totalShowCount++
                 AdLogger.d("TopOn全屏原生广告累积展示次数: $totalShowCount")
 
-                // 记录展示
+                // 记录展示（应用级 + 平台级）
                 AdConfigManager.getFullscreenNativeConfig().recordShow()
+                PlatformFrequencyManager.recordShow(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE)
+                AdLogger.d("[$TAG] 记录展示 | 平台当日展示: %d", PlatformFrequencyManager.getDailyShowCount(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE))
 
                 val revenueValue = adInfo.publisherRevenue ?: adInfo.ecpm ?: 0.0
                 val revenueCurrency = adInfo.currency ?: "USD"
@@ -501,7 +529,10 @@ class TopOnFullScreenNativeAdController private constructor() {
                 totalClickCount++
                 AdLogger.d("TopOn全屏原生广告累积点击次数: $totalClickCount")
 
+                // 记录点击（应用级 + 平台级）
                 AdConfigManager.getFullscreenNativeConfig().recordClick()
+                PlatformFrequencyManager.recordClick(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE)
+                AdLogger.d("[$TAG] 记录点击 | 平台当日点击: %d", PlatformFrequencyManager.getDailyClickCount(BiddingPlatform.TOPON, BiddingAdType.FULL_NATIVE))
 
                 val revenueValue = adInfo.publisherRevenue ?: adInfo.ecpm ?: 0.0
                 val revenueCurrency = adInfo.currency ?: "USD"

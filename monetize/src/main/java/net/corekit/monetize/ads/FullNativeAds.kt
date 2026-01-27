@@ -606,7 +606,11 @@ class FullNativeAds private constructor() {
                             totalShowCount++
                             AdLogger.d("全屏原生广告累积展示次数: $totalShowCount")
 
+                            // 记录展示（应用级 + 平台级）
                             AdConfigManager.getFullscreenNativeConfig().recordShow()
+                            PlatformFrequencyManager.recordShow(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE)
+                            AdLogger.d("[$TAG] 记录展示 | 平台当日展示: %d", PlatformFrequencyManager.getDailyShowCount(BiddingPlatform.ADMOB, BiddingAdType.FULL_NATIVE))
+                            
                             if (!isCacheFull(adUnitId)) {
                                 PreloadController.preloadPlatformAdType(context, net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB, net.corekit.monetize.ads.bidding.BiddingAdType.FULL_NATIVE)
                             }

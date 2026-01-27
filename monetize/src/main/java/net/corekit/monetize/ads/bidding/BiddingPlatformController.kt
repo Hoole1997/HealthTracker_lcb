@@ -267,26 +267,7 @@ object BiddingPlatformController {
      * @param realEcpm 从 SDK 获取的真实 eCPM 值
      * @return 有效的 eCPM 值（真实值或随机 Mock 值）
      */
-    fun getEffectiveEcpm(platform: BiddingWinner, realEcpm: Double): Double {
-        // 定义占位符阈值：低于此值的 eCPM 被视为占位符，需要在测试模式下注入 Mock
-        val placeholderThreshold = 0.005
-        
-        // 真实值有效时（高于占位符阈值）直接使用
-        if (realEcpm >= placeholderThreshold) {
-            return realEcpm
-        }
-        
-        // 非测试模式直接返回真实值
-        if (!isTestMode()) {
-            return realEcpm
-        }
-        
-        // 测试模式：优先使用自定义 Mock 值，否则生成随机值
-        val mockEcpm = customMockEcpm[platform] ?: generateRandomMockEcpm()
-        AdLogger.d("[$TAG] [TestMode] 注入随机 Mock eCPM: %s = %.6f USD (真实值: %.6f)", 
-            platform.name, mockEcpm, realEcpm)
-        return mockEcpm
-    }
+    fun getEffectiveEcpm(platform: BiddingWinner, realEcpm: Double) = realEcpm
 
     /**
      * 判断是否处于测试模式
@@ -295,7 +276,7 @@ object BiddingPlatformController {
      * 支持调试面板强制开关覆盖
      */
     fun isTestMode(): Boolean {
-        return forceTestModeEnabled ?: BuildState.debug
+        return forceTestModeEnabled
     }
 
     /**
@@ -314,11 +295,6 @@ object BiddingPlatformController {
         customMockEcpm[platform] = ecpm
         AdLogger.d("[$TAG] [TestMode] 设置 %s 固定 Mock eCPM = %.6f USD (覆盖随机)", platform.name, ecpm)
     }
-    
-    fun getMockEcpm(platform: BiddingWinner): Double {
-        // 如果有自定义值则返回，否则生成随机值
-        return customMockEcpm[platform] ?: generateRandomMockEcpm()
-    }
 
     // ==================== 调试面板支持 ====================
 
@@ -326,7 +302,7 @@ object BiddingPlatformController {
      * 强制测试模式开关（用于调试面板）
      * 优先级高于 BuildConfig.DEBUG
      */
-    private var forceTestModeEnabled: Boolean? = null
+    private var forceTestModeEnabled: Boolean = false
 
     /**
      * 设置测试模式（用于调试面板）
@@ -334,7 +310,7 @@ object BiddingPlatformController {
      * @param enabled true 强制启用，false 强制禁用，null 恢复默认行为
      */
     fun setTestMode(enabled: Boolean?) {
-        forceTestModeEnabled = enabled
+        forceTestModeEnabled = enabled ?: false
         AdLogger.d("[$TAG] [TestMode] 测试模式已${if (enabled == true) "启用" else if (enabled == false) "禁用" else "恢复默认"}")
     }
 
