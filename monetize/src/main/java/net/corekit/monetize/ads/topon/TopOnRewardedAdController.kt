@@ -312,6 +312,7 @@ class TopOnRewardedAdController private constructor() {
                     "position" to currentPosition,
                     "number" to totalShowCount,
                     "ad_source" to currentAdSource,
+                    "value" to cachedEcpm,
                     "currency" to "USD"
                 )
             )
