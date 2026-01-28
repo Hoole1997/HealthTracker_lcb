@@ -56,9 +56,8 @@ jobs:
           echo "Warning: INTERNAL_GOOGLE_SERVICES_JSON_BASE64 is empty."
         else
           mkdir -p app/src/internal
-          echo "$GOOGLE_JSON_ENCODED" | base64 -di > app/google-services.json
-          cp app/google-services.json app/src/internal/google-services.json
-          echo "Decoded Internal google-services.json"
+          echo "$GOOGLE_JSON_ENCODED" | base64 -di > app/src/internal/google-services.json
+          echo "Decoded Internal google-services.json to app/src/internal/"
         fi
 
     - name: Create Internal Sign Properties
@@ -93,9 +92,9 @@ jobs:
         echo "Decoded PlayStore Keystore"
 
         if [ -n "$GOOGLE_JSON_ENCODED" ]; then
-           echo "$GOOGLE_JSON_ENCODED" | base64 -di > app/google-services.json
-           cp app/google-services.json app/src/playstore/google-services.json
-           echo "Decoded PlayStore google-services.json"
+           mkdir -p app/src/playstore
+           echo "$GOOGLE_JSON_ENCODED" | base64 -di > app/src/playstore/google-services.json
+           echo "Decoded PlayStore google-services.json to app/src/playstore/"
         fi
 
     - name: Create PlayStore Sign Properties
