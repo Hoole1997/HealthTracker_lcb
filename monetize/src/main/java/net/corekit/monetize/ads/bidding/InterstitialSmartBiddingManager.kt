@@ -112,7 +112,7 @@ object InterstitialSmartBiddingManager {
             }
             BiddingPlatform.PANGLE -> {
                 AdLogger.d("[$TAG] 展示 Pangle 插页广告")
-                val showResult = PangleInterstitialAdController.getInstance().showAd(activity)
+                val showResult = PangleInterstitialAdController.getInstance().showAd(activity,position = position)
                 if (showResult is AdResult.Success) {
                     net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
                 }
@@ -120,7 +120,7 @@ object InterstitialSmartBiddingManager {
             }
             BiddingPlatform.TOPON -> {
                 AdLogger.d("[$TAG] 展示 TopOn 插页广告")
-                val showResult = TopOnInterstitialAdController.getInstance().showAd(activity)
+                val showResult = TopOnInterstitialAdController.getInstance().showAd(activity,position = position)
                 if (showResult is AdResult.Success) {
                     net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
                 }
@@ -195,7 +195,7 @@ object InterstitialSmartBiddingManager {
             }
             BiddingPlatform.PANGLE -> {
                 AdLogger.d("[$TAG] 展示 Pangle 插页广告")
-                val showResult = PangleInterstitialAdController.getInstance().showAd(activity)
+                val showResult = PangleInterstitialAdController.getInstance().showAd(activity, position = position)
 //                if (showResult is AdResult.Success) {
 //                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, BiddingWinner.PANGLE, BiddingAdType.INTERSTITIAL)
 //                }
@@ -203,7 +203,7 @@ object InterstitialSmartBiddingManager {
             }
             BiddingPlatform.TOPON -> {
                 AdLogger.d("[$TAG] 展示 TopOn 插页广告")
-                val showResult = TopOnInterstitialAdController.getInstance().showAd(activity)
+                val showResult = TopOnInterstitialAdController.getInstance().showAd(activity,position = position)
 //                if (showResult is AdResult.Success) {
 //                    net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, BiddingWinner.TOPON, BiddingAdType.INTERSTITIAL)
 //                }

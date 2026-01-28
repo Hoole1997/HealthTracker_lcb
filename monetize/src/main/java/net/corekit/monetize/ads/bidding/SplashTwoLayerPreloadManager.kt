@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.ViewGroup
 import kotlinx.coroutines.*
 import net.corekit.monetize.ads.AdException
+import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ads.AdResult
 import net.corekit.monetize.ads.AdsManager
 import net.corekit.monetize.ads.config.BiddingConfigManager
@@ -171,19 +172,19 @@ object SplashTwoLayerPreloadManager {
     ): AdResult<Unit> {
         return when (platform) {
             BiddingPlatform.ADMOB -> {
-                val showResult = AdsManager.Controllers.interstitial.displayAd(activity, "bidding")
+                val showResult = AdsManager.Controllers.interstitial.displayAd(activity, AdPosition.SP_APP_START)
                 onDismiss?.invoke()
                 showResult
             }
             BiddingPlatform.PANGLE -> {
-                val result = PangleInterstitialAdController.getInstance().showAd(activity, onDismiss)
+                val result = PangleInterstitialAdController.getInstance().showAd(activity, onDismiss,AdPosition.SP_APP_START)
                 if (result is AdResult.Success) {
                     net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.PANGLE, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
                 }
                 result
             }
             BiddingPlatform.TOPON -> {
-                val result = TopOnInterstitialAdController.getInstance().showAd(activity, onDismiss)
+                val result = TopOnInterstitialAdController.getInstance().showAd(activity, onDismiss,AdPosition.SP_APP_START)
                 if (result is AdResult.Success) {
                     net.corekit.monetize.ads.PreloadController.preloadPlatformAdType(activity, net.corekit.monetize.ads.bidding.BiddingWinner.TOPON, net.corekit.monetize.ads.bidding.BiddingAdType.INTERSTITIAL)
                 }

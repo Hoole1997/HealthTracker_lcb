@@ -367,6 +367,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
                 if (BuildState.debug) "使用竞价模式加载广告".logd(TAG)
                 SplashBiddingManager.smartBidAndShow(
                     activity = this,
+                    container = mViewBind.adContainer,
                     onAdLoaded = { isSuccess ->
                         isAdLoaded = isSuccess
                     }

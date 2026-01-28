@@ -385,6 +385,7 @@ object RewardTwoLayerPreloadManager {
     suspend fun showWinnerAd(
         activity: Activity,
         result: FinalBidResult,
+        position: String = "",
         onRewardEarned: ((Boolean) -> Unit)? = null,
         onDismiss: (() -> Unit)? = null
     ): AdResult<Unit> {
@@ -396,9 +397,9 @@ object RewardTwoLayerPreloadManager {
         
         return withTimeoutOrNull(SHOW_TIMEOUT_MS) {
             when (winner.winnerType) {
-                BiddingAdType.REWARDED -> showRewardedAd(activity, winner.platform, onRewardEarned, onDismiss)
+                BiddingAdType.REWARDED -> showRewardedAd(activity, winner.platform, onRewardEarned, position,onDismiss)
                 BiddingAdType.REWARDED_INTERSTITIAL -> {
-                    val result = rewardedInterstitialController.displayAd(activity, "bidding")
+                    val result = rewardedInterstitialController.displayAd(activity, position)
                     if (result is AdResult.Success) {
                         onRewardEarned?.invoke(true)
                     }
@@ -412,7 +413,7 @@ object RewardTwoLayerPreloadManager {
                 }
                 BiddingAdType.INTERSTITIAL -> {
                     onRewardEarned?.invoke(false)
-                    showInterstitialAd(activity, winner.platform, onDismiss)
+                    showInterstitialAd(activity, winner.platform, position,onDismiss)
                 }
                 else -> AdResult.Failure(AdException(AdException.ERROR_INTERNAL, "Unsupported ad type"))
             }
@@ -423,11 +424,12 @@ object RewardTwoLayerPreloadManager {
         activity: Activity,
         platform: BiddingPlatform,
         onRewardEarned: ((Boolean) -> Unit)?,
+        position: String,
         onDismiss: (() -> Unit)?
     ): AdResult<Unit> {
         return when (platform) {
             BiddingPlatform.ADMOB -> {
-                val showResult = rewardedController.show(activity, "bidding")
+                val showResult = rewardedController.show(activity, position)
                 if (showResult is AdResult.Success) {
                     onRewardEarned?.invoke(showResult.data.rewarded)
                 }
@@ -440,10 +442,10 @@ object RewardTwoLayerPreloadManager {
                 }
             }
             BiddingPlatform.PANGLE -> {
-                PangleRewardedAdController.getInstance().showAd(activity, onRewardEarned, onDismiss)
+                PangleRewardedAdController.getInstance().showAd(activity, onRewardEarned, onDismiss,position)
             }
             BiddingPlatform.TOPON -> {
-                TopOnRewardedAdController.getInstance().showAd(activity, onRewardEarned, onDismiss)
+                TopOnRewardedAdController.getInstance().showAd(activity, onRewardEarned, onDismiss,position)
             }
         }
     }
@@ -451,19 +453,20 @@ object RewardTwoLayerPreloadManager {
     private suspend fun showInterstitialAd(
         activity: Activity,
         platform: BiddingPlatform,
+        position: String = "",
         onDismiss: (() -> Unit)?
     ): AdResult<Unit> {
         return when (platform) {
             BiddingPlatform.ADMOB -> {
-                AdsManager.Controllers.interstitial.displayAd(activity, "bidding")
+                AdsManager.Controllers.interstitial.displayAd(activity, position)
                 onDismiss?.invoke()
                 AdResult.Success(Unit)
             }
             BiddingPlatform.PANGLE -> {
-                PangleInterstitialAdController.getInstance().showAd(activity, onDismiss)
+                PangleInterstitialAdController.getInstance().showAd(activity, onDismiss,position)
             }
             BiddingPlatform.TOPON -> {
-                TopOnInterstitialAdController.getInstance().showAd(activity, onDismiss)
+                TopOnInterstitialAdController.getInstance().showAd(activity, onDismiss,position)
             }
         }
     }

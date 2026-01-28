@@ -362,7 +362,7 @@ object RewardBiddingManager {
             // 展示广告
             val consumedAdType = bidResult.winner.winnerType
             val consumedPlatform = bidResult.winner.platform
-            return RewardTwoLayerPreloadManager.showWinnerAd(activity, bidResult, onRewardEarned).also {
+            return RewardTwoLayerPreloadManager.showWinnerAd(activity, bidResult, position,onRewardEarned).also {
                 // 展示后异步定向预加载消耗的广告类型和平台（在 also 块中确保能获取到 consumedAdType 和 consumedPlatform）
                 CoroutineScope(Dispatchers.IO).launch {
                     preloadByConsumedType(activity, consumedAdType, consumedPlatform)

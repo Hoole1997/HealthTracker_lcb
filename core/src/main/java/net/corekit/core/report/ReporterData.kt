@@ -89,7 +89,7 @@ object ReportDataManager {
      */
     fun reportData(eventName: String, data: Map<String, Any> = mapOf()) {
         if (BuildState.debug && data.containsKey("position")) {
-            Log.d("AdPosition", "Event: $eventName, Position: ${data["position"]}")
+            Log.d("AdPosition", "Event: $eventName, Position: ${data.toString()}")
         }
         try {
             // 遍历所有上报器进行上报
@@ -115,7 +115,7 @@ object ReportDataManager {
      */
     fun reportDataByName(reporterName: String, eventName: String, data: Map<String, Any>) {
         if (BuildState.debug && data.containsKey("position")) {
-            Log.d("AdPosition", "Event: $eventName, Position: ${data["position"]}")
+            Log.d("AdPosition", "Event: $eventName, Position: ${data.toString()}")
         }
         try {
             // 查找指定名称的上报器
