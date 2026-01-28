@@ -23,6 +23,8 @@ jobs:
 
     env:
       BUILD_VARIANT: ${{ github.event.inputs.variant || 'internalDebug' }}
+      # Override default 8GB heap to 4GB to fit in GitHub Actions runner limits (7GB total)
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError"
 
     steps:
     - uses: actions/checkout@v4
