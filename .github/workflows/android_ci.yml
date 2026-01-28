@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      BUILD_VARIANT: ${{ github.event.inputs.variant || 'internalDebug' }}
+      BUILD_VARIANT: ${{ github.event.inputs.variant || 'internalRelease' }}
       # Override default 8GB heap to 4GB to fit in GitHub Actions runner limits (7GB total)
       GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError"
 
@@ -121,12 +121,18 @@ jobs:
         # Capitalize variant name for task construction (e.g. playstoreRelease -> PlaystoreRelease)
         CAP_VARIANT="$(tr '[:lower:]' '[:upper:]' <<< ${BUILD_VARIANT:0:1})${BUILD_VARIANT:1}"
         
+        # Only exclude lintVital for Release builds (Debug builds don't have this task, causing failure)
+        EXCLUDE_LINT_VITAL=""
+        if [[ "$BUILD_VARIANT" == *"Release"* ]]; then
+             EXCLUDE_LINT_VITAL="-x lintVital$CAP_VARIANT"
+        fi
+        
         if [[ "$BUILD_VARIANT" == *"playstore"* ]]; then
             echo "Building App Bundle (AAB) for $BUILD_VARIANT"
-            ./gradlew bundle$BUILD_VARIANT -x lint -x lintVital$CAP_VARIANT --stacktrace
+            ./gradlew bundle$BUILD_VARIANT -x lint $EXCLUDE_LINT_VITAL --stacktrace
         else
             echo "Building APK for $BUILD_VARIANT"
-            ./gradlew assemble$BUILD_VARIANT -x lint -x lintVital$CAP_VARIANT --stacktrace
+            ./gradlew assemble$BUILD_VARIANT -x lint $EXCLUDE_LINT_VITAL --stacktrace
         fi
 
     - name: Upload Artifact
