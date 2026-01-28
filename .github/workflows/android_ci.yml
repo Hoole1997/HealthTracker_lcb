@@ -21,6 +21,9 @@ jobs:
     name: Build Android App
     runs-on: ubuntu-latest
 
+    env:
+      BUILD_VARIANT: ${{ github.event.inputs.variant || 'internalDebug' }}
+
     steps:
     - uses: actions/checkout@v4
 
@@ -35,15 +38,14 @@ jobs:
       run: chmod +x gradlew
 
     - name: Decode Internal Keystore & Google Services
-      # Only run if explicitly building internal variant OR on PRs/Push (defaulting to internal check)
-      if: contains(github.event.inputs.variant, 'internal') || github.event_name == 'pull_request' || github.event_name == 'push'
+      if: contains(env.BUILD_VARIANT, 'internal')
       env:
         ENCODED_STRING: ${{ secrets.INTERNAL_KEYSTORE_BASE64 }}
         GOOGLE_JSON_ENCODED: ${{ secrets.INTERNAL_GOOGLE_SERVICES_JSON_BASE64 }}
       run: |
-        echo "Checking Secrets..."
+        echo "Checking Secrets for Internal..."
         if [ -z "$ENCODED_STRING" ]; then
-          echo "Warning: INTERNAL_KEYSTORE_BASE64 is empty. Signing might fail if needed."
+          echo "Warning: INTERNAL_KEYSTORE_BASE64 is empty."
         else
           mkdir -p app/src/internal
           echo "$ENCODED_STRING" | base64 -di > app/src/internal/pdfreader.jks
@@ -60,7 +62,7 @@ jobs:
         fi
 
     - name: Create Internal Sign Properties
-      if: contains(github.event.inputs.variant, 'internal') || github.event_name == 'pull_request' || github.event_name == 'push'
+      if: contains(env.BUILD_VARIANT, 'internal')
       env:
         STORE_PASSWORD: ${{ secrets.INTERNAL_STORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.INTERNAL_KEY_ALIAS }}
@@ -75,11 +77,12 @@ jobs:
         fi
 
     - name: Decode PlayStore Keystore & Google Services
-      if: contains(github.event.inputs.variant, 'playstore')
+      if: contains(env.BUILD_VARIANT, 'playstore')
       env:
         ENCODED_STRING: ${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}
         GOOGLE_JSON_ENCODED: ${{ secrets.PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64 }}
       run: |
+        echo "Checking Secrets for PlayStore..."
         if [ -z "$ENCODED_STRING" ]; then
           echo "Error: PLAYSTORE_KEYSTORE_BASE64 is empty!"
           exit 1
@@ -96,7 +99,7 @@ jobs:
         fi
 
     - name: Create PlayStore Sign Properties
-      if: contains(github.event.inputs.variant, 'playstore')
+      if: contains(env.BUILD_VARIANT, 'playstore')
       env:
         STORE_PASSWORD: ${{ secrets.PLAYSTORE_STORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.PLAYSTORE_KEY_ALIAS }}
@@ -112,28 +115,24 @@ jobs:
 
     - name: Build with Gradle
       run: |
-        VARIANT=${{ github.event.inputs.variant }}
-        if [ -z "$VARIANT" ]; then
-          VARIANT="internalDebug" # Default for PRs and Pushes
-        fi
-        
-        echo "Building Variant: $VARIANT"
+        echo "Building Variant: $BUILD_VARIANT"
         
         # Capitalize variant name for task construction (e.g. playstoreRelease -> PlaystoreRelease)
-        CAP_VARIANT="$(tr '[:lower:]' '[:upper:]' <<< ${VARIANT:0:1})${VARIANT:1}"
+        CAP_VARIANT="$(tr '[:lower:]' '[:upper:]' <<< ${BUILD_VARIANT:0:1})${BUILD_VARIANT:1}"
         
-        if [[ "$VARIANT" == *"playstore"* ]]; then
-            echo "Building App Bundle (AAB) for $VARIANT"
-            ./gradlew bundle$VARIANT -x lint -x lintVital$CAP_VARIANT --stacktrace
+        if [[ "$BUILD_VARIANT" == *"playstore"* ]]; then
+            echo "Building App Bundle (AAB) for $BUILD_VARIANT"
+            ./gradlew bundle$BUILD_VARIANT -x lint -x lintVital$CAP_VARIANT --stacktrace
         else
-            echo "Building APK for $VARIANT"
-            ./gradlew assemble$VARIANT -x lint -x lintVital$CAP_VARIANT --stacktrace
+            echo "Building APK for $BUILD_VARIANT"
+            ./gradlew assemble$BUILD_VARIANT -x lint -x lintVital$CAP_VARIANT --stacktrace
         fi
 
     - name: Upload Artifact
+      if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: app-${{ github.event.inputs.variant || 'default' }}
+        name: app-${{ env.BUILD_VARIANT }}
         path: |
           app/build/outputs/apk/**/*.apk
           app/build/outputs/bundle/**/*.aab
