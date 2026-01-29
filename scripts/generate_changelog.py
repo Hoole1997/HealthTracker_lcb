@@ -8,12 +8,14 @@ def get_git_commits(from_tag, to_tag):
     """
     Get all commits between two tags using git log.
     """
-    cmd = ["git", "log", "--pretty=format:%s @%cn", f"{from_tag}..{to_tag}"]
+    cmd = ["git", "log", "--pretty=format:%s%n%b%n---COMMIT_DELIMITER---", f"{from_tag}..{to_tag}"]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         print(f"Error getting git log: {result.stderr}", file=sys.stderr)
         return []
-    return result.stdout.strip().split('\n')
+    # Split by delimiter and filter empty
+    raw_commits = result.stdout.split("---COMMIT_DELIMITER---")
+    return [c.strip() for c in raw_commits if c.strip()]
 
 def parse_commits(commits):
     """
@@ -44,7 +46,12 @@ def parse_commits(commits):
         if not line:
             continue
             
-        match = re.match(regex, line)
+        # Split subject and body
+        parts = line.split('\n', 1)
+        subject = parts[0].strip()
+        body = parts[1].strip() if len(parts) > 1 else ""
+
+        match = re.match(regex, subject)
         if match:
             c_type, c_scope, c_desc = match.groups()
             
@@ -52,16 +59,32 @@ def parse_commits(commits):
             category = categories.get(c_type.lower())
             
             if category:
-                # Format: "description (scope) @author"
+                # Format: "description (scope)"
                 scope_str = f"**[{c_scope}]** " if c_scope else ""
+                
+                # Construct main bullet
                 formatted_msg = f"{scope_str}{c_desc}"
+                
+                # Append body as sub-list if exists
+                if body:
+                    # Indent body lines
+                    body_lines = body.split('\n')
+                    for bl in body_lines:
+                        bl = bl.strip()
+                        if bl.startswith('- ') or bl.startswith('* '):
+                            formatted_msg += f"\n  {bl}"
+                        elif bl:
+                            formatted_msg += f"\n  - {bl}"
+                            
                 grouped[category].append(formatted_msg)
             else:
-                # Type recognized but not in main map, add to Others
-                others.append(line)
+                others.append(subject)
+                if body:
+                     others.append(f"  {body}")
         else:
-            # Non-conventional commits - add to Others
-            others.append(line)
+            others.append(subject)
+            if body:
+                 others.append(f"  {body}")
 
     return grouped, others
 
@@ -120,11 +143,14 @@ def main():
     prev_tag = sys.argv[1]
     curr_tag = sys.argv[2]
     
-    print(f"Generating changelog from {prev_tag} to {curr_tag}...")
+    # Optional 3rd arg for display name (e.g. if curr_tag is HEAD but we want to show T1.0.7.A)
+    display_version = sys.argv[3] if len(sys.argv) > 3 else curr_tag
+    
+    print(f"Generating changelog from {prev_tag} to {curr_tag} (Title: {display_version})...")
     
     commits = get_git_commits(prev_tag, curr_tag)
     grouped = parse_commits(commits)
-    changelog = generate_markdown(grouped, curr_tag)
+    changelog = generate_markdown(grouped, display_version)
     
     # Output to file
     with open("release_notes.txt", "w") as f:

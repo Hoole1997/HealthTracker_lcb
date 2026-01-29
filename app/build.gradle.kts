@@ -35,6 +35,22 @@ val adMobConfig = findProperty("admob") as Map<*, *>
 val adMobUnitConfig = adMobConfig["adUnitIds"] as Map<*, *>
 println("showLog = $showLog")
 
+
+// 定义一个辅助函数来解析 google-services.json
+fun getAppIdFromJson(path: String): String? {
+    val file = project.file(path)
+    if (!file.exists()) return null
+    return try {
+        val json = groovy.json.JsonSlurper().parse(file) as Map<*, *>
+        val client = (json["client"] as List<*>).firstOrNull() as? Map<*, *>
+        val clientInfo = client?.get("client_info") as? Map<*, *>
+        clientInfo?.get("mobilesdk_app_id") as? String
+    } catch (e: Exception) {
+        println("Warning: Failed to parse App ID from $path: ${e.message}")
+        null
+    }
+}
+
 android {
     namespace = "com.daily.health.manager"
 
@@ -95,8 +111,11 @@ android {
             }
 
             firebaseAppDistribution {
-                // App ID 优先读取环境变量
-                appId = System.getenv("INTERNAL_FIREBASE_APP_ID") ?: project.findProperty("internalFirebaseAppId") as? String
+                // App ID Priority: ENV -> google-services.json -> Property
+                appId = System.getenv("INTERNAL_FIREBASE_APP_ID") 
+                        ?: getAppIdFromJson("src/internal/google-services.json")
+                        ?: project.findProperty("internalFirebaseAppId") as? String
+                
                 // Credential File 优先读取 src/internal/ 下的专用 Key
                 serviceCredentialsFile = project.file("src/internal/google-services-json-key.json").absolutePath
                 releaseNotesFile = rootProject.file("release_notes.txt").absolutePath
@@ -112,6 +131,8 @@ android {
             versionNameSuffix = ""
         }
     }
+
+
 
     buildTypes {
         release {
