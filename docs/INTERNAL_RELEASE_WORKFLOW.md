@@ -51,23 +51,43 @@ graph TD
     *   **Password**: **⚠️ 重要**: 这里**不能**填写您的 GitHub 登录密码。必须填写 **Personal Access Token (PAT)**。
 
 ### 2.2 GitHub Secrets 详细配置指南
-**自动化配置工具 (推荐)**:
-我们提供了一个脚本 `scripts/generate_ci_secrets_helper.sh` 自动生成所需内容。
+### 2.2 GitHub Secrets 详细配置指南
+为了保护敏感信息（如签名文件），我们不能将其直接提交到代码仓库。CI 构建时，我们会从 GitHub Secrets 中通过 Base64 解码恢复这些文件。
 
-**操作步骤**:
-1.  **运行助手**: 在项目根目执行 `./scripts/generate_ci_secrets_helper.sh`
-2.  **查看输出**: 脚本会在终端显示 **密码**，并将 **Base64** 文件生成在 `build/secrets/` 目录。
-3.  **填入 GitHub**: 进入 GitHub -> Settings -> Secrets and variables -> Actions -> New repository secret。
+#### 方案 A: 通用手动配置 (适用于所有项目)
+不依赖任何特定脚本，适用于任何 Android 工程结构。
 
-**必须配置的 Secrets 清单**:
+**必须准备的素材**:
+1.  签名文件 (例如 `your-key.jks`)
+2.  Firebase 配置文件 (例如 `google-services.json`)
+3.  签名密码信息
 
-| Secret Name (Key)                        | 填写内容 (Value)                                                |
-| :--------------------------------------- | :-------------------------------------------------------------- |
-| **INTERNAL_KEYSTORE_BASE64**             | `build/secrets/internal_keystore_base64.txt` 的内容             |
-| **INTERNAL_GOOGLE_SERVICES_JSON_BASE64** | `build/secrets/internal_google_services_json_base64.txt` 的内容 |
-| **INTERNAL_STORE_PASSWORD**              | Keystore 密码 (脚本输出中会显示)                                |
-| **INTERNAL_KEY_ALIAS**                   | Key Alias (通常为 `key0`)                                       |
-| **INTERNAL_KEY_PASSWORD**                | Key 密码                                                        |
+**第一步：生成 Base64 字符串**
+在本地终端执行以下命令 (Mac/Linux)：
+
+```bash
+# 1. 生成 Keystore 的 Base64 并复制到剪贴板 (Mac)
+base64 -i <path/to/your.jks> | pbcopy
+# Linux 用户使用: base64 -w 0 <path/to/your.jks>
+
+# 2. 生成 google-services.json 的 Base64
+base64 -i <path/to/google-services.json> | pbcopy
+```
+
+**第二步：在 GitHub 添加 Secrets**
+1.  GitHub -> **Settings** -> **Secrets and variables** -> **Actions** -> **New repository secret**。
+2.  依次添加以下 5 个变量：
+
+| Secret Name (Key)                        | Value (填写内容)                       |
+| :--------------------------------------- | :------------------------------------- |
+| **INTERNAL_KEYSTORE_BASE64**             | 粘贴刚才生成的 `.jks` Base64 长字符串  |
+| **INTERNAL_GOOGLE_SERVICES_JSON_BASE64** | 粘贴刚才生成的 `.json` Base64 长字符串 |
+| **INTERNAL_STORE_PASSWORD**              | Keystore 的 Store Password (明文)      |
+| **INTERNAL_KEY_ALIAS**                   | Key Alias (明文，例如 `key0`)          |
+| **INTERNAL_KEY_PASSWORD**                | Key Password (明文)                    |
+
+#### 方案 B: 使用项目辅助脚本 (可选)
+如果您的项目结构与本项目一致（通过 properties 管理签名），可以使用参考脚本 `scripts/generate_ci_secrets_helper.sh` 自动提取并生成上述内容。使用方法详见后文 **3.4 脚本详解**。
 
 ---
 
