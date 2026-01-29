@@ -146,7 +146,9 @@ jobs:
         
         CURRENT_TAG=${GITHUB_REF#refs/tags/}
         # Find previous tag (sort by creator date desc, skip current, take first)
-        PREV_TAG=$(git tag --sort=-creatordate | grep "T" | grep -v "^${CURRENT_TAG}$" | head -n 1)
+        # 修复逻辑: 不再只 grep "T"，而是查找任何版本 Tag (T* 或 v*)。
+        # 这样如果上一个是 v1.0.1，也能正确计算增量
+        PREV_TAG=$(git tag --sort=-creatordate | grep -E "^(T|v)" | grep -v "^${CURRENT_TAG}$" | head -n 1)
         
         if [ -z "$PREV_TAG" ]; then
            echo "No previous tag found. Using initial commit logic or empty."
