@@ -111,11 +111,13 @@ graph TD
 
 ### 3.4 密钥生成助手: `generate_ci_secrets_helper.sh`
 *   **功能**: 本地辅助工具，用于快速准备 GitHub Secrets。
+*   **注意**: **本脚本是针对当前项目结构编写的参考实现**。
+    *   默认逻辑：读取 `app/src/internal/sign.properties` 解析签名配置。
+    *   **适配指南**: 如果其他项目的签名配置文件位置不同（例如在根目录 `local.properties` 或 `keystore.properties`），**请务必修改脚本中的 `PROP_FILE` 路径和解析逻辑** 以适配您的工程。
 *   **逻辑**:
-    1.  读取 `app/src/internal/sign.properties`获取密钥路径和密码。
+    1.  读取配置获取密钥路径和密码。
     2.  将 `.jks` 和 `json` 文件转换为 Base64 字符串。
-    3.  将结果保存到 `build/secrets/` 临时目录，方便用户复制。
-    4.  **注意**: 该脚本生成的 `build/` 目录已被 gitignore，防止泄露。
+    3.  将结果保存到 `build/secrets/` 临时目录。
 
 ---
 
