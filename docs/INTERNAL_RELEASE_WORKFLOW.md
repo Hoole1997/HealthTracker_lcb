@@ -51,83 +51,92 @@ graph TD
     *   **Password**: **⚠️ 重要**: 这里**不能**填写您的 GitHub 登录密码。必须填写 **Personal Access Token (PAT)**。
 
 ### 2.2 GitHub Secrets 详细配置指南
-为了保护敏感信息（如签名文件），我们不能将其直接提交到代码仓库。CI 构建时，我们会从 GitHub Secrets 中通过 Base64 解码恢复这些文件。
+**自动化配置工具 (推荐)**:
+我们提供了一个脚本 `scripts/generate_ci_secrets_helper.sh` 自动生成所需内容。
 
-#### 第一步：准备 Base64 字符串
-在本地终端执行以下命令，将文件转换为 Base64 字符串（以 macOS 为例）：
+**操作步骤**:
+1.  **运行助手**: 在项目根目执行 `./scripts/generate_ci_secrets_helper.sh`
+2.  **查看输出**: 脚本会在终端显示 **密码**，并将 **Base64** 文件生成在 `build/secrets/` 目录。
+3.  **填入 GitHub**: 进入 GitHub -> Settings -> Secrets and variables -> Actions -> New repository secret。
 
-```bash
-# 生成 Keystore 的 Base64
-base64 -i app/your-keystore.jks | pbcopy
-# (Linux 用户使用: base64 -w 0 app/your-keystore.jks)
+**必须配置的 Secrets 清单**:
 
-# 生成 google-services.json 的 Base64
-base64 -i app/google-services.json | pbcopy
-```
-
-#### 第二步：在 GitHub 添加 Secrets
-1.  打开 GitHub 仓库页面。
-2.  点击顶部导航栏的 **Settings** (设置)。
-3.  在左侧侧边栏中找到 **Secrets and variables** -> 点击 **Actions**。
-4.  点击右上角的绿色按钮 **New repository secret**。
-
-#### 第三步：添加以下 Secret 条目
-请依次添加以下 Key，Value 填入对应的内容：
-
-| Secret Name (Key)                        | Value (内容描述)                                       |
-| :--------------------------------------- | :----------------------------------------------------- |
-| **INTERNAL_KEYSTORE_BASE64**             | 刚才生成的 `.jks` 文件的 Base64 完整字符串             |
-| **INTERNAL_GOOGLE_SERVICES_JSON_BASE64** | 刚才生成的 `google-services.json` 的 Base64 完整字符串 |
-| **INTERNAL_STORE_PASSWORD**              | Keystore 的 Store Password (明文)                      |
-| **INTERNAL_KEY_ALIAS**                   | Key Alias (明文，例如 `key0`)                          |
-| **INTERNAL_KEY_PASSWORD**                | Key Password (明文)                                    |
+| Secret Name (Key)                        | 填写内容 (Value)                                                |
+| :--------------------------------------- | :-------------------------------------------------------------- |
+| **INTERNAL_KEYSTORE_BASE64**             | `build/secrets/internal_keystore_base64.txt` 的内容             |
+| **INTERNAL_GOOGLE_SERVICES_JSON_BASE64** | `build/secrets/internal_google_services_json_base64.txt` 的内容 |
+| **INTERNAL_STORE_PASSWORD**              | Keystore 密码 (脚本输出中会显示)                                |
+| **INTERNAL_KEY_ALIAS**                   | Key Alias (通常为 `key0`)                                       |
+| **INTERNAL_KEY_PASSWORD**                | Key 密码                                                        |
 
 ---
 
-## 3. 常见问题排查 (Troubleshooting)
+## 3. 📂 自动化脚本详解 (Script Reference)
+
+本系统依赖于 `scripts/` 目录下的四个核心脚本，它们各司其职。
+
+### 3.1 发布入口脚本: `publish_internal.sh`
+*   **功能**: "一键发布" 的控制台工具。
+*   **使用方式**:
+    ```bash
+    ./scripts/publish_internal.sh          # 交互模式 (需手动确认 Y)
+    ./scripts/publish_internal.sh --yes    # 自动模式 (Antigravity Workflow 使用)
+    ```
+*   **核心逻辑**:
+    1.  解析 `app/build.gradle.kts` 获取基准版本号 (如 `1.0.6`)。
+    2.  `git tag -l` 检索当前所有 `T1.0.6.*` 的 Tag。
+    3.  调用 `version_manager.py` 计算出最新的一位后缀 (如 `B`)。
+    4.  执行 `git tag` 打标并 `git push` 给远程。
+
+### 3.2 版本计算引擎: `version_manager.py`
+*   **功能**: 处理复杂的版本位递增算法。
+*   **逻辑**: 实现了 **Bijective Base-26** 算法。
+    *   输入 `latest_suffix='Z'`, 输出 `'A_A'`。
+    *   输入 `latest_suffix='A'`, 输出 `'B'`。
+*   **原因**: 相比简单的数字递增，这种命名方式 (Excel 列名风格) 可以在有限的长度内支持无限的版本迭代，且排序清晰。
+
+### 3.3 变更日志生成器: `generate_changelog.py`
+*   **功能**: 自动生成 Release Notes。
+*   **运行环境**: 仅在 CI 环境中自动调用。
+*   **逻辑**:
+    1.  获取当前 Tag (e.g. `T1.0.6.B`)。
+    2.  向前回溯找到 **上一个 Tag** (支持 `T*` 或 `v*`)。
+    3.  执行 `git log prev..current`。
+    4.  按 Conventional Commits 规范分类解析 commit message：
+        *   `feat`: 新功能
+        *   `fix`: 修复
+        *   `perf`: 性能
+        *   其他: 归类为 Misc。
+    5.  生成 `release_notes.txt` 文件供 Artifact 上传使用。
+
+### 3.4 密钥生成助手: `generate_ci_secrets_helper.sh`
+*   **功能**: 本地辅助工具，用于快速准备 GitHub Secrets。
+*   **逻辑**:
+    1.  读取 `app/src/internal/sign.properties`获取密钥路径和密码。
+    2.  将 `.jks` 和 `json` 文件转换为 Base64 字符串。
+    3.  将结果保存到 `build/secrets/` 临时目录，方便用户复制。
+    4.  **注意**: 该脚本生成的 `build/` 目录已被 gitignore，防止泄露。
+
+---
+
+## 4. 常见问题排查 (Troubleshooting)
 
 ### 🔴 错误一: "Refusing to allow... update workflow"
 *   **现象**: 内网仓库显示镜像同步失败，错误信息包含 `workflow scope` 相关字样。
-*   **原因**: 您使用的 GitHub Token (PAT) 权限不足。GitHub 安全策略规定，修改 `.github/workflows/` 目录下的 CI 配置文件需要额外的权限。
-*   **解决**:
-    1.  重新生成 Token。
-    2.  **关键步骤**: 在 Scopes 列表中，务必勾选 **`workflow`** (通常在 `repo` 选项下方)。
-    3.  回到镜像设置，更新 Password 为新 Token。
+*   **原因**: 您使用的 GitHub Token (PAT) 权限不足。
+*   **解决**: 重新生成 Token，务必勾选 **`workflow`** 权限。
 
 ### 🔴 错误二: "Authentication Failed"
 *   **现象**: 同步失败，提示鉴权错误。
-*   **原因**: Token 过期，或者配置更新未生效。
-*   **解决**:
-    1.  生成新的 Token (Classic)，建议有效期设为 *No expiration* (永久) 以免频繁维护。
-    2.  **清空** 镜像设置里的 Password 框 (有些浏览器会通过记住密码自动填充旧的)，手动粘贴新 Token。
-    3.  点击 **Synchronize Now** 进行测试。
+*   **解决**: Token 过期。请生成新 Token，并在镜像设置中**清空密码框**后重新粘贴。
 
 ### 🔴 错误三: Actions 页面看不到 Workflow 列表
-*   **现象**: 推送了代码，但在 GitHub Actions 页面一片空白，左侧没有 Workflow 列表。
-*   **原因**: GitHub 默认只读取 **默认分支 (main/master)** 的 CI 配置。如果您的配置文件只存在于 `feature` 分支，GitHub 界面上不可见。
-*   **解决**:
-    1.  必须先发起 Pull Request，将包含 `.github/workflows/` 的分支 **合并进 main**。
-    2.  合并后，Actions 侧边栏即会出现。此后在任何分支打 Tag 均可触发。
-
----
-
-## 4. 自动化脚本 (Scripts)
-
-位置: `./scripts/`
-
-| 脚本名                      | 功能                                                                                                        |
-| :-------------------------- | :---------------------------------------------------------------------------------------------------------- |
-| **`publish_internal.sh`**   | **发布入口**。自动识别 `app/build.gradle.kts` 版本，寻找历史 Tag，计算出下一位 Tag (如 `T1.0.6.B`) 并推送。 |
-| **`version_manager.py`**    | **版本算法**。实现了 `Z` -> `A_A` 的特殊进位逻辑，确保版本号无限可扩展。                                    |
-| **`generate_changelog.py`** | **日志生成**。基于两次 Tag 之间的 git commit 生成格式化的 Release Notes。                                   |
+*   **现象**: 推送了 Tag 但 CI 没反应，Acitons 页面找不到入口。
+*   **原因**: GitHub 默认只展示默认分支 (`main`) 的 Workflow。
+*   **解决**: 必须先将代码合并进 `main` 分支。
 
 ## 5. CI 优化细节
 
-*   **版本注入 (Version Injection)**:
-    *   CI 捕获 Tag 名 (e.g., `T1.0.6.B`)。
-    *   通过 Gradle 参数 `-PinternalVersionName=T1.0.6.B` 传入。
-    *   构建脚本会自动覆盖 `versionName`，确保 App 内显示的版本与 Tag 一致。
-*   **产物重命名**:
-    *   构建产物名为 `app-internalRelease-T1.0.6.B.zip`，便于归档和区分。
-*   **构建缓存**:
-    *   使用 `gradle/actions/setup-gradle@v4`，大幅提升非首次构建的速度。
+*   **版本注入**: `-PinternalVersionName` 覆盖机制，确保 App 内部版本号与 GitHub Tag 一致。
+*   **产物重命名**: 生成 `app-internalRelease-T1.0.6.B.zip`。
+*   **构建缓存**: 采用 `gradle/actions/setup-gradle@v4`。
