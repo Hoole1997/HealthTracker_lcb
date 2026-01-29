@@ -140,6 +140,8 @@ jobs:
             TAG_NAME=${GITHUB_REF#refs/tags/}
             echo "Triggered by Tag: $TAG_NAME"
             INTERNAL_VERSION_PARAM="-PinternalVersionName=$TAG_NAME"
+            # Persist TAG_NAME to GITHUB_ENV to be used in other steps
+            echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
         fi
 
         if [[ "$BUILD_VARIANT" == *"playstore"* ]]; then
@@ -181,7 +183,8 @@ jobs:
       if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: app-${{ env.BUILD_VARIANT }}
+        # If TAG_NAME exists (env.TAG_NAME), append it. Otherwise just BUILD_VARIANT.
+        name: app-${{ env.BUILD_VARIANT }}${{ env.TAG_NAME && format('-{0}', env.TAG_NAME) || '' }}
         path: |
           app/build/outputs/apk/**/*.apk
           app/build/outputs/bundle/**/*.aab
