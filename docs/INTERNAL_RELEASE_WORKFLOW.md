@@ -86,8 +86,7 @@ base64 -i <path/to/google-services.json> | pbcopy
 | **INTERNAL_KEY_ALIAS**                   | Key Alias (明文，例如 `key0`)          |
 | **INTERNAL_KEY_PASSWORD**                | Key Password (明文)                    |
 
-#### 方案 B: 使用项目辅助脚本 (可选)
-如果您的项目结构与本项目一致（通过 properties 管理签名），可以使用参考脚本 `scripts/generate_ci_secrets_helper.sh` 自动提取并生成上述内容。使用方法详见后文 **3.4 脚本详解**。
+
 
 ---
 
@@ -129,15 +128,7 @@ base64 -i <path/to/google-services.json> | pbcopy
         *   其他: 归类为 Misc。
     5.  生成 `release_notes.txt` 文件供 Artifact 上传使用。
 
-### 3.4 密钥生成助手: `generate_ci_secrets_helper.sh`
-*   **功能**: 本地辅助工具，用于快速准备 GitHub Secrets。
-*   **注意**: **本脚本是针对当前项目结构编写的参考实现**。
-    *   默认逻辑：读取 `app/src/internal/sign.properties` 解析签名配置。
-    *   **适配指南**: 如果其他项目的签名配置文件位置不同（例如在根目录 `local.properties` 或 `keystore.properties`），**请务必修改脚本中的 `PROP_FILE` 路径和解析逻辑** 以适配您的工程。
-*   **逻辑**:
-    1.  读取配置获取密钥路径和密码。
-    2.  将 `.jks` 和 `json` 文件转换为 Base64 字符串。
-    3.  将结果保存到 `build/secrets/` 临时目录。
+
 
 ---
 
