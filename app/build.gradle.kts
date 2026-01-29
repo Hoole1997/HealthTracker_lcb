@@ -1,3 +1,4 @@
+import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import com.android.build.api.dsl.DefaultConfig
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import kotlin.collections.get
@@ -7,6 +8,7 @@ plugins {
     // 使用自定义插件
     alias(libs.plugins.android.app)
     alias(libs.plugins.android.compose.convention)
+    alias(libs.plugins.firebase.appdistribution)
     alias(libs.plugins.android.koin.convention)
     alias(libs.plugins.android.room.convention)
     alias(libs.plugins.android.firebase.convention)
@@ -37,8 +39,8 @@ android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        versionCode = 6
-        versionName = "1.0.6"
+        versionCode = 7
+        versionName = "1.0.7"
         buildConfig {
             boolean("showLog", showLog)
         }
@@ -90,6 +92,15 @@ android {
                 versionNameSuffix = "" 
             } else {
                 versionNameSuffix = "-internal"
+            }
+
+            firebaseAppDistribution {
+                // App ID 优先读取环境变量
+                appId = System.getenv("INTERNAL_FIREBASE_APP_ID") ?: project.findProperty("internalFirebaseAppId") as? String
+                // Credential File 优先读取 src/internal/ 下的专用 Key
+                serviceCredentialsFile = project.file("src/internal/google-services-json-key.json").absolutePath
+                releaseNotesFile = rootProject.file("release_notes.txt").absolutePath
+                groups = "internal-testers"
             }
             // End Check
         }

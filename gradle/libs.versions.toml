@@ -16,6 +16,8 @@ shimmerlayout = "2.1.0"
 skeleton = "1.1.2"
 targetSdk = "35"
 
+firebaseAppDist = "5.1.1"
+
 agp = "8.6.0"
 kotlin = "2.1.0"
 coreKtx = "1.13.1"
@@ -119,6 +121,7 @@ firebase-config = { group = "com.google.firebase", name = "firebase-config" }
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
+firebase-appdistribution-gradle = { module = "com.google.firebase:firebase-appdistribution-gradle", version.ref = "firebaseAppDist" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 firebase-analytics-mock = { module = "com.google.firebase:firebase-analytics-mock", version.ref = "firebase_mock_version" }
 
@@ -182,6 +185,7 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room", version.ref = "room_version" }
 google-service = { id = "com.google.gms.google-services", version.ref = "google_service_version" }
+firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppDist" }
 
  # Custom Convention Plugins
  android-app = { id = "android.app", version = "unspecified" }

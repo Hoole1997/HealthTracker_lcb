@@ -29,6 +29,8 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+google-services-json-key.json
+release_notes.txt
 
 # Android Profiling
 *.hprof
@@ -65,3 +67,7 @@ app/mapping.txt
 
 # Ignore the generated CI template project
 Android-CI-Template/
+
+# Robust ignores
+**/google-services-json-key.json
+**/release_notes.txt

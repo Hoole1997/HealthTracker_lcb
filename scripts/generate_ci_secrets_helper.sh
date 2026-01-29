@@ -67,6 +67,23 @@ generate_secrets() {
         echo "⚠️  [${UPPER_FLAVOR}] 未找到 google-services.json，跳过。"
     fi
 
+    # 处理 Firebase 凭证 (google-services-json-key.json)
+    # 查找顺序: app/src/{flavor}/ -> 根目录
+    local CRED_FILE="app/src/${FLAVOR}/google-services-json-key.json"
+    if [ ! -f "$CRED_FILE" ]; then
+        CRED_FILE="google-services-json-key.json"
+    fi
+
+    if [ -f "$CRED_FILE" ]; then
+        local CRED_B64_FILE="${OUTPUT_DIR}/${FLAVOR}_firebase_credential_base64.txt"
+        base64 -i "$CRED_FILE" | tr -d '\n' > "$CRED_B64_FILE"
+        echo "✅ [${UPPER_FLAVOR}] Firebase Credential Base64 已保存到: $CRED_B64_FILE"
+        echo "   (你可以使用 'cat $CRED_B64_FILE | pbcopy' 复制到剪贴板)"
+        echo "   Secret Name: ${UPPER_FLAVOR}_FIREBASE_CREDENTIAL_FILE_CONTENT"
+    else
+        echo "⚠️  [${UPPER_FLAVOR}] 未找到 google-services-json-key.json (在 src/${FLAVOR}/ 或 根目录)，跳过 Firebase 凭证生成。"
+    fi
+
     echo "   Password: $STORE_PASSWORD"
     echo "   Alias:    $KEY_ALIAS"
     echo "   Key Pass: $KEY_PASSWORD"

@@ -179,6 +179,23 @@ jobs:
         
         cat release_notes.txt
 
+
+    - name: Deploy Internal to Firebase
+      if: startsWith(github.ref, 'refs/tags/T')
+      env:
+        INTERNAL_FIREBASE_APP_ID: ${{ secrets.INTERNAL_FIREBASE_APP_ID }}
+        CREDENTIAL_CONTENT: ${{ secrets.INTERNAL_FIREBASE_CREDENTIAL_FILE_CONTENT }}
+      run: |
+        echo "Checking Firebase Credentials..."
+        if [ -n "$CREDENTIAL_CONTENT" ]; then
+           mkdir -p app/src/internal
+           echo "$CREDENTIAL_CONTENT" | base64 -di > app/src/internal/google-services-json-key.json
+           echo "Deploying to Firebase App Distribution..."
+           ./gradlew appDistributionUploadInternalRelease
+        else
+           echo "⚠️ Warning: FIREBASE_CREDENTIAL_FILE_CONTENT is missing. Skipping deployment."
+        fi
+
     - name: Upload Artifact
       if: success()
       uses: actions/upload-artifact@v4
