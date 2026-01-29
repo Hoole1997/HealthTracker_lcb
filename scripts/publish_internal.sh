@@ -7,9 +7,20 @@
 GRADLE_FILE="app/build.gradle.kts"
 VERSION=""
 
-# 1. 确定版本号
-if [ -n "$1" ]; then
-  VERSION="$1"
+# 1. 解析参数
+VERSION=""
+AUTO_CONFIRM=false
+
+for arg in "$@"; do
+  if [ "$arg" == "--yes" ]; then
+    AUTO_CONFIRM=true
+  elif [[ "$arg" != --* ]]; then
+    # 如果不是以 -- 开头，则认为是版本号
+    VERSION="$arg"
+  fi
+done
+
+if [ -n "$VERSION" ]; then
   echo "ℹ️  使用用户输入版本: $VERSION"
 else
   if [ -f "scripts/version_manager.py" ]; then
@@ -37,14 +48,28 @@ NEXT_SUFFIX=$(python3 scripts/version_manager.py next_suffix "$VERSION" "$ALL_TA
 
 NEW_TAG="${TAG_PREFIX}.${NEXT_SUFFIX}"
 
+# 检查是否包含 --yes 参数
+AUTO_CONFIRM=false
+for arg in "$@"; do
+  if [ "$arg" == "--yes" ]; then
+    AUTO_CONFIRM=true
+  fi
+done
+
 echo "=================================================="
 echo "🚀 准备发布 Internal 版本"
 echo "=================================================="
 echo "🏷️  新 Tag:  $NEW_TAG"
 echo "--------------------------------------------------"
 
-read -p "❓ 确认创建并推送到远程吗? (y/N) " -n 1 -r
-echo
+if [ "$AUTO_CONFIRM" = true ]; then
+    REPLY="y"
+    echo "⚡ 自动确认发布 (--yes)"
+else
+    read -p "❓ 确认创建并推送到远程吗? (y/N) " -n 1 -r
+    echo
+fi
+
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "📦 创建 Tag..."
     git tag "$NEW_TAG"

@@ -13,7 +13,7 @@ ext.setupSigningConfigs = { android ->
                 def props = new Properties()
                 internalPropsFile.withInputStream { props.load(it) }
 
-                storeFile = file("${project.projectDir}/src/internal/" + props.getProperty('keystore').replace('../config/', ''))
+                storeFile = file("${project.projectDir}/src/internal/" + props.getProperty('keystore'))
                 storePassword = props.getProperty('keystore.password')
                 keyAlias = props.getProperty('keyAlias')
                 keyPassword = props.getProperty('keyPassword')
@@ -33,7 +33,7 @@ ext.setupSigningConfigs = { android ->
                 def props = new Properties()
                 playstorePropsFile.withInputStream { props.load(it) }
 
-                storeFile = file("${project.projectDir}/src/playstore/" + props.getProperty('keystore').replace('../config/', ''))
+                storeFile = file("${project.projectDir}/src/playstore/" + props.getProperty('keystore'))
                 storePassword = props.getProperty('keystore.password')
                 keyAlias = props.getProperty('keyAlias')
                 keyPassword = props.getProperty('keyPassword')
