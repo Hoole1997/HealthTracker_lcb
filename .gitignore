@@ -57,8 +57,7 @@ app/mapping.txt
 *.md
 !/README.md
 !docs/
-!docs/Branch_Change_Summary.md
-!docs/变更记录_*.md
+!docs/*.md
 /claudedocs
 
 # Figma configuration (contains personal access tokens)
