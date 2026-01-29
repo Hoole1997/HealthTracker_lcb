@@ -57,18 +57,20 @@ def parse_commits(commits):
                 formatted_msg = f"{scope_str}{c_desc}"
                 grouped[category].append(formatted_msg)
             else:
+                # Type recognized but not in main map, add to Others
                 others.append(line)
         else:
-            # Non-conventional commits (optional: ignore or put in others)
-            # others.append(line) 
-            pass
+            # Non-conventional commits - add to Others
+            others.append(line)
 
-    return grouped
+    return grouped, others
 
-def generate_markdown(grouped, version):
+def generate_markdown(result, version):
     """
     Generate Markdown changelog.
     """
+    grouped, others = result
+    
     output = []
     output.append(f"# 📦 Internal Release {version}")
     output.append("")
@@ -79,7 +81,11 @@ def generate_markdown(grouped, version):
         "🐛 Bug Fixes",
         "⚡ Performance",
         "♻️ Refactor",
-        "🏗️ Build"
+        "🏗️ Build",
+        "📝 Documentation",
+        "✅ Tests",
+        "🔧 Chore",
+        "🎨 Style",
     ]
     
     has_content = False
@@ -92,6 +98,14 @@ def generate_markdown(grouped, version):
             for msg in msgs:
                 output.append(f"- {msg}")
             output.append("")
+            
+    # Append Others if any
+    if others:
+        has_content = True
+        output.append("### 🧩 Other Changes")
+        for msg in others:
+            output.append(f"- {msg}")
+        output.append("")
             
     if not has_content:
         output.append("No significant changes found in this release.")
