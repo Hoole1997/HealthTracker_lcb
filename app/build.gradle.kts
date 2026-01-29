@@ -82,7 +82,16 @@ android {
         create("internal") {
             dimension = "distribution"
             applicationId = "com.daily.health.manager"
-            versionNameSuffix = "-internal"
+            // Start Check: Internal Version Injection
+            if (project.hasProperty("internalVersionName")) {
+                val tagVersion = project.property("internalVersionName") as String
+                versionName = tagVersion 
+                // Clear suffix because tagVersion (e.g. T1.0.6.A) already includes necessary info
+                versionNameSuffix = "" 
+            } else {
+                versionNameSuffix = "-internal"
+            }
+            // End Check
         }
 
         // Play 市场版本

@@ -129,12 +129,21 @@ jobs:
              EXCLUDE_LINT_VITAL="-x lintVital$CAP_VARIANT"
         fi
         
+        # Extract Tag Name (if triggered by tag)
+        INTERNAL_VERSION_PARAM=""
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            echo "Triggered by Tag: $TAG_NAME"
+            INTERNAL_VERSION_PARAM="-PinternalVersionName=$TAG_NAME"
+        fi
+
         if [[ "$BUILD_VARIANT" == *"playstore"* ]]; then
             echo "Building App Bundle (AAB) for $BUILD_VARIANT"
             ./gradlew bundle$BUILD_VARIANT -x lint $EXCLUDE_LINT_VITAL --stacktrace
         else
             echo "Building APK for $BUILD_VARIANT"
-            ./gradlew assemble$BUILD_VARIANT -x lint $EXCLUDE_LINT_VITAL --stacktrace
+            # Pass the tag version to Gradle
+            ./gradlew assemble$BUILD_VARIANT -x lint $EXCLUDE_LINT_VITAL $INTERNAL_VERSION_PARAM --stacktrace
         fi
 
     - name: Generate Changelog for Internal Release
