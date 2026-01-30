@@ -10,15 +10,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.StyleRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.airbnb.lottie.LottieAnimationView
-import com.app.raise.base.BaseDialog
 import com.app.raise.base.BaseAppraiseDialog
+import com.app.raise.base.BaseDialog
 import com.app.raise.config.EvaluateConfig
 import com.app.raise.helper.CheckHelper
 import com.app.raise.listeners.EvaluateListener
 import java.util.Locale
 
-class AppraiseDialog(@StyleRes private val theme: Int = R.style.dialog_theme) :
+class AppraiseDialog(@StyleRes private val theme: Int = com.healthtracker.framework.R.style.BottomSheetDialog) :
     BaseAppraiseDialog() {
 
     var dialog: Dialog? = null
@@ -79,8 +81,32 @@ class AppraiseDialog(@StyleRes private val theme: Int = R.style.dialog_theme) :
         dialog?.window?.requestFeature(1)
         dialog?.setContentView(view)
         dialog?.show()
+        val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        if (bottomSheet != null) {
+            val originalBottomSheetPaddingLeft = bottomSheet.paddingLeft
+            val originalBottomSheetPaddingTop = bottomSheet.paddingTop
+            val originalBottomSheetPaddingRight = bottomSheet.paddingRight
+            val originalBottomSheetPaddingBottom = bottomSheet.paddingBottom
+            ViewCompat.setOnApplyWindowInsetsListener(bottomSheet) { v, insets ->
+                val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                v.setPadding(
+                    originalBottomSheetPaddingLeft,
+                    originalBottomSheetPaddingTop,
+                    originalBottomSheetPaddingRight,
+                    originalBottomSheetPaddingBottom + navBars.bottom
+                )
+                insets
+            }
+            bottomSheet.post { ViewCompat.requestApplyInsets(bottomSheet) }
+        }
+        val decorView = dialog?.window?.decorView
+        decorView?.post { ViewCompat.requestApplyInsets(decorView) }
         dialog?.window?.setBackgroundDrawable(ColorDrawable(0))
         dialog?.window?.setLayout(-1, -1)
+        dialog?.window?.let {
+            com.healthtracker.framework.BarUtils.setNavBarColor(it, android.graphics.Color.WHITE)
+            com.healthtracker.framework.BarUtils.setNavBarLightMode(it, true)
+        }
         view.postDelayed(Runnable { checkHelper.startFirst() }, 1200L)
         return dialog as BaseDialog
     }
@@ -88,5 +114,4 @@ class AppraiseDialog(@StyleRes private val theme: Int = R.style.dialog_theme) :
     fun getAppraiseDialog(): Dialog? {
         return dialog
     }
-
 }

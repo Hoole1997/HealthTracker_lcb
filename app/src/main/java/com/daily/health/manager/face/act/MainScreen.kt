@@ -57,6 +57,9 @@ import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.AdPosition
 import org.koin.android.ext.android.inject
 import kotlin.coroutines.resume
+import com.daily.health.manager.helper.HealthTrackerEvaluateListener
+import com.app.raise.AppraiseManager
+import com.healthtracker.framework.util.SpUtils
 
 class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), PermissionProvider {
 
@@ -92,6 +95,50 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
         super.onResume()
         // 刷新天气显示（温度单位可能已切换）
         mViewModel.refreshWeatherDisplay()
+        // 检查是否需要显示评分弹窗（新手引导完成后触发）
+        checkPendingRateDialog()
+    }
+
+    /**
+     * 检查是否有待处理的评分弹窗
+     * 新手引导完成后会设置标记，在 onResume 时检测并显示评分弹窗
+     */
+    private fun checkPendingRateDialog() {
+        // 仅在从外部返回时检查（如从记录页返回）
+        checkAndShowRateDialogAfterOnboarding()
+    }
+
+    /**
+     * 检查并显示新手引导后的评分弹窗
+     */
+    private fun checkAndShowRateDialogAfterOnboarding() {
+        val pendingRate = SpUtils.getBoolean(
+            HealthTrackerEvaluateListener.KEY_PENDING_RATE_AFTER_ONBOARDING, false
+        )
+        val hasRated = SpUtils.getBoolean(
+            HealthTrackerEvaluateListener.KEY_HAS_RATED, false
+        )
+
+        if (pendingRate && !hasRated) {
+            // 清除待评分标记
+            SpUtils.putBoolean(
+                HealthTrackerEvaluateListener.KEY_PENDING_RATE_AFTER_ONBOARDING, false
+            )
+            // 延迟显示评分弹窗，确保界面完全加载
+            mViewBind.root.postDelayed({
+                showRateDialog("home")
+            }, 500)
+        }
+    }
+
+    /**
+     * 显示评分弹窗
+     * @param source 来源标识，用于埋点统计
+     */
+    private fun showRateDialog(source: String) {
+        ReportDataManager.reportData("rate_us_show", mapOf("source" to source))
+        val manager = AppraiseManager(this, star5GoMarket = false)
+        manager.showAppraiseDialog(HealthTrackerEvaluateListener(this, source))
     }
 
     override fun onStop() {
@@ -247,6 +294,8 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             homeFragment.onNotificationPermissionFlowFinished()
             if (currentTabIndex == 0) {
                 homeFragment.highLightComplete.await()
+                // 高亮引导完成后立即检查并显示评分弹窗
+                checkAndShowRateDialogAfterOnboarding()
             }
             awaitResumedIfNeeded()
             loadBanner(mViewBind.adViewContainer, AdPosition.BA_HOME_BOTTOM, onClose = {

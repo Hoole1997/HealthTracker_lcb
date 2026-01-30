@@ -42,6 +42,8 @@ import com.hyy.highlightpro.shape.RectShape
 import com.hyy.highlightpro.util.dp
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
+import com.daily.health.manager.helper.HealthTrackerEvaluateListener
+import com.healthtracker.framework.util.SpUtils
 import kotlinx.coroutines.CompletableDeferred
 import java.util.Date
 import java.util.Locale
@@ -361,6 +363,10 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             return false
         }
         if (hasShowAllGuide()) {
+            SpUtils.putBoolean(
+                HealthTrackerEvaluateListener.KEY_PENDING_RATE_AFTER_ONBOARDING,
+                true
+            )
             if (!highLightComplete.isCompleted) {
                 highLightComplete.complete(true)
             }
@@ -376,6 +382,11 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
 
     private fun onGuideDismissed() {
         if (hasShowAllGuide()) {
+            // 所有引导已完成，设置待评分标记
+            SpUtils.putBoolean(
+                HealthTrackerEvaluateListener.KEY_PENDING_RATE_AFTER_ONBOARDING,
+                true
+            )
             if (!highLightComplete.isCompleted) {
                 highLightComplete.complete(true)
             }

@@ -46,12 +46,20 @@ import com.daily.health.manager.face.act.ProfileActivity
 import com.daily.health.manager.face.act.TargetRangeScreen
 import com.daily.health.manager.face.dialog.ComingSoonDialog
 import com.daily.health.manager.face.theme.HealthTrackerTheme
+import com.daily.health.manager.helper.HealthTrackerEvaluateListener
+import com.app.raise.AppraiseManager
+import com.app.raise.config.EvaluateConfig
+import com.healthtracker.framework.util.SpUtils
+import net.corekit.core.report.ReportDataManager
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import net.corekit.monetize.ui.debug.AdDebugPanel
 
+
 class SettingsFrg : BaseMVVMFragment<BaseViewModel, HtFragmentSettingsBinding>() {
+
+    private var hasRatedState = androidx.compose.runtime.mutableStateOf(false)
 
     private val languageSelectLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -75,10 +83,16 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, HtFragmentSettingsBinding>()
         mViewBind?.composeView?.setContent {
             HealthTrackerTheme {
                 SettingsScreen(
+                    hasRated = hasRatedState.value,
                     onAction = ::handleAction
                 )
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        hasRatedState.value = SpUtils.getBoolean(HealthTrackerEvaluateListener.KEY_HAS_RATED, false)
     }
 
     private fun handleAction(action: SettingsAction) {
@@ -124,6 +138,27 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, HtFragmentSettingsBinding>()
             SettingsAction.AdDebugPanel -> {
                 AdDebugPanel.showDebugDialog(requireActivity())
             }
+
+            SettingsAction.RateUs -> {
+                ReportDataManager.reportData("rate_us_show", mapOf("source" to "settings"))
+                val hasRated = SpUtils.getBoolean(HealthTrackerEvaluateListener.KEY_HAS_RATED, false)
+                if (!hasRated) {
+                    // 未评分，显示评分弹窗
+                    val manager = AppraiseManager(requireContext(), star5GoMarket = false)
+                    manager.showAppraiseDialog(
+                        HealthTrackerEvaluateListener(
+                            requireActivity() as androidx.fragment.app.FragmentActivity,
+                            "settings"
+                        ) {
+                            // 评分完成后刷新状态，隐藏 Rate Us 入口
+                            hasRatedState.value = true
+                        }
+                    )
+                } else {
+                    // 已评分，直接跳转 Play Store
+                    AppraiseManager.goToMarket(requireContext(), EvaluateConfig())
+                }
+            }
         }
     }
 }
@@ -134,6 +169,7 @@ private enum class SettingsAction {
     TargetRangeSettings,
     PersonalInfo,
     Language,
+    RateUs,
     Feedback,
     Disclaimers,
     PrivacyPolicy,
@@ -151,6 +187,7 @@ private data class SettingsItemUi(
 
 @Composable
 private fun SettingsScreen(
+    hasRated: Boolean,
     onAction: (SettingsAction) -> Unit
 ) {
 
@@ -167,7 +204,13 @@ private fun SettingsScreen(
         SettingsItemUi(SettingsAction.PersonalInfo, R.string.ht_personal_info, R.drawable.ht_ic_setting_profile),
         SettingsItemUi(SettingsAction.Language, R.string.ht_language, R.drawable.ht_ic_setting_language)
     )
-    val helpAndFeedbackItems = listOf(
+    val helpAndFeedbackItems = mutableListOf<SettingsItemUi>()
+    if (!hasRated) {
+        helpAndFeedbackItems.add(
+            SettingsItemUi(SettingsAction.RateUs, R.string.ht_rate_us, R.drawable.ht_ic_setting_rate)
+        )
+    }
+    helpAndFeedbackItems.add(
         SettingsItemUi(SettingsAction.Feedback, R.string.ht_feedback, R.drawable.ht_ic_setting_feedback)
     )
     val legalItems = listOf(
