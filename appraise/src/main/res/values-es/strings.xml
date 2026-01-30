@@ -1,0 +1,13 @@
+<resources>
+    <string name="evaluate_txt_clicktips">El mejor comentario sobre nosotros</string>
+    <string name="lib_rate_dialog_tip">Nos hemos esforzado por brindarle una mejor experiencia de uso. Si puede darnos un comentario, se lo agradeceríamos mucho.</string>
+    <string name="evaluate_title_doulike">¿Cómo fue tu experiencia?</string>
+    <string name="evaluate_txt_1guide">Lamentamos escuchar eso. Cuéntanos qué podemos mejorar.</string>
+    <string name="evaluate_txt_2guide">Realmente necesitamos más comentarios tuyos para mejorar continuamente nuestros productos</string>
+    <string name="evaluate_txt_3guide">Tus sugerencias y aliento \nnos ayudarán a hacerlo mejor</string>
+    <string name="evaluate_txt_4guide">¿Cómo podemos obtener tu \ncalificación de cinco estrellas?</string>
+    <string name="evaluate_txt_5guide">¡Gracias! ¿Te gustaría dejar una reseña en Google Play?</string>
+
+    <string name="btn_rate_on_google_play">Calificar en Google Play</string>
+    <string name="btn_feedback">Comentarios</string>
+</resources>

@@ -1,0 +1,13 @@
+<resources>
+    <string name="evaluate_txt_clicktips">Hakkımızdaki en iyi yorum</string>
+    <string name="lib_rate_dialog_tip">Size daha iyi bir kullanım deneyimi sunmaya çalışıyoruz, bize bir yorum bırakabilirseniz çok minnettar oluruz</string>
+    <string name="evaluate_title_doulike">Deneyiminiz nasıldı?</string>
+    <string name="evaluate_txt_1guide">Bunu duyduğumuza üzüldük. Neyi geliştirebileceğimizi bize bildirin.</string>
+    <string name="evaluate_txt_2guide">Ürünlerimizi sürekli iyileştirmek için sizden daha fazla geri bildirime ihtiyacımız var</string>
+    <string name="evaluate_txt_3guide">Önerileriniz ve desteğiniz \ndaha iyisini yapmamıza yardımcı olacak</string>
+    <string name="evaluate_txt_4guide">Beş yıldızlı puanınızı \nnasıl alabiliriz?</string>
+    <string name="evaluate_txt_5guide">Teşekkürler! Google Play'de bir yorum bırakmak ister misiniz?</string>
+
+    <string name="btn_rate_on_google_play">Google Play'de Oyla</string>
+    <string name="btn_feedback">Geri Bildirim</string>
+</resources>

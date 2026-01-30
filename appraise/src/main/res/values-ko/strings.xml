@@ -1,0 +1,13 @@
+<resources>
+    <string name="evaluate_txt_clicktips">우리에 대한 최고의 코멘트</string>
+    <string name="lib_rate_dialog_tip">더 나은 사용 경험을 제공하기 위해 노력하고 있습니다. 코멘트를 주시면 대단히 감사하겠습니다.</string>
+    <string name="evaluate_title_doulike">경험은 어떠셨나요?</string>
+    <string name="evaluate_txt_1guide">죄송합니다. 개선할 점을 알려주세요.</string>
+    <string name="evaluate_txt_2guide">제품을 지속적으로 개선하기 위해 더 많은 피드백이 필요합니다</string>
+    <string name="evaluate_txt_3guide">제안과 격려는 \n우리가 더 잘할 수 있도록 도와줄 것입니다</string>
+    <string name="evaluate_txt_4guide">어떻게 하면 \n별 5개 등급을 받을 수 있을까요?</string>
+    <string name="evaluate_txt_5guide">감사합니다! Google Play에 리뷰를 남겨주시겠습니까?</string>
+
+    <string name="btn_rate_on_google_play">Google Play에서 평가하기</string>
+    <string name="btn_feedback">피드백</string>
+</resources>
