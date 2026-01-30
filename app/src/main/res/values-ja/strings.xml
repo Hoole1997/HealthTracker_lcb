@@ -9,6 +9,7 @@
     <string name="ht_insights">分析</string>
     <string name="ht_tracker">記録</string>
     <string name="ht_record_now">今すぐ記録</string>
+    <string name="ht_rate_us">評価する</string>
     <string name="ht_loading">読み込み中...</string>
     <string name="ht_history">履歴</string>
     <string name="ht_click_to_record">クリックして記録</string>

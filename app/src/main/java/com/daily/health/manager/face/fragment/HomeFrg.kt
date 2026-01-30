@@ -363,10 +363,6 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             return false
         }
         if (hasShowAllGuide()) {
-            SpUtils.putBoolean(
-                HealthTrackerEvaluateListener.KEY_PENDING_RATE_AFTER_ONBOARDING,
-                true
-            )
             if (!highLightComplete.isCompleted) {
                 highLightComplete.complete(true)
             }

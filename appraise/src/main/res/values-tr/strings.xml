@@ -6,8 +6,8 @@
     <string name="evaluate_txt_2guide">Ürünlerimizi sürekli iyileştirmek için sizden daha fazla geri bildirime ihtiyacımız var</string>
     <string name="evaluate_txt_3guide">Önerileriniz ve desteğiniz \ndaha iyisini yapmamıza yardımcı olacak</string>
     <string name="evaluate_txt_4guide">Beş yıldızlı puanınızı \nnasıl alabiliriz?</string>
-    <string name="evaluate_txt_5guide">Teşekkürler! Google Play'de bir yorum bırakmak ister misiniz?</string>
+    <string name="evaluate_txt_5guide">Teşekkürler! Google Play\'de bir yorum bırakmak ister misiniz?</string>
 
-    <string name="btn_rate_on_google_play">Google Play'de Oyla</string>
+    <string name="btn_rate_on_google_play">Google Play\'de Oyla</string>
     <string name="btn_feedback">Geri Bildirim</string>
 </resources>

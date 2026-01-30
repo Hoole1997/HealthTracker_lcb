@@ -9,6 +9,7 @@
     <string name="ht_insights">분석</string>
     <string name="ht_tracker">기록</string>
     <string name="ht_record_now">지금 기록</string>
+    <string name="ht_rate_us">평가하기</string>
     <string name="ht_loading">로딩 중...</string>
     <string name="ht_history">기록</string>
     <string name="ht_click_to_record">기록하려면 클릭</string>
