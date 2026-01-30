@@ -22,17 +22,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/cv_measure_entry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_heart_rate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginHorizontal="@dimen/dp_16"
                 android:background="@drawable/ht_bg_rect_white_12"
                 android:paddingHorizontal="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_6"
                 android:paddingBottom="@dimen/dp_16"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/cv_measure_entry">
 
                 <com.daily.health.manager.face.widget.NumberPickerView
                     android:id="@+id/npv_heart_rate"

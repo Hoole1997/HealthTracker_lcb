@@ -41,6 +41,7 @@ import com.daily.health.manager.face.dialog.SaveCompleteDialog
 import com.daily.health.manager.face.dialog.StatusSelectDialog
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackAddNewRecord
+import com.daily.health.manager.face.card.HeartRateMeasureEntry
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
@@ -473,6 +474,20 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
             binding.actionBar.tvTitle.text = getString(R.string.ht_edit_record)
         }
 
+        binding.cvMeasureEntry.setViewCompositionStrategy(
+            ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+        )
+        binding.cvMeasureEntry.setContent {
+            HeartRateMeasureEntry(
+                lastBpm = null,
+                lastDate = null,
+                onMeasureClick = {
+                    // 直接启动心率测量页面，测量完成后会自动跳转到详情页面
+                    HeartRateMeasureScreen.start(this@HealthRecordScreen)
+                }
+            )
+        }
+
         binding.actionBar.btnBack.clickWithDuration { handleBackPress() }
         binding.btnSave.clickWithDuration {
             trackAddNewRecord(HealthType.HEART_RATE)
@@ -804,6 +819,7 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
             updateBloodSugarRangeView()
         }
     }
+
 
     override fun createViewBinding() = HtActivityHealthRecordBinding.inflate(layoutInflater)
 
