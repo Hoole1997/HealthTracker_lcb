@@ -32,6 +32,22 @@
     <string name="ht_measure_disclaimer">Heart rate measurements via flashlight camera are for reference only and may be inaccurate. Not for medical use. For accurate data, please use professional medical equipment.</string>
     <string name="ht_no_data">--</string>
     <string name="ht_cancel">Cancel</string>
+    <!-- 心率测量错误提示 -->
+    <string name="ht_measure_error_title">Measurement Failed</string>
+    <string name="ht_measure_error_no_finger">Please place your finger on the camera lens and keep it steady.</string>
+    <string name="ht_measure_error_low_quality">Signal quality is too low. Please ensure your finger fully covers the camera lens.</string>
+    <string name="ht_measure_error_timeout">Measurement timed out. Please try again.</string>
+    <string name="ht_measure_error_unknown">An unknown error occurred. Please try again.</string>
+    <string name="ht_measure_retry">Try Again</string>
+    <!-- 心率测量信号质量 -->
+    <string name="ht_signal_excellent">Signal: Excellent</string>
+    <string name="ht_signal_good">Signal: Good</string>
+    <string name="ht_signal_fair">Signal: Fair</string>
+    <string name="ht_signal_poor">Signal: Poor</string>
+    <!-- 心率测量新流程 -->
+    <string name="ht_measure_stabilizing">Stabilizing signal, please hold still…</string>
+    <string name="ht_measuring_progress">Measuring… %1$d%%</string>
+    <string name="ht_measure_complete">Measurement Complete!</string>
     <!-- 血糖和血压的单位不用翻译   -->
     <string name="ht_mg_dl" translatable="false">mg/dL</string>
     <string name="ht_mmol_l" translatable="false">mmol/L</string>

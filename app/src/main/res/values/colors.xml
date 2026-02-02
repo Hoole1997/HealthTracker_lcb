@@ -90,4 +90,6 @@
     <color name="color_E5E5EA">#E5E5EA</color>
     <color name="color_E0E0E0">#E0E0E0</color>
     <color name="color_E6FFF6">#E6FFF6</color>
+    <!-- 错误颜色 -->
+    <color name="error_color">#FF4444</color>
 </resources>

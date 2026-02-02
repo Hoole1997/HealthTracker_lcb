@@ -241,6 +241,12 @@ dependencies {
 
     implementation(libs.play.review)
     implementation(libs.play.review.ktx)
+
+    // CameraX (PPG 心率测量)
+    implementation(libs.camerax.core)
+    implementation(libs.camerax.camera2)
+    implementation(libs.camerax.lifecycle)
+    implementation(libs.camerax.view)
 }
 
 // BuildConfig 扩展函数

@@ -58,6 +58,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.camera.view.PreviewView
+import android.graphics.Matrix
+import androidx.compose.ui.graphics.asComposePath
+import androidx.core.graphics.PathParser
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -67,12 +72,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import com.daily.health.manager.R
 import com.daily.health.manager.databinding.HtActivityLanguageSelectBinding
 import com.daily.health.manager.face.dialog.SaveCompleteDialog
 import com.daily.health.manager.face.theme.HealthTrackerTheme
+import com.daily.health.manager.face.viewmodel.HeartRateMeasureViewModel
+import com.daily.health.manager.face.viewmodel.MeasureEvent
+import com.daily.health.manager.face.viewmodel.MeasureEffect
+import com.daily.health.manager.face.viewmodel.MeasureUiState
+import com.daily.health.manager.face.viewmodel.SignalQuality as ViewModelSignalQuality
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
+import org.koin.android.ext.android.inject
 
 /**
  * 心率测量页面
@@ -94,6 +107,9 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
         }
     }
 
+    // 注入心率测量 ViewModel
+    private val heartRateViewModel: HeartRateMeasureViewModel by inject()
+
     private var hasPermission by mutableStateOf(false)
     private var showPermissionDenied by mutableStateOf(false)
 
@@ -112,11 +128,29 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
         checkCameraPermission()
 
         mViewBind.composeView.setContent {
+            val lifecycleOwner = LocalLifecycleOwner.current
+            val measureUiState by heartRateViewModel.uiState.collectAsStateWithLifecycle()
+
+            // 监听测量 Effect
+            LaunchedEffect(Unit) {
+                heartRateViewModel.effect.collect { effect ->
+                    when (effect) {
+                        is MeasureEffect.MeasurementComplete -> {
+                            handleMeasureComplete(effect.bpm)
+                        }
+                        is MeasureEffect.NavigateToResult -> {
+                            navigateToDetailAndFinish(effect.bpm)
+                        }
+                    }
+                }
+            }
+
             HealthTrackerTheme {
                 HeartRateMeasureScreenContent(
                     hasPermission = hasPermission,
                     showPermissionDenied = showPermissionDenied,
                     showPermissionDialog = showPermissionDialog,
+                    measureUiState = measureUiState,
                     onBackClick = { finish() },
                     onRequestPermission = { showPermissionDialogAction() },
                     onDismissPermissionDialog = { dismissPermissionDialog() },
@@ -128,7 +162,20 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
                         dismissPermissionDialog()
                         goToAppSettings()
                     },
-                    onMeasureComplete = { bpm -> handleMeasureComplete(bpm) }
+                    onStartCamera = {
+                        heartRateViewModel.onEvent(MeasureEvent.StartCamera(lifecycleOwner))
+                    },
+                    onStopCamera = {
+                        heartRateViewModel.onEvent(MeasureEvent.StopCamera)
+                    },
+                    onUseMeasurement = {
+                        heartRateViewModel.onEvent(MeasureEvent.UseMeasurement)
+                    },
+
+                    onMeasureComplete = { bpm -> handleMeasureComplete(bpm) },
+                    onSurfaceProviderReady = { provider ->
+                        heartRateViewModel.setPreviewSurfaceProvider(provider)
+                    }
                 )
             }
         }
@@ -189,15 +236,22 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
         )
         finish()
     }
+
+    override fun onDestroy() {
+        // 页面销毁时停止摄像头和协程
+        heartRateViewModel.onEvent(MeasureEvent.StopCamera)
+        super.onDestroy()
+    }
 }
 
 /**
- * 测量状态
+ * UI 测量状态 - 与 ViewModel 状态对应
  */
-private enum class MeasureState {
-    IDLE,       // 等待开始
-    MEASURING,  // 测量中
-    COMPLETE    // 测量完成
+private enum class UiMeasureState {
+    WAITING_FINGER, // 等待手指放置
+    STABILIZING,    // 稳定期 (3秒)
+    MEASURING,      // 测量中
+    COMPLETE        // 测量完成
 }
 
 @Composable
@@ -205,21 +259,25 @@ private fun HeartRateMeasureScreenContent(
     hasPermission: Boolean,
     showPermissionDenied: Boolean,
     showPermissionDialog: Boolean,
+    measureUiState: MeasureUiState,
     onBackClick: () -> Unit,
     onRequestPermission: () -> Unit,
     onDismissPermissionDialog: () -> Unit,
     onGrantPermission: () -> Unit,
     onGoToSettings: () -> Unit,
-    onMeasureComplete: (Int) -> Unit
+    onStartCamera: () -> Unit,
+    onStopCamera: () -> Unit,
+    onUseMeasurement: () -> Unit,
+    onMeasureComplete: (Int) -> Unit,
+    onSurfaceProviderReady: (androidx.camera.core.Preview.SurfaceProvider) -> Unit
 ) {
-    var measureState by remember { mutableStateOf(MeasureState.IDLE) }
-    var progress by remember { mutableIntStateOf(0) }
-    var measuredBpm by remember { mutableIntStateOf(0) }
-
-    // 无权限时自动显示底部弹窗
+    // 权限状态变化时的处理
     LaunchedEffect(hasPermission) {
         if (!hasPermission) {
             onRequestPermission()
+        } else {
+            // 有权限时自动启动摄像头
+            onStartCamera()
         }
     }
 
@@ -253,17 +311,26 @@ private fun HeartRateMeasureScreenContent(
         ) {
             if (hasPermission) {
                 MeasureContent(
-                    measureState = measureState,
-                    progress = progress,
-                    measuredBpm = measuredBpm,
-                    onStartMeasure = { measureState = MeasureState.MEASURING },
-                    onUseMeasurement = { onMeasureComplete(measuredBpm) },
-                    onRetry = { measureState = MeasureState.IDLE }
+                    measureState = mapUiMeasureState(measureUiState.measureState),
+                    progress = (measureUiState.progress * 100).toInt(),
+                    measuredBpm = measureUiState.currentBpm ?: 0,
+                    signalQuality = measureUiState.signalQuality,
+                    isFingerDetected = measureUiState.isFingerDetected,
+                    onUseMeasurement = onUseMeasurement,
+                    onSurfaceProviderReady = onSurfaceProviderReady
                 )
             }
             // 无权限时不显示任何内容，只显示底部弹窗
         }
     }
+}
+
+// 将 ViewModel MeasureState 映射到 Screen UiMeasureState
+private fun mapUiMeasureState(state: com.daily.health.manager.face.viewmodel.MeasureState): UiMeasureState = when (state) {
+    com.daily.health.manager.face.viewmodel.MeasureState.WAITING_FINGER -> UiMeasureState.WAITING_FINGER
+    com.daily.health.manager.face.viewmodel.MeasureState.STABILIZING -> UiMeasureState.STABILIZING
+    com.daily.health.manager.face.viewmodel.MeasureState.MEASURING -> UiMeasureState.MEASURING
+    com.daily.health.manager.face.viewmodel.MeasureState.COMPLETE -> UiMeasureState.COMPLETE
 }
 
 @Composable
@@ -414,12 +481,13 @@ private fun CameraPermissionBottomSheet(
 
 @Composable
 private fun MeasureContent(
-    measureState: MeasureState,
+    measureState: UiMeasureState,
     progress: Int,
     measuredBpm: Int,
-    onStartMeasure: () -> Unit,
+    signalQuality: ViewModelSignalQuality = ViewModelSignalQuality.NO_SIGNAL,
+    isFingerDetected: Boolean = false,
     onUseMeasurement: () -> Unit,
-    onRetry: () -> Unit
+    onSurfaceProviderReady: (androidx.camera.core.Preview.SurfaceProvider) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -431,41 +499,115 @@ private fun MeasureContent(
         // 心形图标区域（带心电图线条）- 根据Figma设计
         HeartIconArea(
             measureState = measureState,
-            progress = 50,
-            measuredBpm = measuredBpm
+            progress = progress,
+            measuredBpm = measuredBpm,
+            onSurfaceProviderReady = onSurfaceProviderReady
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        // 根据状态显示不同内容
+        when (measureState) {
+            UiMeasureState.WAITING_FINGER, UiMeasureState.STABILIZING -> {
+                // 等待手指/稳定期: 显示引导图
+                Spacer(modifier = Modifier.height(16.dp))
 
-        // 免责声明文案（在心形下方）
-        Text(
-            text = stringResource(R.string.ht_measure_disclaimer),
-            fontSize = 14.sp,
-            color = colorResource(R.color.t1),
-            textAlign = TextAlign.Center,
-            lineHeight = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+                // 免责声明文案
+                Text(
+                    text = stringResource(R.string.ht_measure_disclaimer),
+                    fontSize = 14.sp,
+                    color = colorResource(R.color.t1),
+                    textAlign = TextAlign.Center,
+                    lineHeight = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
 
-        Spacer(modifier = Modifier.height(22.dp))
+                Spacer(modifier = Modifier.height(22.dp))
 
-        // 手指引导提示文案
-        Text(
-            text = stringResource(R.string.ht_measure_finger_instruction),
-            fontSize = 14.sp,
-            color = colorResource(R.color.color_666),
-            textAlign = TextAlign.Center,
-            lineHeight = 20.sp,
-            fontWeight = FontWeight.Medium
-        )
+                // 手指引导提示文案 - 根据状态显示不同文案
+                Text(
+                    text = stringResource(
+                        if (measureState == UiMeasureState.STABILIZING) 
+                            R.string.ht_measure_stabilizing 
+                        else 
+                            R.string.ht_measure_finger_instruction
+                    ),
+                    fontSize = 14.sp,
+                    color = colorResource(R.color.color_666),
+                    textAlign = TextAlign.Center,
+                    lineHeight = 20.sp,
+                    fontWeight = FontWeight.Medium
+                )
 
-        Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-        PhoneFingerGuide()
+                PhoneFingerGuide()
+            }
+            UiMeasureState.MEASURING -> {
+                // 测量中: 显示信号质量指示器和进度
+                Spacer(modifier = Modifier.height(8.dp))
+                SignalQualityIndicator(
+                    signalQuality = signalQuality,
+                    isFingerDetected = isFingerDetected
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // 测量进度文案
+                Text(
+                    text = stringResource(R.string.ht_measuring_progress, progress),
+                    fontSize = 16.sp,
+                    color = colorResource(R.color.t1),
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            UiMeasureState.COMPLETE -> {
+                // 测量完成
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = stringResource(R.string.ht_measure_complete),
+                    fontSize = 18.sp,
+                    color = colorResource(R.color.c5),
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        }
 
 
     }
+}
+
+/**
+ * 信号质量指示器
+ * 根据信号质量和手指检测状态显示不同的文本和颜色
+ */
+@Composable
+private fun SignalQualityIndicator(
+    signalQuality: ViewModelSignalQuality,
+    isFingerDetected: Boolean
+) {
+    val (text, color) = when {
+        !isFingerDetected -> stringResource(R.string.ht_place_finger) to Color.Red
+        signalQuality == ViewModelSignalQuality.EXCELLENT -> stringResource(R.string.ht_signal_excellent) to Color(0xFF4CAF50)
+        signalQuality == ViewModelSignalQuality.GOOD -> stringResource(R.string.ht_signal_good) to Color(0xFF8BC34A)
+        signalQuality == ViewModelSignalQuality.FAIR -> stringResource(R.string.ht_signal_fair) to Color(0xFFFFC107)
+        else -> stringResource(R.string.ht_signal_poor) to Color(0xFFFF5722)
+    }
+    
+    Text(
+        text = text,
+        fontSize = 14.sp,
+        color = color,
+        fontWeight = FontWeight.Medium,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
 }
 
 /**
@@ -551,9 +693,10 @@ private fun PhoneFingerGuide() {
  */
 @Composable
 private fun HeartIconArea(
-    measureState: MeasureState,
+    measureState: UiMeasureState,
     progress: Int,
-    measuredBpm: Int
+    measuredBpm: Int,
+    onSurfaceProviderReady: (androidx.camera.core.Preview.SurfaceProvider) -> Unit
 ) {
     // Figma设计中的粉色背景 #F7EAF1
     val pinkBackground = Color(0xFFF7EAF1)
@@ -602,8 +745,8 @@ private fun HeartIconArea(
                 )
             }
 
-            // 环形进度条（c5颜色）- 测量中时显示
-            if (measureState == MeasureState.MEASURING && progress > 0) {
+            // 环形进度条（c5颜色）- 测量中或回退时显示
+            if (progress > 0) {
                 Canvas(modifier = Modifier.size(166.dp)) {
                     drawArc(
                         color = progressColor,
@@ -629,18 +772,25 @@ private fun HeartIconArea(
                         .size(140.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    // 心形背景 - 实际使用时这里会显示摄像头预览
-                    Image(
-                        painter = painterResource(R.drawable.ic_shap_heart),
-                        contentDescription = null,
-                        modifier = Modifier.size(140.dp).offset(y = 14.dp),
-                        contentScale = ContentScale.Fit
+                    // 摄像头预览 - 替换原本的 Image 占位
+                    AndroidView(
+                        factory = { ctx ->
+                            PreviewView(ctx).apply {
+                                scaleType = PreviewView.ScaleType.FILL_CENTER
+                                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                                onSurfaceProviderReady(this.getSurfaceProvider())
+                            }
+                        },
+                        modifier = Modifier
+                            .size(140.dp)
+                            .offset(y = 14.dp)
+                            .clip(HeartShape)
                     )
 
                     // 根据状态显示不同内容
                     when (measureState) {
-                        MeasureState.IDLE -> {
-                            // "---" 文字
+                        UiMeasureState.WAITING_FINGER -> {
+                            // 等待手指: 显示 "---"
                             Text(
                                 text = "- - -",
                                 fontSize = 24.sp,
@@ -649,10 +799,43 @@ private fun HeartIconArea(
                                 letterSpacing = 4.sp
                             )
                         }
-                        MeasureState.MEASURING -> {
-                            // 测量中不显示文字，进度在环形进度条上
+                        UiMeasureState.STABILIZING -> {
+                            // 稳定期: 显示稳定中提示
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "...",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
                         }
-                        MeasureState.COMPLETE -> {
+                        UiMeasureState.MEASURING -> {
+                            // 测量中显示实时心率
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                if (measuredBpm > 0) {
+                                    Text(
+                                        text = measuredBpm.toString(),
+                                        fontSize = 32.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.ht_bpm),
+                                        fontSize = 12.sp,
+                                        color = Color.White
+                                    )
+                                } else {
+                                    Text(
+                                        text = "...",
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                        }
+                        UiMeasureState.COMPLETE -> {
                             // 显示BPM
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
@@ -678,22 +861,30 @@ private fun HeartIconArea(
 /**
  * 心形Shape - 用于裁剪摄像头预览区域
  */
+/**
+ * 心形Shape - 用于裁剪摄像头预览区域
+ * 使用 ic_shap_heart.xml 中的精确路径
+ */
 private val HeartShape = object : Shape {
+    // ic_shap_heart.xml 中的 pathData
+    private val pathData = "M140,44.19C140,90.26 70,125.13 70,125.13C70,125.13 0,90.4 0,44.19C0,23.65 16.65,7 37.19,7C51.04,7 63.12,14.57 69.52,25.81C69.73,26.18 70.26,26.18 70.46,25.81C76.88,14.57 88.96,7 102.81,7C123.35,7 140,23.65 140,44.19Z"
+
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
         density: Density
     ): Outline {
-        val path = Path().apply {
-            val width = size.width
-            val height = size.height
-            // 简化的心形路径
-            moveTo(width / 2, height * 0.25f)
-            cubicTo(width * 0.15f, height * 0.1f, 0f, height * 0.4f, width / 2, height)
-            cubicTo(width, height * 0.4f, width * 0.85f, height * 0.1f, width / 2, height * 0.25f)
-            close()
-        }
-        return Outline.Generic(path)
+        val path = PathParser.createPathFromPathData(pathData)
+        
+        // 计算缩放比例 (XML viewport 是 140x140)
+        val scaleX = size.width / 140f
+        val scaleY = size.height / 140f
+        
+        val matrix = Matrix()
+        matrix.setScale(scaleX, scaleY)
+        path.transform(matrix)
+        
+        return Outline.Generic(path.asComposePath())
     }
 }
 
@@ -779,3 +970,4 @@ private fun SecondaryButton(
         )
     }
 }
+

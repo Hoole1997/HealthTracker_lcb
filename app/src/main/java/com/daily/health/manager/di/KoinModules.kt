@@ -58,6 +58,7 @@ import com.daily.health.manager.face.viewmodel.TargetRangeViewModel
 import com.daily.health.manager.face.viewmodel.StepSettingViewModel
 import com.daily.health.manager.viewmodel.HealthStatisticsViewModel
 import com.daily.health.manager.face.act.StepCountViewModel
+import com.daily.health.manager.face.viewmodel.HeartRateMeasureViewModel
 import androidx.lifecycle.SavedStateHandle
 import com.healthtracker.framework.config.core.ConfigCache
 import com.healthtracker.framework.config.core.ConfigRegistry
@@ -165,6 +166,7 @@ val databaseModule = module {
     factory { StepSettingViewModel(get()) }
     viewModel { (handle: SavedStateHandle) -> HealthStatisticsViewModel(get(), get(), get(), get(), get(), get(), get(), handle) }
     factory { StepCountViewModel() }
+    factory { HeartRateMeasureViewModel(get<Context>()) }
 }
 
 val frameworkConfigModule = module {
