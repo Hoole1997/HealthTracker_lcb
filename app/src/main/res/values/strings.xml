@@ -46,6 +46,9 @@
     <string name="ht_signal_poor">Signal: Poor</string>
     <!-- 心率测量新流程 -->
     <string name="ht_measure_stabilizing">Stabilizing signal, please hold still…</string>
+    <string name="ht_stabilizing_title">Measuring…</string>
+    <string name="ht_stabilizing_subtitle">Great! Waiting for the reading to get stabilized data…</string>
+    <string name="ht_stabilizing_tip">When the detector turns red, that means you are doing it correctly.</string>
     <string name="ht_measuring_progress">Measuring… %1$d%%</string>
     <string name="ht_measure_complete">Measurement Complete!</string>
     <!-- 血糖和血压的单位不用翻译   -->
