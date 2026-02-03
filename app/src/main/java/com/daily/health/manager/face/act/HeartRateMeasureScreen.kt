@@ -894,29 +894,12 @@ private fun HeartIconArea(
                     .background(pinkBackground)
             )
 
-            // 环形进度条轨道（白色）
-            Canvas(modifier = Modifier.size(166.dp)) {
-                drawArc(
-                    color = Color.White,
-                    startAngle = 0f,
-                    sweepAngle = 360f,
-                    useCenter = false,
-                    style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round)
-                )
-            }
-
-            // 4. 中层：环形进度条（c5颜色）
-            if (progress > 0) {
-                Canvas(modifier = Modifier.size(166.dp)) {
-                    drawArc(
-                        color = progressColor,
-                        startAngle = -90f,
-                        sweepAngle = 360f * progress / 100f,
-                        useCenter = false,
-                        style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round)
-                    )
-                }
-            }
+            // 环形进度条 (轨道 + 进度)
+            MeasureRingProgress(
+                progress = progress,
+                activeColor = progressColor,
+                modifier = Modifier.size(166.dp)
+            )
 
             // 5. 顶层：心形图标 + 摄像头预览
             Box(
@@ -942,42 +925,17 @@ private fun HeartIconArea(
                 when (measureState) {
                     UiMeasureState.WAITING_FINGER, UiMeasureState.STABILIZING -> {
                         // 等待手指/稳定期: 统一显示 "- - -"
-                        Text(
-                            text = "- - -",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            letterSpacing = 4.sp
-                        )
+                        BpmValueText(text = "- - -", fontSize = 24.sp, letterSpacing = 4.sp)
                     }
                     UiMeasureState.MEASURING -> {
                         // 测量中显示实时心率 (无单位)
-                        if (measuredBpm > 0) {
-                            Text(
-                                text = measuredBpm.toString(),
-                                fontSize = 32.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        } else {
-                            Text(
-                                text = "- -", // Changed from "- - -" to "- -"
-                                fontSize = 32.sp, // Changed from 24.sp
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                                // letterSpacing removed
-                            )
-                        }
+                        val displayText = if (measuredBpm > 0) measuredBpm.toString() else "- -"
+                        BpmValueText(text = displayText)
                     }
                     UiMeasureState.COMPLETE -> {
                         // 完成时显示最终 BPM (带单位)
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = measuredBpm.toString(),
-                                fontSize = 32.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
+                            BpmValueText(text = measuredBpm.toString())
                             Text(
                                 text = stringResource(R.string.ht_bpm),
                                 fontSize = 12.sp,
@@ -1172,17 +1130,18 @@ private fun PulseRippleBackground(
 
     Canvas(modifier = modifier) {
         val center = center
-        val baseRadius = 80.dp.toPx() // 160dp 直径的起始基准
+        val baseRadius = 80.dp.toPx()
         
-        // 绘制三层同步波纹
-        // 第一层：最内圈，极致克制
-        drawRipple(center, baseRadius, pulseProgress, color, scaleRange = 1.0f..1.2f, alphaRange = 0.8f..0.0f)
+        // 循环绘制三层波纹，减少冗余代码
+        val layers = listOf(
+            1.2f to 0.8f,  // scale range end to alpha start
+            1.45f to 0.6f,
+            1.7f to 0.4f
+        )
         
-        // 第二层：中圈，轻微扩散
-        drawRipple(center, baseRadius, pulseProgress, color, scaleRange = 1.0f..1.45f, alphaRange = 0.6f..0.0f)
-        
-        // 第三层：最外圈，最大扩散范围收敛至 1.7 倍左右
-        drawRipple(center, baseRadius, pulseProgress, color, scaleRange = 1.0f..1.7f, alphaRange = 0.4f..0.0f)
+        layers.forEach { (maxScale, startAlpha) ->
+            drawRipple(center, baseRadius, pulseProgress, color, 1.0f..maxScale, startAlpha..0.0f)
+        }
     }
 }
 
@@ -1216,5 +1175,44 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawRipple(
         ),
         radius = currentRadius,
         center = center
+    )
+}
+
+/**
+ * 统一度量环绘制 (背景轨道 + 进度)
+ */
+@Composable
+private fun MeasureRingProgress(
+    progress: Int,
+    activeColor: Color,
+    modifier: Modifier = Modifier,
+    strokeWidth: androidx.compose.ui.unit.Dp = 6.dp
+) {
+    Canvas(modifier = modifier) {
+        val stroke = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
+        // 1. 轨道 (Track)
+        drawArc(color = Color.White, 0f, 360f, false, style = stroke)
+        // 2. 进度 (Progress)
+        if (progress > 0) {
+            drawArc(color = activeColor, -90f, 360f * progress / 100f, false, style = stroke)
+        }
+    }
+}
+
+/**
+ * 统一心率数字样式
+ */
+@Composable
+private fun BpmValueText(
+    text: String,
+    fontSize: androidx.compose.ui.unit.TextUnit = 32.sp,
+    letterSpacing: androidx.compose.ui.unit.TextUnit = androidx.compose.ui.unit.TextUnit.Unspecified
+) {
+    Text(
+        text = text,
+        fontSize = fontSize,
+        fontWeight = FontWeight.Bold,
+        color = Color.White,
+        letterSpacing = letterSpacing
     )
 }

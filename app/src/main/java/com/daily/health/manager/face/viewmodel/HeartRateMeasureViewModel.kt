@@ -31,8 +31,11 @@ import com.healthtracker.framework.ext.logd
  *
  * 手指离开时：进度条 300ms 渐减动画 → 回退到 WAITING_FINGER
  */
+import com.daily.health.manager.data.repository.HeartRateRepository
+
 class HeartRateMeasureViewModel(
-    private val context: Context
+    private val context: Context,
+    private val heartRateRepository: HeartRateRepository
 ) : BaseViewModel() {
 
     companion object {
@@ -161,29 +164,19 @@ class HeartRateMeasureViewModel(
      */
     private suspend fun handleStabilizing() {
         if (BuildState.debug) "状态: STABILIZING".logd(TAG)
-
         val startTime = _uiState.value.stabilizationStartTime
-        while (coroutineContext[kotlinx.coroutines.Job]?.isActive == true && _uiState.value.measureState == MeasureState.STABILIZING) {
-            val fingerDetected = analyzer.isFingerDetected()
-
-            // 直接使用 Analyzer 的防抖结果，不再做额外防抖
-            if (!fingerDetected) {
-                if (BuildState.debug) "稳定期手指离开，回退".logd(TAG)
-                handleFingerLost()
-                return
-            }
-
+        
+        runSafeMeasurementLoop(MeasureState.STABILIZING) {
             val elapsed = System.currentTimeMillis() - startTime
             val quality = analyzer.getSignalQuality()
 
             _uiState.update {
                 it.copy(
-                    isFingerDetected = fingerDetected,
+                    isFingerDetected = true,
                     signalQuality = mapQuality(quality)
                 )
             }
 
-            // 稳定期完成，进入测量状态
             if (elapsed >= STABILIZATION_TIME_MS) {
                 if (BuildState.debug) "稳定期完成，开始测量".logd(TAG)
                 _uiState.update {
@@ -192,10 +185,7 @@ class HeartRateMeasureViewModel(
                         measureStartTime = System.currentTimeMillis()
                     )
                 }
-                return
             }
-
-            delay(FINGER_CHECK_INTERVAL_MS)
         }
     }
 
@@ -206,19 +196,9 @@ class HeartRateMeasureViewModel(
      */
     private suspend fun handleMeasuring() {
         if (BuildState.debug) "状态: MEASURING".logd(TAG)
-
         val startTime = _uiState.value.measureStartTime
 
-        while (coroutineContext[kotlinx.coroutines.Job]?.isActive == true && _uiState.value.measureState == MeasureState.MEASURING) {
-            val fingerDetected = analyzer.isFingerDetected()
-
-            // 直接使用 Analyzer 的防抖结果，不再做额外防抖
-            if (!fingerDetected) {
-                if (BuildState.debug) "测量中手指离开，回退".logd(TAG)
-                handleFingerLost()
-                return
-            }
-
+        runSafeMeasurementLoop(MeasureState.MEASURING, UI_UPDATE_INTERVAL_MS) {
             val elapsed = System.currentTimeMillis() - startTime
             val progress = (elapsed.toFloat() / MEASUREMENT_DURATION_MS).coerceIn(0f, 1f)
             val instantBpm = analyzer.getInstantBpm()
@@ -227,20 +207,15 @@ class HeartRateMeasureViewModel(
             _uiState.update {
                 it.copy(
                     progress = progress,
-                    // 保留上次有效的 BPM 值，避免频繁显示 "..."
                     currentBpm = instantBpm ?: it.currentBpm,
                     signalQuality = mapQuality(quality),
                     isFingerDetected = true
                 )
             }
 
-            // 检查是否完成
             if (elapsed >= MEASUREMENT_DURATION_MS) {
                 completeMeasurement()
-                return
             }
-
-            delay(UI_UPDATE_INTERVAL_MS)
         }
     }
 
@@ -308,7 +283,8 @@ class HeartRateMeasureViewModel(
 
         // 如果结果无效，回退重测
         if (result.bpm == null || result.quality == HeartRateAnalyzer.SignalQuality.POOR ||
-            result.quality == HeartRateAnalyzer.SignalQuality.NO_SIGNAL) {
+            result.quality == HeartRateAnalyzer.SignalQuality.NO_SIGNAL
+        ) {
             if (BuildState.debug) "测量结果无效，回退重测".logd(TAG)
             handleFingerLost()
             return
@@ -317,18 +293,26 @@ class HeartRateMeasureViewModel(
         // 停止摄像头
         cameraManager?.stopCapture()
 
+        // 保存到数据库
+        val recordId = heartRateRepository.addHeartRateRecord(
+            heartRateBpm = result.bpm,
+            // ext1 也可以存 confidence
+            ext1 = result.confidence.toString()
+        )
+
         _uiState.update {
             it.copy(
                 measureState = MeasureState.COMPLETE,
                 progress = 1f,
                 finalBpm = result.bpm,
                 currentBpm = result.bpm,
-                confidence = result.confidence
+                confidence = result.confidence,
+                recordId = recordId
             )
         }
 
-        if (BuildState.debug) "测量成功: 心率=${result.bpm} BPM, 置信度=${result.confidence}".logd(TAG)
-        _effect.emit(MeasureEffect.MeasurementComplete(result.bpm))
+        if (BuildState.debug) "测量成功: 心率=${result.bpm} BPM, 置信度=${result.confidence}, ID=$recordId".logd(TAG)
+        _effect.emit(MeasureEffect.MeasurementComplete(result.bpm, recordId))
     }
 
     /**
@@ -351,8 +335,29 @@ class HeartRateMeasureViewModel(
      */
     private fun useMeasurement() {
         val bpm = _uiState.value.finalBpm ?: return
+        val recordId = _uiState.value.recordId ?: return
         viewModelScope.launch {
-            _effect.emit(MeasureEffect.NavigateToResult(bpm))
+            _effect.emit(MeasureEffect.NavigateToResult(bpm, recordId))
+        }
+    }
+
+    /**
+     * 通用测量循环骨架
+     * 自动处理：协程活跃检查、状态检查、手指丢失检测
+     */
+    private suspend fun runSafeMeasurementLoop(
+        targetState: MeasureState,
+        checkInterval: Long = FINGER_CHECK_INTERVAL_MS,
+        onTick: suspend () -> Unit
+    ) {
+        while (coroutineContext[kotlinx.coroutines.Job]?.isActive == true && _uiState.value.measureState == targetState) {
+            if (!analyzer.isFingerDetected()) {
+                if (BuildState.debug) "状态 $targetState 下手指离开，回退".logd(TAG)
+                handleFingerLost()
+                return
+            }
+            onTick()
+            delay(checkInterval)
         }
     }
 
@@ -390,7 +395,8 @@ data class MeasureUiState(
     val isFingerDetected: Boolean = false,
     val confidence: Float = 0f,
     val stabilizationStartTime: Long = 0L,
-    val measureStartTime: Long = 0L
+    val measureStartTime: Long = 0L,
+    val recordId: Long? = null
 )
 
 /**
@@ -435,6 +441,6 @@ sealed class MeasureEvent {
  * 一次性副作用
  */
 sealed class MeasureEffect {
-    data class MeasurementComplete(val bpm: Int) : MeasureEffect()
-    data class NavigateToResult(val bpm: Int) : MeasureEffect()
+    data class MeasurementComplete(val bpm: Int, val recordId: Long) : MeasureEffect()
+    data class NavigateToResult(val bpm: Int, val recordId: Long) : MeasureEffect()
 }
