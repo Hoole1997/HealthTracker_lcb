@@ -73,6 +73,9 @@ import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.core.context.GlobalContext
 import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoRegular
+import com.daily.health.manager.data.entity.AlarmRecord
+import com.daily.health.manager.face.dialog.ReminderSettingsDialogFragment
+import com.daily.health.manager.face.compose.ReminderDialogHelper
 import java.util.Calendar
 import java.util.Locale
 
@@ -1089,10 +1092,31 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
             RecordType.HEART_RATE -> AdPosition.IV_HEART_RATE_SAVE
             RecordType.CHOLESTEROL -> AdPosition.IV_CHOLESTEROL_SAVE
         }
+        
+        val alarmType = when (type) {
+            RecordType.BLOOD_SUGAR -> AlarmRecord.TYPE_BLOOD_SUGAR
+            RecordType.BLOOD_PRESSURE -> AlarmRecord.TYPE_BLOOD_PRESSURE
+            RecordType.BMI -> AlarmRecord.TYPE_BMI
+            RecordType.HEART_RATE -> AlarmRecord.TYPE_HEART_RATE
+            RecordType.CHOLESTEROL -> AlarmRecord.TYPE_CHOLESTEROL
+        }
+
         SaveCompleteDialog.show(supportFragmentManager) {
-            showInter(savePosition) {
+             if (ReminderDialogHelper.shouldShowReminderDialog(alarmType)) {
+                ReminderDialogHelper.markReminderDialogShown(alarmType)
+                ReminderSettingsDialogFragment.newInstance(alarmType).apply {
+                    // Note: Here we might want to finish the activity after dialog is dismissed
+                    // For simplicity, we can let user see the detail after they close or add reminder
+                }.show(supportFragmentManager, "reminder")
+                
+                // For logic continuity, we still open detail in background or after it
                 HealthDetailScreen.start(this@HealthRecordScreen, detailType, recordId)
                 finish()
+            } else {
+                showInter(savePosition) {
+                    HealthDetailScreen.start(this@HealthRecordScreen, detailType, recordId)
+                    finish()
+                }
             }
         }
     }

@@ -13,7 +13,8 @@ import com.daily.health.manager.databinding.HtItemAlarmBinding
  * 用于血压和血糖闹钟列表的数据绑定
  */
 class AlarmAdapter(
-    private val onSwitchChanged: (AlarmRecord, Boolean) -> Unit
+    private val onSwitchChanged: (AlarmRecord, Boolean) -> Unit,
+    private val onItemClick: ((AlarmRecord) -> Unit)? = null
 ) : ListAdapter<AlarmRecord, AlarmAdapter.AlarmViewHolder>(AlarmDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
@@ -42,6 +43,11 @@ class AlarmAdapter(
             // 设置开关监听器
             binding.stAlarm.setOnCheckedChangeListener { _, isChecked ->
                 onSwitchChanged(alarm, isChecked)
+            }
+            
+            // 设置点击监听器
+            binding.root.setOnClickListener {
+                onItemClick?.invoke(alarm)
             }
         }
     }

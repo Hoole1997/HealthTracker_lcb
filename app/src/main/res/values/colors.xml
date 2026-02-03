@@ -84,5 +84,6 @@
     <color name="color_B0B0B0">#B0B0B0</color>
     <color name="color_E0E0E0">#E0E0E0</color>
     <color name="color_E6FFF6">#E6FFF6</color>
+    <color name="color_d3d3d3">#D3D3D3</color>
     <!-- 错误颜色 -->
 </resources>

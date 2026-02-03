@@ -153,6 +153,10 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         mViewBind.composeView.setContent {
             HealthDetailHost(type = type)
         }
+        
+        mViewBind.root.postDelayed({
+             checkAndShowReminderDialog(type)
+        }, 500)
     }
 
     @Composable
@@ -613,5 +617,22 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
 
         return ViewModelProvider(this, factory)[modelClass]
+    }
+    private val alarmViewModel: com.daily.health.manager.face.viewmodel.AlarmViewModel by inject()
+    
+    private fun checkAndShowReminderDialog(type: DetailType) {
+        val alarmType = when(type) {
+            DetailType.BLOOD_SUGAR -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_SUGAR
+            DetailType.BLOOD_PRESSURE -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_PRESSURE
+            DetailType.BMI -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BMI
+            DetailType.HEART_RATE -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_HEART_RATE
+            DetailType.CHOLESTEROL -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_CHOLESTEROL
+        }
+        
+        if (com.daily.health.manager.face.compose.ReminderDialogHelper.shouldShowReminderDialog(alarmType)) {
+            com.daily.health.manager.face.compose.ReminderDialogHelper.markReminderDialogShown(alarmType)
+            val dialog = com.daily.health.manager.face.dialog.ReminderSettingsDialogFragment.newInstance(alarmType)
+            dialog.show(supportFragmentManager, "ReminderSettingsDialog")
+        }
     }
 }

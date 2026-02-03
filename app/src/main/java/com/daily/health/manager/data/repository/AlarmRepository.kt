@@ -24,6 +24,13 @@ class AlarmRepository(
     override suspend fun updateRecord(record: AlarmRecord): Int {
         return alarmDao.update(record)
     }
+
+    /**
+     * 更新现有的闹钟记录 (Public)
+     */
+    suspend fun updateExistingRecord(record: AlarmRecord): Int {
+        return alarmDao.update(record)
+    }
     
     override suspend fun deleteRecordById(recordId: Long): Int {
         return alarmDao.deleteById(recordId)
@@ -372,21 +379,31 @@ class AlarmRepository(
      * @return 闹钟统计数据
      */
     suspend fun getAlarmStatistics(): AlarmStatistics {
-        val totalCount = alarmDao.getRecordCount()
-        val enabledCount = alarmDao.getEnabledRecordCount()
-        val bloodSugarCount = alarmDao.getRecordCountByType(AlarmRecord.TYPE_BLOOD_SUGAR)
-        val bloodPressureCount = alarmDao.getRecordCountByType(AlarmRecord.TYPE_BLOOD_PRESSURE)
-        val medicationCount = alarmDao.getRecordCountByType(AlarmRecord.TYPE_MEDICATION)
-        // 饮水提醒统计暂不用于现有UI，如后续需要可在此处扩展
+        val allAlarms = alarmDao.getAllRecordsSync()
+        val totalCount = allAlarms.size
+        val enabledCount = allAlarms.count { it.isEnabled && !it.isDeleted }
+        val disabledCount = totalCount - enabledCount
         
-        return AlarmStatistics(
+        return allAlarms.fold(AlarmStatistics(
             totalCount = totalCount,
             enabledCount = enabledCount,
-            disabledCount = totalCount - enabledCount,
-            bloodSugarReminderCount = bloodSugarCount,
-            bloodPressureReminderCount = bloodPressureCount,
-            medicationReminderCount = medicationCount
-        )
+            disabledCount = disabledCount
+        )) { acc, alarm ->
+            if (!alarm.isDeleted) {
+                when (alarm.type) {
+                    AlarmRecord.TYPE_BLOOD_SUGAR -> acc.copy(bloodSugarCount = acc.bloodSugarCount + 1)
+                    AlarmRecord.TYPE_BLOOD_PRESSURE -> acc.copy(bloodPressureCount = acc.bloodPressureCount + 1)
+                    AlarmRecord.TYPE_MEDICATION -> acc.copy(medicationCount = acc.medicationCount + 1)
+                    AlarmRecord.TYPE_HYDRATION -> acc.copy(hydrationCount = acc.hydrationCount + 1)
+                    AlarmRecord.TYPE_HEART_RATE -> acc.copy(heartRateCount = acc.heartRateCount + 1)
+                    AlarmRecord.TYPE_BMI -> acc.copy(bmiCount = acc.bmiCount + 1)
+                    AlarmRecord.TYPE_CHOLESTEROL -> acc.copy(cholesterolCount = acc.cholesterolCount + 1)
+                    else -> acc
+                }
+            } else {
+                acc
+            }
+        }
     }
 
     /**
@@ -399,6 +416,63 @@ class AlarmRepository(
     ): Long {
         val record = AlarmRecord.createHydrationReminder(hour, minute, repeatFlag)
         return alarmDao.insert(record)
+    }
+
+    /**
+     * 添加心率测量提醒
+     */
+    suspend fun addHeartRateReminder(
+        hour: Int,
+        minute: Int,
+        repeatFlag: Int = AlarmRecord.REPEAT_DAILY
+    ): Long {
+        val record = AlarmRecord.createHeartRateReminder(hour, minute, repeatFlag)
+        return alarmDao.insert(record)
+    }
+
+    /**
+     * 添加BMI测量提醒
+     */
+    suspend fun addBmiReminder(
+        hour: Int,
+        minute: Int,
+        repeatFlag: Int = AlarmRecord.REPEAT_DAILY
+    ): Long {
+        val record = AlarmRecord.createBmiReminder(hour, minute, repeatFlag)
+        return alarmDao.insert(record)
+    }
+
+    /**
+     * 添加胆固醇测量提醒
+     */
+    suspend fun addCholesterolReminder(
+        hour: Int,
+        minute: Int,
+        repeatFlag: Int = AlarmRecord.REPEAT_DAILY
+    ): Long {
+        val record = AlarmRecord.createCholesterolReminder(hour, minute, repeatFlag)
+        return alarmDao.insert(record)
+    }
+
+    /**
+     * 获取心率测量提醒
+     */
+    fun getHeartRateReminders(): Flow<List<AlarmRecord>> {
+        return alarmDao.getRecordsByType(AlarmRecord.TYPE_HEART_RATE)
+    }
+
+    /**
+     * 获取BMI测量提醒
+     */
+    fun getBmiReminders(): Flow<List<AlarmRecord>> {
+        return alarmDao.getRecordsByType(AlarmRecord.TYPE_BMI)
+    }
+
+    /**
+     * 获取胆固醇测量提醒
+     */
+    fun getCholesterolReminders(): Flow<List<AlarmRecord>> {
+        return alarmDao.getRecordsByType(AlarmRecord.TYPE_CHOLESTEROL)
     }
 
     /**
@@ -445,10 +519,14 @@ class AlarmRepository(
  * 闹钟统计数据类
  */
 data class AlarmStatistics(
-    val totalCount: Int,
-    val enabledCount: Int,
-    val disabledCount: Int,
-    val bloodSugarReminderCount: Int,
-    val bloodPressureReminderCount: Int,
-    val medicationReminderCount: Int
+    val totalCount: Int = 0,
+    val enabledCount: Int = 0,
+    val disabledCount: Int = 0,
+    val bloodSugarCount: Int = 0,
+    val bloodPressureCount: Int = 0,
+    val medicationCount: Int = 0,
+    val hydrationCount: Int = 0,
+    val heartRateCount: Int = 0,
+    val bmiCount: Int = 0,
+    val cholesterolCount: Int = 0
 )

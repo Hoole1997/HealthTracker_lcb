@@ -259,28 +259,46 @@ class AlarmNotificationManager(
             }
             AlarmRecord.TYPE_MEDICATION -> {
                 Triple(
-
                     alarmRecord.getFormattedTime(),
                     context.getString(R.string.ht_medication_reminder_content),
                     context.getString(R.string.ht_take_now)
                 )
             }
             AlarmRecord.TYPE_HYDRATION -> {
-                Triple(
+                 Triple(
                     alarmRecord.getFormattedTime(),
                     context.getString(R.string.ht_alarm_hydration_content),
                     context.getString(R.string.ht_drink_now)
                 )
             }
+            AlarmRecord.TYPE_HEART_RATE -> {
+                Triple(
+                    alarmRecord.getFormattedTime(),
+                    context.getString(R.string.ht_alarm_heart_rate_content),
+                    context.getString(R.string.ht_record_now)
+                )
+            }
+            AlarmRecord.TYPE_BMI -> {
+                Triple(
+                    alarmRecord.getFormattedTime(),
+                    context.getString(R.string.ht_alarm_bmi_content),
+                    context.getString(R.string.ht_record_now)
+                )
+            }
+            AlarmRecord.TYPE_CHOLESTEROL -> {
+                Triple(
+                    alarmRecord.getFormattedTime(),
+                    context.getString(R.string.ht_alarm_cholesterol_content),
+                    context.getString(R.string.ht_record_now)
+                )
+            }
             else -> {
                 // 默认使用健康提醒
                 Triple(
-
                     context.getString(R.string.ht_alarm_default_title), 
                     context.getString(R.string.ht_alarm_default_content),
-                    context.getString(R.string.ht_view_now),
-
-                    )
+                    context.getString(R.string.ht_view_now)
+                )
             }
         }
     }
@@ -330,6 +348,9 @@ class AlarmNotificationManager(
         AlarmRecord.TYPE_BLOOD_PRESSURE -> HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE
         AlarmRecord.TYPE_MEDICATION -> HealthServiceConstants.ACTION_VALUE_MEDICATION
         AlarmRecord.TYPE_HYDRATION -> HealthServiceConstants.ACTION_VALUE_HYDRATION
+        AlarmRecord.TYPE_HEART_RATE -> HealthServiceConstants.ACTION_VALUE_HEART_RATE
+        AlarmRecord.TYPE_BMI -> HealthServiceConstants.ACTION_VALUE_BMI
+        AlarmRecord.TYPE_CHOLESTEROL -> HealthServiceConstants.ACTION_VALUE_CHOLESTEROL
         else -> null
     }
     
@@ -360,6 +381,27 @@ class AlarmNotificationManager(
             background = R.drawable.ht_bg_rect_white_12,
             largeIcon = R.drawable.ht_ic_remind_notify,
             decorIcon = R.mipmap.ht_ic_hydrate_noti,
+            btnTextColor = com.healthtracker.framework.R.color.white
+        )
+        AlarmRecord.TYPE_HEART_RATE -> NotificationResources(
+            smallIcon = R.drawable.ic_notification_bs,
+            background = R.drawable.ht_bg_rect_white_12,
+            largeIcon = R.drawable.ht_ic_remind_notify,
+            decorIcon = R.mipmap.ht_ic_heart,
+            btnTextColor = com.healthtracker.framework.R.color.white
+        )
+        AlarmRecord.TYPE_BMI -> NotificationResources(
+            smallIcon = R.drawable.ic_notification_bs,
+            background = R.drawable.ht_bg_rect_white_12,
+            largeIcon = R.drawable.ht_ic_remind_notify,
+            decorIcon = R.mipmap.ht_ic_bmi,
+            btnTextColor = com.healthtracker.framework.R.color.white
+        )
+        AlarmRecord.TYPE_CHOLESTEROL -> NotificationResources(
+            smallIcon = R.drawable.ic_notification_bs,
+            background = R.drawable.ht_bg_rect_white_12,
+            largeIcon = R.drawable.ht_ic_remind_notify,
+            decorIcon = R.mipmap.ht_ic_cholesterol,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         else -> null

@@ -27,6 +27,15 @@ class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, HtActivityAlarmManage
     // 血压闹钟适配器
     private lateinit var bloodPressureAdapter: AlarmAdapter
 
+    // 心率闹钟适配器
+    private lateinit var heartRateAdapter: AlarmAdapter
+    
+    // BMI闹钟适配器
+    private lateinit var bmiAdapter: AlarmAdapter
+    
+    // 胆固醇闹钟适配器
+    private lateinit var cholesterolAdapter: AlarmAdapter
+
 
     override fun createViewBinding() = HtActivityAlarmManagerBinding.inflate(layoutInflater)
 
@@ -52,29 +61,74 @@ class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, HtActivityAlarmManage
     }
 
     /**
+     * 显示编辑弹窗
+     */
+    private fun showEditDialog(record: AlarmRecord?, type: Int) {
+        val dialog = com.daily.health.manager.face.dialog.AlarmEditDialogFragment.newInstance(
+            alarmRecord = record,
+            alarmType = type,
+            onSave = { h, m, f ->
+                if (record == null) {
+                    when (type) {
+                        AlarmRecord.TYPE_BLOOD_SUGAR -> mViewModel.addBloodSugarAlarm(h, m, f)
+                        AlarmRecord.TYPE_BLOOD_PRESSURE -> mViewModel.addBloodPressureAlarm(h, m, f)
+                        AlarmRecord.TYPE_HEART_RATE -> mViewModel.addHeartRateAlarm(h, m, f)
+                        AlarmRecord.TYPE_BMI -> mViewModel.addBmiAlarm(h, m, f)
+                        AlarmRecord.TYPE_CHOLESTEROL -> mViewModel.addCholesterolAlarm(h, m, f)
+                    }
+                } else {
+                    mViewModel.updateAlarm(record.id, h, m, f)
+                }
+            },
+            onDelete = if (record != null) {
+                { mViewModel.deleteAlarm(record.id) }
+            } else null
+        )
+        dialog.show(supportFragmentManager, "AlarmEditDialog")
+    }
+
+    /**
      * 设置RecyclerView
      */
     private fun setupRecyclerViews() {
-        // 初始化血糖闹钟适配器
-        bloodSugarAdapter = AlarmAdapter { alarm, isEnabled ->
-            mViewModel.updateAlarmEnabled(alarm.id, isEnabled, AlarmRecord.TYPE_BLOOD_SUGAR)
+        // 初始化适配器辅助函数
+        fun createAdapter(type: Int): AlarmAdapter {
+            return AlarmAdapter(
+                onSwitchChanged = { alarm, isEnabled ->
+                    mViewModel.updateAlarmEnabled(alarm.id, isEnabled, type)
+                },
+                onItemClick = { alarm ->
+                    showEditDialog(alarm, type)
+                }
+            )
         }
 
-        // 初始化血压闹钟适配器
-        bloodPressureAdapter = AlarmAdapter { alarm, isEnabled ->
-            mViewModel.updateAlarmEnabled(alarm.id, isEnabled, AlarmRecord.TYPE_BLOOD_PRESSURE)
-        }
+        bloodSugarAdapter = createAdapter(AlarmRecord.TYPE_BLOOD_SUGAR)
+        bloodPressureAdapter = createAdapter(AlarmRecord.TYPE_BLOOD_PRESSURE)
+        heartRateAdapter = createAdapter(AlarmRecord.TYPE_HEART_RATE)
+        bmiAdapter = createAdapter(AlarmRecord.TYPE_BMI)
+        cholesterolAdapter = createAdapter(AlarmRecord.TYPE_CHOLESTEROL)
 
-        // 设置血糖闹钟RecyclerView
-        mViewBind.rvBsAlarm.apply {
+        // 设置RecyclerViews
+        mViewBind.rvBsAlarm.run {
             layoutManager = LinearLayoutManager(this@AlarmManageScreen)
             adapter = bloodSugarAdapter
         }
-
-        // 设置血压闹钟RecyclerView
-        mViewBind.rvBpAlarm.apply {
+        mViewBind.rvBpAlarm.run {
             layoutManager = LinearLayoutManager(this@AlarmManageScreen)
             adapter = bloodPressureAdapter
+        }
+        mViewBind.rvHeartRateAlarm.run {
+            layoutManager = LinearLayoutManager(this@AlarmManageScreen)
+            adapter = heartRateAdapter
+        }
+        mViewBind.rvBmiAlarm.run {
+            layoutManager = LinearLayoutManager(this@AlarmManageScreen)
+            adapter = bmiAdapter
+        }
+        mViewBind.rvCholesterolAlarm.run {
+            layoutManager = LinearLayoutManager(this@AlarmManageScreen)
+            adapter = cholesterolAdapter
         }
     }
 
@@ -82,20 +136,20 @@ class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, HtActivityAlarmManage
      * 设置点击监听器
      */
     private fun setupClickListeners() {
-        // 血糖闹钟添加按钮
         mViewBind.ivAddBsAlarm.clickWithDuration {
-
-            AlarmTimeSelectDialog.show(supportFragmentManager) {
-                mViewModel.addBloodSugarAlarm(it.first, it.second)
-
-            }
+            showEditDialog(null, AlarmRecord.TYPE_BLOOD_SUGAR)
         }
-
-        // 血压闹钟添加按钮
         mViewBind.ivAddBpAlarm.clickWithDuration {
-            AlarmTimeSelectDialog.show(supportFragmentManager) {
-                mViewModel.addBloodPressureAlarm(it.first, it.second)
-            }
+            showEditDialog(null, AlarmRecord.TYPE_BLOOD_PRESSURE)
+        }
+        mViewBind.ivAddHeartRateAlarm.clickWithDuration {
+            showEditDialog(null, AlarmRecord.TYPE_HEART_RATE)
+        }
+        mViewBind.ivAddBmiAlarm.clickWithDuration {
+            showEditDialog(null, AlarmRecord.TYPE_BMI)
+        }
+        mViewBind.ivAddCholesterolAlarm.clickWithDuration {
+            showEditDialog(null, AlarmRecord.TYPE_CHOLESTEROL)
         }
     }
 
@@ -111,6 +165,21 @@ class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, HtActivityAlarmManage
         // 观察血压闹钟数据
         this.collectLatest(mViewModel.bloodPressureAlarms) { alarms ->
             bloodPressureAdapter.submitList(alarms)
+        }
+        
+        // 观察心率闹钟数据
+        this.collectLatest(mViewModel.heartRateAlarms) { alarms ->
+            heartRateAdapter.submitList(alarms)
+        }
+        
+        // 观察BMI闹钟数据
+        this.collectLatest(mViewModel.bmiAlarms) { alarms ->
+            bmiAdapter.submitList(alarms)
+        }
+        
+        // 观察胆固醇闹钟数据
+        this.collectLatest(mViewModel.cholesterolAlarms) { alarms ->
+            cholesterolAdapter.submitList(alarms)
         }
     }
     

@@ -252,6 +252,9 @@ data class LocalEntity04(
         const val TYPE_BLOOD_PRESSURE = 1  // 血压测量提醒
         const val TYPE_MEDICATION = 2      // 服药提醒
         const val TYPE_HYDRATION = 3       // 饮水提醒
+        const val TYPE_HEART_RATE = 4      // 心率提醒
+        const val TYPE_BMI = 5             // BMI提醒
+        const val TYPE_CHOLESTEROL = 6     // 胆固醇提醒
 
         /**
          * 重复模式常量
@@ -380,6 +383,57 @@ data class LocalEntity04(
                 minute = minute,
                 repeatFlag = repeatFlag,
                 vibrateTime = 1500 // 默认振动1.5秒
+            )
+        }
+
+        /**
+         * 创建心率测量提醒
+         */
+        fun createHeartRateReminder(
+            hour: Int,
+            minute: Int,
+            repeatFlag: Int = REPEAT_DAILY
+        ): AlarmRecord {
+            return create(
+                type = TYPE_HEART_RATE,
+                hour = hour,
+                minute = minute,
+                repeatFlag = repeatFlag,
+                vibrateTime = 1000
+            )
+        }
+
+        /**
+         * 创建BMI测量提醒
+         */
+        fun createBmiReminder(
+            hour: Int,
+            minute: Int,
+            repeatFlag: Int = REPEAT_DAILY
+        ): AlarmRecord {
+            return create(
+                type = TYPE_BMI,
+                hour = hour,
+                minute = minute,
+                repeatFlag = repeatFlag,
+                vibrateTime = 1000
+            )
+        }
+
+        /**
+         * 创建胆固醇测量提醒
+         */
+        fun createCholesterolReminder(
+            hour: Int,
+            minute: Int,
+            repeatFlag: Int = REPEAT_DAILY
+        ): AlarmRecord {
+            return create(
+                type = TYPE_CHOLESTEROL,
+                hour = hour,
+                minute = minute,
+                repeatFlag = repeatFlag,
+                vibrateTime = 1000
             )
         }
 

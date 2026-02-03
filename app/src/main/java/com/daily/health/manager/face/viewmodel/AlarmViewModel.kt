@@ -31,6 +31,18 @@ class AlarmViewModel(
     // 血压闹钟数据流
     private val _bloodPressureAlarms = MutableStateFlow<List<AlarmRecord>>(emptyList())
     val bloodPressureAlarms: StateFlow<List<AlarmRecord>> = _bloodPressureAlarms.asStateFlow()
+
+    // 心率闹钟数据流
+    private val _heartRateAlarms = MutableStateFlow<List<AlarmRecord>>(emptyList())
+    val heartRateAlarms: StateFlow<List<AlarmRecord>> = _heartRateAlarms.asStateFlow()
+
+    // BMI闹钟数据流
+    private val _bmiAlarms = MutableStateFlow<List<AlarmRecord>>(emptyList())
+    val bmiAlarms: StateFlow<List<AlarmRecord>> = _bmiAlarms.asStateFlow()
+
+    // 胆固醇闹钟数据流
+    private val _cholesterolAlarms = MutableStateFlow<List<AlarmRecord>>(emptyList())
+    val cholesterolAlarms: StateFlow<List<AlarmRecord>> = _cholesterolAlarms.asStateFlow()
     
     init {
         // 初始化默认闹钟数据
@@ -168,16 +180,25 @@ class AlarmViewModel(
             // 按类型过滤闹钟记录
             val bloodSugarAlarms = allAlarms.filter { it.type == AlarmRecord.TYPE_BLOOD_SUGAR }
             val bloodPressureAlarms = allAlarms.filter { it.type == AlarmRecord.TYPE_BLOOD_PRESSURE }
+            val heartRateAlarms = allAlarms.filter { it.type == AlarmRecord.TYPE_HEART_RATE }
+            val bmiAlarms = allAlarms.filter { it.type == AlarmRecord.TYPE_BMI }
+            val cholesterolAlarms = allAlarms.filter { it.type == AlarmRecord.TYPE_CHOLESTEROL }
             
             // 按时间排序（小时*60+分钟）
             val sortedBloodSugarAlarms = bloodSugarAlarms.sortedBy { it.hour * 60 + it.minute }
             val sortedBloodPressureAlarms = bloodPressureAlarms.sortedBy { it.hour * 60 + it.minute }
+            val sortedHeartRateAlarms = heartRateAlarms.sortedBy { it.hour * 60 + it.minute }
+            val sortedBmiAlarms = bmiAlarms.sortedBy { it.hour * 60 + it.minute }
+            val sortedCholesterolAlarms = cholesterolAlarms.sortedBy { it.hour * 60 + it.minute }
             
             // 更新StateFlow
             _bloodSugarAlarms.value = sortedBloodSugarAlarms
             _bloodPressureAlarms.value = sortedBloodPressureAlarms
+            _heartRateAlarms.value = sortedHeartRateAlarms
+            _bmiAlarms.value = sortedBmiAlarms
+            _cholesterolAlarms.value = sortedCholesterolAlarms
             
-            "Data processing completed - Blood sugar alarms: ${sortedBloodSugarAlarms.size}, Blood pressure alarms: ${sortedBloodPressureAlarms.size}".logd(TAG)
+            "Data processing completed - BS: ${sortedBloodSugarAlarms.size}, BP: ${sortedBloodPressureAlarms.size}, HR: ${sortedHeartRateAlarms.size}, BMI: ${sortedBmiAlarms.size}, CH: ${sortedCholesterolAlarms.size}".logd(TAG)
         } catch (e: Exception) {
             "Failed to process alarm data: ${e.message}".loge(TAG)
         }
@@ -189,8 +210,9 @@ class AlarmViewModel(
      * 添加血糖闹钟
      * @param hour 小时
      * @param minute 分钟
+     * @param repeatFlag 重复标志
      */
-    fun addBloodSugarAlarm(hour: Int, minute: Int) {
+    fun addBloodSugarAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
         viewModelScope.launch {
             try {
                 // 检查是否已存在相同时间的闹钟
@@ -201,7 +223,7 @@ class AlarmViewModel(
                 }
                 
                 // 使用Repository的公共方法添加血糖闹钟
-                val insertedId = alarmRepository.addBloodSugarReminder(hour, minute)
+                val insertedId = alarmRepository.addBloodSugarReminder(hour, minute, repeatFlag)
                 
                 if (insertedId > 0) {
                     "Successfully added blood sugar alarm: ${hour}:${minute}, ID: $insertedId".logd(TAG)
@@ -236,8 +258,9 @@ class AlarmViewModel(
      * 添加血压闹钟
      * @param hour 小时
      * @param minute 分钟
+     * @param repeatFlag 重复标志
      */
-    fun addBloodPressureAlarm(hour: Int, minute: Int) {
+    fun addBloodPressureAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
         viewModelScope.launch {
             try {
                 // 检查是否已存在相同时间的闹钟
@@ -248,7 +271,7 @@ class AlarmViewModel(
                 }
                 
                 // 使用Repository的公共方法添加血压闹钟
-                val insertedId = alarmRepository.addBloodPressureReminder(hour, minute)
+                val insertedId = alarmRepository.addBloodPressureReminder(hour, minute, repeatFlag)
                 
                 if (insertedId > 0) {
                     "Successfully added blood pressure alarm: ${hour}:${minute}, ID: $insertedId".logd(TAG)
@@ -275,6 +298,92 @@ class AlarmViewModel(
                 throw e // 重新抛出以保持协程取消语义
             } catch (e: Exception) {
                 "Blood pressure alarm addition error: ${hour}:${minute}, Error: ${e.javaClass.simpleName} - ${e.message}".loge(TAG)
+            }
+        }
+    }
+
+    /**
+     * 添加心率闹钟
+     */
+    fun addHeartRateAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
+        addAlarm(hour, minute) { h, m -> alarmRepository.addHeartRateReminder(h, m, repeatFlag) }
+    }
+
+    /**
+     * 添加BMI闹钟
+     */
+    fun addBmiAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
+        addAlarm(hour, minute) { h, m -> alarmRepository.addBmiReminder(h, m, repeatFlag) }
+    }
+
+    /**
+     * 添加胆固醇闹钟
+     */
+    fun addCholesterolAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
+        addAlarm(hour, minute) { h, m -> alarmRepository.addCholesterolReminder(h, m, repeatFlag) }
+    }
+
+    /**
+     * 根据类型统一添加闹钟 (Public API)
+     */
+    fun addAlarmByType(type: Int, hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
+        when (type) {
+            AlarmRecord.TYPE_BLOOD_SUGAR -> addBloodSugarAlarm(hour, minute, repeatFlag)
+            AlarmRecord.TYPE_BLOOD_PRESSURE -> addBloodPressureAlarm(hour, minute, repeatFlag)
+            AlarmRecord.TYPE_HEART_RATE -> addHeartRateAlarm(hour, minute, repeatFlag)
+            AlarmRecord.TYPE_BMI -> addBmiAlarm(hour, minute, repeatFlag)
+            AlarmRecord.TYPE_CHOLESTEROL -> addCholesterolAlarm(hour, minute, repeatFlag)
+        }
+    }
+
+    /**
+     * 更新闹钟
+     */
+    fun updateAlarm(recordId: Long, hour: Int, minute: Int, repeatFlag: Int) {
+        viewModelScope.launch {
+            try {
+                // 1. 获取原记录
+                val record = alarmRepository.getRecordById(recordId) ?: return@launch
+                
+                // 2. 更新字段
+                val updatedRecord = record.copy(
+                    hour = hour,
+                    minute = minute,
+                    repeatFlag = repeatFlag,
+                    updatedAt = System.currentTimeMillis()
+                )
+                
+                // 3. 写入数据库
+                val status = alarmRepository.updateExistingRecord(updatedRecord)
+                
+                if (status > 0) {
+                    // 4. 更新系统闹钟
+                    alarmScheduler.updateAlarm(updatedRecord)
+                    "Updated alarm $recordId successfully".logd(TAG)
+                }
+            } catch (e: Exception) {
+                "Failed to update alarm: ${e.message}".loge(TAG)
+            }
+        }
+    }
+
+    private fun addAlarm(hour: Int, minute: Int, insertAction: suspend (Int, Int) -> Long) {
+        viewModelScope.launch {
+            try {
+                val exists = alarmRepository.existsAtTime(hour, minute)
+                if (exists) {
+                    "Alarm time ${hour}:${minute} already exists".logw(TAG)
+                    return@launch
+                }
+                val insertedId = insertAction(hour, minute)
+                if (insertedId > 0) {
+                    val newAlarm = alarmRepository.getRecordById(insertedId)
+                    if (newAlarm != null) {
+                        alarmScheduler.scheduleAlarm(newAlarm)
+                    }
+                }
+            } catch (e: Exception) {
+                "Alarm addition error: ${e.message}".loge(TAG)
             }
         }
     }
