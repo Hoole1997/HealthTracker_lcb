@@ -140,6 +140,8 @@ object AdPosition {
     val NA_NEW_RECORD_CHOLESTEROL_BOTTOM = "NA_NewRecord_Cholesterol_bottom"
     /** 心率录入页底部广告 */
     val NA_NEW_RECORD_HEART_RATE_BOTTOM = "NA_NewRecord_HeartRate_bottom"
+    /** 心率测量页底部广告 */
+    val NA_HEART_RATE_MEASURE_BOTTOM = "NA_HeartRateMeasure_bottom"
     /** BMI录入页底部广告 */
     val NA_NEW_RECORD_BMI_BOTTOM = "NA_NewRecord_BMI_bottom"
     

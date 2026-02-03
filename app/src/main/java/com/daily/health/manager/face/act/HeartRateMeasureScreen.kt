@@ -98,6 +98,9 @@ import com.daily.health.manager.face.viewmodel.SignalQuality as ViewModelSignalQ
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import org.koin.android.ext.android.inject
+import com.daily.health.manager.utils.loadNative
+import net.corekit.monetize.ads.AdPosition
+import net.corekit.monetize.ui.NativeAdStyle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -214,6 +217,8 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
                 }
             }
         }
+
+        loadNative(mViewBind.adContainer, AdPosition.NA_HEART_RATE_MEASURE_BOTTOM, NativeAdStyle.STANDARD)
     }
 
     private fun checkCameraPermission() {
