@@ -166,7 +166,7 @@ val databaseModule = module {
     factory { StepSettingViewModel(get()) }
     viewModel { (handle: SavedStateHandle) -> HealthStatisticsViewModel(get(), get(), get(), get(), get(), get(), get(), handle) }
     factory { StepCountViewModel() }
-    factory { HeartRateMeasureViewModel(get<Context>()) }
+    factory { HeartRateMeasureViewModel(get<Context>(), get()) }
 }
 
 val frameworkConfigModule = module {

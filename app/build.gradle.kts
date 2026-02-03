@@ -247,6 +247,9 @@ dependencies {
     implementation(libs.camerax.camera2)
     implementation(libs.camerax.lifecycle)
     implementation(libs.camerax.view)
+    
+    // Lottie Compose (心率测量动画)
+    implementation(libs.lottie.compose)
 }
 
 // BuildConfig 扩展函数
