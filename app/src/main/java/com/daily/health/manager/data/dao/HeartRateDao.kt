@@ -39,6 +39,10 @@ interface LocalDao07 {
     @Query("SELECT * FROM t07 WHERE c05 = 0 ORDER BY c02 DESC LIMIT 1")
     suspend fun getLatestRecord(): HeartRateRecord?
 
+    /** 获取最新的 PPG 记录 (ext2 == 'camera') */
+    @Query("SELECT * FROM t07 WHERE c05 = 0 AND c08 = 'camera' ORDER BY c02 DESC LIMIT 1")
+    fun observeLatestPpgRecord(): Flow<HeartRateRecord?>
+
     /** 获取全部记录（按时间倒序） */
     @Query("SELECT * FROM t07 WHERE c05 = 0 ORDER BY c02 DESC, c06 DESC")
     fun getAllRecords(): Flow<List<HeartRateRecord>>

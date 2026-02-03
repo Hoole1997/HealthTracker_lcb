@@ -2,6 +2,7 @@ package com.daily.health.manager.face.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.daily.health.manager.data.entity.HealthTag
+import com.daily.health.manager.data.entity.HeartRateRecord
 import com.daily.health.manager.data.enums.HeartRateStatus
 import com.daily.health.manager.data.enums.TagType
 import com.daily.health.manager.data.repository.HeartRateRepository
@@ -16,8 +17,10 @@ import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.ext.loge
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -52,6 +55,12 @@ class HeartRateRecordViewModel(
 
     private val _isTagsLoading = MutableStateFlow(false)
     val isTagsLoading: StateFlow<Boolean> = _isTagsLoading.asStateFlow()
+
+    /**
+     * 最新的 PPG 测量记录 (来自摄像头)
+     */
+    val latestPpgRecord: StateFlow<HeartRateRecord?> = heartRateRepository.observeLatestPpgRecord()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     fun getHeartRateTagsFlow() = healthTagRepository.getTagsByType(TagType.HEART_RATE)
 

@@ -297,7 +297,8 @@ class HeartRateMeasureViewModel(
         val recordId = heartRateRepository.addHeartRateRecord(
             heartRateBpm = result.bpm,
             // ext1 也可以存 confidence
-            ext1 = result.confidence.toString()
+            ext1 = result.confidence.toString(),
+            ext2 = "camera"
         )
 
         _uiState.update {

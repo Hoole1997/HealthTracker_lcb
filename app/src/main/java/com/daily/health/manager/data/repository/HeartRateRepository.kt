@@ -118,4 +118,8 @@ class HeartRateRepository(
     fun observeHeartRateRecordById(recordId: Long): Flow<HeartRateRecord?> {
         return heartRateDao.observeById(recordId)
     }
+
+    fun observeLatestPpgRecord(): Flow<HeartRateRecord?> {
+        return heartRateDao.observeLatestPpgRecord()
+    }
 }

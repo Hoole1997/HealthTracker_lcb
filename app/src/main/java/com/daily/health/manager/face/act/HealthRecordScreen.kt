@@ -9,6 +9,8 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.viewinterop.AndroidView
@@ -21,6 +23,7 @@ import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.data.constants.BodyMetricsDefaults
 import com.daily.health.manager.data.entity.HealthTag
+import com.daily.health.manager.data.entity.HeartRateRecord
 import com.daily.health.manager.data.enums.BmiUnit
 import com.daily.health.manager.data.enums.CholesterolLevel
 import com.daily.health.manager.data.enums.BsUnit
@@ -478,9 +481,10 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
             ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
         )
         binding.cvMeasureEntry.setContent {
+            val lastRecord by heartRateViewModel.latestPpgRecord.collectAsState()
             HeartRateMeasureEntry(
-                lastBpm = null,
-                lastDate = null,
+                lastBpm = lastRecord?.heartRateBpm,
+                lastDate = lastRecord?.recordTime?.time,
                 onMeasureClick = {
                     // 直接启动心率测量页面，测量完成后会自动跳转到详情页面
                     HeartRateMeasureScreen.start(this@HealthRecordScreen)
