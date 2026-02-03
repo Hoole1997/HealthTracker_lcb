@@ -636,29 +636,8 @@ private fun MeasureContent(
                 }
             }
             UiMeasureState.STABILIZING -> {
-                // 稳定期: 显示测量等待界面 (如Figma设计)
-                Spacer(modifier = Modifier.height(40.dp))
-                
-                // "Measuring..."
-                Text(
-                    text = stringResource(R.string.ht_stabilizing_title),
-                    fontSize = 16.sp,
-                    color = colorResource(R.color.t1),
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                
-                Spacer(modifier = Modifier.height(22.dp))
-                
-                // "Great! Waiting for the reading..."
-                Text(
-                    text = stringResource(R.string.ht_stabilizing_subtitle),
-                    fontSize = 14.sp,
-                    color = colorResource(R.color.color_666),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 20.sp,
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
+                // 测量状态标头 (标题 + 副标题)
+                MeasureStatusHeader()
                 
                 MeasureBottomArea(
                     modifier = Modifier.weight(1f),
@@ -687,29 +666,8 @@ private fun MeasureContent(
                 }
             }
             UiMeasureState.MEASURING -> {
-                // 测量中: 显示文案 + 底部 Lottie 动画
-                Spacer(modifier = Modifier.height(40.dp))
-                
-                // "Measuring..."
-                Text(
-                    text = stringResource(R.string.ht_stabilizing_title),
-                    fontSize = 16.sp,
-                    color = colorResource(R.color.t1),
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                
-                Spacer(modifier = Modifier.height(22.dp))
-                
-                // "Great! Waiting for the reading..."
-                Text(
-                    text = stringResource(R.string.ht_stabilizing_subtitle),
-                    fontSize = 14.sp,
-                    color = colorResource(R.color.color_666),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 20.sp,
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
+                // 测量状态标头 (标题 + 副标题)
+                MeasureStatusHeader()
                 
                 val composition by rememberLottieComposition(
                     LottieCompositionSpec.RawRes(R.raw.heart_rate_volatility)
@@ -1214,5 +1172,34 @@ private fun BpmValueText(
         fontWeight = FontWeight.Bold,
         color = Color.White,
         letterSpacing = letterSpacing
+    )
+}
+
+/**
+ * 测量状态标头 (标题 + 副标题)
+ */
+@Composable
+private fun MeasureStatusHeader() {
+    Spacer(modifier = Modifier.height(40.dp))
+    
+    // "Measuring..."
+    Text(
+        text = stringResource(R.string.ht_stabilizing_title),
+        fontSize = 16.sp,
+        color = colorResource(R.color.t1),
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center
+    )
+    
+    Spacer(modifier = Modifier.height(22.dp))
+    
+    // "Great! Waiting for the reading..."
+    Text(
+        text = stringResource(R.string.ht_stabilizing_subtitle),
+        fontSize = 14.sp,
+        color = colorResource(R.color.color_666),
+        textAlign = TextAlign.Center,
+        lineHeight = 20.sp,
+        modifier = Modifier.padding(horizontal = 32.dp)
     )
 }
