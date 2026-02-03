@@ -137,9 +137,9 @@ private fun DecorativeIllustration(modifier: Modifier = Modifier) {
 private fun LastReportHeader() {
     Text(
         text = stringResource(R.string.ht_last_report),
-        fontSize = 17.sp,
-        fontWeight = FontWeight.Bold,
-        color = colorResource(R.color.t1)
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Normal,
+        color = colorResource(R.color.color_666)
     )
 }
 
@@ -151,7 +151,7 @@ private fun ValueRow(
     Row(verticalAlignment = Alignment.Bottom) {
         Text(
             text = lastBpm?.toString() ?: stringResource(R.string.ht_no_data),
-            fontSize = 26.sp,
+            fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = colorResource(R.color.c5)
         )

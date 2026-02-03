@@ -40,11 +40,9 @@
     <string name="ht_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
     <string name="ht_cholesterol_level_unknown">不明</string>
     <string name="ht_cholesterol_level_unknown_desc">コレステロール値を判定するためのデータが不足しています</string>
-    <string name="ht_cholesterol_total_label">総コレステロール</string>
     <string name="ht_cholesterol_hdl_label">HDL</string>
     <string name="ht_cholesterol_ldl_label">LDL</string>
     <string name="ht_cholesterol_tg_label">TG</string>
-    <string name="ht_cholesterol_total_placeholder">--</string>
 
     <!-- 血压等级 -->
     <string name="ht_blood_pressure_level_low">低血圧</string>
@@ -75,11 +73,9 @@
     <string name="ht_notification_channel_alarm_description">健康モニタリングのリマインダー通知</string>
 
     <!-- 血糖提醒通知 -->
-    <string name="ht_alarm_blood_sugar_title">血糖値リマインダー</string>
     <string name="ht_alarm_blood_sugar_content">血糖値を記録する時間です！</string>
 
     <!-- 血压提醒通知 -->
-    <string name="ht_alarm_blood_pressure_title">血圧リマインダー</string>
     <string name="ht_alarm_blood_pressure_content">血圧を記録する時間です！</string>
 
     <!-- 默认健康提醒 -->
@@ -115,7 +111,6 @@
     <string name="ht_save_changes">変更を保存</string>
     <string name="ht_cancel">キャンセル</string>
     <string name="ht_saving">保存中...</string>
-    <string name="ht_save_failed">保存に失敗しました。もう一度お試しください</string>
     <string name="ht_date_time"><![CDATA[日時]]></string>
     <string name="ht_label">ラベル</string>
 
@@ -133,7 +128,6 @@
     <string name="ht_bp_range_des">AHA（米国心臓協会）の最新ガイドラインに基づく</string>
     <string name="ht_cholesterol_range_des">TC: 総コレステロール\nHDL: 高密度リポタンパク質\nLDL: 低密度リポタンパク質\nTG: 中性脂肪\nNon-HDL: 非高密度リポタンパク質\n\nクリーブランド・クリニックのガイドラインに基づく。</string>
     <string name="ht_got_it">OK</string>
-    <string name="ht_details">詳細</string>
     <string name="ht_all_types">すべてのタイプ</string>
     <string name="ht_no_records">記録なし</string>
     <string name="ht_load_fail_please_try_again">読み込みに失敗しました。もう一度お試しください</string>
@@ -172,16 +166,6 @@
     </string-array>
 
     <!-- BMI classification names (8 levels) -->
-    <string-array name="ht_bmi_level_names">
-        <item>非常に深刻な痩せすぎ</item>
-        <item>深刻な痩せすぎ</item>
-        <item>痩せすぎ</item>
-        <item>正常</item>
-        <item>前肥満</item>
-        <item>肥満(1度)</item>
-        <item>肥満(2度)</item>
-        <item>肥満(3度)</item>
-    </string-array>
 
     <!-- BMI classification names (single items for mapping) -->
     <string name="ht_bmi_level_very_severely_underweight">非常に深刻な痩せすぎ</string>
@@ -194,16 +178,6 @@
     <string name="ht_bmi_level_obesity_class_3">肥満(3度)</string>
 
     <!-- BMI record tag labels -->
-    <string-array name="ht_bmi_labels">
-        <item>興奮</item>
-        <item>有酸素運動後</item>
-        <item>気分が落ち込む</item>
-        <item>落ち着いている</item>
-        <item>筋トレ後</item>
-        <item>激しい運動後</item>
-        <item>ダイエット中</item>
-        <item>飲酒後</item>
-    </string-array>
 
     <string-array name="ht_week_simple">
         <item>日</item>
@@ -242,7 +216,6 @@
     <string name="ht_edit">編集</string>
     <string name="ht_delete">削除</string>
     <!-- 药物提醒通知相关字符串 -->
-    <string name="ht_medication_reminder_title">🔔 服薬リマインダー</string>
     <string name="ht_medication_reminder_content">お薬の時間です。忘れずに服用して、お大事になさってください。</string>
 
     <!-- 通知权限相关字符串 -->
@@ -250,16 +223,6 @@
     <string name="ht_notification_permission_title">健康目標の達成をサポート</string>
     <string name="ht_notification_permission_des">通知を有効にして、水分補給、服薬、運動のタイムリーなリマインダーを受け取りましょう。健康的な習慣を見逃しません！</string>
     <string name="ht_close">閉じる</string>
-    <string name="ht_medication_name_temp">💊 %1$s</string>
-    <string name="ht_meds_notes_temp">📝 %1$s</string>
-    <string name="ht_snooze_5_minutes">5分後</string>
-    <string name="ht_snooze_10_minutes">10分後</string>
-    <string name="ht_snooze_15_minutes">15分後</string>
-    <string name="ht_snooze_30_minutes">30分後</string>
-    <string name="ht_take_medication_now">今すぐ服用</string>
-    <string name="ht_every_day_temp">⏰ 毎日 %1$s</string>
-    <string name="ht_now_time_temp">📱 現在時刻 %1$s"</string>
-    <string name="ht_have_reader_privacy"><font color="#02BC77">プライバシーポリシー</font>を読みました</string>
     <string name="ht_choose_your_gender">性別を選択</string>
     <string name="ht_please_choose_your_gender">性別を選択してください</string>
     <string name="ht_txt_profile_des">これはパーソナライズされたデータを作成するために使用されます</string>
@@ -279,17 +242,34 @@
     <string name="ht_weight">体重</string>
     <string name="ht_height">身長</string>
     <string name="ht_create_label_failed">ラベルの作成に失敗しました</string>
+    <string name="ht_last_report">最新のレポート：</string>
+    <string name="ht_test_and_record_hr">心拍数の測定と记录</string>
+    <string name="ht_measure_now">今すぐ測定</string>
+    <string name="ht_measure_title">測定</string>
+    <string name="ht_measure_finger_instruction">指をカメラに当て、測定が終わるまで離さないでください。</string>
+    <string name="ht_camera_permission_title">カメラの権限が必要です</string>
+    <string name="ht_camera_permission_desc">心拍数を測定するには、カメラへのアクセスが必要です。指をカメラレンズに当てて脈拍を検出します。</string>
+    <string name="ht_camera_permission_denied_title">カメラの権限が拒否されました</string>
+    <string name="ht_camera_permission_denied_desc">心拍数測定機能を使用するには、設定からカメラの権限を有効にしてください。</string>
+    <string name="ht_measure_disclaimer">フラッシュカメラによる心拍数測定は参考用であり、不正確な場合があります。医療用ではありません。正確なデータについては、専門の医療機器を使用してください。</string>
+    <string name="ht_ppg_tips_title">測定のヒント</string>
+    <string name="ht_ppg_tips_subtitle">指が<font color="#FB4248">赤色</font>に変われば、正しく測定できています</string>
+    <string name="ht_ppg_tips_step1">指をカメラの上に置きます。熱くなることがあるため、フラッシュには直接触れないようにしてください。</string>
+    <string name="ht_ppg_tips_step2">測定が完了するまで、リラックスして動かないようにしてください！</string>
+    <string name="ht_ppg_tips_step3">明るい場所で測定するか、より良い結果を得るためにフラッシュをオンにしてください。</string>
+    <string name="ht_grant_permission">権限を許可</string>
+    <string name="ht_go_to_settings">設定へ移動</string>
+    <string name="ht_stabilizing_title">測定中…</string>
+    <string name="ht_stabilizing_subtitle">OK！安定したデータを読み取るまでお待ちください…</string>
+    <string name="ht_stabilizing_tip">指が赤色に変われば、正しく測定できています。</string>
+    <string name="ht_measure_complete">測定完了！</string>
+    <string name="ht_start_measure">測定を開始</string>
     <string name="ht_heart_rate">心拍数</string>
-    <string name="ht_heart_rate_detail_description">心拍数は心血管の反応を反映します。長期的な傾向を追跡し、異常な数値が出た場合は医師に相談してください。</string>
-    <string name="ht_record_time_placeholder">--</string>
     <string name="ht_heart_rate_no_tags">タグなし</string>
     <string name="ht_record_not_ready">記録を読み込み中</string>
     <string name="ht_delete_record_failed">記録の削除に失敗しました</string>
-    <string name="ht_heart_rate_record_deleted">記録を削除しました</string>
-    <string name="ht_blood_sugar_record_deleted">血糖値記録を削除しました</string>
     <string name="ht_cholesterol">コレステロール</string>
     <string name="ht_weight_and_bmi"><![CDATA[体重・BMI]]></string>
-    <string name="ht_value_with_unit">%1$s %2$s</string>
 
     <!-- Heart rate -->
     <string name="ht_heart_rate_status_slow">遅い</string>
@@ -322,23 +302,11 @@
     <string name="ht_skip">スキップ</string>
     <string name="ht_next">次へ</string>
     <string name="ht_start_health_journey">健康の旅を始めよう！</string>
-    <string name="ht_guide_bp_des">クリックして最初の血圧記録を追加しましょう。</string>
     <string name="ht_guide_bs_des">クリックして最初の血糖値記録を追加しましょう。</string>
-    <string name="ht_guide_hr_des">クリックして最初の心拍数記録を追加しましょう。</string>
     <string name="ht_target_range">目標範囲</string>
     <string name="ht_target_range_temp">目標範囲(%1$s)</string>
     <string name="ht_reset">リセット</string>
 
-    <string-array name="ht_heart_rate_labels">
-        <item>興奮状態</item>
-        <item>憂鬱</item>
-        <item>平穏</item>
-        <item>激しい運動後</item>
-        <item>有酸素運動後</item>
-        <item>無酸素運動後</item>
-        <item>ダイエット中</item>
-        <item>飲酒後</item>
-    </string-array>
     <string name="ht_please_input_complete_data">完全なデータを入力してください</string>
     <string name="ht_range_order_error">範囲の値は昇順である必要があります</string>
     <string name="ht_range_bounds_error">範囲の値が許容範囲外です</string>
@@ -351,16 +319,12 @@
     <string name="ht_health_service_channel_description">健康データを素早く記録するための常駐通知を表示します</string>
 
     <!-- 自定义推送通知渠道 -->
-    <string name="ht_custom_notification_channel_name">健康アラート</string>
-    <string name="ht_custom_notification_channel_description">血糖値、血圧、心拍数などのリマインダー</string>
     <string name="ht_exit">終了</string>
     <string name="ht_are_you_sure_exit">アプリを終了してもよろしいですか？</string>
-    <string name="ht_health_statistics">健康統計</string>
     <string name="ht__7_days">7日間</string>
     <string name="ht__1_month">1ヶ月</string>
     <string name="ht__3_month">3ヶ月</string>
     <string name="ht_select">選択</string>
-    <string name="ht_summary">概要</string>
     <string name="ht_avg">平均</string>
     <string name="ht_min">最小</string>
     <string name="ht_max">最大</string>
@@ -372,7 +336,6 @@
     <!-- 补水 -->
     <string name="ht_hydrate">水分補給</string>
     <string name="ht_walking">ウォーキング</string>
-    <string name="ht_walking_steps">歩数</string>
     <string name="ht_drink_btn_format">%1$d %2$s 飲む</string>
     <string name="ht_hydrate_cup_count_format">今日は水を%d杯飲みました</string>
     <string name="ht_hydrate_complete_message">よくできました！水分補給目標を達成しました！</string>
@@ -391,7 +354,6 @@
     <!-- Hydration alarm -->
     <string name="ht_alarm_hydration_content">水を飲む時間です！</string>
     <string name="ht_drink_now">今すぐ確認</string>
-    <string name="ht_medication_notification_title_with_time">%2$s に %1$s</string>
     <string name="ht_hydrate_quick_add">クイック追加</string>
     <string name="ht_step_count">歩数</string>
     <string name="ht_today">今日</string>
@@ -399,17 +361,14 @@
     <string name="ht_step_goal">歩数目標</string>
     <string name="ht_text_steps">歩</string>
     <string name="ht_enable_step_count">身体活動の権限が必要です</string>
-    <string name="ht_allow">許可</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">この権限がないと、歩数カウント機能は<font color="#02BC77">動作しません</font></string>
     <string name="ht_go_to_set">設定へ</string>
     <string name="ht_choose_language">言語を選択</string>
     <string name="ht_language">言語</string>
-    <string name="ht_unit_settings">単位設定</string>
     <string name="ht_target_range_settings">目標範囲設定</string>
     <string name="ht_personal_info">個人情報</string>
     <string name="ht_feedback">フィードバック</string>
     <string name="ht_privacy_policy">プライバシーポリシー</string>
-    <string name="ht_terms_of_service">利用規約</string>
     <string name="ht_settings_section_tracking_and_targets">記録と目標</string>
     <string name="ht_settings_section_preferences">アプリ設定</string>
     <string name="ht_settings_section_help_and_feedback">ヘルプとフィードバック</string>

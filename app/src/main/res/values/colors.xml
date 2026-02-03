@@ -20,8 +20,6 @@
 
     <color name="color_F9F9FA">#F9F9FA</color>
     <color name="color_F6F6F6">#F6F6F6</color>
-    <color name="color_4ACA8F">#4ACA8F</color>
-    <color name="color_FF2020">#FF2020</color>
     <color name="color_2AA1FC">#2AA1FC</color>
     <color name="color_FF4420">#FF4420</color>
     <color name="color_F0832D">#F0832D</color>
@@ -37,9 +35,7 @@
     <color name="color_diabetes">#FA0202</color>
     <color name="color_13ABA1">#13ABA1</color>
     <color name="color_f5f5f5">#F5F5F5</color>
-    <color name="color_e4e4e4_25">#40E4E4E4</color>
 
-    <color name="primary">@color/c5</color>
     <color name="color_DFDFDF">#DFDFDF</color>
 
     
@@ -52,7 +48,6 @@
     <color name="color_FB0301">#FB0301</color>
     <color name="color_EFFBF7">#EFFBF7</color>
     <color name="color_111111_40">#66111111</color>
-    <color name="ucrop_color_widget_active">@color/c5</color>
 
     <!-- BMI grade colors -->
     <color name="color_E030DD">#E030DD</color>
@@ -81,16 +76,13 @@
     <color name="chart_grid">#E5E5E5</color>
     <color name="chart_axis_label">#9E9E9E</color>
     <color name="color_ffeae0">#FFEAE0</color>
+    <color name="color_EAEAEA">#EAEAEA</color>
     <color name="color_3b82f6">#3b82f6</color>
     <color name="color_f8f8f8">#f8f8f8</color>
-    <color name="color_e2ffea">#E2FFEA</color>
     <color name="color_F1F8F6">#F1F8F6</color>
     <color name="color_C7C7CC">#C7C7CC</color>
     <color name="color_B0B0B0">#B0B0B0</color>
-    <color name="color_E5E5EA">#E5E5EA</color>
     <color name="color_E0E0E0">#E0E0E0</color>
     <color name="color_E6FFF6">#E6FFF6</color>
     <!-- 错误颜色 -->
-    <color name="error_color">#FF4444</color>
-    <color name="color_d8522e">#d8522e</color>
 </resources>

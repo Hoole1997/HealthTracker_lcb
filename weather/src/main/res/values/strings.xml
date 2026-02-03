@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ht_wind_speed">Wind Speed</string>
-    <string name="ht_hum">Hum</string>
     <string name="ht_daily_5_days">5-Day Forecast</string>
     <string name="ht_more_details">More Details</string>
     <string name="ht_humidity">Humidity</string>

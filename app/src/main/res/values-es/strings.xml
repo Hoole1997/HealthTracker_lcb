@@ -37,11 +37,9 @@
     <string name="ht_cholesterol_level_very_high_desc">CT ≥ 240; No-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
     <string name="ht_cholesterol_level_unknown">Desconocido</string>
     <string name="ht_cholesterol_level_unknown_desc">Datos insuficientes para determinar el nivel de colesterol</string>
-    <string name="ht_cholesterol_total_label">Colesterol Total</string>
     <string name="ht_cholesterol_hdl_label">HDL</string>
     <string name="ht_cholesterol_ldl_label">LDL</string>
     <string name="ht_cholesterol_tg_label">TG</string>
-    <string name="ht_cholesterol_total_placeholder">--</string>
 
     <!-- 血压等级 -->
     <string name="ht_blood_pressure_level_low">Hipotensión</string>
@@ -72,11 +70,9 @@
     <string name="ht_notification_channel_alarm_description">Notificaciones de recordatorio de monitoreo de salud</string>
 
     <!-- 血糖提醒通知 -->
-    <string name="ht_alarm_blood_sugar_title">Recordatorio de Glucosa</string>
     <string name="ht_alarm_blood_sugar_content">¡Es hora de registrar tu glucosa!</string>
 
     <!-- 血压提醒通知 -->
-    <string name="ht_alarm_blood_pressure_title">Recordatorio de Presión Arterial</string>
     <string name="ht_alarm_blood_pressure_content">¡Es hora de registrar tu presión arterial!</string>
 
     <!-- 默认健康提醒 -->
@@ -98,7 +94,6 @@
     <string name="ht_save_changes">Guardar Cambios</string>
     <string name="ht_cancel">Cancelar</string>
     <string name="ht_saving">Guardando...</string>
-    <string name="ht_save_failed">Error al guardar, inténtalo de nuevo</string>
     <string name="ht_date_time"><![CDATA[Fecha y Hora]]></string>
     <string name="ht_label">Etiqueta</string>
 
@@ -116,7 +111,6 @@
     <string name="ht_bp_range_des">Según las últimas directrices de la AHA (American Heart Association)</string>
     <string name="ht_cholesterol_range_des">CT: Colesterol Total\nHDL: Lipoproteína de Alta Densidad\nLDL: Lipoproteína de Baja Densidad\nTG: Triglicéridos\nNo-HDL: Lipoproteína No de Alta Densidad\n\nSegún las directrices de la Cleveland Clinic.</string>
     <string name="ht_got_it">Entendido</string>
-    <string name="ht_details">Detalles</string>
     <string name="ht_all_types">Todos los Tipos</string>
     <string name="ht_no_records">Sin Registros</string>
     <string name="ht_load_fail_please_try_again">Error al cargar, inténtalo de nuevo</string>
@@ -159,16 +153,6 @@
     </string-array>
 
     <!-- BMI classification names (8 levels) -->
-    <string-array name="ht_bmi_level_names">
-        <item>Delgadez Severa</item>
-        <item>Delgadez Moderada</item>
-        <item>Delgadez Leve</item>
-        <item>Normal</item>
-        <item>Sobrepeso</item>
-        <item>Obesidad Grado I</item>
-        <item>Obesidad Grado II</item>
-        <item>Obesidad Grado III</item>
-    </string-array>
 
     <!-- BMI classification names (single items for mapping) -->
     <string name="ht_bmi_level_very_severely_underweight">Delgadez Severa</string>
@@ -181,16 +165,6 @@
     <string name="ht_bmi_level_obesity_class_3">Obesidad Grado III</string>
 
     <!-- BMI record tag labels -->
-    <string-array name="ht_bmi_labels">
-        <item>Emocionado</item>
-        <item>Después de cardio</item>
-        <item>Desanimado</item>
-        <item>Tranquilo</item>
-        <item>Después de pesas</item>
-        <item>Después de ejercicio intenso</item>
-        <item>A dieta</item>
-        <item>Después de beber</item>
-    </string-array>
 
     <!-- 血糖等级专家建议文案数组 -->
     <string-array name="ht_bs_level_expert_advice">
@@ -276,23 +250,12 @@
     <string name="ht_edit">Editar</string>
     <string name="ht_delete">Eliminar</string>
 
-    <string name="ht_medication_reminder_title">🔔 Recordatorio de Medicamento</string>
     <string name="ht_medication_reminder_content">Es hora de tu medicamento, tómalo a tiempo y cuídate.</string>
 
     <string name="ht_turn_on">Activar</string>
     <string name="ht_notification_permission_title">Mantente al día con tus metas de salud</string>
     <string name="ht_notification_permission_des">Activa las notificaciones para recibir recordatorios oportunos de agua, medicamentos y actividades. ¡Nunca pierdas un hábito saludable!</string>
     <string name="ht_close">Cerrar</string>
-    <string name="ht_medication_name_temp">💊 %1$s</string>
-    <string name="ht_meds_notes_temp">📝 %1$s</string>
-    <string name="ht_snooze_5_minutes">5 minutos después</string>
-    <string name="ht_snooze_10_minutes">10 minutos después</string>
-    <string name="ht_snooze_15_minutes">15 minutos después</string>
-    <string name="ht_snooze_30_minutes">30 minutos después</string>
-    <string name="ht_take_medication_now">Tomar ahora</string>
-    <string name="ht_every_day_temp">⏰ Todos los días a las %1$s</string>
-    <string name="ht_now_time_temp">📱 Ahora son las %1$s"</string>
-    <string name="ht_have_reader_privacy">He leído la <font color="#02BC77">Política de Privacidad</font></string>
     <string name="ht_choose_your_gender">Elige tu género</string>
     <string name="ht_please_choose_your_gender">Por favor, elige tu género</string>
     <string name="ht_txt_profile_des">Esto se usará para generar tus datos personalizados</string>
@@ -312,18 +275,35 @@
     <string name="ht_weight">Peso</string>
     <string name="ht_height">Altura</string>
     <string name="ht_create_label_failed">Error al crear etiqueta</string>
-    <string name="ht_heart_rate">Frecuencia Cardíaca</string>
-    <string name="ht_heart_rate_detail_description">La frecuencia cardíaca refleja tu respuesta cardiovascular. Sigue las tendencias a largo plazo y consulta a tu médico para lecturas anormales.</string>
-    <string name="ht_record_time_placeholder">--</string>
+    <string name="ht_last_report">Último informe:</string>
+    <string name="ht_test_and_record_hr">Medir y registrar FC</string>
+    <string name="ht_measure_now">Medir ahora</string>
+    <string name="ht_measure_title">Medir</string>
+    <string name="ht_measure_finger_instruction">Coloque el dedo sobre la cámara y no lo retire hasta el final.</string>
+    <string name="ht_camera_permission_title">Permiso de Cámara Requerido</string>
+    <string name="ht_camera_permission_desc">Para medir su frecuencia cardíaca, necesitamos acceso a su cámara. Coloque su dedo sobre la lente de la cámara para detectar su pulso.</string>
+    <string name="ht_camera_permission_denied_title">Permiso de Cámara Denegado</string>
+    <string name="ht_camera_permission_denied_desc">Habilite el permiso de la cámara en Configuración para usar la función de medición de frecuencia cardíaca.</string>
+    <string name="ht_measure_disclaimer">Las mediciones de frecuencia cardíaca mediante la cámara con flash son solo de referencia y pueden ser inexactas. No apto para uso médico. Para obtener datos precisos, utilice equipo médico profesional.</string>
+    <string name="ht_ppg_tips_title">Consejos de Medición</string>
+    <string name="ht_ppg_tips_subtitle">Cuando el dedo se pone <font color="#FB4248">rojo</font>, lo estás haciendo bien</string>
+    <string name="ht_ppg_tips_step1">Coloque el dedo sobre la cámara, pero evite el flash ya que puede calentarse.</string>
+    <string name="ht_ppg_tips_step2">¡Mantenga la calma y quédese quieto hasta que termine la medición!</string>
+    <string name="ht_ppg_tips_step3">Asegúrese de estar en un área bien iluminada o mantenga el flash encendido para mejores resultados.</string>
+    <string name="ht_grant_permission">Otorgar permiso</string>
+    <string name="ht_go_to_settings">Ir a Ajustes</string>
+    <string name="ht_stabilizing_title">Midiendo…</string>
+    <string name="ht_stabilizing_subtitle">¡Genial! Esperando la lectura para obtener datos estabilizados…</string>
+    <string name="ht_stabilizing_tip">Cuando el dedo se pone rojo, eso significa que lo está haciendo correctamente.</string>
+    <string name="ht_measure_complete">¡Medición completa!</string>
+    <string name="ht_start_measure">Iniciar medición</string>
+    <string name="ht_heart_rate">Frecuencia cardíaca</string>
     <string name="ht_heart_rate_no_tags">Sin etiquetas</string>
     <string name="ht_record_not_ready">El registro está cargando</string>
     <string name="ht_delete_record_failed">Error al eliminar registro</string>
-    <string name="ht_heart_rate_record_deleted">Registro eliminado</string>
-    <string name="ht_blood_sugar_record_deleted">Registro de glucosa eliminado</string>
     <string name="ht_bpm">LPM</string>
     <string name="ht_cholesterol">Colesterol</string>
     <string name="ht_weight_and_bmi"><![CDATA[Peso & IMC]]></string>
-    <string name="ht_value_with_unit">%1$s %2$s</string>
 
     <string name="ht_heart_rate_status_slow">Lenta</string>
     <string name="ht_heart_rate_status_normal">Normal</string>
@@ -356,23 +336,10 @@ Para orientación de salud profesional y diagnóstico, te recomendamos consultar
     <string name="ht_skip">Omitir</string>
     <string name="ht_next">Siguiente</string>
     <string name="ht_start_health_journey">¡Comienza tu Viaje de Salud!</string>
-    <string name="ht_guide_bp_des">Haz clic para añadir tu primera lectura de Presión Arterial ahora.</string>
     <string name="ht_guide_bs_des">Haz clic para añadir tu primera lectura de Glucosa ahora.</string>
-    <string name="ht_guide_hr_des">Haz clic para añadir tu primera lectura de Frecuencia Cardíaca ahora.</string>
     <string name="ht_target_range">Rango Objetivo</string>
     <string name="ht_target_range_temp">Rango Objetivo(%1$s)</string>
     <string name="ht_reset">Restablecer</string>
-
-    <string-array name="ht_heart_rate_labels">
-        <item>Estado emocionado</item>
-        <item>Depresión</item>
-        <item>Tranquilo</item>
-        <item>Después de ejercicio intenso</item>
-        <item>Después de ejercicio aeróbico</item>
-        <item>Después de ejercicio anaeróbico</item>
-        <item>A dieta</item>
-        <item>Después de beber</item>
-    </string-array>
 
     <string-array name="ht_hr_level_expert_advice">
         <item><![CDATA[Tu frecuencia cardíaca está <font color="#FFB901"><b>por debajo del rango normal</b></font>. Esto puede hacerte sentir cansancio, mareo o vértigo. Aquí hay cinco sugerencias:
@@ -424,16 +391,12 @@ Para orientación de salud profesional y diagnóstico, te recomendamos consultar
 
     <string name="ht_health_service_channel_name">Servicio de Monitoreo de Salud</string>
     <string name="ht_health_service_channel_description">Muestra notificación persistente para registro rápido de datos de salud</string>
-    <string name="ht_custom_notification_channel_name">Alertas de Salud</string>
-    <string name="ht_custom_notification_channel_description">Recordatorios de glucosa, presión arterial, frecuencia cardíaca y más</string>
     <string name="ht_exit">Salir</string>
     <string name="ht_are_you_sure_exit">¿Estás seguro de salir de la aplicación?</string>
-    <string name="ht_health_statistics">Estadísticas de Salud</string>
     <string name="ht__7_days">7 Días</string>
     <string name="ht__1_month">1 Mes</string>
     <string name="ht__3_month">3 Meses</string>
     <string name="ht_select">Seleccionar</string>
-    <string name="ht_summary">Resumen</string>
     <string name="ht_avg">Prom</string>
     <string name="ht_min">Mín</string>
     <string name="ht_max">Máx</string>
@@ -444,7 +407,6 @@ Para orientación de salud profesional y diagnóstico, te recomendamos consultar
 
     <string name="ht_hydrate">Hidratación</string>
     <string name="ht_walking">Caminar</string>
-    <string name="ht_walking_steps">Pasos de Caminar</string>
     <string name="ht_drink_btn_format">Beber %d %s</string>
     <string name="ht_hydrate_cup_count_format">Bebiste %d vasos de agua hoy</string>
     <string name="ht_hydrate_complete_message">¡Bien hecho! ¡Completaste tu meta de agua!</string>
@@ -464,7 +426,6 @@ Para orientación de salud profesional y diagnóstico, te recomendamos consultar
     <string name="ht_hydrate_reminder_empty_message">Aún no has establecido ningún recordatorio de agua. ¡Comienza a crear tu hábito de hidratación añadiendo tu primer recordatorio!</string>
     <string name="ht_alarm_hydration_content">¡Es hora de beber agua!</string>
     <string name="ht_drink_now">Ver Ahora</string>
-    <string name="ht_medication_notification_title_with_time">%1$s a las %2$s</string>
     <string name="ht_hydrate_quick_add">Añadir Rápido</string>
     <string name="ht_step_count">Conteo de Pasos</string>
     <string name="ht_today">Hoy</string>
@@ -473,7 +434,6 @@ Para orientación de salud profesional y diagnóstico, te recomendamos consultar
     <string name="ht_today_s_goal">Meta de hoy</string>
     <string name="ht_step_goal">Meta de Pasos</string>
     <string name="ht_enable_step_count">Se requiere permiso de actividad física</string>
-    <string name="ht_allow">Permitir</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">Sin esta autorización, la función de conteo de pasos <font color="#02BC77">no funcionará</font></string>
 
     <string-array name="ht_health_tips_blood_pressure_titles">
@@ -556,12 +516,10 @@ Para orientación de salud profesional y diagnóstico, te recomendamos consultar
     <string name="ht_go_to_set">IR A CONFIGURAR</string>
     <string name="ht_choose_language">Elegir Idioma</string>
     <string name="ht_language">Idioma</string>
-    <string name="ht_unit_settings">Configuración de Unidades</string>
     <string name="ht_target_range_settings">Configuración de Rango Objetivo</string>
     <string name="ht_personal_info">Información personal</string>
     <string name="ht_feedback">Comentarios</string>
     <string name="ht_privacy_policy">Política de Privacidad</string>
-    <string name="ht_terms_of_service">Términos de Servicio</string>
     <string name="ht_settings_section_tracking_and_targets">Seguimiento y Metas</string>
     <string name="ht_settings_section_preferences">Preferencias</string>
     <string name="ht_settings_section_help_and_feedback">Ayuda y Comentarios</string>

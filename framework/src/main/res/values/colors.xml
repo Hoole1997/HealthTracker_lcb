@@ -3,46 +3,24 @@
 
     <color name="transparent">#00000000</color>
     <!-- 5 trans-->
-    <color name="transparent5">#0D000000</color>
     <!-- 10 trans-->
     <color name="transparent10">#1A000000</color>
     <!-- 15 trans-->
-    <color name="transparent15">#26000000</color>
     <!-- 20 trans-->
-    <color name="transparent20">#33000000</color>
     <!-- 30 trans-->
-    <color name="transparent30">#4C000000</color>
     <!-- 40 trans-->
-    <color name="transparent40">#66000000</color>
     <!-- 50 trans-->
-    <color name="transparent50">#80000000</color>
     <!-- 60 trans-->
-    <color name="transparent60">#99000000</color>
     <!-- 70 trans-->
-    <color name="transparent70">#B3000000</color>
     <!-- 80 trans-->
-    <color name="transparent80">#CC000000</color>
     <!-- 90 trans-->
-    <color name="transparent90">#E6000000</color>
     <!-- 100 trans-->
-    <color name="transparent100">#000000</color>
     <!-- 95 trans-->
-    <color name="transparent95">#F2000000</color>
 
     <color name="white">#FFFFFF</color>
-    <color name="white0">#00FFFFFF</color>
-    <color name="white3">#08FFFFFF</color>
-    <color name="white5">#0DFFFFFF</color>
-    <color name="white10">#1AFFFFFF</color>
     <color name="white15">#26FFFFFF</color>
-    <color name="white20">#33FFFFFF</color>
     <color name="white25">#40FFFFFF</color>
-    <color name="white30">#4DFFFFFF</color>
-    <color name="white40">#66FFFFFF</color>
-    <color name="white50">#80FFFFFF</color>
-    <color name="white60">#99FFFFFF</color>
     <color name="white70">#B3FFFFFF</color>
-    <color name="white80">#CCFFFFFF</color>
     <color name="white90">#E6FFFFFF</color>
 
 </resources>

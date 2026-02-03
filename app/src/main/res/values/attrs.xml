@@ -228,13 +228,6 @@
         <attr name="eav_minHeightWithMask" format="dimension" />
     </declare-styleable>
 
-    <style name="ChartStyle">
-        <item name="layers">line</item>
-        <item name="showBottomAxis">false</item>
-        <item name="showStartAxis">true</item>
-
-    </style>
-
     <!-- ==================== 图表样式 ==================== -->
     <style name="BloodPressureChartStyle">
         <item name="layers">line</item>

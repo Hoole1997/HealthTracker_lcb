@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ht_wind_speed">हवा की गति</string>
-    <string name="ht_hum">नमी</string>
     <string name="ht_daily_5_days">5-दिन का पूर्वानुमान</string>
     <string name="ht_more_details">अधिक विवरण</string>
     <string name="ht_humidity">आर्द्रता</string>

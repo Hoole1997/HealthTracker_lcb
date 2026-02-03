@@ -110,6 +110,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.ui.graphics.Brush
+import com.daily.health.manager.face.card.PpgExplainBottomSheet
 
 
 /**
@@ -171,12 +172,15 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
             }
 
             HealthTrackerTheme {
+                var showExplainSheet by remember { mutableStateOf(false) }
+
                 HeartRateMeasureScreenContent(
                     hasPermission = hasPermission,
                     showPermissionDenied = showPermissionDenied,
                     showPermissionDialog = showPermissionDialog,
                     measureUiState = measureUiState,
                     onBackClick = { finish() },
+                    onHelpClick = { showExplainSheet = true },
                     onRequestPermission = { showPermissionDialogAction() },
                     onDismissPermissionDialog = { dismissPermissionDialog() },
                     onGrantPermission = {
@@ -202,6 +206,12 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
                         heartRateViewModel.setPreviewSurfaceProvider(provider)
                     }
                 )
+
+                if (showExplainSheet) {
+                    PpgExplainBottomSheet(
+                        onDismiss = { showExplainSheet = false }
+                    )
+                }
             }
         }
     }
@@ -283,6 +293,7 @@ private fun HeartRateMeasureScreenContent(
     showPermissionDialog: Boolean,
     measureUiState: MeasureUiState,
     onBackClick: () -> Unit,
+    onHelpClick: () -> Unit,
     onRequestPermission: () -> Unit,
     onDismissPermissionDialog: () -> Unit,
     onGrantPermission: () -> Unit,
@@ -322,7 +333,7 @@ private fun HeartRateMeasureScreenContent(
             .background(backgroundColor)
     ) {
         // Top Bar - 白色背景
-        TopBar(onBackClick = onBackClick)
+        TopBar(onBackClick = onBackClick, onHelpClick = onHelpClick)
 
         // Content
         Column(
@@ -727,34 +738,6 @@ private fun MeasureContent(
 
     }
 }
-
-/**
- * 信号质量指示器
- * 根据信号质量和手指检测状态显示不同的文本和颜色
- */
-@Composable
-private fun SignalQualityIndicator(
-    signalQuality: ViewModelSignalQuality,
-    isFingerDetected: Boolean
-) {
-    val (text, color) = when {
-        !isFingerDetected -> stringResource(R.string.ht_place_finger) to Color.Red
-        signalQuality == ViewModelSignalQuality.EXCELLENT -> stringResource(R.string.ht_signal_excellent) to Color(0xFF4CAF50)
-        signalQuality == ViewModelSignalQuality.GOOD -> stringResource(R.string.ht_signal_good) to Color(0xFF8BC34A)
-        signalQuality == ViewModelSignalQuality.FAIR -> stringResource(R.string.ht_signal_fair) to Color(0xFFFFC107)
-        else -> stringResource(R.string.ht_signal_poor) to Color(0xFFFF5722)
-    }
-    
-    Text(
-        text = text,
-        fontSize = 14.sp,
-        color = color,
-        fontWeight = FontWeight.Medium,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(horizontal = 16.dp)
-    )
-}
-
 
 
 /**

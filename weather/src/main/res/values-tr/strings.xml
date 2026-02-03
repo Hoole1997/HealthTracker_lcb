@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ht_wind_speed">Rüzgar Hızı</string>
-    <string name="ht_hum">Nem</string>
     <string name="ht_daily_5_days">5 Günlük Tahmin</string>
     <string name="ht_more_details">Daha Fazla Detay</string>
     <string name="ht_humidity">Nem</string>

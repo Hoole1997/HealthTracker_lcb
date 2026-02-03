@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ht_wind_speed">풍속</string>
-    <string name="ht_hum">습도</string>
     <string name="ht_daily_5_days">5일 일기예보</string>
     <string name="ht_more_details">자세한 정보</string>
     <string name="ht_humidity">습도</string>

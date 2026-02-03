@@ -13,43 +13,28 @@
     <string name="ht_last_report">Last report:</string>
     <string name="ht_test_and_record_hr">Test and record heart rate</string>
     <string name="ht_measure_now">Measure Now</string>
-    <string name="ht_measure_heart_rate">Measure Heart Rate</string>
     <string name="ht_measure_title">Measure</string>
-    <string name="ht_measure_finger_instruction">Please place your finger on the camera and do not remove it until end.</string>
+    <string name="ht_measure_finger_instruction">Please place your finger on the camera and do not remove it until the end.</string>
     <string name="ht_camera_permission_title">Camera Permission Required</string>
     <string name="ht_camera_permission_desc">To measure your heart rate, we need access to your camera. Place your finger on the camera lens to detect your pulse.</string>
     <string name="ht_camera_permission_denied_title">Camera Permission Denied</string>
     <string name="ht_camera_permission_denied_desc">Please enable camera permission in Settings to use the heart rate measurement feature.</string>
     <string name="ht_grant_permission">Grant Permission</string>
     <string name="ht_go_to_settings">Go to Settings</string>
-    <string name="ht_measure_instruction">Place your fingertip on the camera lens and keep it steady during measurement.</string>
-    <string name="ht_measuring_tip">Keep your finger steady on the camera…</string>
-    <string name="ht_measure_complete_tip">Measurement complete! You can use this result or measure again.</string>
-    <string name="ht_place_finger">Place Finger</string>
     <string name="ht_start_measure">Start Measurement</string>
-    <string name="ht_use_this_measurement">Use This Measurement</string>
-    <string name="ht_measure_again">Measure Again</string>
     <string name="ht_measure_disclaimer">Heart rate measurements via flashlight camera are for reference only and may be inaccurate. Not for medical use. For accurate data, please use professional medical equipment.</string>
-    <string name="ht_no_data">--</string>
+    <string name="ht_ppg_tips_title">Measure Tips</string>
+    <string name="ht_ppg_tips_subtitle">When the finger turns <font color="#FB4248">red</font>, you\'re doing it right</string>
+    <string name="ht_ppg_tips_step1">Place your finger over the camera, but avoid the flashlight as it may become warm.</string>
+    <string name="ht_ppg_tips_step2">Stay calm and keep still until the measurement is finished!</string>
+    <string name="ht_ppg_tips_step3">Ensure you are in a well-lit area, or keep the flashlight on for better results.</string>
+    <string name="ht_no_data" translatable="false">--</string>
     <string name="ht_cancel">Cancel</string>
-    <!-- 心率测量错误提示 -->
-    <string name="ht_measure_error_title">Measurement Failed</string>
-    <string name="ht_measure_error_no_finger">Please place your finger on the camera lens and keep it steady.</string>
-    <string name="ht_measure_error_low_quality">Signal quality is too low. Please ensure your finger fully covers the camera lens.</string>
-    <string name="ht_measure_error_timeout">Measurement timed out. Please try again.</string>
-    <string name="ht_measure_error_unknown">An unknown error occurred. Please try again.</string>
-    <string name="ht_measure_retry">Try Again</string>
     <!-- 心率测量信号质量 -->
-    <string name="ht_signal_excellent">Signal: Excellent</string>
-    <string name="ht_signal_good">Signal: Good</string>
-    <string name="ht_signal_fair">Signal: Fair</string>
-    <string name="ht_signal_poor">Signal: Poor</string>
     <!-- 心率测量新流程 -->
-    <string name="ht_measure_stabilizing">Stabilizing signal, please hold still…</string>
     <string name="ht_stabilizing_title">Measuring…</string>
     <string name="ht_stabilizing_subtitle">Great! Waiting for the reading to get stabilized data…</string>
-    <string name="ht_stabilizing_tip">When the detector turns red, that means you are doing it correctly.</string>
-    <string name="ht_measuring_progress">Measuring… %1$d%%</string>
+    <string name="ht_stabilizing_tip">When the finger turns red, that means you are doing it correctly.</string>
     <string name="ht_measure_complete">Measurement Complete!</string>
     <!-- 血糖和血压的单位不用翻译   -->
     <string name="ht_mg_dl" translatable="false">mg/dL</string>
@@ -82,12 +67,9 @@
     <string name="ht_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
     <string name="ht_cholesterol_level_unknown">Unknown</string>
     <string name="ht_cholesterol_level_unknown_desc">Insufficient data to determine cholesterol level</string>
-    <string name="ht_cholesterol_total_label">Total Cholesterol</string>
     <string name="ht_cholesterol_hdl_label">HDL</string>
     <string name="ht_cholesterol_ldl_label">LDL</string>
     <string name="ht_cholesterol_tg_label">TG</string>
-    <string name="ht_cholesterol_unit_mg_dl" translatable="false">mg/dL</string>
-    <string name="ht_cholesterol_total_placeholder">--</string>
 
     <!-- 血压等级 -->
     <string name="ht_blood_pressure_level_low">hypotension</string>
@@ -118,11 +100,9 @@
     <string name="ht_notification_channel_alarm_description">Health monitoring reminder notifications</string>
 
     <!-- 血糖提醒通知 -->
-    <string name="ht_alarm_blood_sugar_title">Blood Sugar Reminder</string>
     <string name="ht_alarm_blood_sugar_content">It\'s time to record your blood sugar!</string>
 
     <!-- 血压提醒通知 -->
-    <string name="ht_alarm_blood_pressure_title">Blood Pressure Reminder</string>
     <string name="ht_alarm_blood_pressure_content">It\'s time to record your blood pressure!</string>
 
     <!-- 默认健康提醒 -->
@@ -130,18 +110,18 @@
     <string name="ht_alarm_default_content">Please monitor your health on time</string>
 
     <!-- 血压范围具体数值 -->
-    <string name="ht_bp_range_low_sys">&lt; 90</string>
-    <string name="ht_bp_range_low_dia">&lt; 60</string>
-    <string name="ht_bp_range_normal_sys">90–119</string>
-    <string name="ht_bp_range_normal_dia">60–79</string>
-    <string name="ht_bp_range_elevated_sys">120–129</string>
-    <string name="ht_bp_range_elevated_dia">60–79</string>
-    <string name="ht_bp_range_high_stage_1_sys">130–139</string>
-    <string name="ht_bp_range_high_stage_1_dia">80–89</string>
-    <string name="ht_bp_range_high_stage_2_sys">140–180</string>
-    <string name="ht_bp_range_high_stage_2_dia">90–120</string>
-    <string name="ht_bp_range_hypertensive_crisis_sys">&gt; 180</string>
-    <string name="ht_bp_range_hypertensive_crisis_dia">&gt; 120</string>
+    <string name="ht_bp_range_low_sys" translatable="false">&lt; 90</string>
+    <string name="ht_bp_range_low_dia" translatable="false">&lt; 60</string>
+    <string name="ht_bp_range_normal_sys" translatable="false">90–119</string>
+    <string name="ht_bp_range_normal_dia" translatable="false">60–79</string>
+    <string name="ht_bp_range_elevated_sys" translatable="false">120–129</string>
+    <string name="ht_bp_range_elevated_dia" translatable="false">60–79</string>
+    <string name="ht_bp_range_high_stage_1_sys" translatable="false">130–139</string>
+    <string name="ht_bp_range_high_stage_1_dia" translatable="false">80–89</string>
+    <string name="ht_bp_range_high_stage_2_sys" translatable="false">140–180</string>
+    <string name="ht_bp_range_high_stage_2_dia" translatable="false">90–120</string>
+    <string name="ht_bp_range_hypertensive_crisis_sys" translatable="false">&gt; 180</string>
+    <string name="ht_bp_range_hypertensive_crisis_dia" translatable="false">&gt; 120</string>
 
     <!-- 血糖测量状态 -->
     <string name="ht_blood_sugar_status_default">Default</string>
@@ -157,7 +137,6 @@
     <string name="ht_save">Save</string>
     <string name="ht_save_changes">Save Changes</string>
     <string name="ht_saving">Saving...</string>
-    <string name="ht_save_failed">Save failed, please try again</string>
     <string name="ht_date_time"><![CDATA[Date&Time]]></string>
     <string name="ht_label">Label</string>
 
@@ -175,7 +154,6 @@
     <string name="ht_bp_range_des">According to the latest guidelines from the AHA (American Heart Association)</string>
     <string name="ht_cholesterol_range_des">TC: Total Cholesterol\nHDL: High-Density Lipoprotein\nLDL: Low-Density Lipoprotein\nTG: Triglycerides\nNon-HDL: Non-High-Density Lipoprotein\n\nAccording to the Cleveland Clinic\'s guidelines.</string>
     <string name="ht_got_it">Got it</string>
-    <string name="ht_details">Details</string>
     <string name="ht_all_types">All Types</string>
     <string name="ht_no_records">No Records</string>
     <string name="ht_load_fail_please_try_again">Load fail,please try again</string>
@@ -217,16 +195,6 @@
     </string-array>
 
     <!-- BMI classification names (8 levels) -->
-    <string-array name="ht_bmi_level_names">
-        <item>Very Severely Underweight</item>
-        <item>Severely Underweight</item>
-        <item>Underweight</item>
-        <item>Normal</item>
-        <item>Overweight</item>
-        <item>Obesity Class I</item>
-        <item>Obesity Class II</item>
-        <item>Obesity Class III</item>
-    </string-array>
 
     <!-- BMI classification names (single items for mapping) -->
     <string name="ht_bmi_level_very_severely_underweight">Very Severely Underweight</string>
@@ -251,16 +219,6 @@
     </string-array>
 
     <!-- BMI record tag labels -->
-    <string-array name="ht_bmi_labels">
-        <item>Feeling excited</item>
-        <item>After cardio</item>
-        <item>Feeling down</item>
-        <item>Calm</item>
-        <item>After strength training</item>
-        <item>After intense workout</item>
-        <item>While dieting</item>
-        <item>After drinking</item>
-    </string-array>
 
     <string-array name="ht_systolic" translatable="false">
         <item>20</item>
@@ -1008,7 +966,6 @@
     <string name="ht_delete">Delete</string>
 
     <!-- 药物提醒通知相关字符串 -->
-    <string name="ht_medication_reminder_title">🔔 Medication Reminder</string>
     <string name="ht_medication_reminder_content">It is time for your medication, please take it on time and take good care of yourself.</string>
 
 
@@ -1017,16 +974,6 @@
     <string name="ht_notification_permission_title">Stay on track with your health goals</string>
     <string name="ht_notification_permission_des">Enable notifications to receive timely reminders for water intake, medication, and activities. Never miss a healthy habit again!</string>
     <string name="ht_close">Close</string>
-    <string name="ht_medication_name_temp">💊 %1$s</string>
-    <string name="ht_meds_notes_temp">📝 %1$s</string>
-    <string name="ht_snooze_5_minutes">5 minutes later</string>
-    <string name="ht_snooze_10_minutes">10 minutes later</string>
-    <string name="ht_snooze_15_minutes">15 minutes later</string>
-    <string name="ht_snooze_30_minutes">30 minutes later</string>
-    <string name="ht_take_medication_now">Take now</string>
-    <string name="ht_every_day_temp">⏰ Every day at %1$s</string>
-    <string name="ht_now_time_temp">📱 Right now it\'s %1$s"</string>
-    <string name="ht_have_reader_privacy">I have read the <font color="#02BC77">Privacy Policy</font></string>
     <string name="ht_choose_your_gender">Choose your gender</string>
     <string name="ht_please_choose_your_gender">Please choose your gender</string>
     <string name="ht_txt_profile_des">This will be used to generate your personalized data</string>
@@ -1047,14 +994,10 @@
     <string name="ht_height">Height</string>
     <string name="ht_create_label_failed">Create label failed</string>
     <string name="ht_heart_rate">Heart Rate</string>
-    <string name="ht_heart_rate_detail_description">Heart rate reflects your cardiovascular response. Track long-term trends and consult your doctor for abnormal readings.</string>
-    <string name="ht_record_time_placeholder">--</string>
     <string name="ht_heart_rate_no_tags">No tags</string>
     <string name="ht_record_not_ready">Record is loading</string>
     <string name="ht_delete_record_failed">Failed to delete record</string>
-    <string name="ht_heart_rate_record_deleted">Record deleted</string>
-    <string name="ht_blood_sugar_record_deleted">Blood sugar record deleted</string>
-    <string name="ht_bpm">BPM</string>
+    <string name="ht_bpm" translatable="false">BPM</string>
     <string name="ht_cholesterol">Cholesterol</string>
     <string name="ht_weight_and_bmi"><![CDATA[Weight & BMI]]></string>
 
@@ -1064,7 +1007,6 @@
     <string name="ht_unit_in" translatable="false">in</string>
     <string name="ht_unit_ft_in" translatable="false">ft-in</string>
     <string name="ht_unit_in_brackets" translatable="false">(%1$s)</string>
-    <string name="ht_value_with_unit">%1$s %2$s</string>
 
     <!-- Heart rate -->
     <string name="ht_heart_rate_status_slow">Slow</string>
@@ -1099,23 +1041,10 @@ healthcare provider or medical institution.</string>
     <string name="ht_skip">Skip</string>
     <string name="ht_next">Next</string>
     <string name="ht_start_health_journey">Start Health Journey!</string>
-    <string name="ht_guide_bp_des">Click to add your first Blood Pressure reading now.</string>
     <string name="ht_guide_bs_des">Click to add your first Blood Sugar reading now.</string>
-    <string name="ht_guide_hr_des">Click to add your first Heart Rate reading now.</string>
     <string name="ht_target_range">Target Range</string>
     <string name="ht_target_range_temp">Target Range(%1$s)</string>
     <string name="ht_reset">Reset</string>
-
-    <string-array name="ht_heart_rate_labels">
-        <item>Excited state</item>
-        <item>Depression</item>
-        <item>Calm</item>
-        <item>After intense exercise</item>
-        <item>After aerobic exercise</item>
-        <item>After anaerobic exercise</item>
-        <item>Dieting</item>
-        <item>After drinking</item>
-    </string-array>
 
     <!-- 心率等级专家建议文案数组 -->
     <string-array name="ht_hr_level_expert_advice">
@@ -1247,16 +1176,12 @@ healthcare provider or medical institution.</string>
     <string name="ht_health_service_channel_description">Displays persistent notification for quick health data recording</string>
 
     <!-- 自定义推送通知渠道 -->
-    <string name="ht_custom_notification_channel_name">Health Alerts</string>
-    <string name="ht_custom_notification_channel_description">Reminders for blood sugar, blood pressure, heart rate and more</string>
     <string name="ht_exit">Exit</string>
     <string name="ht_are_you_sure_exit">Are you sure want to exit the app?</string>
-    <string name="ht_health_statistics">Health Statistics</string>
     <string name="ht__7_days">7 Days</string>
     <string name="ht__1_month">1 Month</string>
     <string name="ht__3_month">3 Month</string>
     <string name="ht_select">Select</string>
-    <string name="ht_summary">Summary</string>
     <string name="ht_avg">Avg</string>
     <string name="ht_min">Min</string>
     <string name="ht_max">Max</string>
@@ -1268,7 +1193,6 @@ healthcare provider or medical institution.</string>
     <!-- 补水 -->
     <string name="ht_hydrate">Hydrate</string>
     <string name="ht_walking">Walking</string>
-    <string name="ht_walking_steps">Walking Steps</string>
     <string name="ht_drink_btn_format">Drink %d %s</string>
     <string name="ht_hydrate_cup_count_format">You drink %d cups of water today</string>
     <string name="ht_hydrate_complete_message">Well done! You\'ve finished your water!</string>
@@ -1277,8 +1201,8 @@ healthcare provider or medical institution.</string>
     <string name="ht_unit_ml" translatable="false">ML</string>
     <string name="ht_daily_water_intake">Daily Water Intake</string>
     <string name="ht_cup_size">Cup Size</string>
-    <string name="ht_fl_oz">fl oz</string>
-    <string name="ht_ml">ML</string>
+    <string name="ht_fl_oz" translatable="false">fl oz</string>
+    <string name="ht_ml" translatable="false">ML</string>
     <string name="ht_hydration_reminder_time">Hydration Reminder Time</string>
     <string name="ht_hydration_reminder_edit">Edit</string>
     <string name="ht_hydrate_reminder_delete_confirm_message">Are you sure you want to delete this alarm?</string>
@@ -1290,17 +1214,15 @@ healthcare provider or medical institution.</string>
     <!-- Hydration alarm -->
     <string name="ht_alarm_hydration_content">It’s time to drink water!</string>
     <string name="ht_drink_now">View Now</string>
-    <string name="ht_medication_notification_title_with_time">%1$s at %2$s</string>
     <string name="ht_hydrate_quick_add">Quick Add</string>
     <string name="ht_step_count">Step Count</string>
     <string name="ht_today">Today</string>
-    <string name="ht_unit_km">km</string>
-    <string name="ht_kcal">Kcal</string>
+    <string name="ht_unit_km" translatable="false">km</string>
+    <string name="ht_kcal" translatable="false">Kcal</string>
     <string name="ht_today_s_goal">Today\'s goal</string>
     <string name="ht_step_goal">Step Goal</string>
     <string name="ht_text_steps" translatable="false">Steps</string>
     <string name="ht_enable_step_count">Physical activity permission required</string>
-    <string name="ht_allow">Allow</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">Without this authorization, the step-count feature <font color="#02BC77">will not work</font></string>
 
     <!-- Blood Pressure -->
@@ -1389,18 +1311,16 @@ healthcare provider or medical institution.</string>
     <string name="ht_go_to_set">GO TO SET</string>
     <string name="ht_choose_language">Choose Language</string>
     <string name="ht_language">Language</string>
-    <string name="ht_unit_settings">Unit Settings</string>
     <string name="ht_target_range_settings">Target Range Settings</string>
     <string name="ht_personal_info">Personal info</string>
     <string name="ht_feedback">Feedback</string>
     <string name="ht_privacy_policy">Privacy Policy</string>
-    <string name="ht_terms_of_service">Terms of Service</string>
     <string name="ht_settings_section_tracking_and_targets">Tracking &amp; Targets</string>
     <string name="ht_settings_section_preferences">Preferences</string>
     <string name="ht_settings_section_help_and_feedback">Help &amp; Feedback</string>
     <string name="ht_settings_section_legal_and_policies">Legal &amp; Policies</string>
-    <string name="ht_settings_section_developer">Developer Tools</string>
-    <string name="ht_ad_debug_panel">Ad Debug Panel</string>
+    <string name="ht_settings_section_developer" translatable="false">Developer Tools</string>
+    <string name="ht_ad_debug_panel" translatable="false">Ad Debug Panel</string>
     <string name="ht_settings_version_format">Version %1$s</string>
     <string name="ht_bill_ad_loading">AD loading…</string>
 

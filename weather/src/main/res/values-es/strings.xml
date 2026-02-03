@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ht_wind_speed">Velocidad del Viento</string>
-    <string name="ht_hum">Hum</string>
     <string name="ht_daily_5_days">Pronóstico de 5 Días</string>
     <string name="ht_more_details">Más Detalles</string>
     <string name="ht_humidity">Humedad</string>

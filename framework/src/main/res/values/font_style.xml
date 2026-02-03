@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--300-->
-    <style name="TextViewFont_RobotoLight">
-        <item name="android:fontFamily">@font/inter_light</item>
-        <item name="fontFamily">@font/inter_light</item>
-    </style>
     <!--400-->
     <style name="TextViewFont_RobotoRegular">
         <item name="android:fontFamily">@font/inter_regular</item>

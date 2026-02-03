@@ -35,11 +35,9 @@
     <string name="ht_cholesterol_level_very_high_desc">TK ≥ 240; HDL-dışı ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
     <string name="ht_cholesterol_level_unknown">Bilinmiyor</string>
     <string name="ht_cholesterol_level_unknown_desc">Kolesterol seviyesini belirlemek için yetersiz veri</string>
-    <string name="ht_cholesterol_total_label">Toplam Kolesterol</string>
     <string name="ht_cholesterol_hdl_label">HDL</string>
     <string name="ht_cholesterol_ldl_label">LDL</string>
     <string name="ht_cholesterol_tg_label">TG</string>
-    <string name="ht_cholesterol_total_placeholder">--</string>
 
     <string name="ht_blood_pressure_level_low">Düşük Tansiyon</string>
     <string name="ht_blood_pressure_level_normal">Normal</string>
@@ -65,10 +63,8 @@
     <string name="ht_notification_channel_alarm_name">Sağlık Hatırlatıcısı</string>
     <string name="ht_notification_channel_alarm_description">Sağlık izleme hatırlatma bildirimleri</string>
 
-    <string name="ht_alarm_blood_sugar_title">Kan Şekeri Hatırlatıcısı</string>
     <string name="ht_alarm_blood_sugar_content">Kan şekerinizi kaydetme zamanı!</string>
 
-    <string name="ht_alarm_blood_pressure_title">Tansiyon Hatırlatıcısı</string>
     <string name="ht_alarm_blood_pressure_content">Tansiyonunuzu kaydetme zamanı!</string>
 
     <string name="ht_alarm_default_title">Sağlık Hatırlatıcısı</string>
@@ -87,7 +83,6 @@
     <string name="ht_save_changes">Değişiklikleri Kaydet</string>
     <string name="ht_cancel">İptal</string>
     <string name="ht_saving">Kaydediliyor...</string>
-    <string name="ht_save_failed">Kaydetme başarısız, lütfen tekrar deneyin</string>
     <string name="ht_date_time"><![CDATA[Tarih ve Saat]]></string>
     <string name="ht_label">Etiket</string>
 
@@ -104,7 +99,6 @@
     <string name="ht_bp_range_des">AHA (Amerikan Kalp Derneği) en son kılavuzlarına göre</string>
     <string name="ht_cholesterol_range_des">TK: Toplam Kolesterol\nHDL: Yüksek Yoğunluklu Lipoprotein\nLDL: Düşük Yoğunluklu Lipoprotein\nTG: Trigliseritler\nHDL-dışı: HDL Olmayan Lipoprotein\n\nCleveland Clinic kılavuzlarına göre.</string>
     <string name="ht_got_it">Anladım</string>
-    <string name="ht_details">Ayrıntılar</string>
     <string name="ht_all_types">Tüm Türler</string>
     <string name="ht_no_records">Kayıt Yok</string>
     <string name="ht_load_fail_please_try_again">Yükleme başarısız, lütfen tekrar deneyin</string>
@@ -146,17 +140,6 @@
         <item>Adet dönemi</item>
     </string-array>
 
-    <string-array name="ht_bmi_level_names">
-        <item>Çok Düşük Kilolu</item>
-        <item>Ciddi Düşük Kilolu</item>
-        <item>Düşük Kilolu</item>
-        <item>Normal</item>
-        <item>Fazla Kilolu</item>
-        <item>Obezite Sınıf I</item>
-        <item>Obezite Sınıf II</item>
-        <item>Obezite Sınıf III</item>
-    </string-array>
-
     <string name="ht_bmi_level_very_severely_underweight">Çok Düşük Kilolu</string>
     <string name="ht_bmi_level_severely_underweight">Ciddi Düşük Kilolu</string>
     <string name="ht_bmi_level_underweight">Düşük Kilolu</string>
@@ -165,17 +148,6 @@
     <string name="ht_bmi_level_obesity_class_1">Obezite Sınıf I</string>
     <string name="ht_bmi_level_obesity_class_2">Obezite Sınıf II</string>
     <string name="ht_bmi_level_obesity_class_3">Obezite Sınıf III</string>
-
-    <string-array name="ht_bmi_labels">
-        <item>Heyecanlı</item>
-        <item>Kardiyodan sonra</item>
-        <item>Üzgün</item>
-        <item>Sakin</item>
-        <item>Ağırlık antrenmanından sonra</item>
-        <item>Yoğun egzersizden sonra</item>
-        <item>Diyette</item>
-        <item>İçtikten sonra</item>
-    </string-array>
 
     <string-array name="ht_week_simple">
         <item>Paz</item>
@@ -214,23 +186,12 @@
     <string name="ht_edit">Düzenle</string>
     <string name="ht_delete">Sil</string>
 
-    <string name="ht_medication_reminder_title">🔔 İlaç Hatırlatıcısı</string>
     <string name="ht_medication_reminder_content">İlacınızı alma zamanı, lütfen zamanında alın ve kendinize iyi bakın.</string>
 
     <string name="ht_turn_on">Aç</string>
     <string name="ht_notification_permission_title">Sağlık hedeflerinizi takip edin</string>
     <string name="ht_notification_permission_des">Su, ilaç ve aktiviteler için zamanında hatırlatmalar almak için bildirimleri etkinleştirin. Sağlıklı bir alışkanlığı asla kaçırmayın!</string>
     <string name="ht_close">Kapat</string>
-    <string name="ht_medication_name_temp">💊 %1$s</string>
-    <string name="ht_meds_notes_temp">📝 %1$s</string>
-    <string name="ht_snooze_5_minutes">5 dakika sonra</string>
-    <string name="ht_snooze_10_minutes">10 dakika sonra</string>
-    <string name="ht_snooze_15_minutes">15 dakika sonra</string>
-    <string name="ht_snooze_30_minutes">30 dakika sonra</string>
-    <string name="ht_take_medication_now">Şimdi al</string>
-    <string name="ht_every_day_temp">⏰ Her gün saat %1$s</string>
-    <string name="ht_now_time_temp">📱 Şu an saat %1$s"</string>
-    <string name="ht_have_reader_privacy"><font color="#02BC77">Gizlilik Politikası</font>nı okudum</string>
     <string name="ht_choose_your_gender">Cinsiyetinizi seçin</string>
     <string name="ht_please_choose_your_gender">Lütfen cinsiyetinizi seçin</string>
     <string name="ht_txt_profile_des">Bu, kişiselleştirilmiş verilerinizi oluşturmak için kullanılacaktır</string>
@@ -250,18 +211,35 @@
     <string name="ht_weight">Kilo</string>
     <string name="ht_height">Boy</string>
     <string name="ht_create_label_failed">Etiket oluşturma başarısız</string>
+    <string name="ht_last_report">Son rapor:</string>
+    <string name="ht_test_and_record_hr">Nabız ölç ve kaydet</string>
+    <string name="ht_measure_now">Şimdi Ölç</string>
+    <string name="ht_measure_title">Ölç</string>
+    <string name="ht_measure_finger_instruction">Lütfen parmağınızı kameranın üzerine koyun ve sonuna kadar kaldırmayın.</string>
+    <string name="ht_camera_permission_title">Kamera İzni Gerekli</string>
+    <string name="ht_camera_permission_desc">Kalp atış hızınızı ölçmek için kameranıza erişmemiz gerekiyor. Nabzınızı algılamak için parmağınızı kamera merceğinin üzerine koyun.</string>
+    <string name="ht_camera_permission_denied_title">Kamera İzni Reddedildi</string>
+    <string name="ht_camera_permission_denied_desc">Kalp atış hızı ölçüm özelliğini kullanmak için lütfen Ayarlar\'dan kamera iznini etkinleştirin.</string>
+    <string name="ht_measure_disclaimer">Flaşlı kamera aracılığıyla yapılan kalp atış hızı ölçümleri yalnızca referans amaçlıdır ve hatalı olabilir. Tıbbi kullanım için değildir. Kesin veriler için lütfen profesyonel tıbbi ekipman kullanın.</string>
+    <string name="ht_ppg_tips_title">Ölçüm İpuçları</string>
+    <string name="ht_ppg_tips_subtitle">Parmak <font color="#FB4248">kırmızıya</font> döndüğünde, doğru yapıyorsunuz demektir</string>
+    <string name="ht_ppg_tips_step1">Parmağınızı kameranın üzerine koyun, ancak sıcak olabileceği için flaşın üzerine koymaktan kaçının.</string>
+    <string name="ht_ppg_tips_step2">Sakin kalın ve ölçüm bitene kadar hareket etmeyin!</string>
+    <string name="ht_ppg_tips_step3">İyi aydınlatılmış bir alanda olduğunuzdan emin olun veya daha iyi sonuçlar için flaşı açık tutun.</string>
+    <string name="ht_grant_permission">İzin ver</string>
+    <string name="ht_go_to_settings">Ayarlara Git</string>
+    <string name="ht_stabilizing_title">Ölçülüyor…</string>
+    <string name="ht_stabilizing_subtitle">Harika! Dengeli veriler almak için okuma bekleniyor…</string>
+    <string name="ht_stabilizing_tip">Parmağınız kırmızıya döndüğünde, bu doğru yaptığınız anlamına gelir.</string>
+    <string name="ht_measure_complete">Ölçüm Tamamlandı!</string>
+    <string name="ht_start_measure">Ölçümü Başlat</string>
     <string name="ht_heart_rate">Kalp Atış Hızı</string>
-    <string name="ht_heart_rate_detail_description">Kalp atış hızı kardiyovasküler yanıtınızı yansıtır. Uzun vadeli eğilimleri takip edin ve anormal okumalar için doktorunuza danışın.</string>
-    <string name="ht_record_time_placeholder">--</string>
     <string name="ht_heart_rate_no_tags">Etiket yok</string>
     <string name="ht_record_not_ready">Kayıt yükleniyor</string>
     <string name="ht_delete_record_failed">Kayıt silme başarısız</string>
-    <string name="ht_heart_rate_record_deleted">Kayıt silindi</string>
-    <string name="ht_blood_sugar_record_deleted">Kan şekeri kaydı silindi</string>
     <string name="ht_bpm">BPM</string>
     <string name="ht_cholesterol">Kolesterol</string>
     <string name="ht_weight_and_bmi"><![CDATA[Kilo & VKİ]]></string>
-    <string name="ht_value_with_unit">%1$s %2$s</string>
 
     <string name="ht_heart_rate_status_slow">Yavaş</string>
     <string name="ht_heart_rate_status_normal">Normal</string>
@@ -294,23 +272,10 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
     <string name="ht_skip">Atla</string>
     <string name="ht_next">İleri</string>
     <string name="ht_start_health_journey">Sağlık Yolculuğunuzu Başlatın!</string>
-    <string name="ht_guide_bp_des">İlk Tansiyon okumanızı eklemek için şimdi tıklayın.</string>
     <string name="ht_guide_bs_des">İlk Kan Şekeri okumanızı eklemek için şimdi tıklayın.</string>
-    <string name="ht_guide_hr_des">İlk Kalp Atış Hızı okumanızı eklemek için şimdi tıklayın.</string>
     <string name="ht_target_range">Hedef Aralık</string>
     <string name="ht_target_range_temp">Hedef Aralık(%1$s)</string>
     <string name="ht_reset">Sıfırla</string>
-
-    <string-array name="ht_heart_rate_labels">
-        <item>Heyecanlı</item>
-        <item>Üzgün</item>
-        <item>Sakin</item>
-        <item>Yoğun egzersizden sonra</item>
-        <item>Aerobik egzersizden sonra</item>
-        <item>Anaerobik egzersizden sonra</item>
-        <item>Diyette</item>
-        <item>İçtikten sonra</item>
-    </string-array>
 
     <string name="ht_please_input_complete_data">Lütfen tam veri girin</string>
     <string name="ht_range_order_error">Aralık değerleri artan sırada olmalıdır</string>
@@ -321,16 +286,12 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
 
     <string name="ht_health_service_channel_name">Sağlık İzleme Hizmeti</string>
     <string name="ht_health_service_channel_description">Hızlı sağlık verisi kaydı için kalıcı bildirim görüntüler</string>
-    <string name="ht_custom_notification_channel_name">Sağlık Uyarıları</string>
-    <string name="ht_custom_notification_channel_description">Kan şekeri, tansiyon, kalp atış hızı ve daha fazlası için hatırlatmalar</string>
     <string name="ht_exit">Çıkış</string>
     <string name="ht_are_you_sure_exit">Uygulamadan çıkmak istediğinizden emin misiniz?</string>
-    <string name="ht_health_statistics">Sağlık İstatistikleri</string>
     <string name="ht__7_days">7 Gün</string>
     <string name="ht__1_month">1 Ay</string>
     <string name="ht__3_month">3 Ay</string>
     <string name="ht_select">Seç</string>
-    <string name="ht_summary">Özet</string>
     <string name="ht_avg">Ort</string>
     <string name="ht_min">Min</string>
     <string name="ht_max">Maks</string>
@@ -341,7 +302,6 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
 
     <string name="ht_hydrate">Hidrasyon</string>
     <string name="ht_walking">Yürüyüş</string>
-    <string name="ht_walking_steps">Yürüyüş Adımları</string>
     <string name="ht_drink_btn_format">%d %s iç</string>
     <string name="ht_hydrate_cup_count_format">Bugün %d bardak su içtiniz</string>
     <string name="ht_hydrate_complete_message">Tebrikler! Su hedefinizi tamamladınız!</string>
@@ -361,7 +321,6 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
     <string name="ht_hydrate_reminder_empty_message">Henüz su hatırlatıcısı ayarlamadınız. İlk hatırlatıcınızı ekleyerek hidrasyon alışkanlığınızı oluşturmaya başlayın!</string>
     <string name="ht_alarm_hydration_content">Su içme zamanı!</string>
     <string name="ht_drink_now">Şimdi Gör</string>
-    <string name="ht_medication_notification_title_with_time">%1$s saat %2$s</string>
     <string name="ht_hydrate_quick_add">Hızlı Ekle</string>
     <string name="ht_step_count">Adım Sayısı</string>
     <string name="ht_today">Bugün</string>
@@ -370,18 +329,15 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
     <string name="ht_today_s_goal">Bugünün hedefi</string>
     <string name="ht_step_goal">Adım Hedefi</string>
     <string name="ht_enable_step_count">Fiziksel aktivite izni gerekli</string>
-    <string name="ht_allow">İzin Ver</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">Bu yetkilendirme olmadan, adım sayma özelliği <font color="#02BC77">çalışmayacaktır</font></string>
 
     <string name="ht_go_to_set">AYARLA</string>
     <string name="ht_choose_language">Dil Seç</string>
     <string name="ht_language">Dil</string>
-    <string name="ht_unit_settings">Birim Ayarları</string>
     <string name="ht_target_range_settings">Hedef Aralık Ayarları</string>
     <string name="ht_personal_info">Kişisel bilgi</string>
     <string name="ht_feedback">Geri Bildirim</string>
     <string name="ht_privacy_policy">Gizlilik Politikası</string>
-    <string name="ht_terms_of_service">Hizmet Şartları</string>
     <string name="ht_settings_section_tracking_and_targets">Takip ve Hedefler</string>
     <string name="ht_settings_section_preferences">Tercihler</string>
     <string name="ht_settings_section_help_and_feedback">Yardım ve Geri Bildirim</string>

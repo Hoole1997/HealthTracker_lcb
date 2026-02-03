@@ -40,11 +40,9 @@
     <string name="ht_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
     <string name="ht_cholesterol_level_unknown">알 수 없음</string>
     <string name="ht_cholesterol_level_unknown_desc">콜레스테롤 수치를 판단하기에 데이터가 부족합니다</string>
-    <string name="ht_cholesterol_total_label">총 콜레스테롤</string>
     <string name="ht_cholesterol_hdl_label">HDL</string>
     <string name="ht_cholesterol_ldl_label">LDL</string>
     <string name="ht_cholesterol_tg_label">TG</string>
-    <string name="ht_cholesterol_total_placeholder">--</string>
 
     <!-- 血压等级 -->
     <string name="ht_blood_pressure_level_low">저혈압</string>
@@ -75,11 +73,9 @@
     <string name="ht_notification_channel_alarm_description">건강 모니터링 알림 통지</string>
 
     <!-- 血糖提醒通知 -->
-    <string name="ht_alarm_blood_sugar_title">혈당 알림</string>
     <string name="ht_alarm_blood_sugar_content">혈당을 기록할 시간입니다!</string>
 
     <!-- 血压提醒通知 -->
-    <string name="ht_alarm_blood_pressure_title">혈압 알림</string>
     <string name="ht_alarm_blood_pressure_content">혈압을 기록할 시간입니다!</string>
 
     <!-- 默认健康提醒 -->
@@ -115,7 +111,6 @@
     <string name="ht_save_changes">변경 사항 저장</string>
     <string name="ht_cancel">취소</string>
     <string name="ht_saving">저장 중...</string>
-    <string name="ht_save_failed">저장에 실패했습니다. 다시 시도해 주세요</string>
     <string name="ht_date_time"><![CDATA[날짜 및 시간]]></string>
     <string name="ht_label">라벨</string>
 
@@ -133,7 +128,6 @@
     <string name="ht_bp_range_des">AHA(미국심장협회)의 최신 가이드라인에 따름</string>
     <string name="ht_cholesterol_range_des">TC: 총 콜레스테롤\nHDL: 고밀도 지단백질\nLDL: 저밀도 지단백질\nTG: 중성지방\nNon-HDL: 비고밀도 지단백질\n\n클리블랜드 클리닉의 가이드라인에 따름.</string>
     <string name="ht_got_it">확인</string>
-    <string name="ht_details">상세</string>
     <string name="ht_all_types">모든 유형</string>
     <string name="ht_no_records">기록 없음</string>
     <string name="ht_load_fail_please_try_again">로드 실패, 다시 시도해 주세요</string>
@@ -172,16 +166,6 @@
     </string-array>
 
     <!-- BMI classification names (8 levels) -->
-    <string-array name="ht_bmi_level_names">
-        <item>매우 심각한 저체중</item>
-        <item>심각한 저체중</item>
-        <item>저체중</item>
-        <item>정상</item>
-        <item>과체중</item>
-        <item>비만 1단계</item>
-        <item>비만 2단계</item>
-        <item>비만 3단계</item>
-    </string-array>
 
     <!-- BMI classification names (single items for mapping) -->
     <string name="ht_bmi_level_very_severely_underweight">매우 심각한 저체중</string>
@@ -194,16 +178,6 @@
     <string name="ht_bmi_level_obesity_class_3">비만 3단계</string>
 
     <!-- BMI record tag labels -->
-    <string-array name="ht_bmi_labels">
-        <item>흥분</item>
-        <item>유산소 운동 후</item>
-        <item>우울</item>
-        <item>평온</item>
-        <item>근력 운동 후</item>
-        <item>격렬한 운동 후</item>
-        <item>다이어트 중</item>
-        <item>음주 후</item>
-    </string-array>
 
     <string-array name="ht_week_simple">
         <item>일</item>
@@ -242,7 +216,6 @@
     <string name="ht_edit">편집</string>
     <string name="ht_delete">삭제</string>
     <!-- 药物提醒通知相关字符串 -->
-    <string name="ht_medication_reminder_title">🔔 복약 알림</string>
     <string name="ht_medication_reminder_content">약 드실 시간입니다. 잊지 말고 복용하시고 건강 챙기세요.</string>
 
     <!-- 通知权限相关字符串 -->
@@ -250,16 +223,6 @@
     <string name="ht_notification_permission_title">건강 목표를 달성하세요</string>
     <string name="ht_notification_permission_des">알림을 활성화하여 수분 섭취, 복약, 활동에 대한 시기적절한 알림을 받으세요. 건강한 습관을 놓치지 마세요!</string>
     <string name="ht_close">닫기</string>
-    <string name="ht_medication_name_temp">💊 %1$s</string>
-    <string name="ht_meds_notes_temp">📝 %1$s</string>
-    <string name="ht_snooze_5_minutes">5분 후</string>
-    <string name="ht_snooze_10_minutes">10분 후</string>
-    <string name="ht_snooze_15_minutes">15분 후</string>
-    <string name="ht_snooze_30_minutes">30분 후</string>
-    <string name="ht_take_medication_now">지금 복용</string>
-    <string name="ht_every_day_temp">⏰ 매일 %1$s</string>
-    <string name="ht_now_time_temp">📱 현재 시각 %1$s"</string>
-    <string name="ht_have_reader_privacy"><font color="#02BC77">개인정보 처리방침</font>을 읽었습니다</string>
     <string name="ht_choose_your_gender">성별 선택</string>
     <string name="ht_please_choose_your_gender">성별을 선택해 주세요</string>
     <string name="ht_txt_profile_des">이는 개인화된 데이터를 생성하는 데 사용됩니다</string>
@@ -279,17 +242,34 @@
     <string name="ht_weight">체중</string>
     <string name="ht_height">신장</string>
     <string name="ht_create_label_failed">라벨 생성 실패</string>
+    <string name="ht_last_report">최근 리포트:</string>
+    <string name="ht_test_and_record_hr">심박수 측정 및 기록</string>
+    <string name="ht_measure_now">지금 측정</string>
+    <string name="ht_measure_title">측정</string>
+    <string name="ht_measure_finger_instruction">카메라 위에 손가락을 대고 측정이 끝날 때까지 떼지 마세요.</string>
+    <string name="ht_camera_permission_title">카메라 권한 필요</string>
+    <string name="ht_camera_permission_desc">심박수를 측정하려면 카메라 권한이 필요합니다. 카메라 렌즈에 손가락을 대고 맥박을 감지하세요.</string>
+    <string name="ht_camera_permission_denied_title">카메라 권한 거부됨</string>
+    <string name="ht_camera_permission_denied_desc">심박수 측정 기능을 사용하려면 설정에서 카메라 권한을 활성화해 주세요.</string>
+    <string name="ht_measure_disclaimer">플래시 카메라를 이용한 심박수 측정은 참고용일 뿐이며 정확하지 않을 수 있습니다. 의료용이 아닙니다. 정확한 데이터는 전문 의료 장비를 사용하세요.</string>
+    <string name="ht_ppg_tips_title">측정 팁</string>
+    <string name="ht_ppg_tips_subtitle">손가락이 <font color="#FB4248">빨간색</font>으로 변하면 올바르게 하고 있는 것입니다</string>
+    <string name="ht_ppg_tips_step1">카메라 위에 손가락을 올리되, 뜨거워질 수 있는 플래시는 피해서 대세요.</string>
+    <string name="ht_ppg_tips_step2">측정이 끝날 때까지 평온을 유지하고 움직이지 마세요!</string>
+    <string name="ht_ppg_tips_step3">밝은 곳에서 측정하거나, 더 나은 결과를 위해 플래시를 켠 상태를 유지하세요.</string>
+    <string name="ht_grant_permission">권한 허용</string>
+    <string name="ht_go_to_settings">설정으로 이동</string>
+    <string name="ht_stabilizing_title">측정 중…</string>
+    <string name="ht_stabilizing_subtitle">좋습니다! 안정된 데이터 판독을 위해 대기 중…</string>
+    <string name="ht_stabilizing_tip">손가락이 빨간색으로 변하면 올바르게 하고 있는 것입니다.</string>
+    <string name="ht_measure_complete">측정 완료!</string>
+    <string name="ht_start_measure">측정 시작</string>
     <string name="ht_heart_rate">심박수</string>
-    <string name="ht_heart_rate_detail_description">심박수는 심혈관 반응을 반영합니다. 장기적인 추세를 추적하고 비정상적인 수치가 나오면 의사와 상담하세요.</string>
-    <string name="ht_record_time_placeholder">--</string>
     <string name="ht_heart_rate_no_tags">태그 없음</string>
     <string name="ht_record_not_ready">기록 로딩 중</string>
     <string name="ht_delete_record_failed">기록 삭제 실패</string>
-    <string name="ht_heart_rate_record_deleted">기록 삭제됨</string>
-    <string name="ht_blood_sugar_record_deleted">혈당 기록 삭제됨</string>
     <string name="ht_cholesterol">콜레스테롤</string>
     <string name="ht_weight_and_bmi"><![CDATA[체중 및 BMI]]></string>
-    <string name="ht_value_with_unit">%1$s %2$s</string>
 
     <!-- Heart rate -->
     <string name="ht_heart_rate_status_slow">느림</string>
@@ -322,23 +302,11 @@
     <string name="ht_skip">건너뛰기</string>
     <string name="ht_next">다음</string>
     <string name="ht_start_health_journey">건강 여정 시작하기!</string>
-    <string name="ht_guide_bp_des">클릭하여 첫 혈압 기록을 추가하세요.</string>
     <string name="ht_guide_bs_des">클릭하여 첫 혈당 기록을 추가하세요.</string>
-    <string name="ht_guide_hr_des">클릭하여 첫 심박수 기록을 추가하세요.</string>
     <string name="ht_target_range">목표 범위</string>
     <string name="ht_target_range_temp">목표 범위(%1$s)</string>
     <string name="ht_reset">초기화</string>
 
-    <string-array name="ht_heart_rate_labels">
-        <item>흥분 상태</item>
-        <item>우울</item>
-        <item>평온</item>
-        <item>격렬한 운동 후</item>
-        <item>유산소 운동 후</item>
-        <item>무산소 운동 후</item>
-        <item>다이어트 중</item>
-        <item>음주 후</item>
-    </string-array>
     <string name="ht_please_input_complete_data">완전한 데이터를 입력해 주세요</string>
     <string name="ht_range_order_error">범위 값은 오름차순이어야 합니다</string>
     <string name="ht_range_bounds_error">범위 값이 허용 범위를 벗어났습니다</string>
@@ -351,16 +319,12 @@
     <string name="ht_health_service_channel_description">건강 데이터를 빠르게 기록하기 위한 상주 알림 표시</string>
 
     <!-- 사용자 정의 푸시 알림 채널 -->
-    <string name="ht_custom_notification_channel_name">건강 알림</string>
-    <string name="ht_custom_notification_channel_description">혈당, 혈압, 심박수 등 알림</string>
     <string name="ht_exit">종료</string>
     <string name="ht_are_you_sure_exit">앱을 종료하시겠습니까?</string>
-    <string name="ht_health_statistics">건강 통계</string>
     <string name="ht__7_days">7일</string>
     <string name="ht__1_month">1개월</string>
     <string name="ht__3_month">3개월</string>
     <string name="ht_select">선택</string>
-    <string name="ht_summary">요약</string>
     <string name="ht_avg">평균</string>
     <string name="ht_min">최소</string>
     <string name="ht_max">최대</string>
@@ -372,7 +336,6 @@
     <!-- 수분 섭취 -->
     <string name="ht_hydrate">수분 섭취</string>
     <string name="ht_walking">걷기</string>
-    <string name="ht_walking_steps">걸음 수</string>
     <string name="ht_drink_btn_format">%1$d %2$s 마시기</string>
     <string name="ht_hydrate_cup_count_format">오늘 물을 %d잔 마셨습니다</string>
     <string name="ht_hydrate_complete_message">잘하셨습니다! 수분 섭취 목표를 달성했습니다!</string>
@@ -391,7 +354,6 @@
     <!-- Hydration alarm -->
     <string name="ht_alarm_hydration_content">물 마실 시간입니다!</string>
     <string name="ht_drink_now">지금 확인</string>
-    <string name="ht_medication_notification_title_with_time">%2$s 에 %1$s</string>
     <string name="ht_hydrate_quick_add">빠른 추가</string>
     <string name="ht_step_count">걸음 수</string>
     <string name="ht_today">오늘</string>
@@ -399,17 +361,14 @@
     <string name="ht_step_goal">걸음 수 목표</string>
     <string name="ht_text_steps">걸음</string>
     <string name="ht_enable_step_count">신체 활동 권한 필요</string>
-    <string name="ht_allow">허용</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">이 권한이 없으면 걸음 수 카운트 기능이 <font color="#02BC77">작동하지 않습니다</font></string>
     <string name="ht_go_to_set">설정으로 이동</string>
     <string name="ht_choose_language">언어 선택</string>
     <string name="ht_language">언어</string>
-    <string name="ht_unit_settings">단위 설정</string>
     <string name="ht_target_range_settings">목표 범위 설정</string>
     <string name="ht_personal_info">개인 정보</string>
     <string name="ht_feedback">피드백</string>
     <string name="ht_privacy_policy">개인정보 처리방침</string>
-    <string name="ht_terms_of_service">이용 약관</string>
     <string name="ht_settings_section_tracking_and_targets">기록 및 목표</string>
     <string name="ht_settings_section_preferences">환경 설정</string>
     <string name="ht_settings_section_help_and_feedback">도움말 및 피드백</string>

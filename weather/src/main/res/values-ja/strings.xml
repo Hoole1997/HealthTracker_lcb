@@ -2,7 +2,6 @@
 <resources>
     <string name="ht_wind_speed">風速</string>
 
-    <string name="ht_hum">湿度</string>
     <string name="ht_daily_5_days">5日間の予報</string>
     <string name="ht_more_details">詳細情報</string>
     <string name="ht_humidity">湿度</string>

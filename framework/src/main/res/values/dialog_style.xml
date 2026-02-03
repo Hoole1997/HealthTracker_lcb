@@ -36,24 +36,6 @@
         <item name="android:windowAnimationStyle">@style/CommonDialogAnimation</item>
     </style>
 
-    <style name="FullScreenDialogStyleBase" parent="@style/Theme.AppCompat.Dialog">
-        <!--不限制弹窗尺寸-->
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <!--背景阴影-->
-        <item name="android:backgroundDimEnabled">false</item>
-        <!--状态栏与导航栏状态-->
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowAnimationStyle">@style/CommonDialogAnimation</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
-
-    <style name="FullScreenDialogStyle" parent="FullScreenDialogStyleBase" />
-
 
     <style name="CommonDialogAnimation">
         <item name="android:windowEnterAnimation">@anim/stand_common_dialog_in</item>

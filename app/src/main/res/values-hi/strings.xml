@@ -35,11 +35,9 @@
     <string name="ht_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
     <string name="ht_cholesterol_level_unknown">अज्ञात</string>
     <string name="ht_cholesterol_level_unknown_desc">कोलेस्ट्रॉल स्तर निर्धारित करने के लिए अपर्याप्त डेटा</string>
-    <string name="ht_cholesterol_total_label">कुल कोलेस्ट्रॉल</string>
     <string name="ht_cholesterol_hdl_label">HDL</string>
     <string name="ht_cholesterol_ldl_label">LDL</string>
     <string name="ht_cholesterol_tg_label">TG</string>
-    <string name="ht_cholesterol_total_placeholder">--</string>
 
     <string name="ht_blood_pressure_level_low">निम्न रक्तचाप</string>
     <string name="ht_blood_pressure_level_normal">सामान्य</string>
@@ -65,10 +63,8 @@
     <string name="ht_notification_channel_alarm_name">स्वास्थ्य रिमाइंडर</string>
     <string name="ht_notification_channel_alarm_description">स्वास्थ्य निगरानी रिमाइंडर नोटिफिकेशन</string>
 
-    <string name="ht_alarm_blood_sugar_title">ब्लड शुगर रिमाइंडर</string>
     <string name="ht_alarm_blood_sugar_content">अपना ब्लड शुगर रिकॉर्ड करने का समय!</string>
 
-    <string name="ht_alarm_blood_pressure_title">रक्तचाप रिमाइंडर</string>
     <string name="ht_alarm_blood_pressure_content">अपना रक्तचाप रिकॉर्ड करने का समय!</string>
 
     <string name="ht_alarm_default_title">स्वास्थ्य रिमाइंडर</string>
@@ -87,7 +83,6 @@
     <string name="ht_save_changes">परिवर्तन सहेजें</string>
     <string name="ht_cancel">रद्द करें</string>
     <string name="ht_saving">सहेजा जा रहा है...</string>
-    <string name="ht_save_failed">सहेजना विफल, कृपया पुनः प्रयास करें</string>
     <string name="ht_date_time"><![CDATA[दिनांक और समय]]></string>
     <string name="ht_label">लेबल</string>
 
@@ -104,7 +99,6 @@
     <string name="ht_bp_range_des">AHA (अमेरिकन हार्ट एसोसिएशन) के नवीनतम दिशानिर्देशों के अनुसार</string>
     <string name="ht_cholesterol_range_des">TC: कुल कोलेस्ट्रॉल\nHDL: उच्च घनत्व लिपोप्रोटीन\nLDL: कम घनत्व लिपोप्रोटीन\nTG: ट्राइग्लिसराइड्स\nNon-HDL: गैर-उच्च घनत्व लिपोप्रोटीन\n\nक्लीवलैंड क्लिनिक के दिशानिर्देशों के अनुसार।</string>
     <string name="ht_got_it">समझ गया</string>
-    <string name="ht_details">विवरण</string>
     <string name="ht_all_types">सभी प्रकार</string>
     <string name="ht_no_records">कोई रिकॉर्ड नहीं</string>
     <string name="ht_load_fail_please_try_again">लोड विफल, कृपया पुनः प्रयास करें</string>
@@ -146,17 +140,6 @@
         <item>मासिक धर्म</item>
     </string-array>
 
-    <string-array name="ht_bmi_level_names">
-        <item>अत्यधिक कम वजन</item>
-        <item>गंभीर कम वजन</item>
-        <item>कम वजन</item>
-        <item>सामान्य</item>
-        <item>अधिक वजन</item>
-        <item>मोटापा श्रेणी I</item>
-        <item>मोटापा श्रेणी II</item>
-        <item>मोटापा श्रेणी III</item>
-    </string-array>
-
     <string name="ht_bmi_level_very_severely_underweight">अत्यधिक कम वजन</string>
     <string name="ht_bmi_level_severely_underweight">गंभीर कम वजन</string>
     <string name="ht_bmi_level_underweight">कम वजन</string>
@@ -165,17 +148,6 @@
     <string name="ht_bmi_level_obesity_class_1">मोटापा श्रेणी I</string>
     <string name="ht_bmi_level_obesity_class_2">मोटापा श्रेणी II</string>
     <string name="ht_bmi_level_obesity_class_3">मोटापा श्रेणी III</string>
-
-    <string-array name="ht_bmi_labels">
-        <item>उत्साहित</item>
-        <item>कार्डियो के बाद</item>
-        <item>उदास</item>
-        <item>शांत</item>
-        <item>वेट ट्रेनिंग के बाद</item>
-        <item>तीव्र व्यायाम के बाद</item>
-        <item>डाइट पर</item>
-        <item>पीने के बाद</item>
-    </string-array>
 
     <string-array name="ht_week_simple">
         <item>रवि</item>
@@ -214,23 +186,12 @@
     <string name="ht_edit">संपादित करें</string>
     <string name="ht_delete">हटाएं</string>
 
-    <string name="ht_medication_reminder_title">🔔 दवा रिमाइंडर</string>
     <string name="ht_medication_reminder_content">आपकी दवा का समय हो गया है, कृपया समय पर लें और अपना ख्याल रखें।</string>
 
     <string name="ht_turn_on">चालू करें</string>
     <string name="ht_notification_permission_title">अपने स्वास्थ्य लक्ष्यों के साथ ट्रैक पर रहें</string>
     <string name="ht_notification_permission_des">पानी, दवाओं और गतिविधियों के लिए समय पर रिमाइंडर प्राप्त करने के लिए नोटिफिकेशन सक्षम करें। कोई भी स्वस्थ आदत न चूकें!</string>
     <string name="ht_close">बंद करें</string>
-    <string name="ht_medication_name_temp">💊 %1$s</string>
-    <string name="ht_meds_notes_temp">📝 %1$s</string>
-    <string name="ht_snooze_5_minutes">5 मिनट बाद</string>
-    <string name="ht_snooze_10_minutes">10 मिनट बाद</string>
-    <string name="ht_snooze_15_minutes">15 मिनट बाद</string>
-    <string name="ht_snooze_30_minutes">30 मिनट बाद</string>
-    <string name="ht_take_medication_now">अभी लें</string>
-    <string name="ht_every_day_temp">⏰ हर दिन %1$s बजे</string>
-    <string name="ht_now_time_temp">📱 अभी समय है %1$s"</string>
-    <string name="ht_have_reader_privacy">मैंने <font color="#02BC77">गोपनीयता नीति</font> पढ़ ली है</string>
     <string name="ht_choose_your_gender">अपना लिंग चुनें</string>
     <string name="ht_please_choose_your_gender">कृपया अपना लिंग चुनें</string>
     <string name="ht_txt_profile_des">यह आपके व्यक्तिगत डेटा उत्पन्न करने के लिए उपयोग किया जाएगा</string>
@@ -250,18 +211,35 @@
     <string name="ht_weight">वजन</string>
     <string name="ht_height">ऊंचाई</string>
     <string name="ht_create_label_failed">लेबल बनाना विफल</string>
+    <string name="ht_last_report">अंतिम रिपोर्ट:</string>
+    <string name="ht_test_and_record_hr">हृदय गति मापें और रिकॉर्ड करें</string>
+    <string name="ht_measure_now">अभी मापें</string>
+    <string name="ht_measure_title">मापें</string>
+    <string name="ht_measure_finger_instruction">कृपया अपनी उंगली कैमरे पर रखें और अंत तक न हटाएं।</string>
+    <string name="ht_camera_permission_title">कैमरा अनुमति आवश्यक है</string>
+    <string name="ht_camera_permission_desc">अपनी हृदय गति मापने के लिए, हमें आपके कैमरे तक पहुंच की आवश्यकता है। अपनी नब्ज का पता लगाने के लिए अपनी उंगली को कैमरा लेंस पर रखें।</string>
+    <string name="ht_camera_permission_denied_title">कैमरा अनुमति अस्वीकृत</string>
+    <string name="ht_camera_permission_denied_desc">हृदय गति माप सुविधा का उपयोग करने के लिए कृपया सेटिंग में कैमरा अनुमति सक्षम करें।</string>
+    <string name="ht_measure_disclaimer">फ्लैशलाइट कैमरे के माध्यम से हृदय गति माप केवल संदर्भ के लिए हैं और गलत हो सकते हैं। चिकित्सा उपयोग के लिए नहीं। सटीक डेटा के लिए, कृपया पेशेवर चिकित्सा उपकरणों का उपयोग करें।</string>
+    <string name="ht_ppg_tips_title">माप युक्तियाँ</string>
+    <string name="ht_ppg_tips_subtitle">जब उंगली <font color="#FB4248">लाल</font> हो जाती है, तो आप सही कर रहे हैं</string>
+    <string name="ht_ppg_tips_step1">अपनी उंगली कैमरे के ऊपर रखें, लेकिन फ्लैशलाइट से बचें क्योंकि यह गर्म हो सकती है।</string>
+    <string name="ht_ppg_tips_step2">शांत रहें और माप पूरा होने तक न हिलें!</string>
+    <string name="ht_ppg_tips_step3">सुनिश्चित करें कि आप एक अच्छी तरह से प्रकाशित क्षेत्र में हैं, या बेहतर परिणामों के लिए फ्लैशलाइट चालू रखें।</string>
+    <string name="ht_grant_permission">अनुमति दें</string>
+    <string name="ht_go_to_settings">सेटिंग में जाएं</string>
+    <string name="ht_stabilizing_title">माप रहा है…</string>
+    <string name="ht_stabilizing_subtitle">बहुत बढ़िया! स्थिर डेटा प्राप्त करने के लिए रीडिंग की प्रतीक्षा की जा रही है…</string>
+    <string name="ht_stabilizing_tip">जब आपकी उंगली लाल हो जाती है, तो इसका मतलब है कि आप इसे सही ढंग से कर रहे हैं।</string>
+    <string name="ht_measure_complete">माप पूरा हुआ!</string>
+    <string name="ht_start_measure">माप शुरू करें</string>
     <string name="ht_heart_rate">हृदय गति</string>
-    <string name="ht_heart_rate_detail_description">हृदय गति आपकी हृदय प्रतिक्रिया को दर्शाती है। दीर्घकालिक रुझानों को ट्रैक करें और असामान्य रीडिंग के लिए अपने डॉक्टर से परामर्श करें।</string>
-    <string name="ht_record_time_placeholder">--</string>
     <string name="ht_heart_rate_no_tags">कोई लेबल नहीं</string>
     <string name="ht_record_not_ready">रिकॉर्ड लोड हो रहा है</string>
     <string name="ht_delete_record_failed">रिकॉर्ड हटाना विफल</string>
-    <string name="ht_heart_rate_record_deleted">रिकॉर्ड हटाया गया</string>
-    <string name="ht_blood_sugar_record_deleted">ब्लड शुगर रिकॉर्ड हटाया गया</string>
     <string name="ht_bpm">BPM</string>
     <string name="ht_cholesterol">कोलेस्ट्रॉल</string>
     <string name="ht_weight_and_bmi"><![CDATA[वजन & BMI]]></string>
-    <string name="ht_value_with_unit">%1$s %2$s</string>
 
     <string name="ht_heart_rate_status_slow">धीमी</string>
     <string name="ht_heart_rate_status_normal">सामान्य</string>
@@ -294,23 +272,10 @@
     <string name="ht_skip">छोड़ें</string>
     <string name="ht_next">अगला</string>
     <string name="ht_start_health_journey">अपनी स्वास्थ्य यात्रा शुरू करें!</string>
-    <string name="ht_guide_bp_des">अभी अपनी पहली रक्तचाप रीडिंग जोड़ने के लिए क्लिक करें।</string>
     <string name="ht_guide_bs_des">अभी अपनी पहली ब्लड शुगर रीडिंग जोड़ने के लिए क्लिक करें।</string>
-    <string name="ht_guide_hr_des">अभी अपनी पहली हृदय गति रीडिंग जोड़ने के लिए क्लिक करें।</string>
     <string name="ht_target_range">लक्ष्य सीमा</string>
     <string name="ht_target_range_temp">लक्ष्य सीमा(%1$s)</string>
     <string name="ht_reset">रीसेट</string>
-
-    <string-array name="ht_heart_rate_labels">
-        <item>उत्साहित</item>
-        <item>उदास</item>
-        <item>शांत</item>
-        <item>तीव्र व्यायाम के बाद</item>
-        <item>एरोबिक व्यायाम के बाद</item>
-        <item>एनारोबिक व्यायाम के बाद</item>
-        <item>डाइट पर</item>
-        <item>पीने के बाद</item>
-    </string-array>
 
     <string name="ht_please_input_complete_data">कृपया पूर्ण डेटा दर्ज करें</string>
     <string name="ht_range_order_error">सीमा मान बढ़ते क्रम में होने चाहिए</string>
@@ -321,16 +286,12 @@
 
     <string name="ht_health_service_channel_name">स्वास्थ्य निगरानी सेवा</string>
     <string name="ht_health_service_channel_description">त्वरित स्वास्थ्य डेटा रिकॉर्डिंग के लिए स्थायी नोटिफिकेशन प्रदर्शित करता है</string>
-    <string name="ht_custom_notification_channel_name">स्वास्थ्य अलर्ट</string>
-    <string name="ht_custom_notification_channel_description">ब्लड शुगर, रक्तचाप, हृदय गति और अधिक के लिए रिमाइंडर</string>
     <string name="ht_exit">बाहर निकलें</string>
     <string name="ht_are_you_sure_exit">क्या आप ऐप से बाहर निकलना चाहते हैं?</string>
-    <string name="ht_health_statistics">स्वास्थ्य आँकड़े</string>
     <string name="ht__7_days">7 दिन</string>
     <string name="ht__1_month">1 महीना</string>
     <string name="ht__3_month">3 महीने</string>
     <string name="ht_select">चुनें</string>
-    <string name="ht_summary">सारांश</string>
     <string name="ht_avg">औसत</string>
     <string name="ht_min">न्यूनतम</string>
     <string name="ht_max">अधिकतम</string>
@@ -341,7 +302,6 @@
 
     <string name="ht_hydrate">हाइड्रेट</string>
     <string name="ht_walking">चलना</string>
-    <string name="ht_walking_steps">चलने के कदम</string>
     <string name="ht_drink_btn_format">%d %s पिएं</string>
     <string name="ht_hydrate_cup_count_format">आज आपने %d गिलास पानी पिया</string>
     <string name="ht_hydrate_complete_message">बहुत बढ़िया! आपने अपना पानी पूरा कर लिया!</string>
@@ -361,7 +321,6 @@
     <string name="ht_hydrate_reminder_empty_message">आपने अभी तक कोई पानी रिमाइंडर सेट नहीं किया है। अपना पहला रिमाइंडर जोड़कर अपनी हाइड्रेशन आदत बनाना शुरू करें!</string>
     <string name="ht_alarm_hydration_content">पानी पीने का समय!</string>
     <string name="ht_drink_now">अभी देखें</string>
-    <string name="ht_medication_notification_title_with_time">%1$s %2$s बजे</string>
     <string name="ht_hydrate_quick_add">त्वरित जोड़ें</string>
     <string name="ht_step_count">कदम गिनती</string>
     <string name="ht_today">आज</string>
@@ -370,18 +329,15 @@
     <string name="ht_today_s_goal">आज का लक्ष्य</string>
     <string name="ht_step_goal">कदम लक्ष्य</string>
     <string name="ht_enable_step_count">शारीरिक गतिविधि अनुमति आवश्यक</string>
-    <string name="ht_allow">अनुमति दें</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">इस प्राधिकरण के बिना, कदम-गिनती सुविधा <font color="#02BC77">काम नहीं करेगी</font></string>
 
     <string name="ht_go_to_set">सेट करने जाएं</string>
     <string name="ht_choose_language">भाषा चुनें</string>
     <string name="ht_language">भाषा</string>
-    <string name="ht_unit_settings">इकाई सेटिंग्स</string>
     <string name="ht_target_range_settings">लक्ष्य सीमा सेटिंग्स</string>
     <string name="ht_personal_info">व्यक्तिगत जानकारी</string>
     <string name="ht_feedback">प्रतिक्रिया</string>
     <string name="ht_privacy_policy">गोपनीयता नीति</string>
-    <string name="ht_terms_of_service">सेवा की शर्तें</string>
     <string name="ht_settings_section_tracking_and_targets">ट्रैकिंग और लक्ष्य</string>
     <string name="ht_settings_section_preferences">प्राथमिकताएं</string>
     <string name="ht_settings_section_help_and_feedback">सहायता और प्रतिक्रिया</string>
