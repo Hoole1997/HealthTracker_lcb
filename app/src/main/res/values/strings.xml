@@ -168,6 +168,7 @@
     <string name="ht_assistant_answer">Answer</string>
     <string name="ht_assistant_neglect">Neglect</string>
     <string name="ht_alarm_management">Alarm Management</string>
+    <string name="ht_reminder_for">Reminder for %s</string>
     <string name="ht_step_stats_max_title">Maximum</string>
     <string name="ht_step_stats_min_title">Minimum</string>
     <string name="ht_step_stats_avg_title">Average</string>
@@ -929,13 +930,13 @@
     </string-array>
 
     <string-array name="ht_week_simple">
-        <item>Sun</item>
         <item>Mon</item>
         <item>Tue</item>
         <item>Wed</item>
         <item>Thu</item>
         <item>Fri</item>
         <item>Sat</item>
+        <item>Sun</item>
     </string-array>
     <string-array name="ht_week_full">
         <item>Sunday</item>

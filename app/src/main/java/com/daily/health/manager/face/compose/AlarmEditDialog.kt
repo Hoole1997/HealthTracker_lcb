@@ -63,11 +63,22 @@ fun AlarmEditDialog(
     onSave: (hour: Int, minute: Int, repeatFlag: Int) -> Unit,
     onDelete: (() -> Unit)? = null
 ) {
+    val typeNameRes = when (alarmType) {
+        AlarmRecord.TYPE_BLOOD_SUGAR -> R.string.ht_blood_suger
+        AlarmRecord.TYPE_BLOOD_PRESSURE -> R.string.ht_blood_pressure
+        AlarmRecord.TYPE_HEART_RATE -> R.string.ht_heart_rate
+        AlarmRecord.TYPE_BMI -> R.string.ht_bmi
+        AlarmRecord.TYPE_CHOLESTEROL -> R.string.ht_cholesterol
+        else -> R.string.ht_alarm_default_title
+    }
+    val typeName = stringResource(typeNameRes)
+    val dialogTitle = stringResource(R.string.ht_reminder_for, typeName)
+
     CommonAlarmConfigDialog(
         initialHour = alarmRecord?.hour ?: 8,
         initialMinute = alarmRecord?.minute ?: 0,
         initialRepeatFlag = alarmRecord?.repeatFlag ?: AlarmRecord.REPEAT_DAILY,
-        title = if (alarmRecord == null) stringResource(R.string.ht_add_record) else stringResource(R.string.ht_edit_record),
+        title = dialogTitle,
         confirmButtonText = stringResource(R.string.ht_save),
         onDismiss = onDismiss,
         onConfirm = onSave,
@@ -382,16 +393,30 @@ fun WeekdaySelector(
     repeatFlag: Int,
     onFlagChanged: (Int) -> Unit
 ) {
-    // 星期标签：MON, TUE ...
-    val days = stringArrayResource(R.array.ht_week_simple)
+    // Use WeekDay enum to ensure correct mask mapping and order (Mon -> Sun)
+    val displayDays = remember {
+        listOf(
+            com.daily.health.manager.util.WeekDay.MONDAY,
+            com.daily.health.manager.util.WeekDay.TUESDAY,
+            com.daily.health.manager.util.WeekDay.WEDNESDAY,
+            com.daily.health.manager.util.WeekDay.THURSDAY,
+            com.daily.health.manager.util.WeekDay.FRIDAY,
+            com.daily.health.manager.util.WeekDay.SATURDAY,
+            com.daily.health.manager.util.WeekDay.SUNDAY
+        )
+    }
+    
+    // Labels from strings.xml (now reordered in strings.xml: Mon, Tue, ..., Sun)
+    val dayLabels = stringArrayResource(R.array.ht_week_simple)
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        days.forEachIndexed { index, dayLabel ->
-            val mask = 1 shl index
+        displayDays.forEachIndexed { index, day ->
+            val mask = day.getMask()
             val isSelected = (repeatFlag and mask) != 0
+            val label = dayLabels.getOrNull(index) ?: ""
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -410,7 +435,7 @@ fun WeekdaySelector(
                     }
             ) {
                 Text(
-                    text = dayLabel.uppercase(),
+                    text = label.uppercase(),
                     color = colorResource(R.color.t1),
                     fontSize = 15.sp, // Slightly smaller
                     fontWeight = FontWeight.Bold

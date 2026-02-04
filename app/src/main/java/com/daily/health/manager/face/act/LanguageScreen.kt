@@ -59,6 +59,7 @@ import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
+import com.daily.health.manager.face.compose.HealthTopBar
 
 
 class LanguageScreen: BaseMVVMActivity<BaseViewModel, HtActivityLanguageSelectBinding>() {
@@ -208,11 +209,27 @@ private fun LanguageSelectScreen(
             .fillMaxSize()
             .background(bgColor)
     ) {
-        TopBar(
-            applyChange = applyChange,
-            confirmEnabled = confirmEnabled,
-            onBack = onBack,
-            onConfirm = { onConfirm(selectedIndex) }
+        HealthTopBar(
+            title = stringResource(R.string.ht_choose_language),
+            onBack = if (applyChange) onBack else null,
+            rightAction = {
+                TextButton(
+                    onClick = { onConfirm(selectedIndex) },
+                    enabled = confirmEnabled,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = colorResource(R.color.c5),
+                        disabledContentColor = Color(android.graphics.Color.DKGRAY)
+                    ),
+                    contentPadding = ButtonDefaults.TextButtonContentPadding
+                ) {
+                    val confirmColor = if (confirmEnabled) colorResource(R.color.c5) else Color(android.graphics.Color.DKGRAY)
+                    Text(
+                        text = stringResource(R.string.ht_confirm),
+                        color = confirmColor,
+                        fontSize = 16.sp,
+                    )
+                }
+            }
         )
 
         LazyColumn(
@@ -238,73 +255,6 @@ private fun LanguageSelectScreen(
                     titleFontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun TopBar(
-    applyChange: Boolean,
-    confirmEnabled: Boolean,
-    onBack: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    val bgColor = colorResource(R.color.c1)
-    val titleColor = colorResource(R.color.t1)
-    val confirmColor = if (confirmEnabled) colorResource(R.color.c5) else Color(android.graphics.Color.DKGRAY)
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-            .background(bgColor)
-            .padding(end = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (applyChange) {
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ht_ic_back),
-                        contentDescription = "back",
-                        tint = Color.Unspecified,
-                    )
-                }
-            }
-        } else {
-            Spacer(modifier = Modifier.width(48.dp))
-        }
-
-        Text(
-            text = stringResource(R.string.ht_choose_language),
-            color = titleColor,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f)
-        )
-
-        TextButton(
-            onClick = onConfirm,
-            enabled = confirmEnabled,
-            colors = ButtonDefaults.textButtonColors(
-                contentColor = colorResource(R.color.c5),
-                disabledContentColor = Color(android.graphics.Color.DKGRAY)
-            ),
-            contentPadding = ButtonDefaults.TextButtonContentPadding
-        ) {
-            Text(
-                text = stringResource(R.string.ht_confirm),
-                color = confirmColor,
-                fontSize = 16.sp,
-            )
         }
     }
 }
