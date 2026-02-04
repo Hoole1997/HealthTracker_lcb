@@ -1,9 +1,11 @@
 package net.corekit.monetize.ads
 
+import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.CoroutineScope
@@ -109,25 +111,31 @@ class NativeAdAutoRefreshManager(
     private val attachStateListener = object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View) {
             AdLogger.d("[$TAG] View 已附加到窗口")
-            onVisibilityChanged(true)
+            updateVisibility()
         }
         
         override fun onViewDetachedFromWindow(v: View) {
             AdLogger.d("[$TAG] View 已从窗口分离")
-            onVisibilityChanged(false)
+            updateVisibility()
         }
+    }
+
+    /** 窗口焦点监听器 */
+    private val windowFocusChangeListener = ViewTreeObserver.OnWindowFocusChangeListener { hasFocus ->
+        AdLogger.d("[$TAG] Window 焦点变化: $hasFocus")
+        updateVisibility()
     }
     
     /** 生命周期观察者 */
     private val lifecycleObserver = object : DefaultLifecycleObserver {
         override fun onResume(owner: LifecycleOwner) {
             AdLogger.d("[$TAG] 生命周期 onResume")
-            onVisibilityChanged(true)
+            updateVisibility()
         }
         
         override fun onPause(owner: LifecycleOwner) {
             AdLogger.d("[$TAG] 生命周期 onPause")
-            onVisibilityChanged(false)
+            updateVisibility()
         }
         
         override fun onDestroy(owner: LifecycleOwner) {
@@ -141,6 +149,8 @@ class NativeAdAutoRefreshManager(
         lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
         // 注册 View 附加状态监听器
         container.addOnAttachStateChangeListener(attachStateListener)
+        // 注册 Window 焦点监听
+        container.viewTreeObserver.addOnWindowFocusChangeListener(windowFocusChangeListener)
     }
     
     /**
@@ -161,6 +171,47 @@ class NativeAdAutoRefreshManager(
     }
     
     /**
+     * 更新综合可见性状态
+     */
+    private fun updateVisibility() {
+        onVisibilityChanged(isReallyVisible())
+    }
+
+    /**
+     * 核心判定逻辑：是否真正可见
+     * 1. 生命周期在 Resume 范围内
+     * 2. View 已附加且 isShown (父级皆可见)
+     * 3. 拥有 Window 焦点 (解决 Dialog 遮挡)
+     * 4. 屏幕上可见面积 > 50% (解决滚动出屏)
+     */
+    private fun isReallyVisible(): Boolean {
+        if (isDestroyed) return false
+        
+        // 1. 基础状态检查
+        val lifecycleVisible = lifecycleOwner.lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)
+        if (!lifecycleVisible) return false
+        
+        // 2. 层级检查
+        if (!container.isAttachedToWindow || !container.isShown) return false
+        
+        // 3. 焦点检查 (处理 Dialog 遮挡)
+        if (!container.hasWindowFocus()) return false
+        
+        // 4. 面积检查
+        val rect = Rect()
+        val isVisibleOnScreen = container.getGlobalVisibleRect(rect)
+        if (!isVisibleOnScreen) return false
+        
+        val visibleArea = rect.width().toLong() * rect.height()
+        val totalArea = container.width.toLong() * container.height
+        
+        if (totalArea <= 0) return true // 尚未 Layout 完成时放行
+        
+        val visibleRatio = visibleArea.toFloat() / totalArea
+        return visibleRatio >= 0.5f
+    }
+
+    /**
      * 可见性变化处理
      * @param visible 是否可见
      */
@@ -174,22 +225,21 @@ class NativeAdAutoRefreshManager(
         lastVisibleState = visible
         
         if (visible) {
+            AdLogger.i("[$TAG] 广告变为 [真正可见]，触发刷新决策")
             // 从不可见变为可见：检查冷却时间，避免频繁刷新
             val timeSinceLastRefresh = System.currentTimeMillis() - lastRefreshTime
             if (timeSinceLastRefresh < VISIBILITY_COOLDOWN_MS) {
-                AdLogger.d("[$TAG] 可见性变化冷却中，距上次刷新 ${timeSinceLastRefresh}ms，跳过刷新，继续计时")
-                // 不刷新，但重新开始计时
+                AdLogger.d("[$TAG] 可见性变化冷却中，继续计时")
                 scheduleRefresh()
                 return
             }
             
             // 使用 Dwell Time 检测：用户需要停留一定时间才触发刷新
-            AdLogger.d("[$TAG] 广告从不可见变为可见，启动 Dwell Time 检测 (${DWELL_TIME_MS}ms)")
             handler.removeCallbacks(dwellTimeRunnable)
             handler.postDelayed(dwellTimeRunnable, DWELL_TIME_MS)
         } else {
             // 从可见变为不可见：停止计时和 Dwell Time 检测
-            AdLogger.d("[$TAG] 广告从可见变为不可见，停止计时")
+            AdLogger.i("[$TAG] 广告变为 [不可见/被遮挡]，挂起计时器")
             handler.removeCallbacks(dwellTimeRunnable)
             cancelRefresh()
         }
@@ -218,6 +268,14 @@ class NativeAdAutoRefreshManager(
      */
     private fun performRefresh() {
         if (isDestroyed || !isStarted) return
+        
+        // 二次校验：在异步回调触发瞬间，如果已经不可见，则跳过
+        if (!isReallyVisible()) {
+            AdLogger.d("[$TAG] 定时器触发刷新，但当前环境判定不可见，挂起刷新")
+            onVisibilityChanged(false)
+            return
+        }
+        
         performRefreshInternal()
     }
     
@@ -292,6 +350,12 @@ class NativeAdAutoRefreshManager(
             scope.cancel()
         } catch (e: Exception) {
             AdLogger.e("[$TAG] 取消协程作用域失败", e)
+        }
+        
+        try {
+            container.viewTreeObserver.removeOnWindowFocusChangeListener(windowFocusChangeListener)
+        } catch (e: Exception) {
+            // Ignore
         }
         
         try {
