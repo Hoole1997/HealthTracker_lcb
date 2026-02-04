@@ -49,6 +49,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
 import com.daily.health.manager.data.entity.AlarmRecord
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import com.daily.health.manager.face.compose.ad.NativeAdContainer
+import net.corekit.monetize.ui.NativeAdStyle
+import net.corekit.monetize.ads.AdPosition
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlin.math.abs
@@ -116,6 +121,7 @@ fun CommonAlarmConfigDialog(
     val currentHour = remember(initialHour) { mutableStateOf(initialHour) }
     val currentMinute = remember(initialMinute) { mutableStateOf(initialMinute) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scrollState = rememberScrollState()
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -127,6 +133,7 @@ fun CommonAlarmConfigDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(scrollState)
                 .padding(24.dp), 
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -286,6 +293,13 @@ fun CommonAlarmConfigDialog(
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                NativeAdContainer(
+                    position = AdPosition.NA_ALARM_CONFIG_DIALOG,
+                    style = NativeAdStyle.CARD_7
+                )
             }
         }
     }

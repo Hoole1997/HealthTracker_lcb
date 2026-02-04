@@ -16,10 +16,6 @@ fun ReminderSettingsDialog(
     onAdd: (hour: Int, minute: Int, repeatFlag: Int) -> Unit,
     onDismiss: () -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        ReportDataManager.reportData("reminder_dialog_show", mapOf("type" to alarmType.toString()))
-    }
-
     val calendar = Calendar.getInstance()
     val initialHour = calendar.get(Calendar.HOUR_OF_DAY)
     val initialMinute = calendar.get(Calendar.MINUTE)
@@ -46,14 +42,9 @@ fun ReminderSettingsDialog(
         description = null, // Sync with AlarmEditDialog: No description
         confirmButtonText = stringResource(R.string.ht_save), // Sync with AlarmEditDialog: "Save"
         onDismiss = {
-            ReportDataManager.reportData("reminder_close_click", mapOf("type" to alarmType.toString()))
             onDismiss()
         },
         onConfirm = { h, m, f ->
-            ReportDataManager.reportData("reminder_add_click", mapOf(
-                "type" to alarmType.toString(),
-                "time" to String.format("%02d:%02d", h, m)
-            ))
             onAdd(h, m, f)
         },
         showDelete = false,

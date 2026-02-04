@@ -176,4 +176,6 @@ object AdPosition {
     /** 首页底部横幅广告 */
     val BA_HOME_BOTTOM = "BA_Home_bottom"
     val NA_NEW_GUIDE_FULL = "NA_New_Guide_Full"
+    /** 闹钟设置/引导弹窗底部广告 */
+    val NA_ALARM_CONFIG_DIALOG = "NA_Alarm_Config_Dialog"
 }
