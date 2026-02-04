@@ -43,7 +43,7 @@ fun NativeAdContainer(
     var containerView by remember { mutableStateOf<FrameLayout?>(null) }
 
     // 独立于重组的加载逻辑
-    LaunchedEffect(position) {
+    LaunchedEffect(position, containerView) {
         val container = containerView ?: return@LaunchedEffect
         AdLogger.d("[NativeAdContainer] 开始加载流程 | Position: $position")
         
