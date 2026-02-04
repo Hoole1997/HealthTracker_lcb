@@ -139,7 +139,7 @@ fun CommonAlarmConfigDialog(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 24.dp), 
+                    .padding(start = 24.dp, end = 24.dp, top = 24.dp), 
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Header (Title + Optional Close Icon)
@@ -299,8 +299,8 @@ fun CommonAlarmConfigDialog(
                     }
                 }
 
-                // 减小按钮和广告之间的间距到原来的二分之一 (16dp -> 8dp)
-                Spacer(modifier = Modifier.height(8.dp))
+                // 固定按钮和广告之间的间距为 20dp
+                Spacer(modifier = Modifier.height(20.dp))
             }
 
             NativeAdContainer(
