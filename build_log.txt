@@ -1,0 +1,355 @@
+Reusing configuration cache.
+> Task :earthquake:preBuild UP-TO-DATE
+> Task :framework:preBuild UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :metrics:preBuild UP-TO-DATE
+> Task :appraise:preBuild UP-TO-DATE
+> Task :monetize:preBuild UP-TO-DATE
+> Task :earthquake:preDebugBuild UP-TO-DATE
+> Task :app:preInternalDebugBuild UP-TO-DATE
+> Task :weather:preBuild UP-TO-DATE
+> Task :framework:preDebugBuild UP-TO-DATE
+> Task :appraise:preDebugBuild UP-TO-DATE
+> Task :core:preBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:preDebugBuild UP-TO-DATE
+> Task :metrics:preDebugBuild UP-TO-DATE
+> Task :app:generateStringFogInternalDebug
+> Task :earthquake:generateDebugResValues UP-TO-DATE
+> Task :app:injectCrashlyticsMappingFileIdInternalDebug UP-TO-DATE
+> Task :app:processInternalDebugGoogleServices UP-TO-DATE
+> Task :core:generateDebugResValues UP-TO-DATE
+> Task :monetize:preDebugBuild UP-TO-DATE
+> Task :app:generateInternalDebugResValues UP-TO-DATE
+> Task :weather:preDebugBuild UP-TO-DATE
+> Task :app:mergeInternalDebugNativeDebugMetadata NO-SOURCE
+> Task :framework:generateDebugResValues UP-TO-DATE
+> Task :monetize:generateDebugResValues UP-TO-DATE
+> Task :weather:generateDebugResValues UP-TO-DATE
+> Task :appraise:generateDebugResValues UP-TO-DATE
+> Task :earthquake:generateDebugResources UP-TO-DATE
+> Task :metrics:generateDebugResValues UP-TO-DATE
+> Task :metrics:generateDebugResources UP-TO-DATE
+> Task :framework:generateDebugResources UP-TO-DATE
+> Task :core:generateDebugResources UP-TO-DATE
+> Task :weather:generateDebugResources UP-TO-DATE
+> Task :appraise:generateDebugResources UP-TO-DATE
+> Task :metrics:packageDebugResources UP-TO-DATE
+> Task :core:packageDebugResources UP-TO-DATE
+> Task :monetize:generateDebugResources UP-TO-DATE
+> Task :earthquake:packageDebugResources UP-TO-DATE
+> Task :core:parseDebugLocalResources UP-TO-DATE
+> Task :earthquake:parseDebugLocalResources UP-TO-DATE
+> Task :appraise:packageDebugResources UP-TO-DATE
+> Task :core:generateDebugRFile UP-TO-DATE
+> Task :framework:packageDebugResources UP-TO-DATE
+> Task :framework:parseDebugLocalResources UP-TO-DATE
+> Task :appraise:parseDebugLocalResources UP-TO-DATE
+> Task :earthquake:generateDebugRFile UP-TO-DATE
+> Task :appraise:generateDebugRFile UP-TO-DATE
+> Task :framework:generateDebugRFile UP-TO-DATE
+> Task :app:generateInternalDebugResources UP-TO-DATE
+> Task :weather:packageDebugResources UP-TO-DATE
+> Task :weather:parseDebugLocalResources UP-TO-DATE
+> Task :metrics:parseDebugLocalResources UP-TO-DATE
+> Task :weather:generateDebugRFile UP-TO-DATE
+> Task :monetize:packageDebugResources UP-TO-DATE
+> Task :metrics:generateDebugRFile UP-TO-DATE
+> Task :app:generateInternalDebugBuildConfig UP-TO-DATE
+> Task :appraise:writeDebugAarMetadata UP-TO-DATE
+> Task :monetize:parseDebugLocalResources UP-TO-DATE
+> Task :core:writeDebugAarMetadata UP-TO-DATE
+> Task :monetize:generateDebugRFile UP-TO-DATE
+> Task :framework:writeDebugAarMetadata UP-TO-DATE
+> Task :earthquake:writeDebugAarMetadata UP-TO-DATE
+> Task :monetize:writeDebugAarMetadata UP-TO-DATE
+> Task :metrics:writeDebugAarMetadata UP-TO-DATE
+> Task :weather:writeDebugAarMetadata UP-TO-DATE
+> Task :core:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:createInternalDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksInternalDebug UP-TO-DATE
+> Task :appraise:extractDeepLinksDebug UP-TO-DATE
+> Task :appraise:processDebugManifest UP-TO-DATE
+> Task :core:extractDeepLinksDebug UP-TO-DATE
+> Task :app:packageInternalDebugResources UP-TO-DATE
+> Task :core:processDebugManifest UP-TO-DATE
+> Task :earthquake:extractDeepLinksDebug UP-TO-DATE
+> Task :app:parseInternalDebugLocalResources UP-TO-DATE
+> Task :framework:extractDeepLinksDebug UP-TO-DATE
+> Task :earthquake:processDebugManifest UP-TO-DATE
+> Task :metrics:extractDeepLinksDebug UP-TO-DATE
+> Task :framework:processDebugManifest UP-TO-DATE
+> Task :monetize:extractDeepLinksDebug UP-TO-DATE
+> Task :metrics:processDebugManifest UP-TO-DATE
+> Task :framework:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :weather:extractDeepLinksDebug UP-TO-DATE
+> Task :appraise:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :monetize:processDebugManifest UP-TO-DATE
+> Task :weather:processDebugManifest UP-TO-DATE
+> Task :core:compileDebugLibraryResources UP-TO-DATE
+> Task :appraise:compileDebugLibraryResources UP-TO-DATE
+> Task :earthquake:compileDebugLibraryResources UP-TO-DATE
+> Task :framework:compileDebugLibraryResources UP-TO-DATE
+> Task :metrics:compileDebugLibraryResources UP-TO-DATE
+> Task :monetize:compileDebugLibraryResources UP-TO-DATE
+> Task :appraise:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :weather:compileDebugLibraryResources UP-TO-DATE
+> Task :framework:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :framework:javaPreCompileDebug UP-TO-DATE
+> Task :framework:generateDebugBuildConfig UP-TO-DATE
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :appraise:javaPreCompileDebug UP-TO-DATE
+> Task :core:generateStringFogDebug
+> Task :core:javaPreCompileDebug UP-TO-DATE
+> Task :core:generateDebugBuildConfig UP-TO-DATE
+> Task :earthquake:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :monetize:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :earthquake:generateStringFogDebug
+> Task :monetize:generateStringFogDebug
+> Task :monetize:generateDebugBuildConfig UP-TO-DATE
+> Task :monetize:javaPreCompileDebug UP-TO-DATE
+> Task :earthquake:javaPreCompileDebug UP-TO-DATE
+> Task :metrics:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :metrics:generateDebugBuildConfig UP-TO-DATE
+> Task :metrics:generateStringFogDebug
+> Task :weather:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :metrics:javaPreCompileDebug UP-TO-DATE
+> Task :weather:generateDebugBuildConfig UP-TO-DATE
+> Task :weather:javaPreCompileDebug UP-TO-DATE
+> Task :app:prePlaystoreDebugBuild UP-TO-DATE
+> Task :app:javaPreCompileInternalDebug UP-TO-DATE
+> Task :app:generatePlaystoreDebugResValues UP-TO-DATE
+> Task :app:generatePlaystoreDebugResources UP-TO-DATE
+> Task :app:injectCrashlyticsMappingFileIdPlaystoreDebug UP-TO-DATE
+> Task :weather:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generatePlaystoreDebugBuildConfig UP-TO-DATE
+> Task :app:processPlaystoreDebugGoogleServices UP-TO-DATE
+> Task :metrics:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateStringFogPlaystoreDebug
+> Task :app:dataBindingMergeDependencyArtifactsPlaystoreDebug UP-TO-DATE
+> Task :app:dataBindingMergeDependencyArtifactsInternalDebug UP-TO-DATE
+> Task :app:createPlaystoreDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksPlaystoreDebug UP-TO-DATE
+> Task :earthquake:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:javaPreCompilePlaystoreDebug UP-TO-DATE
+> Task :app:mapInternalDebugSourceSetPaths UP-TO-DATE
+> Task :app:mergeInternalDebugResources UP-TO-DATE
+> Task :app:mergeInternalDebugShaders UP-TO-DATE
+> Task :monetize:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :appraise:mergeDebugShaders UP-TO-DATE
+> Task :appraise:compileDebugShaders NO-SOURCE
+> Task :appraise:generateDebugAssets UP-TO-DATE
+> Task :app:mapPlaystoreDebugSourceSetPaths UP-TO-DATE
+> Task :app:compileInternalDebugShaders NO-SOURCE
+> Task :app:generateInternalDebugAssets UP-TO-DATE
+> Task :core:mergeDebugShaders UP-TO-DATE
+> Task :framework:mergeDebugShaders UP-TO-DATE
+> Task :metrics:mergeDebugShaders UP-TO-DATE
+> Task :core:compileDebugShaders NO-SOURCE
+> Task :earthquake:mergeDebugShaders UP-TO-DATE
+> Task :appraise:packageDebugAssets UP-TO-DATE
+> Task :framework:compileDebugShaders NO-SOURCE
+> Task :framework:generateDebugAssets UP-TO-DATE
+> Task :core:generateDebugAssets UP-TO-DATE
+> Task :earthquake:compileDebugShaders NO-SOURCE
+> Task :metrics:compileDebugShaders NO-SOURCE
+> Task :metrics:generateDebugAssets UP-TO-DATE
+> Task :earthquake:generateDebugAssets UP-TO-DATE
+> Task :framework:packageDebugAssets UP-TO-DATE
+> Task :monetize:mergeDebugShaders UP-TO-DATE
+> Task :app:packagePlaystoreDebugResources UP-TO-DATE
+> Task :core:packageDebugAssets UP-TO-DATE
+> Task :app:checkPlaystoreDebugAarMetadata UP-TO-DATE
+> Task :monetize:compileDebugShaders NO-SOURCE
+> Task :metrics:packageDebugAssets UP-TO-DATE
+> Task :weather:mergeDebugShaders UP-TO-DATE
+> Task :monetize:generateDebugAssets UP-TO-DATE
+> Task :app:parsePlaystoreDebugLocalResources UP-TO-DATE
+> Task :weather:compileDebugShaders NO-SOURCE
+> Task :app:desugarInternalDebugFileDependencies UP-TO-DATE
+> Task :weather:generateDebugAssets UP-TO-DATE
+> Task :app:checkInternalDebugAarMetadata UP-TO-DATE
+> Task :appraise:mergeDebugJniLibFolders UP-TO-DATE
+> Task :monetize:packageDebugAssets UP-TO-DATE
+> Task :app:mergeInternalDebugJniLibFolders UP-TO-DATE
+> Task :earthquake:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:mergeDebugJniLibFolders UP-TO-DATE
+> Task :weather:packageDebugAssets UP-TO-DATE
+> Task :framework:mergeDebugJniLibFolders UP-TO-DATE
+> Task :metrics:mergeDebugJniLibFolders UP-TO-DATE
+> Task :appraise:mergeDebugNativeLibs NO-SOURCE
+> Task :earthquake:mergeDebugNativeLibs NO-SOURCE
+> Task :earthquake:packageDebugAssets UP-TO-DATE
+> Task :core:mergeDebugNativeLibs NO-SOURCE
+> Task :appraise:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :monetize:mergeDebugJniLibFolders UP-TO-DATE
+> Task :metrics:mergeDebugNativeLibs NO-SOURCE
+> Task :framework:mergeDebugNativeLibs NO-SOURCE
+> Task :core:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :monetize:mergeDebugNativeLibs NO-SOURCE
+> Task :metrics:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :earthquake:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :weather:mergeDebugJniLibFolders UP-TO-DATE
+> Task :monetize:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:writeInternalDebugSigningConfigVersions UP-TO-DATE
+> Task :app:mergePlaystoreDebugNativeDebugMetadata NO-SOURCE
+> Task :framework:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:validateSigningInternalDebug UP-TO-DATE
+> Task :weather:mergeDebugNativeLibs NO-SOURCE
+> Task :app:writeInternalDebugAppMetadata UP-TO-DATE
+> Task :app:desugarPlaystoreDebugFileDependencies UP-TO-DATE
+> Task :weather:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:mergePlaystoreDebugJniLibFolders UP-TO-DATE
+> Task :framework:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:mergePlaystoreDebugShaders UP-TO-DATE
+> Task :app:writePlaystoreDebugAppMetadata UP-TO-DATE
+> Task :app:validateSigningPlaystoreDebug UP-TO-DATE
+> Task :app:compilePlaystoreDebugShaders NO-SOURCE
+> Task :app:generatePlaystoreDebugAssets UP-TO-DATE
+> Task :app:mergePlaystoreDebugResources UP-TO-DATE
+> Task :app:mergeInternalDebugAssets UP-TO-DATE
+> Task :app:mergePlaystoreDebugAssets UP-TO-DATE
+> Task :app:compressInternalDebugAssets UP-TO-DATE
+> Task :app:processInternalDebugMainManifest UP-TO-DATE
+> Task :appraise:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :core:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:writePlaystoreDebugSigningConfigVersions UP-TO-DATE
+> Task :app:processPlaystoreDebugMainManifest UP-TO-DATE
+> Task :app:processInternalDebugManifest UP-TO-DATE
+> Task :weather:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:processInternalDebugManifestForPackage UP-TO-DATE
+> Task :app:processPlaystoreDebugManifest UP-TO-DATE
+> Task :app:mergePlaystoreDebugNativeLibs UP-TO-DATE
+> Task :app:mergeInternalDebugNativeLibs UP-TO-DATE
+> Task :app:checkPlaystoreDebugDuplicateClasses UP-TO-DATE
+> Task :app:processPlaystoreDebugManifestForPackage UP-TO-DATE
+> Task :app:stripInternalDebugDebugSymbols UP-TO-DATE
+> Task :app:stripPlaystoreDebugDebugSymbols UP-TO-DATE
+> Task :app:checkInternalDebugDuplicateClasses UP-TO-DATE
+> Task :framework:compileDebugKotlin UP-TO-DATE
+> Task :framework:processDebugJavaRes UP-TO-DATE
+> Task :metrics:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :framework:compileDebugJavaWithJavac UP-TO-DATE
+> Task :framework:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :framework:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :framework:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :monetize:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:compressPlaystoreDebugAssets UP-TO-DATE
+> Task :app:mergeExtDexInternalDebug UP-TO-DATE
+> Task :core:kaptGenerateStubsDebugKotlin UP-TO-DATE
+> Task :core:kaptDebugKotlin SKIPPED
+> Task :appraise:compileDebugKotlin UP-TO-DATE
+> Task :appraise:processDebugJavaRes UP-TO-DATE
+> Task :appraise:compileDebugJavaWithJavac UP-TO-DATE
+> Task :appraise:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :appraise:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :appraise:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :earthquake:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :weather:compileDebugKotlin UP-TO-DATE
+> Task :weather:processDebugJavaRes UP-TO-DATE
+> Task :app:processInternalDebugResources UP-TO-DATE
+> Task :weather:compileDebugJavaWithJavac UP-TO-DATE
+> Task :weather:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :weather:bundleLibCompileToJarDebug UP-TO-DATE
+
+> Task :app:processPlaystoreDebugResources UP-TO-DATE
+Invalid https.proxyPort '', using default 443
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 36
+
+This Android Gradle plugin (8.6.0) was tested up to compileSdk = 35.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 36.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 36 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=36
+to this project's gradle.properties.
+
+> Task :app:dataBindingGenBaseClassesPlaystoreDebug UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesInternalDebug UP-TO-DATE
+> Task :weather:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:mergeExtDexPlaystoreDebug UP-TO-DATE
+> Task :core:compileDebugKotlin UP-TO-DATE
+> Task :core:processDebugJavaRes UP-TO-DATE
+> Task :core:compileDebugJavaWithJavac UP-TO-DATE
+> Task :core:transformDebugClassesWithAsm UP-TO-DATE
+> Task :core:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :core:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :metrics:compileDebugKotlin UP-TO-DATE
+> Task :metrics:processDebugJavaRes UP-TO-DATE
+> Task :metrics:compileDebugJavaWithJavac UP-TO-DATE
+> Task :metrics:transformDebugClassesWithAsm UP-TO-DATE
+> Task :metrics:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :metrics:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :metrics:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :monetize:compileDebugKotlin UP-TO-DATE
+> Task :monetize:processDebugJavaRes UP-TO-DATE
+> Task :monetize:compileDebugJavaWithJavac UP-TO-DATE
+> Task :monetize:transformDebugClassesWithAsm UP-TO-DATE
+> Task :monetize:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :monetize:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :monetize:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :earthquake:compileDebugKotlin UP-TO-DATE
+> Task :earthquake:processDebugJavaRes UP-TO-DATE
+> Task :earthquake:compileDebugJavaWithJavac UP-TO-DATE
+> Task :earthquake:transformDebugClassesWithAsm UP-TO-DATE
+> Task :earthquake:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :earthquake:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :earthquake:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:mergeLibDexInternalDebug UP-TO-DATE
+> Task :app:mergeLibDexPlaystoreDebug UP-TO-DATE
+> Task :app:kspInternalDebugKotlin UP-TO-DATE
+> Task :app:kspPlaystoreDebugKotlin UP-TO-DATE
+
+> Task :app:compileInternalDebugKotlin FAILED
+e: file:///Users/jiaoyun/touka/HealthTracker/app/src/main/java/com/daily/health/manager/face/act/HeartRateMeasureScreen.kt:239:70 None of the following candidates is applicable:
+static fun isDoNotAskAgainPermissions(p0: Activity, p1: Array<(out) IPermission!>): Boolean
+static fun isDoNotAskAgainPermissions(p0: Activity, p1: (Mutable)List<IPermission!>): Boolean
+
+> Task :app:compilePlaystoreDebugKotlin FAILED
+e: file:///Users/jiaoyun/touka/HealthTracker/app/src/main/java/com/daily/health/manager/face/act/HeartRateMeasureScreen.kt:239:70 None of the following candidates is applicable:
+static fun isDoNotAskAgainPermissions(p0: Activity, p1: Array<(out) IPermission!>): Boolean
+static fun isDoNotAskAgainPermissions(p0: Activity, p1: (Mutable)List<IPermission!>): Boolean
+
+> Task :app:copyRoomSchemas NO-SOURCE
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:compileInternalDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:compilePlaystoreDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 6s
+238 actionable tasks: 8 executed, 230 up-to-date
+Configuration cache entry reused.

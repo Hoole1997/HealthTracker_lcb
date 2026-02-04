@@ -302,7 +302,7 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
 
     <string name="ht_hydrate">Hidrasyon</string>
     <string name="ht_walking">Yürüyüş</string>
-    <string name="ht_drink_btn_format">%d %s iç</string>
+    <string name="ht_drink_btn_format">%1$d %2$s iç</string>
     <string name="ht_hydrate_cup_count_format">Bugün %d bardak su içtiniz</string>
     <string name="ht_hydrate_complete_message">Tebrikler! Su hedefinizi tamamladınız!</string>
     <string name="ht_done">Tamam</string>

@@ -407,7 +407,7 @@ Para orientación de salud profesional y diagnóstico, te recomendamos consultar
 
     <string name="ht_hydrate">Hidratación</string>
     <string name="ht_walking">Caminar</string>
-    <string name="ht_drink_btn_format">Beber %d %s</string>
+    <string name="ht_drink_btn_format">Beber %1$d %2$s</string>
     <string name="ht_hydrate_cup_count_format">Bebiste %d vasos de agua hoy</string>
     <string name="ht_hydrate_complete_message">¡Bien hecho! ¡Completaste tu meta de agua!</string>
     <string name="ht_done">Listo</string>

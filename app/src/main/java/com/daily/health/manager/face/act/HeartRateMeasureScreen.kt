@@ -101,6 +101,8 @@ import org.koin.android.ext.android.inject
 import com.daily.health.manager.utils.loadNative
 import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
+import com.healthtracker.framework.util.PermissionUtils
+import com.hjq.permissions.permission.PermissionLists
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -141,13 +143,7 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
 
     private var hasPermission by mutableStateOf(false)
     private var showPermissionDenied by mutableStateOf(false)
-
-    private val cameraPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        hasPermission = isGranted
-        showPermissionDenied = !isGranted
-    }
+    private var showPermissionDialog by mutableStateOf(false)
 
     override fun createViewBinding() = HtActivityLanguageSelectBinding.inflate(layoutInflater)
 
@@ -187,11 +183,9 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
                     onRequestPermission = { showPermissionDialogAction() },
                     onDismissPermissionDialog = { dismissPermissionDialog() },
                     onGrantPermission = {
-                        dismissPermissionDialog()
                         requestCameraPermission()
                     },
                     onGoToSettings = {
-                        dismissPermissionDialog()
                         goToAppSettings()
                     },
                     onStartCamera = {
@@ -221,13 +215,30 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
         loadNative(mViewBind.adContainer, AdPosition.NA_HEART_RATE_MEASURE_BOTTOM, NativeAdStyle.STANDARD)
     }
 
-    private fun checkCameraPermission() {
-        hasPermission = ContextCompat.checkSelfPermission(
-            this, Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
+    override fun onResume() {
+        super.onResume()
+        // 用户从设置页回来可能已经授权，这里需要自查
+        if (!hasPermission) {
+            val nowHas = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+            if (nowHas) {
+                hasPermission = true
+                showPermissionDialog = false
+            }
+        }
     }
 
-    private var showPermissionDialog by mutableStateOf(false)
+    private fun checkCameraPermission() {
+        val granted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+        hasPermission = granted
+        if (!granted) {
+            // 预检查：如果用户之前已经选择了“不再询问”，则直接进入“拒绝”状态以显示“去设置”
+            showPermissionDenied = com.hjq.permissions.XXPermissions.isDoNotAskAgainPermissions(this, listOf(PermissionLists.getCameraPermission()))
+        }
+    }
 
     private fun showPermissionDialogAction() {
         showPermissionDialog = true
@@ -235,10 +246,28 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
 
     private fun dismissPermissionDialog() {
         showPermissionDialog = false
+        // 用户手动关闭弹窗或点击取消，说明不想测了，直接退出
+        if (!hasPermission) {
+            finish()
+        }
     }
 
     private fun requestCameraPermission() {
-        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        PermissionUtils.requestCameraPermission(this) { granted, isDoNotAsk ->
+            hasPermission = granted
+            if (granted) {
+                showPermissionDialog = false
+                showPermissionDenied = false
+            } else {
+                if (isDoNotAsk) {
+                    // 永久拒绝，此时需要显示“去设置”
+                    showPermissionDenied = true
+                } else {
+                    // 普通拒绝，直接退出页面
+                    finish()
+                }
+            }
+        }
     }
 
     private fun goToAppSettings() {

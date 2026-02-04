@@ -302,7 +302,7 @@
 
     <string name="ht_hydrate">हाइड्रेट</string>
     <string name="ht_walking">चलना</string>
-    <string name="ht_drink_btn_format">%d %s पिएं</string>
+    <string name="ht_drink_btn_format">%1$d %2$s पिएं</string>
     <string name="ht_hydrate_cup_count_format">आज आपने %d गिलास पानी पिया</string>
     <string name="ht_hydrate_complete_message">बहुत बढ़िया! आपने अपना पानी पूरा कर लिया!</string>
     <string name="ht_done">हो गया</string>

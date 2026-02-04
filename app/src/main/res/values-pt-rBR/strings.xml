@@ -593,7 +593,7 @@ Para orientação de saúde profissional e diagnóstico, encorajamos fortemente 
     <!-- 补水 -->
     <string name="ht_hydrate">Hidratação</string>
     <string name="ht_walking">Caminhada</string>
-    <string name="ht_drink_btn_format">Beber %d %s</string>
+    <string name="ht_drink_btn_format">Beber %1$d %2$s</string>
     <string name="ht_hydrate_cup_count_format">Você bebeu %d copos de água hoje</string>
     <string name="ht_hydrate_complete_message">Parabéns! Você completou sua meta de água!</string>
     <string name="ht_done">Concluído</string>
