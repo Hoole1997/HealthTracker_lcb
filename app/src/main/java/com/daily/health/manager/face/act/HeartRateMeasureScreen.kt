@@ -115,6 +115,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.ui.graphics.Brush
+import com.daily.health.manager.App
 import com.daily.health.manager.face.card.PpgExplainBottomSheet
 
 
@@ -275,6 +276,7 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
             data = Uri.fromParts("package", packageName, null)
         }
         startActivity(intent)
+        App.INSTANCE.isGoSetting = true
     }
 
     private fun handleMeasureComplete(bpm: Int, recordId: Long) {

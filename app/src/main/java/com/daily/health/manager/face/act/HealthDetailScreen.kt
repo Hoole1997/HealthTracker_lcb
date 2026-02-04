@@ -61,16 +61,17 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
     companion object {
         private const val EXTRA_DETAIL_TYPE = "extra_detail_type"
         private const val EXTRA_RECORD_ID = "extra_record_id"
-
         private const val RECORD_ID = "record_id"
         private const val BMI_EXTRA_RECORD_ID = "extra_record_id"
+        private const val EXTRA_IS_FROM_SAVE = "extra_is_from_save"
 
-        fun start(context: Context, type: DetailType, recordId: Long) {
+        fun start(context: Context, type: DetailType, recordId: Long, isFromSave: Boolean = false) {
             val intent = Intent(context, HealthDetailScreen::class.java).apply {
                 putExtra(EXTRA_DETAIL_TYPE, type.name)
                 putExtra(EXTRA_RECORD_ID, recordId)
                 putExtra(RECORD_ID, recordId)
                 putExtra(BMI_EXTRA_RECORD_ID, recordId)
+                putExtra(EXTRA_IS_FROM_SAVE, isFromSave)
             }
             context.startActivity(intent)
         }
@@ -136,9 +137,25 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         intent.getLongExtra(EXTRA_RECORD_ID, -1L)
     }
 
+    private val isFromSave: Boolean by lazy {
+        intent.getBooleanExtra(EXTRA_IS_FROM_SAVE, false)
+    }
+
+    private var pendingAlarmTypeForPermission: Int? = null
+
     override fun createViewBinding() = HtActivityHealthDetailBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
+
+    override fun onResume() {
+        super.onResume()
+        // [New Logic] 处理从设置页面返回后的权限授权成功自动弹窗
+        val type = pendingAlarmTypeForPermission
+        if (type != null && androidx.core.app.NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+            pendingAlarmTypeForPermission = null
+            showAlarmGuide(type)
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         val type = detailType
@@ -153,10 +170,6 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         mViewBind.composeView.setContent {
             HealthDetailHost(type = type)
         }
-        
-        mViewBind.root.postDelayed({
-             checkAndShowReminderDialog(type)
-        }, 500)
     }
 
     @Composable
@@ -575,7 +588,59 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         if (detailType == DetailType.BLOOD_PRESSURE) {
             bpBinding?.expertAdviceView?.stopCountdown()
         }
+
+        val type = detailType
+        // [New Logic] 返回键拦截流程：仅限录入后进入 -> 频控通过
+        if (isFromSave && type != null) {
+            val alarmType = when(type) {
+                DetailType.BLOOD_SUGAR -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_SUGAR
+                DetailType.BLOOD_PRESSURE -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_PRESSURE
+                DetailType.BMI -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BMI
+                DetailType.HEART_RATE -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_HEART_RATE
+                DetailType.CHOLESTEROL -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_CHOLESTEROL
+            }
+
+            if (com.daily.health.manager.face.compose.ReminderDialogHelper.canShowBackGuide(alarmType)) {
+                lifecycleScope.launch {
+                    val hasAlarm = alarmViewModel.hasAnyAlarm(alarmType)
+                    if (!hasAlarm) {
+                        // [Rule Update] 弹出任何引导环节(含权限)均视为已展示一次
+                        com.daily.health.manager.face.compose.ReminderDialogHelper.markBackGuideShown(alarmType)
+                        
+                        if (androidx.core.app.NotificationManagerCompat.from(this@HealthDetailScreen).areNotificationsEnabled()) {
+                            showAlarmGuide(alarmType)
+                        } else {
+                            // 无权限：弹出自定义权限说明弹窗
+                            com.daily.health.manager.face.dialog.NotificationPermissionDialog.show(
+                                supportFragmentManager,
+                                onGoToSettings = {
+                                    pendingAlarmTypeForPermission = alarmType
+                                    com.healthtracker.framework.util.PermissionUtils.openPermissionSettings(this@HealthDetailScreen)
+                                },
+                                onCancel = {
+                                    // 拒绝授权或取消：继续执行原有返回流程(插屏 -> finish)
+                                    super.handleBackPress()
+                                }
+                            )
+                        }
+                    } else {
+                        super.handleBackPress()
+                    }
+                }
+                return true
+            }
+        }
+
         return super.handleBackPress()
+    }
+
+    private fun showAlarmGuide(alarmType: Int) {
+        val dialog = com.daily.health.manager.face.dialog.ReminderSettingsDialogFragment.newInstance(alarmType)
+        dialog.setOnDismissListener {
+            // 引导消失后，执行基类插屏广告流程
+            super.handleBackPress()
+        }
+        dialog.show(supportFragmentManager, "ReminderBackGuide")
     }
 
     override fun getHealthType(): HealthType {
@@ -620,19 +685,4 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
     }
     private val alarmViewModel: com.daily.health.manager.face.viewmodel.AlarmViewModel by inject()
     
-    private fun checkAndShowReminderDialog(type: DetailType) {
-        val alarmType = when(type) {
-            DetailType.BLOOD_SUGAR -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_SUGAR
-            DetailType.BLOOD_PRESSURE -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_PRESSURE
-            DetailType.BMI -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BMI
-            DetailType.HEART_RATE -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_HEART_RATE
-            DetailType.CHOLESTEROL -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_CHOLESTEROL
-        }
-        
-        if (com.daily.health.manager.face.compose.ReminderDialogHelper.shouldShowReminderDialog(alarmType)) {
-            com.daily.health.manager.face.compose.ReminderDialogHelper.markReminderDialogShown(alarmType)
-            val dialog = com.daily.health.manager.face.dialog.ReminderSettingsDialogFragment.newInstance(alarmType)
-            dialog.show(supportFragmentManager, "ReminderSettingsDialog")
-        }
-    }
 }

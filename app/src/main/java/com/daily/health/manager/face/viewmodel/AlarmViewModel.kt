@@ -57,10 +57,10 @@ class AlarmViewModel(
     private fun initDefaultAlarms() {
         viewModelScope.launch {
             try {
-                // 执行默认闹钟初始化逻辑
-                initializeDefaultAlarmsIfNeeded()
+                // [Fix] 移除自动初始化逻辑：不再主动插入默认闹钟，确保新用户列表为空
+                // initializeDefaultAlarmsIfNeeded()
                 
-                // 加载数据到StateFlow（无论是否插入了新数据都需要加载）
+                // 加载数据到StateFlow（仅加载用户已手动创建的数据）
                 loadAlarmsFromDatabase()
                 
             } catch (e: CancellationException) {
@@ -334,6 +334,13 @@ class AlarmViewModel(
             AlarmRecord.TYPE_BMI -> addBmiAlarm(hour, minute, repeatFlag)
             AlarmRecord.TYPE_CHOLESTEROL -> addCholesterolAlarm(hour, minute, repeatFlag)
         }
+    }
+
+    /**
+     * 检查是否存在指定类型的任何闹钟
+     */
+    suspend fun hasAnyAlarm(type: Int): Boolean {
+        return alarmRepository.hasAnyAlarmSync(type)
     }
 
     /**

@@ -21,6 +21,8 @@ class NotificationPermissionDialog(
     private val onCancel: (() -> Unit)? = null
 ) : BaseBottomSheetDialogFragment<HtDialogNotificationPermissionBinding>() {
 
+    private var isGoToSettingsClicked = false
+
     companion object {
         private const val TAG = "NotificationPermissionDialog"
 
@@ -65,6 +67,7 @@ class NotificationPermissionDialog(
             btnAllow.text = getString(R.string.ht_turn_on)
             // 设置按钮点击事件
             btnAllow.click {
+                isGoToSettingsClicked = true
                 onGoToSettings?.invoke()
                 dismissAllowingStateLoss()
             }
@@ -76,7 +79,9 @@ class NotificationPermissionDialog(
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        onCancel?.invoke()
+        if (!isGoToSettingsClicked) {
+            onCancel?.invoke()
+        }
     }
 
 }

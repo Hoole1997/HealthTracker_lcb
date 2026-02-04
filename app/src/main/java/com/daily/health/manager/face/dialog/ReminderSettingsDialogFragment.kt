@@ -7,14 +7,24 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.daily.health.manager.face.compose.ReminderSettingsDialog
 import com.daily.health.manager.face.viewmodel.AlarmViewModel
 
 class ReminderSettingsDialogFragment : DialogFragment() {
 
     private var alarmType: Int = 0
-    private val alarmViewModel: AlarmViewModel by viewModels()
+    private val alarmViewModel: AlarmViewModel by viewModel()
+    private var dismissListener: (() -> Unit)? = null
+
+    fun setOnDismissListener(listener: (() -> Unit)) {
+        this.dismissListener = listener
+    }
+
+    override fun onDismiss(dialog: android.content.DialogInterface) {
+        super.onDismiss(dialog)
+        dismissListener?.invoke()
+    }
 
     companion object {
         private const val ARG_ALARM_TYPE = "arg_alarm_type"

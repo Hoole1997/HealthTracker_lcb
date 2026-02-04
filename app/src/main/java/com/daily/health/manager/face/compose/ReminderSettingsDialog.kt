@@ -27,13 +27,24 @@ fun ReminderSettingsDialog(
     // 默认每天重复
     val initialRepeatFlag = 0x7F
 
+    val typeNameRes = when (alarmType) {
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_SUGAR -> R.string.ht_blood_suger
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_PRESSURE -> R.string.ht_blood_pressure
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_HEART_RATE -> R.string.ht_heart_rate
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_BMI -> R.string.ht_bmi
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_CHOLESTEROL -> R.string.ht_cholesterol
+        else -> R.string.ht_alarm_default_title
+    }
+    val typeName = stringResource(typeNameRes)
+    val dialogTitle = stringResource(R.string.ht_reminder_for, typeName)
+
     CommonAlarmConfigDialog(
         initialHour = initialHour,
         initialMinute = initialMinute,
         initialRepeatFlag = initialRepeatFlag,
-        title = stringResource(R.string.ht_alarm_default_title), // "Health Reminder"
-        description = stringResource(R.string.ht_alarm_default_content), // "Please monitor your health on time"
-        confirmButtonText = stringResource(R.string.ht_add_record), // "Add Reminder"
+        title = dialogTitle,
+        description = null, // Sync with AlarmEditDialog: No description
+        confirmButtonText = stringResource(R.string.ht_save), // Sync with AlarmEditDialog: "Save"
         onDismiss = {
             ReportDataManager.reportData("reminder_close_click", mapOf("type" to alarmType.toString()))
             onDismiss()

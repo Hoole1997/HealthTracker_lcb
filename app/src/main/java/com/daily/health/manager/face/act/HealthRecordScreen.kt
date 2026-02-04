@@ -1110,7 +1110,7 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
                 }.show(supportFragmentManager, "reminder")
                 
                 // For logic continuity, we still open detail in background or after it
-                HealthDetailScreen.start(this@HealthRecordScreen, detailType, recordId)
+                HealthDetailScreen.start(this@HealthRecordScreen, detailType, recordId, isFromSave = true)
                 finish()
             } else {
                 showInter(savePosition) {

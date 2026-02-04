@@ -114,6 +114,15 @@ class AlarmRepository(
         return emptyList()
     }
 
+    /**
+     * 检查是否存在指定类型的任何闹钟记录 (Sync)
+     * @param type 闹钟类型
+     * @return true: 存在记录, false: 不存在记录
+     */
+    suspend fun hasAnyAlarmSync(type: Int): Boolean {
+        return alarmDao.getRecordCountByType(type) > 0
+    }
+
     // === 闹钟特有的业务方法 ===
 
     /**
