@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -74,9 +75,14 @@ fun AlarmEditDialog(
     val typeName = stringResource(typeNameRes)
     val dialogTitle = stringResource(R.string.ht_reminder_for, typeName)
 
+    // Use current system time as fallback for new alarms
+    val calendar = remember { java.util.Calendar.getInstance() }
+    val currentH = calendar.get(java.util.Calendar.HOUR_OF_DAY)
+    val currentM = calendar.get(java.util.Calendar.MINUTE)
+
     CommonAlarmConfigDialog(
-        initialHour = alarmRecord?.hour ?: 8,
-        initialMinute = alarmRecord?.minute ?: 0,
+        initialHour = alarmRecord?.hour ?: currentH,
+        initialMinute = alarmRecord?.minute ?: currentM,
         initialRepeatFlag = alarmRecord?.repeatFlag ?: AlarmRecord.REPEAT_DAILY,
         title = dialogTitle,
         confirmButtonText = stringResource(R.string.ht_save),
@@ -106,9 +112,9 @@ fun CommonAlarmConfigDialog(
     onDelete: (() -> Unit)? = null,
     showCloseIcon: Boolean = false
 ) {
-    var repeatFlag by remember { mutableStateOf(initialRepeatFlag) }
-    val currentHour = remember { mutableStateOf(initialHour) }
-    val currentMinute = remember { mutableStateOf(initialMinute) }
+    var repeatFlag by remember(initialRepeatFlag) { mutableStateOf(initialRepeatFlag) }
+    val currentHour = remember(initialHour) { mutableStateOf(initialHour) }
+    val currentMinute = remember(initialMinute) { mutableStateOf(initialMinute) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
@@ -298,11 +304,14 @@ fun WheelTimePicker(
 ) {
     val count = range.last - range.first + 1
     val infiniteCount = Int.MAX_VALUE
-    val initialIndex = infiniteCount / 2 + (initialValue - range.first) - (infiniteCount / 2) % count
-
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
-    val itemHeight = 56.dp // Taller items
     val visibleItemsCount = 3 // Standard picker view
+    val initialIndex = infiniteCount / 2 + (initialValue - range.first) - (infiniteCount / 2) % count - (visibleItemsCount / 2)
+
+    // Use remember(initialValue) with explicit type to ensure picker resets and properties are resolved
+    val listState: LazyListState = remember(initialValue) {
+        LazyListState(firstVisibleItemIndex = initialIndex)
+    }
+    val itemHeight = 56.dp // Taller items
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
@@ -360,8 +369,11 @@ fun WheelTimePicker(
                          val centerOffset = layoutInfo.viewportEndOffset / 2
                          val itemInfo = layoutInfo.visibleItemsInfo.find { it.index == index }
                          if (itemInfo != null) {
-                             val itemCenter = itemInfo.offset + itemInfo.size / 2
-                             abs(centerOffset - itemCenter) < itemInfo.size / 2
+                             // Use property access instead of extension to avoid conflict with Modifier.size/offset
+                             val infoOffset = itemInfo.offset
+                             val infoSize = itemInfo.size
+                             val itemCenter = infoOffset + infoSize / 2
+                             abs(centerOffset - itemCenter) < infoSize / 2
                          } else {
                              false
                          }
