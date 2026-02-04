@@ -299,8 +299,8 @@ fun CommonAlarmConfigDialog(
                     }
                 }
 
-                // 移除底部按钮和广告之间的过大间距
-                Spacer(modifier = Modifier.height(16.dp))
+                // 减小按钮和广告之间的间距到原来的二分之一 (16dp -> 8dp)
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             NativeAdContainer(
