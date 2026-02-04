@@ -133,10 +133,15 @@ fun CommonAlarmConfigDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(scrollState)
-                .padding(24.dp), 
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 24.dp), 
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 // Header (Title + Optional Close Icon)
                 Box(modifier = Modifier.fillMaxWidth()) {
                     // 顶部 Handle Indicator (仿 BottomSheet 视觉)
@@ -294,13 +299,16 @@ fun CommonAlarmConfigDialog(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                NativeAdContainer(
-                    position = AdPosition.NA_ALARM_CONFIG_DIALOG,
-                    style = NativeAdStyle.CARD_7
-                )
+                // 移除底部按钮和广告之间的过大间距
+                Spacer(modifier = Modifier.height(16.dp))
             }
+
+            NativeAdContainer(
+                position = AdPosition.NA_ALARM_CONFIG_DIALOG,
+                style = NativeAdStyle.CARD_7,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
         }
     }
 
