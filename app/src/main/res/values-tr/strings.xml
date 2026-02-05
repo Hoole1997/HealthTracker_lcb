@@ -70,6 +70,12 @@
     <string name="ht_alarm_default_title">Sağlık Hatırlatıcısı</string>
     <string name="ht_alarm_default_content">Lütfen sağlığınızı zamanında izleyin</string>
 
+    <string name="ht_alarm_heart_rate_content">Kalp atış hızını ölçme zamanı</string>
+    <string name="ht_alarm_bmi_content">VKİ ölçme zamanı</string>
+    <string name="ht_alarm_cholesterol_content">Kolesterolü ölçme zamanı</string>
+    <string name="ht_alarm_unsaved_exit_title">Alarmınızdaki değişiklikler henüz kaydedilmedi. Çıkmak istediğinizden emin misiniz?</string>
+    <string name="ht_alarm_delete_confirm_title">Bu alarmı silmek istediğinizden emin misiniz?</string>
+
     <string name="ht_blood_sugar_status_default">Varsayılan</string>
     <string name="ht_blood_sugar_status_fasting">Aç Karnına</string>
     <string name="ht_blood_sugar_status_before_meal">Yemekten önce</string>
@@ -113,6 +119,9 @@
     <string name="ht_assistant_answer">Cevapla</string>
     <string name="ht_assistant_neglect">Yoksay</string>
     <string name="ht_alarm_management">Alarm Yönetimi</string>
+    <string name="ht_reminder_for">%s için hatırlatıcı</string>
+    <string name="ht_ai_assistant_title">Yapay Zekâ Sağlık Asistanı</string>
+    <string name="ht_ai_empty_desc">Bu özellik şu anda geliştirme aşamasında ve henüz kullanılamıyor. Anlayışınız için teşekkür ederiz.</string>
     <string name="ht_step_stats_max_title">Maksimum</string>
     <string name="ht_step_stats_min_title">Minimum</string>
     <string name="ht_step_stats_avg_title">Ortalama</string>
@@ -237,7 +246,6 @@
     <string name="ht_heart_rate_no_tags">Etiket yok</string>
     <string name="ht_record_not_ready">Kayıt yükleniyor</string>
     <string name="ht_delete_record_failed">Kayıt silme başarısız</string>
-    <string name="ht_bpm">BPM</string>
     <string name="ht_cholesterol">Kolesterol</string>
     <string name="ht_weight_and_bmi"><![CDATA[Kilo & VKİ]]></string>
 
@@ -309,8 +317,6 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
     <string name="ht_hydrate_empty_record">Henüz su içme kaydı yok.</string>
     <string name="ht_daily_water_intake">Günlük Su Alımı</string>
     <string name="ht_cup_size">Bardak Boyutu</string>
-    <string name="ht_fl_oz">fl oz</string>
-    <string name="ht_ml">ML</string>
     <string name="ht_hydration_reminder_time">Hidrasyon Hatırlatma Saati</string>
     <string name="ht_hydration_reminder_edit">Düzenle</string>
     <string name="ht_hydrate_reminder_delete_confirm_message">Bu alarmı silmek istediğinizden emin misiniz?</string>
@@ -324,10 +330,9 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
     <string name="ht_hydrate_quick_add">Hızlı Ekle</string>
     <string name="ht_step_count">Adım Sayısı</string>
     <string name="ht_today">Bugün</string>
-    <string name="ht_unit_km">km</string>
-    <string name="ht_kcal">Kcal</string>
     <string name="ht_today_s_goal">Bugünün hedefi</string>
     <string name="ht_step_goal">Adım Hedefi</string>
+    <string name="ht_text_steps">Adım</string>
     <string name="ht_enable_step_count">Fiziksel aktivite izni gerekli</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">Bu yetkilendirme olmadan, adım sayma özelliği <font color="#02BC77">çalışmayacaktır</font></string>
 

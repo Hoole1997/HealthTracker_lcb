@@ -180,6 +180,18 @@ interface LocalDao04 {
     suspend fun existsAtTime(hour: Int, minute: Int, excludeId: Long = -1): Boolean
 
     /**
+     * 检查指定类型在指定时间是否已存在闹钟
+     * 允许不同类型在同一时间共存
+     *
+     * @param type 闹钟类型
+     * @param hour 小时
+     * @param minute 分钟
+     * @param excludeId 排除的记录ID（用于更新时检查）
+     */
+    @Query("SELECT COUNT(*) > 0 FROM t04 WHERE c09 = 0 AND c02 = :type AND c03 = :hour AND c04 = :minute AND c01 != :excludeId")
+    suspend fun existsAtTypeAndTime(type: Int, hour: Int, minute: Int, excludeId: Long = -1): Boolean
+
+    /**
      * 获取下一个即将触发的闹钟
      * @param currentHour 当前小时
      * @param currentMinute 当前分钟

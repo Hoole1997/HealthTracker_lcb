@@ -1229,7 +1229,7 @@ healthcare provider or medical institution.</string>
     <string name="ht_kcal" translatable="false">Kcal</string>
     <string name="ht_today_s_goal">Today\'s goal</string>
     <string name="ht_step_goal">Step Goal</string>
-    <string name="ht_text_steps" translatable="false">Steps</string>
+    <string name="ht_text_steps">Steps</string>
     <string name="ht_enable_step_count">Physical activity permission required</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">Without this authorization, the step-count feature <font color="#02BC77">will not work</font></string>
 

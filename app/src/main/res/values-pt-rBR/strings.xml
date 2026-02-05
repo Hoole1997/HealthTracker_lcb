@@ -79,6 +79,12 @@
     <string name="ht_alarm_default_title">Lembrete de Saúde</string>
     <string name="ht_alarm_default_content">Por favor, monitore sua saúde no horário</string>
 
+    <string name="ht_alarm_heart_rate_content">Hora de medir a frequência cardíaca</string>
+    <string name="ht_alarm_bmi_content">Hora de medir o IMC</string>
+    <string name="ht_alarm_cholesterol_content">Hora de medir o colesterol</string>
+    <string name="ht_alarm_unsaved_exit_title">As alterações no seu alarme ainda não foram salvas. Tem certeza de que deseja sair?</string>
+    <string name="ht_alarm_delete_confirm_title">Tem certeza de que deseja excluir este alarme?</string>
+
     <!-- 血糖测量状态 -->
     <string name="ht_blood_sugar_status_default">Padrão</string>
     <string name="ht_blood_sugar_status_fasting">Jejum</string>
@@ -125,6 +131,9 @@
     <string name="ht_assistant_answer">Responder</string>
     <string name="ht_assistant_neglect">Ignorar</string>
     <string name="ht_alarm_management">Gerenciar Alarmes</string>
+    <string name="ht_reminder_for">Lembrete para %s</string>
+    <string name="ht_ai_assistant_title">Assistente de Saúde com IA</string>
+    <string name="ht_ai_empty_desc">Este recurso está atualmente em desenvolvimento e ainda não está disponível. Obrigado pela sua compreensão.</string>
     <string name="ht_step_stats_max_title">Máximo</string>
     <string name="ht_step_stats_min_title">Mínimo</string>
     <string name="ht_step_stats_avg_title">Média</string>
@@ -405,7 +414,6 @@
     <string name="ht_heart_rate_no_tags">Sem rótulos</string>
     <string name="ht_record_not_ready">Registro está carregando</string>
     <string name="ht_delete_record_failed">Falha ao excluir registro</string>
-    <string name="ht_bpm">BPM</string>
     <string name="ht_cholesterol">Colesterol</string>
     <string name="ht_weight_and_bmi"><![CDATA[Peso & IMC]]></string>
 
@@ -600,8 +608,6 @@ Para orientação de saúde profissional e diagnóstico, encorajamos fortemente 
     <string name="ht_hydrate_empty_record">Ainda não há registro de ingestão de água.</string>
     <string name="ht_daily_water_intake">Ingestão Diária de Água</string>
     <string name="ht_cup_size">Tamanho do Copo</string>
-    <string name="ht_fl_oz">fl oz</string>
-    <string name="ht_ml">ML</string>
     <string name="ht_hydration_reminder_time">Horário do Lembrete de Hidratação</string>
     <string name="ht_hydration_reminder_edit">Editar</string>
     <string name="ht_hydrate_reminder_delete_confirm_message">Tem certeza que deseja excluir este alarme?</string>
@@ -616,10 +622,9 @@ Para orientação de saúde profissional e diagnóstico, encorajamos fortemente 
     <string name="ht_hydrate_quick_add">Adicionar Rápido</string>
     <string name="ht_step_count">Contagem de Passos</string>
     <string name="ht_today">Hoje</string>
-    <string name="ht_unit_km">km</string>
-    <string name="ht_kcal">Kcal</string>
     <string name="ht_today_s_goal">Meta de hoje</string>
     <string name="ht_step_goal">Meta de Passos</string>
+    <string name="ht_text_steps">Passos</string>
     <string name="ht_enable_step_count">Permissão de atividade física necessária</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">Sem esta autorização, o recurso de contagem de passos <font color="#02BC77">não funcionará</font></string>
 

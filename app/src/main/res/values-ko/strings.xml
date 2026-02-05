@@ -82,19 +82,13 @@
     <string name="ht_alarm_default_title">건강 알림</string>
     <string name="ht_alarm_default_content">제때 건강 상태를 확인하세요</string>
 
+    <string name="ht_alarm_heart_rate_content">심박수를 측정할 시간입니다</string>
+    <string name="ht_alarm_bmi_content">BMI를 측정할 시간입니다</string>
+    <string name="ht_alarm_cholesterol_content">콜레스테롤을 측정할 시간입니다</string>
+    <string name="ht_alarm_unsaved_exit_title">알람의 변경 사항이 아직 저장되지 않았습니다. 정말 종료하시겠습니까?</string>
+    <string name="ht_alarm_delete_confirm_title">이 알람을 삭제하시겠습니까?</string>
+
     <!-- 血压范围具体数值 -->
-    <string name="ht_bp_range_low_sys">&lt; 90</string>
-    <string name="ht_bp_range_low_dia">&lt; 60</string>
-    <string name="ht_bp_range_normal_sys">90–119</string>
-    <string name="ht_bp_range_normal_dia">60–79</string>
-    <string name="ht_bp_range_elevated_sys">120–129</string>
-    <string name="ht_bp_range_elevated_dia">60–79</string>
-    <string name="ht_bp_range_high_stage_1_sys">130–139</string>
-    <string name="ht_bp_range_high_stage_1_dia">80–89</string>
-    <string name="ht_bp_range_high_stage_2_sys">140–180</string>
-    <string name="ht_bp_range_high_stage_2_dia">90–120</string>
-    <string name="ht_bp_range_hypertensive_crisis_sys">&gt; 180</string>
-    <string name="ht_bp_range_hypertensive_crisis_dia">&gt; 120</string>
 
     <!-- 血糖测量状态 -->
     <string name="ht_blood_sugar_status_default">기본</string>
@@ -139,6 +133,9 @@
     <string name="ht_delete_record_remind">삭제 후에는 복구할 수 없습니다</string>
     <string name="ht_add_record">기록 추가</string>
     <string name="ht_alarm_management">알람 관리</string>
+    <string name="ht_reminder_for">%s 알림</string>
+    <string name="ht_ai_assistant_title">AI 건강 어시스턴트</string>
+    <string name="ht_ai_empty_desc">이 기능은 현재 개발 중이며 아직 사용할 수 없습니다. 양해해 주셔서 감사합니다.</string>
     <string name="ht_step_stats_max_title">최대</string>
     <string name="ht_step_stats_min_title">최소</string>
     <string name="ht_step_stats_avg_title">평균</string>

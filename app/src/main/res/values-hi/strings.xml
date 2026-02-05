@@ -70,6 +70,12 @@
     <string name="ht_alarm_default_title">स्वास्थ्य रिमाइंडर</string>
     <string name="ht_alarm_default_content">कृपया समय पर अपने स्वास्थ्य की निगरानी करें</string>
 
+    <string name="ht_alarm_heart_rate_content">हृदय गति मापने का समय है</string>
+    <string name="ht_alarm_bmi_content">BMI मापने का समय है</string>
+    <string name="ht_alarm_cholesterol_content">कोलेस्ट्रॉल मापने का समय है</string>
+    <string name="ht_alarm_unsaved_exit_title">आपके अलार्म में किए गए बदलाव अभी सहेजे नहीं गए हैं। क्या आप वाकई बाहर निकलना चाहते हैं?</string>
+    <string name="ht_alarm_delete_confirm_title">क्या आप वाकई इस अलार्म को हटाना चाहते हैं?</string>
+
     <string name="ht_blood_sugar_status_default">डिफ़ॉल्ट</string>
     <string name="ht_blood_sugar_status_fasting">खाली पेट</string>
     <string name="ht_blood_sugar_status_before_meal">भोजन से पहले</string>
@@ -113,6 +119,9 @@
     <string name="ht_assistant_answer">उत्तर</string>
     <string name="ht_assistant_neglect">अनदेखा करें</string>
     <string name="ht_alarm_management">अलार्म प्रबंधन</string>
+    <string name="ht_reminder_for">%s के लिए रिमाइंडर</string>
+    <string name="ht_ai_assistant_title">AI स्वास्थ्य सहायक</string>
+    <string name="ht_ai_empty_desc">यह सुविधा वर्तमान में विकसित की जा रही है और अभी उपलब्ध नहीं है। आपकी समझ के लिए धन्यवाद।</string>
     <string name="ht_step_stats_max_title">अधिकतम</string>
     <string name="ht_step_stats_min_title">न्यूनतम</string>
     <string name="ht_step_stats_avg_title">औसत</string>
@@ -237,7 +246,6 @@
     <string name="ht_heart_rate_no_tags">कोई लेबल नहीं</string>
     <string name="ht_record_not_ready">रिकॉर्ड लोड हो रहा है</string>
     <string name="ht_delete_record_failed">रिकॉर्ड हटाना विफल</string>
-    <string name="ht_bpm">BPM</string>
     <string name="ht_cholesterol">कोलेस्ट्रॉल</string>
     <string name="ht_weight_and_bmi"><![CDATA[वजन & BMI]]></string>
 
@@ -309,8 +317,6 @@
     <string name="ht_hydrate_empty_record">अभी तक कोई पानी रिकॉर्ड नहीं।</string>
     <string name="ht_daily_water_intake">दैनिक पानी का सेवन</string>
     <string name="ht_cup_size">गिलास का आकार</string>
-    <string name="ht_fl_oz">fl oz</string>
-    <string name="ht_ml">ML</string>
     <string name="ht_hydration_reminder_time">हाइड्रेशन रिमाइंडर समय</string>
     <string name="ht_hydration_reminder_edit">संपादित करें</string>
     <string name="ht_hydrate_reminder_delete_confirm_message">क्या आप इस अलार्म को हटाना चाहते हैं?</string>
@@ -324,10 +330,9 @@
     <string name="ht_hydrate_quick_add">त्वरित जोड़ें</string>
     <string name="ht_step_count">कदम गिनती</string>
     <string name="ht_today">आज</string>
-    <string name="ht_unit_km">किमी</string>
-    <string name="ht_kcal">Kcal</string>
     <string name="ht_today_s_goal">आज का लक्ष्य</string>
     <string name="ht_step_goal">कदम लक्ष्य</string>
+    <string name="ht_text_steps">कदम</string>
     <string name="ht_enable_step_count">शारीरिक गतिविधि अनुमति आवश्यक</string>
     <string name="ht_without_this_authorization_step_count_will_not_work">इस प्राधिकरण के बिना, कदम-गिनती सुविधा <font color="#02BC77">काम नहीं करेगी</font></string>
 

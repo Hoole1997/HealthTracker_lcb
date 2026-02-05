@@ -363,6 +363,14 @@ class AlarmRepository(
     }
 
     /**
+     * 检查指定类型在指定时间是否已存在闹钟
+     * 允许不同类型在同一时间共存
+     */
+    suspend fun existsAtTypeAndTime(type: Int, hour: Int, minute: Int, excludeId: Long = -1): Boolean {
+        return alarmDao.existsAtTypeAndTime(type, hour, minute, excludeId)
+    }
+
+    /**
      * 按类型与时间获取闹钟记录
      */
     suspend fun getRecordsByTypeAndTime(type: Int, hour: Int, minute: Int): List<AlarmRecord> {

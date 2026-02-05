@@ -82,19 +82,13 @@
     <string name="ht_alarm_default_title">健康リマインダー</string>
     <string name="ht_alarm_default_content">時間通りに健康状態を確認してください</string>
 
+    <string name="ht_alarm_heart_rate_content">心拍数を測定する時間です</string>
+    <string name="ht_alarm_bmi_content">BMIを測定する時間です</string>
+    <string name="ht_alarm_cholesterol_content">コレステロールを測定する時間です</string>
+    <string name="ht_alarm_unsaved_exit_title">アラームの変更はまだ保存されていません。終了してもよろしいですか？</string>
+    <string name="ht_alarm_delete_confirm_title">このアラームを削除してもよろしいですか？</string>
+
     <!-- 血压范围具体数值 -->
-    <string name="ht_bp_range_low_sys">&lt; 90</string>
-    <string name="ht_bp_range_low_dia">&lt; 60</string>
-    <string name="ht_bp_range_normal_sys">90–119</string>
-    <string name="ht_bp_range_normal_dia">60–79</string>
-    <string name="ht_bp_range_elevated_sys">120–129</string>
-    <string name="ht_bp_range_elevated_dia">60–79</string>
-    <string name="ht_bp_range_high_stage_1_sys">130–139</string>
-    <string name="ht_bp_range_high_stage_1_dia">80–89</string>
-    <string name="ht_bp_range_high_stage_2_sys">140–180</string>
-    <string name="ht_bp_range_high_stage_2_dia">90–120</string>
-    <string name="ht_bp_range_hypertensive_crisis_sys">&gt; 180</string>
-    <string name="ht_bp_range_hypertensive_crisis_dia">&gt; 120</string>
 
     <!-- 血糖测量状态 -->
     <string name="ht_blood_sugar_status_default">デフォルト</string>
@@ -139,6 +133,9 @@
     <string name="ht_delete_record_remind">削除後は元に戻せません</string>
     <string name="ht_add_record">記録を追加</string>
     <string name="ht_alarm_management">アラーム管理</string>
+    <string name="ht_reminder_for">%s のリマインダー</string>
+    <string name="ht_ai_assistant_title">AI健康アシスタント</string>
+    <string name="ht_ai_empty_desc">この機能は現在開発中のため、まだ利用できません。ご理解ありがとうございます。</string>
     <string name="ht_step_stats_max_title">最大</string>
     <string name="ht_step_stats_min_title">最小</string>
     <string name="ht_step_stats_avg_title">平均</string>

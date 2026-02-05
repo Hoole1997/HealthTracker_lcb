@@ -215,8 +215,8 @@ class AlarmViewModel(
     fun addBloodSugarAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
         viewModelScope.launch {
             try {
-                // 检查是否已存在相同时间的闹钟
-                val exists = alarmRepository.existsAtTime(hour, minute)
+                // 检查是否已存在相同类型且相同时间的闹钟
+                val exists = alarmRepository.existsAtTypeAndTime(AlarmRecord.TYPE_BLOOD_SUGAR, hour, minute)
                 if (exists) {
                     "Blood sugar alarm time ${hour}:${minute} already exists, skipping addition".logw(TAG)
                     return@launch
@@ -263,8 +263,8 @@ class AlarmViewModel(
     fun addBloodPressureAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
         viewModelScope.launch {
             try {
-                // 检查是否已存在相同时间的闹钟
-                val exists = alarmRepository.existsAtTime(hour, minute)
+                // 检查是否已存在相同类型且相同时间的闹钟
+                val exists = alarmRepository.existsAtTypeAndTime(AlarmRecord.TYPE_BLOOD_PRESSURE, hour, minute)
                 if (exists) {
                     "Blood pressure alarm time ${hour}:${minute} already exists, skipping addition".logw(TAG)
                     return@launch
@@ -306,21 +306,27 @@ class AlarmViewModel(
      * 添加心率闹钟
      */
     fun addHeartRateAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
-        addAlarm(hour, minute) { h, m -> alarmRepository.addHeartRateReminder(h, m, repeatFlag) }
+        addAlarmByTypeAndTime(AlarmRecord.TYPE_HEART_RATE, hour, minute) { h, m ->
+            alarmRepository.addHeartRateReminder(h, m, repeatFlag)
+        }
     }
 
     /**
      * 添加BMI闹钟
      */
     fun addBmiAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
-        addAlarm(hour, minute) { h, m -> alarmRepository.addBmiReminder(h, m, repeatFlag) }
+        addAlarmByTypeAndTime(AlarmRecord.TYPE_BMI, hour, minute) { h, m ->
+            alarmRepository.addBmiReminder(h, m, repeatFlag)
+        }
     }
 
     /**
      * 添加胆固醇闹钟
      */
     fun addCholesterolAlarm(hour: Int, minute: Int, repeatFlag: Int = AlarmRecord.REPEAT_DAILY) {
-        addAlarm(hour, minute) { h, m -> alarmRepository.addCholesterolReminder(h, m, repeatFlag) }
+        addAlarmByTypeAndTime(AlarmRecord.TYPE_CHOLESTEROL, hour, minute) { h, m ->
+            alarmRepository.addCholesterolReminder(h, m, repeatFlag)
+        }
     }
 
     /**
@@ -374,12 +380,17 @@ class AlarmViewModel(
         }
     }
 
-    private fun addAlarm(hour: Int, minute: Int, insertAction: suspend (Int, Int) -> Long) {
+    private fun addAlarmByTypeAndTime(
+        type: Int,
+        hour: Int,
+        minute: Int,
+        insertAction: suspend (Int, Int) -> Long
+    ) {
         viewModelScope.launch {
             try {
-                val exists = alarmRepository.existsAtTime(hour, minute)
+                val exists = alarmRepository.existsAtTypeAndTime(type, hour, minute)
                 if (exists) {
-                    "Alarm time ${hour}:${minute} already exists".logw(TAG)
+                    "Alarm(type=$type) time ${hour}:${minute} already exists".logw(TAG)
                     return@launch
                 }
                 val insertedId = insertAction(hour, minute)
