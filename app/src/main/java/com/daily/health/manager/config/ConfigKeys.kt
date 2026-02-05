@@ -29,4 +29,10 @@ object ConfigKeys {
      * 格式: JSON 对象，包含付费和自然渠道的推送策略
      */
     const val PUSH_CONFIG_JSON = "pushConfigJson"
+
+    /**
+     * AI 助手开关
+     * 0: 关闭, 1: 开启
+     */
+    const val AI_SWITCH = "AI_Switch"
 }

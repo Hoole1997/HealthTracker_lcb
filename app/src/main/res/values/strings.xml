@@ -172,6 +172,8 @@
     <string name="ht_step_stats_max_title">Maximum</string>
     <string name="ht_step_stats_min_title">Minimum</string>
     <string name="ht_step_stats_avg_title">Average</string>
+    <string name="ht_ai_assistant_title">AI Health Assistant</string>
+    <string name="ht_ai_empty_desc">This feature is currently under development and is not available yet. Thank you for your understanding.</string>
     <string-array name="ht_blood_sugar_labels">
         <item>Feeling excited</item>
         <item>After cardio</item>

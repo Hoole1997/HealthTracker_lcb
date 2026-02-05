@@ -60,6 +60,7 @@ import com.daily.health.manager.viewmodel.HealthStatisticsViewModel
 import com.daily.health.manager.face.act.StepCountViewModel
 import com.daily.health.manager.face.viewmodel.HeartRateMeasureViewModel
 import androidx.lifecycle.SavedStateHandle
+import com.daily.health.manager.config.parsers.AiConfigParser
 import com.healthtracker.framework.config.core.ConfigCache
 import com.healthtracker.framework.config.core.ConfigRegistry
 import com.healthtracker.framework.config.core.RemoteConfigManager
@@ -179,5 +180,6 @@ val frameworkConfigModule = module {
 val appConfigModule = module {
     single { PushMessageParser(get(), get<Context>()) }
     single { PushConfigParser(get(), get(), get()) }
-    single { AppConfigRegistry(get(), get(), get()) }
+    single { AiConfigParser(get()) }
+    single { AppConfigRegistry(get(), get(), get(), get()) }
 }

@@ -263,6 +263,11 @@
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:initOrder="111" />
+        <activity
+            android:name=".face.act.AiAssistantActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
     </application>
 
 </manifest>

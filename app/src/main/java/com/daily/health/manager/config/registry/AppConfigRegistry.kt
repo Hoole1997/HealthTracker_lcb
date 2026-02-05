@@ -1,6 +1,8 @@
 package com.daily.health.manager.config.registry
 
+import com.daily.health.manager.config.models.AiConfig
 import com.daily.health.manager.config.models.PushConfig
+import com.daily.health.manager.config.parsers.AiConfigParser
 import com.daily.health.manager.config.parsers.PushConfigParser
 import com.daily.health.manager.config.parsers.PushMessageParser
 import com.healthtracker.framework.config.core.ConfigRegistry
@@ -29,7 +31,8 @@ import com.healthtracker.framework.config.core.ConfigRegistry
 class AppConfigRegistry(
     private val registry: ConfigRegistry,
     private val pushConfigParser: PushConfigParser,
-    private val pushMessageParser: PushMessageParser
+    private val pushMessageParser: PushMessageParser,
+    private val aiConfigParser: AiConfigParser
     // 未来添加更多解析器注入
     // private val adConfigParser: AdConfigParser,
     // private val featureConfigParser: FeatureConfigParser,
@@ -49,6 +52,9 @@ class AppConfigRegistry(
         // 注册推送相关配置
         registerPushParsers()
 
+        // 注册 AI 相关配置
+        registerAiParsers()
+
         // 未来在此添加其他配置注册
         // registerAdParsers()
         // registerFeatureParsers()
@@ -63,6 +69,13 @@ class AppConfigRegistry(
         // 注意：PushMessageParser 返回 List<PushMessage>
         // 由于泛型类型擦除，我们不能直接注册 List::class
         // PushMessage 列表已经包含在 PushConfig 中，所以这里不需要单独注册
+    }
+
+    /**
+     * 注册 AI 相关解析器
+     */
+    private fun registerAiParsers() {
+        registry.register(AiConfig::class, aiConfigParser)
     }
 
     // 未来添加其他配置注册方法示例:

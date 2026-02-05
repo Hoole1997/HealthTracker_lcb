@@ -27,7 +27,10 @@ import com.daily.health.manager.face.act.MainScreen
 import com.daily.health.manager.face.act.ProfileActivity
 import com.daily.health.manager.face.act.reportGuide
 import com.daily.health.manager.face.viewmodel.HomeViewModel
+import com.daily.health.manager.config.models.AiConfig
+import com.daily.health.manager.face.act.AiAssistantActivity
 import com.daily.health.manager.util.CholesterolCalculator
+import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.NumberFormatter
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
@@ -43,8 +46,11 @@ import com.hyy.highlightpro.util.dp
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
 import com.daily.health.manager.helper.HealthTrackerEvaluateListener
+import com.healthtracker.framework.ext.gone
+import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.SpUtils
 import kotlinx.coroutines.CompletableDeferred
+import org.koin.android.ext.android.inject
 import java.util.Date
 import java.util.Locale
 
@@ -91,6 +97,18 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind?.run {
+            // 控制 AI 助手入口显示逻辑
+            val remoteConfigManager: RemoteConfigManager by inject()
+            val aiConfig = remoteConfigManager.getConfig<AiConfig>()
+            if(aiConfig.isEnabled()){
+                flAiAssistantEntry.visible()
+            }else{
+                flAiAssistantEntry.gone()
+            }
+            flAiAssistantEntry.clickWithDuration {
+                requireActivity().startActivity<AiAssistantActivity>()
+            }
+
             clHistory.clickWithDuration {
                 latestSugerID?.let {
                     requireActivity().startActivity<HistoryRecordScreen>()
