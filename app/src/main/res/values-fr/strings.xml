@@ -225,6 +225,13 @@
     <string name="ht_notification_permission_title">Restez sur la bonne voie avec vos objectifs de santé</string>
     <string name="ht_notification_permission_des">Activez les notifications pour recevoir des rappels en temps voulu pour l\'hydratation, les médicaments et les activités. Ne manquez plus jamais une habitude saine!</string>
     <string name="ht_close">Fermer</string>
+    <string name="ht_notification_grant_permissions">Ne manquez pas une habitude saine</string>
+    <string name="ht_notification_grant_permissions_des">Activez les notifications pour recevoir des rappels en temps voulu pour construire des habitudes saines. Ne manquez rien!</string>
+    <string name="ht_notification_des_blood_sugar">Recevez des rappels en temps voulu pour enregistrer votre glycémie</string>
+    <string name="ht_notification_des_blood_pressure">Recevez des rappels en temps voulu pour enregistrer votre tension artérielle</string>
+    <string name="ht_notification_des_heart_rate">Recevez des rappels en temps voulu pour mesurer votre rythme cardiaque</string>
+    <string name="ht_notification_des_bmi">Recevez des rappels en temps voulu pour contrôler votre IMC</string>
+    <string name="ht_notification_des_cholesterol">Recevez des rappels en temps voulu pour contrôler votre cholestérol</string>
     <string name="ht_choose_your_gender">Choisissez votre sexe</string>
     <string name="ht_please_choose_your_gender">Veuillez choisir votre sexe</string>
     <string name="ht_txt_profile_des">Ceci sera utilisé pour générer vos données personnalisées</string>

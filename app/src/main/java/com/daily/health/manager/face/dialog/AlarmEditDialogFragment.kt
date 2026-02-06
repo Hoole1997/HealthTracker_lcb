@@ -47,6 +47,11 @@ class AlarmEditDialogFragment : BaseBottomSheetDialogFragment<HtDialogNotificati
 
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
+        // 恢复时直接关闭（回调已丢失）
+        if (savedInstanceState != null) {
+            dismissAllowingStateLoss()
+            return
+        }
         mViewBind?.composeView?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

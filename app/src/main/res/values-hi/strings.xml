@@ -248,6 +248,13 @@
     <string name="ht_delete_record_failed">रिकॉर्ड हटाना विफल</string>
     <string name="ht_cholesterol">कोलेस्ट्रॉल</string>
     <string name="ht_weight_and_bmi"><![CDATA[वजन & BMI]]></string>
+    <string name="ht_notification_grant_permissions">स्वास्थ्य की आदत कभी न छोड़ें</string>
+    <string name="ht_notification_grant_permissions_des">स्वस्थ आदतें बनाने के लिए समय पर रिमाइंडर प्राप्त करने के लिए नोटिफिकेशन सक्षम करें। कुछ भी न चूकें!</string>
+    <string name="ht_notification_des_blood_sugar">अपना ब्लड शुगर रिकॉर्ड करने के लिए समय पर रिमाइंडर प्राप्त करें</string>
+    <string name="ht_notification_des_blood_pressure">अपना रक्तचाप रिकॉर्ड करने के लिए समय पर रिमाइंडर प्राप्त करें</string>
+    <string name="ht_notification_des_heart_rate">अपनी हृदय गति मापने के लिए समय पर रिमाइंडर प्राप्त करें</string>
+    <string name="ht_notification_des_bmi">अपने BMI को नियंत्रित करने के लिए समय पर रिमाइंडर प्राप्त करें</string>
+    <string name="ht_notification_des_cholesterol">अपने कोलेस्ट्रॉल को नियंत्रित करने के लिए समय पर रिमाइंडर प्राप्त करें</string>
 
     <string name="ht_heart_rate_status_slow">धीमी</string>
     <string name="ht_heart_rate_status_normal">सामान्य</string>

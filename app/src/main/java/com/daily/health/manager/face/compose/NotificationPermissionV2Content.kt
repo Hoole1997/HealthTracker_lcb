@@ -57,7 +57,7 @@ private val GrayPreviewBg = Color(0xFFE8E8EC)
 /** 手机示意框内部背景 */
 private val PhoneInnerBg = Color(0xFFF0F0F5)
 /** 拖拽指示器颜色 */
-private val DragHandleColor = Color(0xFFEAEAEA)
+private val DragHandleColor = Color(0xFFC0C0C4)
 /** 标题文字颜色 */
 private val TitleColor = Color(0xFF333333)
 /** 描述文字颜色 */
@@ -345,7 +345,7 @@ private fun WhiteContentArea(
             onClick = onButtonClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(48.dp),
             shape = RoundedCornerShape(100.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = C5Green,

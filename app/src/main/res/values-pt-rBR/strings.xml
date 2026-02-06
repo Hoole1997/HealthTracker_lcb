@@ -369,6 +369,13 @@
     <string name="ht_notification_permission_title">Mantenha-se no caminho com suas metas de saúde</string>
     <string name="ht_notification_permission_des">Ative as notificações para receber lembretes oportunos de ingestão de água, medicamentos e atividades. Nunca perca um hábito saudável!</string>
     <string name="ht_close">Fechar</string>
+    <string name="ht_notification_grant_permissions">Não perca um hábito saudável</string>
+    <string name="ht_notification_grant_permissions_des">Ative as notificações para receber lembretes oportunos para construir hábitos saudáveis. Não perca nada!</string>
+    <string name="ht_notification_des_blood_sugar">Receba lembretes oportunos para registrar seu açúcar no sangue</string>
+    <string name="ht_notification_des_blood_pressure">Receba lembretes oportunos para registrar sua pressão arterial</string>
+    <string name="ht_notification_des_heart_rate">Receba lembretes oportunos para medir sua frequência cardíaca</string>
+    <string name="ht_notification_des_bmi">Receba lembretes oportunos para controlar seu IMC</string>
+    <string name="ht_notification_des_cholesterol">Receba lembretes oportunos para controlar seu colesterol</string>
     <string name="ht_choose_your_gender">Escolha seu gênero</string>
     <string name="ht_please_choose_your_gender">Por favor, escolha seu gênero</string>
     <string name="ht_txt_profile_des">Isso será usado para gerar seus dados personalizados</string>

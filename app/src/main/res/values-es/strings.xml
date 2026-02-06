@@ -265,6 +265,13 @@
     <string name="ht_notification_permission_title">Mantente al día con tus metas de salud</string>
     <string name="ht_notification_permission_des">Activa las notificaciones para recibir recordatorios oportunos de agua, medicamentos y actividades. ¡Nunca pierdas un hábito saludable!</string>
     <string name="ht_close">Cerrar</string>
+    <string name="ht_notification_grant_permissions">No pierdas un hábito saludable</string>
+    <string name="ht_notification_grant_permissions_des">Activa las notificaciones para recibir recordatorios oportunos para construir hábitos saludables. ¡No te lo pierdas!</string>
+    <string name="ht_notification_des_blood_sugar">Recibe recordatorios oportunos para registrar tu glucosa en sangre</string>
+    <string name="ht_notification_des_blood_pressure">Recibe recordatorios oportunos para registrar tu presión arterial</string>
+    <string name="ht_notification_des_heart_rate">Recibe recordatorios oportunos para medir tu frecuencia cardíaca</string>
+    <string name="ht_notification_des_bmi">Recibe recordatorios oportunos para controlar tu IMC</string>
+    <string name="ht_notification_des_cholesterol">Recibe recordatorios oportunos para controlar tu colesterol</string>
     <string name="ht_choose_your_gender">Elige tu género</string>
     <string name="ht_please_choose_your_gender">Por favor, elige tu género</string>
     <string name="ht_txt_profile_des">Esto se usará para generar tus datos personalizados</string>

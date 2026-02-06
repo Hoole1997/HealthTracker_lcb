@@ -225,6 +225,13 @@
     <string name="ht_notification_permission_title">Bleiben Sie bei Ihren Gesundheitszielen auf Kurs</string>
     <string name="ht_notification_permission_des">Aktivieren Sie Benachrichtigungen, um rechtzeitig Erinnerungen für Wasseraufnahme, Medikamente und Aktivitäten zu erhalten. Verpassen Sie nie wieder eine gesunde Gewohnheit!</string>
     <string name="ht_close">Schließen</string>
+    <string name="ht_notification_grant_permissions">Verpasse nie eine gesunde Gewohnheit</string>
+    <string name="ht_notification_grant_permissions_des">Aktivieren Sie Benachrichtigungen, um rechtzeitige Erinnerungen für den Aufbau gesunder Gewohnheiten zu erhalten. Verpassen Sie nichts!</string>
+    <string name="ht_notification_des_blood_sugar">Erhalten Sie rechtzeitige Erinnerungen an Ihre Medikation für den Blutzucker</string>
+    <string name="ht_notification_des_blood_pressure">Erhalten Sie rechtzeitige Erinnerungen an Ihre Medikation für den Blutdruck</string>
+    <string name="ht_notification_des_heart_rate">Erhalten Sie rechtzeitige Erinnerungen zum Messen Ihrer Herzfrequenz</string>
+    <string name="ht_notification_des_bmi">Erhalten Sie rechtzeitige Erinnerungen zur Kontrolle Ihres BMI</string>
+    <string name="ht_notification_des_cholesterol">Erhalten Sie rechtzeitige Erinnerungen zur Kontrolle Ihres Cholesterinspiegels</string>
     <string name="ht_choose_your_gender">Wählen Sie Ihr Geschlecht</string>
     <string name="ht_please_choose_your_gender">Bitte wählen Sie Ihr Geschlecht</string>
     <string name="ht_txt_profile_des">Dies wird verwendet, um Ihre personalisierten Daten zu generieren</string>

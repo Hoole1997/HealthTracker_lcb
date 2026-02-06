@@ -220,6 +220,13 @@
     <string name="ht_notification_permission_title">健康目標の達成をサポート</string>
     <string name="ht_notification_permission_des">通知を有効にして、水分補給、服薬、運動のタイムリーなリマインダーを受け取りましょう。健康的な習慣を見逃しません！</string>
     <string name="ht_close">閉じる</string>
+    <string name="ht_notification_grant_permissions">健康習慣を見逃さない</string>
+    <string name="ht_notification_grant_permissions_des">通知を有効にして、健康的な習慣を身につけるためのタイムリーなリマインダーを受け取りましょう。見逃さないようにしましょう！</string>
+    <string name="ht_notification_des_blood_sugar">血糖値を記録するためのタイムリーなリマインダーを受け取る</string>
+    <string name="ht_notification_des_blood_pressure">血圧を記録するためのタイムリーなリマインダーを受け取る</string>
+    <string name="ht_notification_des_heart_rate">心拍数を測定するためのタイムリーなリマインダーを受け取る</string>
+    <string name="ht_notification_des_bmi">BMIを管理するためのタイムリーなリマインダーを受け取る</string>
+    <string name="ht_notification_des_cholesterol">コレステロールを管理するためのタイムリーなリマインダーを受け取る</string>
     <string name="ht_choose_your_gender">性別を選択</string>
     <string name="ht_please_choose_your_gender">性別を選択してください</string>
     <string name="ht_txt_profile_des">これはパーソナライズされたデータを作成するために使用されます</string>

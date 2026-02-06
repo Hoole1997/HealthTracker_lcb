@@ -142,6 +142,13 @@
     <string name="ht_delete">Elimina</string>
     <string name="ht_turn_on">Attiva</string>
     <string name="ht_close">Chiudi</string>
+    <string name="ht_notification_grant_permissions">Non perdere un’abitudine sana</string>
+    <string name="ht_notification_grant_permissions_des">Attiva le notifiche per ricevere promemoria tempestivi per costruire abitudini sane. Non perderti nulla!</string>
+    <string name="ht_notification_des_blood_sugar">Ricevi promemoria tempestivi per registrare la tua glicemia</string>
+    <string name="ht_notification_des_blood_pressure">Ricevi promemoria tempestivi per registrare la tua pressione sanguigna</string>
+    <string name="ht_notification_des_heart_rate">Ricevi promemoria tempestivi per misurare la tua frequenza cardiaca</string>
+    <string name="ht_notification_des_bmi">Ricevi promemoria tempestivi per controllare il tuo IMC</string>
+    <string name="ht_notification_des_cholesterol">Ricevi promemoria tempestivi per controllare il tuo colesterolo</string>
     <string name="ht_choose_your_gender">Scegli sesso</string>
     <string name="ht_male">Maschio</string>
     <string name="ht_female">Femmina</string>

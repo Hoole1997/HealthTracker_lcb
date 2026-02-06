@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.createSavedStateHandle
+import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.data.entity.BloodPressureRecord
@@ -621,6 +622,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
                                 isDoNotAsk = isDoNotAsk,
                                 onGoToSettings = {
                                     pendingAlarmTypeForPermission = alarmType
+                                    App.INSTANCE.isGoSetting = true
                                     com.healthtracker.framework.util.PermissionUtils.openPermissionSettings(this@HealthDetailScreen)
                                 },
                                 onRequestPermission = {

@@ -201,6 +201,13 @@
     <string name="ht_notification_permission_title">Sağlık hedeflerinizi takip edin</string>
     <string name="ht_notification_permission_des">Su, ilaç ve aktiviteler için zamanında hatırlatmalar almak için bildirimleri etkinleştirin. Sağlıklı bir alışkanlığı asla kaçırmayın!</string>
     <string name="ht_close">Kapat</string>
+    <string name="ht_notification_grant_permissions">Sağlıklı bir alışkanlığı asla kaçırmayın</string>
+    <string name="ht_notification_grant_permissions_des">Sağlıklı alışkanlıklar oluşturmak için zamanında hatırlatıcılar almak üzere bildirimleri etkinleştirin. Hiçbir şeyi kaçırmayın!</string>
+    <string name="ht_notification_des_blood_sugar">Kan şekerinizi kaydetmek için zamanında hatırlatıcılar alın</string>
+    <string name="ht_notification_des_blood_pressure">Tansiyonunuzu kaydetmek için zamanında hatırlatıcılar alın</string>
+    <string name="ht_notification_des_heart_rate">Kalp atış hızınızı ölçmek için zamanında hatırlatıcılar alın</string>
+    <string name="ht_notification_des_bmi">VKİ\'nizi kontrol etmek için zamanında hatırlatıcılar alın</string>
+    <string name="ht_notification_des_cholesterol">Kolesterolünüzü kontrol etmek için zamanında hatırlatıcılar alın</string>
     <string name="ht_choose_your_gender">Cinsiyetinizi seçin</string>
     <string name="ht_please_choose_your_gender">Lütfen cinsiyetinizi seçin</string>
     <string name="ht_txt_profile_des">Bu, kişiselleştirilmiş verilerinizi oluşturmak için kullanılacaktır</string>
