@@ -2,6 +2,7 @@ package com.daily.health.manager.analyzer.math
 
 import kotlin.math.PI
 import kotlin.math.cos
+import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -187,12 +188,74 @@ object FastFourierTransformer {
     private fun isPowerOfTwo(n: Int): Boolean = n > 0 && (n and (n - 1)) == 0
 
     /**
+     * FFT 分析结果，包含主频和信噪比
+     */
+    data class FrequencyResult(
+        val frequency: Double,
+        val snr: Double,       // 峰值功率 / 平均功率
+        val topFrequencies: List<Pair<Double, Double>>  // 前3个峰值 (频率, 功率)
+    )
+
+    /**
+     * 增强版：查找主频并返回信噪比
+     */
+    fun findDominantFrequencyWithSNR(
+        signal: DoubleArray,
+        sampleRate: Double,
+        minFreq: Double = 0.7,
+        maxFreq: Double = 4.0
+    ): FrequencyResult? {
+        if (signal.size < 4) return null
+
+        val paddedSignal = padToPowerOfTwo(signal)
+        val power = powerSpectrum(paddedSignal)
+        val freqs = frequencyAxis(paddedSignal.size, sampleRate)
+
+        // 收集带内频率及其功率
+        val bandPowers = mutableListOf<Pair<Int, Double>>()  // (index, power)
+        for (i in power.indices) {
+            if (freqs[i] in minFreq..maxFreq) {
+                bandPowers.add(i to power[i])
+            }
+        }
+        if (bandPowers.isEmpty()) return null
+
+        // 按功率排序，取前3个
+        val sorted = bandPowers.sortedByDescending { it.second }
+        val peakIdx = sorted[0].first
+        val peakPower = sorted[0].second
+
+        // 计算带内平均功率（排除峰值附近±3 bin）
+        val noisePowers = bandPowers.filter {
+            kotlin.math.abs(it.first - peakIdx) > 3
+        }.map { it.second }
+        val meanNoisePower = if (noisePowers.isNotEmpty()) noisePowers.average() else 1.0
+        val snr = if (meanNoisePower > 0) peakPower / meanNoisePower else 0.0
+
+        // 抛物线插值提高频率精度
+        var dominantFreq = freqs[peakIdx]
+        if (peakIdx > 0 && peakIdx < power.size - 1) {
+            val alpha = power[peakIdx - 1]
+            val beta = power[peakIdx]
+            val gamma = power[peakIdx + 1]
+            if (2 * beta - alpha - gamma != 0.0) {
+                val delta = 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
+                val freqResolution = sampleRate / paddedSignal.size
+                dominantFreq = (peakIdx + delta) * freqResolution
+            }
+        }
+
+        val topFreqs = sorted.take(3).map { freqs[it.first] to it.second }
+        return FrequencyResult(dominantFreq, snr, topFreqs)
+    }
+
+    /**
      * 从频率计算 BPM
      *
      * @param frequency 频率 (Hz)
      * @return 心率 (BPM)
      */
-    fun frequencyToBpm(frequency: Double): Int = (frequency * 60).toInt()
+    fun frequencyToBpm(frequency: Double): Int = (frequency * 60).roundToInt()
 
     /**
      * 验证 FFT 实现正确性

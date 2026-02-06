@@ -377,8 +377,10 @@ class HeartRateMeasureViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        stopCamera()
+        // 先 release 释放 executor 线程，再 stopCamera 清理状态
+        // stopCamera 内部会将 cameraManager 置 null，所以必须先调用 release
         cameraManager?.release()
+        stopCamera()
     }
 }
 

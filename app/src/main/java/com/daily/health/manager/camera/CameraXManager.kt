@@ -14,9 +14,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
+import androidx.lifecycle.Lifecycle
 
 /**
  * CameraX 管理器
@@ -41,6 +45,7 @@ class CameraXManager(private val context: Context) {
 
     companion object {
         private const val TAG = "PPG_Camera"
+        private const val INIT_TIMEOUT_MS = 5000L  // 摄像头初始化超时 5 秒
     }
 
     /**
@@ -67,11 +72,18 @@ class CameraXManager(private val context: Context) {
     private var cameraProvider: ProcessCameraProvider? = null
     private var imageAnalysis: ImageAnalysis? = null
     private val cameraExecutor = Executors.newSingleThreadExecutor()
+    // 初始化超时调度器
+    private val timeoutScheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+    private var initTimeoutFuture: ScheduledFuture<*>? = null
 
     private val _cameraState = MutableStateFlow(CameraState.IDLE)
     val cameraState: StateFlow<CameraState> = _cameraState.asStateFlow()
 
     private var frameCallback: FrameCallback? = null
+    // 帧率诊断
+    private var frameCount = 0L
+    private var lastFrameTimestamp = 0L
+    private var firstFrameTimestamp = 0L
 
     /**
      * 开始摄像头捕获
@@ -95,8 +107,28 @@ class CameraXManager(private val context: Context) {
         frameCallback = callback
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+
+        // 启动初始化超时保护
+        initTimeoutFuture = timeoutScheduler.schedule({
+            if (_cameraState.value == CameraState.INITIALIZING) {
+                if (BuildState.debug) "摄像头初始化超时 (${INIT_TIMEOUT_MS}ms)".loge(TAG)
+                _cameraState.value = CameraState.ERROR
+            }
+        }, INIT_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+
         cameraProviderFuture.addListener({
+            // 取消超时计时器
+            initTimeoutFuture?.cancel(false)
+            initTimeoutFuture = null
+
             try {
+                // 检查生命周期是否仍然有效
+                if (!lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    if (BuildState.debug) "摄像头回调时生命周期已销毁，取消绑定".loge(TAG)
+                    _cameraState.value = CameraState.ERROR
+                    return@addListener
+                }
+
                 cameraProvider = cameraProviderFuture.get()
                 if (BuildState.debug) "摄像头 Provider 获取成功".logd(TAG)
                 bindCamera(lifecycleOwner, surfaceProvider)
@@ -115,6 +147,13 @@ class CameraXManager(private val context: Context) {
         surfaceProvider: androidx.camera.core.Preview.SurfaceProvider?
     ) {
         val provider = cameraProvider ?: return
+
+        // 二次检查生命周期状态，防止在 Provider 获取和 bindCamera 之间生命周期变化
+        if (!lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            if (BuildState.debug) "bindCamera 时生命周期无效，跳过绑定".loge(TAG)
+            _cameraState.value = CameraState.ERROR
+            return
+        }
 
         // 使用后置摄像头
         val cameraSelector = CameraSelector.Builder()
@@ -218,6 +257,20 @@ class CameraXManager(private val context: Context) {
 
             if (count > 0) {
                 val averageBrightness = sum.toDouble() / count
+
+                // 帧率诊断（每100帧输出一次）
+                if (BuildState.debug) {
+                    frameCount++
+                    if (firstFrameTimestamp == 0L) firstFrameTimestamp = timestamp
+                    if (lastFrameTimestamp > 0 && frameCount % 100 == 0L) {
+                        val totalDurationMs = (timestamp - firstFrameTimestamp) / 1_000_000.0
+                        val avgFps = if (totalDurationMs > 0) frameCount * 1000.0 / totalDurationMs else 0.0
+                        val intervalMs = (timestamp - lastFrameTimestamp) / 1_000_000.0
+                        "帧率诊断: 第${frameCount}帧, 平均FPS=${String.format("%.1f", avgFps)}, 当前帧间隔=${String.format("%.1f", intervalMs)}ms".logd(TAG)
+                    }
+                    lastFrameTimestamp = timestamp
+                }
+
                 frameCallback?.onFrame(averageBrightness, timestamp)
             }
 
@@ -275,6 +328,9 @@ class CameraXManager(private val context: Context) {
      */
     fun release() {
         stopCapture()
+        initTimeoutFuture?.cancel(false)
+        initTimeoutFuture = null
         cameraExecutor.shutdown()
+        timeoutScheduler.shutdown()
     }
 }

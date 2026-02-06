@@ -7,6 +7,11 @@
 - 已修复：闹钟触发时 WakeLock 提前释放、单次闹钟禁用的嵌套协程、药物闹钟查询/删除/禁用联动、通知 PendingIntent 冲突与重复时间更新风险。
 - 后续建议：补齐闹钟类型的 smallIcon 资源区分并统一验证通知交互；为闹钟更新/删除增加更细粒度的日志与指标上报，便于问题追踪。
 
+## 心率测量稳定性与算法修复（2026-02-06）
+
+- 已修复：rawSamples 线程安全（synchronized + ArrayDeque）、onCleared 资源泄漏、滤波器频带与 MAX_BPM 不匹配（0.75-3.0Hz/45-180BPM）、峰值检测阈值顺序、FFT 并发滤波器冲突、CameraX 生命周期边界保护与初始化超时。
+- 后续建议：考虑从 Y 通道切换到真正红色通道以提高 PPG 信噪比；为 filtfilt 添加镜像填充减少边缘伪影；真机回归测试前后台切换、权限拒绝/恢复场景。
+
 ## 分支变更总结（防关联 & 代码安全）
 
 - `feature_1.0.0` 分支汇总文档：[`docs/Branch_Change_Summary.md`](docs/Branch_Change_Summary.md)

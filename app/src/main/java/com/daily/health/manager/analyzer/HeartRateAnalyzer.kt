@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
@@ -83,8 +84,11 @@ class HeartRateAnalyzer {
         NO_SIGNAL   // 无信号
     }
 
-    // 原始信号缓冲区
-    private val rawSamples = mutableListOf<Sample>()
+    // 同步锁对象，保护 rawSamples 的线程安全访问
+    private val lock = Any()
+
+    // 原始信号缓冲区（通过 lock 同步访问）
+    private val rawSamples = ArrayDeque<Sample>(MAX_SAMPLES + 10)
 
     // 滤波器实例
     private val bandpassFilter = ButterworthBandpassFilter()
@@ -105,14 +109,16 @@ class HeartRateAnalyzer {
      * @param timestamp 纳秒级时间戳 (来自 ImageProxy.imageInfo.timestamp)
      */
     fun addSample(value: Double, timestamp: Long) {
-        rawSamples.add(Sample(timestamp, value))
+        synchronized(lock) {
+            rawSamples.addLast(Sample(timestamp, value))
 
-        // 限制缓冲区大小
-        while (rawSamples.size > MAX_SAMPLES) {
-            rawSamples.removeAt(0)
+            // 限制缓冲区大小（ArrayDeque removeFirst 为 O(1)）
+            while (rawSamples.size > MAX_SAMPLES) {
+                rawSamples.removeFirst()
+            }
         }
 
-        // 每 100 个样本输出一次日志
+        // 日志放在锁外，减少持锁时间
         if (BuildState.debug && rawSamples.size % 100 == 0) {
             "采样数=${rawSamples.size}, 最新值=$value".logd(TAG)
         }
@@ -126,7 +132,8 @@ class HeartRateAnalyzer {
      * - 从“检测到”到“未检测到”需连续 FINGER_LOST_CONFIRM_COUNT 次确认
      */
     fun isFingerDetected(): Boolean {
-        if (rawSamples.size < DETECTION_SAMPLE_SIZE) return fingerDetectedState
+        val sampleSize = synchronized(lock) { rawSamples.size }
+        if (sampleSize < DETECTION_SAMPLE_SIZE) return fingerDetectedState
 
         val instantDetected = checkFingerInstant()
 
@@ -158,7 +165,9 @@ class HeartRateAnalyzer {
      * 即时检测手指 (无防抖)
      */
     private fun checkFingerInstant(): Boolean {
-        val recentValues = rawSamples.takeLast(DETECTION_SAMPLE_SIZE).map { it.value }
+        val recentValues = synchronized(lock) {
+            rawSamples.toList().takeLast(DETECTION_SAMPLE_SIZE).map { it.value }
+        }
         val mean = recentValues.average()
         val variance = recentValues.map { (it - mean).pow(2) }.average()
 
@@ -167,8 +176,11 @@ class HeartRateAnalyzer {
         val hasSignal = variance in VARIANCE_MIN..VARIANCE_MAX
 
         val detected = brightnessOk && hasSignal
-        if (BuildState.debug && rawSamples.size % 30 == 0) {
-            "手指检测(instant): detected=$detected, mean=${String.format("%.1f", mean)}, var=${String.format("%.2f", variance)}, state=$fingerDetectedState".logd(TAG)
+        if (BuildState.debug) {
+            val sz = synchronized(lock) { rawSamples.size }
+            if (sz % 30 == 0) {
+                "手指检测(instant): detected=$detected, mean=${String.format("%.1f", mean)}, var=${String.format("%.2f", variance)}, state=$fingerDetectedState".logd(TAG)
+            }
         }
         return detected
     }
@@ -177,11 +189,14 @@ class HeartRateAnalyzer {
      * 获取信号质量
      */
     fun getSignalQuality(): SignalQuality {
-        if (rawSamples.size < MIN_SAMPLES) return SignalQuality.NO_SIGNAL
+        val sampleSize = synchronized(lock) { rawSamples.size }
+        if (sampleSize < MIN_SAMPLES) return SignalQuality.NO_SIGNAL
         if (!isFingerDetected()) return SignalQuality.NO_SIGNAL
 
-        val recentValues = rawSamples.takeLast(WINDOW_SIZE_SEC.toInt() * SAMPLE_RATE.toInt())
-            .map { it.value }
+        val recentValues = synchronized(lock) {
+            rawSamples.toList().takeLast(WINDOW_SIZE_SEC.toInt() * SAMPLE_RATE.toInt())
+                .map { it.value }
+        }
 
         if (recentValues.size < MIN_SAMPLES) return SignalQuality.POOR
 
@@ -215,9 +230,10 @@ class HeartRateAnalyzer {
      */
     fun getInstantBpm(): Int? {
         // 业界标准：1.5秒即可开始计算
-        if (rawSamples.size < MIN_SAMPLES_INSTANT) {
-            if (BuildState.debug && rawSamples.size % 15 == 0) {
-                "实时心率: 样本不足 ${rawSamples.size}/$MIN_SAMPLES_INSTANT".logd(TAG)
+        val sampleSize = synchronized(lock) { rawSamples.size }
+        if (sampleSize < MIN_SAMPLES_INSTANT) {
+            if (BuildState.debug && sampleSize % 15 == 0) {
+                "实时心率: 样本不足 $sampleSize/$MIN_SAMPLES_INSTANT".logd(TAG)
             }
             return lastValidBpm
         }
@@ -232,8 +248,8 @@ class HeartRateAnalyzer {
         val rawBpm = detectBpmFromPeaks(filtered)
         
         if (rawBpm == null) {
-            if (BuildState.debug && rawSamples.size % 30 == 0) {
-                "实时心率: 无法计算 (样本=${rawSamples.size})".logd(TAG)
+            if (BuildState.debug && sampleSize % 30 == 0) {
+                "实时心率: 无法计算 (样本=$sampleSize)".logd(TAG)
             }
             return lastValidBpm
         }
@@ -269,33 +285,63 @@ class HeartRateAnalyzer {
      * 此方法在后台线程执行，避免阻塞主线程。
      */
     suspend fun getFinalBpm(): Int? = withContext(Dispatchers.Default) {
-        if (rawSamples.size < MIN_SAMPLES) return@withContext null
+        val sampleSize = synchronized(lock) { rawSamples.size }
+        if (sampleSize < MIN_SAMPLES) return@withContext null
         if (!isFingerDetected()) return@withContext null
 
         val signal = prepareSignal()
         if (signal.isEmpty()) return@withContext null
 
-        // 应用滤波
-        val filtered = bandpassFilter.filtfilt(signal)
+        // 使用独立的滤波器实例，避免与 getInstantBpm 并发访问共享 bandpassFilter
+        val fftFilter = ButterworthBandpassFilter()
+        val filtered = fftFilter.filtfilt(signal)
 
-        // 应用汉宁窗
+        // === 方法1: 峰值检测 ===
+        val peakBpm = detectBpmFromPeaks(filtered)
+
+        // === 方法2: FFT 频谱分析 ===
         val windowed = FastFourierTransformer.applyHanningWindow(filtered)
-
-        // 查找主频
-        val dominantFreq = FastFourierTransformer.findDominantFrequency(
+        val fftResult = FastFourierTransformer.findDominantFrequencyWithSNR(
             windowed,
             SAMPLE_RATE,
             MIN_BPM / 60.0,
             MAX_BPM / 60.0
-        ) ?: return@withContext null.also {
-            if (BuildState.debug) "FFT 分析: 未找到主频率".logd(TAG)
+        )
+
+        val fftBpm = fftResult?.let {
+            val bpm = FastFourierTransformer.frequencyToBpm(it.frequency)
+            if (bpm in MIN_BPM..MAX_BPM) bpm else null
         }
 
-        val bpm = FastFourierTransformer.frequencyToBpm(dominantFreq)
-        if (BuildState.debug) "FFT 分析: 频率=$dominantFreq Hz, 心率=$bpm BPM".logd(TAG)
+        if (BuildState.debug) {
+            val fftSize = FastFourierTransformer.padToPowerOfTwo(windowed).size
+            val topFreqsStr = fftResult?.topFrequencies?.joinToString { "${String.format("%.2f", it.first)}Hz" } ?: "N/A"
+            "FFT 参数: 信号长度=${signal.size}, FFT大小=$fftSize, SNR=${String.format("%.1f", fftResult?.snr ?: 0.0)}, 频谱峰值=[$topFreqsStr]".logd(TAG)
+            "最终心率: FFT=$fftBpm, 峰值=$peakBpm".logd(TAG)
+        }
 
-        // 有效性检查
-        if (bpm in MIN_BPM..MAX_BPM) bpm else null
+        // === 交叉验证并融合结果 ===
+        val finalBpm = when {
+            // 两者都有效：如果差距在 10 BPM 以内，取加权平均（FFT 权重更高）
+            fftBpm != null && peakBpm != null -> {
+                val diff = kotlin.math.abs(fftBpm - peakBpm)
+                if (diff <= 10) {
+                    // FFT 60% + 峰值 40%（FFT 频率分辨率更精确）
+                    (fftBpm * 0.6 + peakBpm * 0.4).roundToInt()
+                } else {
+                    // 差距大，取 SNR 高时信任 FFT，否则取峰值
+                    if ((fftResult?.snr ?: 0.0) > 5.0) fftBpm else peakBpm
+                }
+            }
+            // 只有 FFT：需 SNR > 3 才可信
+            fftBpm != null -> if ((fftResult?.snr ?: 0.0) > 3.0) fftBpm else null
+            // 只有峰值
+            peakBpm != null -> peakBpm
+            else -> null
+        }
+
+        if (BuildState.debug) "最终确认心率: $finalBpm BPM".logd(TAG)
+        finalBpm
     }
 
     /**
@@ -325,8 +371,10 @@ class HeartRateAnalyzer {
      * 重置分析器
      */
     fun reset() {
-        if (BuildState.debug) "重置分析器: 清除 ${rawSamples.size} 个样本".logd(TAG)
-        rawSamples.clear()
+        synchronized(lock) {
+            if (BuildState.debug) "重置分析器: 清除 ${rawSamples.size} 个样本".logd(TAG)
+            rawSamples.clear()
+        }
         bandpassFilter.reset()
         // 重置防抖状态
         fingerDetectedState = false
@@ -340,7 +388,7 @@ class HeartRateAnalyzer {
     /**
      * 获取当前采样数
      */
-    fun getSampleCount(): Int = rawSamples.size
+    fun getSampleCount(): Int = synchronized(lock) { rawSamples.size }
 
     /**
      * 准备信号：重采样到固定采样率
@@ -349,9 +397,8 @@ class HeartRateAnalyzer {
      * 线性插值到均匀的固定采样率。
      */
     private fun prepareSignal(): DoubleArray {
-        if (rawSamples.size < 2) return doubleArrayOf()
-
-        val samples = rawSamples.toList()
+        val samples = synchronized(lock) { rawSamples.toList() }
+        if (samples.size < 2) return doubleArrayOf()
         val startTime = samples.first().timestamp
         val endTime = samples.last().timestamp
         val durationNanos = endTime - startTime
@@ -417,8 +464,8 @@ class HeartRateAnalyzer {
         val signalMin = signal.min()
         val amplitude = signalMax - signalMin
         
-        if (BuildState.debug && rawSamples.size % 60 == 0) {
-            "峰值检测: 信号长度=${signal.size}, 幅度=$amplitude, min=$signalMin, max=$signalMax".logd(TAG)
+        if (BuildState.debug && synchronized(lock) { rawSamples.size } % 60 == 0) {
+            "峰值检测: 信号长度=${signal.size}, 幅度=${String.format("%.4f", amplitude)}".logd(TAG)
         }
         
         // 如果幅度太小，信号可能无效
@@ -427,18 +474,20 @@ class HeartRateAnalyzer {
             return null
         }
 
-        // 尝试不同的阈值，从低到高
-        val thresholdLevels = listOf(0.35, 0.45, 0.55)
+        // 尝试不同的阈值，从高到低（优先使用高阈值减少误检）
+        val thresholdLevels = listOf(0.55, 0.45, 0.35)
+        // 峰值数量上下限判定：最大峰值数 = 信号时长(s) * MAX_BPM/60
+        val maxExpectedPeaks = ((signal.size / SAMPLE_RATE) * MAX_BPM / 60.0).toInt() + 1
         
         for (thresholdRatio in thresholdLevels) {
             val threshold = signalMin + amplitude * thresholdRatio
             val peaks = detectPeaksWithThreshold(signal, threshold)
             
-            if (BuildState.debug && rawSamples.size % 60 == 0) {
-                "峰值检测: 阈值比例=$thresholdRatio, 检测到 ${peaks.size} 个峰值".logd(TAG)
+            if (BuildState.debug && synchronized(lock) { rawSamples.size } % 60 == 0) {
+                "峰值检测: 阈值=$thresholdRatio, 峰值数=${peaks.size}".logd(TAG)
             }
-            
-            if (peaks.size >= 2) {
+
+            if (peaks.size >= 2 && peaks.size <= maxExpectedPeaks) {
                 val bpm = calculateBpmFromPeaks(peaks)
                 if (bpm != null) {
                     if (BuildState.debug) "峰值检测成功: 阈值=$thresholdRatio, 峰值数=${peaks.size}, BPM=$bpm".logd(TAG)
@@ -452,10 +501,13 @@ class HeartRateAnalyzer {
     }
     
     /**
-     * 使用指定阈值检测峰值
+     * 使用指定阈值检测峰值，返回亚样本精度的峰值位置
+     *
+     * 对每个整数峰值位置做抛物线插值，获得浮点精度的峰位，
+     * 解决 30Hz 采样率下 R-R 间隔量化台阶问题（90↔94 跳变）。
      */
-    private fun detectPeaksWithThreshold(signal: DoubleArray, threshold: Double): List<Int> {
-        val peaks = mutableListOf<Int>()
+    private fun detectPeaksWithThreshold(signal: DoubleArray, threshold: Double): List<Double> {
+        val peaks = mutableListOf<Double>()
         val refractoryPeriod = (SAMPLE_RATE * MIN_RR_INTERVAL).toInt()
         var lastPeakIdx = -refractoryPeriod
         
@@ -464,7 +516,17 @@ class HeartRateAnalyzer {
             if (signal[i] > signal[i - 1] && signal[i] > signal[i + 1]) {
                 // 超过阈值且在不应期之外
                 if (signal[i] > threshold && (i - lastPeakIdx) >= refractoryPeriod) {
-                    peaks.add(i)
+                    // 抛物线插值获得亚样本精度的峰值位置
+                    val alpha = signal[i - 1]
+                    val beta = signal[i]
+                    val gamma = signal[i + 1]
+                    val denom = 2.0 * beta - alpha - gamma
+                    val refinedIdx = if (denom > 1e-10) {
+                        i + 0.5 * (alpha - gamma) / denom
+                    } else {
+                        i.toDouble()
+                    }
+                    peaks.add(refinedIdx)
                     lastPeakIdx = i
                 }
             }
@@ -475,11 +537,14 @@ class HeartRateAnalyzer {
     
     /**
      * 从峰值位置计算 BPM
+     *
+     * 使用截尾均值（去掉最大最小 10%）替代中位数，
+     * 配合亚样本精度的峰值位置，可以得到更精确的浮点 R-R 间隔。
      */
-    private fun calculateBpmFromPeaks(peaks: List<Int>): Int? {
+    private fun calculateBpmFromPeaks(peaks: List<Double>): Int? {
         if (peaks.size < 2) return null
         
-        // 计算 R-R 间隔
+        // 计算 R-R 间隔（浮点精度）
         val rrIntervals = peaks.zipWithNext { a, b ->
             (b - a) / SAMPLE_RATE
         }
@@ -492,11 +557,17 @@ class HeartRateAnalyzer {
             return null
         }
 
-        // 使用中位数而非平均值，更抗噪声
-        val sortedIntervals = validIntervals.sorted()
-        val medianInterval = sortedIntervals[sortedIntervals.size / 2]
+        // 截尾均值：去掉最大和最小 10% 后取平均，兼顾抗噪和精度
+        val sorted = validIntervals.sorted()
+        val trimCount = (sorted.size * 0.1).toInt()
+        val trimmed = if (sorted.size > 4) {
+            sorted.subList(trimCount, sorted.size - trimCount)
+        } else {
+            sorted  // 样本太少时不截尾
+        }
+        val meanInterval = trimmed.average()
         
-        val bpm = (60.0 / medianInterval).toInt()
+        val bpm = (60.0 / meanInterval).roundToInt()
 
         return if (bpm in MIN_BPM..MAX_BPM) bpm else null
     }

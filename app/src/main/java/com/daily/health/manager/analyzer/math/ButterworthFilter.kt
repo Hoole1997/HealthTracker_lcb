@@ -9,8 +9,8 @@ import kotlin.math.tan
 /**
  * Butterworth 带通滤波器
  *
- * 该滤波器用于在心率测量中过滤 PPG 信号，保留心率频率范围 (0.75Hz - 2.5Hz，对应 45-150 BPM)。
- * 这个范围更适合静坐测量场景，减少高频噪声干扰。
+ * 该滤波器用于在心率测量中过滤 PPG 信号，保留心率频率范围 (0.75Hz - 3.0Hz，对应 45-180 BPM)。
+ * 这个范围覆盖静坐测量场景的完整心率区间，包括运动后或年轻用户的较高心率。
  *
  * 系数通过以下 Python 代码生成：
  * ```python
@@ -19,7 +19,7 @@ import kotlin.math.tan
  *
  * fs = 30.0  # 采样率
  * lowcut = 0.75   # 45 BPM
- * highcut = 2.5   # 150 BPM
+ * highcut = 3.0   # 180 BPM
  * nyq = fs / 2
  * low = lowcut / nyq
  * high = highcut / nyq
@@ -29,31 +29,31 @@ import kotlin.math.tan
  * print("a =", a.tolist())
  * ```
  *
- * 输出 (2阶带通, 0.75-2.5Hz @ 30Hz):
- * b = [0.04658291, 0.0, -0.09316582, 0.0, 0.04658291]
- * a = [1.0, -3.16778851, 3.85957102, -2.14702379, 0.45946049]
+ * 输出 (2阶带通, 0.75-3.0Hz @ 30Hz):
+ * b = [0.0413908148, 0.0, -0.0827816296, 0.0, 0.0413908148]
+ * a = [1.0, -3.1819605790, 3.9334965035, -2.2583981138, 0.5139818942]
  */
 class ButterworthBandpassFilter(
     private val sampleRate: Double = 30.0,
     private val lowCutoff: Double = 0.75,
-    private val highCutoff: Double = 2.5
+    private val highCutoff: Double = 3.0
 ) {
-    // 滤波器系数 (2阶 Butterworth 带通, 0.75-2.5Hz @ 30Hz)
-    // 适用于静坐测量 (45-150 BPM)
+    // 滤波器系数 (2阶 Butterworth 带通, 0.75-3.0Hz @ 30Hz)
+    // 适用于静坐测量 (45-180 BPM)
     private val b = doubleArrayOf(
-        0.04658291,
+        0.0413908148,
         0.0,
-        -0.09316582,
+        -0.0827816296,
         0.0,
-        0.04658291
+        0.0413908148
     )
 
     private val a = doubleArrayOf(
         1.0,
-        -3.16778851,
-        3.85957102,
-        -2.14702379,
-        0.45946049
+        -3.1819605790,
+        3.9334965035,
+        -2.2583981138,
+        0.5139818942
     )
 
     // 滤波器状态缓冲区
@@ -111,11 +111,30 @@ class ButterworthBandpassFilter(
      * @return 零相位滤波后的信号数组
      */
     fun filtfilt(signal: DoubleArray): DoubleArray {
-        if (signal.isEmpty()) return signal
+        if (signal.size < 2) return signal
+
+        // 镜像填充长度 = 3 * 滤波器阶数（4阶 IIR → 12 个样本）
+        // 这是 scipy filtfilt 的标准做法，用于消除边缘瞬态效应
+        val padLen = minOf(3 * (a.size - 1), signal.size - 1)
+
+        // 构建填充后的信号: [镜像前端] + [原始信号] + [镜像后端]
+        val padded = DoubleArray(signal.size + 2 * padLen)
+
+        // 前端镜像填充: 以 signal[0] 为对称轴反射
+        for (i in 0 until padLen) {
+            padded[i] = 2.0 * signal[0] - signal[padLen - i]
+        }
+        // 原始信号
+        signal.copyInto(padded, padLen)
+        // 后端镜像填充: 以 signal[last] 为对称轴反射
+        val last = signal.size - 1
+        for (i in 0 until padLen) {
+            padded[padLen + signal.size + i] = 2.0 * signal[last] - signal[last - 1 - i]
+        }
 
         // 前向滤波
         reset()
-        val forward = signal.map { filterSample(it) }.toDoubleArray()
+        val forward = padded.map { filterSample(it) }.toDoubleArray()
 
         // 反转信号
         forward.reverse()
@@ -126,7 +145,9 @@ class ButterworthBandpassFilter(
 
         // 再次反转得到最终结果
         backward.reverse()
-        return backward
+
+        // 截取中间部分（去除填充）
+        return backward.copyOfRange(padLen, padLen + signal.size)
     }
 
     /**
