@@ -358,7 +358,14 @@ class AlarmViewModel(
                 // 1. 获取原记录
                 val record = alarmRepository.getRecordById(recordId) ?: return@launch
                 
-                // 2. 更新字段
+                // 2. 检查是否存在相同类型且相同时间的闹钟（排除自身）
+                val exists = alarmRepository.existsAtTypeAndTime(record.type, hour, minute, recordId)
+                if (exists) {
+                    "Alarm time ${hour}:${minute} already exists for type=${record.type}, skipping update".logw(TAG)
+                    return@launch
+                }
+                
+                // 3. 更新字段
                 val updatedRecord = record.copy(
                     hour = hour,
                     minute = minute,
@@ -366,11 +373,11 @@ class AlarmViewModel(
                     updatedAt = System.currentTimeMillis()
                 )
                 
-                // 3. 写入数据库
+                // 4. 写入数据库
                 val status = alarmRepository.updateExistingRecord(updatedRecord)
                 
                 if (status > 0) {
-                    // 4. 更新系统闹钟
+                    // 5. 更新系统闹钟
                     alarmScheduler.updateAlarm(updatedRecord)
                     "Updated alarm $recordId successfully".logd(TAG)
                 }

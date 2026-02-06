@@ -104,9 +104,12 @@ class AlarmNotificationManager(
         try {
 
             val notificationId = generateNotificationId(alarmRecord)
-            val icon = if(alarmRecord.type == AlarmRecord.TYPE_BLOOD_PRESSURE) R.drawable.ht_ic_notifcation_pb else R.drawable.ic_notification_bs
+            val icon = when (alarmRecord.type) {
+                AlarmRecord.TYPE_BLOOD_PRESSURE -> R.drawable.ht_ic_notifcation_pb
+                else -> R.drawable.ic_notification_bs
+            }
             // 创建点击意图
-            val clickIntent = createClickPendingIntent(alarmRecord.type)
+            val clickIntent = createClickPendingIntent(alarmRecord.type, notificationId)
 
             val collapsedView = createCollapsedView(alarmRecord,notificationId)
             val expandedView = createExpandedView(alarmRecord, notificationId)
@@ -321,7 +324,7 @@ class AlarmNotificationManager(
      * 直接启动 SplashActivity，不再通过 BroadcastReceiver 中转
      * 这样可以避免 Android 10+ 从后台启动 Activity 的限制
      */
-    private fun createClickPendingIntent(alarmType: Int): PendingIntent {
+    private fun createClickPendingIntent(alarmType: Int, notificationId: Int): PendingIntent {
         // 将内部 action 映射到对应的参数值
         val actionValue = getNotificationAction(alarmType)
 
@@ -333,10 +336,10 @@ class AlarmNotificationManager(
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
-        // 使用 getActivity 而不是 getBroadcast，符合 Android 10+ 要求
+        // 使用 notificationId 作为 requestCode，避免同类型不同闹钟的 PendingIntent 互相覆盖
         return PendingIntent.getActivity(
             context,
-            alarmType,  // 使用alarmType作为requestCode确保唯一性
+            notificationId,
             intent,
             flags
         )

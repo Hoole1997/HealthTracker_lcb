@@ -378,6 +378,24 @@ class AlarmRepository(
     }
 
     /**
+     * 获取指定药物关联的所有闹钟记录
+     * @param medicineId 药物提醒ID
+     * @return 关联的闹钟记录列表
+     */
+    suspend fun getAlarmsByMedicineId(medicineId: Long): List<AlarmRecord> {
+        return alarmDao.getAlarmsByMedicineId(medicineId)
+    }
+
+    /**
+     * 软删除指定药物关联的所有闹钟记录
+     * @param medicineId 药物提醒ID
+     * @return 影响的行数
+     */
+    suspend fun softDeleteAlarmsByMedicineId(medicineId: Long): Int {
+        return alarmDao.softDeleteByMedicineId(medicineId)
+    }
+
+    /**
      * 获取下一个即将触发的闹钟
      * @return 下一个闹钟记录，可能为null
      */

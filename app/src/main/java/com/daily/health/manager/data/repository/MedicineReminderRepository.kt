@@ -224,10 +224,21 @@ class MedicineReminderRepository(
      */
     private suspend fun cancelMedicationAlarms(medicineId: Long) {
         try {
-            // TODO: 实现从AlarmRepository中获取指定药物的所有闹钟
-            // 目前简化实现：只记录日志，不实际取消闹钟
-            // 完整实现需要在AlarmRepository中添加getAlarmsByMedicineId方法
-            "Cancelling medication alarms for MedicineID=$medicineId (simplified implementation)".logd(TAG)
+            // 1. 获取该药物关联的所有闹钟记录
+            val alarms = alarmRepository.getAlarmsByMedicineId(medicineId)
+            if (alarms.isEmpty()) {
+                "No medication alarms found for MedicineID=$medicineId".logd(TAG)
+                return
+            }
+
+            // 2. 逐个取消系统闹钟
+            alarms.forEach { alarm ->
+                alarmScheduler.cancelAlarm(alarm)
+            }
+
+            // 3. 批量软删除数据库记录
+            val deletedCount = alarmRepository.softDeleteAlarmsByMedicineId(medicineId)
+            "Cancelled $deletedCount medication alarms for MedicineID=$medicineId".logd(TAG)
         } catch (e: Exception) {
             "Error cancelling medication alarms: MedicineID=$medicineId, Error=${e.message}".loge(TAG)
         }
@@ -237,14 +248,40 @@ class MedicineReminderRepository(
      * 启用/禁用药物提醒
      */
     suspend fun setMedicineActive(id: Long, isActive: Boolean) {
-        dao.setActive(id, isActive)
+        try {
+            dao.setActive(id, isActive)
+
+            // 联动闹钟启用/禁用
+            val alarms = alarmRepository.getAlarmsByMedicineId(id)
+            alarms.forEach { alarm ->
+                if (isActive) {
+                    alarmRepository.enableAlarm(alarm.id)
+                    alarmScheduler.scheduleAlarm(alarm.copy(isEnabled = true))
+                } else {
+                    alarmScheduler.cancelAlarm(alarm)
+                    alarmRepository.disableAlarm(alarm.id)
+                }
+            }
+            "Medicine active state updated: ID=$id, active=$isActive, alarms=${alarms.size}".logd(TAG)
+        } catch (e: Exception) {
+            "Error updating medicine active state: ID=$id, Error=${e.message}".loge(TAG)
+        }
     }
 
     /**
      * 删除药物提醒
      */
     suspend fun deleteMedicine(id: Long) {
-        dao.deleteById(id)
+        try {
+            // 先取消关联的系统闹钟
+            cancelMedicationAlarms(id)
+            // 再删除药物提醒记录
+            dao.deleteById(id)
+            "Medicine deleted with alarms cancelled: ID=$id".logd(TAG)
+        } catch (e: Exception) {
+            "Error deleting medicine: ID=$id, Error=${e.message}".loge(TAG)
+            throw e
+        }
     }
 
     /**

@@ -100,6 +100,22 @@ interface LocalDao04 {
     suspend fun getRecordsByTypeAndTime(type: Int, hour: Int, minute: Int): List<AlarmRecord>
 
     /**
+     * 根据药物ID获取关联的服药提醒闹钟记录
+     * @param medicineId 药物提醒ID（存储在 longExt1/c16 字段）
+     * @return 关联的闹钟记录列表
+     */
+    @Query("SELECT * FROM t04 WHERE c09 = 0 AND c02 = 2 AND c16 = :medicineId")
+    suspend fun getAlarmsByMedicineId(medicineId: Long): List<AlarmRecord>
+
+    /**
+     * 软删除指定药物ID关联的所有闹钟记录
+     * @param medicineId 药物提醒ID
+     * @return 影响的行数
+     */
+    @Query("UPDATE t04 SET c09 = 1 WHERE c02 = 2 AND c16 = :medicineId")
+    suspend fun softDeleteByMedicineId(medicineId: Long): Int
+
+    /**
      * 根据时间范围获取闹钟记录
      * @param startHour 开始小时
      * @param endHour 结束小时

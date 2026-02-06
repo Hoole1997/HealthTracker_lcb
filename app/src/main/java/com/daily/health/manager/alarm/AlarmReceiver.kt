@@ -54,44 +54,37 @@ class AlarmReceiver : BroadcastReceiver() {
             return
         }
         
-        // 获取WakeLock确保处理完成前设备保持唤醒
+        // 获取闹钟信息
+        val alarmId = intent.getLongExtra(AlarmScheduler.EXTRA_ALARM_ID, -1L)
+        val alarmType = intent.getIntExtra(AlarmScheduler.EXTRA_ALARM_TYPE, -1)
+        
+        if (alarmId == -1L) {
+            "Invalid alarm ID received, ignoring broadcast".logw(TAG)
+            return
+        }
+        
+        "Processing alarm trigger: ID=$alarmId, Type=$alarmType".logd(TAG)
+        
+        // 获取WakeLock和goAsync，确保异步处理完成前设备保持唤醒
+        val pendingResult = goAsync()
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         val wakeLock = powerManager.newWakeLock(
             PowerManager.PARTIAL_WAKE_LOCK,
             WAKE_LOCK_TAG
         )
+        wakeLock.acquire(WAKE_LOCK_TIMEOUT)
         
-        try {
-            wakeLock.acquire(WAKE_LOCK_TIMEOUT)
-            
-            // 获取闹钟信息
-            val alarmId = intent.getLongExtra(AlarmScheduler.EXTRA_ALARM_ID, -1L)
-            val alarmType = intent.getIntExtra(AlarmScheduler.EXTRA_ALARM_TYPE, -1)
-            
-            if (alarmId == -1L) {
-                "Invalid alarm ID received, ignoring broadcast".logw(TAG)
-                return
-            }
-            
-            "Processing alarm trigger: ID=$alarmId, Type=$alarmType".logd(TAG)
-            
-            // 异步处理闹钟逻辑
-            val pendingResult = goAsync()
-            coroutineScope.launch {
-                try {
-                    handleAlarmTrigger(alarmRepository, alarmScheduler, notificationManager, alarmId, alarmType)
-                } catch (e: Exception) {
-                    "Error handling alarm trigger: ${e.message}".loge(TAG)
-                } finally {
-                    pendingResult.finish()
+        // 异步处理闹钟逻辑，WakeLock 在协程完成后释放
+        coroutineScope.launch {
+            try {
+                handleAlarmTrigger(alarmRepository, alarmScheduler, notificationManager, alarmId, alarmType)
+            } catch (e: Exception) {
+                "Error handling alarm trigger: ${e.message}".loge(TAG)
+            } finally {
+                if (wakeLock.isHeld) {
+                    wakeLock.release()
                 }
-            }
-            
-        } catch (e: Exception) {
-            "Error in onReceive: ${e.message}".loge(TAG)
-        } finally {
-            if (wakeLock.isHeld) {
-                wakeLock.release()
+                pendingResult.finish()
             }
         }
     }
@@ -185,7 +178,7 @@ class AlarmReceiver : BroadcastReceiver() {
      *
      * @param alarmRecord 闹钟记录
      */
-    private fun scheduleNextRepeat(
+    private suspend fun scheduleNextRepeat(
         alarmRepository: AlarmRepository,
         alarmScheduler: AlarmScheduler,
         alarmRecord: AlarmRecord
@@ -203,18 +196,16 @@ class AlarmReceiver : BroadcastReceiver() {
                     "Failed to schedule next repeat: ID=${alarmRecord.id}".logw(TAG)
                 }
             } else {
-                // 单次闹钟触发后自动禁用
-                coroutineScope.launch {
-                    try {
-                        val success = alarmRepository.disableAlarm(alarmRecord.id)
-                        if (success) {
-                            "Single alarm disabled after trigger: ID=${alarmRecord.id}".logd(TAG)
-                        } else {
-                            "Failed to disable single alarm: ID=${alarmRecord.id}".logw(TAG)
-                        }
-                    } catch (e: Exception) {
-                        "Error disabling single alarm: ID=${alarmRecord.id}, Error=${e.message}".loge(TAG)
+                // 单次闹钟触发后自动禁用（直接 suspend 调用，避免嵌套协程导致 pendingResult 提前完成）
+                try {
+                    val success = alarmRepository.disableAlarm(alarmRecord.id)
+                    if (success) {
+                        "Single alarm disabled after trigger: ID=${alarmRecord.id}".logd(TAG)
+                    } else {
+                        "Failed to disable single alarm: ID=${alarmRecord.id}".logw(TAG)
                     }
+                } catch (e: Exception) {
+                    "Error disabling single alarm: ID=${alarmRecord.id}, Error=${e.message}".loge(TAG)
                 }
             }
         } catch (e: Exception) {
