@@ -86,9 +86,11 @@ abstract class BaseBottomSheetDialogFragment<VB : ViewBinding>(var dialogListene
         super.onViewCreated(view, savedInstanceState)
         //软键盘弹出时为底部添加padding
         setOnApplyWindowInsetsListener(view) { v, insets ->
-            val navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
-            val inputBar = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
-            v.updatePadding(bottom = max(navigationBars,inputBar) + defPadding)
+            if(isAutoNavigationBarsPadding()){
+                val navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+                val inputBar = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+                v.updatePadding(bottom = max(navigationBars,inputBar) + defPadding)
+            }
             insets
         }
         initView(view, savedInstanceState)
@@ -140,4 +142,6 @@ abstract class BaseBottomSheetDialogFragment<VB : ViewBinding>(var dialogListene
         } catch (_: Throwable) {
         }
     }
+
+   protected open fun isAutoNavigationBarsPadding() = true
 }

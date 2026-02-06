@@ -126,4 +126,6 @@ class NotificationPermissionV2DialogFragment :
             onCancel?.invoke()
         }
     }
+
+    override fun isAutoNavigationBarsPadding() = false
 }

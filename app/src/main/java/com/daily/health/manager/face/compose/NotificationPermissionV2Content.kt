@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -56,7 +57,7 @@ private val GrayPreviewBg = Color(0xFFE8E8EC)
 /** 手机示意框内部背景 */
 private val PhoneInnerBg = Color(0xFFF0F0F5)
 /** 拖拽指示器颜色 */
-private val DragHandleColor = Color(0xFFC0C0C4)
+private val DragHandleColor = Color(0xFFEAEAEA)
 /** 标题文字颜色 */
 private val TitleColor = Color(0xFF333333)
 /** 描述文字颜色 */
@@ -121,8 +122,8 @@ private fun GrayPreviewArea(alarmType: Int) {
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 0.dp)
-                .width(48.dp)
-                .height(6.dp)
+                .width(66.dp)
+                .height(8.dp)
                 .clip(RoundedCornerShape(4.dp))
                 .background(DragHandleColor)
         )
@@ -292,7 +293,7 @@ private fun NotificationPreviewCard(alarmType: Int) {
             Image(
                 painter = painterResource(id = previewData.decorIconResId),
                 contentDescription = null,
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier.size(64.dp).alpha(0.8f),
                 contentScale = ContentScale.Fit
             )
         }
@@ -313,6 +314,8 @@ private fun WhiteContentArea(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
+            // 内容区域 padding，底部增加导航栏高度以延伸白色背景
+            .navigationBarsPadding()
             .padding(start = 32.dp, end = 32.dp, top = 32.dp, bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

@@ -4,20 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.DialogFragment
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import com.daily.health.manager.data.entity.AlarmRecord
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.DialogFragment
 import com.daily.health.manager.R
+import com.daily.health.manager.data.entity.AlarmRecord
+import com.daily.health.manager.databinding.HtDialogNotificationPermissionV2Binding
 import com.daily.health.manager.face.compose.AlarmEditDialog
-import com.google.common.collect.Multimaps.index
+import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
-import androidx.fragment.app.DialogFragment as FragmentDialog
 
-class AlarmEditDialogFragment : DialogFragment() {
+class AlarmEditDialogFragment : BaseBottomSheetDialogFragment<HtDialogNotificationPermissionV2Binding>() {
 
     private var alarmRecord: AlarmRecord? = null
     private var alarmType: Int = 0
@@ -40,12 +39,15 @@ class AlarmEditDialogFragment : DialogFragment() {
         }
     }
 
-    override fun onCreateView(
+    override fun createViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
+        parent: ViewGroup?,
+        attachToParent: Boolean
+    ) = HtDialogNotificationPermissionV2Binding.inflate(inflater, parent, attachToParent)
+
+
+    override fun initView(view: View, savedInstanceState: Bundle?) {
+        mViewBind?.composeView?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 var showDeleteConfirm by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
@@ -59,7 +61,7 @@ class AlarmEditDialogFragment : DialogFragment() {
                         // 或者用户希望我把那个 Fragment 的 UI 逻辑迁移到这里。
                         // 不过通常在这里我们可以直接展示一个符合那个样式的 Compose 弹窗，或者调用 Fragment。
                         // 为了保持一致性，我将尝试直接弹出那个 Fragment。
-                        
+
                         LaunchedEffect(Unit) {
                             ConfirmDialog(
                                 title = getString(R.string.ht_tips),
@@ -95,10 +97,7 @@ class AlarmEditDialogFragment : DialogFragment() {
             }
         }
     }
-    
-    // Make background transparent for rounded corners
-    override fun onStart() {
-        super.onStart()
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-    }
+
+
+    override fun isAutoNavigationBarsPadding() = false
 }
