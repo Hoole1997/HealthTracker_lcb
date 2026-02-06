@@ -56,10 +56,6 @@ abstract class BaseBottomSheetDialogFragment<VB : ViewBinding>(var dialogListene
                 val parent = it.parent
                 it.measure(0, 0)
                 BottomSheetBehavior.from(parent as View).peekHeight = it.measuredHeight
-
-                parent.updateLayoutParams<CoordinatorLayout.LayoutParams> {
-                    gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-                }
             }
         }
 

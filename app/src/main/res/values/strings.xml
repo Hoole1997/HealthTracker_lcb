@@ -976,6 +976,14 @@
     <string name="ht_turn_on">Turn on</string>
     <string name="ht_notification_permission_title">Stay on track with your health goals</string>
     <string name="ht_notification_permission_des">Enable notifications to receive timely reminders for water intake, medication, and activities. Never miss a healthy habit again!</string>
+    <string name="ht_notification_grant_permissions">Never miss a healthy habit</string>
+    <string name="ht_notification_grant_permissions_des">Get timely reminders for health measurements, water intake, and medication</string>
+    <!-- 场景化副标题文案 -->
+    <string name="ht_notification_des_blood_sugar">Get timely reminders to record your blood sugar and track your health trends</string>
+    <string name="ht_notification_des_blood_pressure">Get timely reminders to record your blood pressure and monitor changes</string>
+    <string name="ht_notification_des_heart_rate">Get timely reminders to measure your heart rate and stay on top of your fitness</string>
+    <string name="ht_notification_des_bmi">Get timely reminders to track your weight and BMI progress</string>
+    <string name="ht_notification_des_cholesterol">Get timely reminders to record your cholesterol levels and manage your health</string>
     <string name="ht_close">Close</string>
     <string name="ht_choose_your_gender">Choose your gender</string>
     <string name="ht_please_choose_your_gender">Please choose your gender</string>

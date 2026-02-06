@@ -610,14 +610,29 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
                         if (androidx.core.app.NotificationManagerCompat.from(this@HealthDetailScreen).areNotificationsEnabled()) {
                             showAlarmGuide(alarmType)
                         } else {
-                            // 无权限：弹出自定义权限说明弹窗
-                            com.daily.health.manager.face.dialog.NotificationPermissionDialog.show(
+                            // 无权限：先弹出 V2 权限引导弹窗，点击按钮后再请求系统权限
+                            val isDoNotAsk = com.hjq.permissions.XXPermissions.isDoNotAskAgainPermissions(
+                                this@HealthDetailScreen,
+                                listOf(com.hjq.permissions.permission.PermissionLists.getPostNotificationsPermission())
+                            )
+                            com.daily.health.manager.face.dialog.NotificationPermissionV2DialogFragment.show(
                                 supportFragmentManager,
+                                alarmType = alarmType,
+                                isDoNotAsk = isDoNotAsk,
                                 onGoToSettings = {
                                     pendingAlarmTypeForPermission = alarmType
                                     com.healthtracker.framework.util.PermissionUtils.openPermissionSettings(this@HealthDetailScreen)
                                 },
-                                onCancel = {
+                                onRequestPermission = {
+                                    com.healthtracker.framework.util.PermissionUtils.requestNotificationPermission(this@HealthDetailScreen) { granted, _ ->
+                                        if (granted) {
+                                            showAlarmGuide(alarmType)
+                                        } else {
+                                            super.handleBackPress()
+                                        }
+                                    }
+                                },
+                                onCancelCallback = {
                                     // 拒绝授权或取消：继续执行原有返回流程(插屏 -> finish)
                                     super.handleBackPress()
                                 }
