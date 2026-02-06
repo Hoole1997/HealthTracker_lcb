@@ -376,4 +376,5 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
     <string name="ht_uninstall_reason_others">Diğer</string>
     <string name="ht_uninstall_reason_hint">Lütfen %1$s\'ı neden kaldırdığınızı belirtin</string>
 
+    <string name="ht_permission_denied">İzin reddedildi</string>
 </resources>

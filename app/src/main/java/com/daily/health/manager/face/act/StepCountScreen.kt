@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import android.widget.Toast
 import com.daily.health.manager.App
+import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.constants.KEY_STEP_COUNT_GOLE
 import com.daily.health.manager.databinding.HtActivityStepCountBinding
@@ -29,7 +30,7 @@ class StepCountScreen : BaseInterActivity<StepCountViewModel, HtActivityStepCoun
     private var chartManager: HealthLineChartManager? = null
 
     private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) startHealthService() else Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+        if (granted) startHealthService() else Toast.makeText(this, getString(R.string.ht_permission_denied), Toast.LENGTH_SHORT).show()
     }
 
     override fun createViewBinding() = HtActivityStepCountBinding.inflate(layoutInflater)

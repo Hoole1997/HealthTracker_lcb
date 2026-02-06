@@ -750,5 +750,6 @@
     <string name="ht_uninstall_reason_others">その他</string>
     <string name="ht_uninstall_reason_hint">%1$sをアンインストールする理由を入力してください</string>
     <string name="shortcut_uninstall_short">アンインストール</string>
+    <string name="ht_permission_denied">権限が拒否されました</string>
 </resources>
 

@@ -1358,5 +1358,6 @@ healthcare provider or medical institution.</string>
     <string name="ht_uninstall_reason_unable_meet_demand">Unable to meet the demand</string>
     <string name="ht_uninstall_reason_others">Others</string>
     <string name="ht_uninstall_reason_hint">Please enter the reason why you uninstalling %1$s</string>
+    <string name="ht_permission_denied">Permission denied</string>
 
 </resources>

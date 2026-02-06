@@ -376,4 +376,5 @@
     <string name="ht_uninstall_reason_others">अन्य</string>
     <string name="ht_uninstall_reason_hint">कृपया बताएं कि आप %1$s को क्यों अनइंस्टॉल कर रहे हैं</string>
 
+    <string name="ht_permission_denied">अनुमति अस्वीकार कर दी गई</string>
 </resources>

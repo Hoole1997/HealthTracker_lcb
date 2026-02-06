@@ -750,5 +750,6 @@
     <string name="ht_uninstall_reason_others">기타</string>
     <string name="ht_uninstall_reason_hint">%1$s을(를) 삭제하는 이유를 입력해 주세요</string>
     <string name="shortcut_uninstall_short">삭제</string>
+    <string name="ht_permission_denied">권한이 거부되었습니다</string>
 </resources>
 

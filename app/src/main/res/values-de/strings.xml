@@ -1,0 +1,391 @@
+<resources>
+    <string name="app_name">Blutzucker &amp; Gesundheits-Tracker</string>
+    <string name="ht_meds_manager">Medikamenten-Manager</string>
+    <string name="ht_blood_suger">Blutzucker</string>
+    <string name="ht_blood_pressure">Blutdruck</string>
+    <string name="ht_home">Startseite</string>
+    <string name="ht_meds">Medikamente</string>
+    <string name="ht_insights">Einblicke</string>
+    <string name="ht_tracker">Tracker</string>
+    <string name="ht_settings">Einstellungen</string>
+    <string name="ht_record_now">Jetzt aufzeichnen</string>
+    <string name="ht_rate_us">Bewerten Sie uns</string>
+    <string name="ht_last_report">Letzter Bericht:</string>
+    <string name="ht_test_and_record_hr">Herzfrequenz testen und aufzeichnen</string>
+    <string name="ht_measure_now">Jetzt messen</string>
+    <string name="ht_measure_title">Messen</string>
+    <string name="ht_measure_finger_instruction">Bitte legen Sie Ihren Finger auf die Kamera und entfernen Sie ihn nicht bis zum Ende.</string>
+    <string name="ht_camera_permission_title">Kameraberechtigung erforderlich</string>
+    <string name="ht_camera_permission_desc">Um Ihre Herzfrequenz zu messen, benötigen wir Zugriff auf Ihre Kamera. Legen Sie Ihren Finger auf die Kameralinse, um Ihren Puls zu erkennen.</string>
+    <string name="ht_camera_permission_denied_title">Kameraberechtigung verweigert</string>
+    <string name="ht_camera_permission_denied_desc">Bitte aktivieren Sie die Kameraberechtigung in den Einstellungen, um die Herzfrequenzmessung zu nutzen.</string>
+    <string name="ht_grant_permission">Berechtigung erteilen</string>
+    <string name="ht_go_to_settings">Zu Einstellungen</string>
+    <string name="ht_start_measure">Messung starten</string>
+    <string name="ht_measure_disclaimer">Herzfrequenzmessungen über die Blitzkamera dienen nur als Referenz und können ungenau sein. Nicht für medizinische Zwecke. Für genaue Daten verwenden Sie bitte professionelle medizinische Geräte.</string>
+    <string name="ht_ppg_tips_title">Messtipps</string>
+    <string name="ht_ppg_tips_subtitle">Wenn der Finger <font color="#FB4248">rot</font> wird, machen Sie es richtig</string>
+    <string name="ht_ppg_tips_step1">Legen Sie Ihren Finger über die Kamera, aber vermeiden Sie den Blitz, da er warm werden kann.</string>
+    <string name="ht_ppg_tips_step2">Bleiben Sie ruhig und still, bis die Messung abgeschlossen ist!</string>
+    <string name="ht_ppg_tips_step3">Stellen Sie sicher, dass Sie sich in einem gut beleuchteten Bereich befinden, oder lassen Sie den Blitz für bessere Ergebnisse an.</string>
+    <string name="ht_cancel">Abbrechen</string>
+    <string name="ht_stabilizing_title">Messen…</string>
+    <string name="ht_stabilizing_subtitle">Großartig! Warten auf stabilisierte Daten…</string>
+    <string name="ht_stabilizing_tip">Wenn der Finger rot wird, bedeutet das, dass Sie es richtig machen.</string>
+    <string name="ht_measure_complete">Messung abgeschlossen!</string>
+    <string name="ht_loading">Laden...</string>
+    <string name="ht_history">Verlauf</string>
+    <string name="ht_click_to_record">Zum Aufzeichnen klicken</string>
+    <string name="ht_new_record">Neuer Eintrag</string>
+    <string name="ht_edit_record">Eintrag bearbeiten</string>
+    <string name="ht_status">Status</string>
+    <string name="ht_text_default">Standard</string>
+
+    <!-- Blutzuckerstufen -->
+    <string name="ht_blood_sugar_level_low">Niedrig</string>
+    <string name="ht_blood_sugar_level_normal">Normal</string>
+    <string name="ht_blood_sugar_level_prediabetes">Prädiabetes</string>
+    <string name="ht_blood_sugar_level_diabetes">Diabetes</string>
+
+    <!-- Cholesterinstufen -->
+    <string name="ht_cholesterol_level_normal">Normal</string>
+    <string name="ht_cholesterol_level_normal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
+    <string name="ht_cholesterol_level_near_optimal">Fast optimal</string>
+    <string name="ht_cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_borderline">Grenzwertig</string>
+    <string name="ht_cholesterol_level_borderline_desc">TC 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_high">Hoch</string>
+    <string name="ht_cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_very_high">Sehr hoch</string>
+    <string name="ht_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
+    <string name="ht_cholesterol_level_unknown">Unbekannt</string>
+    <string name="ht_cholesterol_level_unknown_desc">Unzureichende Daten zur Bestimmung des Cholesterinspiegels</string>
+    <string name="ht_cholesterol_hdl_label">HDL</string>
+    <string name="ht_cholesterol_ldl_label">LDL</string>
+    <string name="ht_cholesterol_tg_label">TG</string>
+
+    <!-- Blutdruckstufen -->
+    <string name="ht_blood_pressure_level_low">Hypotonie</string>
+    <string name="ht_blood_pressure_level_normal">Normal</string>
+    <string name="ht_blood_pressure_level_elevated">Erhöht</string>
+    <string name="ht_blood_pressure_level_high_stage_1">Hypertonie Stufe 1</string>
+    <string name="ht_blood_pressure_level_high_stage_2">Hypertonie Stufe 2</string>
+    <string name="ht_blood_pressure_level_hypertensive_crisis">Hypertensive Krise</string>
+
+    <!-- Blutdruckbereich kurz -->
+    <string name="ht_blood_pressure_range_low_short">SYS %1$s oder DIA %2$s</string>
+    <string name="ht_blood_pressure_range_normal_short">SYS %1$s und DIA %2$s</string>
+    <string name="ht_blood_pressure_range_elevated_short">SYS %1$s und DIA %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_1_short">SYS %1$s oder DIA %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_2_short">SYS %1$s oder DIA %2$s</string>
+    <string name="ht_blood_pressure_range_hypertensive_crisis_short">SYS %1$s oder DIA %2$s</string>
+
+    <!-- Blutdruckbereich voll -->
+    <string name="ht_blood_pressure_range_low_full">Systolisch %1$s oder Diastolisch %2$s</string>
+    <string name="ht_blood_pressure_range_normal_full">Systolisch %1$s und Diastolisch %2$s</string>
+    <string name="ht_blood_pressure_range_elevated_full">Systolisch %1$s und Diastolisch %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_1_full">Systolisch %1$s oder Diastolisch %2$s</string>
+    <string name="ht_blood_pressure_range_high_stage_2_full">Systolisch %1$s oder Diastolisch %2$s</string>
+    <string name="ht_blood_pressure_range_hypertensive_crisis_full">Systolisch %1$s oder Diastolisch %2$s</string>
+
+    <!-- Benachrichtigungen -->
+    <string name="ht_notification_channel_alarm_name">Gesundheitserinnerung</string>
+    <string name="ht_notification_channel_alarm_description">Benachrichtigungen zur Gesundheitsüberwachung</string>
+    <string name="ht_alarm_blood_sugar_content">Es ist Zeit, Ihren Blutzucker aufzuzeichnen!</string>
+    <string name="ht_alarm_blood_pressure_content">Es ist Zeit, Ihren Blutdruck aufzuzeichnen!</string>
+    <string name="ht_alarm_default_title">Gesundheitserinnerung</string>
+    <string name="ht_alarm_default_content">Bitte überwachen Sie Ihre Gesundheit rechtzeitig</string>
+
+    <!-- Blutzuckerstatus -->
+    <string name="ht_blood_sugar_status_default">Standard</string>
+    <string name="ht_blood_sugar_status_fasting">Nüchtern</string>
+    <string name="ht_blood_sugar_status_before_meal">Vor dem Essen</string>
+    <string name="ht_blood_sugar_status_bedtime">Vor dem Schlafengehen</string>
+    <string name="ht_blood_sugar_status_after_exercise">Nach dem Training</string>
+    <string name="ht_blood_sugar_status_one_hour_after_meal">1 Std. nach dem Essen</string>
+    <string name="ht_blood_sugar_status_before_exercise">Vor dem Training</string>
+    <string name="ht_blood_sugar_status_two_hours_after_meal">2 Std. nach dem Essen</string>
+
+    <!-- Schaltflächen -->
+    <string name="ht_save">Speichern</string>
+    <string name="ht_save_changes">Änderungen speichern</string>
+    <string name="ht_saving">Speichern...</string>
+    <string name="ht_date_time"><![CDATA[Datum&Zeit]]></string>
+    <string name="ht_label">Bezeichnung</string>
+
+    <!-- Relative Zeit -->
+    <string name="ht_latest">Neueste</string>
+    <string name="ht_just_now">Gerade eben</string>
+    <string name="ht_seconds_ago">Vor %d Sekunden</string>
+    <string name="ht_minutes_ago">Vor %d Minuten</string>
+    <string name="ht_hours_ago">Vor %d Stunden</string>
+    <string name="ht_days_ago">Vor %d Tagen</string>
+    <string name="ht_systolic">Systolisch</string>
+    <string name="ht_diastolic">Diastolisch</string>
+    <string name="ht_pulse">Puls</string>
+    <string name="ht_type">Typ</string>
+    <string name="ht_bp_range_des">Gemäß den neuesten Richtlinien der AHA (American Heart Association)</string>
+    <string name="ht_cholesterol_range_des">TC: Gesamtcholesterin\nHDL: High-Density Lipoprotein\nLDL: Low-Density Lipoprotein\nTG: Triglyceride\nNon-HDL: Non-High-Density Lipoprotein\n\nGemäß den Richtlinien der Cleveland Clinic.</string>
+    <string name="ht_got_it">Verstanden</string>
+    <string name="ht_all_types">Alle Typen</string>
+    <string name="ht_no_records">Keine Einträge</string>
+    <string name="ht_load_fail_please_try_again">Laden fehlgeschlagen, bitte erneut versuchen</string>
+    <string name="ht_try_again">Erneut versuchen</string>
+    <string name="ht_delete_record_remind_title">Diesen Eintrag löschen?</string>
+    <string name="ht_tips">Tipps</string>
+    <string name="ht_delete_tips_content">Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?</string>
+    <string name="ht_confirm">Bestätigen</string>
+    <string name="ht_delete_record_remind">Kann nach dem Löschen nicht wiederhergestellt werden</string>
+    <string name="ht_add_record">Eintrag hinzufügen</string>
+
+    <string name="ht_assistant_answer">Antworten</string>
+    <string name="ht_assistant_neglect">Ignorieren</string>
+    <string name="ht_alarm_management">Alarm-Verwaltung</string>
+    <string name="ht_reminder_for">Erinnerung für %s</string>
+    <string name="ht_step_stats_max_title">Maximum</string>
+    <string name="ht_step_stats_min_title">Minimum</string>
+    <string name="ht_step_stats_avg_title">Durchschnitt</string>
+    <string name="ht_ai_assistant_title">KI-Gesundheitsassistent</string>
+    <string name="ht_ai_empty_desc">Diese Funktion befindet sich derzeit in Entwicklung und ist noch nicht verfügbar. Vielen Dank für Ihr Verständnis.</string>
+
+    <string-array name="ht_blood_sugar_labels">
+        <item>Aufgeregt</item>
+        <item>Nach Cardio</item>
+        <item>Niedergeschlagen</item>
+        <item>Ruhig</item>
+        <item>Nach Krafttraining</item>
+        <item>Nach intensivem Training</item>
+        <item>Während Diät</item>
+        <item>Nach Alkohol</item>
+    </string-array>
+
+    <string-array name="ht_blood_pressure_labels">
+        <item>Links</item>
+        <item>Rechts</item>
+        <item>Nach Medikament</item>
+        <item>Nach Spaziergang</item>
+        <item>Vor dem Essen</item>
+        <item>Nach dem Essen</item>
+        <item>Sitzend</item>
+        <item>Liegend</item>
+        <item>Periode</item>
+    </string-array>
+
+    <!-- BMI-Stufen -->
+    <string name="ht_bmi_level_very_severely_underweight">Sehr stark untergewichtig</string>
+    <string name="ht_bmi_level_severely_underweight">Stark untergewichtig</string>
+    <string name="ht_bmi_level_underweight">Untergewichtig</string>
+    <string name="ht_bmi_level_normal">Normal</string>
+    <string name="ht_bmi_level_overweight">Übergewichtig</string>
+    <string name="ht_bmi_level_obesity_class_1">Adipositas Klasse I</string>
+    <string name="ht_bmi_level_obesity_class_2">Adipositas Klasse II</string>
+    <string name="ht_bmi_level_obesity_class_3">Adipositas Klasse III</string>
+
+    <string-array name="ht_week_simple">
+        <item>Mo</item>
+        <item>Di</item>
+        <item>Mi</item>
+        <item>Do</item>
+        <item>Fr</item>
+        <item>Sa</item>
+        <item>So</item>
+    </string-array>
+
+    <string-array name="ht_week_full">
+        <item>Sonntag</item>
+        <item>Montag</item>
+        <item>Dienstag</item>
+        <item>Mittwoch</item>
+        <item>Donnerstag</item>
+        <item>Freitag</item>
+        <item>Samstag</item>
+    </string-array>
+
+    <string name="ht_every_weekday">Jeden Werktag</string>
+    <string name="ht_every_weekend">Jedes Wochenende</string>
+    <string name="ht_everyday">Jeden Tag</string>
+    <string name="ht_once">Einmal</string>
+    <string name="ht_meds_remind_empty">Tippen Sie auf die Schaltfläche unten, um \nIhre Erinnerungen hinzuzufügen</string>
+    <string name="ht_add">Hinzufügen</string>
+    <string name="ht_add_reminder">Erinnerung hinzufügen</string>
+    <string name="ht_medication_name">Medikamentenname</string>
+    <string name="ht_enter_medication_name">Medikamentenname eingeben</string>
+    <string name="ht_number_of_daily_doses">Anzahl der täglichen Dosen:</string>
+    <string name="ht_notes">Notizen</string>
+    <string name="ht_hint_meds_notes">Anweisungen: Nach den Mahlzeiten, 3x täglich.</string>
+    <string name="ht_sync_with_calendar">Mit Kalender synchronisieren</string>
+    <string name="ht_take_now">Jetzt einnehmen</string>
+    <string name="ht_view_now">Jetzt ansehen</string>
+    <string name="ht_edit">Bearbeiten</string>
+    <string name="ht_delete">Löschen</string>
+
+    <string name="ht_medication_reminder_content">Es ist Zeit für Ihre Medikamente, bitte nehmen Sie sie pünktlich ein und achten Sie auf sich.</string>
+
+    <string name="ht_turn_on">Einschalten</string>
+    <string name="ht_notification_permission_title">Bleiben Sie bei Ihren Gesundheitszielen auf Kurs</string>
+    <string name="ht_notification_permission_des">Aktivieren Sie Benachrichtigungen, um rechtzeitig Erinnerungen für Wasseraufnahme, Medikamente und Aktivitäten zu erhalten. Verpassen Sie nie wieder eine gesunde Gewohnheit!</string>
+    <string name="ht_close">Schließen</string>
+    <string name="ht_choose_your_gender">Wählen Sie Ihr Geschlecht</string>
+    <string name="ht_please_choose_your_gender">Bitte wählen Sie Ihr Geschlecht</string>
+    <string name="ht_txt_profile_des">Dies wird verwendet, um Ihre personalisierten Daten zu generieren</string>
+    <string name="ht_male">Männlich</string>
+    <string name="ht_female">Weiblich</string>
+    <string name="ht_choose_your_age">Wählen Sie Ihr Alter</string>
+    <string name="ht_please_choose_your_age">Bitte wählen Sie Ihr Alter</string>
+    <string name="ht_text_continue">Weiter</string>
+    <string name="ht_take_a_photo">Foto aufnehmen</string>
+    <string name="ht_choose_from_photos">Aus Fotos wählen</string>
+    <string name="ht_please_select">Bitte auswählen</string>
+    <string name="ht_confirm_delete_title">Tag löschen</string>
+    <string name="ht_confirm_delete_message">Sind Sie sicher, dass Sie dieses Tag löschen möchten?</string>
+    <string name="ht_temp_age">Alter: %1$s</string>
+    <string name="ht_enter_new_label">Neue Bezeichnung eingeben</string>
+    <string name="ht_add_label">Bezeichnung hinzufügen</string>
+    <string name="ht_weight">Gewicht</string>
+    <string name="ht_height">Größe</string>
+    <string name="ht_create_label_failed">Bezeichnung erstellen fehlgeschlagen</string>
+    <string name="ht_heart_rate">Herzfrequenz</string>
+    <string name="ht_heart_rate_no_tags">Keine Tags</string>
+    <string name="ht_record_not_ready">Eintrag wird geladen</string>
+    <string name="ht_delete_record_failed">Eintrag löschen fehlgeschlagen</string>
+    <string name="ht_cholesterol">Cholesterin</string>
+    <string name="ht_weight_and_bmi"><![CDATA[Gewicht & BMI]]></string>
+
+    <!-- Herzfrequenz -->
+    <string name="ht_heart_rate_status_slow">Langsam</string>
+    <string name="ht_heart_rate_status_normal">Normal</string>
+    <string name="ht_heart_rate_status_fast">Schnell</string>
+    <string name="ht_heart_rate_desc_slow">Ruheherzfrequenz &lt; 60 BPM</string>
+    <string name="ht_heart_rate_desc_normal">Ruheherzfrequenz 60–100 BPM</string>
+    <string name="ht_heart_rate_desc_fast">Ruheherzfrequenz &gt;100 BPM</string>
+    <string name="ht_total_cholesterol">Gesamtcholesterin %1$s</string>
+    <string name="ht_hdl">HDL</string>
+    <string name="ht_ldl">LDL</string>
+    <string name="ht_tg">TG</string>
+    <string name="ht_non_hdl">Non-HDL</string>
+    <string name="ht_tc_hdl">TC/HDL</string>
+    <string name="ht_ldl_hdl">LDL/HDL</string>
+    <string name="ht_result">Ergebnis</string>
+    <string name="ht_exclusive_advice">Exklusiver Rat</string>
+    <string name="ht_bmi">BMI</string>
+    <string name="ht_watch_ads_to_see_exclusive_advice">Werbung ansehen für exklusiven Rat.</string>
+    <string name="ht_get_exclusive_tips">Exklusive Tipps erhalten</string>
+    <string name="ht_kindly_note">Bitte beachten</string>
+    <string name="ht_your_health_data_requires">Ihre Gesundheitsdaten erfordern Aufmerksamkeit. Schalten Sie personalisierte professionelle Empfehlungen frei, die auf Ihre Messungen zugeschnitten sind</string>
+    <string name="ht_free_unlock">Kostenlos freischalten</string>
+    <string name="ht_guide_title_1">Blutdruck-Gesundheit</string>
+    <string name="ht_guide_title_2">Blutdrucktrends beherrschen</string>
+    <string name="ht_guide_1_des">Blutdruckdaten jederzeit aufzeichnen</string>
+    <string name="ht_guide_2_des">Datendiagramme auf einen Blick</string>
+    <string name="ht_guide_3_des">Wir sind für die persönliche tägliche Blutdrucküberwachung konzipiert und bieten keine professionelle medizinische Beratung.
+Für professionelle Gesundheitsberatung und Diagnose empfehlen wir dringend, einen qualifizierten Gesundheitsdienstleister oder eine medizinische Einrichtung zu konsultieren.</string>
+    <string name="ht_disclaimers">Haftungsausschlüsse</string>
+    <string name="ht_skip">Überspringen</string>
+    <string name="ht_next">Weiter</string>
+    <string name="ht_start_health_journey">Gesundheitsreise starten!</string>
+    <string name="ht_guide_bs_des">Klicken Sie, um jetzt Ihren ersten Blutzuckerwert hinzuzufügen.</string>
+    <string name="ht_target_range">Zielbereich</string>
+    <string name="ht_target_range_temp">Zielbereich(%1$s)</string>
+    <string name="ht_reset">Zurücksetzen</string>
+
+    <string name="ht_please_input_complete_data">Bitte geben Sie vollständige Daten ein</string>
+    <string name="ht_range_order_error">Bereichswerte müssen in aufsteigender Reihenfolge sein</string>
+    <string name="ht_range_bounds_error">Bereichswerte liegen außerhalb der akzeptablen Grenzen</string>
+    <string name="ht_reset_all_ranges_confirm">Alle Zielbereiche auf Standardwerte zurücksetzen?</string>
+    <string name="ht_reset_success">Zurücksetzen erfolgreich</string>
+    <string name="ht_save_success">Erfolgreich gespeichert</string>
+
+    <string name="ht_health_service_channel_name">Gesundheitsüberwachungsdienst</string>
+    <string name="ht_health_service_channel_description">Zeigt dauerhafte Benachrichtigung für schnelle Gesundheitsdatenaufzeichnung</string>
+
+    <string name="ht_exit">Beenden</string>
+    <string name="ht_are_you_sure_exit">Sind Sie sicher, dass Sie die App beenden möchten?</string>
+    <string name="ht__7_days">7 Tage</string>
+    <string name="ht__1_month">1 Monat</string>
+    <string name="ht__3_month">3 Monate</string>
+    <string name="ht_select">Auswählen</string>
+    <string name="ht_avg">Durchschn.</string>
+    <string name="ht_min">Min</string>
+    <string name="ht_max">Max</string>
+    <string name="ht_all_history">Gesamter Verlauf</string>
+    <string name="ht_health_tips">Gesundheitstipps</string>
+    <string name="ht_no_date">Kein Datum</string>
+    <string name="ht_add_now">Jetzt hinzufügen</string>
+
+    <!-- Hydration -->
+    <string name="ht_hydrate">Trinken</string>
+    <string name="ht_walking">Gehen</string>
+    <string name="ht_drink_btn_format">%1$d %2$s trinken</string>
+    <string name="ht_hydrate_cup_count_format">Sie haben heute %d Gläser Wasser getrunken</string>
+    <string name="ht_hydrate_complete_message">Gut gemacht! Sie haben Ihr Wasser getrunken!</string>
+    <string name="ht_done">Fertig</string>
+    <string name="ht_hydrate_empty_record">Noch kein Wasseraufnahme-Eintrag.</string>
+    <string name="ht_daily_water_intake">Tägliche Wasseraufnahme</string>
+    <string name="ht_cup_size">Glasgröße</string>
+    <string name="ht_hydration_reminder_time">Trinkerinnerungszeit</string>
+    <string name="ht_hydration_reminder_edit">Bearbeiten</string>
+    <string name="ht_hydrate_reminder_delete_confirm_message">Sind Sie sicher, dass Sie diesen Alarm löschen möchten?</string>
+    <string name="ht_coming_soon_title">Demnächst!</string>
+    <string name="ht_coming_soon_message">Sie sind ein Zeitreisender! Dieser Tag ist noch nicht gekommen. Bitte wählen Sie ein früheres Datum oder kehren Sie zu heute zurück.</string>
+    <string name="ht_back_to_today">ZURÜCK ZU HEUTE</string>
+    <string name="ht_hydrate_reminder_exist">Die Erinnerungszeit wurde bereits eingestellt.</string>
+    <string name="ht_hydrate_reminder_empty_message">Sie haben noch keine Wassererinnerungen eingestellt. Beginnen Sie mit dem Aufbau Ihrer Trinkgewohnheit, indem Sie Ihre erste Erinnerung hinzufügen!</string>
+    <string name="ht_alarm_hydration_content">Es ist Zeit, Wasser zu trinken!</string>
+    <string name="ht_alarm_heart_rate_content">Es ist Zeit, die Herzfrequenz zu messen</string>
+    <string name="ht_alarm_bmi_content">Es ist Zeit, den BMI zu messen</string>
+    <string name="ht_alarm_cholesterol_content">Es ist Zeit, das Cholesterin zu messen</string>
+    <string name="ht_alarm_unsaved_exit_title">Die Änderungen an Ihrem Alarm wurden noch nicht gespeichert. Sind Sie sicher, dass Sie beenden möchten?</string>
+    <string name="ht_alarm_delete_confirm_title">Sind Sie sicher, dass Sie diesen Alarm löschen möchten?</string>
+    <string name="ht_drink_now">Jetzt ansehen</string>
+    <string name="ht_hydrate_quick_add">Schnell hinzufügen</string>
+    <string name="ht_step_count">Schrittzahl</string>
+    <string name="ht_today">Heute</string>
+    <string name="ht_today_s_goal">Heutiges Ziel</string>
+    <string name="ht_step_goal">Schrittziel</string>
+    <string name="ht_text_steps">Schritte</string>
+    <string name="ht_enable_step_count">Berechtigung für körperliche Aktivität erforderlich</string>
+    <string name="ht_without_this_authorization_step_count_will_not_work">Ohne diese Berechtigung wird die Schrittzählfunktion <font color="#02BC77">nicht funktionieren</font></string>
+
+    <string name="ht_go_to_set">EINRICHTEN</string>
+    <string name="ht_choose_language">Sprache wählen</string>
+    <string name="ht_language">Sprache</string>
+    <string name="ht_target_range_settings">Zielbereich-Einstellungen</string>
+    <string name="ht_personal_info">Persönliche Daten</string>
+    <string name="ht_feedback">Feedback</string>
+    <string name="ht_privacy_policy">Datenschutzrichtlinie</string>
+    <string name="ht_settings_section_tracking_and_targets">Tracking &amp; Ziele</string>
+    <string name="ht_settings_section_preferences">Einstellungen</string>
+    <string name="ht_settings_section_help_and_feedback">Hilfe &amp; Feedback</string>
+    <string name="ht_settings_section_legal_and_policies">Rechtliches &amp; Richtlinien</string>
+    <string name="ht_settings_version_format">Version %1$s</string>
+    <string name="ht_bill_ad_loading">Werbung wird geladen…</string>
+
+    <string name="ht_please_tell_more">Bitte teilen Sie uns mehr Details mit, damit wir Ihr Problem schneller finden und lösen können</string>
+    <string name="ht_upload_screenshots">Screenshots hochladen</string>
+    <string name="ht_btn_submit">Absenden</string>
+    <string name="ht_feedback_email_title">%s Feedback</string>
+    <string name="ht_feedback_sending_failed">Senden fehlgeschlagen, bitte überprüfen Sie Ihre E-Mail-App.</string>
+    <string name="ht_max_upload_photos">Sie können bis zu %d Fotos hochladen</string>
+    <string name="ht_feedback_submitted">Erfolgreich gesendet</string>
+    <string name="ht_last_measurement">Letzte Messung: %1$s</string>
+    <string name="shortcut_uninstall_short">Deinstallieren</string>
+
+    <!-- Deinstallation -->
+    <string name="ht_uninstall_lose_access_title">Wenn Sie diese App deinstallieren, verlieren Sie den Zugriff auf folgende Funktionen:</string>
+    <string name="ht_uninstall_feature_blood_sugar">Blutzucker- &amp; Blutdrucküberwachung</string>
+    <string name="ht_uninstall_feature_trend">Trendanalyse der Gesundheitsdaten</string>
+    <string name="ht_uninstall_feature_reminder">Medikamenten- &amp; Gesundheitserinnerungen</string>
+    <string name="ht_uninstall_feature_insights">Gesundheitseinblicke &amp; personalisierte Tipps</string>
+    <string name="ht_uninstall_btn_dont_uninstall">Noch nicht deinstallieren</string>
+    <string name="ht_uninstall_btn_uninstall">Deinstallieren</string>
+    <string name="ht_uninstall_reason_title">Warum %1$s deinstallieren?</string>
+    <string name="ht_uninstall_reason_difficult">Schwierig zu bedienen</string>
+    <string name="ht_uninstall_reason_too_many_ads">Zu viele Werbung</string>
+    <string name="ht_uninstall_reason_poor_experience">Schlechte Benutzererfahrung</string>
+    <string name="ht_uninstall_reason_similar_installed">Ähnliche Produkte wurden installiert</string>
+    <string name="ht_uninstall_reason_unable_meet_demand">Erfüllt nicht die Anforderungen</string>
+    <string name="ht_uninstall_reason_others">Andere</string>
+    <string name="ht_uninstall_reason_hint">Bitte geben Sie den Grund ein, warum Sie %1$s deinstallieren</string>
+    <string name="ht_permission_denied">Berechtigung verweigert</string>
+
+</resources>

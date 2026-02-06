@@ -753,4 +753,5 @@ Para orientação de saúde profissional e diagnóstico, encorajamos fortemente 
     <string name="ht_uninstall_reason_others">Outros</string>
     <string name="ht_uninstall_reason_hint">Por favor, insira o motivo pelo qual está desinstalando %1$s</string>
 
+    <string name="ht_permission_denied">Permissão negada</string>
 </resources>

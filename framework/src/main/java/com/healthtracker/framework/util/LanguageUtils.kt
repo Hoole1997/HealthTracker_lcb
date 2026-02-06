@@ -31,10 +31,10 @@ object LanguageUtils {
         LangBean("en", "English", "en"),
         LangBean("es", "Español", "es"),  // 西班牙语
         LangBean("pt_BR", "Português (Brasil)", "pt", "BR"),  // 巴西葡萄牙语
-//        LangBean("de", "Deutsch", "de"),
-//        LangBean("fr", "Français", "fr"),
+        LangBean("de", "Deutsch", "de"),  // 德语
+        LangBean("fr", "Français", "fr"),  // 法语
 //        LangBean("id", "Indonesian", "in", "ID"),   // 印度尼西亚语
-//        LangBean("it", "Italiano", "it"),   // 	意大利语
+        LangBean("it", "Italiano", "it"),  // 意大利语
         LangBean("ja", "日本語", "ja"),
         LangBean("ko", "한국어", "ko"),
         LangBean("hi", "हिंदी", "hi", "IN"),  // 印地语
