@@ -80,6 +80,17 @@ class HeartRateMeasureViewModel(
             is MeasureEvent.StartCamera -> startCamera(event.lifecycleOwner)
             is MeasureEvent.StopCamera -> stopCamera()
             is MeasureEvent.UseMeasurement -> useMeasurement()
+            is MeasureEvent.ResumeFlashlight -> resumeFlashlight()
+        }
+    }
+
+    /**
+     * 恢复闪光灯状态（用于从后台返回时）
+     */
+    private fun resumeFlashlight() {
+        if (cameraManager != null && _uiState.value.measureState != MeasureState.COMPLETE) {
+            if (BuildState.debug) "恢复闪光灯".logd(TAG)
+            cameraManager?.setTorchEnabled(true)
         }
     }
 
@@ -436,6 +447,7 @@ sealed class MeasureEvent {
     data class StartCamera(val lifecycleOwner: LifecycleOwner) : MeasureEvent()
     data object StopCamera : MeasureEvent()
     data object UseMeasurement : MeasureEvent()
+    data object ResumeFlashlight : MeasureEvent() // 恢复闪光灯（用于后台返回）
 }
 
 // ===== Effect =====

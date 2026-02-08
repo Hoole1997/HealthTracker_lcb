@@ -85,6 +85,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import kotlinx.coroutines.delay
 import com.daily.health.manager.R
 import com.daily.health.manager.databinding.HtActivityLanguageSelectBinding
@@ -198,7 +200,9 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, HtActivityLanguag
                     onUseMeasurement = {
                         heartRateViewModel.onEvent(MeasureEvent.UseMeasurement)
                     },
-
+                    onResumeFlashlight = {
+                        heartRateViewModel.onEvent(MeasureEvent.ResumeFlashlight)
+                    },
                     onMeasureComplete = { bpm -> handleMeasureComplete(bpm, 0L) },
                     onSurfaceProviderReady = { provider ->
                         heartRateViewModel.setPreviewSurfaceProvider(provider)
@@ -337,9 +341,24 @@ private fun HeartRateMeasureScreenContent(
     onStartCamera: () -> Unit,
     onStopCamera: () -> Unit,
     onUseMeasurement: () -> Unit,
+    onResumeFlashlight: () -> Unit, // 新增：恢复闪光灯回调
     onMeasureComplete: (Int) -> Unit,
     onSurfaceProviderReady: (androidx.camera.core.Preview.SurfaceProvider) -> Unit
 ) {
+    // 监听生命周期，从后台返回时恢复闪光灯
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, hasPermission) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME && hasPermission) {
+                onResumeFlashlight()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     // 权限状态变化时的处理
     LaunchedEffect(hasPermission) {
         if (!hasPermission) {
