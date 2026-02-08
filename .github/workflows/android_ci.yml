@@ -210,34 +210,10 @@ jobs:
           release_notes.txt
 
     # ========================================
-    # Play Store 构建通知 (飞书卡片消息)
+    # 构建通知 (飞书卡片消息 + 文件上传)
     # ========================================
-    - name: Generate Changelog for PlayStore Release
-      if: contains(env.BUILD_VARIANT, 'playstore') && success()
-      run: |
-        echo "Generating Changelog for PlayStore..."
-        git fetch --prune --unshallow --tags || true
-        
-        CURRENT_TAG=${GITHUB_REF#refs/tags/}
-        # Find previous tag (any version tag)
-        PREV_TAG=$(git tag --sort=-creatordate | grep -E "^[0-9]+\.[0-9]+\.[0-9]+$" | grep -v "^${CURRENT_TAG}$" | head -n 1)
-        
-        if [ -z "$PREV_TAG" ]; then
-           echo "No previous version tag found, using last 10 commits"
-           PREV_TAG="HEAD~10"
-        fi
-        
-        echo "Diff: $PREV_TAG..$CURRENT_TAG"
-        python3 scripts/generate_changelog.py "$PREV_TAG" "$CURRENT_TAG" || echo "- 首次发布" > release_notes.txt
-        
-        cat release_notes.txt
-        # Save to env for notification
-        echo "CHANGELOG<<EOF" >> $GITHUB_ENV
-        cat release_notes.txt >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
-
-    - name: Notify Lark (PlayStore Build)
-      if: contains(env.BUILD_VARIANT, 'playstore') && always()
+    - name: Notify Lark (Build Result)
+      if: contains(env.BUILD_VARIANT, 'playstore') && (success() || failure())
       env:
         LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
         LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
@@ -249,23 +225,38 @@ jobs:
           exit 0
         fi
         
-        # Determine build status
+        # Build status
         BUILD_STATUS="${{ job.status }}"
         VERSION="${{ env.TAG_NAME || 'unknown' }}"
         
-        # Build download URL (GitHub artifact link)
-        DOWNLOAD_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        LOG_URL="$DOWNLOAD_URL"
+        # Calculate build duration (approximate)
+        START_TIME="${{ github.event.repository.pushed_at || github.event.head_commit.timestamp }}"
+        END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        # Simple duration display (will show N/A if calculation fails)
+        DURATION="N/A"
         
-        # Read changelog
-        CHANGELOG="${CHANGELOG:-无更新日志}"
+        # Log URL
+        LOG_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
-        python3 scripts/lark_notifier.py \
-          --version "$VERSION" \
-          --status "$BUILD_STATUS" \
-          --duration "N/A" \
-          --changelog "$CHANGELOG" \
-          --download-url "$DOWNLOAD_URL" \
-          --log-url "$LOG_URL" \
-          --commit "${{ github.sha }}" \
-          --trigger "${{ github.actor }}"
+        # Find AAB file
+        AAB_FILE=$(find app/build/outputs/bundle -name "*.aab" 2>/dev/null | head -1)
+        
+        if [ -n "$AAB_FILE" ]; then
+          echo "Found AAB: $AAB_FILE"
+          python3 scripts/lark_notifier.py \
+            --version "$VERSION" \
+            --status "$BUILD_STATUS" \
+            --duration "$DURATION" \
+            --file "$AAB_FILE" \
+            --log-url "$LOG_URL" \
+            --commit "${{ github.sha }}"
+        else
+          echo "No AAB file found, sending notification without file"
+          python3 scripts/lark_notifier.py \
+            --version "$VERSION" \
+            --status "$BUILD_STATUS" \
+            --duration "$DURATION" \
+            --log-url "$LOG_URL" \
+            --commit "${{ github.sha }}"
+        fi
+

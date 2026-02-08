@@ -1,7 +1,8 @@
 # Play Store CI 构建 + 飞书通知 设计文档
 
-> **状态**: 设计完成，待实现  
+> **状态**: ✅ 已实现  
 > **创建日期**: 2026-02-09  
+> **更新日期**: 2026-02-09  
 > **验证状态**: 飞书机器人已验证可用 ✅
 
 ---
@@ -17,7 +18,7 @@
 | 触发方式 | 脚本推 Tag (主) + Workflow Dispatch (备) |
 | 构建产物 | 签名的 AAB 包                            |
 | 通知渠道 | 飞书群卡片消息                           |
-| 下载方式 | 飞书云盘直接下载（无需 GitHub 登录）     |
+| 下载方式 | GitHub Actions Artifact 下载             |
 | 仓库隐私 | 保持私有仓库                             |
 
 ---
@@ -38,7 +39,7 @@
 │                    GitHub Actions CI                                 │
 │  ┌─────────────┐   ┌─────────────┐   ┌─────────────────────────┐   │
 │  │ Build AAB   │ → │ Upload to   │ → │ Send Lark Card Message  │   │
-│  │ (签名打包)  │   │ Lark Cloud  │   │ (含下载按钮)            │   │
+│  │ (签名打包)  │   │ Artifact    │   │ (含下载按钮)            │   │
 │  └─────────────┘   └─────────────┘   └─────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
             │
@@ -55,150 +56,145 @@
 
 ---
 
-## 3. 核心组件
+## 3. 飞书机器人配置指南
 
-### 3.1 触发脚本 `scripts/publish_playstore.sh`
+### 3.1 创建飞书应用
+
+1. **登录飞书开放平台**
+   - 访问 https://open.feishu.cn/
+   - 使用你的飞书账号登录（个人版或企业版）
+
+2. **创建应用**
+   - 点击右上角 **「创建应用」** → **「创建自建应用」**
+   - 填写应用名称：`CI 构建通知机器人`
+   - 填写应用描述：`用于 GitHub Actions 构建结果通知`
+   - 选择图标后点击 **「创建」**
+
+3. **获取应用凭证**
+   - 进入应用详情页 → **「凭证与基础信息」**
+   - 记录 **App ID** 和 **App Secret**（这两个值需要配置到 GitHub Secrets）
+
+### 3.2 配置应用权限
+
+1. **添加消息发送权限**
+   - 进入 **「权限管理」** 页面
+   - 搜索并开通以下权限：
+   
+   **必需权限**:
+   | 权限                     | 权限标识           | 用途           |
+   | ------------------------ | ------------------ | -------------- |
+   | 获取与发送单聊、群组消息 | `im:message`       | 发送卡片消息   |
+   | 获取群组信息             | `im:chat:readonly` | 获取群 Chat ID |
+   
+   **可选权限** (如需上传 AAB 到飞书云盘):
+   | 权限         | 权限标识      | 用途                    |
+   | ------------ | ------------- | ----------------------- |
+   | 上传文件资源 | `im:resource` | 上传 AAB 文件到飞书云盘 |
+   
+2. **权限审批（仅企业版需要）**
+   - 个人版：权限即开即用
+   - 企业版：需要管理员审批，填写使用说明后等待审批
+
+### 3.3 启用机器人能力
+
+1. 进入 **「添加应用能力」** 页面
+2. 点击 **「机器人」** → **「添加」**
+3. 配置机器人名称和头像
+
+### 3.4 发布应用
+
+1. 进入 **「版本管理与发布」** 页面
+2. 点击 **「创建版本」**
+3. 填写版本号和更新说明
+4. 提交发布：
+   - 个人版：直接发布
+   - 企业版：提交审核，等待管理员审批
+
+### 3.5 将机器人添加到群
+
+1. 打开目标飞书群
+2. 点击群设置 → **「群机器人」** → **「添加机器人」**
+3. 搜索并添加你创建的机器人
+
+### 3.6 获取群 Chat ID
+
+**方法一：通过 API 获取**
 
 ```bash
-#!/bin/bash
-# 用法: ./scripts/publish_playstore.sh
+# 1. 先获取 Access Token
+curl -X POST https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal \
+  -H "Content-Type: application/json" \
+  -d '{"app_id": "你的AppID", "app_secret": "你的AppSecret"}'
 
-VERSION=$(python3 scripts/version_manager.py get_version "app/build.gradle.kts")
-
-if git rev-parse "$VERSION" >/dev/null 2>&1; then
-    echo "❌ Tag $VERSION 已存在，请先升级 versionName"
-    exit 1
-fi
-
-git tag -a "$VERSION" -m "Play Store Release $VERSION"
-git push origin "$VERSION"
-echo "✅ 已推送 Tag: $VERSION"
+# 2. 获取机器人所在的群列表
+curl -X GET "https://open.feishu.cn/open-apis/im/v1/chats?page_size=20" \
+  -H "Authorization: Bearer 上一步获取的token"
 ```
 
-**Tag 命名规则**：
-- Play Store: `1.0.7` (纯版本号)
-- Internal: `T1.0.7.A` (带 T 前缀)
+**方法二：使用测试脚本自动发现**
 
-### 3.2 飞书通知脚本 `scripts/lark_notifier.py`
-
-**核心功能**：
-1. 获取 `tenant_access_token`
-2. 上传 AAB 到飞书云盘 (可选)
-3. 构建卡片消息 JSON
-4. 发送到指定群
-
-**卡片消息格式**：
-```json
-{
-  "header": {"title": "📦 Play Store 构建通知", "template": "green"},
-  "elements": [
-    {"fields": ["版本: 1.0.7", "状态: ✅ 成功", "耗时: 8m32s"]},
-    {"text": "更新日志: ..."},
-    {"actions": [
-      {"button": "📥 下载 AAB", "url": "..."},
-      {"button": "📋 查看日志", "url": "..."}
-    ]}
-  ]
-}
+```bash
+# 运行测试脚本，查看输出中的 chat_id
+python3 scripts/test_lark_card.py
 ```
-
-### 3.3 CI 工作流修改
-
-在 `.github/workflows/android_ci.yml` 中增加：
-- Play Store Tag 触发条件
-- 飞书通知 Job
 
 ---
 
 ## 4. GitHub Secrets 配置
 
-| Secret 名称       | 用途            | 来源                |
-| ----------------- | --------------- | ------------------- |
-| `LARK_APP_ID`     | 飞书应用 ID     | 飞书开放平台 → 凭证 |
-| `LARK_APP_SECRET` | 飞书应用 Secret | 飞书开放平台 → 凭证 |
-| `LARK_CHAT_ID`    | 目标群 ID       | API 获取或群设置    |
+在仓库设置中添加以下 Secrets：
+
+**路径**: 仓库 → Settings → Secrets and variables → Actions → New repository secret
+
+| Secret 名称       | 值来源                               |
+| ----------------- | ------------------------------------ |
+| `LARK_APP_ID`     | 飞书开放平台 → 应用凭证 → App ID     |
+| `LARK_APP_SECRET` | 飞书开放平台 → 应用凭证 → App Secret |
+| `LARK_CHAT_ID`    | 通过 API 或测试脚本获取              |
 
 ---
 
 ## 5. 从个人飞书切换到企业飞书
 
-### 5.1 切换前提
-
-| 条件           | 说明                             |
-| -------------- | -------------------------------- |
-| 企业管理员权限 | 需要管理员审批应用发布           |
-| 权限审核       | `im:resource` 等权限需要企业审批 |
-
-### 5.2 切换步骤
-
-#### Step 1: 在企业飞书开放平台创建应用
-
-1. 访问 https://open.feishu.cn/ → 切换到**企业账号**登录
-2. 创建新应用（或迁移现有应用）
-3. 配置相同的权限：
-   - `im:message:send_as_bot`
-   - `im:chat:readonly`
-   - `im:resource`
-
-#### Step 2: 提交权限审核
-
-1. 在"权限管理"中申请需要的权限
-2. 填写权限使用说明（用于 CI 构建通知）
-3. 等待企业管理员审批
-
-#### Step 3: 发布应用到企业
-
-1. 创建版本 → 提交审核
-2. 管理员审批通过后，应用上线
-
-#### Step 4: 更新 GitHub Secrets
-
-只需更换 3 个 Secret：
+切换只需更新 GitHub Secrets 中的 3 个值：
 
 ```bash
-# 旧值 (个人测试)
-LARK_APP_ID=cli_a90206a9c378dcd4
-LARK_APP_SECRET=styT0OE...
-LARK_CHAT_ID=oc_908a29e183d00f535b48977b24ed83cc
-
-# 新值 (企业正式)
-LARK_APP_ID=cli_企业应用ID
-LARK_APP_SECRET=企业应用Secret
-LARK_CHAT_ID=oc_企业群ChatID
+# 更新为企业飞书应用的凭证
+LARK_APP_ID     → 企业应用 App ID
+LARK_APP_SECRET → 企业应用 App Secret  
+LARK_CHAT_ID    → 企业群 Chat ID
 ```
 
-#### Step 5: 验证
-
-```bash
-# 手动触发一次构建验证
-gh workflow run android_ci.yml -f build_type=playstore
-```
-
-### 5.3 注意事项
-
-| 风险点       | 缓解措施                              |
-| ------------ | ------------------------------------- |
-| 权限审核被拒 | 提前与管理员沟通，说明用途            |
-| Chat ID 变更 | 确保新群已添加企业版机器人            |
-| Token 缓存   | CI 每次运行重新获取 Token，无缓存问题 |
+> **注意**: 企业版应用需要管理员审批权限和发布版本。
 
 ---
 
-## 6. 实现计划
+## 6. 使用方式
 
-| 阶段 | 任务                                | 预计耗时 |
-| ---- | ----------------------------------- | -------- |
-| 1    | 创建 `scripts/lark_notifier.py`     | 30 分钟  |
-| 2    | 创建 `scripts/publish_playstore.sh` | 15 分钟  |
-| 3    | 修改 CI 工作流                      | 30 分钟  |
-| 4    | 配置 GitHub Secrets                 | 10 分钟  |
-| 5    | 端到端测试                          | 20 分钟  |
+### 发布 Play Store 版本
+
+```bash
+# 确保 versionName 已更新后，运行发布脚本
+./scripts/publish_playstore.sh
+```
+
+脚本会自动：
+1. 读取当前版本号
+2. 创建并推送 Git Tag
+3. 触发 GitHub Actions 构建
+4. 构建完成后发送飞书通知
+
+### 紧急备用：手动触发
+
+```bash
+gh workflow run android_ci.yml -f variant=playstoreRelease
+```
 
 ---
 
 ## 7. 已验证凭证 (个人测试)
 
-> ⚠️ 以下凭证仅用于个人测试，切换企业后需更新
+> ⚠️ 以下凭证仅用于个人测试环境
 
 ```
 App ID:     cli_a90206a9c378dcd4
@@ -209,6 +205,11 @@ Chat ID:    oc_908a29e183d00f535b48977b24ed83cc
 
 ---
 
-## 8. 附录：测试脚本
+## 8. 相关文件
 
-测试脚本已保存在 `/tmp/test_lark_card.py`，可用于验证飞书连通性。
+| 文件                               | 说明                |
+| ---------------------------------- | ------------------- |
+| `scripts/lark_notifier.py`         | CI 专用飞书通知脚本 |
+| `scripts/publish_playstore.sh`     | 一键发布脚本        |
+| `scripts/test_lark_card.py`        | 本地测试脚本        |
+| `.github/workflows/android_ci.yml` | CI 工作流           |
