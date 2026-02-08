@@ -90,6 +90,9 @@
     <string name="ht_alarm_heart_rate_content">Kalp atış hızını ölçme zamanı</string>
     <string name="ht_alarm_bmi_content">VKİ ölçme zamanı</string>
     <string name="ht_alarm_cholesterol_content">Kolesterolü ölçme zamanı</string>
+    <!-- 通用场景通知权限弹窗 -->
+    <string name="ht_alarm_general_content">Hızlı bir kontrol zamanı</string>
+    <string name="ht_notification_des_general">Zamanında sağlık hatırlatmaları almak ve önemli bir kontrolü kaçırmamak için bildirimleri etkinleştirin.</string>
     <string name="ht_alarm_unsaved_exit_title">Alarmınızdaki değişiklikler henüz kaydedilmedi. Çıkmak istediğinizden emin misiniz?</string>
     <string name="ht_alarm_delete_confirm_title">Bu alarmı silmek istediğinizden emin misiniz?</string>
 

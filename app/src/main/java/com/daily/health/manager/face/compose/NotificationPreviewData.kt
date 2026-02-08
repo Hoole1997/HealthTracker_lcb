@@ -52,9 +52,9 @@ fun getNotificationPreviewData(alarmType: Int): NotificationPreviewData {
             descriptionResId = R.string.ht_notification_des_cholesterol
         )
         else -> NotificationPreviewData(
-            contentResId = R.string.ht_alarm_blood_sugar_content,
-            decorIconResId = R.mipmap.ht_ic_bs_notify_icon,
-            descriptionResId = R.string.ht_notification_des_blood_sugar
+            contentResId = R.string.ht_alarm_general_content,
+            decorIconResId = R.mipmap.ic_notification_req_ring, // 暂用血糖图标，后续替换
+            descriptionResId = R.string.ht_notification_des_general
         )
     }
 }

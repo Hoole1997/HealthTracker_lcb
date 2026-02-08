@@ -98,6 +98,9 @@
     <string name="ht_alarm_heart_rate_content">심박수를 측정할 시간입니다</string>
     <string name="ht_alarm_bmi_content">BMI를 측정할 시간입니다</string>
     <string name="ht_alarm_cholesterol_content">콜레스테롤을 측정할 시간입니다</string>
+    <!-- 通用场景通知权限弹窗 -->
+    <string name="ht_alarm_general_content">빠른 체크인 시간입니다</string>
+    <string name="ht_notification_des_general">알림을 활성화하여 적시에 건강 알림을 받고 중요한 체크인을 놓치지 마세요.</string>
     <string name="ht_alarm_unsaved_exit_title">알람의 변경 사항이 아직 저장되지 않았습니다. 정말 종료하시겠습니까?</string>
     <string name="ht_alarm_delete_confirm_title">이 알람을 삭제하시겠습니까?</string>
 

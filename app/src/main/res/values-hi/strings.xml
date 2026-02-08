@@ -90,6 +90,9 @@
     <string name="ht_alarm_heart_rate_content">हृदय गति मापने का समय है</string>
     <string name="ht_alarm_bmi_content">BMI मापने का समय है</string>
     <string name="ht_alarm_cholesterol_content">कोलेस्ट्रॉल मापने का समय है</string>
+    <!-- 通用场景通知权限弹窗 -->
+    <string name="ht_alarm_general_content">एक त्वरित चेक-इन का समय है</string>
+    <string name="ht_notification_des_general">समय पर स्वास्थ्य रिमाइंडर प्राप्त करने के लिए नोटिफिकेशन सक्षम करें और कोई भी महत्वपूर्ण चेक-इन न चूकें।</string>
     <string name="ht_alarm_unsaved_exit_title">आपके अलार्म में किए गए बदलाव अभी सहेजे नहीं गए हैं। क्या आप वाकई बाहर निकलना चाहते हैं?</string>
     <string name="ht_alarm_delete_confirm_title">क्या आप वाकई इस अलार्म को हटाना चाहते हैं?</string>
 

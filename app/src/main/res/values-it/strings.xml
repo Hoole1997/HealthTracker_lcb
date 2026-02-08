@@ -90,6 +90,9 @@
     <string name="ht_bs_notify_btn_check">Controlla</string>
 
     <string name="ht_alarm_blood_pressure_content">È ora di registrare la pressione!</string>
+    <!-- 通用场景通知权限弹窗 -->
+    <string name="ht_alarm_general_content">È ora di un rapido check-in</string>
+    <string name="ht_notification_des_general">Attiva le notifiche per ricevere promemoria tempestivi sulla salute e non perdere mai un check-in importante.</string>
 
     <string name="ht_blood_sugar_status_fasting">A digiuno</string>
     <string name="ht_blood_sugar_status_before_meal">Prima del pasto</string>

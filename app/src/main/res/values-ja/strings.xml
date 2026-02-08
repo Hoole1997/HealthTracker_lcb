@@ -98,6 +98,9 @@
     <string name="ht_alarm_heart_rate_content">心拍数を測定する時間です</string>
     <string name="ht_alarm_bmi_content">BMIを測定する時間です</string>
     <string name="ht_alarm_cholesterol_content">コレステロールを測定する時間です</string>
+    <!-- 通用场景通知权限弹窗 -->
+    <string name="ht_alarm_general_content">クイックチェックインの時間です</string>
+    <string name="ht_notification_des_general">通知を有効にして、タイムリーな健康リマインダーを受け取り、重要なチェックインを見逃さないようにしましょう。</string>
     <string name="ht_alarm_unsaved_exit_title">アラームの変更はまだ保存されていません。終了してもよろしいですか？</string>
     <string name="ht_alarm_delete_confirm_title">このアラームを削除してもよろしいですか？</string>
 

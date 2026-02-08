@@ -357,6 +357,9 @@ Pour des conseils de santé professionnels et un diagnostic, nous vous encourage
     <string name="ht_alarm_heart_rate_content">C\'est l\'heure de mesurer le rythme cardiaque</string>
     <string name="ht_alarm_bmi_content">C\'est l\'heure de mesurer l\'IMC</string>
     <string name="ht_alarm_cholesterol_content">C\'est l\'heure de mesurer le cholestérol</string>
+    <!-- 通用场景通知权限弹窗 -->
+    <string name="ht_alarm_general_content">C\'est l\'heure d\'un bilan rapide</string>
+    <string name="ht_notification_des_general">Activez les notifications pour recevoir des rappels de santé en temps voulu et ne manquer aucun bilan important.</string>
     <string name="ht_alarm_unsaved_exit_title">Les modifications de votre alarme n\'ont pas encore été enregistrées. Êtes-vous sûr de vouloir quitter?</string>
     <string name="ht_alarm_delete_confirm_title">Êtes-vous sûr de vouloir supprimer cette alarme?</string>
     <string name="ht_drink_now">Voir maintenant</string>

@@ -99,6 +99,9 @@
     <string name="ht_alarm_heart_rate_content">Hora de medir a frequência cardíaca</string>
     <string name="ht_alarm_bmi_content">Hora de medir o IMC</string>
     <string name="ht_alarm_cholesterol_content">Hora de medir o colesterol</string>
+    <!-- 通用场景通知权限弹窗 -->
+    <string name="ht_alarm_general_content">Hora de um check-in rápido</string>
+    <string name="ht_notification_des_general">Ative as notificações para receber lembretes de saúde no momento certo e nunca perder um check-in importante.</string>
     <string name="ht_alarm_unsaved_exit_title">As alterações no seu alarme ainda não foram salvas. Tem certeza de que deseja sair?</string>
     <string name="ht_alarm_delete_confirm_title">Tem certeza de que deseja excluir este alarme?</string>
 

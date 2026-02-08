@@ -355,6 +355,9 @@ Für professionelle Gesundheitsberatung und Diagnose empfehlen wir dringend, ein
     <string name="ht_alarm_heart_rate_content">Es ist Zeit, die Herzfrequenz zu messen</string>
     <string name="ht_alarm_bmi_content">Es ist Zeit, den BMI zu messen</string>
     <string name="ht_alarm_cholesterol_content">Es ist Zeit, das Cholesterin zu messen</string>
+    <!-- 通用场景通知权限弹窗 -->
+    <string name="ht_alarm_general_content">Es ist Zeit für einen kurzen Check-in</string>
+    <string name="ht_notification_des_general">Aktivieren Sie Benachrichtigungen, um rechtzeitige Gesundheitserinnerungen zu erhalten und keinen wichtigen Check-in zu verpassen.</string>
     <string name="ht_alarm_unsaved_exit_title">Die Änderungen an Ihrem Alarm wurden noch nicht gespeichert. Sind Sie sicher, dass Sie beenden möchten?</string>
     <string name="ht_alarm_delete_confirm_title">Sind Sie sicher, dass Sie diesen Alarm löschen möchten?</string>
     <string name="ht_drink_now">Jetzt ansehen</string>
