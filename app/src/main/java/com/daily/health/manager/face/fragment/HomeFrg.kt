@@ -50,6 +50,7 @@ import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.SpUtils
 import kotlinx.coroutines.CompletableDeferred
+import net.corekit.core.report.ReportDataManager
 import org.koin.android.ext.android.inject
 import java.util.Date
 import java.util.Locale
@@ -106,6 +107,7 @@ class HomeFrg: BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
                 flAiAssistantEntry.gone()
             }
             flAiAssistantEntry.clickWithDuration {
+                ReportDataManager.reportData("AI_Click")
                 requireActivity().startActivity<AiAssistantActivity>()
             }
 
