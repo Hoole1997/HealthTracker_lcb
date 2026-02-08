@@ -331,13 +331,14 @@ def send_card_message(
             "url": download_url
         })
     
-    # 查看日志按钮
-    actions.append({
-        "tag": "button",
-        "text": {"tag": "plain_text", "content": "📋 查看日志"},
-        "type": "default",
-        "url": log_url
-    })
+    # 查看日志按钮 (仅在失败或需要调试时显示，用户要求成功时不显示)
+    if not is_success:
+        actions.append({
+            "tag": "button",
+            "text": {"tag": "plain_text", "content": "📋 查看日志"},
+            "type": "default",
+            "url": log_url
+        })
     
     if actions:
         elements.append({
