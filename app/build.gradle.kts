@@ -55,8 +55,8 @@ android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        versionCode = 7
-        versionName = "1.0.7"
+        versionCode = 8
+        versionName = "1.0.8"
         buildConfig {
             boolean("showLog", showLog)
         }
