@@ -15,8 +15,9 @@ on:
     branches: [ "master", "main", "develop" ]
   push:
     tags: 
-      - "v*" 
-      - "T*"
+      - "v*"       # Legacy version tags
+      - "T*"       # Internal test builds (T1.0.7.A, T1.0.7.B)
+      - "[0-9]+.[0-9]+.[0-9]+"  # Play Store releases (1.0.7, 1.0.8)
 
 jobs:
   build:
@@ -24,7 +25,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      BUILD_VARIANT: ${{ github.event.inputs.variant || 'internalRelease' }}
+      # Detect build variant: Pure version tags (1.0.7) -> playstoreRelease, else use input or internalRelease
+      BUILD_VARIANT: ${{ (startsWith(github.ref, 'refs/tags/') && !startsWith(github.ref, 'refs/tags/T') && !startsWith(github.ref, 'refs/tags/v')) && 'playstoreRelease' || github.event.inputs.variant || 'internalRelease' }}
       # Override default 8GB heap to 4GB to fit in GitHub Actions runner limits (7GB total)
       GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError"
 
@@ -206,3 +208,64 @@ jobs:
           app/build/outputs/apk/**/*.apk
           app/build/outputs/bundle/**/*.aab
           release_notes.txt
+
+    # ========================================
+    # Play Store 构建通知 (飞书卡片消息)
+    # ========================================
+    - name: Generate Changelog for PlayStore Release
+      if: contains(env.BUILD_VARIANT, 'playstore') && success()
+      run: |
+        echo "Generating Changelog for PlayStore..."
+        git fetch --prune --unshallow --tags || true
+        
+        CURRENT_TAG=${GITHUB_REF#refs/tags/}
+        # Find previous tag (any version tag)
+        PREV_TAG=$(git tag --sort=-creatordate | grep -E "^[0-9]+\.[0-9]+\.[0-9]+$" | grep -v "^${CURRENT_TAG}$" | head -n 1)
+        
+        if [ -z "$PREV_TAG" ]; then
+           echo "No previous version tag found, using last 10 commits"
+           PREV_TAG="HEAD~10"
+        fi
+        
+        echo "Diff: $PREV_TAG..$CURRENT_TAG"
+        python3 scripts/generate_changelog.py "$PREV_TAG" "$CURRENT_TAG" || echo "- 首次发布" > release_notes.txt
+        
+        cat release_notes.txt
+        # Save to env for notification
+        echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+        cat release_notes.txt >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+    - name: Notify Lark (PlayStore Build)
+      if: contains(env.BUILD_VARIANT, 'playstore') && always()
+      env:
+        LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
+        LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
+        LARK_CHAT_ID: ${{ secrets.LARK_CHAT_ID }}
+      run: |
+        # Skip if Lark credentials are not configured
+        if [ -z "$LARK_APP_ID" ] || [ -z "$LARK_APP_SECRET" ] || [ -z "$LARK_CHAT_ID" ]; then
+          echo "⚠️ Lark credentials not configured, skipping notification"
+          exit 0
+        fi
+        
+        # Determine build status
+        BUILD_STATUS="${{ job.status }}"
+        VERSION="${{ env.TAG_NAME || 'unknown' }}"
+        
+        # Build download URL (GitHub artifact link)
+        DOWNLOAD_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        LOG_URL="$DOWNLOAD_URL"
+        
+        # Read changelog
+        CHANGELOG="${CHANGELOG:-无更新日志}"
+        
+        python3 scripts/lark_notifier.py \
+          --version "$VERSION" \
+          --status "$BUILD_STATUS" \
+          --duration "N/A" \
+          --changelog "$CHANGELOG" \
+          --download-url "$DOWNLOAD_URL" \
+          --log-url "$LOG_URL" \
+          --commit "${{ github.sha }}" \
+          --trigger "${{ github.actor }}"
