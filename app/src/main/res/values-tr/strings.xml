@@ -65,6 +65,23 @@
 
     <string name="ht_alarm_blood_sugar_content">Kan şekerinizi kaydetme zamanı!</string>
 
+    <!-- 血糖场景通知文案 (7 种场景) -->
+    <string name="ht_bs_notify_title_fasting_am">Kahvaltı Öncesi</string>
+    <string name="ht_bs_notify_desc_fasting_am">Kahvaltıdan önce kan şekerinizi ölçün.</string>
+    <string name="ht_bs_notify_title_post_breakfast">Kahvaltı Sonrası</string>
+    <string name="ht_bs_notify_desc_post_breakfast">Kahvaltıdan 2 saat sonra kan şekerinizi ölçün.</string>
+    <string name="ht_bs_notify_title_pre_lunch">Öğle Yemeği Öncesi</string>
+    <string name="ht_bs_notify_desc_pre_lunch">Öğle yemeğinden önce kan şekerinizi ölçme zamanı.</string>
+    <string name="ht_bs_notify_title_post_lunch">Öğle Yemeği Sonrası</string>
+    <string name="ht_bs_notify_desc_post_lunch">Öğle yemeğinden 2 saat sonra kan şekerinizi ölçün.</string>
+    <string name="ht_bs_notify_title_pre_dinner">Akşam Yemeği Öncesi</string>
+    <string name="ht_bs_notify_desc_pre_dinner">Akşam yemeğinden önce kan şekerinizi ölçün.</string>
+    <string name="ht_bs_notify_title_post_dinner">Akşam Yemeği Sonrası</string>
+    <string name="ht_bs_notify_desc_post_dinner">Akşam yemeğinden 2 saat sonra kan şekerinizi ölçün.</string>
+    <string name="ht_bs_notify_title_bedtime">Yatmadan Önce</string>
+    <string name="ht_bs_notify_desc_bedtime">Yatmadan önce kan şekerinizi ölçün.</string>
+    <string name="ht_bs_notify_btn_check">Kontrol Et</string>
+
     <string name="ht_alarm_blood_pressure_content">Tansiyonunuzu kaydetme zamanı!</string>
 
     <string name="ht_alarm_default_title">Sağlık Hatırlatıcısı</string>

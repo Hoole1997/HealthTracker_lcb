@@ -92,9 +92,25 @@
     <string name="ht_notification_channel_alarm_name">Rappel Santé</string>
     <string name="ht_notification_channel_alarm_description">Notifications de rappel de suivi santé</string>
     <string name="ht_alarm_blood_sugar_content">C\'est l\'heure d\'enregistrer votre glycémie!</string>
+
+    <!-- 血糖场景通知文案 (7 种场景) -->
+    <string name="ht_bs_notify_title_fasting_am">Avant le Petit-déjeuner</string>
+    <string name="ht_bs_notify_desc_fasting_am">Mesurez votre glycémie avant le petit-déjeuner.</string>
+    <string name="ht_bs_notify_title_post_breakfast">Après le Petit-déjeuner</string>
+    <string name="ht_bs_notify_desc_post_breakfast">Mesurez votre glycémie 2 heures après le petit-déjeuner.</string>
+    <string name="ht_bs_notify_title_pre_lunch">Avant le Déjeuner</string>
+    <string name="ht_bs_notify_desc_pre_lunch">C\'est l\'heure de mesurer votre glycémie avant le déjeuner.</string>
+    <string name="ht_bs_notify_title_post_lunch">Après le Déjeuner</string>
+    <string name="ht_bs_notify_desc_post_lunch">Mesurez votre glycémie 2 heures après le déjeuner.</string>
+    <string name="ht_bs_notify_title_pre_dinner">Avant le Dîner</string>
+    <string name="ht_bs_notify_desc_pre_dinner">Mesurez votre glycémie avant le dîner.</string>
+    <string name="ht_bs_notify_title_post_dinner">Après le Dîner</string>
+    <string name="ht_bs_notify_desc_post_dinner">Mesurez votre glycémie 2 heures après le dîner.</string>
+    <string name="ht_bs_notify_title_bedtime">Avant le Coucher</string>
+    <string name="ht_bs_notify_desc_bedtime">Mesurez votre glycémie avant de vous coucher.</string>
+    <string name="ht_bs_notify_btn_check">Vérifier</string>
+
     <string name="ht_alarm_blood_pressure_content">C\'est l\'heure d\'enregistrer votre tension artérielle!</string>
-    <string name="ht_alarm_default_title">Rappel Santé</string>
-    <string name="ht_alarm_default_content">Veuillez surveiller votre santé à temps</string>
 
     <!-- Statut glycémie -->
     <string name="ht_blood_sugar_status_default">Par défaut</string>

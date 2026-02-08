@@ -72,6 +72,23 @@
     <!-- 血糖提醒通知 -->
     <string name="ht_alarm_blood_sugar_content">Hora de registrar sua glicemia!</string>
 
+    <!-- 血糖场景通知文案 (7 种场景) -->
+    <string name="ht_bs_notify_title_fasting_am">Antes do Café</string>
+    <string name="ht_bs_notify_desc_fasting_am">Meça sua glicemia antes do café da manhã.</string>
+    <string name="ht_bs_notify_title_post_breakfast">Após o Café</string>
+    <string name="ht_bs_notify_desc_post_breakfast">Meça sua glicemia 2 horas após o café.</string>
+    <string name="ht_bs_notify_title_pre_lunch">Antes do Almoço</string>
+    <string name="ht_bs_notify_desc_pre_lunch">É hora de medir sua glicemia antes do almoço.</string>
+    <string name="ht_bs_notify_title_post_lunch">Após o Almoço</string>
+    <string name="ht_bs_notify_desc_post_lunch">Meça sua glicemia 2 horas após o almoço.</string>
+    <string name="ht_bs_notify_title_pre_dinner">Antes do Jantar</string>
+    <string name="ht_bs_notify_desc_pre_dinner">Meça sua glicemia antes do jantar.</string>
+    <string name="ht_bs_notify_title_post_dinner">Após o Jantar</string>
+    <string name="ht_bs_notify_desc_post_dinner">Meça sua glicemia 2 horas após o jantar.</string>
+    <string name="ht_bs_notify_title_bedtime">Antes de Dormir</string>
+    <string name="ht_bs_notify_desc_bedtime">Meça sua glicemia antes de dormir.</string>
+    <string name="ht_bs_notify_btn_check">Verificar</string>
+
     <!-- 血压提醒通知 -->
     <string name="ht_alarm_blood_pressure_content">Hora de registrar sua pressão arterial!</string>
 

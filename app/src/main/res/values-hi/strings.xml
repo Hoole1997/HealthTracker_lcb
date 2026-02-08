@@ -65,6 +65,23 @@
 
     <string name="ht_alarm_blood_sugar_content">अपना ब्लड शुगर रिकॉर्ड करने का समय!</string>
 
+    <!-- 血糖场景通知文案 (7 种场景) -->
+    <string name="ht_bs_notify_title_fasting_am">नाश्ते से पहले</string>
+    <string name="ht_bs_notify_desc_fasting_am">नाश्ते से पहले अपना ब्लड शुगर मापें।</string>
+    <string name="ht_bs_notify_title_post_breakfast">नाश्ते के बाद</string>
+    <string name="ht_bs_notify_desc_post_breakfast">नाश्ते के 2 घंटे बाद अपना ब्लड शुगर मापें।</string>
+    <string name="ht_bs_notify_title_pre_lunch">दोपहर के भोजन से पहले</string>
+    <string name="ht_bs_notify_desc_pre_lunch">दोपहर के भोजन से पहले अपना ब्लड शुगर मापने का समय है।</string>
+    <string name="ht_bs_notify_title_post_lunch">दोपहर के भोजन के बाद</string>
+    <string name="ht_bs_notify_desc_post_lunch">दोपहर के भोजन के 2 घंटे बाद अपना ब्लड शुगर मापें।</string>
+    <string name="ht_bs_notify_title_pre_dinner">रात के खाने से पहले</string>
+    <string name="ht_bs_notify_desc_pre_dinner">रात के खाने से पहले अपना ब्लड शुगर मापें।</string>
+    <string name="ht_bs_notify_title_post_dinner">रात के खाने के बाद</string>
+    <string name="ht_bs_notify_desc_post_dinner">रात के खाने के 2 घंटे बाद अपना ब्लड शुगर मापें।</string>
+    <string name="ht_bs_notify_title_bedtime">सोने से पहले</string>
+    <string name="ht_bs_notify_desc_bedtime">सोने से पहले अपना ब्लड शुगर मापें।</string>
+    <string name="ht_bs_notify_btn_check">जाँचें</string>
+
     <string name="ht_alarm_blood_pressure_content">अपना रक्तचाप रिकॉर्ड करने का समय!</string>
 
     <string name="ht_alarm_default_title">स्वास्थ्य रिमाइंडर</string>

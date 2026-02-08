@@ -1,17 +1,24 @@
 package com.daily.health.manager.face.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.daily.health.manager.alarm.AlarmScheduler
+import com.daily.health.manager.data.entity.AlarmRecord
 import com.daily.health.manager.data.entity.HealthTag
 import com.daily.health.manager.data.enums.BsUnit
 import com.daily.health.manager.data.enums.TagType
+import com.daily.health.manager.data.repository.AlarmRepository
 import com.daily.health.manager.data.repository.BloodSugarRepository
 import com.daily.health.manager.data.repository.HealthTagRepository
 import com.daily.health.manager.data.enums.BloodSugarStatus
+import com.daily.health.manager.helper.BloodSugarNotificationContent
 import com.daily.health.manager.util.BloodSugarScaleHelper
 import com.daily.health.manager.constants.KEY_LAST_RECORD_TYPE
 import com.daily.health.manager.face.history.HistoryRecordItem
 import com.healthtracker.framework.base.BaseViewModel
+import com.healthtracker.framework.ext.logd
+import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.util.SpUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,10 +27,18 @@ import java.util.Date
 import com.daily.health.manager.data.utils.DateTimeUtils
 import kotlinx.coroutines.flow.Flow
 
+
 class BsRecordViewModel(
     private val bloodSugarRepository: BloodSugarRepository,
-    private val healthTagRepository: HealthTagRepository
+    private val healthTagRepository: HealthTagRepository,
+    private val alarmRepository: AlarmRepository,
+    private val alarmScheduler: AlarmScheduler
 ) : BaseViewModel() {
+
+    // 血糖闹钟预设标识 Key
+    companion object {
+        private const val KEY_BS_ALARM_PRESET_DONE = "key_bs_alarm_preset_done"
+    }
 
     // 编辑模式的记录ID
     private var editingRecordId: Long? = null
@@ -249,6 +264,46 @@ class BsRecordViewModel(
         }
     }
 
-
-
+    /**
+     * 检查并预设血糖测量闹钟
+     * 首次进入血糖页时静默预设 7 个标准化闹钟
+     */
+    fun checkAndPresetBloodSugarAlarms() {
+        // 已预设过，跳过
+        if (SpUtils.getBoolean(KEY_BS_ALARM_PRESET_DONE, false)) {
+            return
+        }
+        
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                // 获取 7 个场景预设配置
+                val alarms = BloodSugarNotificationContent.getPresetConfigs().map { (sceneId, hour, minute) ->
+                    AlarmRecord.create(
+                        type = AlarmRecord.TYPE_BLOOD_SUGAR,
+                        hour = hour,
+                        minute = minute,
+                        repeatFlag = AlarmRecord.REPEAT_DAILY,
+                        isEnabled = true,
+                        vibrateTime = 1000
+                    ).copy(textExt1 = sceneId)  // 存储场景 ID
+                }
+                
+                // 批量插入数据库
+                val insertedIds = alarmRepository.batchInsertRecords(alarms)
+                
+                // 调度系统闹钟
+                val insertedAlarms = insertedIds.mapIndexed { index, id -> 
+                    alarms[index].copy(id = id) 
+                }
+                alarmScheduler.scheduleAlarms(insertedAlarms)
+                
+                // 标记预设完成
+                SpUtils.putBoolean(KEY_BS_ALARM_PRESET_DONE, true)
+                
+                "Blood sugar alarms preset completed: ${insertedIds.size} alarms".logd("BsRecordViewModel")
+            } catch (e: Exception) {
+                "Failed to preset blood sugar alarms: ${e.message}".loge("BsRecordViewModel")
+            }
+        }
+    }
 }

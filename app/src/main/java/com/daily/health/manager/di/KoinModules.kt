@@ -149,7 +149,7 @@ val databaseModule = module {
     factory { TrackerViewModel(get(), get(), get(), get(), get(), get()) }
 
     factory { AlarmViewModel(get(), get()) }
-    factory { BsRecordViewModel(get(), get()) }
+    factory { BsRecordViewModel(get(), get(), get(), get()) }
     factory { BpRecordViewModel(get(), get()) }
     factory { BsDetailViewModel(get(), get()) }
     viewModel { (handle: SavedStateHandle) -> BpDetailViewModel(get(), handle) }

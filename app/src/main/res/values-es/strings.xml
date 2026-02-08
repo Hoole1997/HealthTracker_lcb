@@ -72,12 +72,24 @@
     <!-- 血糖提醒通知 -->
     <string name="ht_alarm_blood_sugar_content">¡Es hora de registrar tu glucosa!</string>
 
-    <!-- 血压提醒通知 -->
-    <string name="ht_alarm_blood_pressure_content">¡Es hora de registrar tu presión arterial!</string>
+    <!-- 血糖场景通知文案 (7 种场景) -->
+    <string name="ht_bs_notify_title_fasting_am">Antes del Desayuno</string>
+    <string name="ht_bs_notify_desc_fasting_am">Mide tu glucosa antes de desayunar.</string>
+    <string name="ht_bs_notify_title_post_breakfast">Después del Desayuno</string>
+    <string name="ht_bs_notify_desc_post_breakfast">Mide tu glucosa 2 horas después del desayuno.</string>
+    <string name="ht_bs_notify_title_pre_lunch">Antes del Almuerzo</string>
+    <string name="ht_bs_notify_desc_pre_lunch">Es hora de medir tu glucosa antes del almuerzo.</string>
+    <string name="ht_bs_notify_title_post_lunch">Después del Almuerzo</string>
+    <string name="ht_bs_notify_desc_post_lunch">Mide tu glucosa 2 horas después del almuerzo.</string>
+    <string name="ht_bs_notify_title_pre_dinner">Antes de la Cena</string>
+    <string name="ht_bs_notify_desc_pre_dinner">Mide tu glucosa antes de cenar.</string>
+    <string name="ht_bs_notify_title_post_dinner">Después de la Cena</string>
+    <string name="ht_bs_notify_desc_post_dinner">Mide tu glucosa 2 horas después de la cena.</string>
+    <string name="ht_bs_notify_title_bedtime">Antes de Dormir</string>
+    <string name="ht_bs_notify_desc_bedtime">Mide tu glucosa antes de acostarte.</string>
+    <string name="ht_bs_notify_btn_check">Consultar</string>
 
-    <!-- 默认健康提醒 -->
-    <string name="ht_alarm_default_title">Recordatorio de Salud</string>
-    <string name="ht_alarm_default_content">Por favor, monitorea tu salud a tiempo</string>
+    <!-- 血压提醒通知 -->
 
     <string name="ht_alarm_heart_rate_content">Es hora de medir la frecuencia cardíaca</string>
     <string name="ht_alarm_bmi_content">Es hora de medir el IMC</string>

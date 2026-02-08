@@ -75,12 +75,25 @@
     <!-- 血糖提醒通知 -->
     <string name="ht_alarm_blood_sugar_content">血糖値を記録する時間です！</string>
 
+    <!-- 血糖场景通知文案 (7 种场景) -->
+    <string name="ht_bs_notify_title_fasting_am">朝食前</string>
+    <string name="ht_bs_notify_desc_fasting_am">朝食前に血糖値を測定してください。</string>
+    <string name="ht_bs_notify_title_post_breakfast">朝食後</string>
+    <string name="ht_bs_notify_desc_post_breakfast">朝食の2時間後に血糖値を測定してください。</string>
+    <string name="ht_bs_notify_title_pre_lunch">昼食前</string>
+    <string name="ht_bs_notify_desc_pre_lunch">昼食前に血糖値を測定する時間です。</string>
+    <string name="ht_bs_notify_title_post_lunch">昼食後</string>
+    <string name="ht_bs_notify_desc_post_lunch">昼食の2時間後に血糖値を測定してください。</string>
+    <string name="ht_bs_notify_title_pre_dinner">夕食前</string>
+    <string name="ht_bs_notify_desc_pre_dinner">夕食前に血糖値を測定してください。</string>
+    <string name="ht_bs_notify_title_post_dinner">夕食後</string>
+    <string name="ht_bs_notify_desc_post_dinner">夕食の2時間後に血糖値を測定してください。</string>
+    <string name="ht_bs_notify_title_bedtime">就寝前</string>
+    <string name="ht_bs_notify_desc_bedtime">就寝前に血糖値を測定してください。</string>
+    <string name="ht_bs_notify_btn_check">確認する</string>
+
     <!-- 血压提醒通知 -->
     <string name="ht_alarm_blood_pressure_content">血圧を記録する時間です！</string>
-
-    <!-- 默认健康提醒 -->
-    <string name="ht_alarm_default_title">健康リマインダー</string>
-    <string name="ht_alarm_default_content">時間通りに健康状態を確認してください</string>
 
     <string name="ht_alarm_heart_rate_content">心拍数を測定する時間です</string>
     <string name="ht_alarm_bmi_content">BMIを測定する時間です</string>

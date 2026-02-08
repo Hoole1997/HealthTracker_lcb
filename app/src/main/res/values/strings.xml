@@ -102,6 +102,23 @@
     <!-- 血糖提醒通知 -->
     <string name="ht_alarm_blood_sugar_content">It\'s time to record your blood sugar!</string>
 
+    <!-- 血糖场景通知文案 (7 种场景) -->
+    <string name="ht_bs_notify_title_fasting_am">Before Breakfast</string>
+    <string name="ht_bs_notify_desc_fasting_am">Check your blood sugar before eating breakfast.</string>
+    <string name="ht_bs_notify_title_post_breakfast">After Breakfast</string>
+    <string name="ht_bs_notify_desc_post_breakfast">Measure blood sugar 2 hours after breakfast.</string>
+    <string name="ht_bs_notify_title_pre_lunch">Before Lunch</string>
+    <string name="ht_bs_notify_desc_pre_lunch">Time to check your blood sugar before lunch.</string>
+    <string name="ht_bs_notify_title_post_lunch">After Lunch</string>
+    <string name="ht_bs_notify_desc_post_lunch">Measure blood sugar 2 hours after lunch.</string>
+    <string name="ht_bs_notify_title_pre_dinner">Before Dinner</string>
+    <string name="ht_bs_notify_desc_pre_dinner">Check your blood sugar before dinner.</string>
+    <string name="ht_bs_notify_title_post_dinner">After Dinner</string>
+    <string name="ht_bs_notify_desc_post_dinner">Measure blood sugar 2 hours after dinner.</string>
+    <string name="ht_bs_notify_title_bedtime">Before Bed</string>
+    <string name="ht_bs_notify_desc_bedtime">Check your blood sugar before going to sleep.</string>
+    <string name="ht_bs_notify_btn_check">Check</string>
+
     <!-- 血压提醒通知 -->
     <string name="ht_alarm_blood_pressure_content">It\'s time to record your blood pressure!</string>
 

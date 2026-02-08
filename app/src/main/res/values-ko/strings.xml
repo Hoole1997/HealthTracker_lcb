@@ -75,12 +75,25 @@
     <!-- 血糖提醒通知 -->
     <string name="ht_alarm_blood_sugar_content">혈당을 기록할 시간입니다!</string>
 
+    <!-- 血糖场景通知文案 (7 种场景) -->
+    <string name="ht_bs_notify_title_fasting_am">아침 식사 전</string>
+    <string name="ht_bs_notify_desc_fasting_am">아침 식사 전에 혈당을 측정하세요.</string>
+    <string name="ht_bs_notify_title_post_breakfast">아침 식사 후</string>
+    <string name="ht_bs_notify_desc_post_breakfast">아침 식사 2시간 후에 혈당을 측정하세요.</string>
+    <string name="ht_bs_notify_title_pre_lunch">점심 식사 전</string>
+    <string name="ht_bs_notify_desc_pre_lunch">점심 식사 전에 혈당을 측정할 시간입니다.</string>
+    <string name="ht_bs_notify_title_post_lunch">점심 식사 후</string>
+    <string name="ht_bs_notify_desc_post_lunch">점심 식사 2시간 후에 혈당을 측정하세요.</string>
+    <string name="ht_bs_notify_title_pre_dinner">저녁 식사 전</string>
+    <string name="ht_bs_notify_desc_pre_dinner">저녁 식사 전에 혈당을 측정하세요.</string>
+    <string name="ht_bs_notify_title_post_dinner">저녁 식사 후</string>
+    <string name="ht_bs_notify_desc_post_dinner">저녁 식사 2시간 후에 혈당을 측정하세요.</string>
+    <string name="ht_bs_notify_title_bedtime">취침 전</string>
+    <string name="ht_bs_notify_desc_bedtime">잠자리에 들기 전에 혈당을 측정하세요.</string>
+    <string name="ht_bs_notify_btn_check">확인하기</string>
+
     <!-- 血压提醒通知 -->
     <string name="ht_alarm_blood_pressure_content">혈압을 기록할 시간입니다!</string>
-
-    <!-- 默认健康提醒 -->
-    <string name="ht_alarm_default_title">건강 알림</string>
-    <string name="ht_alarm_default_content">제때 건강 상태를 확인하세요</string>
 
     <string name="ht_alarm_heart_rate_content">심박수를 측정할 시간입니다</string>
     <string name="ht_alarm_bmi_content">BMI를 측정할 시간입니다</string>

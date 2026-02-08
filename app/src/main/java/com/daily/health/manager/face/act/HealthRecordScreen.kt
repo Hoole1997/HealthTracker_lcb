@@ -876,6 +876,9 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, HtActivityHealthReco
         bsBinding = binding
 
         bsViewModel.initializeWithRecord(recordId)
+        
+        // 静默预设血糖测量闹钟（仅首次进入时执行）
+        bsViewModel.checkAndPresetBloodSugarAlarms()
 
         binding.actionBar.btnBack.clickWithDuration {
             handleBackPress()

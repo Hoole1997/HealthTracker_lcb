@@ -15,6 +15,7 @@ import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.constants.PUSH_CLOSE_ACTION
 import com.daily.health.manager.data.entity.AlarmRecord
+import com.daily.health.manager.helper.BloodSugarNotificationContent
 import com.daily.health.manager.helper.NotificationResourceMapper.NotificationResources
 import com.daily.health.manager.receiver.NotificationActionReceiver
 import com.daily.health.manager.service.HealthServiceConstants
@@ -153,19 +154,28 @@ class AlarmNotificationManager(
     private fun createCollapsedView(
         alarmRecord: AlarmRecord, notificationId: Int
     ): RemoteViews {
-        val (time,des,btnText) = getNotificationContent(alarmRecord)
+        val (time, title, desc, btnText) = getNotificationContent(alarmRecord)
         val notifResources = getAlarmNotificationRes(alarmRecord.type)
-        return RemoteViews(context.packageName, R.layout.ht_layout_meds_notify).apply {
-
-            // 设置标题和按钮文字
-            setTextViewText(R.id.tv_title, des)
-            setTextViewText(R.id.tv_time, time)
-            notifResources?.decorIcon?.let { icon ->
-                setImageViewResource(R.id.iv_type, icon)
+        
+        // 血糖类型使用专属布局
+        return if (alarmRecord.type == AlarmRecord.TYPE_BLOOD_SUGAR) {
+            RemoteViews(context.packageName, R.layout.ht_layout_bs_notify).apply {
+                setTextViewText(R.id.tv_time, time)
+                setTextViewText(R.id.tv_time_type, title)
+                setTextViewText(R.id.tv_action, btnText)
             }
-            if(canClose()){
-                // Bind close button click to delete intent
-                setOnClickPendingIntent(R.id.iv_close, createDeletePendingIntent(notificationId))
+        } else {
+            RemoteViews(context.packageName, R.layout.ht_layout_meds_notify).apply {
+                // 设置标题和按钮文字
+                setTextViewText(R.id.tv_title, desc)
+                setTextViewText(R.id.tv_time, time)
+                notifResources?.decorIcon?.let { icon ->
+                    setImageViewResource(R.id.iv_type, icon)
+                }
+                if(canClose()){
+                    // Bind close button click to delete intent
+                    setOnClickPendingIntent(R.id.iv_close, createDeletePendingIntent(notificationId))
+                }
             }
         }
     }
@@ -177,25 +187,33 @@ class AlarmNotificationManager(
      */
     private fun createExpandedView(alarmRecord: AlarmRecord, notificationId: Int
     ): RemoteViews {
-        val (time,des,btnText) = getNotificationContent(alarmRecord)
+        val (time, title, desc, btnText) = getNotificationContent(alarmRecord)
         val notifResources = getAlarmNotificationRes(alarmRecord.type)
-        return RemoteViews(context.packageName, R.layout.ht_layout_meds_notify_big).apply {
-           // 设置背景（如果有）
-            notifResources?.decorIcon?.let { bg ->
-                setImageViewResource(R.id.ic_bg_icon,bg)
+        
+        // 血糖类型使用专属布局
+        return if (alarmRecord.type == AlarmRecord.TYPE_BLOOD_SUGAR) {
+            RemoteViews(context.packageName, R.layout.ht_layout_bs_notify_big).apply {
+                setTextViewText(R.id.tv_time, time)
+                setTextViewText(R.id.tv_time_des, desc)
+                setTextViewText(R.id.tv_action, btnText)
             }
-
-
-            // 设置标题和按钮文字
-            setTextViewText(R.id.tv_title, time)
-            setTextViewText(R.id.tv_content, des)
-            setTextViewText(R.id.tv_btn,btnText)
-            notifResources?.decorIcon?.let { icon ->
-                setImageViewResource(R.id.iv_type, icon)
-            }
-            if(canClose()){
-                // Bind close button click to delete intent
-                setOnClickPendingIntent(R.id.iv_close, createDeletePendingIntent(notificationId))
+        } else {
+            RemoteViews(context.packageName, R.layout.ht_layout_meds_notify_big).apply {
+                // 设置背景（如果有）
+                notifResources?.decorIcon?.let { bg ->
+                    setImageViewResource(R.id.ic_bg_icon, bg)
+                }
+                // 设置标题和按钮文字
+                setTextViewText(R.id.tv_title, time)
+                setTextViewText(R.id.tv_content, desc)
+                setTextViewText(R.id.tv_btn, btnText)
+                notifResources?.decorIcon?.let { icon ->
+                    setImageViewResource(R.id.iv_type, icon)
+                }
+                if(canClose()){
+                    // Bind close button click to delete intent
+                    setOnClickPendingIntent(R.id.iv_close, createDeletePendingIntent(notificationId))
+                }
             }
         }
     }
@@ -241,66 +259,87 @@ class AlarmNotificationManager(
      * @param alarmRecord 闹钟记录
      * @return Triple(渠道ID, 标题, 内容)
      */
-    private fun getNotificationContent(alarmRecord: AlarmRecord): Triple<String, String, String> {
+    /**
+     * 通知内容数据类
+     * @property time 格式化时间，如 "07:30"
+     * @property title 标题，血糖场景为测量状态，如 "空腹"
+     * @property desc 描述内容
+     * @property btnText 按钮文字
+     */
+    private data class NotificationContent(
+        val time: String,
+        val title: String,
+        val desc: String,
+        val btnText: String
+    )
+
+    private fun getNotificationContent(alarmRecord: AlarmRecord): NotificationContent {
         return when (alarmRecord.type) {
             AlarmRecord.TYPE_BLOOD_SUGAR -> {
-                Triple(
-
-                    alarmRecord.getFormattedTime(),
-                    context.getString(R.string.ht_alarm_blood_sugar_content),
-                    context.getString(R.string.ht_record_now)
-
+                // 血糖类型使用 BloodSugarNotificationContent 获取场景差异化文案
+                val sceneId = alarmRecord.textExt1
+                NotificationContent(
+                    time = alarmRecord.getFormattedTime(),
+                    title = context.getString(BloodSugarNotificationContent.getTitleResId(sceneId)),
+                    desc = context.getString(BloodSugarNotificationContent.getDescResId(sceneId)),
+                    btnText = context.getString(BloodSugarNotificationContent.getButtonResId())
                 )
             }
             AlarmRecord.TYPE_BLOOD_PRESSURE -> {
-                Triple(
-
-                    alarmRecord.getFormattedTime(),
-                    context.getString(R.string.ht_alarm_blood_pressure_content),
-                    context.getString(R.string.ht_record_now)
+                NotificationContent(
+                    time = alarmRecord.getFormattedTime(),
+                    title = "",
+                    desc = context.getString(R.string.ht_alarm_blood_pressure_content),
+                    btnText = context.getString(R.string.ht_record_now)
                 )
             }
             AlarmRecord.TYPE_MEDICATION -> {
-                Triple(
-                    alarmRecord.getFormattedTime(),
-                    context.getString(R.string.ht_medication_reminder_content),
-                    context.getString(R.string.ht_take_now)
+                NotificationContent(
+                    time = alarmRecord.getFormattedTime(),
+                    title = "",
+                    desc = context.getString(R.string.ht_medication_reminder_content),
+                    btnText = context.getString(R.string.ht_take_now)
                 )
             }
             AlarmRecord.TYPE_HYDRATION -> {
-                 Triple(
-                    alarmRecord.getFormattedTime(),
-                    context.getString(R.string.ht_alarm_hydration_content),
-                    context.getString(R.string.ht_drink_now)
+                NotificationContent(
+                    time = alarmRecord.getFormattedTime(),
+                    title = "",
+                    desc = context.getString(R.string.ht_alarm_hydration_content),
+                    btnText = context.getString(R.string.ht_drink_now)
                 )
             }
             AlarmRecord.TYPE_HEART_RATE -> {
-                Triple(
-                    alarmRecord.getFormattedTime(),
-                    context.getString(R.string.ht_alarm_heart_rate_content),
-                    context.getString(R.string.ht_record_now)
+                NotificationContent(
+                    time = alarmRecord.getFormattedTime(),
+                    title = "",
+                    desc = context.getString(R.string.ht_alarm_heart_rate_content),
+                    btnText = context.getString(R.string.ht_record_now)
                 )
             }
             AlarmRecord.TYPE_BMI -> {
-                Triple(
-                    alarmRecord.getFormattedTime(),
-                    context.getString(R.string.ht_alarm_bmi_content),
-                    context.getString(R.string.ht_record_now)
+                NotificationContent(
+                    time = alarmRecord.getFormattedTime(),
+                    title = "",
+                    desc = context.getString(R.string.ht_alarm_bmi_content),
+                    btnText = context.getString(R.string.ht_record_now)
                 )
             }
             AlarmRecord.TYPE_CHOLESTEROL -> {
-                Triple(
-                    alarmRecord.getFormattedTime(),
-                    context.getString(R.string.ht_alarm_cholesterol_content),
-                    context.getString(R.string.ht_record_now)
+                NotificationContent(
+                    time = alarmRecord.getFormattedTime(),
+                    title = "",
+                    desc = context.getString(R.string.ht_alarm_cholesterol_content),
+                    btnText = context.getString(R.string.ht_record_now)
                 )
             }
             else -> {
                 // 默认使用健康提醒
-                Triple(
-                    context.getString(R.string.ht_alarm_default_title), 
-                    context.getString(R.string.ht_alarm_default_content),
-                    context.getString(R.string.ht_view_now)
+                NotificationContent(
+                    time = context.getString(R.string.ht_alarm_default_title),
+                    title = "",
+                    desc = context.getString(R.string.ht_alarm_default_content),
+                    btnText = context.getString(R.string.ht_view_now)
                 )
             }
         }

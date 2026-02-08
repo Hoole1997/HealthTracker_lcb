@@ -71,10 +71,26 @@
     <string name="ht_notification_channel_alarm_name">Promemoria Salute</string>
     <string name="ht_notification_channel_alarm_description">Notifiche promemoria salute</string>
     <string name="ht_alarm_blood_sugar_content">È ora di registrare la glicemia!</string>
+
+    <!-- 血糖场景通知文案 (7 种场景) -->
+    <string name="ht_bs_notify_title_fasting_am">Prima della Colazione</string>
+    <string name="ht_bs_notify_desc_fasting_am">Misura la glicemia prima di colazione.</string>
+    <string name="ht_bs_notify_title_post_breakfast">Dopo la Colazione</string>
+    <string name="ht_bs_notify_desc_post_breakfast">Misura la glicemia 2 ore dopo colazione.</string>
+    <string name="ht_bs_notify_title_pre_lunch">Prima del Pranzo</string>
+    <string name="ht_bs_notify_desc_pre_lunch">È ora di misurare la glicemia prima di pranzo.</string>
+    <string name="ht_bs_notify_title_post_lunch">Dopo il Pranzo</string>
+    <string name="ht_bs_notify_desc_post_lunch">Misura la glicemia 2 ore dopo pranzo.</string>
+    <string name="ht_bs_notify_title_pre_dinner">Prima della Cena</string>
+    <string name="ht_bs_notify_desc_pre_dinner">Misura la glicemia prima di cena.</string>
+    <string name="ht_bs_notify_title_post_dinner">Dopo la Cena</string>
+    <string name="ht_bs_notify_desc_post_dinner">Misura la glicemia 2 ore dopo cena.</string>
+    <string name="ht_bs_notify_title_bedtime">Prima di Dormire</string>
+    <string name="ht_bs_notify_desc_bedtime">Misura la glicemia prima di andare a letto.</string>
+    <string name="ht_bs_notify_btn_check">Controlla</string>
+
     <string name="ht_alarm_blood_pressure_content">È ora di registrare la pressione!</string>
-    <string name="ht_alarm_default_title">Promemoria Salute</string>
-    <string name="ht_alarm_default_content">Controlla la tua salute</string>
-    <string name="ht_blood_sugar_status_default">Predefinito</string>
+
     <string name="ht_blood_sugar_status_fasting">A digiuno</string>
     <string name="ht_blood_sugar_status_before_meal">Prima del pasto</string>
     <string name="ht_blood_sugar_status_bedtime">Prima di dormire</string>
