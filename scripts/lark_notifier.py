@@ -63,6 +63,97 @@ def get_tenant_access_token(app_id: str, app_secret: str) -> str:
     return data["tenant_access_token"]
 
 
+def get_root_folder_token(token: str) -> str:
+    """
+    获取飞书云盘「我的空间」根目录的 folder token
+    
+    返回: folder_token 或空字符串
+    """
+    url = "https://open.feishu.cn/open-apis/drive/explorer/v2/root_folder/meta"
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    resp = requests.get(url, headers=headers, timeout=10)
+    data = resp.json()
+    
+    if data.get("code") != 0:
+        print(f"   ⚠️ 获取根目录失败: {data.get('msg')}")
+        return ""
+    
+    folder_token = data.get("data", {}).get("token", "")
+    print(f"   ✅ 根目录 Token: {folder_token[:10]}...")
+    return folder_token
+
+
+def list_folder_children(token: str, folder_token: str) -> list[dict]:
+    """
+    列出文件夹下的所有子文件夹
+    
+    返回: [{"name": "xxx", "token": "xxx"}, ...]
+    """
+    url = "https://open.feishu.cn/open-apis/drive/v1/files"
+    headers = {"Authorization": f"Bearer {token}"}
+    params = {
+        "folder_token": folder_token,
+        "page_size": 100
+    }
+    
+    resp = requests.get(url, headers=headers, params=params, timeout=10)
+    data = resp.json()
+    
+    if data.get("code") != 0:
+        return []
+    
+    files = data.get("data", {}).get("files", [])
+    # 只返回文件夹
+    return [{"name": f["name"], "token": f["token"]} 
+            for f in files if f.get("type") == "folder"]
+
+
+def create_folder(token: str, parent_token: str, folder_name: str) -> str:
+    """
+    在指定文件夹下创建子文件夹
+    
+    返回: 新文件夹的 token 或空字符串
+    """
+    url = "https://open.feishu.cn/open-apis/drive/v1/files/create_folder"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "name": folder_name,
+        "folder_token": parent_token
+    }
+    
+    resp = requests.post(url, headers=headers, json=data, timeout=10)
+    result = resp.json()
+    
+    if result.get("code") != 0:
+        print(f"   ❌ 创建文件夹 '{folder_name}' 失败: {result.get('msg')}")
+        return ""
+    
+    new_token = result.get("data", {}).get("token", "")
+    print(f"   ✅ 已创建文件夹: {folder_name}")
+    return new_token
+
+
+def get_or_create_folder(token: str, parent_token: str, folder_name: str) -> str:
+    """
+    获取或创建指定名称的文件夹
+    
+    返回: 文件夹的 token
+    """
+    # 先查找是否已存在
+    children = list_folder_children(token, parent_token)
+    for child in children:
+        if child["name"] == folder_name:
+            print(f"   📁 使用已有文件夹: {folder_name}")
+            return child["token"]
+    
+    # 不存在则创建
+    return create_folder(token, parent_token, folder_name)
+
+
 def upload_file_multipart(token: str, file_path: str, folder_token: str = "") -> tuple[str, str]:
     """
     分片上传大文件到飞书云盘
@@ -77,12 +168,19 @@ def upload_file_multipart(token: str, file_path: str, folder_token: str = "") ->
     print(f"   文件: {file_name} ({file_size / 1024 / 1024:.2f} MB)")
     print(f"   分片数: {block_num} (每片 {CHUNK_SIZE // 1024 // 1024} MB)")
     
+    # 如果没有指定文件夹，获取根目录 token
+    if not folder_token:
+        folder_token = get_root_folder_token(token)
+        if not folder_token:
+            print("   ❌ 无法获取根目录 token，跳过上传")
+            return "", ""
+    
     # Step 1: 准备上传 (获取 upload_id)
     prepare_url = "https://open.feishu.cn/open-apis/drive/v1/files/upload_prepare"
     prepare_data = {
         "file_name": file_name,
         "parent_type": "explorer",  # 上传到云盘
-        "parent_node": folder_token or "me",  # 默认上传到我的空间
+        "parent_node": folder_token,  # 必须是有效的 folder token
         "size": file_size
     }
     
@@ -280,6 +378,7 @@ def main():
     parser.add_argument("--status", required=True, help="构建状态 (success/failure)")
     parser.add_argument("--duration", default="N/A", help="构建耗时")
     parser.add_argument("--file", default="", help="要上传的文件路径 (AAB/APK)")
+    parser.add_argument("--project", default="HealthTracker", help="项目名称（用于创建目录）")
     parser.add_argument("--log-url", default="#", help="日志链接")
     parser.add_argument("--commit", default="unknown", help="Commit SHA")
     
@@ -300,17 +399,34 @@ def main():
     file_name = ""
     
     if args.file and os.path.exists(args.file):
-        print("\n2. 分片上传文件到飞书云盘...")
-        file_token, file_name = upload_file_multipart(token, args.file, folder_token)
+        print("\n2. 准备上传目录...")
         
-        if file_token:
-            print("\n3. 创建分享链接...")
-            download_url = create_share_link(token, file_token)
+        # 获取或使用指定的根目录
+        root_token = folder_token
+        if not root_token:
+            root_token = get_root_folder_token(token)
+            if not root_token:
+                print("   ⚠️ 无法获取根目录，跳过文件上传")
+            else:
+                # 创建 项目/版本号 目录结构
+                project_folder = get_or_create_folder(token, root_token, args.project)
+                if project_folder:
+                    version_folder = get_or_create_folder(token, project_folder, args.version)
+                    if version_folder:
+                        folder_token = version_folder
+        
+        if folder_token:
+            print("\n3. 分片上传文件到飞书云盘...")
+            file_token, file_name = upload_file_multipart(token, args.file, folder_token)
+            
+            if file_token:
+                print("\n4. 创建分享链接...")
+                download_url = create_share_link(token, file_token)
     elif args.file:
         print(f"\n⚠️ 警告: 文件不存在 {args.file}")
     
     # 发送卡片消息
-    step_num = 4 if download_url else 2
+    step_num = 5 if download_url else 2
     print(f"\n{step_num}. 发送卡片消息...")
     result = send_card_message(
         token=token,
