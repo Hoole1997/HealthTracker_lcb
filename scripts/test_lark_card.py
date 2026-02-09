@@ -16,9 +16,9 @@ import requests
 import json
 
 # 凭证配置 (优先使用环境变量)
-APP_ID = os.environ.get("LARK_APP_ID", "cli_a90206a9c378dcd4")
-APP_SECRET = os.environ.get("LARK_APP_SECRET", "styT0OEj7rkO71qjV8B0MesUONysALLO")
-CHAT_ID = os.environ.get("LARK_CHAT_ID", "oc_908a29e183d00f535b48977b24ed83cc")
+APP_ID = os.environ.get("LARK_APP_ID", "cli_a903fbac57badcd6")
+APP_SECRET = os.environ.get("LARK_APP_SECRET", "22msGNoggdqOFL4f1HSpabpXOVfsAirb")
+CHAT_ID = os.environ.get("LARK_CHAT_ID", "oc_b7ac3097e762189bd9517ce3f13e245c")
 
 
 def get_token():
