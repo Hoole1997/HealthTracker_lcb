@@ -169,7 +169,12 @@ def create_share_link(token: str, file_token: str, is_folder: bool = False) -> s
         "security_entity": "anyone_can_view",
         "link_share_entity": "anyone_readable"
     }
-    requests.patch(permission_url, headers=headers, params={"type": res_type}, json=permission_data, timeout=10)
+    resp = requests.patch(permission_url, headers=headers, params={"type": res_type}, json=permission_data, timeout=10)
+    data = resp.json()
+    if data.get("code") == 0:
+        print(f"   ✅ 已自动开启{'文件夹' if is_folder else '文件'}分享权限")
+    else:
+        print(f"   ⚠️ 自动分享失败: {data.get('msg')} (请手动将机器人添加为文件夹协作者)")
     
     if is_folder:
         return f"https://fvkbzjdob1.feishu.cn/drive/folder/{file_token}"
