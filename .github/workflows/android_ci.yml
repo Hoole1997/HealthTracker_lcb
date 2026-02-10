@@ -200,10 +200,12 @@ jobs:
         DURATION="$((DURATION_SEC / 60))m $((DURATION_SEC % 60))s"
         LOG_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
-        # 在 HealthTracker 目录下寻找 AAB (Official) 或 APK (Internal)
-        AAB_FILE=$(find app/build/outputs/bundle -name "*.aab" 2>/dev/null | head -1)
-        APK_FILE=$(find app/build/outputs/apk -name "*.apk" 2>/dev/null | head -1)
-        FILE_PATH="${AAB_FILE:-$APK_FILE}"
+        # 仅在 Official(外网) 模式且构建成功时上传产物
+        if [ "$BUILD_MODE" == "official" ] && [ "${{ job.status }}" == "success" ]; then
+            FILE_PATH=$(find app/build/outputs/bundle -name "*.aab" 2>/dev/null | head -1)
+        else
+            FILE_PATH=""
+        fi
         
         if [ -n "$FILE_PATH" ]; then
           python3 ../common-tools/lark_notifier.py \
