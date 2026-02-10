@@ -159,8 +159,9 @@ def upload_file_multipart(token: str, file_path: str, folder_token: str = "") ->
     return data["data"]["file_token"], file_name
 
 
-def create_share_link(token: str, file_token: str) -> str:
-    """创建并开放文件分享权限"""
+def create_share_link(token: str, file_token: str, is_folder: bool = False) -> str:
+    """创建并开放分享权限"""
+    res_type = "folder" if is_folder else "file"
     permission_url = f"https://open.feishu.cn/open-apis/drive/v1/permissions/{file_token}/public"
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     permission_data = {
@@ -168,7 +169,10 @@ def create_share_link(token: str, file_token: str) -> str:
         "security_entity": "anyone_can_view",
         "link_share_entity": "anyone_readable"
     }
-    requests.patch(permission_url, headers=headers, params={"type": "file"}, json=permission_data, timeout=10)
+    requests.patch(permission_url, headers=headers, params={"type": res_type}, json=permission_data, timeout=10)
+    
+    if is_folder:
+        return f"https://fvkbzjdob1.feishu.cn/drive/folder/{file_token}"
     return f"https://fvkbzjdob1.feishu.cn/file/{file_token}"
 
 
@@ -251,7 +255,8 @@ def main():
             file_token, file_name = upload_file_multipart(token, args.file, folder_token)
             if file_token:
                 download_url = create_share_link(token, file_token)
-                folder_url = f"https://fvkbzjdob1.feishu.cn/drive/folder/{folder_token}"
+                # 为文件夹也开启分享权限，确保外部可进入
+                folder_url = create_share_link(token, folder_token, is_folder=True)
 
     send_card_message(token, chat_id, args.version, args.status, args.duration, args.log_url, args.commit, download_url=download_url, file_name=file_name, folder_url=folder_url)
 
