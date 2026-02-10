@@ -1,0 +1,35 @@
+ext {
+    // AdMob配置 (测试 ID)
+    admob = [applicationId: "ca-app-pub-3940256099942544~3347511713",
+             adUnitIds    : [banner      : "ca-app-pub-3940256099942544/9214589741",
+                             interstitial: "ca-app-pub-3940256099942544/1033173712",
+                             splash      : "ca-app-pub-3940256099942544/9257395921",
+                             native      : "ca-app-pub-3940256099942544/2247696110",
+                             full_native : "ca-app-pub-3940256099942544/2247696110",
+                             rewarded    : "ca-app-pub-3940256099942544/5224354917",
+                             rewarded_interstitial: "ca-app-pub-3940256099942544/5354046379"
+             ]
+    ]
+
+    // 应用基础配置 (本地/内网默认)
+    app = [applicationId: "com.healthtracker.blood.suger.internal",
+           show_log     : true,
+           string_fog   : true,
+           shifter_mode : "internal" // 标识当前为本地模式
+    ]
+
+    // 业务 URL (内网测试)
+    url = [privacyUrl: "https://www.google.com.hk",
+           teamUrl   : "https://www.google.com.hk",
+           fcmUrl    : "https://htc.hero-t.com",
+           fcmPkg    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
+           email     : "bluepsme000@gmail.com"
+    ]
+
+    // 统计归因 (测试 Token)
+    analytics = [adjustAppToken        : "1rbqbbrxrcu8",
+                 thinkingDataAppId     : "7eb813add90f4740b63817dcb3d8c49f",
+                 thinkingDataServerUrl : "https://ht.hero-t.com",
+                 defaultUserChannel    : "paid"
+    ]
+}

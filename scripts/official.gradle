@@ -1,0 +1,24 @@
+ext {
+    // AdMob配置 (正式 ID)
+    admob = [applicationId: "ca-app-pub-8468697989886586~7705543629",
+             adUnitIds    : [banner      : "ca-app-pub-8468697989886586/9321877626",
+                             interstitial: "ca-app-pub-8468697989886586/6783166585",
+                             splash      : "ca-app-pub-8468697989886586/8161479822",
+                             native      : "ca-app-pub-8468697989886586/1910113856",
+                             full_native : "ca-app-pub-8468697989886586/4289042793",
+                             rewarded    : "ca-app-pub-8468697989886586/5577896120",
+                             rewarded_interstitial: "ca-app-pub-8468697989886586/6242264624"
+             ]
+    ]
+
+    // 应用参数覆盖 (正式版关闭 Log)
+    app = [applicationId: "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
+           show_log     : false,
+           shifter_mode : "official"
+    ]
+
+    // 业务 URL (正式官网)
+    url = [privacyUrl: "https://hero-t.com/privacy.html",
+           teamUrl   : "https://hero-t.com/privacy.html"
+    ]
+}

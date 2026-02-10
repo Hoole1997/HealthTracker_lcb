@@ -31,19 +31,11 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
-// 根据构建任务自动选择配置文件
-val taskNames = gradle.startParameter.taskNames
-val configFile = when {
-    taskNames.any { it.contains("Playstore", ignoreCase = true) } -> file("app/src/playstore/config.gradle")
-    taskNames.any { it.contains("Internal", ignoreCase = true) } -> file("app/src/internal/config.gradle")
-    // 降级策略：如果无法从任务名识别，但又是 release 构建，默认使用 playstore 以防万一，
-    // 或者维持 internal 并在日志中警告
-    else -> file("app/src/internal/config.gradle")
-}
-
-apply {
-    from(configFile)
-}
+// ==========================================
+// 🚀 注意：配置加载逻辑已下迁至各 Module
+// 以支持三层解耦架构下的动态注入与离线回退。
+// 详情参见 app/build.gradle.kts 中的 Shifter 逻辑。
+// ==========================================
 
 subprojects {
     configurations.all {

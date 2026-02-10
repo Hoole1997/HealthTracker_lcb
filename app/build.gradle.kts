@@ -28,45 +28,55 @@ apply(from = "../scripts/sign.gradle")
 // 引入动态混淆字典生成脚本
 apply(from = "generate-dictionary.gradle.kts")
 
-// 使用默认配置，避免不同变种间的冲突
-val showLog = findProperty("app")?.let { (it as Map<*, *>)["show_log"] as Boolean } ?: false
-val url = findProperty("url") as Map<*, *>
-val adMobConfig = findProperty("admob") as Map<*, *>
-val adMobUnitConfig = adMobConfig["adUnitIds"] as Map<*, *>
-println("showLog = $showLog")
+// ==========================================
+// 🚀 三层解耦配置加载器 (The Shifter)
+// ==========================================
+val remoteOverride = project.hasProperty("remoteOverride")
+val shifterFile = if (remoteOverride) "../scripts/official.gradle" else "../scripts/internal.gradle"
 
+// 1. 加载本地默认配置 (Internal 第一副本)
+apply(from = "../scripts/internal.gradle")
 
-// 定义一个辅助函数来解析 google-services.json
-fun getAppIdFromJson(path: String): String? {
-    val file = project.file(path)
-    if (!file.exists()) return null
-    return try {
-        val json = groovy.json.JsonSlurper().parse(file) as Map<*, *>
-        val client = (json["client"] as List<*>).firstOrNull() as? Map<*, *>
-        val clientInfo = client?.get("client_info") as? Map<*, *>
-        clientInfo?.get("mobilesdk_app_id") as? String
-    } catch (e: Exception) {
-        println("Warning: Failed to parse App ID from $path: ${e.message}")
-        null
-    }
+// 2. 尝试加载远程补丁 (外网/官方) - 本地路径作为演示，实际 CI 会动态下载
+if (remoteOverride) {
+    println("📡 [Shifter] Detected Remote Override Mode. Applying official config...")
+    apply(from = shifterFile)
 }
+
+// 提取 ext 变量以供后续引用
+val admob = extensions.extraProperties["admob"] as Map<*, *>
+val admobUnit = admob["adUnitIds"] as Map<*, *>
+val appConfig = extensions.extraProperties["app"] as Map<*, *>
+val urls = extensions.extraProperties["url"] as Map<*, *>
+val analytics = extensions.extraProperties["analytics"] as Map<*, *>
+
+val showLog = appConfig["show_log"] as Boolean
+val shifterMode = appConfig["shifter_mode"] ?: "internal"
+println("📦 [Shifter] Build Mode: $shifterMode | Package: ${appConfig["applicationId"]}")
 
 android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
+        applicationId = appConfig["applicationId"] as String
         versionCode = 7
         versionName = "1.0.7"
         buildConfig {
             boolean("showLog", showLog)
         }
 
-        buildConfigField("String", "PRIVACY_POLICY", "\"${url["privacyUrl"]}\"")
-        buildConfigField("String", "FCM_URL", "\"${url["fcmUrl"]}\"")
-        buildConfigField("String", "FCM_PKG", "\"${url["fcmPkg"]}\"")
-        buildConfigField("String", "FEEDBACK_EMAIL", "\"${url["email"]}\"")
-        buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${adMobConfig["applicationId"]}\"")
-        buildConfigField("String", "ADMOB_SPLASH_ID", "\"${adMobUnitConfig["splash"]}\"")
+        buildConfigField("String", "PRIVACY_POLICY", "\"${urls["privacyUrl"]}\"")
+        buildConfigField("String", "FCM_URL", "\"${urls["fcmUrl"]}\"")
+        buildConfigField("String", "FCM_PKG", "\"${urls["fcmPkg"]}\"")
+        buildConfigField("String", "FEEDBACK_EMAIL", "\"${urls["email"]}\"")
+        buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${admob["applicationId"]}\"")
+        buildConfigField("String", "ADMOB_SPLASH_ID", "\"${admobUnit["splash"]}\"")
+        
+        // 动态设置版本名后缀 (仅内网模式)
+        if (shifterMode == "internal") {
+            versionNameSuffix = "-internal"
+        }
+
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
         }
@@ -92,45 +102,7 @@ android {
 
 
 
-    // Flavor 配置
-    flavorDimensions += "distribution"
-
-    productFlavors {
-        // 内部测试版本
-        create("internal") {
-            dimension = "distribution"
-            applicationId = "com.daily.health.manager"
-            // Start Check: Internal Version Injection
-            if (project.hasProperty("internalVersionName")) {
-                val tagVersion = project.property("internalVersionName") as String
-                versionName = tagVersion 
-                // Clear suffix because tagVersion (e.g. T1.0.6.A) already includes necessary info
-                versionNameSuffix = "" 
-            } else {
-                versionNameSuffix = "-internal"
-            }
-
-            firebaseAppDistribution {
-                // App ID Priority: ENV -> google-services.json -> Property
-                appId = System.getenv("INTERNAL_FIREBASE_APP_ID") 
-                        ?: getAppIdFromJson("src/internal/google-services.json")
-                        ?: project.findProperty("internalFirebaseAppId") as? String
-                
-                // Credential File 优先读取 src/internal/ 下的专用 Key
-                serviceCredentialsFile = project.file("src/internal/google-services-json-key.json").absolutePath
-                releaseNotesFile = rootProject.file("release_notes.txt").absolutePath
-                groups = "internal-testers"
-            }
-            // End Check
-        }
-
-        // Play 市场版本
-        create("playstore") {
-            dimension = "distribution"
-            applicationId = "com.health.sugar.log.medication.pressure.manage.track.blood.tool"
-            versionNameSuffix = ""
-        }
-    }
+    // 🚀 已移除旧有的 productFlavors，实现零变种构建
 
 
 
@@ -145,6 +117,14 @@ android {
             )
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
+            }
+
+            // 统一配置 Firebase App Distribution
+            firebaseAppDistribution {
+                appId = System.getenv("FIREBASE_APP_ID") 
+                serviceCredentialsFile = project.file("scripts/google-services-json-key.json").absolutePath
+                releaseNotesFile = rootProject.file("release_notes.txt").absolutePath
+                groups = "internal-testers"
             }
         }
     }
