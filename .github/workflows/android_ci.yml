@@ -55,7 +55,7 @@ jobs:
     - name: Checkout Common Tools (Layer 2)
       uses: actions/checkout@v4
       with:
-        repository: ReMax/android-ci
+        repository: ReMax-ci/android-ci
         token: ${{ secrets.GH_PAT_FOR_SCRIPTS }} # 假设已配置机器人权限
         path: common-tools
 
@@ -196,7 +196,7 @@ jobs:
         fi
         
         VERSION="${{ env.TAG_NAME || env.PROJECT_VERSION || 'unknown' }}"
-        DURATION_SEC=$(( $(date +%s) - env.BUILD_START_TIME ))
+        DURATION_SEC=$(( $(date +%s) - ${{ env.BUILD_START_TIME }} ))
         DURATION="$((DURATION_SEC / 60))m $((DURATION_SEC % 60))s"
         LOG_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
