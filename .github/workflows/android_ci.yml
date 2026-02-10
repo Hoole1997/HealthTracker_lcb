@@ -149,7 +149,7 @@ jobs:
         
         echo "Diff: $PREV_TAG..$CURRENT_TAG"
         
-        python3 scripts/generate_changelog.py "$PREV_TAG" "$CURRENT_TAG"
+        python3 ../common-tools/generate_changelog.py "$PREV_TAG" "$CURRENT_TAG"
         
         cat release_notes.txt
 
@@ -206,7 +206,7 @@ jobs:
         FILE_PATH="${AAB_FILE:-$APK_FILE}"
         
         if [ -n "$FILE_PATH" ]; then
-          python3 ../common-tools/scripts/lark_notifier.py \
+          python3 ../common-tools/lark_notifier.py \
             --version "$VERSION" \
             --status "${{ job.status }}" \
             --duration "$DURATION" \
@@ -215,7 +215,7 @@ jobs:
             --log-url "$LOG_URL" \
             --commit "${{ github.sha }}"
         else
-          python3 ../common-tools/scripts/lark_notifier.py \
+          python3 ../common-tools/lark_notifier.py \
             --version "$VERSION" \
             --status "${{ job.status }}" \
             --duration "$DURATION" \
