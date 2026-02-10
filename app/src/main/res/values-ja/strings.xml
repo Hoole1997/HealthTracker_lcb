@@ -753,7 +753,6 @@
         <item>水を目に見える場所に置き、手の届くところに置いておくと、一日中こまめに飲むようになります。</item>
         <item>スイカやキュウリなど、水分含有量の高い果物や野菜を楽しんで、水分補給に役立てましょう。</item>
     </string-array>
-    <string name="ht_bill_ad_loading">広告を読み込み中…</string>
     <string name="ht_last_measurement">最新の測定 : %1$s</string>
 
     <!-- Uninstall Intercept Strings -->

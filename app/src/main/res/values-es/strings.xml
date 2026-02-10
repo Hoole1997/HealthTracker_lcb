@@ -552,7 +552,6 @@ Para orientación de salud profesional y diagnóstico, te recomendamos consultar
     <string name="ht_settings_section_help_and_feedback">Ayuda y Comentarios</string>
     <string name="ht_settings_section_legal_and_policies">Legal y Políticas</string>
     <string name="ht_settings_version_format">Versión %1$s</string>
-    <string name="ht_bill_ad_loading">Cargando anuncio…</string>
 
     <string name="ht_please_tell_more">Por favor, cuéntanos más detalles para que podamos localizar y resolver tu problema más rápido</string>
     <string name="ht_upload_screenshots">Subir Capturas de Pantalla</string>

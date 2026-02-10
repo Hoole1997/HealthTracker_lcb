@@ -12,7 +12,7 @@ ext {
     ]
 
     // 应用基础配置 (本地/内网默认)
-    app = [applicationId: "com.healthtracker.blood.suger.internal",
+    app = [applicationId: "com.daily.health.manager",
            show_log     : true,
            string_fog   : true,
            shifter_mode : "internal" // 标识当前为本地模式

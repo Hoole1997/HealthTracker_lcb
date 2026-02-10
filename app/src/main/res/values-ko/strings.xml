@@ -753,7 +753,6 @@
         <item>물을 눈에 잘 띄고 손이 닿는 곳에 두면 하루 종일 자주 마시게 됩니다.</item>
         <item>수박과 오이처럼 수분 함량이 높은 과일과 채소를 즐겨 수분을 유지하세요.</item>
     </string-array>
-    <string name="ht_bill_ad_loading">광고 로드 중…</string>
     <string name="ht_last_measurement">최근 측정 : %1$s</string>
 
     <!-- Uninstall Intercept Strings -->

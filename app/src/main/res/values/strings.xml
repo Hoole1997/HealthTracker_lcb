@@ -1358,7 +1358,6 @@ healthcare provider or medical institution.</string>
     <string name="ht_settings_section_developer" translatable="false">Developer Tools</string>
     <string name="ht_ad_debug_panel" translatable="false">Ad Debug Panel</string>
     <string name="ht_settings_version_format">Version %1$s</string>
-    <string name="ht_bill_ad_loading">AD loading…</string>
 
     <string name="ht_please_tell_more">Please tell us more details so that we can locate and solve your problem faster</string>
     <string name="ht_upload_screenshots">Upload Screenshots</string>

@@ -375,7 +375,6 @@
     <string name="ht_settings_section_help_and_feedback">सहायता और प्रतिक्रिया</string>
     <string name="ht_settings_section_legal_and_policies">कानूनी और नीतियां</string>
     <string name="ht_settings_version_format">संस्करण %1$s</string>
-    <string name="ht_bill_ad_loading">विज्ञापन लोड हो रहा है…</string>
 
     <string name="ht_please_tell_more">कृपया हमें अधिक विवरण बताएं ताकि हम आपकी समस्या को तेजी से ढूंढ और हल कर सकें</string>
     <string name="ht_upload_screenshots">स्क्रीनशॉट अपलोड करें</string>

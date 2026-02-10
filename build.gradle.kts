@@ -27,15 +27,23 @@ buildscript {
     }
 }
 
+
+// ==========================================
+// 🚀 全局三层架构配置加载器 (Global Shifter)
+// ==========================================
+val remoteOverride = project.hasProperty("remoteOverride")
+val shifterFile = if (remoteOverride) "scripts/official.gradle" else "scripts/internal.gradle"
+
+// 加载配置到根项目 ext 中，使所有子模块可见
+apply(from = "scripts/internal.gradle")
+if (remoteOverride) {
+    logger.lifecycle("📡 [Global Shifter] Applying official config patch...")
+    apply(from = shifterFile)
+}
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
-
-// ==========================================
-// 🚀 注意：配置加载逻辑已下迁至各 Module
-// 以支持三层解耦架构下的动态注入与离线回退。
-// 详情参见 app/build.gradle.kts 中的 Shifter 逻辑。
-// ==========================================
 
 subprojects {
     configurations.all {

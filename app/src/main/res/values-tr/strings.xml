@@ -375,7 +375,6 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
     <string name="ht_settings_section_help_and_feedback">Yardım ve Geri Bildirim</string>
     <string name="ht_settings_section_legal_and_policies">Yasal ve Politikalar</string>
     <string name="ht_settings_version_format">Sürüm %1$s</string>
-    <string name="ht_bill_ad_loading">Reklam yükleniyor…</string>
 
     <string name="ht_please_tell_more">Lütfen sorununuzu daha hızlı bulup çözmemiz için bize daha fazla ayrıntı verin</string>
     <string name="ht_upload_screenshots">Ekran Görüntülerini Yükle</string>

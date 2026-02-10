@@ -751,7 +751,6 @@ Para orientação de saúde profissional e diagnóstico, encorajamos fortemente 
     <string name="ht_settings_section_help_and_feedback">Ajuda e Feedback</string>
     <string name="ht_settings_section_legal_and_policies">Legal e Políticas</string>
     <string name="ht_settings_version_format">Versão %1$s</string>
-    <string name="ht_bill_ad_loading">Carregando anúncio…</string>
 
     <string name="ht_please_tell_more">Por favor, conte-nos mais detalhes para que possamos localizar e resolver seu problema mais rapidamente</string>
     <string name="ht_upload_screenshots">Enviar Capturas de Tela</string>

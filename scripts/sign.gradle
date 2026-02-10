@@ -1,61 +1,41 @@
 
 /**
- * 统一的签名配置脚本
- * 根据不同的flavor从对应目录读取sign.properties配置
+ * 统一的签名配置脚本 (Layer 2)
+ * 适配零变体架构，根据动态属性应用签名。
  */
 
 ext.setupSigningConfigs = { android ->
     android.signingConfigs {
-        // 内部测试签名配置
+        // 1. 内部测试签名配置 (默认)
         internal {
-            def internalPropsFile = file("${project.projectDir}/src/internal/sign.properties")
+            def internalPropsFile = file("${project.rootDir}/scripts/sign.properties")
             if (internalPropsFile.exists()) {
                 def props = new Properties()
                 internalPropsFile.withInputStream { props.load(it) }
 
-                storeFile = file("${project.projectDir}/src/internal/" + props.getProperty('keystore'))
+                storeFile = file("${project.rootDir}/scripts/" + props.getProperty('keystore'))
                 storePassword = props.getProperty('keystore.password')
                 keyAlias = props.getProperty('keyAlias')
                 keyPassword = props.getProperty('keyPassword')
+                println("🔑 [Sign] Applied signing config from scripts/sign.properties")
             } else {
-                // 兜底配置，避免构建失败
+                // 离线 Fallback: 尝试使用旧路径或应用默认签名
                 storeFile = file("${project.projectDir}/src/internal/pdfreader.jks")
                 storePassword = "pdfreader"
                 keyAlias = "pdfreader"
                 keyPassword = "pdfreader"
-            }
-        }
-
-        // Play 市场签名配置
-        playstore {
-            def playstorePropsFile = file("${project.projectDir}/src/playstore/sign.properties")
-            if (playstorePropsFile.exists()) {
-                def props = new Properties()
-                playstorePropsFile.withInputStream { props.load(it) }
-
-                storeFile = file("${project.projectDir}/src/playstore/" + props.getProperty('keystore'))
-                storePassword = props.getProperty('keystore.password')
-                keyAlias = props.getProperty('keyAlias')
-                keyPassword = props.getProperty('keyPassword')
-            } else {
-
+                println("⚠️ [Sign] Using Fallback signing config")
             }
         }
     }
 
-    // 配置 productFlavors 使用对应的签名配置
-    android.productFlavors {
-        internal {
+    // 2. 根据构建模式动态应用签名
+    android.buildTypes {
+        release {
+            // 在零变体架构下，Release 默认使用 internal 签名，
+            // 除非 CI 注入了 official 的 sign.properties 覆盖了 scripts/ 下的文件
             signingConfig = android.signingConfigs.internal
         }
-
-        playstore {
-            signingConfig = android.signingConfigs.playstore
-        }
-    }
-
-    // 配置 buildTypes - debug 版本使用 internal 签名
-    android.buildTypes {
         debug {
             signingConfig = android.signingConfigs.internal
         }

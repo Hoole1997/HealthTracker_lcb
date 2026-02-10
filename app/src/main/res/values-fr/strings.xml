@@ -384,7 +384,6 @@ Pour des conseils de santé professionnels et un diagnostic, nous vous encourage
     <string name="ht_settings_section_help_and_feedback">Aide &amp; Retour</string>
     <string name="ht_settings_section_legal_and_policies">Légal &amp; Politiques</string>
     <string name="ht_settings_version_format">Version %1$s</string>
-    <string name="ht_bill_ad_loading">Chargement de la publicité…</string>
 
     <string name="ht_please_tell_more">Veuillez nous donner plus de détails afin que nous puissions localiser et résoudre votre problème plus rapidement</string>
     <string name="ht_upload_screenshots">Télécharger des captures d\'écran</string>
