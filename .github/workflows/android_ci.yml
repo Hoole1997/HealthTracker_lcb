@@ -230,6 +230,7 @@ jobs:
         LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
         LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
         LARK_CHAT_ID: ${{ secrets.LARK_CHAT_ID }}
+        LARK_FOLDER_TOKEN: ${{ secrets.LARK_FOLDER_TOKEN }}
       run: |
         # Skip if Lark credentials are not configured
         if [ -z "$LARK_APP_ID" ] || [ -z "$LARK_APP_SECRET" ] || [ -z "$LARK_CHAT_ID" ]; then

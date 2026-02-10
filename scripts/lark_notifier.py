@@ -101,6 +101,7 @@ def list_folder_children(token: str, folder_token: str) -> list[dict]:
     data = resp.json()
     
     if data.get("code") != 0:
+        print(f"   ⚠️ 列出文件夹内容失败: {data.get('msg')} (code: {data.get('code')})")
         return []
     
     files = data.get("data", {}).get("files", [])
@@ -408,13 +409,22 @@ def main():
             root_token = get_root_folder_token(token)
             if not root_token:
                 print("   ⚠️ 无法获取根目录，跳过文件上传")
+        
+        # 尝试创建 项目/版本号 目录结构
+        if root_token:
+            target_folder = root_token  # 默认上传到根目录（兜底）
+            project_folder = get_or_create_folder(token, root_token, args.project)
+            if project_folder:
+                target_folder = project_folder  # 至少放到项目文件夹
+                version_folder = get_or_create_folder(token, project_folder, args.version)
+                if version_folder:
+                    target_folder = version_folder  # 最终放到版本文件夹
+                else:
+                    print(f"   ⚠️ 版本目录创建失败，上传到项目根目录: {args.project}/")
             else:
-                # 创建 项目/版本号 目录结构
-                project_folder = get_or_create_folder(token, root_token, args.project)
-                if project_folder:
-                    version_folder = get_or_create_folder(token, project_folder, args.version)
-                    if version_folder:
-                        folder_token = version_folder
+                print(f"   ⚠️ 项目目录创建失败，上传到云盘根目录")
+            folder_token = target_folder
+
         
         if folder_token:
             print("\n3. 分片上传文件到飞书云盘...")
