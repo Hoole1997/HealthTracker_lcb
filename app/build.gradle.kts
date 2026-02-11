@@ -60,13 +60,13 @@ android {
     defaultConfig {
         applicationId = appConfig["applicationId"] as String
         versionCode = 7
+        versionName = "1.0.7"
+        
         // 🚀 动态支持从属性注入 versionName (用于 CI Tag 构建)
         val semanticVersion = project.findProperty("internalVersionName")?.toString()
-        versionName = if (semanticVersion != null && semanticVersion.isNotEmpty()) {
+        if (semanticVersion != null && semanticVersion.isNotEmpty()) {
             println("🏷️ [Shifter] Override VersionName: $semanticVersion")
-            semanticVersion.removePrefix("v").removePrefix("T")
-        } else {
-            "1.0.7"
+            versionName = semanticVersion.removePrefix("v").removePrefix("T")
         }
 
         buildConfig {
@@ -131,7 +131,7 @@ android {
             firebaseAppDistribution {
                 // 🚀 同时兼容 FIREBASE_APP_ID 和 INTERNAL_FIREBASE_APP_ID (CI 中使用的名称)
                 appId = System.getenv("FIREBASE_APP_ID") ?: System.getenv("INTERNAL_FIREBASE_APP_ID") ?: ""
-                serviceCredentialsFile = project.file("scripts/google-services-json-key.json").absolutePath
+                serviceCredentialsFile = rootProject.file("scripts/google-services-json-key.json").absolutePath
                 releaseNotesFile = rootProject.file("release_notes.txt").absolutePath
                 groups = "internal-testers"
             }
