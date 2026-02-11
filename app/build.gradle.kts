@@ -60,7 +60,15 @@ android {
     defaultConfig {
         applicationId = appConfig["applicationId"] as String
         versionCode = 7
-        versionName = "1.0.7"
+        // 🚀 动态支持从属性注入 versionName (用于 CI Tag 构建)
+        val semanticVersion = project.findProperty("internalVersionName")?.toString()
+        versionName = if (semanticVersion != null && semanticVersion.isNotEmpty()) {
+            println("🏷️ [Shifter] Override VersionName: $semanticVersion")
+            semanticVersion.removePrefix("v").removePrefix("T")
+        } else {
+            "1.0.7"
+        }
+
         buildConfig {
             boolean("showLog", showLog)
         }
@@ -72,8 +80,8 @@ android {
         buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${admob["applicationId"]}\"")
         buildConfigField("String", "ADMOB_SPLASH_ID", "\"${admobUnit["splash"]}\"")
         
-        // 动态设置版本名后缀 (仅内网模式)
-        if (shifterMode == "internal") {
+        // 动态设置版本名后缀 (仅内网模式且没有注入 semanticVersion 时)
+        if (shifterMode == "internal" && semanticVersion == null) {
             versionNameSuffix = "-internal"
         }
 
@@ -121,7 +129,8 @@ android {
 
             // 统一配置 Firebase App Distribution
             firebaseAppDistribution {
-                appId = System.getenv("FIREBASE_APP_ID") 
+                // 🚀 同时兼容 FIREBASE_APP_ID 和 INTERNAL_FIREBASE_APP_ID (CI 中使用的名称)
+                appId = System.getenv("FIREBASE_APP_ID") ?: System.getenv("INTERNAL_FIREBASE_APP_ID") ?: ""
                 serviceCredentialsFile = project.file("scripts/google-services-json-key.json").absolutePath
                 releaseNotesFile = rootProject.file("release_notes.txt").absolutePath
                 groups = "internal-testers"
@@ -302,25 +311,28 @@ val enableActivityGuard = gradle.startParameter.taskNames.any { it.contains("Rel
 actGuard {
     isEnable = false
     whiteClassList = hashSetOf(
-        "androidx.core.content.FileProvider",
-        "org.koin.*",
-        "com.google.firebase.*",
-        "com.google.android.gms.*",
-        "com.adjust.*",
-        "com.facebook.*",
-        "com.bytedance.*",
-        "cn.thinkingdata.*",
-        "com.blankj.utilcode.util.*",
-        "com.github.dhaval2404.imagepicker.*",
-        "com.yalantis.ucrop.*",
-        "com.daily.health.manager.face.act.*",
-        "com.daily.health.manager.alarm.*",
-
+        "androidx.**",
+        "org.koin.**",
+        "com.google.**",
+        "com.adjust.**",
+        "com.facebook.**",
+        "com.bytedance.**",
+        "cn.thinkingdata.**",
+        "com.blankj.utilcode.**",
+        "com.github.dhaval2404.imagepicker.**",
+        "com.yalantis.ucrop.**",
+        "com.thinkup.**",
+        "sg.bigo.**",
+        "com.applovin.**",
+        "com.pangle.**",
+        "com.mbridge.**",
+        "com.tradplusad.**",
+        "com.vungle.**",
     )
     otherClassList = hashSetOf(
         "com.daily.health.manager.App",
-        "com.daily.health.manager.service.*",
-        "com.daily.health.manager.provider.*",
+        "com.daily.health.manager.service.**",
+        "com.daily.health.manager.provider.**",
         "com.daily.health.manager.ui.weight.*",
         "com.daily.health.manager.ui.widget.*",
         "com.daily.health.manager.receiver.*",
