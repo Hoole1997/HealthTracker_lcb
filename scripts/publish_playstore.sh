@@ -33,12 +33,20 @@ if [ ! -f "$BUILD_GRADLE" ]; then
     exit 1
 fi
 
-# 使用 Python 提取版本号 (更可靠)
+# 检查脚本搜寻路径
 if [ -f "$PROJECT_ROOT/scripts/version_manager.py" ]; then
-    VERSION=$(python3 "$PROJECT_ROOT/scripts/version_manager.py" get_version "$BUILD_GRADLE")
+    VERSION_MGR="$PROJECT_ROOT/scripts/version_manager.py"
+elif [ -f "$PROJECT_ROOT/../common-tools/version_manager.py" ]; then
+    VERSION_MGR="$PROJECT_ROOT/../common-tools/version_manager.py"
+elif [ -f "$PROJECT_ROOT/../android-ci/version_manager.py" ]; then
+    VERSION_MGR="$PROJECT_ROOT/../android-ci/version_manager.py"
 else
     # 备用方案: 使用 grep
     VERSION=$(grep -E 'versionName\s*=' "$BUILD_GRADLE" | head -1 | sed -E 's/.*"([^"]+)".*/\1/')
+fi
+
+if [ -n "$VERSION_MGR" ]; then
+    VERSION=$(python3 "$VERSION_MGR" get_version "$BUILD_GRADLE")
 fi
 
 if [ -z "$VERSION" ]; then

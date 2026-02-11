@@ -20,12 +20,22 @@ for arg in "$@"; do
   fi
 done
 
+# 检查脚本搜寻路径
+if [ -f "scripts/version_manager.py" ]; then
+    VERSION_MGR="scripts/version_manager.py"
+elif [ -f "../common-tools/version_manager.py" ]; then
+    VERSION_MGR="../common-tools/version_manager.py"
+elif [ -f "../android-ci/version_manager.py" ]; then
+    VERSION_MGR="../android-ci/version_manager.py"
+else
+    echo "❌ 错误: 未找到 version_manager.py"
+    exit 1
+fi
+
 if [ -n "$VERSION" ]; then
   echo "ℹ️  使用用户输入版本: $VERSION"
 else
-  if [ -f "scripts/version_manager.py" ]; then
-     VERSION=$(python3 scripts/version_manager.py get_version "$GRADLE_FILE")
-  fi
+  VERSION=$(python3 "$VERSION_MGR" get_version "$GRADLE_FILE")
   
   if [ -z "$VERSION" ]; then
      echo "❌ 无法从 $GRADLE_FILE 自动提取版本号，请手动指定。"
@@ -44,7 +54,7 @@ ALL_TAGS=$(git tag -l "${TAG_PREFIX}.*")
 
 # 3. 计算下一个后缀
 # 调用 Python 脚本处理复杂的 Z -> A_A 逻辑
-NEXT_SUFFIX=$(python3 scripts/version_manager.py next_suffix "$VERSION" "$ALL_TAGS")
+NEXT_SUFFIX=$(python3 "$VERSION_MGR" next_suffix "$VERSION" "$ALL_TAGS")
 
 NEW_TAG="${TAG_PREFIX}.${NEXT_SUFFIX}"
 

@@ -27,13 +27,13 @@
 
 # ==================== 阶段2 & 4: 代码混淆增强 ====================
 
-# 启用激进混淆
-# 注意：-repackageclasses 会覆盖 -flattenpackagehierarchy，只使用一个
--repackageclasses ''
--allowaccessmodification
-
 # 混淆优化
 -overloadaggressively
+-optimizationpasses 5
+-mergeinterfacesaggressively
+-allowaccessmodification
+-flattenpackagehierarchy ''
+-repackageclasses ''
 
 # 使用自定义混淆字典（阶段4）
 # 优先使用动态生成的字典（每次构建随机化）

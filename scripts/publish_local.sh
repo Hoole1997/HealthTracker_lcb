@@ -6,15 +6,25 @@
 # 2. 生成 Changelog (release_notes.txt)
 # 3. 调用 Gradle 分发任务
 
-# 检查 Python 环境
-if ! command -v python3 &> /dev/null; then
-    echo "❌ 错误: 未找到 python3"
+# 检查脚本搜寻路径 (Layer 1 还是 Layer 2)
+# 检查脚本搜寻路径 (Layer 1 还是 Layer 2)
+if [ -f "scripts/version_manager.py" ]; then
+    VERSION_MGR="scripts/version_manager.py"
+    CHANGELOG_GEN="scripts/generate_changelog.py"
+elif [ -f "../common-tools/version_manager.py" ]; then
+    VERSION_MGR="../common-tools/version_manager.py"
+    CHANGELOG_GEN="../common-tools/generate_changelog.py"
+elif [ -f "../android-ci/version_manager.py" ]; then
+    VERSION_MGR="../android-ci/version_manager.py"
+    CHANGELOG_GEN="../android-ci/generate_changelog.py"
+else
+    echo "❌ 错误: 未找到核心脚本 (version_manager.py)。"
     exit 1
 fi
 
 # 1. 计算下一个版本号
 GRADLE_FILE="app/build.gradle.kts"
-VERSION=$(python3 scripts/version_manager.py get_version "$GRADLE_FILE")
+VERSION=$(python3 "$VERSION_MGR" get_version "$GRADLE_FILE")
 if [ -z "$VERSION" ]; then
     echo "❌ 无法读取版本号"
     exit 1
@@ -22,7 +32,7 @@ fi
 
 TAG_PREFIX="T${VERSION}"
 ALL_TAGS=$(git tag -l "${TAG_PREFIX}.*")
-NEXT_SUFFIX=$(python3 scripts/version_manager.py next_suffix "$VERSION" "$ALL_TAGS")
+NEXT_SUFFIX=$(python3 "$VERSION_MGR" next_suffix "$VERSION" "$ALL_TAGS")
 NEXT_TAG="${TAG_PREFIX}.${NEXT_SUFFIX}"
 
 echo "ℹ️  当前基准: $VERSION"
@@ -46,7 +56,7 @@ fi
 
 echo "📝 生成 Changelog ($start_ref -> HEAD)..."
 # 第三个参数用于在 Changelog 标题中显示预测的版本号 (而不是 "HEAD")
-python3 scripts/generate_changelog.py "$start_ref" "HEAD" "$NEXT_TAG"
+python3 "$CHANGELOG_GEN" "$start_ref" "HEAD" "$NEXT_TAG"
 
 if [ ! -f "release_notes.txt" ]; then
     echo "❌ Changelog 生成失败。"
@@ -58,8 +68,8 @@ cat release_notes.txt
 echo "--------------------------------------------------"
 
 echo "🚀 开始构建并分发 (Version: ${NEXT_TAG})..."
-# 显式执行 assemble 以确保 APK 存在，并注入动态版本号
-./gradlew clean assembleInternalRelease appDistributionUploadInternalRelease \
+# 🚀 适配零变体架构：assembleInternalRelease -> assembleRelease
+./gradlew clean assembleRelease appDistributionUploadRelease \
   -PinternalVersionName="${NEXT_TAG}"
 
 echo "✅ 本地分发完成！"
