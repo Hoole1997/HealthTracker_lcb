@@ -66,6 +66,9 @@ jobs:
       run: |
         # 从 build.gradle.kts 提取版本号
         V_NAME=$(grep "versionName =" app/build.gradle.kts | head -n 1 | awk -F'"' '{print $2}')
+        if [ "$BUILD_MODE" == "internal" ]; then
+           V_NAME="${V_NAME}-internal"
+        fi
         echo "PROJECT_VERSION=$V_NAME" >> $GITHUB_ENV
         echo "Extracted project version: $V_NAME"
 
@@ -155,16 +158,17 @@ jobs:
 
 
     - name: Deploy Internal to Firebase
-      if: startsWith(github.ref, 'refs/tags/T')
+      if: env.BUILD_MODE == 'internal' && github.event_name != 'pull_request'
       env:
-        INTERNAL_FIREBASE_APP_ID: ${{ secrets.INTERNAL_FIREBASE_APP_ID }}
+        FIREBASE_APP_ID: ${{ secrets.INTERNAL_FIREBASE_APP_ID }}
         CREDENTIAL_CONTENT: ${{ secrets.INTERNAL_FIREBASE_CREDENTIAL_FILE_CONTENT }}
       run: |
         echo "Checking Firebase Credentials..."
         if [ -n "$CREDENTIAL_CONTENT" ]; then
            echo "$CREDENTIAL_CONTENT" | base64 -di > scripts/google-services-json-key.json
            echo "Deploying to Firebase App Distribution..."
-           ./gradlew appDistributionUploadRelease
+           # 确保这里也带上版本号参数 (如果是手动触发且有 Tag 解析)
+           ./gradlew appDistributionUploadRelease ${VERSION_PARAM}
         else
            echo "⚠️ Warning: FIREBASE_CREDENTIAL_FILE_CONTENT is missing. Skipping deployment."
         fi
@@ -195,7 +199,13 @@ jobs:
           exit 0
         fi
         
-        VERSION="${{ env.TAG_NAME || env.PROJECT_VERSION || 'unknown' }}"
+        # 确定版本显示逻辑 (优先使用 Tag 名)
+        if [ -n "${{ env.TAG_NAME }}" ]; then
+            VERSION="${{ env.TAG_NAME }}"
+        else
+            VERSION="${{ env.PROJECT_VERSION }}"
+        fi
+        
         DURATION_SEC=$(( $(date +%s) - ${{ env.BUILD_START_TIME }} ))
         DURATION="$((DURATION_SEC / 60))m $((DURATION_SEC % 60))s"
         LOG_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
