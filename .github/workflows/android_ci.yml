@@ -134,8 +134,8 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/T')
       run: |
         echo "Generating Changelog..."
-        # Fetch all tags to find previous one
-        git fetch --prune --unshallow --tags
+        # Fetch tags to find previous one (already fetched depth 0)
+        git fetch --prune --tags
         
         CURRENT_TAG=${GITHUB_REF#refs/tags/}
         # Find previous tag (sort by creator date desc, skip current, take first)
