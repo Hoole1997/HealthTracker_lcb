@@ -66,7 +66,7 @@ android {
         val semanticVersion = project.findProperty("internalVersionName")?.toString()
         if (semanticVersion != null && semanticVersion.isNotEmpty()) {
             println("🏷️ [Shifter] Override VersionName: $semanticVersion")
-            versionName = semanticVersion.removePrefix("v").removePrefix("T")
+            versionName = semanticVersion.removePrefix("v")
         }
 
         buildConfig {
