@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "898632685296",
+    "project_id": "healththracker",
+    "storage_bucket": "healththracker.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:898632685296:android:13ae2245d56448e243d435",
+        "android_client_info": {
+          "package_name": "com.daily.health.manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl6YgXoqOh_8jCmcOMo3lHis_QPYbClC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

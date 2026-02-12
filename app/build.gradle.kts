@@ -145,7 +145,7 @@ android {
         variant.outputs
             .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
             .forEach { output ->
-                val outputFileName = "HealthTracker-${variant.baseName}-${variant.versionName}.apk"
+                val outputFileName = "${rootProject.name}-${variant.baseName}-${variant.versionName}.apk"
                 output.outputFileName = outputFileName
             }
     }
