@@ -11,14 +11,50 @@ ext {
              ]
     ]
 
+    // Pangle配置（穿山甲）- 来自原 playstore 变体配置
+    pangle = [applicationId: "8764840",
+              adUnitIds    : [banner      : "",
+                              interstitial: "982706984",
+                              splash      : "",
+                              native      : "",
+                              full_native : "",
+                              rewarded    : "982706974"
+              ]
+    ]
+
+    // TopOn配置 - 来自原 playstore 变体配置
+    topon = [applicationId: "h1h1rj70betkqo",
+             appKey       : "a57fbca5a6c09228eb3d0b85f839cee21",
+             adUnitIds    : [banner      : "",
+                             interstitial: "n1h1rj70d91b6q",
+                             splash      : "n1h1rj70f57asu",
+                             native      : "n1h1rj70e3qg3b",
+                             full_native : "",
+                             rewarded    : "n1h1rj70csd0l0"
+             ]
+    ]
+
     // 应用参数覆盖 (正式版关闭 Log)
     app = [applicationId: "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
            show_log     : false,
+           string_fog   : true,
            shifter_mode : "official"
     ]
 
     // 业务 URL (正式官网)
+    // ⚠️ 必须包含所有字段，Groovy ext 是整体覆盖而非合并
     url = [privacyUrl: "https://hero-t.com/privacy.html",
-           teamUrl   : "https://hero-t.com/privacy.html"
+           teamUrl   : "https://hero-t.com/privacy.html",
+           fcmUrl    : "https://htc.hero-t.com",
+           fcmPkg    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
+           email     : "bluepsme000@gmail.com"
+    ]
+
+    // 统计归因 (正式 Token)
+    // TODO: 如果正式环境有独立的 Adjust/ThinkingData Token，请在此替换
+    analytics = [adjustAppToken        : "1rbqbbrxrcu8",
+                 thinkingDataAppId     : "7eb813add90f4740b63817dcb3d8c49f",
+                 thinkingDataServerUrl : "https://ht.hero-t.com",
+                 defaultUserChannel    : "paid"
     ]
 }

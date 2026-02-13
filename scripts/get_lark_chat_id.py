@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
+import os
+import sys
 import requests
 import json
 
-# 新的飞书企业版凭证
-APP_ID = "cli_a903fbac57badcd6"
-APP_SECRET = "22msGNoggdqOFL4f1HSpabpXOVfsAirb"
+# 从环境变量读取飞书凭证 (禁止硬编码)
+APP_ID = os.environ.get("LARK_APP_ID", "")
+APP_SECRET = os.environ.get("LARK_APP_SECRET", "")
 
 def get_token():
     url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
@@ -18,6 +20,10 @@ def list_chats(token):
     return resp.json()
 
 if __name__ == "__main__":
+    if not APP_ID or not APP_SECRET:
+        print("❌ 错误: 请设置环境变量 LARK_APP_ID 和 LARK_APP_SECRET")
+        print("   用法: LARK_APP_ID=xxx LARK_APP_SECRET=xxx python3 get_lark_chat_id.py")
+        sys.exit(1)
     print("正在获取飞书群组列表...")
     token = get_token()
     if not token:
