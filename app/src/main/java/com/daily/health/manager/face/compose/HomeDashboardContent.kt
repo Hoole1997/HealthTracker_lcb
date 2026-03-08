@@ -267,25 +267,25 @@ private fun HeroConcentricCircles(
         modifier = modifier
             .size(247.dp * scale)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.1f))
-        )
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .clip(CircleShape)
+//                .background(Color.White.copy(alpha = 0.06f))
+//        )
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(185.dp * scale)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.1f))
+                .background(Color.White.copy(alpha = 0.08f))
         )
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(125.dp * scale)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.1f))
+                .background(Color.White.copy(alpha = 0.10f))
         )
     }
 }
@@ -306,6 +306,7 @@ private fun HeroCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(176.dp * scale)
+                    .clip(RoundedCornerShape(12.dp * scale))
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf( Color(0xFFFF6868),Color(0xFFFFA08A))
@@ -322,7 +323,7 @@ private fun HeroCard(
                         .size(width = 173.dp * scale, height = 119.dp * scale)
                 )
                 HeroConcentricCircles(
-                    modifier = Modifier.offset((-67).dp * scale, (-49).dp * scale),
+                    modifier = Modifier.offset((-70).dp * scale, (-14).dp * scale),
                     scale = scale,
                 )
                 Image(
