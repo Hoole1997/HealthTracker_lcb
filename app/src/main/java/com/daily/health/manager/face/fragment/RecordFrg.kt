@@ -153,34 +153,34 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
     private fun setupHealthCards() {
         mViewBind?.run {
             // Blood Sugar
-            includeBs.ivIcon.setImageResource(R.mipmap.ht_ic_blood_suger)
+            includeBs.ivIcon.setImageResource(R.mipmap.ht_home_card_bs)
             includeBs.tvTitle.text = getString(R.string.ht_blood_suger)
 
             // Blood Pressure
-            includeBp.ivIcon.setImageResource(R.mipmap.ht_ic_blood_pressure)
+            includeBp.ivIcon.setImageResource(R.mipmap.ht_home_card_bp)
             includeBp.tvTitle.text = getString(R.string.ht_blood_pressure)
 
             // Heart Rate
-            includeHr.ivIcon.setImageResource(R.mipmap.ht_ic_heart)
+            includeHr.ivIcon.setImageResource(R.mipmap.ht_home_hero_heart)
             includeHr.tvTitle.text = getString(R.string.ht_heart_rate)
 
             // Cholesterol
-            includeCho.ivIcon.setImageResource(R.mipmap.ht_ic_cholesterol)
+            includeCho.ivIcon.setImageResource(R.mipmap.ht_home_card_cholesterol)
             includeCho.tvTitle.text = getString(R.string.ht_cholesterol)
 
             // BMI (组合 Weight + BMI)
-            includeBmi.ivIcon.setImageResource(R.mipmap.ht_ic_bmi)
+            includeBmi.ivIcon.setImageResource(R.mipmap.ht_home_card_weight)
             "${getString(R.string.ht_weight)} & ${getString(R.string.ht_bmi)}".also { includeBmi.tvTitle.text = it }
 
             // Steps
-            includeStep.ivIcon.setImageResource(R.mipmap.ht_ic_home_step)
+            includeStep.ivIcon.setImageResource(R.mipmap.ht_home_card_step)
             includeStep.tvTitle.text = getString(R.string.ht_step_count)
             includeStep.btnAdd.apply {
                 text = getString(R.string.ht_settings)
             }
 
             // Hydrate
-            includeHydrate.ivIcon.setImageResource(R.mipmap.ht_ic_home_cup)
+            includeHydrate.ivIcon.setImageResource(R.mipmap.ht_home_card_water)
             includeHydrate.tvTitle.text = getString(R.string.ht_hydrate)
             includeHydrate.btnAdd.apply {
                 text = getString(R.string.ht_settings)
