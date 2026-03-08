@@ -2,11 +2,9 @@ package com.daily.health.manager.face.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -26,7 +24,6 @@ import com.daily.health.manager.face.act.HistoryRecordScreen
 import com.daily.health.manager.face.act.HydrateScreen
 import com.daily.health.manager.face.act.MainScreen
 import com.daily.health.manager.face.act.ProfileActivity
-import com.daily.health.manager.face.act.reportGuide
 import com.daily.health.manager.face.compose.HomeDashboardScreen
 import com.daily.health.manager.face.compose.HomeFeatureCardUi
 import com.daily.health.manager.face.compose.HomeHeroUi
@@ -35,22 +32,11 @@ import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
 import com.daily.health.manager.face.viewmodel.HomeViewModel
 import com.daily.health.manager.hasAddProfile
-import com.daily.health.manager.hasShowAllGuide
-import com.daily.health.manager.hasShowGuideBs
-import com.daily.health.manager.helper.HealthTrackerEvaluateListener
-import com.daily.health.manager.saveShowGuideBs
 import com.daily.health.manager.util.CholesterolCalculator
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.NumberFormatter
-import com.healthtracker.framework.util.SpUtils
-import com.hyy.highlightpro.HighlightPro
-import com.hyy.highlightpro.parameter.Constraints
-import com.hyy.highlightpro.parameter.HighlightParameter
-import com.hyy.highlightpro.parameter.MarginOffset
-import com.hyy.highlightpro.shape.RectShape
-import com.hyy.highlightpro.util.dp
 import kotlinx.coroutines.CompletableDeferred
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -68,10 +54,6 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
     }
 
     private var pendingActivityType: PendingActivityType? = null
-    private var notificationPermissionFlowFinished = false
-    private var guideAnchorReady = false
-    private var isShowHighligh = false
-    private var isHeighLightLeave = false
 
     var highLightComplete = CompletableDeferred<Boolean>()
 
@@ -129,29 +111,14 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
                     },
                     onHydrateClick = ::openHydrate,
                     onStepCountClick = ::openStepCount,
-                    onBloodSugarBoundsChanged = ::updateGuideAnchor,
+                    onBloodSugarBoundsChanged = {},
                 )
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        isHeighLightLeave = false
-        if (notificationPermissionFlowFinished && guideAnchorReady) {
-            guidFeature()
-        }
-    }
-
     fun onNotificationPermissionFlowFinished() {
-        if (notificationPermissionFlowFinished) {
-            return
-        }
-        notificationPermissionFlowFinished = true
-        if (isResumed && guideAnchorReady) {
-            guidFeature()
-        }
-        if (hasShowAllGuide() && !highLightComplete.isCompleted) {
+        if (!highLightComplete.isCompleted) {
             highLightComplete.complete(true)
         }
     }
@@ -252,25 +219,6 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
         (requireActivity() as? MainScreen)?.checkStepPermissionAndNavigate()
     }
 
-    private fun updateGuideAnchor(bounds: Rect) {
-        val anchorView = mViewBind?.clPsRecord ?: return
-        if (bounds.width() <= 0 || bounds.height() <= 0) {
-            return
-        }
-        val layoutParams = (anchorView.layoutParams as? FrameLayout.LayoutParams)
-            ?: FrameLayout.LayoutParams(bounds.width(), bounds.height())
-        layoutParams.width = bounds.width()
-        layoutParams.height = bounds.height()
-        layoutParams.leftMargin = bounds.left
-        layoutParams.topMargin = bounds.top
-        anchorView.layoutParams = layoutParams
-        guideAnchorReady = true
-        anchorView.bringToFront()
-        if (notificationPermissionFlowFinished && isResumed) {
-            anchorView.post { guidFeature() }
-        }
-    }
-
     private fun formatCholesterolValue(record: CholesterolRecord?): String {
         if (record == null) {
             return "--"
@@ -335,76 +283,6 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
             seconds < 86400 -> getString(R.string.ht_hours_ago, (seconds / 3600).toInt())
             else -> getString(R.string.ht_days_ago, (seconds / 86400).toInt())
         }
-    }
-
-    private fun guidFeature(): Boolean {
-        if (!notificationPermissionFlowFinished || !guideAnchorReady) {
-            return false
-        }
-        if (hasShowAllGuide()) {
-            if (!highLightComplete.isCompleted) {
-                highLightComplete.complete(true)
-            }
-            return false
-        }
-        if (isShowHighligh) {
-            return false
-        }
-        return guideBs()
-    }
-
-    private fun onGuideDismissed() {
-        if (hasShowAllGuide()) {
-            SpUtils.putBoolean(
-                HealthTrackerEvaluateListener.KEY_PENDING_RATE_AFTER_ONBOARDING,
-                true,
-            )
-            if (!highLightComplete.isCompleted) {
-                highLightComplete.complete(true)
-            }
-            return
-        }
-        if (!isHeighLightLeave && isResumed) {
-            guidFeature()
-        }
-    }
-
-    private fun guideBs(): Boolean {
-        if (hasShowGuideBs()) {
-            return false
-        }
-        HighlightPro.with(this)
-            .setHighlightParameter {
-                HighlightParameter.Builder()
-                    .setHighlightViewId(R.id.cl_ps_record)
-                    .setTipsViewId(R.layout.ht_layout_guide_bs)
-                    .setHighlightShape(RectShape(4f.dp, 4f.dp, 12f))
-                    .setHighlightHorizontalPadding(0f.dp)
-                    .setConstraints(
-                        Constraints.StartToStartOfHighlight +
-                            Constraints.TopToBottomOfHighlight +
-                            Constraints.EndToEndOfHighlight
-                    )
-                    .setMarginOffset(MarginOffset(start = 7.dp, top = 16.dp, end = 16.dp))
-                    .build()
-            }
-            .interceptBackPressed(true)
-            .setOnMaskViewClickCallback {
-                isShowHighligh = true
-                isHeighLightLeave = true
-                openBloodSugarRecord()
-                reportGuide(7)
-            }
-            .setOnShowCallback {
-                isShowHighligh = true
-                saveShowGuideBs()
-            }
-            .setOnDismissCallback {
-                isShowHighligh = false
-                onGuideDismissed()
-            }
-            .show()
-        return true
     }
 
     private fun navigateToActivityWithProfileCheck(activityType: PendingActivityType) {
