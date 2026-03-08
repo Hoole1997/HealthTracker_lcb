@@ -3,9 +3,11 @@ package com.daily.health.manager.face.act
 // 移除广播接收器相关导入，改用页面可见状态检查月份变化
 import android.Manifest
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -15,19 +17,14 @@ import androidx.viewpager.widget.ViewPager
 import com.android.common.weather.WeatherActivity
 import com.android.common.weather.util.TemperaturePreferences
 import com.android.common.weather.util.WeatherIconMapper
+import com.app.raise.AppraiseManager
 import com.daily.health.manager.App
 import com.daily.health.manager.R
-import com.daily.health.manager.ad.FullScreenNativeAdTestEntry
 import com.daily.health.manager.alarm.PermissionManager
 import com.daily.health.manager.config.models.PushMessage
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.HtActivityMainBinding
 import com.daily.health.manager.databinding.HtLayoutHomeTabItemBinding
-import com.daily.health.manager.helper.CustomNotificationHelper
-import com.daily.health.manager.permission.PermissionProvider
-import com.daily.health.manager.permission.PermissionRequest
-import com.daily.health.manager.service.HealthServiceConstants
-import com.daily.health.manager.strategy.PushScenario
 import com.daily.health.manager.face.adapter.FragmentsAdapter
 import com.daily.health.manager.face.dialog.ActivityPerRequestDialog
 import com.daily.health.manager.face.dialog.ExitDialog
@@ -39,6 +36,12 @@ import com.daily.health.manager.face.fragment.SettingsFrg
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
 import com.daily.health.manager.face.viewmodel.MainViewModel
+import com.daily.health.manager.helper.CustomNotificationHelper
+import com.daily.health.manager.helper.HealthTrackerEvaluateListener
+import com.daily.health.manager.permission.PermissionProvider
+import com.daily.health.manager.permission.PermissionRequest
+import com.daily.health.manager.service.HealthServiceConstants
+import com.daily.health.manager.strategy.PushScenario
 import com.daily.health.manager.utils.loadBanner
 import com.google.android.material.tabs.TabLayout
 import com.healthtracker.framework.BuildState
@@ -49,6 +52,7 @@ import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.healthtracker.framework.util.Restore
+import com.healthtracker.framework.util.SpUtils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -57,9 +61,6 @@ import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.AdPosition
 import org.koin.android.ext.android.inject
 import kotlin.coroutines.resume
-import com.daily.health.manager.helper.HealthTrackerEvaluateListener
-import com.app.raise.AppraiseManager
-import com.healthtracker.framework.util.SpUtils
 
 class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), PermissionProvider {
 
@@ -184,7 +185,9 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
      */
     private fun updateUIForTabPosition(position: Int) {
         with(mViewBind) {
-            // 重置所有UI元素的默认状态
+            applyHostBackgroundForTab(position)
+            llWeather.gone()
+            tvTitle.visible()
             ivRemind.visible()
             tvMonth.gone()
 
@@ -244,6 +247,27 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
         }
     }
 
+    private fun applyHostBackgroundForTab(position: Int) {
+        val isHomeTab = position == 0
+        val homeColor = ContextCompat.getColor(this, R.color.ht_home_host_bg)
+        val defaultColor = ContextCompat.getColor(this, R.color.c1)
+        val subpageColor = ContextCompat.getColor(this, R.color.ht_subpage_bg)
+
+        if (isHomeTab) {
+            mViewBind.root.setBackgroundResource(R.drawable.ht_bg_home_host_gradient)
+            mViewBind.areaBar.setBackgroundColor(Color.TRANSPARENT)
+            mViewBind.viewPagerHome.setBackgroundColor(Color.TRANSPARENT)
+            mViewBind.adViewContainer.setBackgroundColor(homeColor)
+        } else {
+            mViewBind.root.setBackgroundColor(defaultColor)
+            mViewBind.areaBar.setBackgroundColor(defaultColor)
+            mViewBind.viewPagerHome.setBackgroundColor(
+                if (position in 2..4) subpageColor else defaultColor
+            )
+            mViewBind.adViewContainer.setBackgroundResource(R.drawable.ht_bg_bottom_banner)
+        }
+    }
+
     override fun createViewBinding() = HtActivityMainBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = MainViewModel::class.java
@@ -273,12 +297,10 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
 
             setupBottomNavBar()
             setupViewPager()
+            viewPagerHome.currentItem = currentTabIndex
+            updateUIForTabPosition(currentTabIndex)
 
-            // 天气数据点击事件（从 tvTitle 迁移到 llWeather）
-            llWeather.clickWithDuration {
-                ReportDataManager.reportData("weather_page_click")
-                startActivity<WeatherActivity>()
-            }
+            llWeather.gone()
 
             // 延迟处理通知点击参数，确保UI完全初始化
             root.postDelayed({
@@ -326,9 +348,8 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
                             // 更新温度单位
                             tvTemperatureUnit.text = if (TemperaturePreferences.isCelsius()) "°C" else "°F"
                             
-                            // 显示天气控件，隐藏标题
-                            llWeather.visible()
-                            tvTitle.gone()
+                            llWeather.gone()
+                            tvTitle.visible()
                         }
                     }
                 }
@@ -619,6 +640,8 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             startActivity<StepCountScreen>()
         }
     }
+
+    override fun getStatusBarColor() = com.healthtracker.framework.R.color.transparent
 
 
 }

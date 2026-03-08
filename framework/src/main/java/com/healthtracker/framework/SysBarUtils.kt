@@ -122,7 +122,7 @@ object SysBarUtils {
         val windowInsetsControllerCompat  = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsControllerCompat.apply {
             // 只设置状态栏外观，不影响导航栏
-            isAppearanceLightStatusBars = isLightColor(color)
+            isAppearanceLightStatusBars = true
             setStatusBarColor(window, color,true)
         }
     }

@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/home_nav_bar_height">
-
+    android:layout_height="@dimen/home_nav_bar_height"
+    android:paddingTop="@dimen/dp_4"
+    android:paddingBottom="@dimen/dp_6">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_tab_icon"
@@ -13,12 +14,12 @@
         android:contentDescription="@string/ht_home"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/tv_tab_text"
-        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         app:tint="@color/ht_selector_tab_color"
-        tools:src="@drawable/ht_ic_tab_home_selected"/>
+        tools:src="@drawable/ht_ic_tab_home_selected" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_tab_text"
@@ -27,10 +28,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
         android:gravity="center"
+        android:includeFontPadding="false"
         android:maxLines="1"
         android:text="@string/ht_home"
         android:textColor="@color/ht_selector_tab_color"
-        android:textSize="@dimen/sp_14"
+        android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

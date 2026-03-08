@@ -8,6 +8,10 @@
 
     <color name="c1">@color/white</color>
     <color name="c5">#1D6BF2</color>
+    <color name="ht_home_host_bg_top">#CCE6FB</color>
+    <color name="ht_home_host_bg">#F5F8FD</color>
+    <color name="ht_subpage_bg">#F5F7FB</color>
+    <color name="ht_home_tab_unselected">#AAB5C7</color>
     <color name="c5_8">#D2E2FF</color>
     <color name="t1">#333333</color>
     <color name="color_444">#444444</color>
@@ -46,7 +50,7 @@
     <color name="color_FFB909">#FFB909</color>
     <color name="color_FF8000">#FF8000</color>
     <color name="color_FB0301">#FB0301</color>
-    <color name="color_EFFBF7">#EFFBF7</color>
+    <color name="color_EFFBF7">#E3EFFF</color>
     <color name="color_111111_40">#66111111</color>
 
     <!-- BMI grade colors -->

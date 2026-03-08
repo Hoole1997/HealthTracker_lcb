@@ -190,9 +190,8 @@ fun HomeDashboardScreen(
 ) {
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF5F8FD)),
-        contentPadding = PaddingValues(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 20.dp),
+            .fillMaxSize(),
+        contentPadding = PaddingValues(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         item {
