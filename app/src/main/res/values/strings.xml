@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Blood Sugar &amp; Health Tracker</string>
+    <string name="app_name">Blood Sugar &amp; \nPressure Tracker</string>
     <string name="ht_meds_manager">Medication Manager</string>
     <string name="ht_blood_suger">Blood Sugar</string>
     <string name="ht_blood_pressure">Blood Pressure</string>
@@ -41,6 +41,8 @@
     <string name="ht_mmol_l" translatable="false">mmol/L</string>
     <string name="ht_mmHg" translatable="false">mmHg</string>
     <string name="ht_loading">Loading...</string>
+    <string name="ht_loading_pure">Loading</string>
+    <string name="ht_read_and_agree_privacy">I have read the </string>
     <string name="ht_history">History</string>
     <string name="ht_click_to_record">Click to record</string>
     <string name="ht_new_record">New Record</string>

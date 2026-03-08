@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Glycémie &amp; Suivi Santé</string>
+    <string name="app_name">Glycémie &amp; Suivi Tension</string>
     <string name="ht_meds_manager">Gestionnaire de Médicaments</string>
     <string name="ht_blood_suger">Glycémie</string>
     <string name="ht_blood_pressure">Tension Artérielle</string>

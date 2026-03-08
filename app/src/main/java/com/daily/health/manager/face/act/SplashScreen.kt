@@ -7,6 +7,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -45,14 +48,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.daily.health.manager.App
+import com.daily.health.manager.BuildConfig
 import com.daily.health.manager.R
 import com.daily.health.manager.constants.KEY_FROM_SHORTCUT
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_CONTENT
@@ -597,8 +606,8 @@ private fun AutoSizeSingleLineText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color,
-    maxFontSize: androidx.compose.ui.unit.TextUnit,
-    minFontSize: androidx.compose.ui.unit.TextUnit,
+    maxFontSize: TextUnit,
+    minFontSize: TextUnit,
     fontFamily: FontFamily? = null,
     fontWeight: FontWeight? = null
 ) {
@@ -666,37 +675,71 @@ private fun SplashScreen(
         }
     }
 
+    // 一次性读取当前日期时间（启动页期间无需刷新）
+    val now = remember { Date() }
+    val dateText = remember { SimpleDateFormat("MMMM d", Locale.ENGLISH).format(now) }
+    val timeWeekText = remember { SimpleDateFormat("h:mm a, EEEE", Locale.ENGLISH).format(now) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.c1))
     ) {
-        Image(
-            painter = painterResource(id = R.mipmap.ht_bg_splash),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-        Image(
-            painter = painterResource(id = R.mipmap.ht_bg_splash_top_start),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-        Image(
-            painter = painterResource(id = R.mipmap.ht_bg_splash_top_end),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
 
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (logo, appName, loadingBar, loadingText, recentCard) = createRefs()
+            val (logoBackground, logo, appName, loadingBar, loadingText, recentCard, dateTimeBlock) = createRefs()
             val centerGuideline = createGuidelineFromTop(0.22f)
-            val bottomGuideline = createGuidelineFromTop(0.88f)
+            val bottomGuideline = createGuidelineFromBottom(0.12f)
+
+            // 右上角日期时间
+            Column(
+                modifier = Modifier
+                    .constrainAs(dateTimeBlock) {
+                        top.linkTo(parent.top, margin = 48.dp)
+                        end.linkTo(parent.end, margin = 20.dp)
+                    },
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    text = dateText,
+                    color = colorResource(id = R.color.t1),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.alpha(contentAlpha.value)
+                )
+                Box(Modifier.size(
+                    height = 4.dp,
+                    width = 0.dp
+                ))
+                Text(
+                    text = timeWeekText,
+                    color = colorResource(id = R.color.color_464545),
+                    lineHeight = 16.sp,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Light,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.alpha(contentAlpha.value)
+                )
+            }
+
+            // 图标圆形模糊背景光晕（替换为设计图资源 ht_bg_splash_logo）
+            Image(
+                painter = painterResource(id = R.mipmap.ht_bg_splash_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(logoBackground) {
+                        top.linkTo(logo.top)
+                        bottom.linkTo(logo.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                contentScale = ContentScale.FillWidth
+            )
 
             Image(
-                painter = painterResource(id = R.drawable.ht_ic_logo_sq),
+                painter = painterResource(id = R.mipmap.ht_ic_logo_sq),
                 contentDescription = null,
                 modifier = Modifier
                     .size(96.dp)
@@ -710,16 +753,17 @@ private fun SplashScreen(
 
             Text(
                 text = stringResource(id = R.string.app_name),
-                color = colorResource(id = R.color.c5).copy(alpha = contentAlpha.value),
-                fontSize = 22.sp,
+                color = colorResource(id = R.color.t1),
+                fontSize = 24.sp,
                 fontFamily = FontFamily(Font(FrameworkR.font.inter_bold)),
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center,
+                lineHeight = 32.sp,
                 modifier = Modifier.constrainAs(appName) {
                     top.linkTo(logo.bottom, margin = 20.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                },
-                maxLines = 1,
+                }.alpha(contentAlpha.value),
                 overflow = TextOverflow.Ellipsis
             )
 
@@ -737,27 +781,25 @@ private fun SplashScreen(
 
             LinearProgressIndicator(
                 modifier = Modifier
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .height(4.dp)
+                    .clip(RoundedCornerShape(2.dp))
                     .constrainAs(loadingBar) {
-                        top.linkTo(bottomGuideline)
-                        bottom.linkTo(bottomGuideline)
+                        bottom.linkTo(loadingText.top, margin = 12.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         width = Dimension.percent(0.8f)
                     },
                 color = colorResource(id = R.color.c5),
-                trackColor = Color(0xFFB1EDD6),
-                strokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap
+                trackColor = Color(0xFFD2E2FF)
             )
 
             Text(
-                text = stringResource(id = R.string.ht_loading),
-                color = colorResource(id = R.color.color_666),
+                text = stringResource(id = R.string.ht_loading_pure),
+                color = colorResource(id = R.color.c5),
                 fontSize = 14.sp,
-                fontFamily = FontFamily(Font(FrameworkR.font.inter_regular)),
+                fontFamily = FontFamily(Font(FrameworkR.font.inter_medium)),
                 modifier = Modifier.constrainAs(loadingText) {
-                    top.linkTo(loadingBar.bottom, margin = 10.dp)
+                    bottom.linkTo(bottomGuideline)
                     start.linkTo(loadingBar.start)
                     end.linkTo(loadingBar.end)
                 },

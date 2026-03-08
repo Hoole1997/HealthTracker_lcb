@@ -7,8 +7,8 @@
     <color name="bg_window">@color/color_f8f8f8</color>
 
     <color name="c1">@color/white</color>
-    <color name="c5">#02BC77</color>
-    <color name="c5_8">#5DD4A8</color>
+    <color name="c5">#1D6BF2</color>
+    <color name="c5_8">#D2E2FF</color>
     <color name="t1">#333333</color>
     <color name="color_444">#444444</color>
     <color name="color_BFBFBF">#BFBFBF</color>
@@ -54,6 +54,7 @@
     <color name="color_942DE2">#942DE2</color>
     <color name="color_D2D2D2">#D2D2D2</color>
     <color name="color_F1F1F0">#F1F1F0</color>
+    <color name="color_464545">#464545</color>
 
 
     <color name="color_02BC77">#02BC77</color>

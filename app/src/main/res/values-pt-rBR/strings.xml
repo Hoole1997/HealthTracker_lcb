@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Glicemia &amp; Saúde</string>
+    <string name="app_name">Glicemia &amp; Pressão Tracker</string>
     <string name="ht_meds_manager">Gerenciador de Medicamentos</string>
     <string name="ht_blood_suger">Glicemia</string>
     <string name="ht_blood_pressure">Pressão Arterial</string>
