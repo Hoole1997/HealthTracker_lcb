@@ -92,7 +92,7 @@
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/ht_bg_rect_white_40"
-                android:backgroundTint="@color/c5"
+                android:backgroundTint="#02BC77"
                 android:gravity="center">
 
                 <ImageView

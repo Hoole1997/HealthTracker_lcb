@@ -4,6 +4,8 @@
     <string name="ht_blood_suger">Glicemia</string>
     <string name="ht_blood_pressure">Pressione Sanguigna</string>
     <string name="ht_home">Home</string>
+    <string name="ht_home_heart_subtitle">Fai la tua prima misurazione oggi!</string>
+    <string name="ht_record">Registra</string>
     <string name="ht_meds">Farmaci</string>
     <string name="ht_insights">Analisi</string>
     <string name="ht_tracker">Tracker</string>

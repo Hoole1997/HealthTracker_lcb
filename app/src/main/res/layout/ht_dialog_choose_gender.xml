@@ -59,7 +59,7 @@
         app:layout_constraintEnd_toEndOf="@id/v_male_center"
         app:layout_constraintStart_toStartOf="@id/v_male_center"
         app:round="@dimen/dp_32"
-        app:srcCompat="@mipmap/ht_ic_male_small" />
+        app:srcCompat="@mipmap/ht_ic_male" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:layout_width="@dimen/dp_66"
@@ -68,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="@id/v_female_center"
         app:layout_constraintStart_toStartOf="@id/v_female_center"
         app:round="@dimen/dp_32"
-        app:srcCompat="@mipmap/ht_ic_female_small" />
+        app:srcCompat="@mipmap/ht_ic_female" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/v_center"

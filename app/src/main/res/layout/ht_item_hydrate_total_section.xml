@@ -62,7 +62,7 @@
            app:layout_constraintStart_toStartOf="@id/v_outline"
            app:layout_constraintEnd_toEndOf="@id/v_outline"
 
-           android:background="@mipmap/ht_ic_cup_cover1"/>
+           android:background="@drawable/ht_ic_cup_cover1"/>
 
        <View
            android:layout_width="@dimen/dp_0"
@@ -88,8 +88,8 @@
            app:wlv_shapeType="rectangle"
            app:wlv_triangle_direction="east"
            app:wlv_waveAmplitude="20"
-           app:wlv_waveInnerColor="#B4F9C6"
-           app:wlv_waveColor="#02BC77" />
+           app:wlv_waveInnerColor="@color/c5_8"
+           app:wlv_waveColor="@color/c5" />
        <View
            android:id="@+id/v_outline"
            app:layout_constraintBottom_toBottomOf="parent"
@@ -100,6 +100,16 @@
            app:layout_constraintEnd_toEndOf="parent"
            android:background="@drawable/ht_bg_cup_cover"
            />
+
+
+       <View
+           android:layout_width="@dimen/dp_10"
+           android:layout_height="@dimen/dp_107"
+           android:background="@drawable/ht_bg_cup_lite"
+           app:layout_constraintStart_toStartOf="@id/waterCupView"
+           android:layout_marginStart="@dimen/dp_40"
+           app:layout_constraintTop_toTopOf="parent"
+           android:layout_marginTop="@dimen/dp_48"/>
    </androidx.constraintlayout.widget.ConstraintLayout>
     
     <LinearLayout
@@ -113,7 +123,8 @@
             android:id="@+id/drinkLess"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
-            android:src="@mipmap/ht_ic_hydrate_subtract"
+            android:src="@drawable/ht_ic_hydrate_subtract"
+            android:background="@mipmap/ht_bg_drink_btn"
             android:layout_marginEnd="@dimen/dp_20"/>
 
         <com.google.android.material.button.MaterialButton
@@ -132,7 +143,9 @@
             android:id="@+id/drinkMore"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
-            android:src="@mipmap/ht_ic_hydrate_add"
+            android:background="@mipmap/ht_bg_drink_btn"
+            android:padding="@dimen/dp_12"
+            android:src="@drawable/ht_ic_hydrate_add"
             android:layout_marginStart="@dimen/dp_20"/>
         
     </LinearLayout>

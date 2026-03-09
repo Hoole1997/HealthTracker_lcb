@@ -1225,7 +1225,6 @@ healthcare provider or medical institution.</string>
 
     <!-- 补水 -->
     <string name="ht_hydrate">Hydrate</string>
-    <string name="ht_home_drink_water">Drink Water</string>
     <string name="ht_walking">Walking</string>
     <string name="ht_drink_btn_format">Drink %1$d %2$s</string>
     <string name="ht_hydrate_cup_count_format">You drink %d cups of water today</string>

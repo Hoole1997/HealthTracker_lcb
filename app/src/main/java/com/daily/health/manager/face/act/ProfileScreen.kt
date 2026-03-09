@@ -382,14 +382,16 @@ private fun GenderCard(
     labelRes: Int,
     onClick: () -> Unit,
 ) {
-    val shape = RoundedCornerShape(12.dp)
+    val shape = RoundedCornerShape(16.dp)
     val labelColor = if (selected) colorResource(R.color.c5) else colorResource(R.color.t1)
-    val bgRes = if (selected) R.drawable.ht_bg_gender_checked else R.drawable.ht_bg_gender_normal
+    val backgroundColor = if (selected) Color(0x1F1D6BF2) else Color(0xFFF9F9FA)
+    val borderColor = colorResource(R.color.c5)
 
     Surface(
-        modifier = modifier.height(130.dp),
+        modifier = modifier.height(179.dp),
         shape = shape,
-        color = Color.Transparent,
+        color = backgroundColor,
+        border = if (selected) androidx.compose.foundation.BorderStroke(1.dp, borderColor) else null,
         onClick = onClick,
         enabled = true,
         tonalElevation = 0.dp,
@@ -397,18 +399,11 @@ private fun GenderCard(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
-                painter = painterResource(bgRes),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = androidx.compose.ui.layout.ContentScale.FillBounds
-            )
-            Image(
                 painter = painterResource(iconRes),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(92.dp)
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 8.dp),
+                    .size(width = 102.dp, height = 127.dp)
+                    .align(Alignment.BottomCenter),
             )
             Text(
                 text = stringResource(labelRes),
@@ -416,8 +411,8 @@ private fun GenderCard(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(start = 20.dp, top = 16.dp)
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp)
             )
         }
     }

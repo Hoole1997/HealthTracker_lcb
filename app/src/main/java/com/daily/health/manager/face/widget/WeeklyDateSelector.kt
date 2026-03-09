@@ -85,7 +85,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
     private val viewPager: ViewPager2 = root.findViewById(R.id.viewPager)
 
     // 自定义属性
-    private var selectedBackgroundColor: Int = Color.parseColor("#05BA7B")
+    private var selectedBackgroundColor: Int = Color.parseColor("#1D6BF2")
     private var unselectedTextColor: Int = Color.parseColor("#666666")
     private var selectedTextColor: Int = Color.WHITE
     private var selectedWeekTextColor: Int = selectedBackgroundColor

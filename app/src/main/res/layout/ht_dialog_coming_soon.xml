@@ -66,8 +66,8 @@
 
         <ImageView
             android:id="@+id/imgAlarm"
-            android:layout_width="@dimen/dp_22"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:importantForAccessibility="no"
             android:layout_gravity="center"
             android:src="@drawable/ht_ic_hydrate_hint_alarm" />

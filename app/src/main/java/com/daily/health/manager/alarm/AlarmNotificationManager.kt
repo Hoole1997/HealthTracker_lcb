@@ -401,14 +401,14 @@ class AlarmNotificationManager(
             smallIcon = R.drawable.ic_notification_bs,
             background = R.drawable.ht_bg_rect_white_12,
             largeIcon = R.drawable.ht_ic_remind_notify,
-            decorIcon = R.mipmap.ht_ic_bs_notify_icon,
+            decorIcon = R.mipmap.ht_home_card_bs,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_BLOOD_PRESSURE-> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
             background = R.drawable.ht_bg_rect_white_12,
             largeIcon = R.drawable.ht_ic_remind_notify,
-            decorIcon = R.mipmap.ht_ic_bp_notify_icon,
+            decorIcon = R.mipmap.ht_home_card_bp,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_MEDICATION -> NotificationResources(
@@ -422,28 +422,28 @@ class AlarmNotificationManager(
             smallIcon = R.drawable.ic_notification_bs,
             background = R.drawable.ht_bg_rect_white_12,
             largeIcon = R.drawable.ht_ic_remind_notify,
-            decorIcon = R.mipmap.ht_ic_hydrate_noti,
+            decorIcon = R.mipmap.ht_home_card_water,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_HEART_RATE -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
             background = R.drawable.ht_bg_rect_white_12,
             largeIcon = R.drawable.ht_ic_remind_notify,
-            decorIcon = R.mipmap.ht_ic_heart,
+            decorIcon = R.mipmap.ht_home_hero_heart,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_BMI -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
             background = R.drawable.ht_bg_rect_white_12,
             largeIcon = R.drawable.ht_ic_remind_notify,
-            decorIcon = R.mipmap.ht_ic_bmi,
+            decorIcon = R.mipmap.ht_home_card_weight,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_CHOLESTEROL -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
             background = R.drawable.ht_bg_rect_white_12,
             largeIcon = R.drawable.ht_ic_remind_notify,
-            decorIcon = R.mipmap.ht_ic_cholesterol,
+            decorIcon = R.mipmap.ht_home_card_cholesterol,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         else -> null

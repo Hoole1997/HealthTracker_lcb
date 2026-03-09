@@ -196,9 +196,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@drawable/ht_bg_detail_header"
-                android:minHeight="@dimen/dp_100"
-                app:layout_constraintBottom_toBottomOf="@id/bp_status_view"
+                app:layout_constraintBottom_toBottomOf="@id/v_bg_bottom"
                 app:layout_constraintTop_toTopOf="@id/bp_status_view" />
+
+            <View
+                android:id="@+id/v_bg_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                app:layout_constraintTop_toTopOf="@id/bp_status_view"
+                android:layout_marginTop="@dimen/dp_56"/>
 
             <com.daily.health.manager.face.weight.LeveStatusView
                 android:id="@+id/bp_status_view"

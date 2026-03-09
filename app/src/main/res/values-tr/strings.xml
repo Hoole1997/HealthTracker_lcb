@@ -4,6 +4,8 @@
     <string name="ht_blood_suger">Kan Şekeri</string>
     <string name="ht_blood_pressure">Tansiyon</string>
     <string name="ht_home">Ana Sayfa</string>
+    <string name="ht_home_heart_subtitle">Bugün ilk ölçümünüzü yapın!</string>
+    <string name="ht_record">Kaydet</string>
     <string name="ht_meds">İlaçlar</string>
     <string name="ht_insights">Analizler</string>
     <string name="ht_tracker">Takipçi</string>

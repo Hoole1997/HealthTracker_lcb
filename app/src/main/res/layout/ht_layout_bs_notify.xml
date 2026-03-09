@@ -14,7 +14,7 @@
         android:layout_height="@dimen/dp_36"
         android:layout_marginStart="16dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ht_ic_bs_notify_icon"/>
+        android:src="@mipmap/ht_home_card_bs"/>
 
 
    <LinearLayout

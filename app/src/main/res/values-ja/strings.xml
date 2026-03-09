@@ -5,6 +5,8 @@
     <string name="ht_blood_suger">血糖値</string>
     <string name="ht_blood_pressure">血圧</string>
     <string name="ht_home">ホーム</string>
+    <string name="ht_home_heart_subtitle">今日、最初の測定をしましょう！</string>
+    <string name="ht_record">記録</string>
     <string name="ht_meds">服薬</string>
     <string name="ht_insights">分析</string>
     <string name="ht_tracker">記録</string>
@@ -121,7 +123,7 @@
     <string name="ht_save_changes">変更を保存</string>
     <string name="ht_cancel">キャンセル</string>
     <string name="ht_saving">保存中...</string>
-    <string name="ht_date_time"><![CDATA[日時]]></string>
+    <string name="ht_date_time">日時</string>
     <string name="ht_label">ラベル</string>
 
     <!-- 相对时间显示 -->
@@ -289,7 +291,7 @@
     <string name="ht_record_not_ready">記録を読み込み中</string>
     <string name="ht_delete_record_failed">記録の削除に失敗しました</string>
     <string name="ht_cholesterol">コレステロール</string>
-    <string name="ht_weight_and_bmi"><![CDATA[体重・BMI]]></string>
+    <string name="ht_weight_and_bmi">体重・BMI</string>
 
     <!-- Heart rate -->
     <string name="ht_heart_rate_status_slow">遅い</string>

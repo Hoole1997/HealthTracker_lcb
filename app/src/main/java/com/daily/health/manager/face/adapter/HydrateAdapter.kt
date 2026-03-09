@@ -150,7 +150,7 @@ class HydrateAdapter(
                     // 图片：居中于父
                     val iv = ImageView(binding.root.context).apply {
                         id = View.generateViewId()
-                        setImageResource(R.mipmap.ht_ic_empty_hydrate_record)
+                        setImageResource(R.drawable.ht_ic_empty_hydrate_record)
                         adjustViewBounds = true
                         scaleType = ImageView.ScaleType.CENTER_INSIDE
                         contentDescription = binding.root.context.getString(R.string.ht_hydrate_empty_record)

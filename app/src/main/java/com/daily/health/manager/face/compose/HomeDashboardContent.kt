@@ -648,7 +648,7 @@ private fun HomeDashboardScreenPreview() {
             ),
             cards = listOf(
                 HomeFeatureCardUi.BloodPressure(
-                    title = "Blood Pressure",
+                    title = stringResource(R.string.ht_blood_pressure),
                     value = "100/45",
                     unit = "mmHg",
                 ),

@@ -173,7 +173,7 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
                 unit = BmiUnit.getWeightUnitLabel(),
             ),
             HomeFeatureCardUi.Hydrate(
-                title = getString(R.string.ht_home_drink_water),
+                title = getString(R.string.ht_hydrate),
                 currentValue = todayTotalIntakeMl.toString(),
                 targetValue = targetMl.toString(),
                 unit = getString(R.string.ht_ml).lowercase(Locale.ROOT),

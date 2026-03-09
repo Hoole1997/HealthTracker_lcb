@@ -20,7 +20,7 @@
         android:scaleType="centerInside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/ht_ic_heart" />
+        tools:src="@mipmap/ht_home_hero_heart" />
 
     <!-- 标题 -->
     <androidx.appcompat.widget.AppCompatTextView

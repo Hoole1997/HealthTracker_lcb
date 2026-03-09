@@ -122,7 +122,7 @@ object SysBarUtils {
         val windowInsetsControllerCompat  = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsControllerCompat.apply {
             // 只设置状态栏外观，不影响导航栏
-            isAppearanceLightStatusBars = true
+            isAppearanceLightStatusBars = isLightColor(color)
             setStatusBarColor(window, color,true)
         }
     }
@@ -131,6 +131,8 @@ object SysBarUtils {
      * 判断颜色是否为浅色
      */
     private fun isLightColor(@ColorInt color: Int): Boolean {
+
+        if(Color.TRANSPARENT == color) return true
         val red = Color.red(color)
         val green = Color.green(color)
         val blue = Color.blue(color)

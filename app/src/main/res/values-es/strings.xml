@@ -4,6 +4,8 @@
     <string name="ht_blood_suger">Glucosa</string>
     <string name="ht_blood_pressure">Presión Arterial</string>
     <string name="ht_home">Inicio</string>
+    <string name="ht_home_heart_subtitle">¡Toma la primera medición hoy!</string>
+    <string name="ht_record">Grabar</string>
     <string name="ht_meds">Medicamentos</string>
     <string name="ht_insights">Análisis</string>
     <string name="ht_tracker">Rastreador</string>

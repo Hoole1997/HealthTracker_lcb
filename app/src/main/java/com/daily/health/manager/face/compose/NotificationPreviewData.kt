@@ -28,27 +28,27 @@ fun getNotificationPreviewData(alarmType: Int): NotificationPreviewData {
     return when (alarmType) {
         AlarmRecord.TYPE_BLOOD_SUGAR -> NotificationPreviewData(
             contentResId = R.string.ht_alarm_blood_sugar_content,
-            decorIconResId = R.mipmap.ht_ic_bs_notify_icon,
+            decorIconResId = R.mipmap.ht_home_card_bs,
             descriptionResId = R.string.ht_notification_des_blood_sugar
         )
         AlarmRecord.TYPE_BLOOD_PRESSURE -> NotificationPreviewData(
             contentResId = R.string.ht_alarm_blood_pressure_content,
-            decorIconResId = R.mipmap.ht_ic_bp_notify_icon,
+            decorIconResId = R.mipmap.ht_home_card_bp,
             descriptionResId = R.string.ht_notification_des_blood_pressure
         )
         AlarmRecord.TYPE_HEART_RATE -> NotificationPreviewData(
             contentResId = R.string.ht_alarm_heart_rate_content,
-            decorIconResId = R.mipmap.ht_ic_heart,
+            decorIconResId = R.mipmap.ht_home_hero_heart,
             descriptionResId = R.string.ht_notification_des_heart_rate
         )
         AlarmRecord.TYPE_BMI -> NotificationPreviewData(
             contentResId = R.string.ht_alarm_bmi_content,
-            decorIconResId = R.mipmap.ht_ic_bmi,
+            decorIconResId = R.mipmap.ht_home_card_weight,
             descriptionResId = R.string.ht_notification_des_bmi
         )
         AlarmRecord.TYPE_CHOLESTEROL -> NotificationPreviewData(
             contentResId = R.string.ht_alarm_cholesterol_content,
-            decorIconResId = R.mipmap.ht_ic_cholesterol,
+            decorIconResId = R.mipmap.ht_home_card_cholesterol,
             descriptionResId = R.string.ht_notification_des_cholesterol
         )
         else -> NotificationPreviewData(

@@ -11,9 +11,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_icon"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
-        android:src="@mipmap/ht_ic_record_cup"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:src="@drawable/ht_ic_record_cup"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_time"
         app:layout_goneMarginStart="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_8"
         tools:text="200" />
 
     <androidx.appcompat.widget.AppCompatTextView

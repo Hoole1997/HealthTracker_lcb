@@ -5,6 +5,8 @@
     <string name="ht_blood_suger">혈당</string>
     <string name="ht_blood_pressure">혈압</string>
     <string name="ht_home">홈</string>
+    <string name="ht_home_heart_subtitle">오늘 첫 측정을 해보세요!</string>
+    <string name="ht_record">기록</string>
     <string name="ht_meds">약</string>
     <string name="ht_insights">분석</string>
     <string name="ht_tracker">기록</string>

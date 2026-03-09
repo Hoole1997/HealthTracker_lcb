@@ -4,6 +4,8 @@
     <string name="ht_blood_suger">Blutzucker</string>
     <string name="ht_blood_pressure">Blutdruck</string>
     <string name="ht_home">Startseite</string>
+    <string name="ht_home_heart_subtitle">Machen Sie heute die erste Messung!</string>
+    <string name="ht_record">Aufzeichnen</string>
     <string name="ht_meds">Medikamente</string>
     <string name="ht_insights">Einblicke</string>
     <string name="ht_tracker">Tracker</string>

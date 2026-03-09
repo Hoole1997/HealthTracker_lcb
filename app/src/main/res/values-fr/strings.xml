@@ -4,6 +4,8 @@
     <string name="ht_blood_suger">Glycémie</string>
     <string name="ht_blood_pressure">Tension Artérielle</string>
     <string name="ht_home">Accueil</string>
+    <string name="ht_home_heart_subtitle">Faites la première mesure aujourd\'hui !</string>
+    <string name="ht_record">Enregister</string>
     <string name="ht_meds">Médicaments</string>
     <string name="ht_insights">Analyses</string>
     <string name="ht_tracker">Suivi</string>

@@ -4,6 +4,8 @@
     <string name="ht_blood_suger">ब्लड शुगर</string>
     <string name="ht_blood_pressure">रक्तचाप</string>
     <string name="ht_home">होम</string>
+    <string name="ht_home_heart_subtitle">आज पहला माप लें!</string>
+    <string name="ht_record">रिकॉर्ड</string>
     <string name="ht_meds">दवाइयाँ</string>
     <string name="ht_insights">विश्लेषण</string>
     <string name="ht_tracker">ट्रैकर</string>
