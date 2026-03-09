@@ -51,7 +51,7 @@ import com.daily.health.manager.data.entity.AlarmRecord
 import kotlinx.coroutines.delay
 
 /** 主题绿色 c5 */
-private val C5Green = Color(0xFF02BC77)
+private val C5Green = Color(0xFF1D6BF2)
 /** 灰色预览区域背景 */
 private val GrayPreviewBg = Color(0xFFE8E8EC)
 /** 手机示意框内部背景 */
