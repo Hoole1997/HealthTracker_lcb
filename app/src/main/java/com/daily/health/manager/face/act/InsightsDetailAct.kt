@@ -52,7 +52,7 @@ import net.corekit.monetize.ui.NativeAdStyle
 import java.io.File
 import com.healthtracker.framework.R as FrameworkR
 
-class InsightsDetailScreen :
+class InsightsDetailAct :
     BaseInterActivity<BaseViewModel, TrActivityInsightsDetailBinding>() {
 
     companion object {
@@ -63,7 +63,7 @@ class InsightsDetailScreen :
 
         fun start(context: Context, article: InsightAssetPreparer.InsightArticle) {
             ReportDataManager.reportData("Insights_item_click",mapOf("article_id" to article.articleId))
-            val intent = Intent(context, InsightsDetailScreen::class.java).apply {
+            val intent = Intent(context, InsightsDetailAct::class.java).apply {
                 putExtra(EXTRA_TITLE, article.title)
                 putExtra(EXTRA_CONTENT, article.content)
                 putExtra(EXTRA_IMAGE, article.listImagePath)
@@ -124,7 +124,7 @@ class InsightsDetailScreen :
             spannableBuilder.removeSpan(quoteSpan)
             spannableBuilder.setSpan(
                 com.daily.health.manager.face.widget.CustomQuoteSpan(
-                    ContextCompat.getColor(this@InsightsDetailScreen, R.color.color_3b82f6),
+                    ContextCompat.getColor(this@InsightsDetailAct, R.color.color_3b82f6),
                     stripeWidth = 10,
                     gapWidth = 20
                 ),
@@ -162,7 +162,7 @@ class InsightsDetailScreen :
                     if (links.isNotEmpty()) {
                         val url = links[0].url
                         // Load URL in WebView instead of opening in browser
-                        InnerWebScreen.start(this@InsightsDetailScreen,url)
+                        InnerWebAct.start(this@InsightsDetailAct,url)
                         return true
                     }
                 }

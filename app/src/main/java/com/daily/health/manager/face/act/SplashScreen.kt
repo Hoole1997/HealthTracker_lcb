@@ -7,7 +7,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -61,7 +58,6 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.daily.health.manager.App
-import com.daily.health.manager.BuildConfig
 import com.daily.health.manager.R
 import com.daily.health.manager.constants.KEY_FROM_SHORTCUT
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_CONTENT
@@ -143,15 +139,15 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
                     return@SplashStateMachine
                 }
                 reportGroup()
-                if (ActivityUtils.isActivityExistsInStack(MainScreen::class.java)) {
+                if (ActivityUtils.isActivityExistsInStack(MainAct::class.java)) {
                     finish()
                     return@SplashStateMachine
                 }
                 // 判断应该跳转到哪个页面
                 val targetActivity = if (hasNewGuide()) {
-                    MainScreen::class.java
+                    MainAct::class.java
                 } else {
-                    GuideScreen::class.java
+                    GuideAct::class.java
                 }
                 // 创建Intent并传递通知参数
                 val targetIntent = Intent(this, targetActivity).apply {

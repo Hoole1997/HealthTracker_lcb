@@ -14,7 +14,7 @@ import androidx.viewpager.widget.ViewPager
 import com.daily.health.manager.R
 import com.daily.health.manager.databinding.TrFragmentInsightsBinding
 import com.daily.health.manager.databinding.TrItemInsightsViewpageBinding
-import com.daily.health.manager.face.act.InsightsDetailScreen
+import com.daily.health.manager.face.act.InsightsDetailAct
 import com.daily.health.manager.face.adapter.InsightsArticleAdapter
 import com.daily.health.manager.utils.InsightAssetPreparer
 import com.healthtracker.framework.base.BaseViewModel
@@ -141,7 +141,7 @@ class InsightsFrg: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() 
     }
 
     private fun openArticleDetail(article: InsightAssetPreparer.InsightArticle) {
-        InsightsDetailScreen.start(requireContext(), article)
+        InsightsDetailAct.start(requireContext(), article)
     }
 
     private inner class InsightsPagerAdapter(

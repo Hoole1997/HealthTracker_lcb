@@ -14,7 +14,7 @@ import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.AdPosition
 
-class StepSettingScreen: BaseInterActivity<StepSettingViewModel, TrActivityStepSettingBinding>() {
+class StepSettingAct: BaseInterActivity<StepSettingViewModel, TrActivityStepSettingBinding>() {
     override fun createViewBinding() = TrActivityStepSettingBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = StepSettingViewModel::class.java
@@ -27,15 +27,15 @@ class StepSettingScreen: BaseInterActivity<StepSettingViewModel, TrActivityStepS
         mViewModel.loadRecord()
         with(mViewBind){
             clWeight.clickWithDuration {
-                HealthRecordScreen.start(
-                    this@StepSettingScreen,
-                    HealthRecordScreen.RecordType.BMI
+                HealthRecordAct.start(
+                    this@StepSettingAct,
+                    HealthRecordAct.RecordType.BMI
                 )
             }
             clHeight.clickWithDuration {
-                HealthRecordScreen.start(
-                    this@StepSettingScreen,
-                    HealthRecordScreen.RecordType.BMI
+                HealthRecordAct.start(
+                    this@StepSettingAct,
+                    HealthRecordAct.RecordType.BMI
                 )
             }
 

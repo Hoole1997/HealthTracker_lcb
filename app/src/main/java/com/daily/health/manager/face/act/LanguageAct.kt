@@ -6,23 +6,17 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -62,7 +56,7 @@ import org.koin.android.ext.android.inject
 import com.daily.health.manager.face.compose.HealthTopBar
 
 
-class LanguageScreen: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBinding>() {
+class LanguageAct: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBinding>() {
 
 
     override fun createViewBinding() = TrActivityLanguageSelectBinding.inflate(layoutInflater)
@@ -78,11 +72,11 @@ class LanguageScreen: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBi
     override fun initView(savedInstanceState: Bundle?) {
         applyChange = intent?.getBooleanExtra(KEY_APPLY_CHANGE, false) ?: false
         
-        languageList = getLanguageList(this@LanguageScreen)
+        languageList = getLanguageList(this@LanguageAct)
         savedSelectIndex = savedInstanceState?.getInt(KEY_SELECT_INDEX, -1) ?: -1
 
         if (savedSelectIndex !in languageList.indices) {
-            val currentLangId = LanguageUtils.getAppLanguage(this@LanguageScreen)
+            val currentLangId = LanguageUtils.getAppLanguage(this@LanguageAct)
             savedSelectIndex = languageList.indexOfFirst { it.id == currentLangId }.takeIf { it >= 0 } ?: 0
         }
         
@@ -96,7 +90,7 @@ class LanguageScreen: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBi
                     list = languageList,
                     savedSelectIndex = savedSelectIndex,
                     onSelectedIndexChanged = { newIndex ->
-                        this@LanguageScreen.savedSelectIndex = newIndex
+                        this@LanguageAct.savedSelectIndex = newIndex
                     },
                     onBack = { finish() },
                     onConfirm = { selectedIndex ->
@@ -125,7 +119,7 @@ class LanguageScreen: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBi
             // 通知设置页面需要重建以应用语言变更
             setResult(RESULT_OK)
         } else {
-            val targetPage = if(AdConfigManager.showNewGuide()) GuideScreen::class.java else MainScreen::class.java
+            val targetPage = if(AdConfigManager.showNewGuide()) GuideAct::class.java else MainAct::class.java
             this.startActivity(Intent(this, targetPage).apply {
                 putExtras(intent)
             })

@@ -15,7 +15,7 @@ import com.google.android.libraries.ads.mobile.sdk.common.AdActivity
 import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
 import com.daily.health.manager.constants.KEY_APP_OPEN_TIMES
 import com.daily.health.manager.constants.KEY_APP_START_TIME
-import com.daily.health.manager.face.act.GuideScreen
+import com.daily.health.manager.face.act.GuideAct
 import com.daily.health.manager.face.act.SplashScreen
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logi
@@ -94,7 +94,7 @@ private fun getDateInt(calendar: Calendar, time: Long): Int {
 
 fun isExcludePage(lastVisibleActivity: Activity?) =
     lastVisibleActivity is SplashScreen ||
-            lastVisibleActivity is GuideScreen
+            lastVisibleActivity is GuideAct
 
 
 fun isAdPage(activity: Activity?) = activity?.run {
@@ -109,7 +109,7 @@ val adClasses = arrayOf(
     AudienceNetworkActivity::class.java,
     TTAppOpenAdActivity::class.java,
     TTAdActivity::class.java,
-    GuideScreen::class.java,
+    GuideAct::class.java,
     sg.bigo.ads.api.AdActivity::class.java,
     PangleFullScreenNativeAdActivity::class.java,
     TopOnFullScreenNativeAdActivity::class.java

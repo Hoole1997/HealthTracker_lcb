@@ -23,7 +23,7 @@ import com.hjq.toast.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FeedbackScreen: BaseMVVMActivity<BaseViewModel, TrActivityFeedbackBinding>() {
+class FeedbackAct: BaseMVVMActivity<BaseViewModel, TrActivityFeedbackBinding>() {
     
     companion object {
         private const val MAX_PHOTO_COUNT = 6
@@ -140,7 +140,7 @@ class FeedbackScreen: BaseMVVMActivity<BaseViewModel, TrActivityFeedbackBinding>
         
         // 设置 RecyclerView
         with(mViewBind.rvPhoto) {
-            layoutManager = LinearLayoutManager(this@FeedbackScreen, HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(this@FeedbackAct, HORIZONTAL, false)
             adapter = photoAdapter
         }
     }

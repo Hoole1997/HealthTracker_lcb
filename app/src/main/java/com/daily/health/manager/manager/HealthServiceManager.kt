@@ -1,22 +1,18 @@
 package com.daily.health.manager.manager
 
 import android.app.ActivityManager
-import android.app.ForegroundServiceStartNotAllowedException
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import com.daily.health.manager.alarm.PermissionManager
 import com.daily.health.manager.helper.ResidentNotificationHelper
-import com.daily.health.manager.service.HealthService
+import com.daily.health.manager.service.HTService
 import com.daily.health.manager.service.HealthServiceConstants
-import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.hasOreo
 import net.corekit.core.report.ReportDataManager
-import kotlin.compareTo
 
 /**
  * 健康服务管理器
@@ -49,8 +45,8 @@ class HealthServiceManager(
 
         try {
             ReportDataManager.reportData("Notific_Pull", mapOf("topic" to "permanent"))
-            val intent = Intent(context, HealthService::class.java).apply {
-                putExtra(HealthService.IS_SILENT,isServiceRunning())
+            val intent = Intent(context, HTService::class.java).apply {
+                putExtra(HTService.IS_SILENT,isServiceRunning())
             }
 
             // Android 8.0+ 使用 startForegroundService
@@ -81,7 +77,7 @@ class HealthServiceManager(
             val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             @Suppress("DEPRECATION")
             for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-                if (HealthService::class.java.name == service.service.className) {
+                if (HTService::class.java.name == service.service.className) {
                     return true
                 }
             }

@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import com.app.raise.AppraiseManager
 import com.app.raise.config.EvaluateConfig
 import com.app.raise.listeners.EvaluateListener
-import com.daily.health.manager.face.act.FeedbackScreen
+import com.daily.health.manager.face.act.FeedbackAct
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.report.ReportDataManager
@@ -78,7 +78,7 @@ class HealthTrackerEvaluateListener(
             "rate_us_submit",
             mapOf("score" to evaluateScore, "source" to source, "action" to "feedback")
         )
-        activity.startActivity(Intent(activity, FeedbackScreen::class.java))
+        activity.startActivity(Intent(activity, FeedbackAct::class.java))
         // 标记已评分
         markAsRated()
     }

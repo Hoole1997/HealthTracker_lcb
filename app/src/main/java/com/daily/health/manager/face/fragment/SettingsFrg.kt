@@ -41,11 +41,11 @@ import com.daily.health.manager.BuildConfig
 import com.daily.health.manager.R
 import com.daily.health.manager.databinding.TrFragmentSettingsBinding
 import com.daily.health.manager.face.act.AlarmManageScreen
-import com.daily.health.manager.face.act.FeedbackScreen
-import com.daily.health.manager.face.act.InnerWebScreen
-import com.daily.health.manager.face.act.LanguageScreen
+import com.daily.health.manager.face.act.FeedbackAct
+import com.daily.health.manager.face.act.InnerWebAct
+import com.daily.health.manager.face.act.LanguageAct
 import com.daily.health.manager.face.act.ProfileActivity
-import com.daily.health.manager.face.act.TargetRangeScreen
+import com.daily.health.manager.face.act.TargetRangeAct
 import com.daily.health.manager.face.dialog.ComingSoonDialog
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.helper.HealthTrackerEvaluateListener
@@ -108,7 +108,7 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>()
             }
 
             SettingsAction.TargetRangeSettings -> {
-                startActivity(Intent(requireContext(), TargetRangeScreen::class.java))
+                startActivity(Intent(requireContext(), TargetRangeAct::class.java))
             }
 
             SettingsAction.PersonalInfo -> {
@@ -116,13 +116,13 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>()
             }
 
             SettingsAction.Language -> {
-                languageSelectLauncher.launch(Intent(requireContext(), LanguageScreen::class.java).apply {
-                    putExtra(LanguageScreen.KEY_APPLY_CHANGE, true)
+                languageSelectLauncher.launch(Intent(requireContext(), LanguageAct::class.java).apply {
+                    putExtra(LanguageAct.KEY_APPLY_CHANGE, true)
                 })
             }
 
             SettingsAction.Feedback -> {
-                startActivity(Intent(requireContext(), FeedbackScreen::class.java))
+                startActivity(Intent(requireContext(), FeedbackAct::class.java))
             }
 
             SettingsAction.Disclaimers -> {
@@ -130,7 +130,7 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>()
             }
 
             SettingsAction.PrivacyPolicy -> {
-                InnerWebScreen.start(requireContext(), BuildConfig.PRIVACY_POLICY)
+                InnerWebAct.start(requireContext(), BuildConfig.PRIVACY_POLICY)
             }
 
             SettingsAction.TermsOfService -> {

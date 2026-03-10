@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 /**
  * 血糖目标范围设置页面
  */
-class TargetRangeScreen : BaseMVVMActivity<TargetRangeViewModel, TrActivityTargetRangeBinding>() {
+class TargetRangeAct : BaseMVVMActivity<TargetRangeViewModel, TrActivityTargetRangeBinding>() {
 
     private lateinit var adapter: TargetRangeAdapter
     private var hasChanged = false  // 标记是否有修改
@@ -62,8 +62,8 @@ class TargetRangeScreen : BaseMVVMActivity<TargetRangeViewModel, TrActivityTarge
         )
 
         mViewBind.rvRange.apply {
-            layoutManager = LinearLayoutManager(this@TargetRangeScreen)
-            adapter = this@TargetRangeScreen.adapter
+            layoutManager = LinearLayoutManager(this@TargetRangeAct)
+            adapter = this@TargetRangeAct.adapter
         }
     }
 

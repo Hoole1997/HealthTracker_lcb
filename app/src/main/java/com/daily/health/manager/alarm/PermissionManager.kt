@@ -5,7 +5,7 @@ import com.daily.health.manager.App
 import com.daily.health.manager.constants.HAS_NOTIFICATION_PERMISSION
 import com.daily.health.manager.constants.HAS_REPORT_NOTIFICATION_REVOKED
 import com.daily.health.manager.face.act.AlarmManageScreen
-import com.daily.health.manager.face.act.MainScreen
+import com.daily.health.manager.face.act.MainAct
 import com.daily.health.manager.face.act.SplashScreen
 import com.daily.health.manager.face.dialog.NotificationPermissionDialog
 import com.daily.health.manager.util.pushRequest
@@ -67,7 +67,7 @@ class PermissionManager {
 
         val position = when (activity) {
             is SplashScreen -> "AppStart"
-            is MainScreen -> "Home"
+            is MainAct -> "Home"
             is AlarmManageScreen -> "alarm"
             else -> "other"
         }
@@ -122,7 +122,7 @@ class PermissionManager {
     }
 
     private fun showCustomNotificationRequest(activity: FragmentActivity, onGoSetting:(() -> Unit)? = null, onComplete: (Boolean) -> Unit){
-        if (activity is MainScreen) {
+        if (activity is MainAct) {
             if (hasShowCustomNotificationRequest) {
                 if (BuildState.debug) "本次启动，用户已请求过通知权限，不再请求".logd(
                     TAG

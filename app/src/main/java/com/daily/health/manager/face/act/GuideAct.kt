@@ -14,7 +14,7 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import net.corekit.core.report.ReportDataManager
 
-class GuideScreen : BaseMVVMActivity<BaseViewModel, TrActivityGuideBinding>() {
+class GuideAct : BaseMVVMActivity<BaseViewModel, TrActivityGuideBinding>() {
 
     override fun createViewBinding() = TrActivityGuideBinding.inflate(layoutInflater)
 
@@ -39,7 +39,7 @@ class GuideScreen : BaseMVVMActivity<BaseViewModel, TrActivityGuideBinding>() {
 
     private fun goNext() {
         saveHasNewGuide()
-        startActivity(Intent(this, MainScreen::class.java).apply {
+        startActivity(Intent(this, MainAct::class.java).apply {
             putExtras(intent)
         })
         finish()

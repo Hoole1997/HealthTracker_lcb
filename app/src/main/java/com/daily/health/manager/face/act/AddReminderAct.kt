@@ -31,7 +31,7 @@ import com.healthtracker.framework.ext.hideSoftKeyBoard
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.AdPosition
 
-class AddReminderScreen : BaseInterActivity<AddReminderViewModel, TrActivityAddReminderBinding>(){
+class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddReminderBinding>(){
 
 
     private val startForProfileImageResult =
@@ -92,7 +92,7 @@ class AddReminderScreen : BaseInterActivity<AddReminderViewModel, TrActivityAddR
             remindId: Long? = null,
             startDate: String? = null
         ) {
-            val intent = android.content.Intent(context, AddReminderScreen::class.java).apply {
+            val intent = android.content.Intent(context, AddReminderAct::class.java).apply {
                 remindId?.let { putExtra("remindId", it) }
                 startDate?.let { putExtra("startDate", it) }
             }
@@ -135,7 +135,7 @@ class AddReminderScreen : BaseInterActivity<AddReminderViewModel, TrActivityAddR
 
             ivImg.clickWithDuration {
                 ImgGetTypeDialog.show(supportFragmentManager, {
-                    ImagePicker.with(this@AddReminderScreen)
+                    ImagePicker.with(this@AddReminderAct)
                         .cropSquare()        // 打开裁剪功能，可传入比例 crop(1f, 1f) 做正方形
                         .compress(1024) // 压缩图片至1MB以内
                         .maxResultSize(1080, 1080) // 限制分辨率
@@ -145,7 +145,7 @@ class AddReminderScreen : BaseInterActivity<AddReminderViewModel, TrActivityAddR
                             App.INSTANCE.isFeatureLeave = true
                         }
                 }) {
-                    ImagePicker.with(this@AddReminderScreen)
+                    ImagePicker.with(this@AddReminderAct)
                         .cropSquare()
                         .compress(1024) // 压缩图片至1MB以内
                         .maxResultSize(1080, 1080) // 限制分辨率
@@ -167,7 +167,7 @@ class AddReminderScreen : BaseInterActivity<AddReminderViewModel, TrActivityAddR
         }
 
         with(mViewBind.rvDailyRemind) {
-            layoutManager = GridLayoutManager(this@AddReminderScreen, 3)
+            layoutManager = GridLayoutManager(this@AddReminderAct, 3)
             adapter = timeAdapter
         }
     }
@@ -207,7 +207,7 @@ class AddReminderScreen : BaseInterActivity<AddReminderViewModel, TrActivityAddR
             btnSave.text =
                 if (state.isEditMode) getString(R.string.tr_save_changes) else getString(R.string.tr_save)
 
-            Glide.with(this@AddReminderScreen)
+            Glide.with(this@AddReminderAct)
                 .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.tr_ic_camera))
                 .load(state.coverUri)
                 .transition(DrawableTransitionOptions.withCrossFade())

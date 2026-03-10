@@ -23,7 +23,6 @@ import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.data.constants.BodyMetricsDefaults
 import com.daily.health.manager.data.entity.HealthTag
-import com.daily.health.manager.data.entity.HeartRateRecord
 import com.daily.health.manager.data.enums.BmiUnit
 import com.daily.health.manager.data.enums.CholesterolLevel
 import com.daily.health.manager.data.enums.BsUnit
@@ -77,16 +76,15 @@ import com.daily.health.manager.data.entity.AlarmRecord
 import com.daily.health.manager.face.dialog.ReminderSettingsDialogFragment
 import com.daily.health.manager.face.compose.ReminderDialogHelper
 import java.util.Calendar
-import java.util.Locale
 
-class HealthRecordScreen : BaseInterActivity<BaseViewModel, TrActivityHealthRecordBinding>() {
+class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordBinding>() {
 
     companion object {
         private const val EXTRA_RECORD_TYPE = "extra_record_type"
         private const val EXTRA_RECORD_ID = "extra_record_id"
 
         fun start(context: Context, type: RecordType, recordId: Long? = null) {
-            val intent = Intent(context, HealthRecordScreen::class.java).apply {
+            val intent = Intent(context, HealthRecordAct::class.java).apply {
                 putExtra(EXTRA_RECORD_TYPE, type.name)
                 recordId?.let { putExtra(EXTRA_RECORD_ID, it) }
             }
@@ -490,7 +488,7 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, TrActivityHealthReco
                 lastDate = lastRecord?.recordTime?.time,
                 onMeasureClick = {
                     // 直接启动心率测量页面，测量完成后会自动跳转到详情页面
-                    HeartRateMeasureScreen.start(this@HealthRecordScreen)
+                    HeartRateMeasureScreen.start(this@HealthRecordAct)
                 }
             )
         }
@@ -511,8 +509,8 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, TrActivityHealthReco
         }
 
         with(binding.npvHeartRate) {
-            val tfRegular = getRobotoRegular(this@HealthRecordScreen)
-            val tfBold = getRobotoBold(this@HealthRecordScreen)
+            val tfRegular = getRobotoRegular(this@HealthRecordAct)
+            val tfBold = getRobotoBold(this@HealthRecordAct)
             setContentNormalTextTypeface(tfRegular)
             setContentSelectedTextTypeface(tfBold)
 
@@ -701,11 +699,11 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, TrActivityHealthReco
         binding.dateTimeSelectionView.setLabelVisible(false)
 
         fun formatCholesterolValue(value: Float): String {
-            return NumberFormatter.formatNumber(value.toDouble(), LanguageUtils.getAppLocale(this@HealthRecordScreen), 0)
+            return NumberFormatter.formatNumber(value.toDouble(), LanguageUtils.getAppLocale(this@HealthRecordAct), 0)
         }
 
         fun formatRatioValue(value: Float): String {
-            return NumberFormatter.formatNumber(value.toDouble(), LanguageUtils.getAppLocale(this@HealthRecordScreen), 2)
+            return NumberFormatter.formatNumber(value.toDouble(), LanguageUtils.getAppLocale(this@HealthRecordAct), 2)
         }
 
         fun updateLsvCurrentIndex(riskLevel: CholesterolLevel) {
@@ -889,7 +887,7 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, TrActivityHealthReco
         }
 
         binding.clRangeTarget.clickWithDuration {
-            targetRangeLauncher.launch(Intent(this@HealthRecordScreen, TargetRangeScreen::class.java))
+            targetRangeLauncher.launch(Intent(this@HealthRecordAct, TargetRangeAct::class.java))
         }
 
         binding.dateTimeSelectionView.setOnLabelClickListener {
@@ -1082,11 +1080,11 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, TrActivityHealthReco
 
     private fun goDetail(type: RecordType, recordId: Long) {
         val detailType = when (type) {
-            RecordType.BLOOD_SUGAR -> HealthDetailScreen.DetailType.BLOOD_SUGAR
-            RecordType.BLOOD_PRESSURE -> HealthDetailScreen.DetailType.BLOOD_PRESSURE
-            RecordType.BMI -> HealthDetailScreen.DetailType.BMI
-            RecordType.HEART_RATE -> HealthDetailScreen.DetailType.HEART_RATE
-            RecordType.CHOLESTEROL -> HealthDetailScreen.DetailType.CHOLESTEROL
+            RecordType.BLOOD_SUGAR -> HealthDetailAct.DetailType.BLOOD_SUGAR
+            RecordType.BLOOD_PRESSURE -> HealthDetailAct.DetailType.BLOOD_PRESSURE
+            RecordType.BMI -> HealthDetailAct.DetailType.BMI
+            RecordType.HEART_RATE -> HealthDetailAct.DetailType.HEART_RATE
+            RecordType.CHOLESTEROL -> HealthDetailAct.DetailType.CHOLESTEROL
         }
         val savePosition = when (type) {
             RecordType.BLOOD_SUGAR -> AdPosition.IV_BLOOD_SUGAR_SAVE
@@ -1113,11 +1111,11 @@ class HealthRecordScreen : BaseInterActivity<BaseViewModel, TrActivityHealthReco
                 }.show(supportFragmentManager, "reminder")
                 
                 // For logic continuity, we still open detail in background or after it
-                HealthDetailScreen.start(this@HealthRecordScreen, detailType, recordId, isFromSave = true)
+                HealthDetailAct.start(this@HealthRecordAct, detailType, recordId, isFromSave = true)
                 finish()
             } else {
                 showInter(savePosition) {
-                    HealthDetailScreen.start(this@HealthRecordScreen, detailType, recordId)
+                    HealthDetailAct.start(this@HealthRecordAct, detailType, recordId)
                     finish()
                 }
             }

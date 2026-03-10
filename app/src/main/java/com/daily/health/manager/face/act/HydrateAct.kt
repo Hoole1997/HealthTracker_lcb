@@ -22,7 +22,7 @@ import com.healthtracker.framework.ext.startActivity
 import kotlinx.coroutines.flow.combine
 import net.corekit.core.report.ReportDataManager
 
-class HydrateScreen : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>() {
+class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>() {
 
     private var actionBarBaseHeight: Int = -1
     private var currentDrinkAmountMl: Int = 100
@@ -38,7 +38,7 @@ class HydrateScreen : BaseInterActivity<HydrateViewModel, TrActivityHydrateBindi
         private const val ANIMATION_DURATION = 800L
 
         fun start(context: Context) {
-            context.startActivity<HydrateScreen>()
+            context.startActivity<HydrateAct>()
         }
     }
 
@@ -56,7 +56,7 @@ class HydrateScreen : BaseInterActivity<HydrateViewModel, TrActivityHydrateBindi
         }
 
         mViewBind.ivSetting.setOnClickListener {
-            HydrateSettingScreen.start(this)
+            HydrateSettingAct.start(this)
         }
 
         // 周日期选择：拦截未来日期并弹窗
@@ -249,7 +249,7 @@ class HydrateScreen : BaseInterActivity<HydrateViewModel, TrActivityHydrateBindi
                 override fun onAnimationEnd(animation: Animator) {
                     // 仅添加饮水时跳转到完成页面，删除记录时不跳转
                     if (isAddingIntake) {
-                        HydrateCompleteScreen.start(this@HydrateScreen)
+                        HydrateCompleteScreen.start(this@HydrateAct)
                     }
                 }
             })

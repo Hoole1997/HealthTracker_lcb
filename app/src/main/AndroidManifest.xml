@@ -44,62 +44,62 @@
 
 
         <activity
-            android:name=".face.act.GuideScreen"
+            android:name=".face.act.GuideAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".face.act.MainScreen"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".face.act.StepCountScreen"
+            android:name=".face.act.MainAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.StepSettingScreen"
+            android:name=".face.act.StepCountAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.TargetRangeScreen"
+            android:name=".face.act.StepSettingAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.HealthDetailScreen"
+            android:name=".face.act.TargetRangeAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.HealthRecordScreen"
+            android:name=".face.act.HealthDetailAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.InsightsDetailScreen"
+            android:name=".face.act.HealthRecordAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.HistoryRecordScreen"
+            android:name=".face.act.InsightsDetailAct"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".face.act.HistoryRecordAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
@@ -113,7 +113,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.AddReminderScreen"
+            android:name=".face.act.AddReminderAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
@@ -125,13 +125,13 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".face.act.HydrateScreen"
+            android:name=".face.act.HydrateAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".face.act.HydrateSettingScreen"
+            android:name=".face.act.HydrateSettingAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
@@ -144,28 +144,28 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.HealthStatisticsScreen"
+            android:name=".face.act.HealthStatisticsAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.LanguageScreen"
+            android:name=".face.act.LanguageAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.InnerWebScreen"
+            android:name=".face.act.InnerWebAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".face.act.FeedbackScreen"
+            android:name=".face.act.FeedbackAct"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:exported="false"
             android:launchMode="singleTask"
@@ -244,7 +244,7 @@
         </receiver>
 
         <service
-            android:name=".service.HealthService"
+            android:name=".service.HTService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />

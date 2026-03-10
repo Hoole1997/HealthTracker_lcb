@@ -15,12 +15,12 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 
-class InnerWebScreen: BaseMVVMActivity<BaseViewModel, TrActivityInnerWebBinding>() {
+class InnerWebAct: BaseMVVMActivity<BaseViewModel, TrActivityInnerWebBinding>() {
 
     companion object{
         private const val EXTRA_RRL = "EXTRA_RRL"
         fun start(context: Context,url:String){
-            context.startActivity<InnerWebScreen>(EXTRA_RRL to url)
+            context.startActivity<InnerWebAct>(EXTRA_RRL to url)
         }
     }
 
@@ -44,7 +44,7 @@ class InnerWebScreen: BaseMVVMActivity<BaseViewModel, TrActivityInnerWebBinding>
             }
             // Initialize WebView with WebViewUtils
             WebViewUtils.initWebViewSetting(webView, true, true)
-            progress.setColor(ContextCompat.getColor(this@InnerWebScreen, R.color.c5))
+            progress.setColor(ContextCompat.getColor(this@InnerWebAct, R.color.c5))
             // Setup WebViewClient for page load events
             webView.webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {

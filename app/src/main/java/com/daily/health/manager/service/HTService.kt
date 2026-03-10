@@ -37,7 +37,7 @@ import org.koin.core.context.GlobalContext
  * - 启动前台服务，显示常驻通知
  * - 每 5 分钟自动刷新通知，确保通知始终显示
  */
-class HealthService : Service() {
+class HTService : Service() {
 
     companion object {
         private const val TAG = "HealthService"

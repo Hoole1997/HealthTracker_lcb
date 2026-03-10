@@ -69,7 +69,7 @@ import net.corekit.monetize.ads.AdPosition
 import org.koin.android.ext.android.inject
 import kotlin.coroutines.resume
 
-class MainScreen : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), PermissionProvider {
+class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), PermissionProvider {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -417,7 +417,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Per
         var goSetting = false
         val result = suspendCancellableCoroutine<Boolean> { cont ->
             permissionManager.checkNotificationPermission(
-                activity = this@MainScreen,
+                activity = this@MainAct,
                 onGoSetting = {
                     goSetting = true
                 }
@@ -558,28 +558,28 @@ class MainScreen : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Per
 
         when (action) {
             HealthServiceConstants.ACTION_VALUE_BLOOD_SUGAR -> {
-                HealthRecordScreen.start(
+                HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.BLOOD_SUGAR
+                    HealthRecordAct.RecordType.BLOOD_SUGAR
                 )
             }
 
             HealthServiceConstants.ACTION_VALUE_BLOOD_PRESSURE -> {
-                HealthRecordScreen.start(
+                HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.BLOOD_PRESSURE
+                    HealthRecordAct.RecordType.BLOOD_PRESSURE
                 )
             }
 
             HealthServiceConstants.ACTION_VALUE_HEART_RATE -> {
-                HealthRecordScreen.start(
+                HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.HEART_RATE
+                    HealthRecordAct.RecordType.HEART_RATE
                 )
             }
 
             HealthServiceConstants.ACTION_VALUE_HYDRATION -> {
-                startActivity<HydrateScreen>()
+                startActivity<HydrateAct>()
             }
 
             HealthServiceConstants.ACTION_VALUE_STEPS -> {
@@ -591,21 +591,21 @@ class MainScreen : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Per
             }
 
             HealthServiceConstants.ACTION_VALUE_CHOLESTEROL -> {
-                HealthRecordScreen.start(
+                HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.CHOLESTEROL
+                    HealthRecordAct.RecordType.CHOLESTEROL
                 )
             }
 
             HealthServiceConstants.ACTION_VALUE_BMI -> {
-                HealthRecordScreen.start(
+                HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.BMI
+                    HealthRecordAct.RecordType.BMI
                 )
             }
 
             HealthServiceConstants.ACTION_VALUE_HISTORY -> {
-                startActivity<HistoryRecordScreen>()
+                startActivity<HistoryRecordAct>()
             }
 
             HealthServiceConstants.ACTION_VALUE_MEDICATION -> {
@@ -633,7 +633,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Per
         lifecycleScope.launch {
             val messages = PushMessage.createDefaultList()
             Toast.makeText(
-                this@MainScreen,
+                this@MainAct,
                 "Sending ${messages.size} test notifications...",
                 Toast.LENGTH_SHORT
             ).show()
@@ -653,7 +653,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Per
             }
 
             Toast.makeText(
-                this@MainScreen,
+                this@MainAct,
                 "✅ All ${messages.size} test notifications sent!",
                 Toast.LENGTH_SHORT
             ).show()
@@ -676,7 +676,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Per
             it.launch { isSuccess, showSettingsRedirect, hasPermission ->
                 if (isSuccess || hasPermission) {
                     trackEnterPageClick(HealthType.WALKING_STEPS)
-                    startActivity<StepCountScreen>()
+                    startActivity<StepCountAct>()
                 } else if (showSettingsRedirect) {
                     ActivityPerRequestDialog.show(supportFragmentManager) {
                         it.goSetting(this)
@@ -686,7 +686,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Per
             }
         } ?: {
             trackEnterPageClick(HealthType.WALKING_STEPS)
-            startActivity<StepCountScreen>()
+            startActivity<StepCountAct>()
         }
     }
 

@@ -20,10 +20,10 @@ import com.daily.health.manager.data.entity.HeartRateRecord
 import com.daily.health.manager.data.enums.BmiUnit
 import com.daily.health.manager.data.enums.BsUnit
 import com.daily.health.manager.databinding.TrFragmentHomeBinding
-import com.daily.health.manager.face.act.HealthRecordScreen
-import com.daily.health.manager.face.act.HistoryRecordScreen
-import com.daily.health.manager.face.act.HydrateScreen
-import com.daily.health.manager.face.act.MainScreen
+import com.daily.health.manager.face.act.HealthRecordAct
+import com.daily.health.manager.face.act.HistoryRecordAct
+import com.daily.health.manager.face.act.HydrateAct
+import com.daily.health.manager.face.act.MainAct
 import com.daily.health.manager.face.act.ProfileActivity
 import com.daily.health.manager.face.compose.HomeDashboardScreen
 import com.daily.health.manager.face.compose.HomeGuideOverlayUi
@@ -264,33 +264,33 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
 
     private fun openBloodSugarHistoryOrRecord(recordId: Long?) {
         recordId?.let {
-            requireActivity().startActivity<HistoryRecordScreen>()
+            requireActivity().startActivity<HistoryRecordAct>()
         } ?: openBloodSugarRecord()
     }
 
     private fun openBloodSugarRecord() {
         requireContext().trackEnterPageClick(HealthType.BLOOD_SUGAR)
-        HealthRecordScreen.start(
+        HealthRecordAct.start(
             requireActivity(),
-            HealthRecordScreen.RecordType.BLOOD_SUGAR,
+            HealthRecordAct.RecordType.BLOOD_SUGAR,
         )
     }
 
     private fun openBloodPressureRecord() {
         requireContext().trackEnterPageClick(HealthType.BLOOD_PRESSURE)
-        HealthRecordScreen.start(
+        HealthRecordAct.start(
             requireActivity(),
-            HealthRecordScreen.RecordType.BLOOD_PRESSURE,
+            HealthRecordAct.RecordType.BLOOD_PRESSURE,
         )
     }
 
     private fun openHydrate() {
         requireContext().trackEnterPageClick(HealthType.HYDRATE)
-        requireActivity().startActivity<HydrateScreen>()
+        requireActivity().startActivity<HydrateAct>()
     }
 
     private fun openStepCount() {
-        (requireActivity() as? MainScreen)?.checkStepPermissionAndNavigate()
+        (requireActivity() as? MainAct)?.checkStepPermissionAndNavigate()
     }
 
     private fun formatCholesterolValue(record: CholesterolRecord?): String {
@@ -376,17 +376,17 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
         when (activityType) {
             PendingActivityType.BMI -> {
                 requireContext().trackEnterPageClick(HealthType.BMI)
-                HealthRecordScreen.start(requireActivity(), HealthRecordScreen.RecordType.BMI)
+                HealthRecordAct.start(requireActivity(), HealthRecordAct.RecordType.BMI)
             }
 
             PendingActivityType.CHOLESTEROL -> {
                 requireContext().trackEnterPageClick(HealthType.CHOLESTEROL)
-                HealthRecordScreen.start(requireActivity(), HealthRecordScreen.RecordType.CHOLESTEROL)
+                HealthRecordAct.start(requireActivity(), HealthRecordAct.RecordType.CHOLESTEROL)
             }
 
             PendingActivityType.HEART_RATE -> {
                 requireContext().trackEnterPageClick(HealthType.HEART_RATE)
-                HealthRecordScreen.start(requireActivity(), HealthRecordScreen.RecordType.HEART_RATE)
+                HealthRecordAct.start(requireActivity(), HealthRecordAct.RecordType.HEART_RATE)
             }
         }
     }

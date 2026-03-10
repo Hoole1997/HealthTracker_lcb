@@ -11,11 +11,11 @@ import com.daily.health.manager.face.viewmodel.HydrateSettingViewModel
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
 
-class HydrateSettingScreen : BaseInterActivity<HydrateSettingViewModel, TrActivityHydrateSettingBinding>() {
+class HydrateSettingAct : BaseInterActivity<HydrateSettingViewModel, TrActivityHydrateSettingBinding>() {
 
     companion object {
         fun start(context: Context) {
-            context.startActivity<HydrateSettingScreen>()
+            context.startActivity<HydrateSettingAct>()
         }
     }
 

@@ -41,7 +41,6 @@ import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import com.daily.health.manager.face.tracker.HealthType
-import com.daily.health.manager.utils.loadInterstitial
 import com.healthtracker.framework.util.getRobotoMedium
 import org.koin.android.ext.android.inject
 import java.util.Calendar
@@ -51,7 +50,7 @@ import java.util.TimeZone
 /**
  * Health Statistics Activity
  */
-class HealthStatisticsScreen :
+class HealthStatisticsAct :
     BaseInterActivity<HealthStatisticsViewModel, TrActivityHealthStatisticsBinding>() {
 
     companion object {
@@ -98,7 +97,7 @@ class HealthStatisticsScreen :
                 extras.add(EXTRA_DATE_RANGE_PRESET to it.ordinal)
             }
 
-            context.startActivity<HealthStatisticsScreen>(*extras.toTypedArray())
+            context.startActivity<HealthStatisticsAct>(*extras.toTypedArray())
         }
     }
 
@@ -194,7 +193,7 @@ class HealthStatisticsScreen :
                     }
                     HealthMetric.BLOOD_PRESSURE, HealthMetric.CHOLESTEROL -> {
                         if (dimensionMenu == null) {
-                            dimensionMenu = StatisticDimensionMenu(this@HealthStatisticsScreen) { dimension ->
+                            dimensionMenu = StatisticDimensionMenu(this@HealthStatisticsAct) { dimension ->
                                 mViewModel.setStatisticDimension(dimension)
                             }.apply {
                                 isFocusable = true
@@ -217,11 +216,11 @@ class HealthStatisticsScreen :
         historyAdapter.setOnItemClickListener(object : HistoryAdapter.OnItemClickListener {
             override fun onItemClick(item: HistoryRecordItem, position: Int) {
                 when (item.getRecordType()) {
-                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> HealthDetailScreen.start(this@HealthStatisticsScreen, HealthDetailScreen.DetailType.BLOOD_SUGAR, item.getId())
-                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> HealthDetailScreen.start(this@HealthStatisticsScreen, HealthDetailScreen.DetailType.BLOOD_PRESSURE, item.getId())
-                    HistoryRecordItem.RecordType.CHOLESTEROL -> HealthDetailScreen.start(this@HealthStatisticsScreen, HealthDetailScreen.DetailType.CHOLESTEROL, item.getId())
-                    HistoryRecordItem.RecordType.HEART_RATE -> HealthDetailScreen.start(this@HealthStatisticsScreen, HealthDetailScreen.DetailType.HEART_RATE, item.getId())
-                    HistoryRecordItem.RecordType.BMI_RECORD -> HealthDetailScreen.start(this@HealthStatisticsScreen, HealthDetailScreen.DetailType.BMI, item.getId())
+                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.BLOOD_SUGAR, item.getId())
+                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.BLOOD_PRESSURE, item.getId())
+                    HistoryRecordItem.RecordType.CHOLESTEROL -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.CHOLESTEROL, item.getId())
+                    HistoryRecordItem.RecordType.HEART_RATE -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.HEART_RATE, item.getId())
+                    HistoryRecordItem.RecordType.BMI_RECORD -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.BMI, item.getId())
                 }
             }
 
@@ -230,7 +229,7 @@ class HealthStatisticsScreen :
             }
         })
         mViewBind.rvHistory.apply {
-            layoutManager = LinearLayoutManager(this@HealthStatisticsScreen)
+            layoutManager = LinearLayoutManager(this@HealthStatisticsAct)
             adapter = historyAdapter
         }
     }
@@ -245,34 +244,34 @@ class HealthStatisticsScreen :
                 HealthMetric.BMI -> HistoryRecordItem.RecordType.BMI_RECORD
                 else -> HistoryRecordItem.RecordType.BLOOD_SUGAR
             }
-            HistoryRecordScreen.start(this, recordType = recordType)
+            HistoryRecordAct.start(this, recordType = recordType)
         }
         mViewBind.btnAddRecord.clickWithDuration {
             when (mViewModel.selectedMetricType.value) {
-                HealthMetric.BLOOD_SUGAR -> HealthRecordScreen.start(
+                HealthMetric.BLOOD_SUGAR -> HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.BLOOD_SUGAR
+                    HealthRecordAct.RecordType.BLOOD_SUGAR
                 )
-                HealthMetric.BLOOD_PRESSURE -> HealthRecordScreen.start(
+                HealthMetric.BLOOD_PRESSURE -> HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.BLOOD_PRESSURE
+                    HealthRecordAct.RecordType.BLOOD_PRESSURE
                 )
-                HealthMetric.CHOLESTEROL -> HealthRecordScreen.start(
+                HealthMetric.CHOLESTEROL -> HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.CHOLESTEROL
+                    HealthRecordAct.RecordType.CHOLESTEROL
                 )
-                HealthMetric.HEART_RATE -> HealthRecordScreen.start(
+                HealthMetric.HEART_RATE -> HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.HEART_RATE
+                    HealthRecordAct.RecordType.HEART_RATE
                 )
-                HealthMetric.BMI -> HealthRecordScreen.start(
+                HealthMetric.BMI -> HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.BMI
+                    HealthRecordAct.RecordType.BMI
                 )
-                HealthMetric.HYDRATION -> HydrateScreen.start(this)
-                else -> HealthRecordScreen.start(
+                HealthMetric.HYDRATION -> HydrateAct.start(this)
+                else -> HealthRecordAct.start(
                     this,
-                    HealthRecordScreen.RecordType.BLOOD_SUGAR
+                    HealthRecordAct.RecordType.BLOOD_SUGAR
                 )
             }
         }

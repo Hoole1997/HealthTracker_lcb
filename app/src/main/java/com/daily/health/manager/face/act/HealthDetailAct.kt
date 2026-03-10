@@ -56,7 +56,7 @@ import org.koin.core.context.GlobalContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDetailBinding>(),
+class HealthDetailAct : BaseInterActivity<BaseViewModel, TrActivityHealthDetailBinding>(),
     HealthTypeProvider {
 
     companion object {
@@ -67,7 +67,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDeta
         private const val EXTRA_IS_FROM_SAVE = "extra_is_from_save"
 
         fun start(context: Context, type: DetailType, recordId: Long, isFromSave: Boolean = false) {
-            val intent = Intent(context, HealthDetailScreen::class.java).apply {
+            val intent = Intent(context, HealthDetailAct::class.java).apply {
                 putExtra(EXTRA_DETAIL_TYPE, type.name)
                 putExtra(EXTRA_RECORD_ID, recordId)
                 putExtra(RECORD_ID, recordId)
@@ -244,7 +244,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDeta
         binding.btnBack.clickWithDuration { onBackPress() }
         binding.btnDelete.clickWithDuration { showDeleteConfirmBs() }
         binding.btnEdit.clickWithDuration {
-            HealthRecordScreen.start(this, HealthRecordScreen.RecordType.BLOOD_SUGAR, recordId)
+            HealthRecordAct.start(this, HealthRecordAct.RecordType.BLOOD_SUGAR, recordId)
         }
 
         setupCommonExpertAdvice(binding.expertAdviceView)
@@ -312,7 +312,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDeta
         binding.btnDelete.clickWithDuration { showDeleteConfirmBp() }
         binding.btnEdit.clickWithDuration {
             bpViewModel.bloodPressureRecord.value?.let {
-                HealthRecordScreen.start(this, HealthRecordScreen.RecordType.BLOOD_PRESSURE, it.id)
+                HealthRecordAct.start(this, HealthRecordAct.RecordType.BLOOD_PRESSURE, it.id)
             }
         }
 
@@ -364,7 +364,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDeta
         binding.btnBack.clickWithDuration { onBackPress() }
         binding.btnEdit.clickWithDuration {
             bmiViewModel.bmiRecord.value?.let {
-                HealthRecordScreen.start(this, HealthRecordScreen.RecordType.BMI, it.id)
+                HealthRecordAct.start(this, HealthRecordAct.RecordType.BMI, it.id)
             }
         }
         binding.btnDelete.clickWithDuration { showDeleteConfirmBmi() }
@@ -435,7 +435,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDeta
         binding.btnDelete.click { showDeleteConfirmHr() }
         binding.btnEdit.click {
             hrViewModel.currentRecordId()?.let { id ->
-                HealthRecordScreen.start(this, HealthRecordScreen.RecordType.HEART_RATE, id)
+                HealthRecordAct.start(this, HealthRecordAct.RecordType.HEART_RATE, id)
             } ?: showToast(getString(R.string.tr_record_not_ready))
         }
 
@@ -504,7 +504,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDeta
 
         binding.btnBack.clickWithDuration { onBackPress() }
         binding.btnEdit.clickWithDuration {
-            HealthRecordScreen.start(this, HealthRecordScreen.RecordType.CHOLESTEROL, recordId)
+            HealthRecordAct.start(this, HealthRecordAct.RecordType.CHOLESTEROL, recordId)
         }
         binding.btnDelete.clickWithDuration { showDeleteConfirmCho() }
 
@@ -608,12 +608,12 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDeta
                         // [Rule Update] 弹出任何引导环节(含权限)均视为已展示一次
                         com.daily.health.manager.face.compose.ReminderDialogHelper.markBackGuideShown(alarmType)
                         
-                        if (androidx.core.app.NotificationManagerCompat.from(this@HealthDetailScreen).areNotificationsEnabled()) {
+                        if (androidx.core.app.NotificationManagerCompat.from(this@HealthDetailAct).areNotificationsEnabled()) {
                             showAlarmGuide(alarmType)
                         } else {
                             // 无权限：先弹出 V2 权限引导弹窗，点击按钮后再请求系统权限
                             val isDoNotAsk = com.hjq.permissions.XXPermissions.isDoNotAskAgainPermissions(
-                                this@HealthDetailScreen,
+                                this@HealthDetailAct,
                                 listOf(com.hjq.permissions.permission.PermissionLists.getPostNotificationsPermission())
                             )
                             com.daily.health.manager.face.dialog.NotificationPermissionV2DialogFragment.show(
@@ -623,10 +623,10 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDeta
                                 onGoToSettings = {
                                     pendingAlarmTypeForPermission = alarmType
                                     App.INSTANCE.isGoSetting = true
-                                    com.healthtracker.framework.util.PermissionUtils.openPermissionSettings(this@HealthDetailScreen)
+                                    com.healthtracker.framework.util.PermissionUtils.openPermissionSettings(this@HealthDetailAct)
                                 },
                                 onRequestPermission = {
-                                    com.healthtracker.framework.util.PermissionUtils.requestNotificationPermission(this@HealthDetailScreen) { granted, _ ->
+                                    com.healthtracker.framework.util.PermissionUtils.requestNotificationPermission(this@HealthDetailAct) { granted, _ ->
                                         if (granted) {
                                             showAlarmGuide(alarmType)
                                         } else {

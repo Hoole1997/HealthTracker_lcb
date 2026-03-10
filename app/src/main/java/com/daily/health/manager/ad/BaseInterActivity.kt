@@ -3,11 +3,11 @@ package com.daily.health.manager.ad
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import com.daily.health.manager.face.act.HealthDetailScreen
-import com.daily.health.manager.face.act.HealthRecordScreen
-import com.daily.health.manager.face.act.HealthStatisticsScreen
-import com.daily.health.manager.face.act.HydrateScreen
-import com.daily.health.manager.face.act.StepCountScreen
+import com.daily.health.manager.face.act.HealthDetailAct
+import com.daily.health.manager.face.act.HealthRecordAct
+import com.daily.health.manager.face.act.HealthStatisticsAct
+import com.daily.health.manager.face.act.HydrateAct
+import com.daily.health.manager.face.act.StepCountAct
 import com.daily.health.manager.utils.loadRewardBidding
 import com.daily.health.manager.utils.showInter
 import net.corekit.monetize.ads.AdPosition
@@ -33,7 +33,7 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
         super.onCreate(savedInstanceState)
         // 进入页面时立即展示插页广告
         showInter(getBackAdPosition()) {}
-        if(this is HealthStatisticsScreen){
+        if(this is HealthStatisticsAct){
             trackEnterTrackPageClick(getCurrentHealthType())
         }
     }
@@ -58,18 +58,18 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
     private fun getEventTypeAndHealthType(): Pair<EventType, HealthType>? {
         return when(this) {
             // Record Activities -> NewRecordPage_Back
-            is HealthRecordScreen -> EventType.NEW_RECORD_PAGE to getCurrentHealthType()
-            is StepCountScreen -> EventType.NEW_RECORD_PAGE to HealthType.WALKING_STEPS
-            is HydrateScreen -> EventType.NEW_RECORD_PAGE to HealthType.HYDRATE
+            is HealthRecordAct -> EventType.NEW_RECORD_PAGE to getCurrentHealthType()
+            is StepCountAct -> EventType.NEW_RECORD_PAGE to HealthType.WALKING_STEPS
+            is HydrateAct -> EventType.NEW_RECORD_PAGE to HealthType.HYDRATE
 
             // Detail Activities -> ResultPage_Back
-            is HealthDetailScreen -> {
+            is HealthDetailAct -> {
                 val healthType = getCurrentHealthType()
                 EventType.RESULT_PAGE to healthType
             }
 
             // Statistics Activity -> Trackpage_Back
-            is HealthStatisticsScreen -> {
+            is HealthStatisticsAct -> {
                 // 从子类获取当前的健康类型
                 val healthType = getCurrentHealthType()
                 EventType.TRACK_PAGE to healthType
@@ -102,7 +102,7 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
         val healthType = getCurrentHealthType()
         return when(this) {
             // 录入页面返回
-            is HealthRecordScreen -> when(healthType) {
+            is HealthRecordAct -> when(healthType) {
                 HealthType.BLOOD_SUGAR -> AdPosition.IV_BLOOD_SUGAR_BACK
                 HealthType.BLOOD_PRESSURE -> AdPosition.IV_BLOOD_PRESSURE_BACK
                 HealthType.CHOLESTEROL -> AdPosition.IV_CHOLESTEROL_BACK
@@ -110,10 +110,10 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
                 HealthType.BMI -> AdPosition.IV_BMI_BACK
                 else -> AdPosition.IV_BLOOD_SUGAR_BACK
             }
-            is HydrateScreen -> AdPosition.IV_WATER_BACK
-            is StepCountScreen -> AdPosition.IV_WALK_BACK
+            is HydrateAct -> AdPosition.IV_WATER_BACK
+            is StepCountAct -> AdPosition.IV_WALK_BACK
             // 报表页面返回
-            is HealthStatisticsScreen -> when(healthType) {
+            is HealthStatisticsAct -> when(healthType) {
                 HealthType.BLOOD_SUGAR -> AdPosition.IV_BLOOD_SUGAR_TRACK_BACK
                 HealthType.BLOOD_PRESSURE -> AdPosition.IV_BLOOD_PRESSURE_TRACK_BACK
                 HealthType.CHOLESTEROL -> AdPosition.IV_CHOLESTEROL_TRACK_BACK
@@ -124,7 +124,7 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
                 else -> AdPosition.IV_BLOOD_SUGAR_TRACK_BACK
             }
             // 详情页面返回 - 使用报表返回position
-            is HealthDetailScreen -> when(healthType) {
+            is HealthDetailAct -> when(healthType) {
                 HealthType.BLOOD_SUGAR -> AdPosition.IV_BLOOD_SUGAR_TRACK_BACK
                 HealthType.BLOOD_PRESSURE -> AdPosition.IV_BLOOD_PRESSURE_TRACK_BACK
                 HealthType.CHOLESTEROL -> AdPosition.IV_CHOLESTEROL_TRACK_BACK

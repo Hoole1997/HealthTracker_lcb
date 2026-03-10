@@ -19,7 +19,7 @@ import com.daily.health.manager.face.history.CholesterolHistoryItem
 import com.daily.health.manager.face.history.HeartRateHistoryItem
 import com.daily.health.manager.face.history.HistoryAdapter
 import com.daily.health.manager.face.history.HistoryRecordItem
-import com.daily.health.manager.face.act.HealthDetailScreen.DetailType
+import com.daily.health.manager.face.act.HealthDetailAct.DetailType
 import com.daily.health.manager.face.viewmodel.HistoryViewModel
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.fragment.DialogListener
@@ -31,7 +31,7 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import java.util.Date
 
-class HistoryRecordScreen: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryRecordBinding>() {
+class HistoryRecordAct: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryRecordBinding>() {
 
     // 历史记录适配器
     private lateinit var historyAdapter: HistoryAdapter
@@ -44,7 +44,7 @@ class HistoryRecordScreen: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryR
             context: Context,
             recordType: HistoryRecordItem.RecordType = HistoryRecordItem.RecordType.BLOOD_SUGAR
         ) {
-            context.startActivity<HistoryRecordScreen>(
+            context.startActivity<HistoryRecordAct>(
                 RECORD_TYPE to recordType.ordinal
             )
         }
@@ -98,33 +98,33 @@ class HistoryRecordScreen: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryR
             btnAddRecord.clickWithDuration {
                 when (recordType) {
                     HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                        HealthRecordScreen.start(
-                            this@HistoryRecordScreen,
-                            HealthRecordScreen.RecordType.BLOOD_SUGAR
+                        HealthRecordAct.start(
+                            this@HistoryRecordAct,
+                            HealthRecordAct.RecordType.BLOOD_SUGAR
                         )
                     }
                     HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                        HealthRecordScreen.start(
-                            this@HistoryRecordScreen,
-                            HealthRecordScreen.RecordType.BLOOD_PRESSURE
+                        HealthRecordAct.start(
+                            this@HistoryRecordAct,
+                            HealthRecordAct.RecordType.BLOOD_PRESSURE
                         )
                     }
                     HistoryRecordItem.RecordType.CHOLESTEROL -> {
-                        HealthRecordScreen.start(
-                            this@HistoryRecordScreen,
-                            HealthRecordScreen.RecordType.CHOLESTEROL
+                        HealthRecordAct.start(
+                            this@HistoryRecordAct,
+                            HealthRecordAct.RecordType.CHOLESTEROL
                         )
                     }
                     HistoryRecordItem.RecordType.HEART_RATE -> {
-                        HealthRecordScreen.start(
-                            this@HistoryRecordScreen,
-                            HealthRecordScreen.RecordType.HEART_RATE
+                        HealthRecordAct.start(
+                            this@HistoryRecordAct,
+                            HealthRecordAct.RecordType.HEART_RATE
                         )
                     }
                     HistoryRecordItem.RecordType.BMI_RECORD -> {
-                        HealthRecordScreen.start(
-                            this@HistoryRecordScreen,
-                            HealthRecordScreen.RecordType.BMI
+                        HealthRecordAct.start(
+                            this@HistoryRecordAct,
+                            HealthRecordAct.RecordType.BMI
                         )
                     }
                 }
@@ -156,7 +156,7 @@ class HistoryRecordScreen: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryR
         
         // 设置RecyclerView
         with(mViewBind.rvHistory) {
-            layoutManager = LinearLayoutManager(this@HistoryRecordScreen)
+            layoutManager = LinearLayoutManager(this@HistoryRecordAct)
             adapter = historyAdapter
         }
     }
@@ -167,19 +167,19 @@ class HistoryRecordScreen: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryR
     private fun handleItemClick(item: HistoryRecordItem) {
         when (item.getRecordType()) {
             HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-                HealthDetailScreen.start(this, DetailType.BLOOD_SUGAR, item.getId())
+                HealthDetailAct.start(this, DetailType.BLOOD_SUGAR, item.getId())
             }
             HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-                HealthDetailScreen.start(this, DetailType.BLOOD_PRESSURE, item.getId())
+                HealthDetailAct.start(this, DetailType.BLOOD_PRESSURE, item.getId())
             }
             HistoryRecordItem.RecordType.CHOLESTEROL -> {
-                HealthDetailScreen.start(this, DetailType.CHOLESTEROL, item.getId())
+                HealthDetailAct.start(this, DetailType.CHOLESTEROL, item.getId())
             }
             HistoryRecordItem.RecordType.HEART_RATE -> {
-                HealthDetailScreen.start(this, DetailType.HEART_RATE, item.getId())
+                HealthDetailAct.start(this, DetailType.HEART_RATE, item.getId())
             }
             HistoryRecordItem.RecordType.BMI_RECORD -> {
-                HealthDetailScreen.start(this, DetailType.BMI, item.getId())
+                HealthDetailAct.start(this, DetailType.BMI, item.getId())
             }
         }
     }

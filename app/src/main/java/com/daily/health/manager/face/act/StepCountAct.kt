@@ -13,7 +13,7 @@ import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.constants.KEY_STEP_COUNT_GOLE
 import com.daily.health.manager.databinding.TrActivityStepCountBinding
-import com.daily.health.manager.service.HealthService
+import com.daily.health.manager.service.HTService
 import com.daily.health.manager.face.chart.HealthLineChartManager
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collect
@@ -23,7 +23,7 @@ import com.healthtracker.framework.util.NumberFormatter
 import com.healthtracker.framework.util.SpUtils
 import org.koin.android.ext.android.inject
 
-class StepCountScreen : BaseInterActivity<StepCountViewModel, TrActivityStepCountBinding>() {
+class StepCountAct : BaseInterActivity<StepCountViewModel, TrActivityStepCountBinding>() {
 
     private val chartManagerFactory: HealthLineChartManager.Factory by inject()
 
@@ -39,11 +39,11 @@ class StepCountScreen : BaseInterActivity<StepCountViewModel, TrActivityStepCoun
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.btnBack.clickWithDuration { handleBackPress() }
         mViewBind.ivSetting.clickWithDuration {
-            startActivity<StepSettingScreen>()
+            startActivity<StepSettingAct>()
         }
 
         mViewBind.vGoalBg.clickWithDuration {
-            startActivity<StepSettingScreen>()
+            startActivity<StepSettingAct>()
         }
 
         chartManager = chartManagerFactory.create(mViewBind.chartView, this)
@@ -96,7 +96,7 @@ class StepCountScreen : BaseInterActivity<StepCountViewModel, TrActivityStepCoun
     }
 
     private fun startHealthService() {
-        val intent = Intent(this, HealthService::class.java)
+        val intent = Intent(this, HTService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
         } else {

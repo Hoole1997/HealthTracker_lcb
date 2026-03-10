@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.daily.health.manager.R
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.TrFragmentMedsBinding
-import com.daily.health.manager.face.act.AddReminderScreen
+import com.daily.health.manager.face.act.AddReminderAct
 import com.daily.health.manager.face.adapter.MedsReminderAdapter
 import com.daily.health.manager.face.dialog.ConfirmDialog
 import com.daily.health.manager.face.model.MedsReminderItem
@@ -84,7 +84,7 @@ class MedsFrg: BaseMVVMFragment<MedsViewModel, TrFragmentMedsBinding>() {
     private fun setupClickListeners() {
         mViewBind?.btnAdd?.clickWithDuration {
             ReportDataManager.reportData("med_click_add",mapOf())
-            requireActivity().startActivity<AddReminderScreen>()
+            requireActivity().startActivity<AddReminderAct>()
         }
     }
 
@@ -214,7 +214,7 @@ class MedsFrg: BaseMVVMFragment<MedsViewModel, TrFragmentMedsBinding>() {
                  MenuAction.EDIT -> {
                      // 跳转到编辑页面，传递提醒ID
                      "Navigate to edit medication reminder: ID=${item.reminderId}".logd(TAG)
-                     AddReminderScreen.start(requireContext(), item.reminderId)
+                     AddReminderAct.start(requireContext(), item.reminderId)
                  }
                  MenuAction.DELETE -> {
                      // 删除服药提醒，任意选都是删除当前整个服药提醒，而不是针对某次
