@@ -1074,6 +1074,8 @@ healthcare provider or medical institution.</string>
     <string name="ht_skip">Skip</string>
     <string name="ht_next">Next</string>
     <string name="ht_start_health_journey">Start Health Journey!</string>
+    <string name="ht_guide_hr_des">Click to add your first Heart Rate reading now.</string>
+    <string name="ht_guide_bp_des">Click to add your first Blood Pressure reading now.</string>
     <string name="ht_guide_bs_des">Click to add your first Blood Sugar reading now.</string>
     <string name="ht_onboarding_title_1">Keep Track of Trends</string>
     <string name="ht_onboarding_desc_1">Check and record your heart rate anytime. Keep track of your fitness and well-being easily.</string>

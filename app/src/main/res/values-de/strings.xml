@@ -306,6 +306,8 @@ Für professionelle Gesundheitsberatung und Diagnose empfehlen wir dringend, ein
     <string name="ht_skip">Überspringen</string>
     <string name="ht_next">Weiter</string>
     <string name="ht_start_health_journey">Gesundheitsreise starten!</string>
+    <string name="ht_guide_hr_des">Klicken Sie, um jetzt Ihren ersten Herzfrequenzwert hinzuzufügen.</string>
+    <string name="ht_guide_bp_des">Klicken Sie, um jetzt Ihren ersten Blutdruckwert hinzuzufügen.</string>
     <string name="ht_guide_bs_des">Klicken Sie, um jetzt Ihren ersten Blutzuckerwert hinzuzufügen.</string>
     <string name="ht_target_range">Zielbereich</string>
     <string name="ht_target_range_temp">Zielbereich(%1$s)</string>

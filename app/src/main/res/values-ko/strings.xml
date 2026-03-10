@@ -324,6 +324,8 @@
     <string name="ht_skip">건너뛰기</string>
     <string name="ht_next">다음</string>
     <string name="ht_start_health_journey">건강 여정 시작하기!</string>
+    <string name="ht_guide_hr_des">클릭하여 첫 심박수 기록을 추가하세요.</string>
+    <string name="ht_guide_bp_des">클릭하여 첫 혈압 기록을 추가하세요.</string>
     <string name="ht_guide_bs_des">클릭하여 첫 혈당 기록을 추가하세요.</string>
     <string name="ht_target_range">목표 범위</string>
     <string name="ht_target_range_temp">목표 범위(%1$s)</string>

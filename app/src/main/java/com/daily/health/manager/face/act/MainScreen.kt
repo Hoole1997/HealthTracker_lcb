@@ -8,6 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -26,6 +29,9 @@ import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.HtActivityMainBinding
 import com.daily.health.manager.databinding.HtLayoutHomeTabItemBinding
 import com.daily.health.manager.face.adapter.FragmentsAdapter
+import com.daily.health.manager.face.compose.HomeFeatureGuideOverlay
+import com.daily.health.manager.face.compose.HomeGuideOverlayUi
+import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.dialog.ActivityPerRequestDialog
 import com.daily.health.manager.face.dialog.ExitDialog
 import com.daily.health.manager.face.fragment.HomeFrg
@@ -56,6 +62,7 @@ import com.healthtracker.framework.util.SpUtils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.AdPosition
@@ -82,6 +89,8 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
     private val bannerShowComplete = CompletableDeferred<Boolean>()
 
     private val homeFrgReady = CompletableDeferred<HomeFrg>()
+    private val hostHomeGuideOverlayUi = MutableStateFlow<HomeGuideOverlayUi?>(null)
+    private val hostCurrentTab = MutableStateFlow(0)
 
     private val settingLauncher =
         registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { result ->
@@ -184,6 +193,12 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
      * @param position Tab位置索引
      */
     private fun updateUIForTabPosition(position: Int) {
+        hostCurrentTab.value = position
+        window.statusBarColor = if (position == 0 && hostHomeGuideOverlayUi.value != null) {
+            android.graphics.Color.parseColor("#99000000")
+        } else {
+            android.graphics.Color.TRANSPARENT
+        }
         with(mViewBind) {
             applyHostBackgroundForTab(position)
             llWeather.gone()
@@ -280,6 +295,27 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             permissionRequest?.with(this)
         }
         mViewModel.startHealthService()
+        mViewBind.composeHomeGuideOverlay.setViewCompositionStrategy(
+            ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+        )
+        mViewBind.composeHomeGuideOverlay.setContent {
+            val overlayUi by hostHomeGuideOverlayUi.collectAsStateWithLifecycle()
+            val currentTab by hostCurrentTab.collectAsStateWithLifecycle()
+
+            HealthTrackerTheme {
+                if (currentTab == 0) {
+                    overlayUi?.let { ui ->
+                        HomeFeatureGuideOverlay(
+                            step = ui.step,
+                            anchorRects = ui.anchorRects,
+                            onNextClick = { homeFrg?.onHomeGuideNext() },
+                            onDismiss = { homeFrg?.dismissHomeGuide() },
+                            onTargetClick = { homeFrg?.handleHomeGuideTargetClick() },
+                        )
+                    }
+                }
+            }
+        }
         with(mViewBind) {
             viewPagerHome.offscreenPageLimit = 0
 
@@ -298,6 +334,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             setupBottomNavBar()
             setupViewPager()
             viewPagerHome.currentItem = currentTabIndex
+            hostCurrentTab.value = currentTabIndex
             updateUIForTabPosition(currentTabIndex)
 
             llWeather.gone()
@@ -332,6 +369,18 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             bannerShowComplete.await()
         }
         
+        lifecycleScope.launch {
+            val homeFragment = homeFrgReady.await()
+            homeFragment.homeGuideOverlayUi.collect { overlayUi ->
+                hostHomeGuideOverlayUi.value = overlayUi
+                window.statusBarColor = if (overlayUi != null && currentTabIndex == 0) {
+                    android.graphics.Color.parseColor("#99000000")
+                } else {
+                    android.graphics.Color.TRANSPARENT
+                }
+            }
+        }
+
         // 观察天气数据
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

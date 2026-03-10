@@ -2,6 +2,7 @@ package com.daily.health.manager.face.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -25,6 +26,9 @@ import com.daily.health.manager.face.act.HydrateScreen
 import com.daily.health.manager.face.act.MainScreen
 import com.daily.health.manager.face.act.ProfileActivity
 import com.daily.health.manager.face.compose.HomeDashboardScreen
+import com.daily.health.manager.face.compose.HomeGuideOverlayUi
+import com.daily.health.manager.face.compose.HomeGuideStep
+import com.daily.health.manager.face.compose.HomeGuideTarget
 import com.daily.health.manager.face.compose.HomeFeatureCardUi
 import com.daily.health.manager.face.compose.HomeHeroUi
 import com.daily.health.manager.face.theme.HealthTrackerTheme
@@ -32,12 +36,15 @@ import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
 import com.daily.health.manager.face.viewmodel.HomeViewModel
 import com.daily.health.manager.hasAddProfile
+import com.daily.health.manager.hasShowHomeEntryGuideV2
+import com.daily.health.manager.saveShowHomeEntryGuideV2
 import com.daily.health.manager.util.CholesterolCalculator
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.NumberFormatter
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -54,7 +61,12 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
     }
 
     private var pendingActivityType: PendingActivityType? = null
+    private val notificationPermissionFlowFinished = MutableStateFlow(false)
+    private val guideAnchorRects = mutableMapOf<HomeGuideTarget, Rect>()
+    private var currentGuideStep: HomeGuideStep? = null
+    private var hasShownHomeGuide = hasShowHomeEntryGuideV2()
 
+    val homeGuideOverlayUi = MutableStateFlow<HomeGuideOverlayUi?>(null)
     var highLightComplete = CompletableDeferred<Boolean>()
 
     private enum class PendingActivityType {
@@ -111,13 +123,75 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, HtFragmentHomeBinding>() {
                     },
                     onHydrateClick = ::openHydrate,
                     onStepCountClick = ::openStepCount,
-                    onBloodSugarBoundsChanged = {},
+                    onGuideAnchorBoundsChanged = { target, rect ->
+                        guideAnchorRects[target] = Rect(rect)
+                        updateGuideOverlayUi()
+                    },
                 )
             }
         }
     }
 
     fun onNotificationPermissionFlowFinished() {
+        notificationPermissionFlowFinished.value = true
+        if (hasShownHomeGuide) {
+            currentGuideStep = null
+            updateGuideOverlayUi()
+            markHighlightFlowCompleted()
+            return
+        }
+        if (currentGuideStep == null) {
+            currentGuideStep = HomeGuideStep.HEART_RATE
+        }
+        updateGuideOverlayUi()
+    }
+
+    fun onHomeGuideNext() {
+        val nextStep = currentGuideStep?.nextStep()
+        if (nextStep == null) {
+            finishHomeGuide()
+        } else {
+            currentGuideStep = nextStep
+            updateGuideOverlayUi()
+        }
+    }
+
+    fun dismissHomeGuide() {
+        finishHomeGuide()
+    }
+
+    fun handleHomeGuideTargetClick() {
+        val step = currentGuideStep ?: return
+        finishHomeGuide()
+        when (step) {
+            HomeGuideStep.HEART_RATE -> navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
+            HomeGuideStep.BLOOD_PRESSURE -> openBloodPressureRecord()
+            HomeGuideStep.BLOOD_SUGAR -> openBloodSugarRecord()
+        }
+    }
+
+    private fun updateGuideOverlayUi() {
+        val step = currentGuideStep
+        homeGuideOverlayUi.value = if (
+            notificationPermissionFlowFinished.value &&
+            !hasShownHomeGuide &&
+            step != null
+        ) {
+            HomeGuideOverlayUi(step = step, anchorRects = guideAnchorRects.toMap())
+        } else {
+            null
+        }
+    }
+
+    private fun finishHomeGuide() {
+        saveShowHomeEntryGuideV2()
+        hasShownHomeGuide = true
+        currentGuideStep = null
+        updateGuideOverlayUi()
+        markHighlightFlowCompleted()
+    }
+
+    private fun markHighlightFlowCompleted() {
         if (!highLightComplete.isCompleted) {
             highLightComplete.complete(true)
         }

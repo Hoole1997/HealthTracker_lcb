@@ -191,6 +191,9 @@
     <string name="ht_disclaimers">Avvertenze</string>
     <string name="ht_skip">Salta</string>
     <string name="ht_next">Avanti</string>
+    <string name="ht_guide_hr_des">Fai clic per aggiungere subito la tua prima lettura della frequenza cardiaca.</string>
+    <string name="ht_guide_bp_des">Fai clic per aggiungere subito la tua prima lettura della pressione sanguigna.</string>
+    <string name="ht_guide_bs_des">Fai clic per aggiungere subito la tua prima lettura della glicemia.</string>
     <string name="ht_start_health_journey">Inizia il percorso salute!</string>
     <string name="ht_target_range">Intervallo obiettivo</string>
     <string name="ht_reset">Reimposta</string>

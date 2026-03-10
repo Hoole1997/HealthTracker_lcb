@@ -309,6 +309,8 @@ Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti s
     <string name="ht_skip">Atla</string>
     <string name="ht_next">İleri</string>
     <string name="ht_start_health_journey">Sağlık Yolculuğunuzu Başlatın!</string>
+    <string name="ht_guide_hr_des">İlk Kalp Atış Hızı ölçümünüzü eklemek için şimdi tıklayın.</string>
+    <string name="ht_guide_bp_des">İlk Tansiyon ölçümünüzü eklemek için şimdi tıklayın.</string>
     <string name="ht_guide_bs_des">İlk Kan Şekeri okumanızı eklemek için şimdi tıklayın.</string>
     <string name="ht_target_range">Hedef Aralık</string>
     <string name="ht_target_range_temp">Hedef Aralık(%1$s)</string>

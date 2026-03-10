@@ -308,6 +308,8 @@ Pour des conseils de santé professionnels et un diagnostic, nous vous encourage
     <string name="ht_skip">Passer</string>
     <string name="ht_next">Suivant</string>
     <string name="ht_start_health_journey">Commencer votre parcours santé!</string>
+    <string name="ht_guide_hr_des">Cliquez pour ajouter votre première mesure de fréquence cardiaque maintenant.</string>
+    <string name="ht_guide_bp_des">Cliquez pour ajouter votre première mesure de pression artérielle maintenant.</string>
     <string name="ht_guide_bs_des">Cliquez pour ajouter votre première lecture de glycémie maintenant.</string>
     <string name="ht_target_range">Plage cible</string>
     <string name="ht_target_range_temp">Plage cible(%1$s)</string>

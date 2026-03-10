@@ -368,6 +368,8 @@ Para orientación de salud profesional y diagnóstico, te recomendamos consultar
     <string name="ht_skip">Omitir</string>
     <string name="ht_next">Siguiente</string>
     <string name="ht_start_health_journey">¡Comienza tu Viaje de Salud!</string>
+    <string name="ht_guide_hr_des">Haz clic para añadir tu primera lectura de Frecuencia cardíaca ahora.</string>
+    <string name="ht_guide_bp_des">Haz clic para añadir tu primera lectura de Presión arterial ahora.</string>
     <string name="ht_guide_bs_des">Haz clic para añadir tu primera lectura de Glucosa ahora.</string>
     <string name="ht_target_range">Rango Objetivo</string>
     <string name="ht_target_range_temp">Rango Objetivo(%1$s)</string>

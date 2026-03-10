@@ -309,6 +309,8 @@
     <string name="ht_skip">छोड़ें</string>
     <string name="ht_next">अगला</string>
     <string name="ht_start_health_journey">अपनी स्वास्थ्य यात्रा शुरू करें!</string>
+    <string name="ht_guide_hr_des">अभी अपनी पहली हार्ट रेट रीडिंग जोड़ने के लिए क्लिक करें।</string>
+    <string name="ht_guide_bp_des">अभी अपनी पहली ब्लड प्रेशर रीडिंग जोड़ने के लिए क्लिक करें।</string>
     <string name="ht_guide_bs_des">अभी अपनी पहली ब्लड शुगर रीडिंग जोड़ने के लिए क्लिक करें।</string>
     <string name="ht_target_range">लक्ष्य सीमा</string>
     <string name="ht_target_range_temp">लक्ष्य सीमा(%1$s)</string>

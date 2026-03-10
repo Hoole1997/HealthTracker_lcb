@@ -478,6 +478,8 @@ Para orientação de saúde profissional e diagnóstico, encorajamos fortemente 
     <string name="ht_skip">Pular</string>
     <string name="ht_next">Próximo</string>
     <string name="ht_start_health_journey">Comece sua Jornada de Saúde!</string>
+    <string name="ht_guide_hr_des">Clique para adicionar sua primeira leitura de Frequência Cardíaca agora.</string>
+    <string name="ht_guide_bp_des">Clique para adicionar sua primeira leitura de Pressão Arterial agora.</string>
     <string name="ht_guide_bs_des">Clique para adicionar sua primeira leitura de Glicemia agora.</string>
     <string name="ht_target_range">Faixa Alvo</string>
     <string name="ht_target_range_temp">Faixa Alvo(%1$s)</string>

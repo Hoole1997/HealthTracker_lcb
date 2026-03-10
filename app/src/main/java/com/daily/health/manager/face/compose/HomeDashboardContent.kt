@@ -35,7 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.stringResource
@@ -49,6 +50,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
 import kotlin.math.roundToInt
+
+
+private fun LayoutCoordinates.toAndroidWindowRect(): Rect {
+    val bounds = boundsInWindow()
+    return Rect(
+        bounds.left.roundToInt(),
+        bounds.top.roundToInt(),
+        bounds.right.roundToInt(),
+        bounds.bottom.roundToInt(),
+    )
+}
 
 @Immutable
 data class HomeHeroUi(
@@ -186,7 +198,7 @@ fun HomeDashboardScreen(
     onBmiClick: () -> Unit,
     onHydrateClick: () -> Unit,
     onStepCountClick: () -> Unit,
-    onBloodSugarBoundsChanged: (Rect) -> Unit,
+    onGuideAnchorBoundsChanged: (HomeGuideTarget, Rect) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -195,7 +207,16 @@ fun HomeDashboardScreen(
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         item {
-            HeroCard(hero = hero, onClick = onHeartRateClick)
+            HeroCard(
+                hero = hero,
+                onClick = onHeartRateClick,
+                onCardBoundsChanged = {
+                    onGuideAnchorBoundsChanged(HomeGuideTarget.HERO_CARD, it)
+                },
+                onButtonBoundsChanged = {
+                    onGuideAnchorBoundsChanged(HomeGuideTarget.HERO_CTA, it)
+                },
+            )
         }
         items(cards.size / 2) { rowIndex ->
             Row(
@@ -209,18 +230,47 @@ fun HomeDashboardScreen(
                     card = left,
                     onCardClick = actionForCard(left, onBloodSugarCardClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
                     onRecordClick = recordActionForCard(left, onBloodSugarRecordClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
-                    onAnchorBoundsChanged = if (left.guideAnchorOnButton) onBloodSugarBoundsChanged else null,
+                    onCardBoundsChanged = guideCardTargetForCard(left)?.let { target ->
+                        { rect -> onGuideAnchorBoundsChanged(target, rect) }
+                    },
+                    onRecordBoundsChanged = guideRecordTargetForCard(left)?.let { target ->
+                        { rect -> onGuideAnchorBoundsChanged(target, rect) }
+                    },
                 )
                 FeatureCard(
                     modifier = Modifier.weight(1f),
                     card = right,
                     onCardClick = actionForCard(right, onBloodSugarCardClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
                     onRecordClick = recordActionForCard(right, onBloodSugarRecordClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
-                    onAnchorBoundsChanged = if (right.guideAnchorOnButton) onBloodSugarBoundsChanged else null,
+                    onCardBoundsChanged = guideCardTargetForCard(right)?.let { target ->
+                        { rect -> onGuideAnchorBoundsChanged(target, rect) }
+                    },
+                    onRecordBoundsChanged = guideRecordTargetForCard(right)?.let { target ->
+                        { rect -> onGuideAnchorBoundsChanged(target, rect) }
+                    },
                 )
             }
         }
     }
+}
+
+
+private fun guideCardTargetForCard(card: HomeFeatureCardUi): HomeGuideTarget? = when (card) {
+    is HomeFeatureCardUi.BloodPressure -> HomeGuideTarget.BLOOD_PRESSURE_CARD
+    is HomeFeatureCardUi.BloodSugar -> HomeGuideTarget.BLOOD_SUGAR_CARD
+    is HomeFeatureCardUi.Cholesterol,
+    is HomeFeatureCardUi.Bmi,
+    is HomeFeatureCardUi.Hydrate,
+    is HomeFeatureCardUi.StepCount -> null
+}
+
+private fun guideRecordTargetForCard(card: HomeFeatureCardUi): HomeGuideTarget? = when (card) {
+    is HomeFeatureCardUi.BloodPressure -> HomeGuideTarget.BLOOD_PRESSURE_RECORD
+    is HomeFeatureCardUi.BloodSugar -> HomeGuideTarget.BLOOD_SUGAR_RECORD
+    is HomeFeatureCardUi.Cholesterol,
+    is HomeFeatureCardUi.Bmi,
+    is HomeFeatureCardUi.Hydrate,
+    is HomeFeatureCardUi.StepCount -> null
 }
 
 private fun actionForCard(
@@ -293,6 +343,8 @@ private fun HeroConcentricCircles(
 private fun HeroCard(
     hero: HomeHeroUi,
     onClick: () -> Unit,
+    onCardBoundsChanged: ((Rect) -> Unit)? = null,
+    onButtonBoundsChanged: ((Rect) -> Unit)? = null,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val scale = maxWidth / 343.dp
@@ -308,10 +360,13 @@ private fun HeroCard(
                     .clip(RoundedCornerShape(12.dp * scale))
                     .background(
                         brush = Brush.horizontalGradient(
-                            colors = listOf( Color(0xFFFF6868),Color(0xFFFFA08A))
+                            colors = listOf(Color(0xFFFF6868), Color(0xFFFFA08A))
                         )
                     )
                     .clickable(onClick = onClick)
+                    .onGloballyPositioned { coordinates ->
+                        onCardBoundsChanged?.invoke(coordinates.toAndroidWindowRect())
+                    }
             ) {
                 Image(
                     painter = painterResource(id = R.mipmap.ht_home_hero_ecg),
@@ -369,6 +424,9 @@ private fun HeroCard(
                         .clip(RoundedCornerShape(44.dp * scale))
                         .background(Color.White)
                         .clickable(onClick = onClick)
+                        .onGloballyPositioned { coordinates ->
+                            onButtonBoundsChanged?.invoke(coordinates.toAndroidWindowRect())
+                        }
                 ) {
                     Row(
                         modifier = Modifier
@@ -449,7 +507,8 @@ private fun FeatureCard(
     card: HomeFeatureCardUi,
     onCardClick: () -> Unit,
     onRecordClick: () -> Unit,
-    onAnchorBoundsChanged: ((Rect) -> Unit)? = null,
+    onCardBoundsChanged: ((Rect) -> Unit)? = null,
+    onRecordBoundsChanged: ((Rect) -> Unit)? = null,
 ) {
     Card(
         modifier = modifier,
@@ -461,6 +520,9 @@ private fun FeatureCard(
                 .fillMaxWidth()
                 .height(162.dp)
                 .clickable(onClick = onCardClick)
+                .onGloballyPositioned { coordinates ->
+                    onCardBoundsChanged?.invoke(coordinates.toAndroidWindowRect())
+                }
         ) {
             Text(
                 text = card.title,
@@ -555,7 +617,7 @@ private fun FeatureCard(
                 modifier = Modifier.offset(12.dp, 120.dp),
                 textColor = card.buttonColor,
                 onClick = onRecordClick,
-                onBoundsChanged = onAnchorBoundsChanged,
+                onBoundsChanged = onRecordBoundsChanged,
             )
         }
     }
@@ -596,14 +658,7 @@ private fun RecordPill(
             .background(Color.White)
             .clickable(onClick = onClick)
             .onGloballyPositioned { coordinates ->
-                onBoundsChanged?.invoke(
-                    Rect(
-                        coordinates.positionInRoot().x.roundToInt(),
-                        coordinates.positionInRoot().y.roundToInt(),
-                        coordinates.positionInRoot().x.roundToInt() + coordinates.size.width,
-                        coordinates.positionInRoot().y.roundToInt() + coordinates.size.height,
-                    )
-                )
+                onBoundsChanged?.invoke(coordinates.toAndroidWindowRect())
             }
     ) {
         Row(
@@ -689,7 +744,7 @@ private fun HomeDashboardScreenPreview() {
             onBmiClick = {},
             onHydrateClick = {},
             onStepCountClick = {},
-            onBloodSugarBoundsChanged = {},
+            onGuideAnchorBoundsChanged = { _, _ -> },
         )
     }
 }

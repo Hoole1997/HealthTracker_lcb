@@ -23,20 +23,16 @@ import kotlinx.coroutines.launch
 abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVMActivity<VM,VB>() {
 
     override fun handleBackPress(): Boolean {
-
-        
-        showInter(getBackAdPosition()) {
-            // 根据 Activity 类型自动上报返回事件
-            trackBackEvent()
-            // 显示插屏广告后关闭 Activity
-            finish()
-        }
-        // 返回 true 表示已处理返回键事件
+        // 根据 Activity 类型自动上报返回事件
+        trackBackEvent()
+        finish()
         return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 进入页面时立即展示插页广告
+        showInter(getBackAdPosition()) {}
         if(this is HealthStatisticsScreen){
             trackEnterTrackPageClick(getCurrentHealthType())
         }

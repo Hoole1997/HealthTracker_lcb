@@ -5,6 +5,7 @@ import com.daily.health.manager.constants.KEY_HAS_GUIDE_NEW
 import com.daily.health.manager.constants.KEY_HAS_SHOW_GUIDE_BP
 import com.daily.health.manager.constants.KEY_HAS_SHOW_GUIDE_BS
 import com.daily.health.manager.constants.KEY_HAS_SHOW_GUIDE_HR
+import com.daily.health.manager.constants.KEY_HAS_SHOW_HOME_ENTRY_GUIDE_V2
 import com.daily.health.manager.constants.KEY_IS_NEW_USER
 import com.daily.health.manager.constants.KEY_USER_AGE
 import com.daily.health.manager.constants.KEY_USER_GENDER
@@ -44,6 +45,11 @@ fun saveShowGuideHr() = SpUtils.putBoolean(KEY_HAS_SHOW_GUIDE_HR,true)
 
 fun hasShowGuideHr() = SpUtils.getBoolean(KEY_HAS_SHOW_GUIDE_HR,false)
 
+
+
+fun saveShowHomeEntryGuideV2() = SpUtils.putBoolean(KEY_HAS_SHOW_HOME_ENTRY_GUIDE_V2,true)
+
+fun hasShowHomeEntryGuideV2() = SpUtils.getBoolean(KEY_HAS_SHOW_HOME_ENTRY_GUIDE_V2,false)
 
 fun hasShowAllGuide() = hasShowGuideBs()
 
