@@ -148,7 +148,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
                     return@SplashStateMachine
                 }
                 // 判断应该跳转到哪个页面
-                val targetActivity = if (hasNewGuide() || !AdConfigManager.showNewGuide()) {
+                val targetActivity = if (hasNewGuide()) {
                     MainScreen::class.java
                 } else {
                     GuideScreen::class.java

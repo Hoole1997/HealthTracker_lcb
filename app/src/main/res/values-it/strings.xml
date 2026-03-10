@@ -243,4 +243,13 @@
         <item>Venerdì</item>
         <item>Sabato</item>
     </string-array>
+    <string name="ht_onboarding_title_1">Tieni traccia delle tendenze</string>
+    <string name="ht_onboarding_desc_1">Controlla e registra la tua frequenza cardiaca in qualsiasi momento. Tieni facilmente sotto controllo la tua forma fisica e il tuo benessere.</string>
+    <string name="ht_onboarding_title_2">Monitoraggio di vari dati corporei</string>
+    <string name="ht_onboarding_desc_2">Registra vari valori del tuo corpo e monitora i cambiamenti nel tempo per comprendere meglio le tendenze della tua salute.</string>
+    <string name="ht_onboarding_title_3">Imposta promemoria per i farmaci</string>
+    <string name="ht_onboarding_desc_3">Imposta promemoria per i tuoi farmaci e ricevi avvisi puntuali. Non perdere mai una dose e segui correttamente la tua terapia.</string>
+    <string name="ht_onboarding_title_4">Avvertenze</string>
+    <string name="ht_onboarding_desc_4">Questa app è progettata per il monitoraggio quotidiano personale della pressione arteriosa e non fornisce consulenza medica professionale. Per indicazioni sanitarie e diagnosi professionali, ti invitiamo vivamente a consultare un operatore sanitario qualificato o una struttura medica.</string>
+    <string name="ht_onboarding_start">Inizia</string>
 </resources>

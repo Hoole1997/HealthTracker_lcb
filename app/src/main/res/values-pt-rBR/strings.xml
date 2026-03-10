@@ -782,4 +782,13 @@ Para orientação de saúde profissional e diagnóstico, encorajamos fortemente 
     <string name="ht_uninstall_reason_hint">Por favor, insira o motivo pelo qual está desinstalando %1$s</string>
 
     <string name="ht_permission_denied">Permissão negada</string>
+    <string name="ht_onboarding_title_1">Acompanhe as tendências</string>
+    <string name="ht_onboarding_desc_1">Verifique e registre sua frequência cardíaca a qualquer momento. Acompanhe sua forma física e bem-estar com facilidade.</string>
+    <string name="ht_onboarding_title_2">Monitoramento de vários dados corporais</string>
+    <string name="ht_onboarding_desc_2">Registre várias medições do seu corpo e acompanhe as mudanças ao longo do tempo para entender melhor suas tendências de saúde.</string>
+    <string name="ht_onboarding_title_3">Defina lembretes de medicamentos</string>
+    <string name="ht_onboarding_desc_3">Defina lembretes para seus medicamentos e receba alertas na hora certa. Não perca nenhuma dose e mantenha seu tratamento em dia.</string>
+    <string name="ht_onboarding_title_4">Isenções de Responsabilidade</string>
+    <string name="ht_onboarding_desc_4">Este aplicativo foi desenvolvido para o acompanhamento diário pessoal da pressão arterial e não oferece aconselhamento médico profissional. Para orientação de saúde e diagnóstico profissionais, recomendamos consultar um profissional de saúde qualificado ou uma instituição médica.</string>
+    <string name="ht_onboarding_start">Começar</string>
 </resources>

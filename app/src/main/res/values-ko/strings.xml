@@ -775,5 +775,14 @@
     <string name="ht_uninstall_reason_hint">%1$s을(를) 삭제하는 이유를 입력해 주세요</string>
     <string name="shortcut_uninstall_short">삭제</string>
     <string name="ht_permission_denied">권한이 거부되었습니다</string>
+    <string name="ht_onboarding_title_1">건강 추세를 확인하세요</string>
+    <string name="ht_onboarding_desc_1">언제든지 심박수를 확인하고 기록하세요. 당신의 체력과 건강 상태를 쉽게 추적할 수 있습니다.</string>
+    <string name="ht_onboarding_title_2">다양한 신체 데이터 모니터링</string>
+    <string name="ht_onboarding_desc_2">신체의 다양한 수치를 기록하고 시간에 따른 변화를 모니터링하여 건강 추세를 더 잘 이해하세요.</string>
+    <string name="ht_onboarding_title_3">복약 알림 설정</string>
+    <string name="ht_onboarding_desc_3">복용 중인 약에 대한 알림을 설정하고 제때 알림을 받으세요. 복용을 놓치지 말고 치료 계획을 잘 지켜보세요.</string>
+    <string name="ht_onboarding_title_4">면책 조항</string>
+    <string name="ht_onboarding_desc_4">이 앱은 개인의 일상적인 혈압 추적을 위해 설계되었으며 전문적인 의료 조언을 제공하지 않습니다. 전문적인 건강 상담과 진단이 필요하다면 자격을 갖춘 의료 전문가나 의료 기관에 문의하시기 바랍니다.</string>
+    <string name="ht_onboarding_start">시작</string>
 </resources>
 

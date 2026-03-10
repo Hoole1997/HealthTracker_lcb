@@ -405,4 +405,13 @@
     <string name="ht_uninstall_reason_hint">कृपया बताएं कि आप %1$s को क्यों अनइंस्टॉल कर रहे हैं</string>
 
     <string name="ht_permission_denied">अनुमति अस्वीकार कर दी गई</string>
+    <string name="ht_onboarding_title_1">रुझानों पर नज़र रखें</string>
+    <string name="ht_onboarding_desc_1">किसी भी समय अपनी हृदय गति जांचें और रिकॉर्ड करें। अपनी फिटनेस और सेहत पर आसानी से नज़र रखें।</string>
+    <string name="ht_onboarding_title_2">शरीर के विभिन्न डेटा की निगरानी</string>
+    <string name="ht_onboarding_desc_2">अपने शरीर के विभिन्न रीडिंग रिकॉर्ड करें और समय के साथ होने वाले बदलावों की निगरानी करें, ताकि आप अपने स्वास्थ्य रुझानों को बेहतर समझ सकें।</string>
+    <string name="ht_onboarding_title_3">दवाइयों की रिमाइंडर सेट करें</string>
+    <string name="ht_onboarding_desc_3">अपनी दवाइयों के लिए रिमाइंडर सेट करें और समय पर अलर्ट पाएं। कोई भी डोज़ मिस न करें और अपने उपचार को सही दिशा में बनाए रखें।</string>
+    <string name="ht_onboarding_title_4">अस्वीकरण</string>
+    <string name="ht_onboarding_desc_4">यह ऐप व्यक्तिगत दैनिक रक्तचाप ट्रैकिंग के लिए बनाया गया है और पेशेवर चिकित्सीय सलाह प्रदान नहीं करता। पेशेवर स्वास्थ्य मार्गदर्शन और निदान के लिए, कृपया किसी योग्य स्वास्थ्य सेवा प्रदाता या चिकित्सा संस्थान से परामर्श करें।</string>
+    <string name="ht_onboarding_start">शुरू करें</string>
 </resources>

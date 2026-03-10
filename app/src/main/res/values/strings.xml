@@ -1075,6 +1075,15 @@ healthcare provider or medical institution.</string>
     <string name="ht_next">Next</string>
     <string name="ht_start_health_journey">Start Health Journey!</string>
     <string name="ht_guide_bs_des">Click to add your first Blood Sugar reading now.</string>
+    <string name="ht_onboarding_title_1">Keep Track of Trends</string>
+    <string name="ht_onboarding_desc_1">Check and record your heart rate anytime. Keep track of your fitness and well-being easily.</string>
+    <string name="ht_onboarding_title_2">Various body data monitoring</string>
+    <string name="ht_onboarding_desc_2">Record various data readings from your body and monitor changes over time to better understand your health trends.</string>
+    <string name="ht_onboarding_title_3">Set Medicine Reminders</string>
+    <string name="ht_onboarding_desc_3">Set reminders for your medicines and get alerts on time. Never miss a dose and stay on track with your treatment.</string>
+    <string name="ht_onboarding_title_4">Disclaimers</string>
+    <string name="ht_onboarding_desc_4">We are designed for personal daily blood pressure tracking and does not offer professional medical advice. For professional health guidance and diagnosis, we strongly encourage you to consult with a qualified healthcare provider or medical institution.</string>
+    <string name="ht_onboarding_start">Start</string>
     <string name="ht_target_range">Target Range</string>
     <string name="ht_target_range_temp">Target Range(%1$s)</string>
     <string name="ht_reset">Reset</string>
