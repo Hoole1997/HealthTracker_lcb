@@ -15,7 +15,7 @@
         <item name="android:letterSpacing">0</item>
         <item name="android:textSize">@dimen/sp_18</item>
         <item name="android:textColor">@color/white90</item>
-        <item name="backgroundTint">@color/ht_selector_btn_color</item>
+        <item name="backgroundTint">@color/tr_selector_btn_color</item>
         <item name="rippleColor">@color/c5_8</item>
     </style>
 
@@ -67,7 +67,7 @@
 
     <!-- Custom DatePicker Positive Button (确认按钮) -->
     <style name="CustomDatePickerPositiveButton" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/ht_datepicker_positive_button_selector</item>
+        <item name="android:textColor">@color/tr_datepicker_positive_button_selector</item>
         <item name="rippleColor">@color/c5_8</item>
     </style>
 

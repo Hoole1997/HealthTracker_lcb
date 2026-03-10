@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.daily.health.manager.databinding.HtActivityGuideBinding
+import com.daily.health.manager.databinding.TrActivityGuideBinding
 import com.daily.health.manager.face.compose.OnboardingRoute
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.saveHasNewGuide
@@ -14,9 +14,9 @@ import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
 import net.corekit.core.report.ReportDataManager
 
-class GuideScreen : BaseMVVMActivity<BaseViewModel, HtActivityGuideBinding>() {
+class GuideScreen : BaseMVVMActivity<BaseViewModel, TrActivityGuideBinding>() {
 
-    override fun createViewBinding() = HtActivityGuideBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivityGuideBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 

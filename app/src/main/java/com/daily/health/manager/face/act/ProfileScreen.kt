@@ -44,7 +44,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.constants.KEY_HAS_ADD_PROFILE
-import com.daily.health.manager.databinding.HtActivityProfileBinding
+import com.daily.health.manager.databinding.TrActivityProfileBinding
 import com.daily.health.manager.getUserAge
 import com.daily.health.manager.isMale
 import com.daily.health.manager.face.widget.NumberPickerView
@@ -59,7 +59,7 @@ import com.hjq.toast.Toaster
 import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 
-class ProfileActivity: BaseInterActivity<BaseViewModel, HtActivityProfileBinding>() {
+class ProfileActivity: BaseInterActivity<BaseViewModel, TrActivityProfileBinding>() {
     companion object{
         private const val TAG = "ProfileActivity"
 
@@ -94,7 +94,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, HtActivityProfileBinding
 
 
 
-    override fun createViewBinding() = HtActivityProfileBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivityProfileBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -165,7 +165,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, HtActivityProfileBinding
         saveUserAge(age)
         saveUserGender(gender)
         SpUtils.putBoolean(KEY_HAS_ADD_PROFILE, true)
-        Toaster.show(getString(R.string.ht_save_success))
+        Toaster.show(getString(R.string.tr_save_success))
 
         when (launchMode) {
             MODE_GUIDE -> {
@@ -216,7 +216,7 @@ private fun ProfileScreen(
         ProfileTopBar(onBack = onBack)
 
         Text(
-            text = stringResource(R.string.ht_choose_your_gender),
+            text = stringResource(R.string.tr_choose_your_gender),
             color = colorResource(R.color.t1),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
@@ -224,7 +224,7 @@ private fun ProfileScreen(
         )
 
         Text(
-            text = stringResource(R.string.ht_txt_profile_des),
+            text = stringResource(R.string.tr_txt_profile_des),
             color = colorResource(R.color.color_666),
             fontSize = 16.sp,
             modifier = Modifier.padding(start = 14.dp, end = 16.dp, top = 12.dp)
@@ -239,21 +239,21 @@ private fun ProfileScreen(
             GenderCard(
                 modifier = Modifier.weight(1f),
                 selected = gender == 0,
-                iconRes = R.mipmap.ht_ic_male,
-                labelRes = R.string.ht_male,
+                iconRes = R.mipmap.tr_ic_male,
+                labelRes = R.string.tr_male,
                 onClick = { onGenderChanged(0) }
             )
             GenderCard(
                 modifier = Modifier.weight(1f),
                 selected = gender == 1,
-                iconRes = R.mipmap.ht_ic_female,
-                labelRes = R.string.ht_female,
+                iconRes = R.mipmap.tr_ic_female,
+                labelRes = R.string.tr_female,
                 onClick = { onGenderChanged(1) }
             )
         }
 
         Text(
-            text = stringResource(R.string.ht_choose_your_age),
+            text = stringResource(R.string.tr_choose_your_age),
             color = colorResource(R.color.t1),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
@@ -269,7 +269,7 @@ private fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth(),
                 factory = { ctx ->
                     val root = LayoutInflater.from(ctx)
-                        .inflate(R.layout.ht_layout_profile_age_picker, null, false)
+                        .inflate(R.layout.tr_layout_profile_age_picker, null, false)
                     val picker = root.findViewById<NumberPickerView>(R.id.numberPicker)
 
                     picker.apply {
@@ -311,13 +311,13 @@ private fun ProfileScreen(
 
         if (isGuideMode) {
             PrimaryActionButton(
-                textRes = R.string.ht_text_continue,
+                textRes = R.string.tr_text_continue,
                 enabled = true,
                 onClick = onContinue,
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
             Text(
-                text = stringResource(R.string.ht_skip),
+                text = stringResource(R.string.tr_skip),
                 color = colorResource(R.color.color_999),
                 fontSize = 16.sp,
                 modifier = Modifier
@@ -331,7 +331,7 @@ private fun ProfileScreen(
             )
         } else {
             PrimaryActionButton(
-                textRes = R.string.ht_save,
+                textRes = R.string.tr_save,
                 enabled = saveEnabled,
                 onClick = onSave,
                 modifier = Modifier
@@ -365,7 +365,7 @@ private fun ProfileTopBar(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ht_ic_back),
+                    painter = painterResource(R.drawable.tr_ic_back),
                     contentDescription = "back",
                     tint = Color.Unspecified,
                 )

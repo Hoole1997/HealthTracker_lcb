@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.daily.health.manager.databinding.HtDialogChooseGenderBinding
+import com.daily.health.manager.databinding.TrDialogChooseGenderBinding
 import com.daily.health.manager.isMale
 import com.daily.health.manager.saveUserGender
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
@@ -14,7 +14,7 @@ import com.healthtracker.framework.ext.clickWithDuration
 /**
  * 性别选择弹窗
  */
-class GenderChooseDialog : BaseVbDialogFragment<HtDialogChooseGenderBinding>() {
+class GenderChooseDialog : BaseVbDialogFragment<TrDialogChooseGenderBinding>() {
 
     private var onGenderConfirmed: (() -> Unit)? = null
     private var selectedGender: Int = if (isMale()) GENDER_MALE else GENDER_FEMALE
@@ -37,7 +37,7 @@ class GenderChooseDialog : BaseVbDialogFragment<HtDialogChooseGenderBinding>() {
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ): HtDialogChooseGenderBinding = HtDialogChooseGenderBinding.inflate(inflater, parent, attachToParent)
+    ): TrDialogChooseGenderBinding = TrDialogChooseGenderBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         setupGenderGroup()

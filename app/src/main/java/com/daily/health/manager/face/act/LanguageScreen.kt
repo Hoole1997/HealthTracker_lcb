@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
 import com.daily.health.manager.config.models.PushConfig
-import com.daily.health.manager.databinding.HtActivityLanguageSelectBinding
+import com.daily.health.manager.databinding.TrActivityLanguageSelectBinding
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
@@ -62,10 +62,10 @@ import org.koin.android.ext.android.inject
 import com.daily.health.manager.face.compose.HealthTopBar
 
 
-class LanguageScreen: BaseMVVMActivity<BaseViewModel, HtActivityLanguageSelectBinding>() {
+class LanguageScreen: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBinding>() {
 
 
-    override fun createViewBinding() = HtActivityLanguageSelectBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivityLanguageSelectBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -210,7 +210,7 @@ private fun LanguageSelectScreen(
             .background(bgColor)
     ) {
         HealthTopBar(
-            title = stringResource(R.string.ht_choose_language),
+            title = stringResource(R.string.tr_choose_language),
             onBack = if (applyChange) onBack else null,
             rightAction = {
                 TextButton(
@@ -224,7 +224,7 @@ private fun LanguageSelectScreen(
                 ) {
                     val confirmColor = if (confirmEnabled) colorResource(R.color.c5) else Color(android.graphics.Color.DKGRAY)
                     Text(
-                        text = stringResource(R.string.ht_confirm),
+                        text = stringResource(R.string.tr_confirm),
                         color = confirmColor,
                         fontSize = 16.sp,
                     )
@@ -298,7 +298,7 @@ private fun LanguageItem(
             )
             if (isSelected) {
                 Image(
-                    painter = painterResource(R.drawable.ht_ic_checked),
+                    painter = painterResource(R.drawable.tr_ic_checked),
                     contentDescription = "selected",
                     modifier = Modifier.size(18.dp)
                 )

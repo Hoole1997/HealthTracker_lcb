@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.daily.health.manager.data.utils.DateTimeUtils
-import com.daily.health.manager.databinding.HtDialogAlarmTimeSelectBinding
+import com.daily.health.manager.databinding.TrDialogAlarmTimeSelectBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.getRobotoBold
 
-class AlarmTimeSelectDialog(private val def: Pair<Int,Int>? = null,private val callBack:((Pair<Int, Int>)-> Unit)? = null) : BaseBottomSheetDialogFragment<HtDialogAlarmTimeSelectBinding>() {
+class AlarmTimeSelectDialog(private val def: Pair<Int,Int>? = null,private val callBack:((Pair<Int, Int>)-> Unit)? = null) : BaseBottomSheetDialogFragment<TrDialogAlarmTimeSelectBinding>() {
 
     companion object{
         fun show(manager: FragmentManager, def: Pair<Int,Int>? = null, callBack:((Pair<Int, Int>)-> Unit)? = null){
@@ -35,7 +35,7 @@ class AlarmTimeSelectDialog(private val def: Pair<Int,Int>? = null,private val c
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtDialogAlarmTimeSelectBinding.inflate(inflater, parent, attachToParent)
+    ) = TrDialogAlarmTimeSelectBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.run {

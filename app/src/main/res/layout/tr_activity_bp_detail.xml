@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionBarSize"
+        android:background="@color/c5"
+
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"
+            android:scaleType="center"
+            android:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/tr_ic_back" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title"
+            style="@style/TextViewFont_RobotoBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_1"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="@string/tr_result"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_18"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_back"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:paddingHorizontal="@dimen/dp_10"
+            android:scaleType="center"
+            android:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/tr_ic_header_edit" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_20"
+            android:scaleType="center"
+            android:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/tr_ic_header_delete" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/dp_16"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_bar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/v_header_back"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/c5"
+                app:layout_constraintBottom_toTopOf="@id/bp_status_view"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_systolic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_16"
+                style="@style/TextViewFont_RobotoRegular"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_9AE4C9"
+                android:text="@string/tr_systolic"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_diastolic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextViewFont_RobotoRegular"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_systolic"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_9AE4C9"
+                android:text="@string/tr_diastolic"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_pulse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextViewFont_RobotoRegular"
+                android:layout_marginEnd="@dimen/dp_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_systolic"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_9AE4C9"
+                android:text="@string/tr_pulse"/>
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_systolic_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextViewFont_RobotoBold"
+                android:includeFontPadding="false"
+                android:layout_marginTop="@dimen/dp_8"
+                app:layout_constraintStart_toStartOf="@id/tv_systolic"
+                app:layout_constraintTop_toBottomOf="@id/tv_systolic"
+                app:layout_constraintEnd_toEndOf="@id/tv_systolic"
+                android:textSize="@dimen/sp_32"
+                android:textColor="@color/white"
+                tools:text="117"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_diastolic_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextViewFont_RobotoBold"
+                android:includeFontPadding="false"
+                android:layout_marginTop="@dimen/dp_8"
+                app:layout_constraintStart_toStartOf="@id/tv_diastolic"
+                app:layout_constraintTop_toBottomOf="@id/tv_diastolic"
+                app:layout_constraintEnd_toEndOf="@id/tv_diastolic"
+                android:textSize="@dimen/sp_32"
+                android:textColor="@color/white"
+                tools:text="75"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_pulse_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextViewFont_RobotoBold"
+                android:includeFontPadding="false"
+                android:layout_marginTop="@dimen/dp_8"
+                app:layout_constraintStart_toStartOf="@id/tv_pulse"
+                app:layout_constraintTop_toBottomOf="@id/tv_pulse"
+                app:layout_constraintEnd_toEndOf="@id/tv_pulse"
+                android:textSize="@dimen/sp_32"
+                android:textColor="@color/white"
+                tools:text="70"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_time"
+                style="@style/TextViewFont_RobotoRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_16"
+                android:textColor="@color/white70"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintTop_toBottomOf="@id/tv_systolic_value"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="2025-10-11 15:12" />
+
+            <View
+                android:id="@+id/v_leve_status"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/tr_bg_detail_header"
+                app:layout_constraintBottom_toBottomOf="@id/v_bg_bottom"
+                app:layout_constraintTop_toTopOf="@id/bp_status_view" />
+
+            <View
+                android:id="@+id/v_bg_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                app:layout_constraintTop_toTopOf="@id/bp_status_view"
+                android:layout_marginTop="@dimen/dp_56"/>
+
+            <com.daily.health.manager.face.weight.LeveStatusView
+                android:id="@+id/bp_status_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tr_bg_rect_white_12"
+                android:paddingHorizontal="@dimen/dp_16"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:paddingVertical="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_12"
+                app:lsvRangeTextColor = "@color/t1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_time"/>
+
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ll_chart_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_20"
+                android:paddingTop="@dimen/dp_16"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/expert_advice_view"
+                android:background="@drawable/tr_bg_rect_white_12"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/ll_bp_line_des"
+                    layout="@layout/tr_layout_bp_chart_des"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.patrykandpatrick.vico.views.cartesian.CartesianChartView
+                    android:id="@+id/chart_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_240"
+                    android:layout_marginHorizontal="@dimen/dp_16"
+                    tools:previewLineSeriesCount="2"
+                    tools:previewMaxY="300"
+                    tools:previewMaxX="7"
+                    tools:chartStyle="@style/BloodPressureChartStyle"
+                    app:layout_constraintTop_toBottomOf="@id/ll_bp_line_des"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+            <!-- 专家建议自定义控件 -->
+            <com.daily.health.manager.face.widget.ExpertAdviceView
+                android:id="@+id/expert_advice_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ad_Container"
+                app:eav_showMask="true"
+                app:eav_countdownSeconds="5"
+                app:eav_blurRadius="5"
+                app:eav_minHeightWithMask="@dimen/dp_237" />
+
+            <FrameLayout
+                android:id="@+id/ad_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/dp_12"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/bp_status_view"
+                android:background="@drawable/tr_bg_rect_white_12"
+                android:backgroundTint="#EEF5FF"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.daily.health.manager.App
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.HtActivityFeedbackBinding
+import com.daily.health.manager.databinding.TrActivityFeedbackBinding
 import com.daily.health.manager.face.adapter.ChoosePhotoRCVAdapter
 import com.daily.health.manager.face.dialog.ImgGetTypeDialog
 import com.daily.health.manager.utils.FeedbackUtils
@@ -23,7 +23,7 @@ import com.hjq.toast.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FeedbackScreen: BaseMVVMActivity<BaseViewModel, HtActivityFeedbackBinding>() {
+class FeedbackScreen: BaseMVVMActivity<BaseViewModel, TrActivityFeedbackBinding>() {
     
     companion object {
         private const val MAX_PHOTO_COUNT = 6
@@ -77,7 +77,7 @@ class FeedbackScreen: BaseMVVMActivity<BaseViewModel, HtActivityFeedbackBinding>
         }
     }
     
-    override fun createViewBinding() = HtActivityFeedbackBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivityFeedbackBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -116,7 +116,7 @@ class FeedbackScreen: BaseMVVMActivity<BaseViewModel, HtActivityFeedbackBinding>
         if(goFeedback){
             lifecycleScope.launch {
                 delay(100L)
-                Toaster.show(getString(R.string.ht_feedback_submitted))
+                Toaster.show(getString(R.string.tr_feedback_submitted))
                 finish()
             }
         }
@@ -151,7 +151,7 @@ class FeedbackScreen: BaseMVVMActivity<BaseViewModel, HtActivityFeedbackBinding>
     private fun handleAddPhoto() {
         // 检查图片数量限制
         if (photoList.size >= MAX_PHOTO_COUNT) {
-            Toaster.show(getString(R.string.ht_max_upload_photos, MAX_PHOTO_COUNT))
+            Toaster.show(getString(R.string.tr_max_upload_photos, MAX_PHOTO_COUNT))
             return
         }
         
@@ -219,7 +219,7 @@ class FeedbackScreen: BaseMVVMActivity<BaseViewModel, HtActivityFeedbackBinding>
                 Toast.makeText(
                     this
                     ,
-                    getString(R.string.ht_feedback_sending_failed),
+                    getString(R.string.tr_feedback_sending_failed),
                     Toast.LENGTH_SHORT
                 ).show()
             }

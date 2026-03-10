@@ -41,7 +41,7 @@ class HydrateReminderTimeAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.ht_item_hydrate_setting_reminder_time, parent, false)
+            .inflate(R.layout.tr_item_hydrate_setting_reminder_time, parent, false)
         return TimeViewHolder(view)
     }
 
@@ -75,9 +75,9 @@ class HydrateReminderTimeAdapter(
             val position = holder.bindingAdapterPosition
             if (position == RecyclerView.NO_POSITION) return@setOnClickListener
             DeleteHydrateReminderDialog(
-                message = activity.getString(R.string.ht_hydrate_reminder_delete_confirm_message),
-                leftText = activity.getString(R.string.ht_cancel),
-                rightText = activity.getString(R.string.ht_confirm),
+                message = activity.getString(R.string.tr_hydrate_reminder_delete_confirm_message),
+                leftText = activity.getString(R.string.tr_cancel),
+                rightText = activity.getString(R.string.tr_confirm),
                 onDialogListener = object : DialogListener {
                     override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                         if (which == DeleteHydrateReminderDialog.BUTTON_OK) {

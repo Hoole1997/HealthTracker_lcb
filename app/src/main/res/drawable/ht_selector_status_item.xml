@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android" android:enterFadeDuration="0" android:exitFadeDuration="0">
-    <item android:state_selected="false" android:drawable="@drawable/ht_bg_status_item_normal"/>
-    <item android:state_selected="true" android:drawable="@drawable/ht_bg_status_item_checked"/>
-</selector>

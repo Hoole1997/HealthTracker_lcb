@@ -12,7 +12,7 @@ import com.daily.health.manager.data.enums.BloodSugarRanges
 import com.daily.health.manager.data.enums.BloodSugarStatus
 import com.daily.health.manager.data.enums.BsUnit
 import com.daily.health.manager.data.enums.getStatusStringRes
-import com.daily.health.manager.databinding.HtDialogRangeEditBinding
+import com.daily.health.manager.databinding.TrDialogRangeEditBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
@@ -21,7 +21,7 @@ import com.healthtracker.framework.ext.showToast
 /**
  * 血糖目标范围编辑对话框
  */
-class RangeEditDialog : BaseBottomSheetDialogFragment<HtDialogRangeEditBinding>() {
+class RangeEditDialog : BaseBottomSheetDialogFragment<TrDialogRangeEditBinding>() {
 
     private lateinit var bloodSugarStatus: BloodSugarStatus
     private var currentUnit: BsUnit = BsUnit.MG_DL
@@ -35,7 +35,7 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<HtDialogRangeEditBinding>(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtDialogRangeEditBinding.inflate(inflater, parent, attachToParent)
+    ) = TrDialogRangeEditBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         // 获取传入参数
@@ -281,19 +281,19 @@ class RangeEditDialog : BaseBottomSheetDialogFragment<HtDialogRangeEditBinding>(
         // 1. 获取当前输入
         val ranges = getCurrentInputRanges()
         if (ranges == null) {
-            showToast(getString(R.string.ht_please_input_complete_data))
+            showToast(getString(R.string.tr_please_input_complete_data))
             return
         }
 
         // 2. 验证范围顺序
         if (!validateRanges(ranges)) {
-            showToast(getString(R.string.ht_range_order_error))
+            showToast(getString(R.string.tr_range_order_error))
             return
         }
 
         // 3. 验证范围边界
         if (!validateBounds(ranges)) {
-            showToast(getString(R.string.ht_range_bounds_error))
+            showToast(getString(R.string.tr_range_bounds_error))
             return
         }
 

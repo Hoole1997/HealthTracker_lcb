@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daily.health.manager.R
 import com.daily.health.manager.data.enums.BsUnit
-import com.daily.health.manager.databinding.HtActivityTargetRangeBinding
+import com.daily.health.manager.databinding.TrActivityTargetRangeBinding
 import com.daily.health.manager.face.adapter.TargetRangeAdapter
 import com.daily.health.manager.face.dialog.ConfirmDialog
 import com.daily.health.manager.face.dialog.RangeEditDialog
@@ -20,12 +20,12 @@ import kotlinx.coroutines.launch
 /**
  * 血糖目标范围设置页面
  */
-class TargetRangeScreen : BaseMVVMActivity<TargetRangeViewModel, HtActivityTargetRangeBinding>() {
+class TargetRangeScreen : BaseMVVMActivity<TargetRangeViewModel, TrActivityTargetRangeBinding>() {
 
     private lateinit var adapter: TargetRangeAdapter
     private var hasChanged = false  // 标记是否有修改
 
-    override fun createViewBinding() = HtActivityTargetRangeBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivityTargetRangeBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = TargetRangeViewModel::class.java
 
@@ -47,7 +47,7 @@ class TargetRangeScreen : BaseMVVMActivity<TargetRangeViewModel, HtActivityTarge
             showResetConfirmDialog()
         }
 
-        mViewBind.tvTitle.text = getString(R.string.ht_target_range_temp, BsUnit.getPreferredUnit().displayName)
+        mViewBind.tvTitle.text = getString(R.string.tr_target_range_temp, BsUnit.getPreferredUnit().displayName)
     }
 
     /**
@@ -114,7 +114,7 @@ class TargetRangeScreen : BaseMVVMActivity<TargetRangeViewModel, HtActivityTarge
                 // 2. 保存范围值
                 mViewModel.saveRanges(status, unit, ranges)
                 hasChanged = true
-                showToast(getString(R.string.ht_save_success))
+                showToast(getString(R.string.tr_save_success))
             }
         ).show(supportFragmentManager, "RangeEditDialog")
     }
@@ -124,17 +124,17 @@ class TargetRangeScreen : BaseMVVMActivity<TargetRangeViewModel, HtActivityTarge
      */
     private fun showResetConfirmDialog() {
         ConfirmDialog(
-            getString(R.string.ht_reset),
-            getString(R.string.ht_reset_all_ranges_confirm),
-            leftText = getString(R.string.ht_cancel),
-            rightText = getString(R.string.ht_confirm),
+            getString(R.string.tr_reset),
+            getString(R.string.tr_reset_all_ranges_confirm),
+            leftText = getString(R.string.tr_cancel),
+            rightText = getString(R.string.tr_confirm),
             onDialogListener = object :DialogListener{
                 override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                     super.onItemClick(dialogFragment, which)
                     if(which == R.id.btn_ok){
                         mViewModel.resetAllRanges()
                         hasChanged = true
-                        showToast(getString(R.string.ht_reset_success))
+                        showToast(getString(R.string.tr_reset_success))
                     }
                 }
             }

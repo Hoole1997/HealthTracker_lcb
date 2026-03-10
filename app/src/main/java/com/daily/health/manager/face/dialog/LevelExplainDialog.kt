@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.daily.health.manager.databinding.HtDialogLevelExplainBinding
+import com.daily.health.manager.databinding.TrDialogLevelExplainBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
@@ -14,7 +14,7 @@ import com.healthtracker.framework.ext.gone
 class LevelExplainDialog(
     private val items: List<LevelExplainItem>,
     private val des: String? = null
-) : BaseBottomSheetDialogFragment<HtDialogLevelExplainBinding>() {
+) : BaseBottomSheetDialogFragment<TrDialogLevelExplainBinding>() {
 
     constructor() : this(emptyList(), null)
 
@@ -36,7 +36,7 @@ class LevelExplainDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtDialogLevelExplainBinding.inflate(inflater, parent, attachToParent)
+    ) = TrDialogLevelExplainBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {

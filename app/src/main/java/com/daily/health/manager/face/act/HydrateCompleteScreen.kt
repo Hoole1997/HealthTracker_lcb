@@ -4,14 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
-import com.daily.health.manager.databinding.HtActivityHydrateCompleteBinding
+import com.daily.health.manager.databinding.TrActivityHydrateCompleteBinding
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.startActivity
 import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import com.daily.health.manager.utils.loadNative
 
-class HydrateCompleteScreen : BaseInterActivity<BaseViewModel, HtActivityHydrateCompleteBinding>() {
+class HydrateCompleteScreen : BaseInterActivity<BaseViewModel, TrActivityHydrateCompleteBinding>() {
 
     companion object {
         fun start(context: Context) {
@@ -19,14 +19,14 @@ class HydrateCompleteScreen : BaseInterActivity<BaseViewModel, HtActivityHydrate
         }
     }
 
-    override fun createViewBinding(): HtActivityHydrateCompleteBinding =
-        HtActivityHydrateCompleteBinding.inflate(layoutInflater)
+    override fun createViewBinding(): TrActivityHydrateCompleteBinding =
+        TrActivityHydrateCompleteBinding.inflate(layoutInflater)
 
     override fun getVMModelClass(): Class<BaseViewModel> = BaseViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.apply {
-            tvMessage.setText(R.string.ht_hydrate_complete_message)
+            tvMessage.setText(R.string.tr_hydrate_complete_message)
 
             // 完成按钮
             btnDone.setOnClickListener { finish() }

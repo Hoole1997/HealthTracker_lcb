@@ -33,7 +33,7 @@ fun AiAssistantScreen(
     Column(modifier = modifier.fillMaxSize()) {
         // 使用项目通用的 TopBar
         HealthTopBar(
-            title = stringResource(id = R.string.ht_ai_assistant_title),
+            title = stringResource(id = R.string.tr_ai_assistant_title),
             onBack = onBack
         )
 
@@ -47,7 +47,7 @@ fun AiAssistantScreen(
         ) {
             Spacer(modifier = Modifier.height(140.dp))
             Image(
-                painter = painterResource(id = R.mipmap.ht_ic_ai_empty),
+                painter = painterResource(id = R.mipmap.tr_ic_ai_empty),
                 contentDescription = null,
                 modifier = Modifier.size(182.dp)
             )
@@ -56,7 +56,7 @@ fun AiAssistantScreen(
 
             Text(
                 modifier = Modifier.padding(horizontal = 12.dp),
-                text = stringResource(id = R.string.ht_ai_empty_desc),
+                text = stringResource(id = R.string.tr_ai_empty_desc),
                 style = androidx.compose.ui.text.TextStyle(
                     color = colorResource(R.color.color_999),
                     fontSize = 14.sp,

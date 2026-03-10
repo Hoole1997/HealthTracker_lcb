@@ -231,7 +231,7 @@ private fun NotificationPreviewCard(alarmType: Int) {
     ) {
         // 背景水印：闹钟 2D 装饰（方案 A）
         Icon(
-            painter = painterResource(id = R.drawable.ht_ic_setting_alarm),
+            painter = painterResource(id = R.drawable.tr_ic_setting_alarm),
             contentDescription = null,
             modifier = Modifier
                 .size(120.dp)
@@ -321,7 +321,7 @@ private fun WhiteContentArea(
     ) {
         // 标题
         Text(
-            text = stringResource(id = R.string.ht_notification_grant_permissions),
+            text = stringResource(id = R.string.tr_notification_grant_permissions),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = TitleColor,
@@ -354,7 +354,7 @@ private fun WhiteContentArea(
         ) {
             Text(
                 text = stringResource(
-                    id = if (isDoNotAsk) R.string.ht_go_to_settings else R.string.ht_turn_on
+                    id = if (isDoNotAsk) R.string.tr_go_to_settings else R.string.tr_turn_on
                 ),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,

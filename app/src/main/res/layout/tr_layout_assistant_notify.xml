@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="64dp"
+    android:background="@drawable/tr_bg_rect_white_12"
+    android:gravity="center_vertical">
+
+
+    <ImageView
+        android:id="@+id/iv_type"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="@dimen/dp_2"
+
+        android:layout_marginStart="16dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/tr_ic_assistant"
+        android:background="@drawable/tr_bg_assistant"/>
+
+
+    <TextView
+        android:id="@+id/tv_time"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="8dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:textColor="@color/t1"
+        android:textSize="14sp"
+        tools:text="Your Health Assistant" />
+
+    <ImageView
+        android:id="@+id/iv_confirm"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="10dp"
+        android:scaleType="center"
+        android:background="@drawable/tr_circle_shape"
+        android:backgroundTint="#EE5845"
+        android:src="@drawable/tr_ic_call_accept"/>
+
+   <ImageView
+       android:id="@+id/iv_close"
+       android:layout_width="32dp"
+       android:layout_height="32dp"
+       android:layout_marginEnd="10dp"
+       android:scaleType="center"
+
+       android:background="@drawable/tr_circle_shape"
+       android:backgroundTint="#02BC77"
+       android:src="@drawable/tr_ic_call_decline"/>
+
+
+</LinearLayout>

@@ -125,8 +125,8 @@ private fun HomeGuideStep.layoutSpec(): HomeGuideLayoutSpec = when (this) {
         handLeftFromActionLeft = 75f,
         handTopFromActionTop = 58f,
         handSize = 123f,
-        arrowRes = R.mipmap.ht_ic_guide_arrow_1,
-        messageRes = R.string.ht_guide_hr_des,
+        arrowRes = R.mipmap.tr_ic_guide_arrow_1,
+        messageRes = R.string.tr_guide_hr_des,
     )
 
     HomeGuideStep.BLOOD_PRESSURE -> HomeGuideLayoutSpec(
@@ -142,8 +142,8 @@ private fun HomeGuideStep.layoutSpec(): HomeGuideLayoutSpec = when (this) {
         handLeftFromActionLeft = 95f,
         handTopFromActionTop = -8f,
         handSize = 114f,
-        arrowRes = R.mipmap.ht_ic_guide_arrow_1,
-        messageRes = R.string.ht_guide_bp_des,
+        arrowRes = R.mipmap.tr_ic_guide_arrow_1,
+        messageRes = R.string.tr_guide_bp_des,
     )
 
     HomeGuideStep.BLOOD_SUGAR -> HomeGuideLayoutSpec(
@@ -159,8 +159,8 @@ private fun HomeGuideStep.layoutSpec(): HomeGuideLayoutSpec = when (this) {
         handLeftFromActionLeft = 80f,
         handTopFromActionTop = 0f,
         handSize = 114f,
-        arrowRes = R.mipmap.ht_ic_guide_arrow_2,
-        messageRes = R.string.ht_guide_bs_des,
+        arrowRes = R.mipmap.tr_ic_guide_arrow_2,
+        messageRes = R.string.tr_guide_bs_des,
     )
 }
 
@@ -321,7 +321,7 @@ internal fun HomeFeatureGuideOverlay(
                 }
         ) {
             Text(
-                text = stringResource(id = R.string.ht_next),
+                text = stringResource(id = R.string.tr_next),
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
@@ -330,7 +330,7 @@ internal fun HomeFeatureGuideOverlay(
         }
 
         Image(
-            painter = painterResource(id = R.mipmap.ht_ic_guide_hand),
+            painter = painterResource(id = R.mipmap.tr_ic_guide_hand),
             contentDescription = null,
             modifier = Modifier
                 .offset {

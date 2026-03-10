@@ -69,7 +69,7 @@ import com.daily.health.manager.constants.LANDING_NOTIFICATION_FROM
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_TITLE
 import com.daily.health.manager.constants.UNINSTALL
 import com.daily.health.manager.data.utils.DateTimeUtils
-import com.daily.health.manager.databinding.HtActivitySplashBinding
+import com.daily.health.manager.databinding.TrActivitySplashBinding
 import com.daily.health.manager.hasNewGuide
 import com.daily.health.manager.receiver.NotificationActionReceiver
 import com.daily.health.manager.face.history.HistoryRecordItem
@@ -111,7 +111,7 @@ import com.daily.health.manager.alarm.PermissionManager
 import kotlin.math.ceil
 import com.healthtracker.framework.R as FrameworkR
 
-class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>() {
+class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>() {
 
     companion object {
         private const val TAG = "SplashScreen"
@@ -164,7 +164,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, HtActivitySplashBinding>(
         )
     }
 
-    override fun createViewBinding() = HtActivitySplashBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivitySplashBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = SplashViewModel::class.java
     private var launchTime = 0L
@@ -723,9 +723,9 @@ private fun SplashScreen(
                 )
             }
 
-            // 图标圆形模糊背景光晕（替换为设计图资源 ht_bg_splash_logo）
+            // 图标圆形模糊背景光晕（替换为设计图资源 tr_bg_splash_logo）
             Image(
-                painter = painterResource(id = R.mipmap.ht_bg_splash_logo),
+                painter = painterResource(id = R.mipmap.tr_bg_splash_logo),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -739,7 +739,7 @@ private fun SplashScreen(
             )
 
             Image(
-                painter = painterResource(id = R.mipmap.ht_ic_logo_sq),
+                painter = painterResource(id = R.mipmap.tr_ic_logo_sq),
                 contentDescription = null,
                 modifier = Modifier
                     .size(96.dp)
@@ -794,7 +794,7 @@ private fun SplashScreen(
             )
 
             Text(
-                text = stringResource(id = R.string.ht_loading_pure),
+                text = stringResource(id = R.string.tr_loading_pure),
                 color = colorResource(id = R.color.c5),
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(FrameworkR.font.inter_medium)),
@@ -818,14 +818,14 @@ private fun RecentRecordCard(
     val context = LocalContext.current
 
     val typeName = when (item.getRecordType()) {
-        HistoryRecordItem.RecordType.BLOOD_PRESSURE -> stringResource(id = R.string.ht_blood_pressure)
-        HistoryRecordItem.RecordType.BLOOD_SUGAR -> stringResource(id = R.string.ht_blood_suger)
-        HistoryRecordItem.RecordType.HEART_RATE -> stringResource(id = R.string.ht_heart_rate)
-        HistoryRecordItem.RecordType.BMI_RECORD -> stringResource(id = R.string.ht_bmi)
+        HistoryRecordItem.RecordType.BLOOD_PRESSURE -> stringResource(id = R.string.tr_blood_pressure)
+        HistoryRecordItem.RecordType.BLOOD_SUGAR -> stringResource(id = R.string.tr_blood_suger)
+        HistoryRecordItem.RecordType.HEART_RATE -> stringResource(id = R.string.tr_heart_rate)
+        HistoryRecordItem.RecordType.BMI_RECORD -> stringResource(id = R.string.tr_bmi)
         else -> ""
     }
 
-    val title = stringResource(id = R.string.ht_last_measurement, typeName)
+    val title = stringResource(id = R.string.tr_last_measurement, typeName)
     val levelText = item.getLevel(context)
     val timeText = DateTimeUtils.formatDateTime(item.getRecordTime())
     val statusValue = item.getStatus(context)
@@ -833,10 +833,10 @@ private fun RecentRecordCard(
     val statusText = when {
         statusValue.isNullOrBlank() -> null
         item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
-            "${stringResource(id = R.string.ht_pulse)}:$statusValue"
+            "${stringResource(id = R.string.tr_pulse)}:$statusValue"
         }
         item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
-            "${stringResource(id = R.string.ht_status)}:$statusValue"
+            "${stringResource(id = R.string.tr_status)}:$statusValue"
         }
         else -> statusValue
     }

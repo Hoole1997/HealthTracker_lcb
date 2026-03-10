@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.daily.health.manager.databinding.HtDialogDosesTimesBinding
+import com.daily.health.manager.databinding.TrDialogDosesTimesBinding
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.getRobotoBold
 
 class DosesTimesDialog(private val def: Int = 3,private val callBack: ((Int) -> Unit)? = null) :
-    BaseVbDialogFragment<HtDialogDosesTimesBinding>() {
+    BaseVbDialogFragment<TrDialogDosesTimesBinding>() {
 
     constructor() : this(3,null)
 
@@ -18,7 +18,7 @@ class DosesTimesDialog(private val def: Int = 3,private val callBack: ((Int) -> 
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtDialogDosesTimesBinding.inflate(layoutInflater)
+    ) = TrDialogDosesTimesBinding.inflate(layoutInflater)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.run {

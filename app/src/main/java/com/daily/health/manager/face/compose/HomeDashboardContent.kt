@@ -97,7 +97,7 @@ sealed class HomeFeatureCardUi(
         illustrationOffsetY = 5.dp,
         illustrationWidth = 72.dp,
         illustrationHeight = 72.dp,
-        illustrationRes = R.mipmap.ht_home_card_bp,
+        illustrationRes = R.mipmap.tr_home_card_bp,
         buttonColor = Color(0xFF20B9BF),
     )
 
@@ -113,7 +113,7 @@ sealed class HomeFeatureCardUi(
         illustrationOffsetY = 6.dp,
         illustrationWidth = 62.dp,
         illustrationHeight = 68.dp,
-        illustrationRes = R.mipmap.ht_home_card_bs,
+        illustrationRes = R.mipmap.tr_home_card_bs,
         buttonColor = Color(0xFFFE5D5E),
         guideAnchorOnButton = true,
     )
@@ -130,7 +130,7 @@ sealed class HomeFeatureCardUi(
         illustrationOffsetY = 15.dp,
         illustrationWidth = 60.dp,
         illustrationHeight = 60.dp,
-        illustrationRes = R.mipmap.ht_home_card_cholesterol,
+        illustrationRes = R.mipmap.tr_home_card_cholesterol,
         buttonColor = Color(0xFFFFAA22),
     )
 
@@ -146,7 +146,7 @@ sealed class HomeFeatureCardUi(
         illustrationOffsetY = 20.dp,
         illustrationWidth = 48.dp,
         illustrationHeight = 51.dp,
-        illustrationRes = R.mipmap.ht_home_card_weight,
+        illustrationRes = R.mipmap.tr_home_card_weight,
         buttonColor = Color(0xFF7790FF),
     )
 
@@ -163,7 +163,7 @@ sealed class HomeFeatureCardUi(
         illustrationOffsetY = 16.dp,
         illustrationWidth = 39.dp,
         illustrationHeight = 55.dp,
-        illustrationRes = R.mipmap.ht_home_card_water,
+        illustrationRes = R.mipmap.tr_home_card_water,
         buttonColor = Color(0xFF3CBAF0),
     )
 
@@ -181,7 +181,7 @@ sealed class HomeFeatureCardUi(
         illustrationOffsetY = 18.dp,
         illustrationWidth = 63.dp,
         illustrationHeight = 47.dp,
-        illustrationRes = R.mipmap.ht_home_card_step,
+        illustrationRes = R.mipmap.tr_home_card_step,
         buttonColor = Color(0xFFFF6E20),
     )
 }
@@ -369,7 +369,7 @@ private fun HeroCard(
                     }
             ) {
                 Image(
-                    painter = painterResource(id = R.mipmap.ht_home_hero_ecg),
+                    painter = painterResource(id = R.mipmap.tr_home_hero_ecg),
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
@@ -381,7 +381,7 @@ private fun HeroCard(
                     scale = scale,
                 )
                 Image(
-                    painter = painterResource(id = R.mipmap.ht_home_hero_heart),
+                    painter = painterResource(id = R.mipmap.tr_home_hero_heart),
                     contentDescription = null,
                     modifier = Modifier
                         .offset((-10).dp * scale, 24.dp * scale)
@@ -487,7 +487,7 @@ private fun HeroCard(
                             modifier = Modifier.offset(y = 2.dp * scale)
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.ht_ic_blood_suger_status_arrow),
+                            painter = painterResource(id = R.drawable.tr_ic_blood_suger_status_arrow),
                             colorFilter = ColorFilter.tint(Color.White),
                             contentDescription = null,
                             modifier = Modifier
@@ -667,13 +667,13 @@ private fun RecordPill(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(id = R.string.ht_record),
+                text = stringResource(id = R.string.tr_record),
                 color = textColor,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
             )
             Image(
-                painter = painterResource(id = R.drawable.ht_ic_feature_arrow),
+                painter = painterResource(id = R.drawable.tr_ic_feature_arrow),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(textColor),
                 modifier = Modifier.size(18.dp)
@@ -703,7 +703,7 @@ private fun HomeDashboardScreenPreview() {
             ),
             cards = listOf(
                 HomeFeatureCardUi.BloodPressure(
-                    title = stringResource(R.string.ht_blood_pressure),
+                    title = stringResource(R.string.tr_blood_pressure),
                     value = "100/45",
                     unit = "mmHg",
                 ),

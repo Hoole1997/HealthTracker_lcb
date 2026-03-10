@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
-import com.daily.health.manager.databinding.HtDialogAddTagBinding
+import com.daily.health.manager.databinding.TrDialogAddTagBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 
 class AddTagDialog(private val onSave: ((String) -> Unit)? = null) :
-    BaseBottomSheetDialogFragment<HtDialogAddTagBinding>() {
+    BaseBottomSheetDialogFragment<TrDialogAddTagBinding>() {
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtDialogAddTagBinding.inflate(layoutInflater, parent, attachToParent)
+    ) = TrDialogAddTagBinding.inflate(layoutInflater, parent, attachToParent)
 
 
     companion object{

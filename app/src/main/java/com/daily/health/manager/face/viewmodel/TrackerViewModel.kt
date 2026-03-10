@@ -89,7 +89,7 @@ class TrackerViewModel(
 
     private val stepRepository = StepRepository.get(App.INSTANCE)
     private val weekLabels: List<String> = App.INSTANCE.resources
-        .getStringArray(R.array.ht_week_simple)
+        .getStringArray(R.array.tr_week_simple)
         .toList()
     private val kiloFormatter = DecimalFormat("#.##", DecimalFormatSymbols(LanguageUtils.getAppLocale(App.INSTANCE)))
     private val _stepChartState = MutableStateFlow(ChartUiState())
@@ -465,7 +465,7 @@ class TrackerViewModel(
             precomputedRange = minY to maxY,
             axisSteps = STEP_AXIS_STEPS,
             startAxisFormatter = formatter,
-            baselineLabel = App.INSTANCE.getString(R.string.ht_daily_water_intake)
+            baselineLabel = App.INSTANCE.getString(R.string.tr_daily_water_intake)
         )
     }
 

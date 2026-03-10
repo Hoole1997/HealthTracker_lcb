@@ -9,8 +9,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.core.content.ContextCompat
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.HtFragmentRecordBinding
-import com.daily.health.manager.databinding.HtItemHealthChartCardBinding
+import com.daily.health.manager.databinding.TrFragmentRecordBinding
+import com.daily.health.manager.databinding.TrItemHealthChartCardBinding
 import com.daily.health.manager.tips.HealthMetric
 import com.daily.health.manager.face.act.HealthRecordScreen
 import com.daily.health.manager.face.act.HealthStatisticsScreen
@@ -33,7 +33,7 @@ import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
-class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
+class RecordFrg: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBinding>() {
 
     companion object{
         private const val TAG = "RecordFragment"
@@ -57,7 +57,7 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtFragmentRecordBinding.inflate(inflater, parent, attachToParent)
+    ) = TrFragmentRecordBinding.inflate(inflater, parent, attachToParent)
 
     override fun getVMModelClass() = TrackerViewModel::class.java
 
@@ -153,37 +153,37 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
     private fun setupHealthCards() {
         mViewBind?.run {
             // Blood Sugar
-            includeBs.ivIcon.setImageResource(R.mipmap.ht_home_card_bs)
-            includeBs.tvTitle.text = getString(R.string.ht_blood_suger)
+            includeBs.ivIcon.setImageResource(R.mipmap.tr_home_card_bs)
+            includeBs.tvTitle.text = getString(R.string.tr_blood_suger)
 
             // Blood Pressure
-            includeBp.ivIcon.setImageResource(R.mipmap.ht_home_card_bp)
-            includeBp.tvTitle.text = getString(R.string.ht_blood_pressure)
+            includeBp.ivIcon.setImageResource(R.mipmap.tr_home_card_bp)
+            includeBp.tvTitle.text = getString(R.string.tr_blood_pressure)
 
             // Heart Rate
-            includeHr.ivIcon.setImageResource(R.mipmap.ht_home_hero_heart)
-            includeHr.tvTitle.text = getString(R.string.ht_heart_rate)
+            includeHr.ivIcon.setImageResource(R.mipmap.tr_home_hero_heart)
+            includeHr.tvTitle.text = getString(R.string.tr_heart_rate)
 
             // Cholesterol
-            includeCho.ivIcon.setImageResource(R.mipmap.ht_home_card_cholesterol)
-            includeCho.tvTitle.text = getString(R.string.ht_cholesterol)
+            includeCho.ivIcon.setImageResource(R.mipmap.tr_home_card_cholesterol)
+            includeCho.tvTitle.text = getString(R.string.tr_cholesterol)
 
             // BMI (组合 Weight + BMI)
-            includeBmi.ivIcon.setImageResource(R.mipmap.ht_home_card_weight)
-            "${getString(R.string.ht_weight)} & ${getString(R.string.ht_bmi)}".also { includeBmi.tvTitle.text = it }
+            includeBmi.ivIcon.setImageResource(R.mipmap.tr_home_card_weight)
+            "${getString(R.string.tr_weight)} & ${getString(R.string.tr_bmi)}".also { includeBmi.tvTitle.text = it }
 
             // Steps
-            includeStep.ivIcon.setImageResource(R.mipmap.ht_home_card_step)
-            includeStep.tvTitle.text = getString(R.string.ht_step_count)
+            includeStep.ivIcon.setImageResource(R.mipmap.tr_home_card_step)
+            includeStep.tvTitle.text = getString(R.string.tr_step_count)
             includeStep.btnAdd.apply {
-                text = getString(R.string.ht_settings)
+                text = getString(R.string.tr_settings)
             }
 
             // Hydrate
-            includeHydrate.ivIcon.setImageResource(R.mipmap.ht_home_card_water)
-            includeHydrate.tvTitle.text = getString(R.string.ht_hydrate)
+            includeHydrate.ivIcon.setImageResource(R.mipmap.tr_home_card_water)
+            includeHydrate.tvTitle.text = getString(R.string.tr_hydrate)
             includeHydrate.btnAdd.apply {
-                text = getString(R.string.ht_settings)
+                text = getString(R.string.tr_settings)
             }
         }
     }
@@ -419,7 +419,7 @@ class RecordFrg: BaseMVVMFragment<TrackerViewModel, HtFragmentRecordBinding>() {
     /**
      * ✨ 简化：更新图表和空状态的可见性
      */
-    private fun updateChartVisibility(hasData: Boolean, cardBinding: HtItemHealthChartCardBinding?) {
+    private fun updateChartVisibility(hasData: Boolean, cardBinding: TrItemHealthChartCardBinding?) {
         cardBinding?.run {
             if (hasData) {
                 chartView.visible()

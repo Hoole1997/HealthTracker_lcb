@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.daily.health.manager.databinding.HtDialogComingSoonBinding
+import com.daily.health.manager.databinding.TrDialogComingSoonBinding
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.ext.click
 
@@ -15,7 +15,7 @@ import com.healthtracker.framework.ext.click
  */
 class ComingSoonDialog(
     private val onBackToToday: (() -> Unit)? = null
-) : BaseVbDialogFragment<HtDialogComingSoonBinding>() {
+) : BaseVbDialogFragment<TrDialogComingSoonBinding>() {
 
     companion object {
         fun show(
@@ -32,13 +32,13 @@ class ComingSoonDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtDialogComingSoonBinding.inflate(inflater, parent, attachToParent)
+    ) = TrDialogComingSoonBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {
-            tvTitle.text = context?.getString(com.daily.health.manager.R.string.ht_coming_soon_title)
-            tvMessage.text = context?.getString(com.daily.health.manager.R.string.ht_coming_soon_message)
-            btnBackToday.text = context?.getString(com.daily.health.manager.R.string.ht_back_to_today)
+            tvTitle.text = context?.getString(com.daily.health.manager.R.string.tr_coming_soon_title)
+            tvMessage.text = context?.getString(com.daily.health.manager.R.string.tr_coming_soon_message)
+            btnBackToday.text = context?.getString(com.daily.health.manager.R.string.tr_back_to_today)
 
             btnBackToday.click {
                 onBackToToday?.invoke()

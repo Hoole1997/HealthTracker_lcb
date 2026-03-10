@@ -22,14 +22,14 @@ class ChoosePhotoRCVAdapter(private val data: List<String>, private val listener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         picSize = parent.context.resources.getDimensionPixelSize(com.healthtracker.framework.R.dimen.dp_56)
-        return RecyclerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ht_feedback_item_rcv_photo, parent, false))
+        return RecyclerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.tr_feedback_item_rcv_photo, parent, false))
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
         when (position) {
             data.size -> {
                 //拍照或选择图片 触发按钮
-                holder.photoIV.setImageResource(R.drawable.ht_feedback_add_photo_dark)
+                holder.photoIV.setImageResource(R.drawable.tr_feedback_add_photo_dark)
                 holder.deleteIV.visibility = View.GONE
             }
             else -> {

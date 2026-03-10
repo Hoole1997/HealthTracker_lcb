@@ -141,10 +141,10 @@ private fun rememberTextLayout(page: OnboardingPageUi): OnboardingTextLayout {
 
 private val PreviewOnboardingPages = listOf(
     OnboardingPageUi(
-        imageRes = R.mipmap.ht_ic_guide_1,
-        titleRes = R.string.ht_onboarding_title_1,
-        descriptionRes = R.string.ht_onboarding_desc_1,
-        buttonRes = R.string.ht_next,
+        imageRes = R.mipmap.tr_ic_guide_1,
+        titleRes = R.string.tr_onboarding_title_1,
+        descriptionRes = R.string.tr_onboarding_desc_1,
+        buttonRes = R.string.tr_next,
         showArrow = true,
         imageTop = 139.dp,
         imageWidth = 264.2.dp,
@@ -154,10 +154,10 @@ private val PreviewOnboardingPages = listOf(
         imageScale = ContentScale.Fit
     ),
     OnboardingPageUi(
-        imageRes = R.mipmap.ht_ic_guide_2,
-        titleRes = R.string.ht_onboarding_title_2,
-        descriptionRes = R.string.ht_onboarding_desc_2,
-        buttonRes = R.string.ht_next,
+        imageRes = R.mipmap.tr_ic_guide_2,
+        titleRes = R.string.tr_onboarding_title_2,
+        descriptionRes = R.string.tr_onboarding_desc_2,
+        buttonRes = R.string.tr_next,
         showArrow = true,
         imageTop = 183.dp,
         imageWidth = 264.2.dp,
@@ -167,10 +167,10 @@ private val PreviewOnboardingPages = listOf(
         imageScale = ContentScale.Fit
     ),
     OnboardingPageUi(
-        imageRes = R.mipmap.ht_ic_guide_3,
-        titleRes = R.string.ht_onboarding_title_3,
-        descriptionRes = R.string.ht_onboarding_desc_3,
-        buttonRes = R.string.ht_next,
+        imageRes = R.mipmap.tr_ic_guide_3,
+        titleRes = R.string.tr_onboarding_title_3,
+        descriptionRes = R.string.tr_onboarding_desc_3,
+        buttonRes = R.string.tr_next,
         showArrow = true,
         imageTop = 144.dp,
         imageWidth = 264.2.dp,
@@ -180,10 +180,10 @@ private val PreviewOnboardingPages = listOf(
         imageScale = ContentScale.Fit
     ),
     OnboardingPageUi(
-        imageRes = R.mipmap.ht_ic_guide_4,
-        titleRes = R.string.ht_onboarding_title_4,
-        descriptionRes = R.string.ht_onboarding_desc_4,
-        buttonRes = R.string.ht_onboarding_start,
+        imageRes = R.mipmap.tr_ic_guide_4,
+        titleRes = R.string.tr_onboarding_title_4,
+        descriptionRes = R.string.tr_onboarding_desc_4,
+        buttonRes = R.string.tr_onboarding_start,
         showArrow = false,
         imageTop = 107.dp,
         imageWidth = 264.2.dp,

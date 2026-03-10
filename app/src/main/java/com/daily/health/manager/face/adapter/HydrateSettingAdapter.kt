@@ -48,16 +48,16 @@ class HydrateSettingAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_DAILY -> DailyViewHolder(
-                inflater.inflate(R.layout.ht_item_hydrate_setting_daily_intake, parent, false)
+                inflater.inflate(R.layout.tr_item_hydrate_setting_daily_intake, parent, false)
             )
             TYPE_CUP -> CupViewHolder(
-                inflater.inflate(R.layout.ht_item_hydrate_setting_cup_size, parent, false)
+                inflater.inflate(R.layout.tr_item_hydrate_setting_cup_size, parent, false)
             )
             TYPE_REMINDER -> ReminderContainerViewHolder(
-                inflater.inflate(R.layout.ht_item_hydrate_setting_reminder_container, parent, false)
+                inflater.inflate(R.layout.tr_item_hydrate_setting_reminder_container, parent, false)
             )
             TYPE_ADD_REMINDER -> AddReminderViewHolder(
-                inflater.inflate(R.layout.ht_item_hydrate_setting_add_reminder, parent, false)
+                inflater.inflate(R.layout.tr_item_hydrate_setting_add_reminder, parent, false)
             )
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
         }
@@ -174,7 +174,7 @@ class HydrateSettingAdapter(
         }
 
         private fun updateSelectValueText(unitIsMl: Boolean, valueStr: String) {
-            val unit = if (unitIsMl) R.string.ht_ml else R.string.ht_fl_oz
+            val unit = if (unitIsMl) R.string.tr_ml else R.string.tr_fl_oz
             tvSelectValue.text = valueStr
             tvSelectUnit.text = itemView.context.getString(unit).lowercase()
         }
@@ -204,7 +204,7 @@ class HydrateSettingAdapter(
 
             // 根据编辑模式更新删除图标显示与按钮文案
             timeAdapter?.setDeleteMode(isReminderEditMode)
-            tvEdit.setText(if (isReminderEditMode) R.string.ht_cancel else R.string.ht_hydration_reminder_edit)
+            tvEdit.setText(if (isReminderEditMode) R.string.tr_cancel else R.string.tr_hydration_reminder_edit)
 
             // 数据为空时显示空视图，隐藏编辑按钮与列表
             if (reminderTimes.isEmpty()) {
@@ -220,7 +220,7 @@ class HydrateSettingAdapter(
             tvEdit.setOnClickListener {
                 isReminderEditMode = !isReminderEditMode
                 timeAdapter?.setDeleteMode(isReminderEditMode)
-                tvEdit.setText(if (isReminderEditMode) R.string.ht_cancel else R.string.ht_hydration_reminder_edit)
+                tvEdit.setText(if (isReminderEditMode) R.string.tr_cancel else R.string.tr_hydration_reminder_edit)
             }
         }
     }
@@ -235,7 +235,7 @@ class HydrateSettingAdapter(
                     val timeString = DateTimeUtils.formatTimeComponents(pair.first, pair.second)
                     // 防重复：若已存在相同时间，则提示并不添加
                     if (reminderTimes.contains(timeString)) {
-                        Toast.makeText(activity, itemView.context.getString(R.string.ht_hydrate_reminder_exist), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, itemView.context.getString(R.string.tr_hydrate_reminder_exist), Toast.LENGTH_SHORT).show()
                         return@show
                     }
                     // 持久化新增后立即更新UI（先乐观更新，再由Flow刷新）

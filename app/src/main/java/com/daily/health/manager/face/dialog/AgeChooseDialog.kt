@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.daily.health.manager.databinding.HtDialogChooseAgeBinding
+import com.daily.health.manager.databinding.TrDialogChooseAgeBinding
 import com.daily.health.manager.getUserAge
 import com.daily.health.manager.saveUserAge
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
@@ -16,7 +16,7 @@ import com.healthtracker.framework.util.getRobotoRegular
 /**
  * 年龄选择弹窗
  */
-class AgeChooseDialog : BaseVbDialogFragment<HtDialogChooseAgeBinding>() {
+class AgeChooseDialog : BaseVbDialogFragment<TrDialogChooseAgeBinding>() {
 
     private var onAgeConfirmed: (() -> Unit)? = null
     private var selectedAge: Int = getUserAge()
@@ -36,7 +36,7 @@ class AgeChooseDialog : BaseVbDialogFragment<HtDialogChooseAgeBinding>() {
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ): HtDialogChooseAgeBinding = HtDialogChooseAgeBinding.inflate(inflater, parent, attachToParent)
+    ): TrDialogChooseAgeBinding = TrDialogChooseAgeBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         setupNumberPicker()

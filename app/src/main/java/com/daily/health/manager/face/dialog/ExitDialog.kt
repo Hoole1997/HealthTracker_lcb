@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.ethanhua.skeleton.ViewSkeletonScreen
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.HtDialogExitBinding
+import com.daily.health.manager.databinding.TrDialogExitBinding
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.clickWithDuration
@@ -16,7 +16,7 @@ import com.healthtracker.framework.ext.gone
 import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 
-class ExitDialog(private val onExit:(() -> Unit)? = null): BaseBottomSheetDialogFragment<HtDialogExitBinding>() {
+class ExitDialog(private val onExit:(() -> Unit)? = null): BaseBottomSheetDialogFragment<TrDialogExitBinding>() {
 
     constructor():this(null)
 
@@ -30,7 +30,7 @@ class ExitDialog(private val onExit:(() -> Unit)? = null): BaseBottomSheetDialog
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtDialogExitBinding.inflate(layoutInflater,parent,attachToParent)
+    ) = TrDialogExitBinding.inflate(layoutInflater,parent,attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {
@@ -44,7 +44,7 @@ class ExitDialog(private val onExit:(() -> Unit)? = null): BaseBottomSheetDialog
             }
 
             skeleton = ViewSkeletonScreen.Builder(adContainer)
-                .load(R.layout.ht_layout_skeleton_ad)
+                .load(R.layout.tr_layout_skeleton_ad)
                 .shimmer(true)
                 .angle(30)
                 .duration(1200)

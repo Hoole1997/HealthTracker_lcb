@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.daily.health.manager.data.entity.AlarmRecord
-import com.daily.health.manager.databinding.HtItemAlarmBinding
+import com.daily.health.manager.databinding.TrItemAlarmBinding
 
 /**
  * 闹钟列表适配器
@@ -18,7 +18,7 @@ class AlarmAdapter(
 ) : ListAdapter<AlarmRecord, AlarmAdapter.AlarmViewHolder>(AlarmDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
-        val binding = HtItemAlarmBinding.inflate(
+        val binding = TrItemAlarmBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -30,7 +30,7 @@ class AlarmAdapter(
         holder.bind(getItem(position))
     }
 
-    inner class AlarmViewHolder(private val binding: HtItemAlarmBinding) :
+    inner class AlarmViewHolder(private val binding: TrItemAlarmBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(alarm: AlarmRecord) {

@@ -68,15 +68,15 @@ fun AlarmEditDialog(
     onDelete: (() -> Unit)? = null
 ) {
     val typeNameRes = when (alarmType) {
-        AlarmRecord.TYPE_BLOOD_SUGAR -> R.string.ht_blood_suger
-        AlarmRecord.TYPE_BLOOD_PRESSURE -> R.string.ht_blood_pressure
-        AlarmRecord.TYPE_HEART_RATE -> R.string.ht_heart_rate
-        AlarmRecord.TYPE_BMI -> R.string.ht_bmi
-        AlarmRecord.TYPE_CHOLESTEROL -> R.string.ht_cholesterol
-        else -> R.string.ht_alarm_default_title
+        AlarmRecord.TYPE_BLOOD_SUGAR -> R.string.tr_blood_suger
+        AlarmRecord.TYPE_BLOOD_PRESSURE -> R.string.tr_blood_pressure
+        AlarmRecord.TYPE_HEART_RATE -> R.string.tr_heart_rate
+        AlarmRecord.TYPE_BMI -> R.string.tr_bmi
+        AlarmRecord.TYPE_CHOLESTEROL -> R.string.tr_cholesterol
+        else -> R.string.tr_alarm_default_title
     }
     val typeName = stringResource(typeNameRes)
-    val dialogTitle = stringResource(R.string.ht_reminder_for, typeName)
+    val dialogTitle = stringResource(R.string.tr_reminder_for, typeName)
 
     // Use current system time as fallback for new alarms
     val calendar = remember { java.util.Calendar.getInstance() }
@@ -88,7 +88,7 @@ fun AlarmEditDialog(
         initialMinute = alarmRecord?.minute ?: currentM,
         initialRepeatFlag = alarmRecord?.repeatFlag ?: AlarmRecord.REPEAT_DAILY,
         title = dialogTitle,
-        confirmButtonText = stringResource(R.string.ht_save),
+        confirmButtonText = stringResource(R.string.tr_save),
         onDismiss = onDismiss,
         onConfirm = onSave,
         showDelete = alarmRecord != null && onDelete != null,
@@ -180,7 +180,7 @@ fun CommonAlarmConfigDialog(
 
                 if (showCloseIcon) {
                     androidx.compose.material3.Icon(
-                        painter = androidx.compose.ui.res.painterResource(id = R.drawable.ht_ic_dialog_close),
+                        painter = androidx.compose.ui.res.painterResource(id = R.drawable.tr_ic_dialog_close),
                         contentDescription = "Close",
                         tint = colorResource(R.color.color_d3d3d3),
                         modifier = Modifier
@@ -263,7 +263,7 @@ fun CommonAlarmConfigDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val secondaryButtonText = if (showDelete) "Delete" else stringResource(R.string.ht_cancel)
+                val secondaryButtonText = if (showDelete) "Delete" else stringResource(R.string.tr_cancel)
                 val secondaryButtonColor = if (showDelete) Color(0xFFF9F9FA) else Color(0xFFF9F9FA)
                 val secondaryTextColor = if (showDelete) Color(0xFF999999) else Color(0xFF999999) // Design shows gray
 
@@ -452,7 +452,7 @@ fun WeekdaySelector(
     }
     
     // Labels from strings.xml (now reordered in strings.xml: Mon, Tue, ..., Sun)
-    val dayLabels = stringArrayResource(R.array.ht_week_simple)
+    val dayLabels = stringArrayResource(R.array.tr_week_simple)
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -491,7 +491,7 @@ fun WeekdaySelector(
                 // Checkbox Icon
                 androidx.compose.foundation.Image(
                     painter = androidx.compose.ui.res.painterResource(
-                        id = if (isSelected) R.drawable.ht_ic_checked else R.drawable.ht_ic_uncheck
+                        id = if (isSelected) R.drawable.tr_ic_checked else R.drawable.tr_ic_uncheck
                     ),
                     contentDescription = null,
                     modifier = Modifier.size(20.dp)

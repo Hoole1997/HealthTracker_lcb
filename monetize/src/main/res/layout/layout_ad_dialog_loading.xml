@@ -28,6 +28,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/ht_bill_ad_loading"/>
+        android:text="@string/tr_bill_ad_loading"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

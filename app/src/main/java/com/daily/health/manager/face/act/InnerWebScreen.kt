@@ -7,7 +7,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.HtActivityInnerWebBinding
+import com.daily.health.manager.databinding.TrActivityInnerWebBinding
 import com.daily.health.manager.utils.WebViewUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
@@ -15,7 +15,7 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.startActivity
 
-class InnerWebScreen: BaseMVVMActivity<BaseViewModel, HtActivityInnerWebBinding>() {
+class InnerWebScreen: BaseMVVMActivity<BaseViewModel, TrActivityInnerWebBinding>() {
 
     companion object{
         private const val EXTRA_RRL = "EXTRA_RRL"
@@ -24,7 +24,7 @@ class InnerWebScreen: BaseMVVMActivity<BaseViewModel, HtActivityInnerWebBinding>
         }
     }
 
-    override fun createViewBinding() = HtActivityInnerWebBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivityInnerWebBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 

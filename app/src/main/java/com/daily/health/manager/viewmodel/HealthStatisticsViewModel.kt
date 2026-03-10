@@ -457,9 +457,9 @@ class HealthStatisticsViewModel(
 
     private fun buildBsStats(records: List<BloodSugarRecord>, unit: BsUnit): StatsUiState {
         val unitRes = when (unit) {
-            BsUnit.MG_DL -> R.string.ht_mg_dl
-            BsUnit.MMOL_L -> R.string.ht_mmol_l
-            else -> R.string.ht_mg_dl // Default fallback
+            BsUnit.MG_DL -> R.string.tr_mg_dl
+            BsUnit.MMOL_L -> R.string.tr_mmol_l
+            else -> R.string.tr_mg_dl // Default fallback
         }
         if (records.isEmpty()) {
             return StatsUiState(unitLabelRes = unitRes)
@@ -478,7 +478,7 @@ class HealthStatisticsViewModel(
     }
 
     private fun buildBpStats(records: List<BloodPressureRecord>, dimension: StatisticDimension): StatsUiState {
-        val unitRes = R.string.ht_mmHg
+        val unitRes = R.string.tr_mmHg
         if (records.isEmpty()) {
             return StatsUiState(unitLabelRes = unitRes)
         }
@@ -515,7 +515,7 @@ class HealthStatisticsViewModel(
     }
 
     private fun buildCholStats(records: List<CholesterolRecord>, dimension: StatisticDimension): StatsUiState {
-        val unitRes = R.string.ht_mg_dl
+        val unitRes = R.string.tr_mg_dl
         if (records.isEmpty()) {
             return StatsUiState(unitLabelRes = unitRes)
         }
@@ -578,7 +578,7 @@ class HealthStatisticsViewModel(
     private fun buildHrStats(records: List<HeartRateRecord>): StatsUiState {
         return buildSimpleStats(
             records = records,
-            unitLabelRes = R.string.ht_bpm,
+            unitLabelRes = R.string.tr_bpm,
             valueFormatter = { it.toInt().toString() }
         ) { it.heartRateBpm.toDouble() }
     }
@@ -755,7 +755,7 @@ class HealthStatisticsViewModel(
     }
 
     private fun buildStepStats(records: List<DailyStepStat>): StatsUiState {
-        val unitRes = R.string.ht_text_steps
+        val unitRes = R.string.tr_text_steps
         if (records.isEmpty()) {
             return StatsUiState(unitLabelRes = unitRes)
         }
@@ -802,8 +802,8 @@ class HealthStatisticsViewModel(
     private fun buildHydrateStats(records: List<HydrateRecord>, range: DateRange): StatsUiState {
         val hydrateUnit = HydrateSettingManager.getCupUnit()
         val unitRes = when (hydrateUnit) {
-            HydrateSettingManager.CupUnit.FL_OZ -> R.string.ht_fl_oz
-            HydrateSettingManager.CupUnit.ML -> R.string.ht_unit_ml
+            HydrateSettingManager.CupUnit.FL_OZ -> R.string.tr_fl_oz
+            HydrateSettingManager.CupUnit.ML -> R.string.tr_unit_ml
         }
 
         if (records.isEmpty()) {

@@ -41,65 +41,65 @@ class NotificationResourceMapper {
         return when (iconType) {
             1 -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
-                background = R.drawable.ht_bg_hr_notify,
-                largeIcon = R.drawable.ht_ic_homepage_notify,
-                decorIcon = R.drawable.ht_bg_homepage_notify_icon,
+                background = R.drawable.tr_bg_hr_notify,
+                largeIcon = R.drawable.tr_ic_homepage_notify,
+                decorIcon = R.drawable.tr_bg_homepage_notify_icon,
                 btnTextColor = R.color.color_FF4420
             )
             2 -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
-                background = R.drawable.ht_bg_bs_notify,
-                largeIcon = R.drawable.ht_ic_bs_notify,
-                decorIcon = R.mipmap.ht_bg_bs_notify_icon,
+                background = R.drawable.tr_bg_bs_notify,
+                largeIcon = R.drawable.tr_ic_bs_notify,
+                decorIcon = R.mipmap.tr_bg_bs_notify_icon,
                 btnTextColor = R.color.color_02BC77
             )
             3 -> NotificationResources(
-                smallIcon = R.drawable.ht_ic_notifcation_pb,
-                background = R.drawable.ht_bg_bp_notify,
-                largeIcon = R.drawable.ht_ic_bp_notify,
-                decorIcon = R.mipmap.ht_bg_bp_notify_icon,
+                smallIcon = R.drawable.tr_ic_notifcation_pb,
+                background = R.drawable.tr_bg_bp_notify,
+                largeIcon = R.drawable.tr_ic_bp_notify,
+                decorIcon = R.mipmap.tr_bg_bp_notify_icon,
                 btnTextColor = R.color.color_2AA1FC
             )
             4 -> NotificationResources(
-                smallIcon = R.drawable.ht_ic_cholesterol_notify,
-                background = R.drawable.ht_bg_cholesterol_notify,
-                largeIcon = R.drawable.ht_ic_cholesterol_notify,
-                decorIcon = R.mipmap.ht_bg_cholesterol_notify_icon,
+                smallIcon = R.drawable.tr_ic_cholesterol_notify,
+                background = R.drawable.tr_bg_cholesterol_notify,
+                largeIcon = R.drawable.tr_ic_cholesterol_notify,
+                decorIcon = R.mipmap.tr_bg_cholesterol_notify_icon,
                 btnTextColor = R.color.color_F0832D
             )
             5 -> NotificationResources(
-                smallIcon = R.drawable.ht_ic_bmi_notify,
-                background = R.drawable.ht_bg_bmi_notify,
-                largeIcon = R.drawable.ht_ic_bmi_notify,
-                decorIcon = R.mipmap.ht_bg_bmi_notify_icon,
+                smallIcon = R.drawable.tr_ic_bmi_notify,
+                background = R.drawable.tr_bg_bmi_notify,
+                largeIcon = R.drawable.tr_ic_bmi_notify,
+                decorIcon = R.mipmap.tr_bg_bmi_notify_icon,
                 btnTextColor = R.color.color_30A6ED
             )
             6 -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
-                background = R.drawable.ht_bg_hr_notify,
-                largeIcon = R.drawable.ht_ic_hr_notify,
-                decorIcon = R.mipmap.ht_bg_hr_notify_icon,
+                background = R.drawable.tr_bg_hr_notify,
+                largeIcon = R.drawable.tr_ic_hr_notify,
+                decorIcon = R.mipmap.tr_bg_hr_notify_icon,
                 btnTextColor = R.color.color_FF4420
             )
             7 -> NotificationResources(
-                smallIcon = R.drawable.ht_ic_statistical_notify,
-                background = R.drawable.ht_bg_bs_notify,
-                largeIcon = R.drawable.ht_ic_statistical_notify,
-                decorIcon = R.drawable.ht_bg_statistical_notify_icon,
+                smallIcon = R.drawable.tr_ic_statistical_notify,
+                background = R.drawable.tr_bg_bs_notify,
+                largeIcon = R.drawable.tr_ic_statistical_notify,
+                decorIcon = R.drawable.tr_bg_statistical_notify_icon,
                 btnTextColor = R.color.color_02BC77
             )
             9 -> NotificationResources(
-                smallIcon = R.drawable.ht_ic_hydrate_notify,
-                background = R.drawable.ht_bg_bmi_notify,
-                largeIcon = R.drawable.ht_ic_hydrate_notify,
-                decorIcon = R.mipmap.ht_bg_hydrate_notify_icon,
+                smallIcon = R.drawable.tr_ic_hydrate_notify,
+                background = R.drawable.tr_bg_bmi_notify,
+                largeIcon = R.drawable.tr_ic_hydrate_notify,
+                decorIcon = R.mipmap.tr_bg_hydrate_notify_icon,
                 btnTextColor = R.color.color_30A6ED
             )
             10 -> NotificationResources(
-                smallIcon = R.drawable.ht_ic_step_notify,
-                background = R.drawable.ht_bg_cholesterol_notify,
-                largeIcon = R.drawable.ht_ic_step_notify,
-                decorIcon = R.mipmap.ht_bg_step_notify_icon,
+                smallIcon = R.drawable.tr_ic_step_notify,
+                background = R.drawable.tr_bg_cholesterol_notify,
+                largeIcon = R.drawable.tr_ic_step_notify,
+                decorIcon = R.mipmap.tr_bg_step_notify_icon,
                 btnTextColor = R.color.color_F0832D
             )
             11 -> NotificationResources(
@@ -120,7 +120,7 @@ class NotificationResourceMapper {
                 smallIcon = R.drawable.ic_notification_bs,
                 background = null,
                 largeIcon = null,
-                decorIcon = R.drawable.ht_bg_homepage_notify_icon
+                decorIcon = R.drawable.tr_bg_homepage_notify_icon
             )
         }
     }
@@ -137,14 +137,14 @@ class NotificationResourceMapper {
             )
         } else if (iconType == 12) {
             LayoutResources(
-                collapsedLayout = R.layout.ht_layout_assistant_notify,
-                expandedLayout = R.layout.ht_layout_assistant_notify_big
+                collapsedLayout = R.layout.tr_layout_assistant_notify,
+                expandedLayout = R.layout.tr_layout_assistant_notify_big
             )
         } else {
             // 其他类型使用通用布局
             LayoutResources(
-                collapsedLayout = R.layout.ht_layout_common_notify,
-                expandedLayout = R.layout.ht_layout_common_notify_big
+                collapsedLayout = R.layout.tr_layout_common_notify,
+                expandedLayout = R.layout.tr_layout_common_notify_big
             )
         }
     }

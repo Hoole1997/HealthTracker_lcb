@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.daily.health.manager.R
 import com.daily.health.manager.data.utils.DateTimeUtils
-import com.daily.health.manager.databinding.HtItemCholHistoryRecordBinding
-import com.daily.health.manager.databinding.HtItemHistoryRecordBinding
+import com.daily.health.manager.databinding.TrItemCholHistoryRecordBinding
+import com.daily.health.manager.databinding.TrItemHistoryRecordBinding
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
 
@@ -76,11 +76,11 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
 
         return when (viewType) {
             VIEW_TYPE_SIMPLE -> {
-                val binding = HtItemHistoryRecordBinding.inflate(inflater, parent, false)
+                val binding = TrItemHistoryRecordBinding.inflate(inflater, parent, false)
                 SimpleHistoryViewHolder(binding)
             }
             VIEW_TYPE_CHOLESTEROL -> {
-                val binding = HtItemCholHistoryRecordBinding.inflate(inflater, parent, false)
+                val binding = TrItemCholHistoryRecordBinding.inflate(inflater, parent, false)
                 CholesterolViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
@@ -95,7 +95,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
         }
     }
 
-    inner class SimpleHistoryViewHolder(private val binding: HtItemHistoryRecordBinding) :
+    inner class SimpleHistoryViewHolder(private val binding: TrItemHistoryRecordBinding) :
         RecyclerView.ViewHolder(binding.root) {
         
         fun bind(item: HistoryRecordItem) {
@@ -117,11 +117,11 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
                 if (status != null) {
                     if (secondaryValue != null) {
                         // 血压：显示 "Pulse: xxx"
-                        tvStatus.text = "${tvStatus.context.getString(R.string.ht_pulse)}:$status"
+                        tvStatus.text = "${tvStatus.context.getString(R.string.tr_pulse)}:$status"
                     } else {
                         if(item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_SUGAR){
                             // 血糖：显示 "Status: xxx"
-                            tvStatus.text = "${tvStatus.context.getString(R.string.ht_status)}:$status"
+                            tvStatus.text = "${tvStatus.context.getString(R.string.tr_status)}:$status"
                         }else{
                             // BMI：直接显示身高体重
                             tvStatus.text = status
@@ -173,7 +173,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
      * 使用 item_chol_history_record.xml 布局
      */
     inner class CholesterolViewHolder(
-        private val binding: HtItemCholHistoryRecordBinding
+        private val binding: TrItemCholHistoryRecordBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CholesterolHistoryItem) {

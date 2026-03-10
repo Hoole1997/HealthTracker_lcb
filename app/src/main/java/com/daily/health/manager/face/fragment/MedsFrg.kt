@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daily.health.manager.R
 import com.daily.health.manager.data.utils.DateTimeUtils
-import com.daily.health.manager.databinding.HtFragmentMedsBinding
+import com.daily.health.manager.databinding.TrFragmentMedsBinding
 import com.daily.health.manager.face.act.AddReminderScreen
 import com.daily.health.manager.face.adapter.MedsReminderAdapter
 import com.daily.health.manager.face.dialog.ConfirmDialog
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
 import net.corekit.core.report.ReportDataManager
 import java.util.Date
 
-class MedsFrg: BaseMVVMFragment<MedsViewModel, HtFragmentMedsBinding>() {
+class MedsFrg: BaseMVVMFragment<MedsViewModel, TrFragmentMedsBinding>() {
 
 
     private lateinit var reminderAdapter: MedsReminderAdapter
@@ -38,7 +38,7 @@ class MedsFrg: BaseMVVMFragment<MedsViewModel, HtFragmentMedsBinding>() {
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtFragmentMedsBinding.inflate(layoutInflater,parent,attachToParent)
+    ) = TrFragmentMedsBinding.inflate(layoutInflater,parent,attachToParent)
 
     companion object{
         private const val TAG = "MedsFragment"
@@ -251,10 +251,10 @@ class MedsFrg: BaseMVVMFragment<MedsViewModel, HtFragmentMedsBinding>() {
       */
      private fun showDeleteConfirmDialog(item: MedsReminderItem) {
          ConfirmDialog(
-             title = getString(R.string.ht_tips),
-             message = getString(R.string.ht_delete_tips_content),
-             leftText = getString(R.string.ht_cancel),
-             rightText = getString(R.string.ht_confirm),
+             title = getString(R.string.tr_tips),
+             message = getString(R.string.tr_delete_tips_content),
+             leftText = getString(R.string.tr_cancel),
+             rightText = getString(R.string.tr_confirm),
              onDialogListener = object : DialogListener {
                  override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                      super.onItemClick(dialogFragment, which)

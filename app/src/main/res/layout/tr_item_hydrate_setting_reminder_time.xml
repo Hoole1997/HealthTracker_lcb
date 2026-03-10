@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_52"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgDelete"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:src="@mipmap/tr_ic_reminder_delete"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_13"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_time"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/t1"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp_20"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imgDelete"
+        android:layout_marginStart="@dimen/dp_16"
+        app:layout_goneMarginStart="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_13"
+        tools:text="8:00"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/st_alarm"
+        android:layout_width="@dimen/dp_44"
+        android:layout_height="@dimen/dp_26"
+        android:checked="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:textOff=""
+        android:textOn=""
+        android:thumb="@drawable/tr_switch_thumb_style"
+        android:layout_marginEnd="@dimen/dp_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/imgDelete"
+        app:layout_constraintBottom_toBottomOf="@id/imgDelete"
+        app:track="@drawable/tr_switch_track_style"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="#f5f5f5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    
+
+</androidx.constraintlayout.widget.ConstraintLayout>

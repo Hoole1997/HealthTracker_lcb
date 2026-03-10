@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_12"
+    android:background="@drawable/tr_bg_rect_white_12"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clipToOutline="true"
+    android:outlineProvider="background">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_leve"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:textColor="@color/c5"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_record_time"
+        tools:text="@string/tr_blood_pressure_level_normal" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_hdl"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/tr_hdl"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@id/tv_hdl_value"
+        app:layout_constraintStart_toStartOf="@id/tv_hdl_value"
+        app:layout_constraintTop_toBottomOf="@id/tv_leve" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_ldl"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tr_ldl"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@id/tv_ldl_value"
+        app:layout_constraintStart_toStartOf="@id/tv_ldl_value"
+        app:layout_constraintTop_toTopOf="@id/tv_hdl" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_tg"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tr_tg"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@id/tv_tg_value"
+        app:layout_constraintStart_toStartOf="@id/tv_tg_value"
+        app:layout_constraintTop_toTopOf="@id/tv_hdl" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_hdl_value"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_40"
+        android:textColor="@color/c5"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintEnd_toStartOf="@id/tv_ldl_value"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_hdl"
+        tools:text="15" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_ldl_value"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/c5"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintEnd_toStartOf="@id/tv_tg_value"
+        app:layout_constraintStart_toEndOf="@id/tv_hdl_value"
+        app:layout_constraintTop_toTopOf="@id/tv_hdl_value"
+        tools:text="15" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_tg_value"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:textColor="@color/c5"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_ldl_value"
+        app:layout_constraintTop_toTopOf="@id/tv_hdl_value"
+        tools:text="18" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_non_hdl"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/tr_non_hdl"
+        android:textColor="@color/color_999"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@id/tv_non_hdl_value"
+        app:layout_constraintStart_toStartOf="@id/tv_non_hdl_value"
+        app:layout_constraintTop_toBottomOf="@id/tv_hdl_value" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_tc_hdl"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/tr_tc_hdl"
+        android:textColor="@color/color_999"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@id/tv_tc_hdl_value"
+        app:layout_constraintStart_toStartOf="@id/tv_tc_hdl_value"
+        app:layout_constraintTop_toBottomOf="@id/tv_hdl_value" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_ldl_hdl"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/tr_tc_hdl"
+        android:textColor="@color/color_999"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@id/tv_ldl_hdl_value"
+        app:layout_constraintStart_toStartOf="@id/tv_ldl_hdl_value"
+        app:layout_constraintTop_toBottomOf="@id/tv_hdl_value" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_non_hdl_value"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:gravity="center"
+        android:minWidth="@dimen/dp_64"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_20"
+        app:layout_constraintEnd_toStartOf="@id/tv_tc_hdl_value"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_non_hdl"
+        tools:text="115" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_tc_hdl_value"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minWidth="@dimen/dp_64"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_20"
+        app:layout_constraintEnd_toStartOf="@id/tv_ldl_hdl_value"
+
+        app:layout_constraintStart_toEndOf="@id/tv_non_hdl_value"
+        app:layout_constraintTop_toTopOf="@id/tv_non_hdl_value"
+        tools:text="2.95" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_ldl_hdl_value"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:layout_goneMarginBottom="@dimen/dp_16"
+        android:gravity="center"
+        android:minWidth="@dimen/dp_64"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_tc_hdl_value"
+        app:layout_constraintTop_toTopOf="@id/tv_non_hdl_value"
+        app:layout_constraintBottom_toTopOf="@id/iv_delete"
+        tools:text="1.63" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/tr_ic_delete_history" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_record_time"
+        style="@style/TextViewFont_RobotoRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tr_bg_history_record_time"
+        android:paddingHorizontal="@dimen/dp_8"
+        android:paddingVertical="@dimen/dp_4"
+        android:textColor="@color/color_999"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2025-09-09 17:00:00" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

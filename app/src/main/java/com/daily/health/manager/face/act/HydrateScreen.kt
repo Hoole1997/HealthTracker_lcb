@@ -9,7 +9,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
-import com.daily.health.manager.databinding.HtActivityHydrateBinding
+import com.daily.health.manager.databinding.TrActivityHydrateBinding
 import com.daily.health.manager.face.dialog.ComingSoonDialog
 import com.daily.health.manager.face.adapter.HydrateAdapter
 import com.daily.health.manager.face.adapter.HydrateItem
@@ -22,11 +22,11 @@ import com.healthtracker.framework.ext.startActivity
 import kotlinx.coroutines.flow.combine
 import net.corekit.core.report.ReportDataManager
 
-class HydrateScreen : BaseInterActivity<HydrateViewModel, HtActivityHydrateBinding>() {
+class HydrateScreen : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>() {
 
     private var actionBarBaseHeight: Int = -1
     private var currentDrinkAmountMl: Int = 100
-    private val drinkTextFormat: String by lazy { getString(R.string.ht_drink_btn_format) }
+    private val drinkTextFormat: String by lazy { getString(R.string.tr_drink_btn_format) }
 
     // 用于区分首次加载和饮水操作
     private var initializationComplete = false
@@ -44,8 +44,8 @@ class HydrateScreen : BaseInterActivity<HydrateViewModel, HtActivityHydrateBindi
 
     override fun getStatusBarColor() = R.color.bg_window
 
-    override fun createViewBinding(): HtActivityHydrateBinding =
-        HtActivityHydrateBinding.inflate(layoutInflater)
+    override fun createViewBinding(): TrActivityHydrateBinding =
+        TrActivityHydrateBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HydrateViewModel::class.java
 
@@ -121,7 +121,7 @@ class HydrateScreen : BaseInterActivity<HydrateViewModel, HtActivityHydrateBindi
             // 绑定 TotalSection
             bindTotalSection(data)
             // 绑定 RecyclerView（QuickAdd + Records）
-            val unitLabel = if (data.cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.ht_fl_oz) else getString(R.string.ht_unit_ml)
+            val unitLabel = if (data.cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.tr_fl_oz) else getString(R.string.tr_unit_ml)
             val quickAddSection = HydrateItem.QuickAddSection(values = listOf(100, 200, 250, 300, 500, 800), unit = unitLabel)
             val recordSection = HydrateItem.RecordSection(records = data.records, unit = unitLabel)
             adapter.submitList(listOf(quickAddSection, recordSection))
@@ -169,7 +169,7 @@ class HydrateScreen : BaseInterActivity<HydrateViewModel, HtActivityHydrateBindi
 
     private fun updateDrinkButtonText() {
         val cupUnit = HydrateSettingManager.getCupUnit()
-        val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.ht_fl_oz) else getString(R.string.ht_unit_ml)
+        val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.tr_fl_oz) else getString(R.string.tr_unit_ml)
         val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
             HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ)
         } else {
@@ -197,7 +197,7 @@ class HydrateScreen : BaseInterActivity<HydrateViewModel, HtActivityHydrateBindi
         } else {
             data.targetMl
         }
-        val unitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.ht_fl_oz) else getString(R.string.ht_unit_ml)
+        val unitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.tr_fl_oz) else getString(R.string.tr_unit_ml)
 
         // 计算进度
         val targetMl = data.targetMl.coerceAtLeast(1)
@@ -226,7 +226,7 @@ class HydrateScreen : BaseInterActivity<HydrateViewModel, HtActivityHydrateBindi
         lastProgress = progress
 
         mViewBind.totalSection.totalWaterUnit.text = "/$displayTarget$unitLabel"
-        mViewBind.totalSection.totalWaterDesc.text = String.format(getString(R.string.ht_hydrate_cup_count_format), data.count)
+        mViewBind.totalSection.totalWaterDesc.text = String.format(getString(R.string.tr_hydrate_cup_count_format), data.count)
 
         updateDrinkButtonText()
     }

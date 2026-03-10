@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.daily.health.manager.databinding.HtDialogSaveCompleteBinding
+import com.daily.health.manager.databinding.TrDialogSaveCompleteBinding
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 
-class SaveCompleteDialog(private val onEnd:(() -> Unit)? = null): BaseVbDialogFragment<HtDialogSaveCompleteBinding>() {
+class SaveCompleteDialog(private val onEnd:(() -> Unit)? = null): BaseVbDialogFragment<TrDialogSaveCompleteBinding>() {
     constructor():this(null)
     companion object{
         fun show(fragmentManager: FragmentManager,onEnd:() -> Unit){
@@ -26,7 +26,7 @@ class SaveCompleteDialog(private val onEnd:(() -> Unit)? = null): BaseVbDialogFr
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) =  HtDialogSaveCompleteBinding.inflate(inflater,parent,attachToParent)
+    ) =  TrDialogSaveCompleteBinding.inflate(inflater,parent,attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {

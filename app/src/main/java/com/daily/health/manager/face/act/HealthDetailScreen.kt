@@ -23,12 +23,12 @@ import com.daily.health.manager.data.entity.HealthTag
 import com.daily.health.manager.data.entity.HeartRateRecord
 import com.daily.health.manager.data.enums.HeartRateStatus
 import com.daily.health.manager.data.utils.DateTimeUtils
-import com.daily.health.manager.databinding.HtActivityBsDetailBinding
-import com.daily.health.manager.databinding.HtActivityBpDetailBinding
-import com.daily.health.manager.databinding.HtActivityBmiDetailBinding
-import com.daily.health.manager.databinding.HtActivityCholesterolDetailBinding
-import com.daily.health.manager.databinding.HtActivityHealthDetailBinding
-import com.daily.health.manager.databinding.HtActivityHeartRateDetailBinding
+import com.daily.health.manager.databinding.TrActivityBsDetailBinding
+import com.daily.health.manager.databinding.TrActivityBpDetailBinding
+import com.daily.health.manager.databinding.TrActivityBmiDetailBinding
+import com.daily.health.manager.databinding.TrActivityCholesterolDetailBinding
+import com.daily.health.manager.databinding.TrActivityHealthDetailBinding
+import com.daily.health.manager.databinding.TrActivityHeartRateDetailBinding
 import com.daily.health.manager.face.chart.HealthLineChartManager
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.HealthTypeProvider
@@ -56,7 +56,7 @@ import org.koin.core.context.GlobalContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDetailBinding>(),
+class HealthDetailScreen : BaseInterActivity<BaseViewModel, TrActivityHealthDetailBinding>(),
     HealthTypeProvider {
 
     companion object {
@@ -98,11 +98,11 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
 
         fun toLayoutRes(): Int {
             return when (this) {
-                BLOOD_SUGAR -> R.layout.ht_activity_bs_detail
-                BLOOD_PRESSURE -> R.layout.ht_activity_bp_detail
-                BMI -> R.layout.ht_activity_bmi_detail
-                HEART_RATE -> R.layout.ht_activity_heart_rate_detail
-                CHOLESTEROL -> R.layout.ht_activity_cholesterol_detail
+                BLOOD_SUGAR -> R.layout.tr_activity_bs_detail
+                BLOOD_PRESSURE -> R.layout.tr_activity_bp_detail
+                BMI -> R.layout.tr_activity_bmi_detail
+                HEART_RATE -> R.layout.tr_activity_heart_rate_detail
+                CHOLESTEROL -> R.layout.tr_activity_cholesterol_detail
             }
         }
 
@@ -116,11 +116,11 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
 
     private val chartManagerFactory: HealthLineChartManager.Factory by inject()
 
-    private var bsBinding: HtActivityBsDetailBinding? = null
-    private var bpBinding: HtActivityBpDetailBinding? = null
-    private var bmiBinding: HtActivityBmiDetailBinding? = null
-    private var hrBinding: HtActivityHeartRateDetailBinding? = null
-    private var choBinding: HtActivityCholesterolDetailBinding? = null
+    private var bsBinding: TrActivityBsDetailBinding? = null
+    private var bpBinding: TrActivityBpDetailBinding? = null
+    private var bmiBinding: TrActivityBmiDetailBinding? = null
+    private var hrBinding: TrActivityHeartRateDetailBinding? = null
+    private var choBinding: TrActivityCholesterolDetailBinding? = null
 
     private var chartManager: HealthLineChartManager? = null
 
@@ -144,7 +144,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
 
     private var pendingAlarmTypeForPermission: Int? = null
 
-    override fun createViewBinding() = HtActivityHealthDetailBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivityHealthDetailBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -190,31 +190,31 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
     private fun bindAndSetup(type: DetailType, root: View) {
         when (type) {
             DetailType.BLOOD_SUGAR -> {
-                val binding = HtActivityBsDetailBinding.bind(root)
+                val binding = TrActivityBsDetailBinding.bind(root)
                 bsBinding = binding
                 setupBs(binding)
             }
 
             DetailType.BLOOD_PRESSURE -> {
-                val binding = HtActivityBpDetailBinding.bind(root)
+                val binding = TrActivityBpDetailBinding.bind(root)
                 bpBinding = binding
                 setupBp(binding)
             }
 
             DetailType.BMI -> {
-                val binding = HtActivityBmiDetailBinding.bind(root)
+                val binding = TrActivityBmiDetailBinding.bind(root)
                 bmiBinding = binding
                 setupBmi(binding)
             }
 
             DetailType.HEART_RATE -> {
-                val binding = HtActivityHeartRateDetailBinding.bind(root)
+                val binding = TrActivityHeartRateDetailBinding.bind(root)
                 hrBinding = binding
                 setupHeartRate(binding)
             }
 
             DetailType.CHOLESTEROL -> {
-                val binding = HtActivityCholesterolDetailBinding.bind(root)
+                val binding = TrActivityCholesterolDetailBinding.bind(root)
                 choBinding = binding
                 setupCholesterol(binding)
             }
@@ -236,7 +236,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         })
     }
 
-    private fun setupBs(binding: HtActivityBsDetailBinding) {
+    private fun setupBs(binding: TrActivityBsDetailBinding) {
         bsViewModel.initializeWithRecord(recordId)
 
         chartManager = chartManagerFactory.create(binding.chartView, this)
@@ -277,7 +277,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
     }
 
-    private fun updateBsUI(binding: HtActivityBsDetailBinding) {
+    private fun updateBsUI(binding: TrActivityBsDetailBinding) {
         val status = bsViewModel.getBloodSugarStatus()
         val unit = bsViewModel.getDisplayUnit()
         val value = bsViewModel.getDisplayValue()
@@ -294,7 +294,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
             val index = LeveDataFactory.BloodSugar.indexFor(value, unit, status)
             binding.bsStatusView.setCurrentLevel(index)
 
-            val leveDescription = resources.getStringArray(R.array.ht_bs_level_expert_advice)[index]
+            val leveDescription = resources.getStringArray(R.array.tr_bs_level_expert_advice)[index]
             binding.expertAdviceView.setAdviceText(leveDescription)
         }
     }
@@ -305,7 +305,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
     }
 
-    private fun setupBp(binding: HtActivityBpDetailBinding) {
+    private fun setupBp(binding: TrActivityBpDetailBinding) {
         chartManager = chartManagerFactory.create(binding.chartView, this)
 
         binding.btnBack.clickWithDuration { handleBackPress() }
@@ -334,7 +334,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
     }
 
-    private fun updateBpUI(binding: HtActivityBpDetailBinding, record: BloodPressureRecord) {
+    private fun updateBpUI(binding: TrActivityBpDetailBinding, record: BloodPressureRecord) {
         val levels = LeveDataFactory.BloodPressure.buildItems(this)
         binding.bpStatusView.setLevels(levels)
         val idx = LeveDataFactory.BloodPressure.indexFor(record.systolicPressure, record.diastolicPressure)
@@ -345,7 +345,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         binding.tvPulseValue.text = record.pulseRate.toString()
         binding.tvTime.text = DateTimeUtils.formatDateTime(record.recordTime)
 
-        val rangeDes = resources.getStringArray(R.array.ht_bp_level_expert_advice)
+        val rangeDes = resources.getStringArray(R.array.tr_bp_level_expert_advice)
         val adviceText = String.format(rangeDes[idx], record.systolicPressure, record.diastolicPressure)
         binding.expertAdviceView.setAdviceText(adviceText)
     }
@@ -356,7 +356,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
     }
 
-    private fun setupBmi(binding: HtActivityBmiDetailBinding) {
+    private fun setupBmi(binding: TrActivityBmiDetailBinding) {
         bmiViewModel.initializeWithRecord(recordId)
 
         chartManager = chartManagerFactory.create(binding.chartView, this)
@@ -394,7 +394,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
     }
 
-    private fun updateBmiUI(binding: HtActivityBmiDetailBinding) {
+    private fun updateBmiUI(binding: TrActivityBmiDetailBinding) {
         val displayWeight = bmiViewModel.getDisplayWeight()
         binding.tvWeightValue.text = displayWeight
 
@@ -413,7 +413,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
             binding.bpStatusView.setLevels(bmiItems)
             binding.bpStatusView.setCurrentLevel(currentIndex)
 
-            val adviceArray = resources.getStringArray(R.array.ht_bmi_level_expert_advice)
+            val adviceArray = resources.getStringArray(R.array.tr_bmi_level_expert_advice)
             if (currentIndex in adviceArray.indices) {
                 binding.expertAdviceView.setAdviceText(adviceArray[currentIndex])
             } else {
@@ -428,7 +428,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
     }
 
-    private fun setupHeartRate(binding: HtActivityHeartRateDetailBinding) {
+    private fun setupHeartRate(binding: TrActivityHeartRateDetailBinding) {
         chartManager = chartManagerFactory.create(binding.chartView, this)
 
         binding.btnBack.clickWithDuration { onBackPress() }
@@ -436,7 +436,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         binding.btnEdit.click {
             hrViewModel.currentRecordId()?.let { id ->
                 HealthRecordScreen.start(this, HealthRecordScreen.RecordType.HEART_RATE, id)
-            } ?: showToast(getString(R.string.ht_record_not_ready))
+            } ?: showToast(getString(R.string.tr_record_not_ready))
         }
 
         val levels = LeveDataFactory.HeartRate.buildItems(this)
@@ -476,16 +476,16 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
     }
 
-    private fun updateHeartRateRecord(binding: HtActivityHeartRateDetailBinding, record: HeartRateRecord) {
+    private fun updateHeartRateRecord(binding: TrActivityHeartRateDetailBinding, record: HeartRateRecord) {
         binding.tvBpmValue.text = record.heartRateBpm.toString()
         binding.tvTime.text = DateTimeUtils.formatDateTime(record.recordTime)
         val index = LeveDataFactory.HeartRate.indexFor(record.heartRateBpm)
         binding.bpmStatusView.setCurrentLevel(index)
-        val desArray = resources.getStringArray(R.array.ht_hr_level_expert_advice)
+        val desArray = resources.getStringArray(R.array.tr_hr_level_expert_advice)
         binding.expertAdviceView.setAdviceText(desArray[index])
     }
 
-    private fun updateHeartRateStatus(binding: HtActivityHeartRateDetailBinding, status: HeartRateStatus) {
+    private fun updateHeartRateStatus(binding: TrActivityHeartRateDetailBinding, status: HeartRateStatus) {
         binding.bpmStatusView.setCurrentLevel(
             LeveDataFactory.HeartRate.indexFor(status)
         )
@@ -497,7 +497,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
     }
 
-    private fun setupCholesterol(binding: HtActivityCholesterolDetailBinding) {
+    private fun setupCholesterol(binding: TrActivityCholesterolDetailBinding) {
         choViewModel.initializeWithRecord(recordId)
 
         chartManager = chartManagerFactory.create(binding.chartView, this)
@@ -534,7 +534,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         }
     }
 
-    private fun updateCholesterolUI(binding: HtActivityCholesterolDetailBinding) {
+    private fun updateCholesterolUI(binding: TrActivityCholesterolDetailBinding) {
         binding.tvHdlValue.text = choViewModel.getHdlValue()
         binding.tvTcHdlValue.text = choViewModel.getTcHdlRatio()
         binding.tvLdlHdlValue.text = choViewModel.getLdlHdlRatio()
@@ -549,7 +549,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
         val index = LeveDataFactory.Cholesterol.indexFor(cholesterolLevel)
         binding.cholesterolStatusView.setCurrentLevel(index)
 
-        val adviceArray = resources.getStringArray(R.array.ht_cholesterol_level_expert_advice)
+        val adviceArray = resources.getStringArray(R.array.tr_cholesterol_level_expert_advice)
         val adviceIndex = when (cholesterolLevel) {
             com.daily.health.manager.data.enums.CholesterolLevel.UNKNOWN -> 0
             com.daily.health.manager.data.enums.CholesterolLevel.NORMAL -> 1
@@ -569,7 +569,7 @@ class HealthDetailScreen : BaseInterActivity<BaseViewModel, HtActivityHealthDeta
 
     private fun updateTags(targetView: android.widget.TextView, tags: List<HealthTag>) {
         targetView.text = if (tags.isEmpty()) {
-            getString(R.string.ht_heart_rate_no_tags)
+            getString(R.string.tr_heart_rate_no_tags)
         } else {
             tags.joinToString(" · ") { it.name }
         }

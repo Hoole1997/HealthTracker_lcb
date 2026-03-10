@@ -26,8 +26,8 @@ import com.daily.health.manager.R
 import com.daily.health.manager.alarm.PermissionManager
 import com.daily.health.manager.config.models.PushMessage
 import com.daily.health.manager.data.utils.DateTimeUtils
-import com.daily.health.manager.databinding.HtActivityMainBinding
-import com.daily.health.manager.databinding.HtLayoutHomeTabItemBinding
+import com.daily.health.manager.databinding.TrActivityMainBinding
+import com.daily.health.manager.databinding.TrLayoutHomeTabItemBinding
 import com.daily.health.manager.face.adapter.FragmentsAdapter
 import com.daily.health.manager.face.compose.HomeFeatureGuideOverlay
 import com.daily.health.manager.face.compose.HomeGuideOverlayUi
@@ -69,7 +69,7 @@ import net.corekit.monetize.ads.AdPosition
 import org.koin.android.ext.android.inject
 import kotlin.coroutines.resume
 
-class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), PermissionProvider {
+class MainScreen : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), PermissionProvider {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -210,7 +210,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             val titleRes = when (position) {
                 0 -> {
                     // Home页面：显示默认状态
-                    R.string.ht_home
+                    R.string.tr_home
                 }
 
                 1 -> {
@@ -220,29 +220,29 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
                     tvMonth.visible()
                     updateMonthDisplay()
                     medFrg?.needLoadAd()
-                    R.string.ht_meds_manager
+                    R.string.tr_meds_manager
                 }
 
                 2 -> {
                     ReportDataManager.reportData("Insights_tab_enter",mapOf())
                     ivRemind.gone()
-                    R.string.ht_insights
+                    R.string.tr_insights
                 }
 
                 3 -> {
                     ReportDataManager.reportData("Tracker_tab_enter",mapOf())
                     // Record页面：隐藏提醒按钮
                     ivRemind.gone()
-                    R.string.ht_tracker
+                    R.string.tr_tracker
                 }
 
                 4 -> {
                     ReportDataManager.reportData("Settings_tab_enter",mapOf())
                     ivRemind.gone()
-                    R.string.ht_settings
+                    R.string.tr_settings
                 }
 
-                else -> R.string.ht_home
+                else -> R.string.tr_home
             }
             tvTitle.text = getString(titleRes)
         }
@@ -264,12 +264,12 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
 
     private fun applyHostBackgroundForTab(position: Int) {
         val isHomeTab = position == 0
-        val homeColor = ContextCompat.getColor(this, R.color.ht_home_host_bg)
+        val homeColor = ContextCompat.getColor(this, R.color.tr_home_host_bg)
         val defaultColor = ContextCompat.getColor(this, R.color.c1)
-        val subpageColor = ContextCompat.getColor(this, R.color.ht_subpage_bg)
+        val subpageColor = ContextCompat.getColor(this, R.color.tr_subpage_bg)
 
         if (isHomeTab) {
-            mViewBind.root.setBackgroundResource(R.drawable.ht_bg_home_host_gradient)
+            mViewBind.root.setBackgroundResource(R.drawable.tr_bg_home_host_gradient)
             mViewBind.areaBar.setBackgroundColor(Color.TRANSPARENT)
             mViewBind.viewPagerHome.setBackgroundColor(Color.TRANSPARENT)
             mViewBind.adViewContainer.setBackgroundColor(homeColor)
@@ -279,11 +279,11 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             mViewBind.viewPagerHome.setBackgroundColor(
                 if (position in 2..4) subpageColor else defaultColor
             )
-            mViewBind.adViewContainer.setBackgroundResource(R.drawable.ht_bg_bottom_banner)
+            mViewBind.adViewContainer.setBackgroundResource(R.drawable.tr_bg_bottom_banner)
         }
     }
 
-    override fun createViewBinding() = HtActivityMainBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivityMainBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = MainViewModel::class.java
 
@@ -470,11 +470,11 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
             removeAllTabs()
 
             val tabs = arrayListOf(
-                Pair(R.drawable.ht_selector_nav_home, R.string.ht_home),
-                Pair(R.drawable.ht_selector_nav_meds, R.string.ht_meds),
-                Pair(R.drawable.ht_selector_nav_insights, R.string.ht_insights),
-                Pair(R.drawable.ht_selector_nav_record, R.string.ht_tracker),
-                Pair(R.drawable.ht_selector_nav_settings, R.string.ht_settings),
+                Pair(R.drawable.tr_selector_nav_home, R.string.tr_home),
+                Pair(R.drawable.tr_selector_nav_meds, R.string.tr_meds),
+                Pair(R.drawable.tr_selector_nav_insights, R.string.tr_insights),
+                Pair(R.drawable.tr_selector_nav_record, R.string.tr_tracker),
+                Pair(R.drawable.tr_selector_nav_settings, R.string.tr_settings),
 
                 )
 
@@ -506,7 +506,7 @@ class MainScreen : BaseMVVMActivity<MainViewModel, HtActivityMainBinding>(), Per
     private fun addBottomNavTab(tabLayout: TabLayout, icon: Int, title: String) {
         tabLayout.addTab(tabLayout.newTab().apply {
             text = title
-            customView = HtLayoutHomeTabItemBinding.inflate(layoutInflater, tabLayout, false).let {
+            customView = TrLayoutHomeTabItemBinding.inflate(layoutInflater, tabLayout, false).let {
                 it.tvTabText.text = title
                 it.ivTabIcon.setImageResource(icon)
 

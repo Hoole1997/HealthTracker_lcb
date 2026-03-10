@@ -13,12 +13,12 @@ enum class BloodPressureCategory(
     override val colorRes: Int,
     val statusTextRes: Int?
 ) : LevelCategory {
-    LOW("low", R.color.color_3487FC, R.string.ht_blood_pressure_level_low),                         // 低血压: <90/60
-    NORMAL("normal", R.color.color_05BA7B, R.string.ht_blood_pressure_level_normal),                // 正常: 90-119/60-79
-    ELEVATED("elevated", R.color.color_FFE902, R.string.ht_blood_pressure_level_elevated),          // 血压偏高: 120-129/<80
-    HIGH_STAGE_1("high_stage_1", R.color.color_FFB909, R.string.ht_blood_pressure_level_high_stage_1), // 高血压1期: 130-139/80-89
-    HIGH_STAGE_2("high_stage_2", R.color.color_FF8000, R.string.ht_blood_pressure_level_high_stage_2), // 高血压2期: 140-179/90-119
-    HYPERTENSIVE_CRISIS("hypertensive_crisis", R.color.color_FB0301, R.string.ht_blood_pressure_level_hypertensive_crisis), // 高血压危象: ≥180/≥120
+    LOW("low", R.color.color_3487FC, R.string.tr_blood_pressure_level_low),                         // 低血压: <90/60
+    NORMAL("normal", R.color.color_05BA7B, R.string.tr_blood_pressure_level_normal),                // 正常: 90-119/60-79
+    ELEVATED("elevated", R.color.color_FFE902, R.string.tr_blood_pressure_level_elevated),          // 血压偏高: 120-129/<80
+    HIGH_STAGE_1("high_stage_1", R.color.color_FFB909, R.string.tr_blood_pressure_level_high_stage_1), // 高血压1期: 130-139/80-89
+    HIGH_STAGE_2("high_stage_2", R.color.color_FF8000, R.string.tr_blood_pressure_level_high_stage_2), // 高血压2期: 140-179/90-119
+    HYPERTENSIVE_CRISIS("hypertensive_crisis", R.color.color_FB0301, R.string.tr_blood_pressure_level_hypertensive_crisis), // 高血压危象: ≥180/≥120
     UNKNOWN("unknown", R.color.color_05BA7B, null);                  // 未知
 
     companion object {

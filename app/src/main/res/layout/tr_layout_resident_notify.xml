@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="64dp"
+
+
+    android:background="@drawable/tr_bg_rect_white_12"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_bs"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/tr_ic_bs_primery"/>
+        <TextView
+            android:id="@+id/tv_bs_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextViewFont_RobotoMedium"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textSize="11sp"
+            android:textColor="@color/t1"
+            android:text="@string/tr_blood_suger"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_bp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/tr_ic_bp_resident"/>
+        <TextView
+            android:id="@+id/tv_bp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextViewFont_RobotoMedium"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textSize="11sp"
+            android:textColor="@color/t1"
+            android:text="@string/tr_blood_pressure"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_hr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/tr_ic_hr_resident"/>
+        <TextView
+            android:id="@+id/tv_hr_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextViewFont_RobotoMedium"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textSize="11sp"
+            android:textColor="@color/t1"
+            android:text="@string/tr_heart_rate"/>
+    </LinearLayout>
+
+</LinearLayout>

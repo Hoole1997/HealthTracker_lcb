@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.HtDialogConfirmBinding
+import com.daily.health.manager.databinding.TrDialogConfirmBinding
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.fragment.BaseVbDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
@@ -22,7 +22,7 @@ class ConfirmDialog(
     private val leftText: String? = null, private val rightText: String? = null,
     private val titleColor: Int = 0,
     private val isShowNative: Boolean = false
-) : BaseVbDialogFragment<HtDialogConfirmBinding>(){
+) : BaseVbDialogFragment<TrDialogConfirmBinding>(){
 
     companion object {
         val BUTTON_OK = R.id.btn_ok
@@ -44,7 +44,7 @@ class ConfirmDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtDialogConfirmBinding.inflate(inflater, parent, attachToParent)
+    ) = TrDialogConfirmBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {

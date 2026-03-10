@@ -169,7 +169,7 @@ class CustomNotificationHelper(
         deleteIntent: PendingIntent
     ): RemoteViews {
         return RemoteViews(context.packageName, layoutResources.collapsedLayout).apply {
-            if (layoutResources.collapsedLayout == R.layout.ht_layout_assistant_notify) {
+            if (layoutResources.collapsedLayout == R.layout.tr_layout_assistant_notify) {
                 setTextViewText(R.id.tv_time, pushMessage.title)
                 setOnClickPendingIntent(R.id.iv_confirm, clickIntent)
                 setOnClickPendingIntent(R.id.iv_close, deleteIntent)
@@ -207,7 +207,7 @@ class CustomNotificationHelper(
         deleteIntent: PendingIntent
     ): RemoteViews {
         return RemoteViews(context.packageName, layoutResources.expandedLayout).apply {
-            if (layoutResources.expandedLayout == R.layout.ht_layout_assistant_notify_big) {
+            if (layoutResources.expandedLayout == R.layout.tr_layout_assistant_notify_big) {
                 setTextViewText(R.id.tv_title, pushMessage.title)
                 setTextViewText(R.id.tv_content, pushMessage.desc)
                 setOnClickPendingIntent(R.id.ll_answer, clickIntent)
@@ -265,9 +265,9 @@ class CustomNotificationHelper(
         SpUtils.putInt(KEY_ASSISTANT_CALL_INDEX, nextIndex)
 
         val typeNameRes = when (nextIndex) {
-            0 -> R.string.ht_blood_suger
-            1 -> R.string.ht_blood_pressure
-            else -> R.string.ht_heart_rate
+            0 -> R.string.tr_blood_suger
+            1 -> R.string.tr_blood_pressure
+            else -> R.string.tr_heart_rate
         }
         val typeName = context.getString(typeNameRes)
         val displayDesc = pushMessage.desc.replace(ASSISTANT_TYPE_PLACEHOLDER, typeName)

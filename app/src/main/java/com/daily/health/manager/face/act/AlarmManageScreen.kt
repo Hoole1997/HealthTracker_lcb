@@ -2,7 +2,7 @@ package com.daily.health.manager.face.act
 
 import android.os.Bundle
 import com.daily.health.manager.alarm.PermissionManager
-import com.daily.health.manager.databinding.HtActivityAlarmManagerBinding
+import com.daily.health.manager.databinding.TrActivityAlarmManagerBinding
 import com.daily.health.manager.face.viewmodel.AlarmViewModel
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -13,11 +13,11 @@ import org.koin.android.ext.android.inject
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.daily.health.manager.face.compose.AlarmListContent
 
-class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, HtActivityAlarmManagerBinding>() {
+class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, TrActivityAlarmManagerBinding>() {
 
     private val permissionManager: PermissionManager by inject()
 
-    override fun createViewBinding() = HtActivityAlarmManagerBinding.inflate(layoutInflater)
+    override fun createViewBinding() = TrActivityAlarmManagerBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = AlarmViewModel::class.java
 

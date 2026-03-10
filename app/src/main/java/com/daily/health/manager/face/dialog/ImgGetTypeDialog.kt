@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.daily.health.manager.databinding.HtDialogImgGetTypeSelectBinding
+import com.daily.health.manager.databinding.TrDialogImgGetTypeSelectBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.clickWithDuration
 
 class ImgGetTypeDialog(
     private val onTakePhoto: (() -> Unit)? = null,
     private val onChoosePhoto: (() -> Unit)? = null
-) : BaseBottomSheetDialogFragment<HtDialogImgGetTypeSelectBinding>() {
+) : BaseBottomSheetDialogFragment<TrDialogImgGetTypeSelectBinding>() {
 
     constructor():this(null,null)
     companion object {
@@ -29,7 +29,7 @@ class ImgGetTypeDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = HtDialogImgGetTypeSelectBinding.inflate(inflater, parent, attachToParent)
+    ) = TrDialogImgGetTypeSelectBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.apply {

@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
-import com.daily.health.manager.databinding.HtViewGenericStatusBinding
+import com.daily.health.manager.databinding.TrViewGenericStatusBinding
 
 /**
  * 通用状态视图基类
@@ -19,8 +19,8 @@ abstract class GenericStatusView<T> @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) where T : Enum<T>, T : LevelCategory {
 
-    protected val binding: HtViewGenericStatusBinding =
-        HtViewGenericStatusBinding.inflate(LayoutInflater.from(context), this, true)
+    protected val binding: TrViewGenericStatusBinding =
+        TrViewGenericStatusBinding.inflate(LayoutInflater.from(context), this, true)
 
     // 当前状态
     protected var currentLevelValue: T? = null

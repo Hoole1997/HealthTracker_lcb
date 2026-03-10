@@ -56,7 +56,7 @@ fun HeartRateMeasureEntry(
     onMeasureClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val measureButtonLabel = stringResource(R.string.ht_measure_now)
+    val measureButtonLabel = stringResource(R.string.tr_measure_now)
 
     Box(
         modifier = modifier
@@ -136,7 +136,7 @@ private fun DecorativeIllustration(modifier: Modifier = Modifier) {
 @Composable
 private fun LastReportHeader() {
     Text(
-        text = stringResource(R.string.ht_last_report),
+        text = stringResource(R.string.tr_last_report),
         fontSize = 13.sp,
         fontWeight = FontWeight.Normal,
         color = colorResource(R.color.color_666)
@@ -150,14 +150,14 @@ private fun ValueRow(
 ) {
     Row(verticalAlignment = Alignment.Bottom) {
         Text(
-            text = lastBpm?.toString() ?: stringResource(R.string.ht_no_data),
+            text = lastBpm?.toString() ?: stringResource(R.string.tr_no_data),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = colorResource(R.color.c5)
         )
         Spacer(modifier = Modifier.width(5.dp))
         Text(
-            text = stringResource(R.string.ht_bpm),
+            text = stringResource(R.string.tr_bpm),
             fontSize = 14.sp,
             color = colorResource(R.color.t1),
             modifier = Modifier.padding(bottom = 6.dp)
@@ -179,7 +179,7 @@ private fun ValueRow(
 @Composable
 private fun InstructionText() {
     Text(
-        text = stringResource(R.string.ht_test_and_record_hr),
+        text = stringResource(R.string.tr_test_and_record_hr),
         fontSize = 15.sp,
         lineHeight = 22.sp,
         fontWeight = FontWeight.Medium,

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tr_bg_rect_white_12"
+    android:paddingHorizontal="@dimen/dp_16"
+    android:paddingVertical="@dimen/dp_20">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_choose_gender"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:text="@string/tr_please_choose_your_gender"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <RadioGroup
+        android:id="@+id/rg_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_choose_gender">
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/rb_male"
+            android:layout_width="@dimen/dp_78"
+            android:layout_height="@dimen/dp_78"
+            android:layout_marginEnd="@dimen/dp_22"
+            android:background="@drawable/tr_selector_gender_item_small"
+            android:button="@null"
+            android:checked="true" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/rb_female"
+            android:layout_width="@dimen/dp_78"
+            android:layout_height="@dimen/dp_78"
+            android:layout_marginStart="@dimen/dp_22"
+            android:background="@drawable/tr_selector_gender_item_small"
+            android:button="@null" />
+    </RadioGroup>
+
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:layout_width="@dimen/dp_66"
+        android:layout_height="@dimen/dp_66"
+        app:layout_constraintBottom_toBottomOf="@id/rg_gender"
+        app:layout_constraintEnd_toEndOf="@id/v_male_center"
+        app:layout_constraintStart_toStartOf="@id/v_male_center"
+        app:round="@dimen/dp_32"
+        app:srcCompat="@mipmap/tr_ic_male" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:layout_width="@dimen/dp_66"
+        android:layout_height="@dimen/dp_66"
+        app:layout_constraintBottom_toBottomOf="@id/rg_gender"
+        app:layout_constraintEnd_toEndOf="@id/v_female_center"
+        app:layout_constraintStart_toStartOf="@id/v_female_center"
+        app:round="@dimen/dp_32"
+        app:srcCompat="@mipmap/tr_ic_female" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/v_center"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <View
+        android:id="@+id/v_male_center"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        android:layout_marginEnd="@dimen/dp_61"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/v_center"
+        app:layout_constraintTop_toTopOf="@id/rg_gender"
+        app:layout_constraintBottom_toBottomOf="@id/rg_gender"/>
+
+    <View
+        android:id="@+id/v_female_center"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        android:layout_marginStart="@dimen/dp_61"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/v_center"
+        app:layout_constraintTop_toTopOf="@id/rg_gender"
+        app:layout_constraintBottom_toBottomOf="@id/rg_gender"/>
+
+    <androidx.appcompat.widget.AppCompatCheckedTextView
+        android:id="@+id/tv_male"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:checked="true"
+        android:text="@string/tr_male"
+        android:textColor="@color/tr_selector_gender_text_color"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="@id/v_male_center"
+        app:layout_constraintStart_toStartOf="@id/v_male_center"
+        app:layout_constraintTop_toBottomOf="@id/rg_gender" />
+
+    <androidx.appcompat.widget.AppCompatCheckedTextView
+        android:id="@+id/tv_female"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/tr_female"
+        android:textColor="@color/tr_selector_gender_text_color"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="@id/v_female_center"
+        app:layout_constraintStart_toStartOf="@id/v_female_center"
+        app:layout_constraintTop_toBottomOf="@id/rg_gender" />
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        app:layout_constraintTop_toBottomOf="@id/tv_male">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            style="@style/MaterialButton.b3"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_weight="1"
+            android:text="@string/tr_cancel" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_ok"
+            style="@style/MaterialButton.b1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_weight="1"
+            android:text="@string/tr_save" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

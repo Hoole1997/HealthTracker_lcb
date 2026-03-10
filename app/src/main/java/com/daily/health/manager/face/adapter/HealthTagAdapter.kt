@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.daily.health.manager.R
 import com.daily.health.manager.data.entity.HealthTag
 import com.daily.health.manager.data.enums.TagType
-import com.daily.health.manager.databinding.HtItemLabelFlexBinding
+import com.daily.health.manager.databinding.TrItemLabelFlexBinding
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.gone
 import com.healthtracker.framework.ext.visible
@@ -49,7 +49,7 @@ class HealthTagAdapter(
      * 标签ViewHolder
      */
     inner class TagViewHolder(
-        private val binding: HtItemLabelFlexBinding
+        private val binding: TrItemLabelFlexBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: TagItem) {
@@ -73,7 +73,7 @@ class HealthTagAdapter(
                     )
                     labelItem.background = ContextCompat.getDrawable(
                         labelItem.context,
-                        R.drawable.ht_bg_label_select_selected
+                        R.drawable.tr_bg_label_select_selected
                     )
                 } else {
                     tvLabel.setTextColor(
@@ -84,7 +84,7 @@ class HealthTagAdapter(
                     )
                     labelItem.background = ContextCompat.getDrawable(
                         labelItem.context,
-                        R.drawable.ht_bg_label_select_normal
+                        R.drawable.tr_bg_label_select_normal
                     )
                 }
 
@@ -97,7 +97,7 @@ class HealthTagAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
-        val binding = HtItemLabelFlexBinding.inflate(
+        val binding = TrItemLabelFlexBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false

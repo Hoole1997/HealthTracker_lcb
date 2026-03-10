@@ -26,7 +26,7 @@ class HealthTagRepository(
             val existingBloodSugarTags = getPredefinedTagsByType(TagType.BLOOD_SUGAR)
             if (existingBloodSugarTags.isEmpty()) {
                 // 插入血糖预定义标签
-                val bloodSugarLabels = context.resources.getStringArray(com.daily.health.manager.R.array.ht_blood_sugar_labels)
+                val bloodSugarLabels = context.resources.getStringArray(com.daily.health.manager.R.array.tr_blood_sugar_labels)
                 bloodSugarLabels.forEachIndexed { index, label ->
                     val tag = HealthTag.createPredefined(label, TagType.BLOOD_SUGAR, index)
                     healthTagDao.insert(tag)
@@ -37,7 +37,7 @@ class HealthTagRepository(
             val existingBloodPressureTags = getPredefinedTagsByType(TagType.BLOOD_PRESSURE)
             if (existingBloodPressureTags.isEmpty()) {
                 // 插入血压预定义标签
-                val bloodPressureLabels = context.resources.getStringArray(com.daily.health.manager.R.array.ht_blood_pressure_labels)
+                val bloodPressureLabels = context.resources.getStringArray(com.daily.health.manager.R.array.tr_blood_pressure_labels)
                 bloodPressureLabels.forEachIndexed { index, label ->
                     val tag = HealthTag.createPredefined(label, TagType.BLOOD_PRESSURE, index)
                     healthTagDao.insert(tag)
@@ -49,7 +49,7 @@ class HealthTagRepository(
             if (existingBmiTags.isEmpty()) {
                 // 若没有资源数组，则不强制插入，使用名称查找避免编译期资源缺失
                 try {
-                    val bmiLabelsResId = context.resources.getIdentifier("ht_bmi_labels", "array", context.packageName)
+                    val bmiLabelsResId = context.resources.getIdentifier("tr_bmi_labels", "array", context.packageName)
                     if (bmiLabelsResId != 0) {
                         val bmiLabels = context.resources.getStringArray(bmiLabelsResId)
                         bmiLabels.forEachIndexed { index, label ->
@@ -67,7 +67,7 @@ class HealthTagRepository(
             // 检查心率预定义标签
             val existingHeartRateTags = getPredefinedTagsByType(TagType.HEART_RATE)
             if (existingHeartRateTags.isEmpty()) {
-                val heartRateLabelsResId = context.resources.getIdentifier("ht_heart_rate_labels", "array", context.packageName)
+                val heartRateLabelsResId = context.resources.getIdentifier("tr_heart_rate_labels", "array", context.packageName)
                 if (heartRateLabelsResId != 0) {
                     val heartRateLabels = context.resources.getStringArray(heartRateLabelsResId)
                     heartRateLabels.forEachIndexed { index, label ->

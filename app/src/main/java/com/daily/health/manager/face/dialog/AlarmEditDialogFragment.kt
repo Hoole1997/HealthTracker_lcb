@@ -55,10 +55,10 @@ class AlarmEditDialogFragment : ComposeBottomSheetFragment() {
         if (showDeleteConfirm) {
             LaunchedEffect(Unit) {
                 ConfirmDialog(
-                    title = getString(R.string.ht_tips),
-                    message = getString(R.string.ht_alarm_delete_confirm_title),
-                    leftText = getString(R.string.ht_cancel),
-                    rightText = getString(R.string.ht_confirm),
+                    title = getString(R.string.tr_tips),
+                    message = getString(R.string.tr_alarm_delete_confirm_title),
+                    leftText = getString(R.string.tr_cancel),
+                    rightText = getString(R.string.tr_confirm),
                     onDialogListener = object : DialogListener {
                         override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                             if (which == ConfirmDialog.BUTTON_OK) {

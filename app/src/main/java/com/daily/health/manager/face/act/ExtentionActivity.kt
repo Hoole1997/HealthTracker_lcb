@@ -11,10 +11,10 @@ import kotlinx.coroutines.launch
 
 inline fun AppCompatActivity.showDeleteConfirm(crossinline onConfirm: suspend () -> Boolean) {
     ConfirmDialog(
-        title = getString(R.string.ht_delete_record_remind_title),
-        message = getString(R.string.ht_delete_record_remind),
-        leftText = getString(R.string.ht_cancel),
-        rightText = getString(R.string.ht_confirm),
+        title = getString(R.string.tr_delete_record_remind_title),
+        message = getString(R.string.tr_delete_record_remind),
+        leftText = getString(R.string.tr_cancel),
+        rightText = getString(R.string.tr_confirm),
         onDialogListener = object : DialogListener {
             override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                 super.onItemClick(dialogFragment, which)
@@ -23,7 +23,7 @@ inline fun AppCompatActivity.showDeleteConfirm(crossinline onConfirm: suspend ()
                         if (onConfirm.invoke()) {
                             finish()
                         } else {
-                            showToast(getString(R.string.ht_delete_record_failed))
+                            showToast(getString(R.string.tr_delete_record_failed))
                         }
                     }
                 }
@@ -36,10 +36,10 @@ inline fun AppCompatActivity.showDeleteConfirm(crossinline onConfirm: suspend ()
 inline fun AppCompatActivity.showFreeLockConfirm(crossinline onConfirm: () -> Unit,crossinline onCancel:() -> Unit) {
     //TODO 这个最好只展示异常，不然会影响下面原生广告有效展示
     ConfirmDialog(
-        title = getString(R.string.ht_kindly_note),
-        message = getString(R.string.ht_your_health_data_requires),
-        leftText = getString(R.string.ht_cancel),
-        rightText = getString(R.string.ht_free_unlock),
+        title = getString(R.string.tr_kindly_note),
+        message = getString(R.string.tr_your_health_data_requires),
+        leftText = getString(R.string.tr_cancel),
+        rightText = getString(R.string.tr_free_unlock),
         onDialogListener = object : DialogListener {
             override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                 super.onItemClick(dialogFragment, which)

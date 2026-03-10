@@ -1,154 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">혈당 및 혈압 트래커</string>
-    <string name="ht_meds_manager">복약 관리</string>
-    <string name="ht_blood_suger">혈당</string>
-    <string name="ht_blood_pressure">혈압</string>
-    <string name="ht_home">홈</string>
-    <string name="ht_home_heart_subtitle">오늘 첫 측정을 해보세요!</string>
-    <string name="ht_record">기록</string>
-    <string name="ht_meds">약</string>
-    <string name="ht_insights">분석</string>
-    <string name="ht_tracker">기록</string>
-    <string name="ht_record_now">지금 기록</string>
-    <string name="ht_rate_us">평가하기</string>
-    <string name="ht_history">기록</string>
-    <string name="ht_click_to_record">기록하려면 클릭</string>
+    <string name="tr_meds_manager">복약 관리</string>
+    <string name="tr_blood_suger">혈당</string>
+    <string name="tr_blood_pressure">혈압</string>
+    <string name="tr_home">홈</string>
+    <string name="tr_home_heart_subtitle">오늘 첫 측정을 해보세요!</string>
+    <string name="tr_record">기록</string>
+    <string name="tr_meds">약</string>
+    <string name="tr_insights">분석</string>
+    <string name="tr_tracker">기록</string>
+    <string name="tr_record_now">지금 기록</string>
+    <string name="tr_rate_us">평가하기</string>
+    <string name="tr_history">기록</string>
+    <string name="tr_click_to_record">기록하려면 클릭</string>
 
-    <string name="ht_assistant_answer">응답</string>
-    <string name="ht_assistant_neglect">거절</string>
-    <string name="ht_new_record">새 기록</string>
-    <string name="ht_edit_record">기록 편집</string>
-    <string name="ht_status">상태</string>
-    <string name="ht_text_default">기본</string>
+    <string name="tr_assistant_answer">응답</string>
+    <string name="tr_assistant_neglect">거절</string>
+    <string name="tr_new_record">새 기록</string>
+    <string name="tr_edit_record">기록 편집</string>
+    <string name="tr_status">상태</string>
+    <string name="tr_text_default">기본</string>
 
     <!-- 血糖等级 -->
-    <string name="ht_blood_sugar_level_low">낮음</string>
-    <string name="ht_blood_sugar_level_normal">정상</string>
-    <string name="ht_blood_sugar_level_prediabetes">당뇨병 전단계</string>
-    <string name="ht_blood_sugar_level_diabetes">당뇨병</string>
+    <string name="tr_blood_sugar_level_low">낮음</string>
+    <string name="tr_blood_sugar_level_normal">정상</string>
+    <string name="tr_blood_sugar_level_prediabetes">당뇨병 전단계</string>
+    <string name="tr_blood_sugar_level_diabetes">당뇨병</string>
 
     <!-- 总胆固醇风险等级 -->
-    <string name="ht_cholesterol_level_normal">정상</string>
-    <string name="ht_cholesterol_level_normal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
-    <string name="ht_cholesterol_level_near_optimal">거의 최적</string>
-    <string name="ht_cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
-    <string name="ht_cholesterol_level_borderline">경계</string>
-    <string name="ht_cholesterol_level_borderline_desc">TC 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
-    <string name="ht_cholesterol_level_high">높음</string>
-    <string name="ht_cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
-    <string name="ht_cholesterol_level_very_high">매우 높음</string>
-    <string name="ht_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
-    <string name="ht_cholesterol_level_unknown">알 수 없음</string>
-    <string name="ht_cholesterol_level_unknown_desc">콜레스테롤 수치를 판단하기에 데이터가 부족합니다</string>
-    <string name="ht_cholesterol_hdl_label">HDL</string>
-    <string name="ht_cholesterol_ldl_label">LDL</string>
-    <string name="ht_cholesterol_tg_label">TG</string>
+    <string name="tr_cholesterol_level_normal">정상</string>
+    <string name="tr_cholesterol_level_normal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
+    <string name="tr_cholesterol_level_near_optimal">거의 최적</string>
+    <string name="tr_cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
+    <string name="tr_cholesterol_level_borderline">경계</string>
+    <string name="tr_cholesterol_level_borderline_desc">TC 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
+    <string name="tr_cholesterol_level_high">높음</string>
+    <string name="tr_cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
+    <string name="tr_cholesterol_level_very_high">매우 높음</string>
+    <string name="tr_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
+    <string name="tr_cholesterol_level_unknown">알 수 없음</string>
+    <string name="tr_cholesterol_level_unknown_desc">콜레스테롤 수치를 판단하기에 데이터가 부족합니다</string>
+    <string name="tr_cholesterol_hdl_label">HDL</string>
+    <string name="tr_cholesterol_ldl_label">LDL</string>
+    <string name="tr_cholesterol_tg_label">TG</string>
 
     <!-- 血压等级 -->
-    <string name="ht_blood_pressure_level_low">저혈압</string>
-    <string name="ht_blood_pressure_level_normal">정상</string>
-    <string name="ht_blood_pressure_level_elevated">주의 혈압</string>
-    <string name="ht_blood_pressure_level_high_stage_1">고혈압 1단계</string>
-    <string name="ht_blood_pressure_level_high_stage_2">고혈압 2단계</string>
-    <string name="ht_blood_pressure_level_hypertensive_crisis">고혈압 위기</string>
+    <string name="tr_blood_pressure_level_low">저혈압</string>
+    <string name="tr_blood_pressure_level_normal">정상</string>
+    <string name="tr_blood_pressure_level_elevated">주의 혈압</string>
+    <string name="tr_blood_pressure_level_high_stage_1">고혈압 1단계</string>
+    <string name="tr_blood_pressure_level_high_stage_2">고혈압 2단계</string>
+    <string name="tr_blood_pressure_level_hypertensive_crisis">고혈압 위기</string>
 
     <!-- 血压范围描述 - 状态显示用（缩写） -->
-    <string name="ht_blood_pressure_range_low_short">SYS %1$s 또는 DIA %2$s</string>
-    <string name="ht_blood_pressure_range_normal_short">SYS %1$s 및 DIA %2$s</string>
-    <string name="ht_blood_pressure_range_elevated_short">SYS %1$s 및 DIA %2$s</string>
-    <string name="ht_blood_pressure_range_high_stage_1_short">SYS %1$s 또는 DIA %2$s</string>
-    <string name="ht_blood_pressure_range_high_stage_2_short">SYS %1$s 또는 DIA %2$s</string>
-    <string name="ht_blood_pressure_range_hypertensive_crisis_short">SYS %1$s 또는 DIA %2$s</string>
+    <string name="tr_blood_pressure_range_low_short">SYS %1$s 또는 DIA %2$s</string>
+    <string name="tr_blood_pressure_range_normal_short">SYS %1$s 및 DIA %2$s</string>
+    <string name="tr_blood_pressure_range_elevated_short">SYS %1$s 및 DIA %2$s</string>
+    <string name="tr_blood_pressure_range_high_stage_1_short">SYS %1$s 또는 DIA %2$s</string>
+    <string name="tr_blood_pressure_range_high_stage_2_short">SYS %1$s 또는 DIA %2$s</string>
+    <string name="tr_blood_pressure_range_hypertensive_crisis_short">SYS %1$s 또는 DIA %2$s</string>
 
     <!-- 血压范围描述 - 列表视图用（全写） -->
-    <string name="ht_blood_pressure_range_low_full">수축기 %1$s 또는 이완기 %2$s</string>
-    <string name="ht_blood_pressure_range_normal_full">수축기 %1$s 및 이완기 %2$s</string>
-    <string name="ht_blood_pressure_range_elevated_full">수축기 %1$s 및 이완기 %2$s</string>
-    <string name="ht_blood_pressure_range_high_stage_1_full">수축기 %1$s 또는 이완기 %2$s</string>
-    <string name="ht_blood_pressure_range_high_stage_2_full">수축기 %1$s 또는 이완기 %2$s</string>
-    <string name="ht_blood_pressure_range_hypertensive_crisis_full">수축기 %1$s 또는 이완기 %2$s</string>
+    <string name="tr_blood_pressure_range_low_full">수축기 %1$s 또는 이완기 %2$s</string>
+    <string name="tr_blood_pressure_range_normal_full">수축기 %1$s 및 이완기 %2$s</string>
+    <string name="tr_blood_pressure_range_elevated_full">수축기 %1$s 및 이완기 %2$s</string>
+    <string name="tr_blood_pressure_range_high_stage_1_full">수축기 %1$s 또는 이완기 %2$s</string>
+    <string name="tr_blood_pressure_range_high_stage_2_full">수축기 %1$s 또는 이완기 %2$s</string>
+    <string name="tr_blood_pressure_range_hypertensive_crisis_full">수축기 %1$s 또는 이완기 %2$s</string>
 
     <!-- 闹钟通知相关字符串 -->
-    <string name="ht_notification_channel_alarm_name">건강 알림</string>
-    <string name="ht_notification_channel_alarm_description">건강 모니터링 알림 통지</string>
+    <string name="tr_notification_channel_alarm_name">건강 알림</string>
+    <string name="tr_notification_channel_alarm_description">건강 모니터링 알림 통지</string>
 
     <!-- 血糖提醒通知 -->
-    <string name="ht_alarm_blood_sugar_content">혈당을 기록할 시간입니다!</string>
+    <string name="tr_alarm_blood_sugar_content">혈당을 기록할 시간입니다!</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="ht_bs_notify_desc_fasting_am">아침 식사 전에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_desc_post_breakfast">아침 식사 2시간 후에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_desc_pre_lunch">점심 식사 전에 혈당을 측정할 시간입니다.</string>
-    <string name="ht_bs_notify_desc_post_lunch">점심 식사 2시간 후에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_desc_pre_dinner">저녁 식사 전에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_desc_post_dinner">저녁 식사 2시간 후에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_desc_bedtime">잠자리에 들기 전에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_btn_check">확인하기</string>
+    <string name="tr_bs_notify_desc_fasting_am">아침 식사 전에 혈당을 측정하세요.</string>
+    <string name="tr_bs_notify_desc_post_breakfast">아침 식사 2시간 후에 혈당을 측정하세요.</string>
+    <string name="tr_bs_notify_desc_pre_lunch">점심 식사 전에 혈당을 측정할 시간입니다.</string>
+    <string name="tr_bs_notify_desc_post_lunch">점심 식사 2시간 후에 혈당을 측정하세요.</string>
+    <string name="tr_bs_notify_desc_pre_dinner">저녁 식사 전에 혈당을 측정하세요.</string>
+    <string name="tr_bs_notify_desc_post_dinner">저녁 식사 2시간 후에 혈당을 측정하세요.</string>
+    <string name="tr_bs_notify_desc_bedtime">잠자리에 들기 전에 혈당을 측정하세요.</string>
+    <string name="tr_bs_notify_btn_check">확인하기</string>
 
     <!-- 血压提醒通知 -->
-    <string name="ht_alarm_blood_pressure_content">혈압을 기록할 시간입니다!</string>
+    <string name="tr_alarm_blood_pressure_content">혈압을 기록할 시간입니다!</string>
 
-    <string name="ht_alarm_heart_rate_content">심박수를 측정할 시간입니다</string>
-    <string name="ht_alarm_bmi_content">BMI를 측정할 시간입니다</string>
-    <string name="ht_alarm_cholesterol_content">콜레스테롤을 측정할 시간입니다</string>
+    <string name="tr_alarm_heart_rate_content">심박수를 측정할 시간입니다</string>
+    <string name="tr_alarm_bmi_content">BMI를 측정할 시간입니다</string>
+    <string name="tr_alarm_cholesterol_content">콜레스테롤을 측정할 시간입니다</string>
     <!-- 通用场景通知权限弹窗 -->
-    <string name="ht_alarm_general_content">빠른 체크인 시간입니다</string>
-    <string name="ht_notification_des_general">알림을 활성화하여 적시에 건강 알림을 받고 중요한 체크인을 놓치지 마세요.</string>
-    <string name="ht_alarm_delete_confirm_title">이 알람을 삭제하시겠습니까?</string>
+    <string name="tr_alarm_general_content">빠른 체크인 시간입니다</string>
+    <string name="tr_notification_des_general">알림을 활성화하여 적시에 건강 알림을 받고 중요한 체크인을 놓치지 마세요.</string>
+    <string name="tr_alarm_delete_confirm_title">이 알람을 삭제하시겠습니까?</string>
 
     <!-- 血压范围具体数值 -->
 
     <!-- 血糖测量状态 -->
-    <string name="ht_blood_sugar_status_default">기본</string>
-    <string name="ht_blood_sugar_status_fasting">공복</string>
-    <string name="ht_blood_sugar_status_before_meal">식전</string>
-    <string name="ht_blood_sugar_status_bedtime">취침 전</string>
-    <string name="ht_blood_sugar_status_after_exercise">운동 후</string>
-    <string name="ht_blood_sugar_status_one_hour_after_meal">식후 1시간</string>
-    <string name="ht_blood_sugar_status_before_exercise">운동 전</string>
-    <string name="ht_blood_sugar_status_two_hours_after_meal">식후 2시간</string>
+    <string name="tr_blood_sugar_status_default">기본</string>
+    <string name="tr_blood_sugar_status_fasting">공복</string>
+    <string name="tr_blood_sugar_status_before_meal">식전</string>
+    <string name="tr_blood_sugar_status_bedtime">취침 전</string>
+    <string name="tr_blood_sugar_status_after_exercise">운동 후</string>
+    <string name="tr_blood_sugar_status_one_hour_after_meal">식후 1시간</string>
+    <string name="tr_blood_sugar_status_before_exercise">운동 전</string>
+    <string name="tr_blood_sugar_status_two_hours_after_meal">식후 2시간</string>
 
     <!-- 按钮和操作 -->
-    <string name="ht_save">저장</string>
-    <string name="ht_save_changes">변경 사항 저장</string>
-    <string name="ht_cancel">취소</string>
-    <string name="ht_saving">저장 중...</string>
-    <string name="ht_date_time"><![CDATA[날짜 및 시간]]></string>
-    <string name="ht_label">라벨</string>
+    <string name="tr_save">저장</string>
+    <string name="tr_save_changes">변경 사항 저장</string>
+    <string name="tr_cancel">취소</string>
+    <string name="tr_saving">저장 중...</string>
+    <string name="tr_date_time"><![CDATA[날짜 및 시간]]></string>
+    <string name="tr_label">라벨</string>
 
     <!-- 相对时间显示 -->
-    <string name="ht_latest">최신</string>
-    <string name="ht_just_now">방금 전</string>
-    <string name="ht_seconds_ago">%d초 전</string>
-    <string name="ht_minutes_ago">%d분 전</string>
-    <string name="ht_hours_ago">%d시간 전</string>
-    <string name="ht_days_ago">%d일 전</string>
-    <string name="ht_systolic">수축기</string>
-    <string name="ht_diastolic">이완기</string>
-    <string name="ht_pulse">맥박</string>
-    <string name="ht_type">유형</string>
-    <string name="ht_bp_range_des">AHA(미국심장협회)의 최신 가이드라인에 따름</string>
-    <string name="ht_cholesterol_range_des">TC: 총 콜레스테롤\nHDL: 고밀도 지단백질\nLDL: 저밀도 지단백질\nTG: 중성지방\nNon-HDL: 비고밀도 지단백질\n\n클리블랜드 클리닉의 가이드라인에 따름.</string>
-    <string name="ht_got_it">확인</string>
-    <string name="ht_all_types">모든 유형</string>
-    <string name="ht_no_records">기록 없음</string>
-    <string name="ht_load_fail_please_try_again">로드 실패, 다시 시도해 주세요</string>
-    <string name="ht_try_again">다시 시도</string>
-    <string name="ht_delete_record_remind_title">이 기록을 삭제하시겠습니까?</string>
-    <string name="ht_tips">팁</string>
-    <string name="ht_delete_tips_content">정말 삭제하시겠습니까?</string>
-    <string name="ht_confirm">확인</string>
-    <string name="ht_delete_record_remind">삭제 후에는 복구할 수 없습니다</string>
-    <string name="ht_add_record">기록 추가</string>
-    <string name="ht_alarm_management">알람 관리</string>
-    <string name="ht_reminder_for">%s 알림</string>
-    <string name="ht_ai_assistant_title">AI 건강 어시스턴트</string>
-    <string name="ht_ai_empty_desc">이 기능은 현재 개발 중이며 아직 사용할 수 없습니다. 양해해 주셔서 감사합니다.</string>
-    <string name="ht_step_stats_max_title">최대</string>
-    <string name="ht_step_stats_min_title">최소</string>
-    <string name="ht_step_stats_avg_title">평균</string>
-    <string-array name="ht_blood_sugar_labels">
+    <string name="tr_latest">최신</string>
+    <string name="tr_just_now">방금 전</string>
+    <string name="tr_seconds_ago">%d초 전</string>
+    <string name="tr_minutes_ago">%d분 전</string>
+    <string name="tr_hours_ago">%d시간 전</string>
+    <string name="tr_days_ago">%d일 전</string>
+    <string name="tr_systolic">수축기</string>
+    <string name="tr_diastolic">이완기</string>
+    <string name="tr_pulse">맥박</string>
+    <string name="tr_type">유형</string>
+    <string name="tr_bp_range_des">AHA(미국심장협회)의 최신 가이드라인에 따름</string>
+    <string name="tr_cholesterol_range_des">TC: 총 콜레스테롤\nHDL: 고밀도 지단백질\nLDL: 저밀도 지단백질\nTG: 중성지방\nNon-HDL: 비고밀도 지단백질\n\n클리블랜드 클리닉의 가이드라인에 따름.</string>
+    <string name="tr_got_it">확인</string>
+    <string name="tr_all_types">모든 유형</string>
+    <string name="tr_no_records">기록 없음</string>
+    <string name="tr_load_fail_please_try_again">로드 실패, 다시 시도해 주세요</string>
+    <string name="tr_try_again">다시 시도</string>
+    <string name="tr_delete_record_remind_title">이 기록을 삭제하시겠습니까?</string>
+    <string name="tr_tips">팁</string>
+    <string name="tr_delete_tips_content">정말 삭제하시겠습니까?</string>
+    <string name="tr_confirm">확인</string>
+    <string name="tr_delete_record_remind">삭제 후에는 복구할 수 없습니다</string>
+    <string name="tr_add_record">기록 추가</string>
+    <string name="tr_alarm_management">알람 관리</string>
+    <string name="tr_reminder_for">%s 알림</string>
+    <string name="tr_ai_assistant_title">AI 건강 어시스턴트</string>
+    <string name="tr_ai_empty_desc">이 기능은 현재 개발 중이며 아직 사용할 수 없습니다. 양해해 주셔서 감사합니다.</string>
+    <string name="tr_step_stats_max_title">최대</string>
+    <string name="tr_step_stats_min_title">최소</string>
+    <string name="tr_step_stats_avg_title">평균</string>
+    <string-array name="tr_blood_sugar_labels">
         <item>흥분</item>
         <item>유산소 운동 후</item>
         <item>우울</item>
@@ -159,7 +159,7 @@
         <item>음주 후</item>
     </string-array>
 
-    <string-array name="ht_blood_pressure_labels">
+    <string-array name="tr_blood_pressure_labels">
         <item>왼팔</item>
         <item>오른팔</item>
         <item>복약 후</item>
@@ -174,18 +174,18 @@
     <!-- BMI classification names (8 levels) -->
 
     <!-- BMI classification names (single items for mapping) -->
-    <string name="ht_bmi_level_very_severely_underweight">매우 심각한 저체중</string>
-    <string name="ht_bmi_level_severely_underweight">심각한 저체중</string>
-    <string name="ht_bmi_level_underweight">저체중</string>
-    <string name="ht_bmi_level_normal">정상</string>
-    <string name="ht_bmi_level_overweight">과체중</string>
-    <string name="ht_bmi_level_obesity_class_1">비만 1단계</string>
-    <string name="ht_bmi_level_obesity_class_2">비만 2단계</string>
-    <string name="ht_bmi_level_obesity_class_3">비만 3단계</string>
+    <string name="tr_bmi_level_very_severely_underweight">매우 심각한 저체중</string>
+    <string name="tr_bmi_level_severely_underweight">심각한 저체중</string>
+    <string name="tr_bmi_level_underweight">저체중</string>
+    <string name="tr_bmi_level_normal">정상</string>
+    <string name="tr_bmi_level_overweight">과체중</string>
+    <string name="tr_bmi_level_obesity_class_1">비만 1단계</string>
+    <string name="tr_bmi_level_obesity_class_2">비만 2단계</string>
+    <string name="tr_bmi_level_obesity_class_3">비만 3단계</string>
 
     <!-- BMI record tag labels -->
 
-    <string-array name="ht_week_simple">
+    <string-array name="tr_week_simple">
         <item>일</item>
         <item>월</item>
         <item>화</item>
@@ -194,7 +194,7 @@
         <item>금</item>
         <item>토</item>
     </string-array>
-    <string-array name="ht_week_full">
+    <string-array name="tr_week_full">
         <item>일요일</item>
         <item>월요일</item>
         <item>화요일</item>
@@ -204,195 +204,195 @@
         <item>토요일</item>
     </string-array>
 
-    <string name="ht_every_weekday">주중 매일</string>
-    <string name="ht_every_weekend">주말 매일</string>
-    <string name="ht_everyday">매일</string>
-    <string name="ht_once">한 번</string>
-    <string name="ht_meds_remind_empty">아래 버튼을 탭하여\n알림을 추가하세요</string>
-    <string name="ht_add">추가</string>
-    <string name="ht_add_reminder">알림 추가</string>
-    <string name="ht_medication_name">약 이름</string>
-    <string name="ht_enter_medication_name">약 이름 입력</string>
-    <string name="ht_number_of_daily_doses">일일 복용 횟수:</string>
-    <string name="ht_notes">메모</string>
-    <string name="ht_hint_meds_notes">지시사항: 식후, 1일 3회</string>
-    <string name="ht_sync_with_calendar">캘린더와 동기화</string>
-    <string name="ht_take_now">지금 복용</string>
-    <string name="ht_view_now">지금 확인</string>
-    <string name="ht_edit">편집</string>
-    <string name="ht_delete">삭제</string>
+    <string name="tr_every_weekday">주중 매일</string>
+    <string name="tr_every_weekend">주말 매일</string>
+    <string name="tr_everyday">매일</string>
+    <string name="tr_once">한 번</string>
+    <string name="tr_meds_remind_empty">아래 버튼을 탭하여\n알림을 추가하세요</string>
+    <string name="tr_add">추가</string>
+    <string name="tr_add_reminder">알림 추가</string>
+    <string name="tr_medication_name">약 이름</string>
+    <string name="tr_enter_medication_name">약 이름 입력</string>
+    <string name="tr_number_of_daily_doses">일일 복용 횟수:</string>
+    <string name="tr_notes">메모</string>
+    <string name="tr_hint_meds_notes">지시사항: 식후, 1일 3회</string>
+    <string name="tr_sync_with_calendar">캘린더와 동기화</string>
+    <string name="tr_take_now">지금 복용</string>
+    <string name="tr_view_now">지금 확인</string>
+    <string name="tr_edit">편집</string>
+    <string name="tr_delete">삭제</string>
     <!-- 药物提醒通知相关字符串 -->
-    <string name="ht_medication_reminder_content">약 드실 시간입니다. 잊지 말고 복용하시고 건강 챙기세요.</string>
+    <string name="tr_medication_reminder_content">약 드실 시간입니다. 잊지 말고 복용하시고 건강 챙기세요.</string>
 
     <!-- 通知权限相关字符串 -->
-    <string name="ht_turn_on">켜기</string>
-    <string name="ht_close">닫기</string>
-    <string name="ht_notification_grant_permissions">건강 습관을 놓치지 마세요</string>
-    <string name="ht_notification_grant_permissions_des">알림을 활성화하여 건강한 습관을 기르기 위한 시기적절한 알림을 받으세요. 놓치지 마세요!</string>
-    <string name="ht_notification_des_blood_sugar">혈당을 기록하기 위한 시기적절한 알림을 받으세요</string>
-    <string name="ht_notification_des_blood_pressure">혈압을 기록하기 위한 시기적절한 알림을 받으세요</string>
-    <string name="ht_notification_des_heart_rate">심박수를 측정하기 위한 시기적절한 알림을 받으세요</string>
-    <string name="ht_notification_des_bmi">BMI를 관리하기 위한 시기적절한 알림을 받으세요</string>
-    <string name="ht_notification_des_cholesterol">콜레스테롤을 관리하기 위한 시기적절한 알림을 받으세요</string>
-    <string name="ht_choose_your_gender">성별 선택</string>
-    <string name="ht_please_choose_your_gender">성별을 선택해 주세요</string>
-    <string name="ht_txt_profile_des">이는 개인화된 데이터를 생성하는 데 사용됩니다</string>
-    <string name="ht_male">남성</string>
-    <string name="ht_female">여성</string>
-    <string name="ht_choose_your_age">연령 선택</string>
-    <string name="ht_please_choose_your_age">연령을 선택해 주세요</string>
-    <string name="ht_text_continue">계속</string>
-    <string name="ht_take_a_photo">사진 촬영</string>
-    <string name="ht_choose_from_photos">사진에서 선택</string>
-    <string name="ht_please_select">선택해 주세요</string>
-    <string name="ht_confirm_delete_title">태그 삭제</string>
-    <string name="ht_confirm_delete_message">이 태그를 삭제하시겠습니까?</string>
-    <string name="ht_temp_age">나이 : %1$s</string>
-    <string name="ht_enter_new_label">새 라벨 입력</string>
-    <string name="ht_add_label">라벨 추가</string>
-    <string name="ht_weight">체중</string>
-    <string name="ht_height">신장</string>
-    <string name="ht_create_label_failed">라벨 생성 실패</string>
-    <string name="ht_last_report">최근 리포트:</string>
-    <string name="ht_test_and_record_hr">심박수 측정 및 기록</string>
-    <string name="ht_measure_now">지금 측정</string>
-    <string name="ht_measure_title">측정</string>
-    <string name="ht_measure_finger_instruction">카메라 위에 손가락을 대고 측정이 끝날 때까지 떼지 마세요.</string>
-    <string name="ht_camera_permission_title">카메라 권한 필요</string>
-    <string name="ht_camera_permission_desc">심박수를 측정하려면 카메라 권한이 필요합니다. 카메라 렌즈에 손가락을 대고 맥박을 감지하세요.</string>
-    <string name="ht_camera_permission_denied_title">카메라 권한 거부됨</string>
-    <string name="ht_camera_permission_denied_desc">심박수 측정 기능을 사용하려면 설정에서 카메라 권한을 활성화해 주세요.</string>
-    <string name="ht_measure_disclaimer">플래시 카메라를 이용한 심박수 측정은 참고용일 뿐이며 정확하지 않을 수 있습니다. 의료용이 아닙니다. 정확한 데이터는 전문 의료 장비를 사용하세요.</string>
-    <string name="ht_ppg_tips_title">측정 팁</string>
-    <string name="ht_ppg_tips_subtitle">손가락이 <font color="#FB4248">빨간색</font>으로 변하면 올바르게 하고 있는 것입니다</string>
-    <string name="ht_ppg_tips_step1">카메라 위에 손가락을 올리되, 뜨거워질 수 있는 플래시는 피해서 대세요.</string>
-    <string name="ht_ppg_tips_step2">측정이 끝날 때까지 평온을 유지하고 움직이지 마세요!</string>
-    <string name="ht_ppg_tips_step3">밝은 곳에서 측정하거나, 더 나은 결과를 위해 플래시를 켠 상태를 유지하세요.</string>
-    <string name="ht_grant_permission">권한 허용</string>
-    <string name="ht_go_to_settings">설정으로 이동</string>
-    <string name="ht_stabilizing_title">측정 중…</string>
-    <string name="ht_stabilizing_subtitle">좋습니다! 안정된 데이터 판독을 위해 대기 중…</string>
-    <string name="ht_stabilizing_tip">손가락이 빨간색으로 변하면 올바르게 하고 있는 것입니다.</string>
-    <string name="ht_measure_complete">측정 완료!</string>
-    <string name="ht_start_measure">측정 시작</string>
-    <string name="ht_heart_rate">심박수</string>
-    <string name="ht_heart_rate_no_tags">태그 없음</string>
-    <string name="ht_record_not_ready">기록 로딩 중</string>
-    <string name="ht_delete_record_failed">기록 삭제 실패</string>
-    <string name="ht_cholesterol">콜레스테롤</string>
-    <string name="ht_weight_and_bmi"><![CDATA[체중 및 BMI]]></string>
+    <string name="tr_turn_on">켜기</string>
+    <string name="tr_close">닫기</string>
+    <string name="tr_notification_grant_permissions">건강 습관을 놓치지 마세요</string>
+    <string name="tr_notification_grant_permissions_des">알림을 활성화하여 건강한 습관을 기르기 위한 시기적절한 알림을 받으세요. 놓치지 마세요!</string>
+    <string name="tr_notification_des_blood_sugar">혈당을 기록하기 위한 시기적절한 알림을 받으세요</string>
+    <string name="tr_notification_des_blood_pressure">혈압을 기록하기 위한 시기적절한 알림을 받으세요</string>
+    <string name="tr_notification_des_heart_rate">심박수를 측정하기 위한 시기적절한 알림을 받으세요</string>
+    <string name="tr_notification_des_bmi">BMI를 관리하기 위한 시기적절한 알림을 받으세요</string>
+    <string name="tr_notification_des_cholesterol">콜레스테롤을 관리하기 위한 시기적절한 알림을 받으세요</string>
+    <string name="tr_choose_your_gender">성별 선택</string>
+    <string name="tr_please_choose_your_gender">성별을 선택해 주세요</string>
+    <string name="tr_txt_profile_des">이는 개인화된 데이터를 생성하는 데 사용됩니다</string>
+    <string name="tr_male">남성</string>
+    <string name="tr_female">여성</string>
+    <string name="tr_choose_your_age">연령 선택</string>
+    <string name="tr_please_choose_your_age">연령을 선택해 주세요</string>
+    <string name="tr_text_continue">계속</string>
+    <string name="tr_take_a_photo">사진 촬영</string>
+    <string name="tr_choose_from_photos">사진에서 선택</string>
+    <string name="tr_please_select">선택해 주세요</string>
+    <string name="tr_confirm_delete_title">태그 삭제</string>
+    <string name="tr_confirm_delete_message">이 태그를 삭제하시겠습니까?</string>
+    <string name="tr_temp_age">나이 : %1$s</string>
+    <string name="tr_enter_new_label">새 라벨 입력</string>
+    <string name="tr_add_label">라벨 추가</string>
+    <string name="tr_weight">체중</string>
+    <string name="tr_height">신장</string>
+    <string name="tr_create_label_failed">라벨 생성 실패</string>
+    <string name="tr_last_report">최근 리포트:</string>
+    <string name="tr_test_and_record_hr">심박수 측정 및 기록</string>
+    <string name="tr_measure_now">지금 측정</string>
+    <string name="tr_measure_title">측정</string>
+    <string name="tr_measure_finger_instruction">카메라 위에 손가락을 대고 측정이 끝날 때까지 떼지 마세요.</string>
+    <string name="tr_camera_permission_title">카메라 권한 필요</string>
+    <string name="tr_camera_permission_desc">심박수를 측정하려면 카메라 권한이 필요합니다. 카메라 렌즈에 손가락을 대고 맥박을 감지하세요.</string>
+    <string name="tr_camera_permission_denied_title">카메라 권한 거부됨</string>
+    <string name="tr_camera_permission_denied_desc">심박수 측정 기능을 사용하려면 설정에서 카메라 권한을 활성화해 주세요.</string>
+    <string name="tr_measure_disclaimer">플래시 카메라를 이용한 심박수 측정은 참고용일 뿐이며 정확하지 않을 수 있습니다. 의료용이 아닙니다. 정확한 데이터는 전문 의료 장비를 사용하세요.</string>
+    <string name="tr_ppg_tips_title">측정 팁</string>
+    <string name="tr_ppg_tips_subtitle">손가락이 <font color="#FB4248">빨간색</font>으로 변하면 올바르게 하고 있는 것입니다</string>
+    <string name="tr_ppg_tips_step1">카메라 위에 손가락을 올리되, 뜨거워질 수 있는 플래시는 피해서 대세요.</string>
+    <string name="tr_ppg_tips_step2">측정이 끝날 때까지 평온을 유지하고 움직이지 마세요!</string>
+    <string name="tr_ppg_tips_step3">밝은 곳에서 측정하거나, 더 나은 결과를 위해 플래시를 켠 상태를 유지하세요.</string>
+    <string name="tr_grant_permission">권한 허용</string>
+    <string name="tr_go_to_settings">설정으로 이동</string>
+    <string name="tr_stabilizing_title">측정 중…</string>
+    <string name="tr_stabilizing_subtitle">좋습니다! 안정된 데이터 판독을 위해 대기 중…</string>
+    <string name="tr_stabilizing_tip">손가락이 빨간색으로 변하면 올바르게 하고 있는 것입니다.</string>
+    <string name="tr_measure_complete">측정 완료!</string>
+    <string name="tr_start_measure">측정 시작</string>
+    <string name="tr_heart_rate">심박수</string>
+    <string name="tr_heart_rate_no_tags">태그 없음</string>
+    <string name="tr_record_not_ready">기록 로딩 중</string>
+    <string name="tr_delete_record_failed">기록 삭제 실패</string>
+    <string name="tr_cholesterol">콜레스테롤</string>
+    <string name="tr_weight_and_bmi"><![CDATA[체중 및 BMI]]></string>
 
     <!-- Heart rate -->
-    <string name="ht_heart_rate_status_slow">느림</string>
-    <string name="ht_heart_rate_status_normal">정상</string>
-    <string name="ht_heart_rate_status_fast">빠름</string>
-    <string name="ht_heart_rate_desc_slow">안정 시 심박수 &lt; 60 BPM</string>
-    <string name="ht_heart_rate_desc_normal">안정 시 심박수 60–100 BPM</string>
-    <string name="ht_heart_rate_desc_fast">안정 시 심박수 &gt;100 BPM</string>
-    <string name="ht_total_cholesterol">총 콜레스테롤 %1$s</string>
-    <string name="ht_hdl">HDL</string>
-    <string name="ht_ldl">LDL</string>
-    <string name="ht_tg">TG</string>
-    <string name="ht_non_hdl">Non-HDL</string>
-    <string name="ht_tc_hdl">TC/HDL</string>
-    <string name="ht_ldl_hdl">LDL/HDL</string>
-    <string name="ht_result">결과</string>
-    <string name="ht_exclusive_advice">전용 조언</string>
-    <string name="ht_bmi">BMI</string>
-    <string name="ht_watch_ads_to_see_exclusive_advice">광고를 보고 전용 조언 확인</string>
-    <string name="ht_get_exclusive_tips">전용 팁 받기</string>
-    <string name="ht_kindly_note">참고</string>
-    <string name="ht_your_health_data_requires">건강 데이터에 주의가 필요합니다. 측정치에 맞춘 전문적인 권장 사항을 잠금 해제하세요.</string>
-    <string name="ht_free_unlock">무료 잠금 해제</string>
-    <string name="ht_skip">건너뛰기</string>
-    <string name="ht_next">다음</string>
-    <string name="ht_guide_hr_des">클릭하여 첫 심박수 기록을 추가하세요.</string>
-    <string name="ht_guide_bp_des">클릭하여 첫 혈압 기록을 추가하세요.</string>
-    <string name="ht_guide_bs_des">클릭하여 첫 혈당 기록을 추가하세요.</string>
-    <string name="ht_target_range">목표 범위</string>
-    <string name="ht_target_range_temp">목표 범위(%1$s)</string>
-    <string name="ht_reset">초기화</string>
+    <string name="tr_heart_rate_status_slow">느림</string>
+    <string name="tr_heart_rate_status_normal">정상</string>
+    <string name="tr_heart_rate_status_fast">빠름</string>
+    <string name="tr_heart_rate_desc_slow">안정 시 심박수 &lt; 60 BPM</string>
+    <string name="tr_heart_rate_desc_normal">안정 시 심박수 60–100 BPM</string>
+    <string name="tr_heart_rate_desc_fast">안정 시 심박수 &gt;100 BPM</string>
+    <string name="tr_total_cholesterol">총 콜레스테롤 %1$s</string>
+    <string name="tr_hdl">HDL</string>
+    <string name="tr_ldl">LDL</string>
+    <string name="tr_tg">TG</string>
+    <string name="tr_non_hdl">Non-HDL</string>
+    <string name="tr_tc_hdl">TC/HDL</string>
+    <string name="tr_ldl_hdl">LDL/HDL</string>
+    <string name="tr_result">결과</string>
+    <string name="tr_exclusive_advice">전용 조언</string>
+    <string name="tr_bmi">BMI</string>
+    <string name="tr_watch_ads_to_see_exclusive_advice">광고를 보고 전용 조언 확인</string>
+    <string name="tr_get_exclusive_tips">전용 팁 받기</string>
+    <string name="tr_kindly_note">참고</string>
+    <string name="tr_your_health_data_requires">건강 데이터에 주의가 필요합니다. 측정치에 맞춘 전문적인 권장 사항을 잠금 해제하세요.</string>
+    <string name="tr_free_unlock">무료 잠금 해제</string>
+    <string name="tr_skip">건너뛰기</string>
+    <string name="tr_next">다음</string>
+    <string name="tr_guide_hr_des">클릭하여 첫 심박수 기록을 추가하세요.</string>
+    <string name="tr_guide_bp_des">클릭하여 첫 혈압 기록을 추가하세요.</string>
+    <string name="tr_guide_bs_des">클릭하여 첫 혈당 기록을 추가하세요.</string>
+    <string name="tr_target_range">목표 범위</string>
+    <string name="tr_target_range_temp">목표 범위(%1$s)</string>
+    <string name="tr_reset">초기화</string>
 
-    <string name="ht_please_input_complete_data">완전한 데이터를 입력해 주세요</string>
-    <string name="ht_range_order_error">범위 값은 오름차순이어야 합니다</string>
-    <string name="ht_range_bounds_error">범위 값이 허용 범위를 벗어났습니다</string>
-    <string name="ht_reset_all_ranges_confirm">모든 목표 범위를 기본값으로 초기화하시겠습니까?</string>
-    <string name="ht_reset_success">초기화되었습니다</string>
-    <string name="ht_save_success">저장되었습니다</string>
+    <string name="tr_please_input_complete_data">완전한 데이터를 입력해 주세요</string>
+    <string name="tr_range_order_error">범위 값은 오름차순이어야 합니다</string>
+    <string name="tr_range_bounds_error">범위 값이 허용 범위를 벗어났습니다</string>
+    <string name="tr_reset_all_ranges_confirm">모든 목표 범위를 기본값으로 초기화하시겠습니까?</string>
+    <string name="tr_reset_success">초기화되었습니다</string>
+    <string name="tr_save_success">저장되었습니다</string>
 
     <!-- 건강 서비스 알림 채널 -->
-    <string name="ht_health_service_channel_name">건강 모니터링 서비스</string>
-    <string name="ht_health_service_channel_description">건강 데이터를 빠르게 기록하기 위한 상주 알림 표시</string>
+    <string name="tr_health_service_channel_name">건강 모니터링 서비스</string>
+    <string name="tr_health_service_channel_description">건강 데이터를 빠르게 기록하기 위한 상주 알림 표시</string>
 
     <!-- 사용자 정의 푸시 알림 채널 -->
-    <string name="ht_exit">종료</string>
-    <string name="ht_are_you_sure_exit">앱을 종료하시겠습니까?</string>
-    <string name="ht__7_days">7일</string>
-    <string name="ht__1_month">1개월</string>
-    <string name="ht__3_month">3개월</string>
-    <string name="ht_select">선택</string>
-    <string name="ht_avg">평균</string>
-    <string name="ht_min">최소</string>
-    <string name="ht_max">최대</string>
-    <string name="ht_all_history">전체 기록</string>
-    <string name="ht_health_tips">건강 팁</string>
-    <string name="ht_no_date">날짜 없음</string>
-    <string name="ht_add_now">지금 추가</string>
+    <string name="tr_exit">종료</string>
+    <string name="tr_are_you_sure_exit">앱을 종료하시겠습니까?</string>
+    <string name="tr__7_days">7일</string>
+    <string name="tr__1_month">1개월</string>
+    <string name="tr__3_month">3개월</string>
+    <string name="tr_select">선택</string>
+    <string name="tr_avg">평균</string>
+    <string name="tr_min">최소</string>
+    <string name="tr_max">최대</string>
+    <string name="tr_all_history">전체 기록</string>
+    <string name="tr_health_tips">건강 팁</string>
+    <string name="tr_no_date">날짜 없음</string>
+    <string name="tr_add_now">지금 추가</string>
 
     <!-- 수분 섭취 -->
-    <string name="ht_hydrate">수분 섭취</string>
-    <string name="ht_walking">걷기</string>
-    <string name="ht_drink_btn_format">%1$d %2$s 마시기</string>
-    <string name="ht_hydrate_cup_count_format">오늘 물을 %d잔 마셨습니다</string>
-    <string name="ht_hydrate_complete_message">잘하셨습니다! 수분 섭취 목표를 달성했습니다!</string>
-    <string name="ht_done">완료</string>
-    <string name="ht_hydrate_empty_record">수분 섭취 기록이 아직 없습니다.</string>
-    <string name="ht_daily_water_intake">일일 수분 섭취량</string>
-    <string name="ht_cup_size">컵 크기</string>
-    <string name="ht_hydration_reminder_time">수분 섭취 알림 시간</string>
-    <string name="ht_hydration_reminder_edit">편집</string>
-    <string name="ht_hydrate_reminder_delete_confirm_message">이 알람을 삭제하시겠습니까?</string>
-    <string name="ht_coming_soon_title">곧 출시됩니다!</string>
-    <string name="ht_coming_soon_message">시간 여행자시군요! 이 날짜는 아직 오지 않았습니다. 과거 날짜를 선택하거나 오늘로 돌아가세요.</string>
-    <string name="ht_back_to_today">오늘로 돌아가기</string>
-    <string name="ht_hydrate_reminder_exist">알림 시간이 이미 설정되어 있습니다.</string>
-    <string name="ht_hydrate_reminder_empty_message">수분 섭취 알림이 아직 설정되지 않았습니다. 첫 알림을 추가하고 수분 섭취 습관을 만들어보세요!</string>
+    <string name="tr_hydrate">수분 섭취</string>
+    <string name="tr_walking">걷기</string>
+    <string name="tr_drink_btn_format">%1$d %2$s 마시기</string>
+    <string name="tr_hydrate_cup_count_format">오늘 물을 %d잔 마셨습니다</string>
+    <string name="tr_hydrate_complete_message">잘하셨습니다! 수분 섭취 목표를 달성했습니다!</string>
+    <string name="tr_done">완료</string>
+    <string name="tr_hydrate_empty_record">수분 섭취 기록이 아직 없습니다.</string>
+    <string name="tr_daily_water_intake">일일 수분 섭취량</string>
+    <string name="tr_cup_size">컵 크기</string>
+    <string name="tr_hydration_reminder_time">수분 섭취 알림 시간</string>
+    <string name="tr_hydration_reminder_edit">편집</string>
+    <string name="tr_hydrate_reminder_delete_confirm_message">이 알람을 삭제하시겠습니까?</string>
+    <string name="tr_coming_soon_title">곧 출시됩니다!</string>
+    <string name="tr_coming_soon_message">시간 여행자시군요! 이 날짜는 아직 오지 않았습니다. 과거 날짜를 선택하거나 오늘로 돌아가세요.</string>
+    <string name="tr_back_to_today">오늘로 돌아가기</string>
+    <string name="tr_hydrate_reminder_exist">알림 시간이 이미 설정되어 있습니다.</string>
+    <string name="tr_hydrate_reminder_empty_message">수분 섭취 알림이 아직 설정되지 않았습니다. 첫 알림을 추가하고 수분 섭취 습관을 만들어보세요!</string>
     <!-- Hydration alarm -->
-    <string name="ht_alarm_hydration_content">물 마실 시간입니다!</string>
-    <string name="ht_drink_now">지금 확인</string>
-    <string name="ht_hydrate_quick_add">빠른 추가</string>
-    <string name="ht_step_count">걸음 수</string>
-    <string name="ht_today">오늘</string>
-    <string name="ht_today_s_goal">오늘의 목표</string>
-    <string name="ht_step_goal">걸음 수 목표</string>
-    <string name="ht_text_steps">걸음</string>
-    <string name="ht_enable_step_count">신체 활동 권한 필요</string>
-    <string name="ht_without_this_authorization_step_count_will_not_work">이 권한이 없으면 걸음 수 카운트 기능이 <font color="#02BC77">작동하지 않습니다</font></string>
-    <string name="ht_go_to_set">설정으로 이동</string>
-    <string name="ht_choose_language">언어 선택</string>
-    <string name="ht_language">언어</string>
-    <string name="ht_target_range_settings">목표 범위 설정</string>
-    <string name="ht_personal_info">개인 정보</string>
-    <string name="ht_feedback">피드백</string>
-    <string name="ht_privacy_policy">개인정보 처리방침</string>
-    <string name="ht_settings_section_tracking_and_targets">기록 및 목표</string>
-    <string name="ht_settings_section_preferences">환경 설정</string>
-    <string name="ht_settings_section_help_and_feedback">도움말 및 피드백</string>
-    <string name="ht_settings_section_legal_and_policies">약관 및 정책</string>
-    <string name="ht_settings_version_format">버전 %1$s</string>
-    <string name="ht_settings">설정</string>
+    <string name="tr_alarm_hydration_content">물 마실 시간입니다!</string>
+    <string name="tr_drink_now">지금 확인</string>
+    <string name="tr_hydrate_quick_add">빠른 추가</string>
+    <string name="tr_step_count">걸음 수</string>
+    <string name="tr_today">오늘</string>
+    <string name="tr_today_s_goal">오늘의 목표</string>
+    <string name="tr_step_goal">걸음 수 목표</string>
+    <string name="tr_text_steps">걸음</string>
+    <string name="tr_enable_step_count">신체 활동 권한 필요</string>
+    <string name="tr_without_this_authorization_step_count_will_not_work">이 권한이 없으면 걸음 수 카운트 기능이 <font color="#02BC77">작동하지 않습니다</font></string>
+    <string name="tr_go_to_set">설정으로 이동</string>
+    <string name="tr_choose_language">언어 선택</string>
+    <string name="tr_language">언어</string>
+    <string name="tr_target_range_settings">목표 범위 설정</string>
+    <string name="tr_personal_info">개인 정보</string>
+    <string name="tr_feedback">피드백</string>
+    <string name="tr_privacy_policy">개인정보 처리방침</string>
+    <string name="tr_settings_section_tracking_and_targets">기록 및 목표</string>
+    <string name="tr_settings_section_preferences">환경 설정</string>
+    <string name="tr_settings_section_help_and_feedback">도움말 및 피드백</string>
+    <string name="tr_settings_section_legal_and_policies">약관 및 정책</string>
+    <string name="tr_settings_version_format">버전 %1$s</string>
+    <string name="tr_settings">설정</string>
 
     <!-- 反馈相关字符串 -->
-    <string name="ht_please_tell_more">문제를 더 빠르게 파악하고 해결할 수 있도록 자세한 내용을 알려주세요</string>
-    <string name="ht_upload_screenshots">스크린샷 업로드</string>
-    <string name="ht_btn_submit">제출</string>
-    <string name="ht_feedback_email_title">%s 피드백</string>
-    <string name="ht_feedback_sending_failed">전송 실패, 이메일 앱을 확인해 주세요.</string>
-    <string name="ht_max_upload_photos">최대 %d장의 사진을 업로드할 수 있습니다</string>
-    <string name="ht_feedback_submitted">제출 완료</string>
+    <string name="tr_please_tell_more">문제를 더 빠르게 파악하고 해결할 수 있도록 자세한 내용을 알려주세요</string>
+    <string name="tr_upload_screenshots">스크린샷 업로드</string>
+    <string name="tr_btn_submit">제출</string>
+    <string name="tr_feedback_email_title">%s 피드백</string>
+    <string name="tr_feedback_sending_failed">전송 실패, 이메일 앱을 확인해 주세요.</string>
+    <string name="tr_max_upload_photos">최대 %d장의 사진을 업로드할 수 있습니다</string>
+    <string name="tr_feedback_submitted">제출 완료</string>
 
     <!-- 血糖等级专家建议文案数组 -->
-    <string-array name="ht_bs_level_expert_advice">
+    <string-array name="tr_bs_level_expert_advice">
         <!-- 低血糖建议 -->
         <item>혈당이 &lt;font color="#3489FE"&gt;&lt;b&gt;낮습니다&lt;/b&gt;&lt;/font&gt; (저혈당). 즉시 혈당을 올리기 위한 조치가 필요합니다. 몇 가지 제안이 있습니다：&lt;br&gt;&lt;b&gt;빠른 당분 섭취:&lt;/b&gt;&lt;br&gt;포도당 캔디, 주스, 일반 탄산음료, 또는 약간의 건포도 등 15~20g의 빠르게 흡수되는 탄수화물을 섭취하여 혈당을 빠르게 올리세요.&lt;br&gt;&lt;b&gt;15분 후 혈당 측정:&lt;/b&gt;&lt;br&gt;여전히 낮다면 같은 과정을 반복하세요.&lt;br&gt;&lt;b&gt;균형 잡힌 간식이나 식사:&lt;/b&gt;&lt;br&gt;혈당이 오르면 단백질, 복합 탄수화물, 건강한 지방이 포함된 균형 잡힌 간식이나 식사를 하여 안정시키세요. 이는 혈당을 정상으로 유지하고 다시 떨어지는 것을 방지합니다. 통곡물 크래커와 땅콩버터, 작은 샌드위치, 또는 과일과 견과류가 좋은 선택입니다.&lt;br&gt;&lt;b&gt;의료 전문가와 상담:&lt;/b&gt;&lt;br&gt;저혈당이 자주 발생한다면 의료 전문가와 상담하는 것이 중요합니다. 근본적인 원인을 평가하고 치료 계획을 조정해 줄 것입니다. 혈당을 더 잘 관리하기 위해 약물 변경, 식사, 운동 습관 개선을 권장할 수 있습니다.</item>
 
@@ -406,7 +406,7 @@
         <item>&lt;font color="#FA0202"&gt;&lt;b&gt;당뇨병&lt;/b&gt;&lt;/font&gt;의 경우, 혈당을 안정시키고 합병증을 예방하기 위해 병을 효과적으로 관리하는 것이 중요합니다.&lt;br&gt;&lt;b&gt;정기적인 진료:&lt;/b&gt;&lt;br&gt;정기적으로 병원을 방문하여 당뇨병 모니터링과 필요한 치료를 받으세요. 여기에는 정기 검진, 혈액 검사, 안과 검진, 발 검사 등이 포함됩니다. 의료 전문가는 약물 검토, 교육 제공, 효과적인 관리를 위한 지도를 제공합니다.&lt;br&gt;&lt;b&gt;당뇨병 관리 일지 작성:&lt;/b&gt;&lt;br&gt;매일의 활동, 식사, 혈당, 복약량, 그리고 두드러진 증상이나 패턴을 기록하는 일지를 작성하세요. 이를 통해 추세를 파악하고 다양한 요인이 혈당에 미치는 영향을 이해하며 당뇨병 관리 계획에 정보에 입각한 조정을 할 수 있습니다.&lt;br&gt;&lt;b&gt;아플 때의 계획 수립:&lt;/b&gt;&lt;br&gt;질병이나 감염은 혈당에 영향을 주어 당뇨병 관리 계획의 조정이 필요할 수 있습니다. 의료 전문가와 협력하여 혈당 모니터링, 필요시 약물 조정, 수분 섭취, 증상 악화 시 진료 기준 등을 포함한 아플 때의 계획을 미리 세워두세요.</item>
     </string-array>
 
-    <string-array name="ht_bp_level_expert_advice">
+    <string-array name="tr_bp_level_expert_advice">
         <!-- Low Blood Pressure -->
         <item>
             <![CDATA[
@@ -540,7 +540,7 @@
         </item>
     </string-array>
     <!-- 心率等级专家建议文案数组 -->
-    <string-array name="ht_hr_level_expert_advice">
+    <string-array name="tr_hr_level_expert_advice">
         <!-- 低心率建议 -->
         <item>
             <![CDATA[
@@ -609,7 +609,7 @@
     </string-array>
 
     <!-- BMI 等级专家建议文案数组 -->
-    <string-array name="ht_bmi_level_expert_advice">
+    <string-array name="tr_bmi_level_expert_advice">
         <!-- 严重体重过轻 -->
         <item>체중이 매우 낮아 건강에 심각한 위험을 초래합니다. 건강한 체중으로 돌아가기 위해 즉시 행동을 취해야 합니다. &lt;br&gt;&lt;b&gt;긴급 의료 상담:&lt;/b&gt;&lt;br&gt;의사나 영양사의 지도를 즉시 받고 근본적인 질환이 없는지 확인하세요. &lt;br&gt;&lt;b&gt;계획적인 영양 섭취:&lt;/b&gt;&lt;br&gt;전문가의 감독 하에 고칼로리, 고영양 식사를 하세요. &lt;br&gt;&lt;b&gt;경과 모니터링:&lt;/b&gt;&lt;br&gt;매주 체중 증가를 기록하고 건강한 범위로 향하고 있는지 확인하세요. &lt;br&gt;&lt;b&gt;근력 운동:&lt;/b&gt;&lt;br&gt;가벼운 저항 운동을 도입하여 안전하게 근육량을 늘리세요.</item>
 
@@ -636,7 +636,7 @@
     </string-array>
 
     <!-- 胆固醇等级专家建议文案数组 -->
-    <string-array name="ht_cholesterol_level_expert_advice">
+    <string-array name="tr_cholesterol_level_expert_advice">
         <!-- UNKNOWN - 数据不足 -->
         <item>콜레스테롤 수치를 평가하기 위한 데이터가 부족합니다. HDL, LDL, 총 콜레스테롤, 중성지방을 포함한 완전한 콜레스테롤 측정을 하세요. &lt;br&gt;&lt;b&gt;완전한 검사:&lt;/b&gt;&lt;br&gt;의료 전문가에 의한 포괄적인 지질 패널 검사를 받으세요. &lt;br&gt;&lt;b&gt;데이터 기록:&lt;/b&gt;&lt;br&gt;모든 콜레스테롤 측정치를 정기적으로 기록하세요. &lt;br&gt;&lt;b&gt;전문가와 상담:&lt;/b&gt;&lt;br&gt;콜레스테롤 건강에 대해 의사나 영양사와 상담하세요.</item>
 
@@ -657,116 +657,116 @@
     </string-array>
 
     <!-- Blood Pressure -->
-    <string-array name="ht_health_tips_blood_pressure_titles">
+    <string-array name="tr_health_tips_blood_pressure_titles">
         <item>혈압을 완벽하게 유지하세요</item>
         <item>심장을 위해 움직이세요</item>
         <item>건강을 위해 긴장을 푸세요</item>
     </string-array>
-    <string-array name="ht_health_tips_blood_pressure_texts">
+    <string-array name="tr_health_tips_blood_pressure_texts">
         <item>소금 섭취에 주의하고 바나나와 같이 칼륨이 풍부한 음식을 섭취하여 건강한 혈압을 유지하세요.</item>
         <item>규칙적인 걷기와 가벼운 운동은 혈관을 유연하게 유지하고 혈압을 관리하는 좋은 방법입니다.</item>
         <item>심호흡이나 명상을 통해 스트레스를 관리하면 혈압 수치에 긍정적인 영향을 줄 수 있습니다.</item>
     </string-array>
 
     <!-- Blood Sugar -->
-    <string-array name="ht_health_tips_blood_sugar_titles">
+    <string-array name="tr_health_tips_blood_sugar_titles">
         <item>식단의 균형을 맞추세요</item>
         <item>현명하게 탄수화물을 선택하세요</item>
         <item>매일 활동적으로 지내세요</item>
     </string-array>
-    <string-array name="ht_health_tips_blood_sugar_texts">
+    <string-array name="tr_health_tips_blood_sugar_texts">
         <item>식후 혈당 수치를 안정적으로 유지하기 위해 접시의 절반을 전분이 없는 채소로 채우세요.</item>
         <item>안정적인 에너지를 공급하고 급격한 혈당 상승을 피하기 위해 정제된 곡물보다 귀리와 같은 통곡물을 선택하세요.</item>
         <item>식후 짧은 산책은 신체가 혈당을 더 효과적으로 관리하는 데 큰 도움이 될 수 있습니다.</item>
     </string-array>
 
     <!-- Cholesterol -->
-    <string-array name="ht_health_tips_cholesterol_titles">
+    <string-array name="tr_health_tips_cholesterol_titles">
         <item>좋은 지방을 섭취하세요</item>
         <item>섬유질을 충분히 섭취하세요</item>
         <item>수치를 위해 움직이세요</item>
     </string-array>
-    <string-array name="ht_health_tips_cholesterol_texts">
+    <string-array name="tr_health_tips_cholesterol_texts">
         <item>아보카도, 견과류, 올리브 오일과 같은 심장에 좋은 지방을 선택하여 건강한 콜레스테롤 수치를 지원하세요.</item>
         <item>사과와 귀리와 같이 수용성 섬유질이 풍부한 식품은 신체가 LDL(나쁜) 콜레스테롤을 관리하는 데 도움이 될 수 있습니다.</item>
         <item>규칙적인 신체 활동은 HDL(좋은) 콜레스테롤을 높이고 LDL을 낮추는 핵심 요소입니다.</item>
     </string-array>
 
     <!-- Heart Rate -->
-    <string-array name="ht_health_tips_heart_rate_titles">
+    <string-array name="tr_health_tips_heart_rate_titles">
         <item>평온함을 찾으세요</item>
         <item>수분을 유지하고 심박수를 안정시키세요</item>
         <item>꾸준함이 핵심입니다</item>
     </string-array>
-    <string-array name="ht_health_tips_heart_rate_texts">
+    <string-array name="tr_health_tips_heart_rate_texts">
         <item>명상과 심호흡 같은 습관은 시간이 지남에 따라 안정 시 심박수를 낮추는 데 도움이 될 수 있습니다.</item>
         <item>탈수는 심장에 부담을 줄 수 있습니다. 물을 충분히 마시면 정상 심박수를 유지하는 데 도움이 됩니다.</item>
         <item>규칙적인 적당한 운동은 심장 근육을 강화하여 휴식 시 혈액을 더 효율적으로 펌핑하도록 돕습니다.</item>
     </string-array>
 
     <!-- BMI -->
-    <string-array name="ht_health_tips_bmi_titles">
+    <string-array name="tr_health_tips_bmi_titles">
         <item>영양가 있는 한 입을 만드세요</item>
         <item>지속 가능한 루틴을 만드세요</item>
         <item>몸의 소리에 귀를 기울이세요</item>
     </string-array>
-    <string-array name="ht_health_tips_bmi_texts">
+    <string-array name="tr_health_tips_bmi_texts">
         <item>포만감을 느끼고 건강한 체중을 유지하기 위해 자연 식품이 풍부한 균형 잡힌 식단에 집중하세요.</item>
         <item>즐길 수 있는 신체 활동을 찾으면 활동적인 상태를 유지하고 장기적으로 체중을 관리하기가 더 쉬워집니다.</item>
         <item>과식을 피하고 건강한 균형을 유지하기 위해 배고픔과 포만감 신호에 주의를 기울이세요.</item>
     </string-array>
 
     <!-- Steps -->
-    <string-array name="ht_health_tips_steps_titles">
+    <string-array name="tr_health_tips_steps_titles">
         <item>매일 걸음 수를 늘리세요</item>
         <item>하루를 나누세요</item>
         <item>걷기를 즐거움으로 만드세요</item>
     </string-array>
-    <string-array name="ht_health_tips_steps_texts">
+    <string-array name="tr_health_tips_steps_texts">
         <item>일관된 일일 걸음 수를 목표로 하세요. 조금만 늘려도 심혈관 건강 개선에 도움이 됩니다.</item>
         <item>신진대사를 활발하게 유지하기 위해 매시간 일어나서 몇 분 동안 걷도록 알림을 설정하세요.</item>
         <item>친구와 함께 걷거나, 팟캐스트를 듣거나, 새로운 공원을 탐험하여 걷기를 즐겁게 만드세요.</item>
     </string-array>
 
     <!-- Hydration -->
-    <string-array name="ht_health_tips_hydration_titles">
+    <string-array name="tr_health_tips_hydration_titles">
         <item>물로 하루를 시작하세요</item>
         <item>항상 물병을 가까이 두세요</item>
         <item>물을 드세요</item>
     </string-array>
-    <string-array name="ht_health_tips_hydration_texts">
+    <string-array name="tr_health_tips_hydration_texts">
         <item>수분 공급과 신진대사를 활성화하기 위해 아침에 일어나자마자 물 한 잔을 마시세요.</item>
         <item>물을 눈에 잘 띄고 손이 닿는 곳에 두면 하루 종일 자주 마시게 됩니다.</item>
         <item>수박과 오이처럼 수분 함량이 높은 과일과 채소를 즐겨 수분을 유지하세요.</item>
     </string-array>
-    <string name="ht_last_measurement">최근 측정 : %1$s</string>
+    <string name="tr_last_measurement">최근 측정 : %1$s</string>
 
     <!-- Uninstall Intercept Strings -->
-    <string name="ht_uninstall_lose_access_title">이 앱을 삭제하면 다음 기능에 접근할 수 없게 됩니다:</string>
-    <string name="ht_uninstall_feature_blood_sugar">혈당 및 혈압 추적</string>
-    <string name="ht_uninstall_feature_trend">건강 데이터 트렌드 분석</string>
-    <string name="ht_uninstall_feature_reminder">복약 및 건강 알림</string>
-    <string name="ht_uninstall_feature_insights">건강 인사이트 및 맞춤 팁</string>
-    <string name="ht_uninstall_btn_dont_uninstall">아직 삭제하지 않기</string>
-    <string name="ht_uninstall_btn_uninstall">삭제</string>
-    <string name="ht_uninstall_reason_title">%1$s을(를) 삭제하는 이유는?</string>
-    <string name="ht_uninstall_reason_difficult">사용하기 어려움</string>
-    <string name="ht_uninstall_reason_too_many_ads">광고가 너무 많음</string>
-    <string name="ht_uninstall_reason_poor_experience">사용자 경험이 좋지 않음</string>
-    <string name="ht_uninstall_reason_similar_installed">유사한 제품이 이미 설치됨</string>
-    <string name="ht_uninstall_reason_unable_meet_demand">요구 사항을 충족할 수 없음</string>
-    <string name="ht_uninstall_reason_others">기타</string>
-    <string name="ht_uninstall_reason_hint">%1$s을(를) 삭제하는 이유를 입력해 주세요</string>
+    <string name="tr_uninstall_lose_access_title">이 앱을 삭제하면 다음 기능에 접근할 수 없게 됩니다:</string>
+    <string name="tr_uninstall_feature_blood_sugar">혈당 및 혈압 추적</string>
+    <string name="tr_uninstall_feature_trend">건강 데이터 트렌드 분석</string>
+    <string name="tr_uninstall_feature_reminder">복약 및 건강 알림</string>
+    <string name="tr_uninstall_feature_insights">건강 인사이트 및 맞춤 팁</string>
+    <string name="tr_uninstall_btn_dont_uninstall">아직 삭제하지 않기</string>
+    <string name="tr_uninstall_btn_uninstall">삭제</string>
+    <string name="tr_uninstall_reason_title">%1$s을(를) 삭제하는 이유는?</string>
+    <string name="tr_uninstall_reason_difficult">사용하기 어려움</string>
+    <string name="tr_uninstall_reason_too_many_ads">광고가 너무 많음</string>
+    <string name="tr_uninstall_reason_poor_experience">사용자 경험이 좋지 않음</string>
+    <string name="tr_uninstall_reason_similar_installed">유사한 제품이 이미 설치됨</string>
+    <string name="tr_uninstall_reason_unable_meet_demand">요구 사항을 충족할 수 없음</string>
+    <string name="tr_uninstall_reason_others">기타</string>
+    <string name="tr_uninstall_reason_hint">%1$s을(를) 삭제하는 이유를 입력해 주세요</string>
     <string name="shortcut_uninstall_short">삭제</string>
-    <string name="ht_permission_denied">권한이 거부되었습니다</string>
-    <string name="ht_onboarding_title_1">건강 추세를 확인하세요</string>
-    <string name="ht_onboarding_desc_1">언제든지 심박수를 확인하고 기록하세요. 당신의 체력과 건강 상태를 쉽게 추적할 수 있습니다.</string>
-    <string name="ht_onboarding_title_2">다양한 신체 데이터 모니터링</string>
-    <string name="ht_onboarding_desc_2">신체의 다양한 수치를 기록하고 시간에 따른 변화를 모니터링하여 건강 추세를 더 잘 이해하세요.</string>
-    <string name="ht_onboarding_title_3">복약 알림 설정</string>
-    <string name="ht_onboarding_desc_3">복용 중인 약에 대한 알림을 설정하고 제때 알림을 받으세요. 복용을 놓치지 말고 치료 계획을 잘 지켜보세요.</string>
-    <string name="ht_onboarding_title_4">면책 조항</string>
-    <string name="ht_onboarding_desc_4">이 앱은 개인의 일상적인 혈압 추적을 위해 설계되었으며 전문적인 의료 조언을 제공하지 않습니다. 전문적인 건강 상담과 진단이 필요하다면 자격을 갖춘 의료 전문가나 의료 기관에 문의하시기 바랍니다.</string>
-    <string name="ht_onboarding_start">시작</string>
+    <string name="tr_permission_denied">권한이 거부되었습니다</string>
+    <string name="tr_onboarding_title_1">건강 추세를 확인하세요</string>
+    <string name="tr_onboarding_desc_1">언제든지 심박수를 확인하고 기록하세요. 당신의 체력과 건강 상태를 쉽게 추적할 수 있습니다.</string>
+    <string name="tr_onboarding_title_2">다양한 신체 데이터 모니터링</string>
+    <string name="tr_onboarding_desc_2">신체의 다양한 수치를 기록하고 시간에 따른 변화를 모니터링하여 건강 추세를 더 잘 이해하세요.</string>
+    <string name="tr_onboarding_title_3">복약 알림 설정</string>
+    <string name="tr_onboarding_desc_3">복용 중인 약에 대한 알림을 설정하고 제때 알림을 받으세요. 복용을 놓치지 말고 치료 계획을 잘 지켜보세요.</string>
+    <string name="tr_onboarding_title_4">면책 조항</string>
+    <string name="tr_onboarding_desc_4">이 앱은 개인의 일상적인 혈압 추적을 위해 설계되었으며 전문적인 의료 조언을 제공하지 않습니다. 전문적인 건강 상담과 진단이 필요하다면 자격을 갖춘 의료 전문가나 의료 기관에 문의하시기 바랍니다.</string>
+    <string name="tr_onboarding_start">시작</string>
 </resources>
 

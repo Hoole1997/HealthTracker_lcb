@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.data.enums.BmiUnit
-import com.daily.health.manager.databinding.HtDialogBmiPickerBinding
+import com.daily.health.manager.databinding.TrDialogBmiPickerBinding
 import com.daily.health.manager.face.weight.RulerView
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
  * BMI 数值选择弹窗，复用通用标尺控件
  * 通过参数区分身高/体重，并支持单位切换与当前值回显
  */
-class BmiPickerDialog : BaseBottomSheetDialogFragment<HtDialogBmiPickerBinding>() {
+class BmiPickerDialog : BaseBottomSheetDialogFragment<TrDialogBmiPickerBinding>() {
 
     private var style: Int = STYLE_WEIGHT
     private var initialValue: Float = 0f
@@ -96,7 +96,7 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<HtDialogBmiPickerBinding>(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ): HtDialogBmiPickerBinding = HtDialogBmiPickerBinding.inflate(inflater, parent, attachToParent)
+    ): TrDialogBmiPickerBinding = TrDialogBmiPickerBinding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         setupTitle()
@@ -108,9 +108,9 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<HtDialogBmiPickerBinding>(
     private fun setupTitle() {
         mViewBind?.tvTitle?.text = getString(
             if (isWeightMode()) {
-                R.string.ht_weight
+                R.string.tr_weight
             } else {
-                R.string.ht_height
+                R.string.tr_height
             }
         )
     }
@@ -227,10 +227,10 @@ class BmiPickerDialog : BaseBottomSheetDialogFragment<HtDialogBmiPickerBinding>(
 
     private fun getUnitLabel(isWeight: Boolean, unit: BmiUnit): String {
         val resId = when {
-            isWeight && unit == BmiUnit.METRIC -> R.string.ht_unit_kg
-            isWeight && unit == BmiUnit.IMPERIAL -> R.string.ht_unit_lb
-            !isWeight && unit == BmiUnit.METRIC -> R.string.ht_unit_cm
-            else -> R.string.ht_unit_in
+            isWeight && unit == BmiUnit.METRIC -> R.string.tr_unit_kg
+            isWeight && unit == BmiUnit.IMPERIAL -> R.string.tr_unit_lb
+            !isWeight && unit == BmiUnit.METRIC -> R.string.tr_unit_cm
+            else -> R.string.tr_unit_in
         }
         return getString(resId)
     }
