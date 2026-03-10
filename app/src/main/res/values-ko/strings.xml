@@ -12,7 +12,6 @@
     <string name="ht_tracker">기록</string>
     <string name="ht_record_now">지금 기록</string>
     <string name="ht_rate_us">평가하기</string>
-    <string name="ht_loading">로딩 중...</string>
     <string name="ht_history">기록</string>
     <string name="ht_click_to_record">기록하려면 클릭</string>
 
@@ -78,19 +77,12 @@
     <string name="ht_alarm_blood_sugar_content">혈당을 기록할 시간입니다!</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="ht_bs_notify_title_fasting_am">아침 식사 전</string>
     <string name="ht_bs_notify_desc_fasting_am">아침 식사 전에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_title_post_breakfast">아침 식사 후</string>
     <string name="ht_bs_notify_desc_post_breakfast">아침 식사 2시간 후에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_title_pre_lunch">점심 식사 전</string>
     <string name="ht_bs_notify_desc_pre_lunch">점심 식사 전에 혈당을 측정할 시간입니다.</string>
-    <string name="ht_bs_notify_title_post_lunch">점심 식사 후</string>
     <string name="ht_bs_notify_desc_post_lunch">점심 식사 2시간 후에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_title_pre_dinner">저녁 식사 전</string>
     <string name="ht_bs_notify_desc_pre_dinner">저녁 식사 전에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_title_post_dinner">저녁 식사 후</string>
     <string name="ht_bs_notify_desc_post_dinner">저녁 식사 2시간 후에 혈당을 측정하세요.</string>
-    <string name="ht_bs_notify_title_bedtime">취침 전</string>
     <string name="ht_bs_notify_desc_bedtime">잠자리에 들기 전에 혈당을 측정하세요.</string>
     <string name="ht_bs_notify_btn_check">확인하기</string>
 
@@ -103,7 +95,6 @@
     <!-- 通用场景通知权限弹窗 -->
     <string name="ht_alarm_general_content">빠른 체크인 시간입니다</string>
     <string name="ht_notification_des_general">알림을 활성화하여 적시에 건강 알림을 받고 중요한 체크인을 놓치지 마세요.</string>
-    <string name="ht_alarm_unsaved_exit_title">알람의 변경 사항이 아직 저장되지 않았습니다. 정말 종료하시겠습니까?</string>
     <string name="ht_alarm_delete_confirm_title">이 알람을 삭제하시겠습니까?</string>
 
     <!-- 血压范围具体数值 -->
@@ -235,8 +226,6 @@
 
     <!-- 通知权限相关字符串 -->
     <string name="ht_turn_on">켜기</string>
-    <string name="ht_notification_permission_title">건강 목표를 달성하세요</string>
-    <string name="ht_notification_permission_des">알림을 활성화하여 수분 섭취, 복약, 활동에 대한 시기적절한 알림을 받으세요. 건강한 습관을 놓치지 마세요!</string>
     <string name="ht_close">닫기</string>
     <string name="ht_notification_grant_permissions">건강 습관을 놓치지 마세요</string>
     <string name="ht_notification_grant_permissions_des">알림을 활성화하여 건강한 습관을 기르기 위한 시기적절한 알림을 받으세요. 놓치지 마세요!</string>
@@ -315,15 +304,8 @@
     <string name="ht_kindly_note">참고</string>
     <string name="ht_your_health_data_requires">건강 데이터에 주의가 필요합니다. 측정치에 맞춘 전문적인 권장 사항을 잠금 해제하세요.</string>
     <string name="ht_free_unlock">무료 잠금 해제</string>
-    <string name="ht_guide_title_1">혈압 건강</string>
-    <string name="ht_guide_title_2">혈압 추세 파악</string>
-    <string name="ht_guide_1_des">언제든지 혈압 데이터 기록</string>
-    <string name="ht_guide_2_des">데이터 차트로 한눈에 파악</string>
-    <string name="ht_guide_3_des">본 앱은 개인의 일일 혈압 추적을 위해 설계되었으며 전문적인 의학적 조언을 제공하지 않습니다.\n전문적인 건강 지도 및 진단은 자격을 갖춘 의료 제공자나 의료 기관에 상담하는 것을 강력히 권장합니다.</string>
-    <string name="ht_disclaimers">면책 조항</string>
     <string name="ht_skip">건너뛰기</string>
     <string name="ht_next">다음</string>
-    <string name="ht_start_health_journey">건강 여정 시작하기!</string>
     <string name="ht_guide_hr_des">클릭하여 첫 심박수 기록을 추가하세요.</string>
     <string name="ht_guide_bp_des">클릭하여 첫 혈압 기록을 추가하세요.</string>
     <string name="ht_guide_bs_des">클릭하여 첫 혈당 기록을 추가하세요.</string>

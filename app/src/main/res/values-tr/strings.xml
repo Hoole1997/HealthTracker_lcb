@@ -12,7 +12,6 @@
     <string name="ht_settings">Ayarlar</string>
     <string name="ht_record_now">Şimdi Kaydet</string>
     <string name="ht_rate_us">Bizi Puanlayın</string>
-    <string name="ht_loading">Yükleniyor...</string>
     <string name="ht_history">Geçmiş</string>
     <string name="ht_click_to_record">Kaydetmek için dokunun</string>
     <string name="ht_new_record">Yeni Kayıt</string>
@@ -68,19 +67,12 @@
     <string name="ht_alarm_blood_sugar_content">Kan şekerinizi kaydetme zamanı!</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="ht_bs_notify_title_fasting_am">Kahvaltı Öncesi</string>
     <string name="ht_bs_notify_desc_fasting_am">Kahvaltıdan önce kan şekerinizi ölçün.</string>
-    <string name="ht_bs_notify_title_post_breakfast">Kahvaltı Sonrası</string>
     <string name="ht_bs_notify_desc_post_breakfast">Kahvaltıdan 2 saat sonra kan şekerinizi ölçün.</string>
-    <string name="ht_bs_notify_title_pre_lunch">Öğle Yemeği Öncesi</string>
     <string name="ht_bs_notify_desc_pre_lunch">Öğle yemeğinden önce kan şekerinizi ölçme zamanı.</string>
-    <string name="ht_bs_notify_title_post_lunch">Öğle Yemeği Sonrası</string>
     <string name="ht_bs_notify_desc_post_lunch">Öğle yemeğinden 2 saat sonra kan şekerinizi ölçün.</string>
-    <string name="ht_bs_notify_title_pre_dinner">Akşam Yemeği Öncesi</string>
     <string name="ht_bs_notify_desc_pre_dinner">Akşam yemeğinden önce kan şekerinizi ölçün.</string>
-    <string name="ht_bs_notify_title_post_dinner">Akşam Yemeği Sonrası</string>
     <string name="ht_bs_notify_desc_post_dinner">Akşam yemeğinden 2 saat sonra kan şekerinizi ölçün.</string>
-    <string name="ht_bs_notify_title_bedtime">Yatmadan Önce</string>
     <string name="ht_bs_notify_desc_bedtime">Yatmadan önce kan şekerinizi ölçün.</string>
     <string name="ht_bs_notify_btn_check">Kontrol Et</string>
 
@@ -95,7 +87,6 @@
     <!-- 通用场景通知权限弹窗 -->
     <string name="ht_alarm_general_content">Hızlı bir kontrol zamanı</string>
     <string name="ht_notification_des_general">Zamanında sağlık hatırlatmaları almak ve önemli bir kontrolü kaçırmamak için bildirimleri etkinleştirin.</string>
-    <string name="ht_alarm_unsaved_exit_title">Alarmınızdaki değişiklikler henüz kaydedilmedi. Çıkmak istediğinizden emin misiniz?</string>
     <string name="ht_alarm_delete_confirm_title">Bu alarmı silmek istediğinizden emin misiniz?</string>
 
     <string name="ht_blood_sugar_status_default">Varsayılan</string>
@@ -220,8 +211,6 @@
     <string name="ht_medication_reminder_content">İlacınızı alma zamanı, lütfen zamanında alın ve kendinize iyi bakın.</string>
 
     <string name="ht_turn_on">Aç</string>
-    <string name="ht_notification_permission_title">Sağlık hedeflerinizi takip edin</string>
-    <string name="ht_notification_permission_des">Su, ilaç ve aktiviteler için zamanında hatırlatmalar almak için bildirimleri etkinleştirin. Sağlıklı bir alışkanlığı asla kaçırmayın!</string>
     <string name="ht_close">Kapat</string>
     <string name="ht_notification_grant_permissions">Sağlıklı bir alışkanlığı asla kaçırmayın</string>
     <string name="ht_notification_grant_permissions_des">Sağlıklı alışkanlıklar oluşturmak için zamanında hatırlatıcılar almak üzere bildirimleri etkinleştirin. Hiçbir şeyi kaçırmayın!</string>
@@ -299,16 +288,8 @@
     <string name="ht_kindly_note">Lütfen Dikkat</string>
     <string name="ht_your_health_data_requires">Sağlık verileriniz dikkat gerektiriyor. Ölçümlerinize özel kişiselleştirilmiş profesyonel önerilerin kilidini açın</string>
     <string name="ht_free_unlock">Ücretsiz Aç</string>
-    <string name="ht_guide_title_1">Tansiyon Sağlığı</string>
-    <string name="ht_guide_title_2">Tansiyon Trendlerinde Ustalaşın</string>
-    <string name="ht_guide_1_des">İstediğiniz zaman tansiyon verilerini kaydedin</string>
-    <string name="ht_guide_2_des">Veri grafikleri bir bakışta netleşir</string>
-    <string name="ht_guide_3_des">Günlük kişisel tansiyon takibi için tasarlandık ve profesyonel tıbbi tavsiye sunmuyoruz.
-Profesyonel sağlık rehberliği ve tanı için nitelikli bir sağlık hizmeti sağlayıcısına danışmanızı şiddetle tavsiye ediyoruz.</string>
-    <string name="ht_disclaimers">Sorumluluk Reddi</string>
     <string name="ht_skip">Atla</string>
     <string name="ht_next">İleri</string>
-    <string name="ht_start_health_journey">Sağlık Yolculuğunuzu Başlatın!</string>
     <string name="ht_guide_hr_des">İlk Kalp Atış Hızı ölçümünüzü eklemek için şimdi tıklayın.</string>
     <string name="ht_guide_bp_des">İlk Tansiyon ölçümünüzü eklemek için şimdi tıklayın.</string>
     <string name="ht_guide_bs_des">İlk Kan Şekeri okumanızı eklemek için şimdi tıklayın.</string>

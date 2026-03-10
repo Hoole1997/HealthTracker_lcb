@@ -12,7 +12,6 @@
     <string name="ht_settings">Configurações</string>
     <string name="ht_record_now">Registrar Agora</string>
     <string name="ht_rate_us">Avalie-nos</string>
-    <string name="ht_loading">Carregando...</string>
     <string name="ht_history">Histórico</string>
     <string name="ht_click_to_record">Toque para registrar</string>
     <string name="ht_new_record">Novo Registro</string>
@@ -75,19 +74,12 @@
     <string name="ht_alarm_blood_sugar_content">Hora de registrar sua glicemia!</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="ht_bs_notify_title_fasting_am">Antes do Café</string>
     <string name="ht_bs_notify_desc_fasting_am">Meça sua glicemia antes do café da manhã.</string>
-    <string name="ht_bs_notify_title_post_breakfast">Após o Café</string>
     <string name="ht_bs_notify_desc_post_breakfast">Meça sua glicemia 2 horas após o café.</string>
-    <string name="ht_bs_notify_title_pre_lunch">Antes do Almoço</string>
     <string name="ht_bs_notify_desc_pre_lunch">É hora de medir sua glicemia antes do almoço.</string>
-    <string name="ht_bs_notify_title_post_lunch">Após o Almoço</string>
     <string name="ht_bs_notify_desc_post_lunch">Meça sua glicemia 2 horas após o almoço.</string>
-    <string name="ht_bs_notify_title_pre_dinner">Antes do Jantar</string>
     <string name="ht_bs_notify_desc_pre_dinner">Meça sua glicemia antes do jantar.</string>
-    <string name="ht_bs_notify_title_post_dinner">Após o Jantar</string>
     <string name="ht_bs_notify_desc_post_dinner">Meça sua glicemia 2 horas após o jantar.</string>
-    <string name="ht_bs_notify_title_bedtime">Antes de Dormir</string>
     <string name="ht_bs_notify_desc_bedtime">Meça sua glicemia antes de dormir.</string>
     <string name="ht_bs_notify_btn_check">Verificar</string>
 
@@ -104,7 +96,6 @@
     <!-- 通用场景通知权限弹窗 -->
     <string name="ht_alarm_general_content">Hora de um check-in rápido</string>
     <string name="ht_notification_des_general">Ative as notificações para receber lembretes de saúde no momento certo e nunca perder um check-in importante.</string>
-    <string name="ht_alarm_unsaved_exit_title">As alterações no seu alarme ainda não foram salvas. Tem certeza de que deseja sair?</string>
     <string name="ht_alarm_delete_confirm_title">Tem certeza de que deseja excluir este alarme?</string>
 
     <!-- 血糖测量状态 -->
@@ -388,8 +379,6 @@
 
     <!-- 通知权限相关字符串 -->
     <string name="ht_turn_on">Ativar</string>
-    <string name="ht_notification_permission_title">Mantenha-se no caminho com suas metas de saúde</string>
-    <string name="ht_notification_permission_des">Ative as notificações para receber lembretes oportunos de ingestão de água, medicamentos e atividades. Nunca perca um hábito saudável!</string>
     <string name="ht_close">Fechar</string>
     <string name="ht_notification_grant_permissions">Não perca um hábito saudável</string>
     <string name="ht_notification_grant_permissions_des">Ative as notificações para receber lembretes oportunos para construir hábitos saudáveis. Não perca nada!</string>
@@ -468,16 +457,8 @@
     <string name="ht_kindly_note">Atenção</string>
     <string name="ht_your_health_data_requires">Seus dados de saúde requerem atenção. Desbloqueie recomendações profissionais personalizadas adaptadas às suas medições</string>
     <string name="ht_free_unlock">Desbloquear Grátis</string>
-    <string name="ht_guide_title_1">Saúde da Pressão Arterial</string>
-    <string name="ht_guide_title_2">Domine as Tendências de Pressão Arterial</string>
-    <string name="ht_guide_1_des">Registre dados de pressão arterial a qualquer momento</string>
-    <string name="ht_guide_2_des">Gráficos de dados claros à primeira vista</string>
-    <string name="ht_guide_3_des">Somos projetados para rastreamento diário pessoal de pressão arterial e não oferecemos aconselhamento médico profissional.
-Para orientação de saúde profissional e diagnóstico, encorajamos fortemente que consulte um profissional de saúde qualificado ou instituição médica.</string>
-    <string name="ht_disclaimers">Isenções de Responsabilidade</string>
     <string name="ht_skip">Pular</string>
     <string name="ht_next">Próximo</string>
-    <string name="ht_start_health_journey">Comece sua Jornada de Saúde!</string>
     <string name="ht_guide_hr_des">Clique para adicionar sua primeira leitura de Frequência Cardíaca agora.</string>
     <string name="ht_guide_bp_des">Clique para adicionar sua primeira leitura de Pressão Arterial agora.</string>
     <string name="ht_guide_bs_des">Clique para adicionar sua primeira leitura de Glicemia agora.</string>

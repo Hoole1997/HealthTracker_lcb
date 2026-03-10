@@ -12,7 +12,6 @@
     <string name="ht_settings">सेटिंग्स</string>
     <string name="ht_record_now">अभी रिकॉर्ड करें</string>
     <string name="ht_rate_us">हमें रेट करें</string>
-    <string name="ht_loading">लोड हो रहा है...</string>
     <string name="ht_history">इतिहास</string>
     <string name="ht_click_to_record">रिकॉर्ड करने के लिए टैप करें</string>
     <string name="ht_new_record">नया रिकॉर्ड</string>
@@ -68,19 +67,12 @@
     <string name="ht_alarm_blood_sugar_content">अपना ब्लड शुगर रिकॉर्ड करने का समय!</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="ht_bs_notify_title_fasting_am">नाश्ते से पहले</string>
     <string name="ht_bs_notify_desc_fasting_am">नाश्ते से पहले अपना ब्लड शुगर मापें।</string>
-    <string name="ht_bs_notify_title_post_breakfast">नाश्ते के बाद</string>
     <string name="ht_bs_notify_desc_post_breakfast">नाश्ते के 2 घंटे बाद अपना ब्लड शुगर मापें।</string>
-    <string name="ht_bs_notify_title_pre_lunch">दोपहर के भोजन से पहले</string>
     <string name="ht_bs_notify_desc_pre_lunch">दोपहर के भोजन से पहले अपना ब्लड शुगर मापने का समय है।</string>
-    <string name="ht_bs_notify_title_post_lunch">दोपहर के भोजन के बाद</string>
     <string name="ht_bs_notify_desc_post_lunch">दोपहर के भोजन के 2 घंटे बाद अपना ब्लड शुगर मापें।</string>
-    <string name="ht_bs_notify_title_pre_dinner">रात के खाने से पहले</string>
     <string name="ht_bs_notify_desc_pre_dinner">रात के खाने से पहले अपना ब्लड शुगर मापें।</string>
-    <string name="ht_bs_notify_title_post_dinner">रात के खाने के बाद</string>
     <string name="ht_bs_notify_desc_post_dinner">रात के खाने के 2 घंटे बाद अपना ब्लड शुगर मापें।</string>
-    <string name="ht_bs_notify_title_bedtime">सोने से पहले</string>
     <string name="ht_bs_notify_desc_bedtime">सोने से पहले अपना ब्लड शुगर मापें।</string>
     <string name="ht_bs_notify_btn_check">जाँचें</string>
 
@@ -95,7 +87,6 @@
     <!-- 通用场景通知权限弹窗 -->
     <string name="ht_alarm_general_content">एक त्वरित चेक-इन का समय है</string>
     <string name="ht_notification_des_general">समय पर स्वास्थ्य रिमाइंडर प्राप्त करने के लिए नोटिफिकेशन सक्षम करें और कोई भी महत्वपूर्ण चेक-इन न चूकें।</string>
-    <string name="ht_alarm_unsaved_exit_title">आपके अलार्म में किए गए बदलाव अभी सहेजे नहीं गए हैं। क्या आप वाकई बाहर निकलना चाहते हैं?</string>
     <string name="ht_alarm_delete_confirm_title">क्या आप वाकई इस अलार्म को हटाना चाहते हैं?</string>
 
     <string name="ht_blood_sugar_status_default">डिफ़ॉल्ट</string>
@@ -220,8 +211,6 @@
     <string name="ht_medication_reminder_content">आपकी दवा का समय हो गया है, कृपया समय पर लें और अपना ख्याल रखें।</string>
 
     <string name="ht_turn_on">चालू करें</string>
-    <string name="ht_notification_permission_title">अपने स्वास्थ्य लक्ष्यों के साथ ट्रैक पर रहें</string>
-    <string name="ht_notification_permission_des">पानी, दवाओं और गतिविधियों के लिए समय पर रिमाइंडर प्राप्त करने के लिए नोटिफिकेशन सक्षम करें। कोई भी स्वस्थ आदत न चूकें!</string>
     <string name="ht_close">बंद करें</string>
     <string name="ht_choose_your_gender">अपना लिंग चुनें</string>
     <string name="ht_please_choose_your_gender">कृपया अपना लिंग चुनें</string>
@@ -299,16 +288,8 @@
     <string name="ht_kindly_note">कृपया ध्यान दें</string>
     <string name="ht_your_health_data_requires">आपके स्वास्थ्य डेटा पर ध्यान देने की आवश्यकता है। अपने माप के अनुसार व्यक्तिगत पेशेवर सिफारिशें अनलॉक करें</string>
     <string name="ht_free_unlock">मुफ्त अनलॉक</string>
-    <string name="ht_guide_title_1">रक्तचाप स्वास्थ्य</string>
-    <string name="ht_guide_title_2">रक्तचाप रुझान में महारत हासिल करें</string>
-    <string name="ht_guide_1_des">किसी भी समय रक्तचाप डेटा रिकॉर्ड करें</string>
-    <string name="ht_guide_2_des">डेटा चार्ट एक नज़र में स्पष्ट हैं</string>
-    <string name="ht_guide_3_des">हम व्यक्तिगत दैनिक रक्तचाप ट्रैकिंग के लिए डिज़ाइन किए गए हैं और पेशेवर चिकित्सा सलाह प्रदान नहीं करते हैं।
-पेशेवर स्वास्थ्य मार्गदर्शन और निदान के लिए, हम आपको एक योग्य स्वास्थ्य सेवा प्रदाता से परामर्श करने की सलाह देते हैं।</string>
-    <string name="ht_disclaimers">अस्वीकरण</string>
     <string name="ht_skip">छोड़ें</string>
     <string name="ht_next">अगला</string>
-    <string name="ht_start_health_journey">अपनी स्वास्थ्य यात्रा शुरू करें!</string>
     <string name="ht_guide_hr_des">अभी अपनी पहली हार्ट रेट रीडिंग जोड़ने के लिए क्लिक करें।</string>
     <string name="ht_guide_bp_des">अभी अपनी पहली ब्लड प्रेशर रीडिंग जोड़ने के लिए क्लिक करें।</string>
     <string name="ht_guide_bs_des">अभी अपनी पहली ब्लड शुगर रीडिंग जोड़ने के लिए क्लिक करें।</string>

@@ -35,7 +35,6 @@
     <string name="ht_stabilizing_subtitle">In attesa di dati stabilizzati…</string>
     <string name="ht_stabilizing_tip">Quando il dito diventa rosso, stai facendo bene.</string>
     <string name="ht_measure_complete">Misurazione completata!</string>
-    <string name="ht_loading">Caricamento...</string>
     <string name="ht_history">Cronologia</string>
     <string name="ht_click_to_record">Clicca per registrare</string>
     <string name="ht_new_record">Nuovo record</string>
@@ -75,19 +74,12 @@
     <string name="ht_alarm_blood_sugar_content">È ora di registrare la glicemia!</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="ht_bs_notify_title_fasting_am">Prima della Colazione</string>
     <string name="ht_bs_notify_desc_fasting_am">Misura la glicemia prima di colazione.</string>
-    <string name="ht_bs_notify_title_post_breakfast">Dopo la Colazione</string>
     <string name="ht_bs_notify_desc_post_breakfast">Misura la glicemia 2 ore dopo colazione.</string>
-    <string name="ht_bs_notify_title_pre_lunch">Prima del Pranzo</string>
     <string name="ht_bs_notify_desc_pre_lunch">È ora di misurare la glicemia prima di pranzo.</string>
-    <string name="ht_bs_notify_title_post_lunch">Dopo il Pranzo</string>
     <string name="ht_bs_notify_desc_post_lunch">Misura la glicemia 2 ore dopo pranzo.</string>
-    <string name="ht_bs_notify_title_pre_dinner">Prima della Cena</string>
     <string name="ht_bs_notify_desc_pre_dinner">Misura la glicemia prima di cena.</string>
-    <string name="ht_bs_notify_title_post_dinner">Dopo la Cena</string>
     <string name="ht_bs_notify_desc_post_dinner">Misura la glicemia 2 ore dopo cena.</string>
-    <string name="ht_bs_notify_title_bedtime">Prima di Dormire</string>
     <string name="ht_bs_notify_desc_bedtime">Misura la glicemia prima di andare a letto.</string>
     <string name="ht_bs_notify_btn_check">Controlla</string>
 
@@ -187,14 +179,11 @@
     <string name="ht_heart_rate_status_fast">Veloce</string>
     <string name="ht_result">Risultato</string>
     <string name="ht_bmi">IMC</string>
-    <string name="ht_guide_title_1">Salute Pressione</string>
-    <string name="ht_disclaimers">Avvertenze</string>
     <string name="ht_skip">Salta</string>
     <string name="ht_next">Avanti</string>
     <string name="ht_guide_hr_des">Fai clic per aggiungere subito la tua prima lettura della frequenza cardiaca.</string>
     <string name="ht_guide_bp_des">Fai clic per aggiungere subito la tua prima lettura della pressione sanguigna.</string>
     <string name="ht_guide_bs_des">Fai clic per aggiungere subito la tua prima lettura della glicemia.</string>
-    <string name="ht_start_health_journey">Inizia il percorso salute!</string>
     <string name="ht_target_range">Intervallo obiettivo</string>
     <string name="ht_reset">Reimposta</string>
     <string name="ht_save_success">Salvato</string>

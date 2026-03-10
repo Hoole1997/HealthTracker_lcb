@@ -19,19 +19,6 @@
         <item name="rippleColor">@color/c5_8</item>
     </style>
 
-    <style name="MaterialButton.b2">
-        <item name="android:fontFamily">@font/inter_medium</item>
-        <item name="fontFamily">@font/inter_medium</item>
-        <item name="android:textColor">@color/white90</item>
-        <item name="backgroundTint">@color/c5</item>
-        <item name="android:letterSpacing">0</item>
-        <item name="cornerRadius">@dimen/dp_8</item>
-        <item name="android:textSize">@dimen/sp_14</item>
-        <item name="android:paddingStart">@dimen/dp_20</item>
-        <item name="android:paddingEnd">@dimen/dp_20</item>
-        <item name="rippleColor">@color/c5_8</item>
-    </style>
-
 
     <style name="MaterialButton.b3">
         <item name="android:fontFamily">@font/inter_medium</item>

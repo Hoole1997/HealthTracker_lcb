@@ -12,7 +12,6 @@
     <string name="ht_tracker">記録</string>
     <string name="ht_record_now">今すぐ記録</string>
     <string name="ht_rate_us">評価する</string>
-    <string name="ht_loading">読み込み中...</string>
     <string name="ht_history">履歴</string>
     <string name="ht_click_to_record">クリックして記録</string>
 
@@ -78,19 +77,12 @@
     <string name="ht_alarm_blood_sugar_content">血糖値を記録する時間です！</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="ht_bs_notify_title_fasting_am">朝食前</string>
     <string name="ht_bs_notify_desc_fasting_am">朝食前に血糖値を測定してください。</string>
-    <string name="ht_bs_notify_title_post_breakfast">朝食後</string>
     <string name="ht_bs_notify_desc_post_breakfast">朝食の2時間後に血糖値を測定してください。</string>
-    <string name="ht_bs_notify_title_pre_lunch">昼食前</string>
     <string name="ht_bs_notify_desc_pre_lunch">昼食前に血糖値を測定する時間です。</string>
-    <string name="ht_bs_notify_title_post_lunch">昼食後</string>
     <string name="ht_bs_notify_desc_post_lunch">昼食の2時間後に血糖値を測定してください。</string>
-    <string name="ht_bs_notify_title_pre_dinner">夕食前</string>
     <string name="ht_bs_notify_desc_pre_dinner">夕食前に血糖値を測定してください。</string>
-    <string name="ht_bs_notify_title_post_dinner">夕食後</string>
     <string name="ht_bs_notify_desc_post_dinner">夕食の2時間後に血糖値を測定してください。</string>
-    <string name="ht_bs_notify_title_bedtime">就寝前</string>
     <string name="ht_bs_notify_desc_bedtime">就寝前に血糖値を測定してください。</string>
     <string name="ht_bs_notify_btn_check">確認する</string>
 
@@ -103,7 +95,6 @@
     <!-- 通用场景通知权限弹窗 -->
     <string name="ht_alarm_general_content">クイックチェックインの時間です</string>
     <string name="ht_notification_des_general">通知を有効にして、タイムリーな健康リマインダーを受け取り、重要なチェックインを見逃さないようにしましょう。</string>
-    <string name="ht_alarm_unsaved_exit_title">アラームの変更はまだ保存されていません。終了してもよろしいですか？</string>
     <string name="ht_alarm_delete_confirm_title">このアラームを削除してもよろしいですか？</string>
 
     <!-- 血压范围具体数值 -->
@@ -235,8 +226,6 @@
 
     <!-- 通知权限相关字符串 -->
     <string name="ht_turn_on">オンにする</string>
-    <string name="ht_notification_permission_title">健康目標の達成をサポート</string>
-    <string name="ht_notification_permission_des">通知を有効にして、水分補給、服薬、運動のタイムリーなリマインダーを受け取りましょう。健康的な習慣を見逃しません！</string>
     <string name="ht_close">閉じる</string>
     <string name="ht_notification_grant_permissions">健康習慣を見逃さない</string>
     <string name="ht_notification_grant_permissions_des">通知を有効にして、健康的な習慣を身につけるためのタイムリーなリマインダーを受け取りましょう。見逃さないようにしましょう！</string>
@@ -315,15 +304,8 @@
     <string name="ht_kindly_note">ご注意</string>
     <string name="ht_your_health_data_requires">健康データに注意が必要です。測定値に合わせた専門的な推奨事項をロック解除してください。</string>
     <string name="ht_free_unlock">無料でロック解除</string>
-    <string name="ht_guide_title_1">血圧の健康</string>
-    <string name="ht_guide_title_2">血圧の傾向を把握</string>
-    <string name="ht_guide_1_des">いつでも血圧データを記録</string>
-    <string name="ht_guide_2_des">データチャートで一目瞭然</string>
-    <string name="ht_guide_3_des">本アプリは個人の日々の血圧追跡用に設計されており、専門的な医療アドバイスを提供するものではありません。\n専門的な健康指導や診断については、資格のある医療提供者や医療機関に相談することを強くお勧めします。</string>
-    <string name="ht_disclaimers">免責事項</string>
     <string name="ht_skip">スキップ</string>
     <string name="ht_next">次へ</string>
-    <string name="ht_start_health_journey">健康の旅を始めよう！</string>
     <string name="ht_guide_hr_des">クリックして最初の心拍数記録を追加しましょう。</string>
     <string name="ht_guide_bp_des">クリックして最初の血圧記録を追加しましょう。</string>
     <string name="ht_guide_bs_des">クリックして最初の血糖値記録を追加しましょう。</string>

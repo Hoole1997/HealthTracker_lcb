@@ -35,7 +35,6 @@
     <string name="ht_stabilizing_subtitle">Großartig! Warten auf stabilisierte Daten…</string>
     <string name="ht_stabilizing_tip">Wenn der Finger rot wird, bedeutet das, dass Sie es richtig machen.</string>
     <string name="ht_measure_complete">Messung abgeschlossen!</string>
-    <string name="ht_loading">Laden...</string>
     <string name="ht_history">Verlauf</string>
     <string name="ht_click_to_record">Zum Aufzeichnen klicken</string>
     <string name="ht_new_record">Neuer Eintrag</string>
@@ -96,19 +95,12 @@
     <string name="ht_alarm_blood_sugar_content">Es ist Zeit, Ihren Blutzucker aufzuzeichnen!</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="ht_bs_notify_title_fasting_am">Vor dem Frühstück</string>
     <string name="ht_bs_notify_desc_fasting_am">Messen Sie Ihren Blutzucker vor dem Frühstück.</string>
-    <string name="ht_bs_notify_title_post_breakfast">Nach dem Frühstück</string>
     <string name="ht_bs_notify_desc_post_breakfast">Messen Sie Ihren Blutzucker 2 Stunden nach dem Frühstück.</string>
-    <string name="ht_bs_notify_title_pre_lunch">Vor dem Mittagessen</string>
     <string name="ht_bs_notify_desc_pre_lunch">Zeit, Ihren Blutzucker vor dem Mittagessen zu messen.</string>
-    <string name="ht_bs_notify_title_post_lunch">Nach dem Mittagessen</string>
     <string name="ht_bs_notify_desc_post_lunch">Messen Sie Ihren Blutzucker 2 Stunden nach dem Mittagessen.</string>
-    <string name="ht_bs_notify_title_pre_dinner">Vor dem Abendessen</string>
     <string name="ht_bs_notify_desc_pre_dinner">Messen Sie Ihren Blutzucker vor dem Abendessen.</string>
-    <string name="ht_bs_notify_title_post_dinner">Nach dem Abendessen</string>
     <string name="ht_bs_notify_desc_post_dinner">Messen Sie Ihren Blutzucker 2 Stunden nach dem Abendessen.</string>
-    <string name="ht_bs_notify_title_bedtime">Vor dem Schlafengehen</string>
     <string name="ht_bs_notify_desc_bedtime">Messen Sie Ihren Blutzucker vor dem Schlafengehen.</string>
     <string name="ht_bs_notify_btn_check">Prüfen</string>
 
@@ -238,8 +230,6 @@
     <string name="ht_medication_reminder_content">Es ist Zeit für Ihre Medikamente, bitte nehmen Sie sie pünktlich ein und achten Sie auf sich.</string>
 
     <string name="ht_turn_on">Einschalten</string>
-    <string name="ht_notification_permission_title">Bleiben Sie bei Ihren Gesundheitszielen auf Kurs</string>
-    <string name="ht_notification_permission_des">Aktivieren Sie Benachrichtigungen, um rechtzeitig Erinnerungen für Wasseraufnahme, Medikamente und Aktivitäten zu erhalten. Verpassen Sie nie wieder eine gesunde Gewohnheit!</string>
     <string name="ht_close">Schließen</string>
     <string name="ht_notification_grant_permissions">Verpasse nie eine gesunde Gewohnheit</string>
     <string name="ht_notification_grant_permissions_des">Aktivieren Sie Benachrichtigungen, um rechtzeitige Erinnerungen für den Aufbau gesunder Gewohnheiten zu erhalten. Verpassen Sie nichts!</string>
@@ -296,16 +286,8 @@
     <string name="ht_kindly_note">Bitte beachten</string>
     <string name="ht_your_health_data_requires">Ihre Gesundheitsdaten erfordern Aufmerksamkeit. Schalten Sie personalisierte professionelle Empfehlungen frei, die auf Ihre Messungen zugeschnitten sind</string>
     <string name="ht_free_unlock">Kostenlos freischalten</string>
-    <string name="ht_guide_title_1">Blutdruck-Gesundheit</string>
-    <string name="ht_guide_title_2">Blutdrucktrends beherrschen</string>
-    <string name="ht_guide_1_des">Blutdruckdaten jederzeit aufzeichnen</string>
-    <string name="ht_guide_2_des">Datendiagramme auf einen Blick</string>
-    <string name="ht_guide_3_des">Wir sind für die persönliche tägliche Blutdrucküberwachung konzipiert und bieten keine professionelle medizinische Beratung.
-Für professionelle Gesundheitsberatung und Diagnose empfehlen wir dringend, einen qualifizierten Gesundheitsdienstleister oder eine medizinische Einrichtung zu konsultieren.</string>
-    <string name="ht_disclaimers">Haftungsausschlüsse</string>
     <string name="ht_skip">Überspringen</string>
     <string name="ht_next">Weiter</string>
-    <string name="ht_start_health_journey">Gesundheitsreise starten!</string>
     <string name="ht_guide_hr_des">Klicken Sie, um jetzt Ihren ersten Herzfrequenzwert hinzuzufügen.</string>
     <string name="ht_guide_bp_des">Klicken Sie, um jetzt Ihren ersten Blutdruckwert hinzuzufügen.</string>
     <string name="ht_guide_bs_des">Klicken Sie, um jetzt Ihren ersten Blutzuckerwert hinzuzufügen.</string>
@@ -362,7 +344,6 @@ Für professionelle Gesundheitsberatung und Diagnose empfehlen wir dringend, ein
     <!-- 通用场景通知权限弹窗 -->
     <string name="ht_alarm_general_content">Es ist Zeit für einen kurzen Check-in</string>
     <string name="ht_notification_des_general">Aktivieren Sie Benachrichtigungen, um rechtzeitige Gesundheitserinnerungen zu erhalten und keinen wichtigen Check-in zu verpassen.</string>
-    <string name="ht_alarm_unsaved_exit_title">Die Änderungen an Ihrem Alarm wurden noch nicht gespeichert. Sind Sie sicher, dass Sie beenden möchten?</string>
     <string name="ht_alarm_delete_confirm_title">Sind Sie sicher, dass Sie diesen Alarm löschen möchten?</string>
     <string name="ht_drink_now">Jetzt ansehen</string>
     <string name="ht_hydrate_quick_add">Schnell hinzufügen</string>
