@@ -100,7 +100,6 @@ dependencies {
 //    api("com.google.ads.mediation:pangle:7.2.0.6.0")
     // UMP
     api("com.google.android.ump:user-messaging-platform:3.1.0")
-    api("com.google.android.libraries.ads.mobile.sdk:ads-mobile-sdk:0.22.0-beta04")
     
     // Glide - 用于原生广告图标加载
     api(libs.glide)
@@ -127,7 +126,7 @@ dependencies {
     api("com.thinkup.sdk:adapter-tpn-pangle:6.5.16.2")
     api("com.thinkup.sdk:adapter-tpn-facebook:6.5.16")
     api("com.facebook.android:audience-network-sdk:6.20.0")
-    // 已移除: TopOn AdMob Adapter 与项目 AdMob SDK 版本冲突 (项目使用 24.5.0, TopOn 期望旧版)
+    // 已移除: TopOn AdMob Adapter 与项目 AdMob SDK 版本冲突 (当前项目统一回退到经典 GMA 24.9.0)
     // 项目已直接使用 AdMob SDK，TopOn 使用其他广告源即可
     // api("com.thinkup.sdk:adapter-tpn-admob:6.5.16")
     api("com.thinkup.sdk:adapter-tpn-mintegral:6.5.16.1")

@@ -174,11 +174,6 @@ apply<Any> {
     }
 }
 
-configurations.all {
-    exclude(group = "com.google.android.gms", module = "play-services-ads")
-    exclude(group = "com.google.android.gms", module = "play-services-ads-lite")
-}
-
 tasks.withType<AbstractArchiveTask>().configureEach {
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
