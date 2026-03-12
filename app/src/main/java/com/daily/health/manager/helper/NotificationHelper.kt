@@ -1,5 +1,6 @@
 package com.daily.health.manager.helper
 
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.manager.HealthServiceManager
 import com.daily.health.manager.strategy.PushOrchestrator
 import com.daily.health.manager.strategy.PushResult
@@ -32,6 +33,12 @@ object NotificationHelper {
     }
 
     fun show(scenario: PushScenario){
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            if (BuildState.debug) {
+                "NotificationHelper.show skipped: notifications disabled, scenario=$scenario".logd(TAG)
+            }
+            return
+        }
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = pushOrchestrator.triggerPush(
@@ -93,6 +100,10 @@ object NotificationHelper {
      * 2. Android 12+ 且应用在后台 → 发送普通通知（可被删除）
      */
     fun handleNotificationStrategy(): Boolean {
+        if (!NotificationFeatureSwitch.notificationsEnabled || !NotificationFeatureSwitch.foregroundServiceEnabled) {
+            if (BuildState.debug) "Notification strategy disabled by product decision".logd(TAG)
+            return false
+        }
         val isForeground = AppLifecycleManager.isForeground()
 
         if (BuildState.debug) {

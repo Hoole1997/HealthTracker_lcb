@@ -3,6 +3,7 @@ package com.daily.health.manager.work
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.NotificationHelper
 import com.daily.health.manager.strategy.PushScenario
 import com.healthtracker.framework.BuildState
@@ -13,6 +14,9 @@ class ScreenUnlockReceiver : BroadcastReceiver() {
        private const val  TAG = "ScreenUnlockReceiver"
     }
     override fun onReceive(context: Context, intent: Intent) {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            return
+        }
         if (Intent.ACTION_USER_PRESENT == intent.action) {
             // 在这里调度WorkManager任务
             if(BuildState.debug) "ScreenUnlockReceiver onReceive".logd(TAG)

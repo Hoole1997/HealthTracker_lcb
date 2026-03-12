@@ -3,6 +3,7 @@ package com.daily.health.manager.strategy
 import android.content.Context
 import com.daily.health.manager.alarm.PermissionManager
 import com.daily.health.manager.config.models.PushMessage
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.CustomNotificationHelper
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
@@ -89,6 +90,12 @@ class LoopPushManager(
         loopCount: Int,
         scenario: PushScenario
     ) {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            if (BuildState.debug) {
+                "Loop push disabled by product decision".logd(PushOrchestrator.TAG)
+            }
+            return
+        }
         if (BuildState.debug) {
             "Starting Loop push: notificationId=$notificationId, loopCount=$loopCount, " +
                     "isPaid=$isPaidUser, pushId=${pushMessage.id}".logd(PushOrchestrator.TAG)

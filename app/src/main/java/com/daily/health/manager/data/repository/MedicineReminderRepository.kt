@@ -5,6 +5,7 @@ import com.daily.health.manager.data.dao.MedicineReminderDao
 import com.daily.health.manager.data.entity.AlarmRecord
 import com.daily.health.manager.data.entity.MedicineReminder
 import com.daily.health.manager.data.entity.PresetTimes
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import kotlinx.coroutines.flow.Flow
@@ -68,33 +69,37 @@ class MedicineReminderRepository(
             "Medicine reminder saved: ID=$medicineId, Name=$medicineName".logd(TAG)
 
             // 2. 为每个提醒时间创建系统闹钟
-            reminderTimes.forEach { timeStr ->
-                try {
-                    val (hour, minute) = parseTimeString(timeStr)
+            if (NotificationFeatureSwitch.notificationsEnabled) {
+                reminderTimes.forEach { timeStr ->
+                    try {
+                        val (hour, minute) = parseTimeString(timeStr)
 
-                    // 创建服药提醒闹钟记录（简化版）
-                    val alarmRecord = AlarmRecord.createMedicationAlarm(
-                        medicineId = medicineId,
-                        hour = hour,
-                        minute = minute,
-                        repeatFlag = AlarmRecord.REPEAT_DAILY // 每天重复
-                    )
+                        // 创建服药提醒闹钟记录（简化版）
+                        val alarmRecord = AlarmRecord.createMedicationAlarm(
+                            medicineId = medicineId,
+                            hour = hour,
+                            minute = minute,
+                            repeatFlag = AlarmRecord.REPEAT_DAILY // 每天重复
+                        )
 
-                    // 保存闹钟记录到数据库
-                    val alarmId = alarmRepository.insertAlarmRecord(alarmRecord)
+                        // 保存闹钟记录到数据库
+                        val alarmId = alarmRepository.insertAlarmRecord(alarmRecord)
 
-                    // 调度系统闹钟
-                    val scheduleSuccess = alarmScheduler.scheduleAlarm(alarmRecord.copy(id = alarmId))
+                        // 调度系统闹钟
+                        val scheduleSuccess = alarmScheduler.scheduleAlarm(alarmRecord.copy(id = alarmId))
 
-                    if (scheduleSuccess) {
-                        "Medication alarm scheduled: MedicineID=$medicineId, AlarmID=$alarmId, Time=$timeStr".logd(TAG)
-                    } else {
-                        "Failed to schedule medication alarm: MedicineID=$medicineId, Time=$timeStr".loge(TAG)
+                        if (scheduleSuccess) {
+                            "Medication alarm scheduled: MedicineID=$medicineId, AlarmID=$alarmId, Time=$timeStr".logd(TAG)
+                        } else {
+                            "Failed to schedule medication alarm: MedicineID=$medicineId, Time=$timeStr".loge(TAG)
+                        }
+
+                    } catch (e: Exception) {
+                        "Error creating alarm for time $timeStr: ${e.message}".loge(TAG)
                     }
-
-                } catch (e: Exception) {
-                    "Error creating alarm for time $timeStr: ${e.message}".loge(TAG)
                 }
+            } else {
+                "Medication reminder scheduling skipped by product decision: MedicineID=$medicineId".logd(TAG)
             }
 
             return medicineId
@@ -149,36 +154,37 @@ class MedicineReminderRepository(
                 cancelMedicationAlarms(id)
 
                 // 2. 为新的提醒时间创建闹钟
-                val actualMedicineName = medicineName ?: current.medicineName
-                val actualNote = note ?: current.note
+                if (NotificationFeatureSwitch.notificationsEnabled) {
+                    reminderTimes.forEach { timeStr ->
+                        try {
+                            val (hour, minute) = parseTimeString(timeStr)
 
-                reminderTimes.forEach { timeStr ->
-                    try {
-                        val (hour, minute) = parseTimeString(timeStr)
+                            // 创建新的服药提醒闹钟（简化版）
+                            val alarmRecord = AlarmRecord.createMedicationAlarm(
+                                medicineId = id,
+                                hour = hour,
+                                minute = minute,
+                                repeatFlag = AlarmRecord.REPEAT_DAILY
+                            )
 
-                        // 创建新的服药提醒闹钟（简化版）
-                        val alarmRecord = AlarmRecord.createMedicationAlarm(
-                            medicineId = id,
-                            hour = hour,
-                            minute = minute,
-                            repeatFlag = AlarmRecord.REPEAT_DAILY
-                        )
+                            // 保存闹钟记录到数据库
+                            val alarmId = alarmRepository.insertAlarmRecord(alarmRecord)
 
-                        // 保存闹钟记录到数据库
-                        val alarmId = alarmRepository.insertAlarmRecord(alarmRecord)
+                            // 调度系统闹钟
+                            val scheduleSuccess = alarmScheduler.scheduleAlarm(alarmRecord.copy(id = alarmId))
 
-                        // 调度系统闹钟
-                        val scheduleSuccess = alarmScheduler.scheduleAlarm(alarmRecord.copy(id = alarmId))
+                            if (scheduleSuccess) {
+                                "Updated medication alarm: MedicineID=$id, AlarmID=$alarmId, Time=$timeStr".logd(TAG)
+                            } else {
+                                "Failed to schedule updated alarm: MedicineID=$id, Time=$timeStr".loge(TAG)
+                            }
 
-                        if (scheduleSuccess) {
-                            "Updated medication alarm: MedicineID=$id, AlarmID=$alarmId, Time=$timeStr".logd(TAG)
-                        } else {
-                            "Failed to schedule updated alarm: MedicineID=$id, Time=$timeStr".loge(TAG)
+                        } catch (e: Exception) {
+                            "Error updating alarm for time $timeStr: ${e.message}".loge(TAG)
                         }
-
-                    } catch (e: Exception) {
-                        "Error updating alarm for time $timeStr: ${e.message}".loge(TAG)
                     }
+                } else {
+                    "Medication reminder rescheduling skipped by product decision: MedicineID=$id".logd(TAG)
                 }
             }
 
@@ -254,7 +260,10 @@ class MedicineReminderRepository(
             // 联动闹钟启用/禁用
             val alarms = alarmRepository.getAlarmsByMedicineId(id)
             alarms.forEach { alarm ->
-                if (isActive) {
+                if (!NotificationFeatureSwitch.notificationsEnabled) {
+                    alarmScheduler.cancelAlarm(alarm)
+                    alarmRepository.disableAlarm(alarm.id)
+                } else if (isActive) {
                     alarmRepository.enableAlarm(alarm.id)
                     alarmScheduler.scheduleAlarm(alarm.copy(isEnabled = true))
                 } else {

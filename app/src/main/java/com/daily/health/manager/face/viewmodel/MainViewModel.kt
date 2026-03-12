@@ -3,6 +3,7 @@ package com.daily.health.manager.face.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.android.common.weather.cache.WeatherCacheManager
 import com.daily.health.manager.alarm.PermissionManager
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.manager.HealthServiceManager
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
@@ -61,6 +62,10 @@ class MainViewModel(
     }
 
     fun startHealthService() {
+        if (!NotificationFeatureSwitch.foregroundServiceEnabled) {
+            _serviceRunning.value = false
+            return
+        }
         if (!_serviceRunning.value && permissionManager.isNotificationPermissionGranted()) {
             healthServiceManager.startHealthService()
             _serviceRunning.value = true

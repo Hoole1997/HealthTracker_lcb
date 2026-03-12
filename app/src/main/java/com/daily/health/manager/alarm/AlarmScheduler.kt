@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.daily.health.manager.data.entity.AlarmRecord
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.util.AlarmRepeatHelper
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.ext.logd
@@ -51,6 +52,10 @@ class AlarmScheduler(
      * @return 是否调度成功
      */
     fun scheduleAlarm(alarmRecord: AlarmRecord): Boolean {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            "Alarm scheduling disabled by product decision: ID=${alarmRecord.id}".logw(TAG)
+            return false
+        }
         return try {
             if (!alarmRecord.isEnabled) {
                 "Alarm is disabled, skipping schedule: ID=${alarmRecord.id}".logw(TAG)
@@ -120,6 +125,10 @@ class AlarmScheduler(
      * @return 是否更新成功
      */
     fun updateAlarm(alarmRecord: AlarmRecord): Boolean {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            "Alarm update scheduling disabled by product decision: ID=${alarmRecord.id}".logw(TAG)
+            return false
+        }
         return try {
             // 先取消现有闹钟
             cancelAlarm(alarmRecord)
@@ -183,6 +192,10 @@ class AlarmScheduler(
      * @return 是否调度成功
      */
     fun rescheduleRepeatingAlarm(alarmRecord: AlarmRecord): Boolean {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            "Repeat alarm scheduling disabled by product decision: ID=${alarmRecord.id}".logw(TAG)
+            return false
+        }
         return if (alarmRecord.isRepeating()) {
             scheduleAlarm(alarmRecord)
         } else {

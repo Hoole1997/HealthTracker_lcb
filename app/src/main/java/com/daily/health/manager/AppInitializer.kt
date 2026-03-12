@@ -7,6 +7,7 @@ import android.view.Gravity
 import com.blankj.utilcode.util.ActivityUtils
 import com.daily.health.manager.config.registry.AppConfigRegistry
 import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.NotificationHelper
 import com.daily.health.manager.strategy.PushScenario
 import com.daily.health.manager.toast.CustomToastStyle
@@ -68,6 +69,11 @@ class AppInitializer(
             if (BuildState.debug) "App entered foreground, refreshing config...".logd(TAG)
             initScope.launch {
                 remoteConfigManager.refreshConfig()
+            }
+
+            if (!NotificationFeatureSwitch.hotResumeSplashAdEnabled) {
+                if (BuildState.debug) "Hot-resume splash flow disabled by product decision".logd(TAG)
+                return
             }
 
             initScope.launch(Dispatchers.Main) {
@@ -137,6 +143,10 @@ class AppInitializer(
     }
 
     fun startSplashActivity() {
+        if (!NotificationFeatureSwitch.hotResumeSplashAdEnabled) {
+            if (BuildState.debug) "startSplashActivity skipped: hot-resume splash disabled".logd(TAG)
+            return
+        }
         try {
             val intent = Intent(application, SplashScreen::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -359,10 +369,12 @@ class AppInitializer(
             AppLifecycleManager.addObserver(configRefreshObserver)
             if(BuildState.debug)  "Config refresh observer registered".logd(TAG)
 
-            // ✅ 注册健康服务前台观察器
-            // 监听应用前后台切换，自动启动/管理健康服务
-            AppLifecycleManager.addObserver(healthServiceForegroundObserver)
-            if(BuildState.debug) "HealthServiceForegroundObserver registered".logd(TAG)
+            if (NotificationFeatureSwitch.foregroundServiceEnabled) {
+                AppLifecycleManager.addObserver(healthServiceForegroundObserver)
+                if(BuildState.debug) "HealthServiceForegroundObserver registered".logd(TAG)
+            } else if (BuildState.debug) {
+                "HealthServiceForegroundObserver registration skipped".logd(TAG)
+            }
 
             // ✅ 注册广告缓存前台观察器（方案2）
             // 监听应用前后台切换，前台返回时自动补充激励广告缓存

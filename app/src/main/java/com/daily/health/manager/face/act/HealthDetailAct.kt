@@ -30,6 +30,7 @@ import com.daily.health.manager.databinding.TrActivityCholesterolDetailBinding
 import com.daily.health.manager.databinding.TrActivityHealthDetailBinding
 import com.daily.health.manager.databinding.TrActivityHeartRateDetailBinding
 import com.daily.health.manager.face.chart.HealthLineChartManager
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.HealthTypeProvider
 import com.daily.health.manager.face.viewmodel.BmiDetailViewModel
@@ -593,6 +594,10 @@ class HealthDetailAct : BaseInterActivity<BaseViewModel, TrActivityHealthDetailB
         val type = detailType
         // [New Logic] 返回键拦截流程：仅限录入后进入 -> 频控通过
         if (isFromSave && type != null) {
+            if (!NotificationFeatureSwitch.reminderEntryEnabled) {
+                return super.handleBackPress()
+            }
+
             val alarmType = when(type) {
                 DetailType.BLOOD_SUGAR -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_SUGAR
                 DetailType.BLOOD_PRESSURE -> com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_PRESSURE

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
 import com.daily.health.manager.App
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.strategy.LoopPushManager
 import com.daily.health.manager.strategy.PushOrchestrator
 import com.healthtracker.framework.BuildState
@@ -42,6 +43,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            if (BuildState.debug) {
+                "Notification action ignored because notifications are disabled".logd(TAG)
+            }
+            return
+        }
+
         val loopPushManager = runCatching { GlobalContext.get().get<LoopPushManager>() }.getOrNull()
         if (loopPushManager == null) {
             "Koin not ready, skipping notification action".logw(PushOrchestrator.TAG)

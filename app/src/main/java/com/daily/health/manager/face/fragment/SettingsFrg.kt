@@ -49,6 +49,7 @@ import com.daily.health.manager.face.act.TargetRangeAct
 import com.daily.health.manager.face.dialog.ComingSoonDialog
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.helper.HealthTrackerEvaluateListener
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.app.raise.AppraiseManager
 import com.app.raise.config.EvaluateConfig
 import com.healthtracker.framework.util.SpUtils
@@ -197,11 +198,13 @@ private fun SettingsScreen(
     val iconTintLegal = iconTintCore.copy()
     val chevronTint = colorResource(R.color.color_C7C7CC).copy(alpha = 0.9f)
 
-    val remindersAndGoalsItems = listOf(
-        SettingsItemUi(SettingsAction.AlarmManagement, R.string.tr_alarm_management, R.drawable.tr_ic_setting_alarm),
-//        SettingsItemUi(SettingsAction.UnitSettings, R.string.tr_unit_settings, R.drawable.tr_ic_setting_unit),
-        SettingsItemUi(SettingsAction.TargetRangeSettings, R.string.tr_target_range_settings, R.drawable.tr_ic_setting_target)
-    )
+    val remindersAndGoalsItems = buildList {
+        if (NotificationFeatureSwitch.reminderEntryEnabled) {
+            add(SettingsItemUi(SettingsAction.AlarmManagement, R.string.tr_alarm_management, R.drawable.tr_ic_setting_alarm))
+        }
+//        add(SettingsItemUi(SettingsAction.UnitSettings, R.string.tr_unit_settings, R.drawable.tr_ic_setting_unit))
+        add(SettingsItemUi(SettingsAction.TargetRangeSettings, R.string.tr_target_range_settings, R.drawable.tr_ic_setting_target))
+    }
     val generalItems = listOf(
         SettingsItemUi(SettingsAction.PersonalInfo, R.string.tr_personal_info, R.drawable.tr_ic_setting_profile),
         SettingsItemUi(SettingsAction.Language, R.string.tr_language, R.drawable.tr_ic_setting_language)

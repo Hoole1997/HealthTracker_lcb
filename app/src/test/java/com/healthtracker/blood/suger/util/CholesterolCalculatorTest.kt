@@ -1,6 +1,6 @@
-package com.healthtracker.blood.suger.util
+package com.daily.health.manager.util
 
-import com.healthtracker.blood.suger.data.enums.CholesterolLevel
+import com.daily.health.manager.data.enums.CholesterolLevel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

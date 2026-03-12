@@ -31,6 +31,7 @@ import com.daily.health.manager.databinding.TrLayoutHomeTabItemBinding
 import com.daily.health.manager.face.adapter.FragmentsAdapter
 import com.daily.health.manager.face.compose.HomeFeatureGuideOverlay
 import com.daily.health.manager.face.compose.HomeGuideOverlayUi
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.dialog.ActivityPerRequestDialog
 import com.daily.health.manager.face.dialog.ExitDialog
@@ -203,7 +204,11 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
             applyHostBackgroundForTab(position)
             llWeather.gone()
             tvTitle.visible()
-            ivRemind.visible()
+            if (NotificationFeatureSwitch.reminderEntryEnabled) {
+                ivRemind.visible()
+            } else {
+                ivRemind.gone()
+            }
             tvMonth.gone()
 
             // 根据不同位置设置特定的UI状态和标题
@@ -319,16 +324,20 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         with(mViewBind) {
             viewPagerHome.offscreenPageLimit = 0
 
-            // Debug 专用：长按发送测试通知
-            if (BuildState.debug) {
-                ivRemind.setOnLongClickListener {
-                    sendTestNotifications()
-                    true
+            if (NotificationFeatureSwitch.reminderEntryEnabled) {
+                // Debug 专用：长按发送测试通知
+                if (BuildState.debug) {
+                    ivRemind.setOnLongClickListener {
+                        sendTestNotifications()
+                        true
+                    }
                 }
-            }
 
-            ivRemind.clickWithDuration {
-                startActivity<AlarmManageScreen>()
+                ivRemind.clickWithDuration {
+                    startActivity<AlarmManageScreen>()
+                }
+            } else {
+                ivRemind.gone()
             }
 
             setupBottomNavBar()
@@ -348,7 +357,6 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         // Banner 和权限流程
         lifecycleScope.launch {
             awaitResumedIfNeeded()
-            checkNotificationPermissionFlow()
             val homeFragment = homeFrgReady.await()
             homeFragment.onNotificationPermissionFlowFinished()
             if (currentTabIndex == 0) {
@@ -628,8 +636,10 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
      * 发送测试通知（仅 Debug 构建）
      * 一次性发送 11 条预配置的测试通知，用于验证 UI
      */
-    @androidx.annotation.RequiresPermission("android.permission.POST_NOTIFICATIONS")
     private fun sendTestNotifications() {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            return
+        }
         lifecycleScope.launch {
             val messages = PushMessage.createDefaultList()
             Toast.makeText(

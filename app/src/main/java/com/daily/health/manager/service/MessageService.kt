@@ -3,6 +3,7 @@ package com.daily.health.manager.service
 import com.blankj.utilcode.util.AppUtils
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.NotificationHelper
 import com.daily.health.manager.strategy.PushScenario
 import com.healthtracker.framework.BuildState
@@ -37,15 +38,17 @@ class MessageService : FirebaseMessagingService() {
         private fun isVersionMatched(messageVersion: String?, currentVersion: String): Boolean {
             // version没有值的时候不判断，全量发送
             if (messageVersion.isNullOrBlank()) {
-                if(BuildState.debug)
-                "FCM消息无version字段，全量发送".logd("FCM消息无version字段，全量发送")
+                if (BuildState.debug) {
+                    "FCM消息无version字段，全量发送".logd("FCM消息无version字段，全量发送")
+                }
                 return true
             }
             
             // 有值的时候，客户端需要判断=当前值才发送
             val isMatched = messageVersion == currentVersion
-            if(BuildState.debug)
-            "FCM消息version检查: 消息version=$messageVersion, 当前version=$currentVersion, 匹配结果=$isMatched".logd(TAG)
+            if (BuildState.debug) {
+                "FCM消息version检查: 消息version=$messageVersion, 当前version=$currentVersion, 匹配结果=$isMatched".logd(TAG)
+            }
             return isMatched
         }
     }
@@ -58,6 +61,10 @@ class MessageService : FirebaseMessagingService() {
      * 当收到 FCM 消息时调用
      */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            if (BuildState.debug) "FCM notification handling disabled by product decision".logd(TAG)
+            return
+        }
 
         ReportDataManager.reportData("Notific_Pull", mapOf("topic" to "ALL_TOKEN"))
 
@@ -69,8 +76,9 @@ class MessageService : FirebaseMessagingService() {
         }
         // 处理数据载荷
         if (remoteMessage.data.isNotEmpty()) {
-            if(BuildState.debug)
-            "消息数据载荷:".logd(TAG)
+            if (BuildState.debug) {
+                "消息数据载荷:".logd(TAG)
+            }
             for ((key, value) in remoteMessage.data) {
                 "  $key: $value".logd(TAG)
             }
@@ -89,6 +97,9 @@ class MessageService : FirebaseMessagingService() {
     }
 
     private fun triggerFCMNotification() {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            return
+        }
         try {
             NotificationHelper.show(PushScenario.FCM)
         }catch (e: Throwable){
@@ -102,8 +113,9 @@ class MessageService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        if(BuildState.debug)
-        "FCM 令牌已更新: $token".logd(TAG)
+        if (BuildState.debug) {
+            "FCM 令牌已更新: $token".logd(TAG)
+        }
 
     }
 

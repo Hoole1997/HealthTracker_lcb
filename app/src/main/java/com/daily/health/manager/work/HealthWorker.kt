@@ -3,6 +3,7 @@ package com.daily.health.manager.work
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.NotificationHelper
 import com.daily.health.manager.strategy.PushScenario
 import com.healthtracker.framework.BuildState
@@ -40,6 +41,9 @@ class HealthWorker(
 
     override suspend fun doWork(): Result {
         if (BuildState.debug) "HealthWorker Run".logd(TAG)
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            return Result.success()
+        }
         try {
             delay(1000L)
             if(AppLifecycleManager.isBackground()){

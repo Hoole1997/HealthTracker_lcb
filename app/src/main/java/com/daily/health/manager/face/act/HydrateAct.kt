@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daily.health.manager.R
@@ -14,6 +15,7 @@ import com.daily.health.manager.face.dialog.ComingSoonDialog
 import com.daily.health.manager.face.adapter.HydrateAdapter
 import com.daily.health.manager.face.adapter.HydrateItem
 import com.daily.health.manager.face.adapter.HydrateRecordItem
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.face.viewmodel.HydrateViewModel
 import com.daily.health.manager.config.HydrateSettingManager
 import com.daily.health.manager.data.utils.DateTimeUtils
@@ -55,8 +57,12 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
             onBackPressedDispatcher.onBackPressed()
         }
 
-        mViewBind.ivSetting.setOnClickListener {
-            HydrateSettingAct.start(this)
+        if (NotificationFeatureSwitch.reminderEntryEnabled) {
+            mViewBind.ivSetting.setOnClickListener {
+                HydrateSettingAct.start(this)
+            }
+        } else {
+            mViewBind.ivSetting.visibility = View.GONE
         }
 
         // 周日期选择：拦截未来日期并弹窗

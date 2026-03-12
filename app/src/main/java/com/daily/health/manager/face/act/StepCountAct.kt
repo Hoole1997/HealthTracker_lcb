@@ -13,6 +13,7 @@ import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.constants.KEY_STEP_COUNT_GOLE
 import com.daily.health.manager.databinding.TrActivityStepCountBinding
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.service.HTService
 import com.daily.health.manager.face.chart.HealthLineChartManager
 import com.healthtracker.framework.ext.clickWithDuration
@@ -96,6 +97,9 @@ class StepCountAct : BaseInterActivity<StepCountViewModel, TrActivityStepCountBi
     }
 
     private fun startHealthService() {
+        if (!NotificationFeatureSwitch.foregroundServiceEnabled) {
+            return
+        }
         val intent = Intent(this, HTService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)

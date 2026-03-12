@@ -11,6 +11,7 @@ import android.os.IBinder
 import androidx.core.content.ContextCompat
 import com.daily.health.manager.config.models.PushConfig
 import com.daily.health.manager.data.repo.StepRepository
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.ResidentNotificationHelper
 import com.daily.health.manager.strategy.PushOrchestrator
 import com.healthtracker.framework.BuildState
@@ -95,6 +96,11 @@ class HTService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (!NotificationFeatureSwitch.foregroundServiceEnabled) {
+            "Health service disabled by product decision".logd(TAG)
+            stopSelf()
+            return START_NOT_STICKY
+        }
         try {
             val silent = intent?.getBooleanExtra(IS_SILENT,true) ?: true
             // 构建通知

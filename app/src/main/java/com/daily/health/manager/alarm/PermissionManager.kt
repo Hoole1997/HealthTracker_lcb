@@ -8,6 +8,7 @@ import com.daily.health.manager.face.act.AlarmManageScreen
 import com.daily.health.manager.face.act.MainAct
 import com.daily.health.manager.face.act.SplashScreen
 import com.daily.health.manager.face.dialog.NotificationPermissionDialog
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.util.pushRequest
 import com.daily.health.manager.util.pushResult
 import com.healthtracker.framework.BuildState
@@ -44,8 +45,13 @@ class PermissionManager {
      *
      * @return 是否已授权通知权限
      */
-    fun isNotificationPermissionGranted() = PermissionUtils.hasPermission(App.INSTANCE,
-        PermissionLists.getPostNotificationsPermission())
+    fun isNotificationPermissionGranted(): Boolean {
+        if (!NotificationFeatureSwitch.notificationsEnabled) return false
+        return PermissionUtils.hasPermission(
+            App.INSTANCE,
+            PermissionLists.getPostNotificationsPermission()
+        )
+    }
 
     /**
      * 检查通知权限是否被撤销
@@ -64,6 +70,10 @@ class PermissionManager {
      * 检查通知权限
      */
     fun checkNotificationPermission(activity: FragmentActivity, onGoSetting:(() -> Unit)? = null, onComplete:(Boolean) -> Unit) {
+        if (!NotificationFeatureSwitch.notificationPermissionPromptEnabled) {
+            onComplete(true)
+            return
+        }
 
         val position = when (activity) {
             is SplashScreen -> "AppStart"

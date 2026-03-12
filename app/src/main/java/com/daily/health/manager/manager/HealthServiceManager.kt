@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import com.daily.health.manager.alarm.PermissionManager
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.ResidentNotificationHelper
 import com.daily.health.manager.service.HTService
 import com.daily.health.manager.service.HealthServiceConstants
@@ -32,6 +33,10 @@ class HealthServiceManager(
      * 启动健康服务
      */
     fun startHealthService(from: String = "local_push") {
+        if (!NotificationFeatureSwitch.foregroundServiceEnabled) {
+            "Foreground service disabled by product decision".logw(TAG)
+            return
+        }
 
         if(System.currentTimeMillis() - lastTime < 5000L){
             return

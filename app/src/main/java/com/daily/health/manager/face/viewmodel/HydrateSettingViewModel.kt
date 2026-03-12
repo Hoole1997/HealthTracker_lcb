@@ -9,6 +9,7 @@ import com.daily.health.manager.data.repository.AlarmRepository
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.alarm.AlarmNotificationManager
 import com.daily.health.manager.alarm.AlarmScheduler
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.healthtracker.framework.base.BaseViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -51,7 +52,7 @@ class HydrateSettingViewModel(
             val insertedId = hydrateReminderDao.insert(HydrateReminder(hour = hour, minute = minute))
 
             // 仅当成功插入时，新增 AlarmRecord 并调度系统闹钟
-            if (insertedId > 0) {
+            if (insertedId > 0 && NotificationFeatureSwitch.notificationsEnabled) {
                 val record = AlarmRecord.createHydrationReminder(hour, minute, AlarmRecord.REPEAT_DAILY)
                 val alarmId = alarmRepository.insertAlarmRecord(record)
                 val insertedRecord = record.copy(id = alarmId)
@@ -67,14 +68,16 @@ class HydrateSettingViewModel(
             hydrateReminderDao.deleteByTime(hour, minute)
 
             // 查找对应的饮水 AlarmRecord，取消系统闹钟并软删除记录
-            val records = alarmRepository.getRecordsByTypeAndTime(AlarmRecord.TYPE_HYDRATION, hour, minute)
-            records.forEach { record ->
-                // 取消系统级闹钟
-                alarmScheduler.cancelAlarm(record)
-                // 取消已展示的通知（如果有）
-                alarmNotificationManager.cancelAlarmNotification(record)
-                // 软删除记录以维持一致性
-                alarmRepository.softDeleteRecord(record.id)
+            if (NotificationFeatureSwitch.notificationsEnabled) {
+                val records = alarmRepository.getRecordsByTypeAndTime(AlarmRecord.TYPE_HYDRATION, hour, minute)
+                records.forEach { record ->
+                    // 取消系统级闹钟
+                    alarmScheduler.cancelAlarm(record)
+                    // 取消已展示的通知（如果有）
+                    alarmNotificationManager.cancelAlarmNotification(record)
+                    // 软删除记录以维持一致性
+                    alarmRepository.softDeleteRecord(record.id)
+                }
             }
         }
     }
@@ -86,29 +89,31 @@ class HydrateSettingViewModel(
             hydrateReminderDao.updateEnabledByTime(hour, minute, enabled)
 
             // 2) 联动 AlarmRecord：启用则调度，禁用则取消
-            val records = alarmRepository.getRecordsByTypeAndTime(AlarmRecord.TYPE_HYDRATION, hour, minute)
-            if (enabled) {
-                if (records.isEmpty()) {
-                    // 若不存在对应闹钟记录，补充创建并调度
-                    val newId = alarmRepository.addHydrationReminder(hour, minute, AlarmRecord.REPEAT_DAILY)
-                    val newRecord = AlarmRecord.createHydrationReminder(hour, minute, AlarmRecord.REPEAT_DAILY)
-                        .copy(id = newId, isEnabled = true)
-                    alarmScheduler.scheduleAlarm(newRecord)
+            if (NotificationFeatureSwitch.notificationsEnabled) {
+                val records = alarmRepository.getRecordsByTypeAndTime(AlarmRecord.TYPE_HYDRATION, hour, minute)
+                if (enabled) {
+                    if (records.isEmpty()) {
+                        // 若不存在对应闹钟记录，补充创建并调度
+                        val newId = alarmRepository.addHydrationReminder(hour, minute, AlarmRecord.REPEAT_DAILY)
+                        val newRecord = AlarmRecord.createHydrationReminder(hour, minute, AlarmRecord.REPEAT_DAILY)
+                            .copy(id = newId, isEnabled = true)
+                        alarmScheduler.scheduleAlarm(newRecord)
+                    } else {
+                        records.forEach { record ->
+                            // 更新启用状态
+                            alarmRepository.enableAlarm(record.id)
+                            // 调度系统闹钟
+                            alarmScheduler.scheduleAlarm(record.copy(isEnabled = true))
+                        }
+                    }
                 } else {
                     records.forEach { record ->
-                        // 更新启用状态
-                        alarmRepository.enableAlarm(record.id)
-                        // 调度系统闹钟
-                        alarmScheduler.scheduleAlarm(record.copy(isEnabled = true))
+                        // 取消系统闹钟与通知
+                        alarmScheduler.cancelAlarm(record)
+                        alarmNotificationManager.cancelAlarmNotification(record)
+                        // 更新禁用状态
+                        alarmRepository.disableAlarm(record.id)
                     }
-                }
-            } else {
-                records.forEach { record ->
-                    // 取消系统闹钟与通知
-                    alarmScheduler.cancelAlarm(record)
-                    alarmNotificationManager.cancelAlarmNotification(record)
-                    // 更新禁用状态
-                    alarmRepository.disableAlarm(record.id)
                 }
             }
         }

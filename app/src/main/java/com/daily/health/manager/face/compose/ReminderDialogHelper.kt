@@ -1,5 +1,6 @@
 package com.daily.health.manager.face.compose
 
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.healthtracker.framework.util.SpUtils
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -18,6 +19,7 @@ object ReminderDialogHelper {
      * 检查今天是否已显示过该类型的提醒弹窗 (原有逻辑)
      */
     fun shouldShowReminderDialog(type: Int): Boolean {
+        if (!NotificationFeatureSwitch.reminderEntryEnabled) return false
         val today = getToday()
         val key = "${KEY_PREFIX}${type}_$today"
         return !SpUtils.getBoolean(key, false)
@@ -40,6 +42,7 @@ object ReminderDialogHelper {
      * 3. 全局每天上限 2 次
      */
     fun canShowBackGuide(type: Int): Boolean {
+        if (!NotificationFeatureSwitch.reminderEntryEnabled) return false
         val today = getToday()
         
         // 1. 全局日频控 (2次)

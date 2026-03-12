@@ -19,6 +19,7 @@ import com.daily.health.manager.constants.LANDING_NOTIFICATION_CONTENT
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_FROM
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_TITLE
 import com.daily.health.manager.constants.PUSH_CLOSE_ACTION
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.receiver.NotificationActionReceiver
 import com.daily.health.manager.service.HealthServiceConstants
 import com.daily.health.manager.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
@@ -91,6 +92,10 @@ class CustomNotificationHelper(
         notificationId: Int? = null,
         scenario: PushScenario
     ): Int {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            "Custom notification disabled by product decision".logd(PushOrchestrator.TAG)
+            return -1
+        }
         try {
             if(pushMessage.actionType == 8){
                 return 0

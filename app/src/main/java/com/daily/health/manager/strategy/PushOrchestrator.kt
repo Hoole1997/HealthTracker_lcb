@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.annotation.RequiresPermission
 import com.daily.health.manager.config.models.PushConfig
 import com.daily.health.manager.config.models.PushMessage
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.CustomNotificationHelper
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.BuildState
@@ -73,6 +74,9 @@ class PushOrchestrator(
         scenario: PushScenario,
         extras: Bundle? = null
     ): PushResult = withContext(Dispatchers.IO)  {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            return@withContext PushResult.Blocked("Notifications disabled by product decision")
+        }
         val pushId = generatePushId(scenario)
         val isPaidUser = ChannelUserController.isPaidChannel()
 

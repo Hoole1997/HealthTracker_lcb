@@ -15,6 +15,7 @@ import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.constants.PUSH_CLOSE_ACTION
 import com.daily.health.manager.data.entity.AlarmRecord
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.BloodSugarNotificationContent
 import com.daily.health.manager.helper.NotificationResourceMapper.NotificationResources
 import com.daily.health.manager.receiver.NotificationActionReceiver
@@ -102,6 +103,10 @@ class AlarmNotificationManager(
      * @param alarmRecord 闹钟记录
      */
     fun showAlarmNotification(alarmRecord: AlarmRecord) {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            "Alarm notification rendering disabled by product decision: ID=${alarmRecord.id}".logd(TAG)
+            return
+        }
         try {
 
             val notificationId = generateNotificationId(alarmRecord)

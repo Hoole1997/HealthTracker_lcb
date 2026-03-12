@@ -6,6 +6,7 @@ import android.content.Intent
 import com.healthtracker.earthquake.push.EarthquakePushInitializer
 import com.daily.health.manager.data.entity.AlarmRecord
 import com.daily.health.manager.data.repository.AlarmRepository
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.manager.HealthServiceManager
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
@@ -102,6 +103,10 @@ class SystemBootReceiver : BroadcastReceiver() {
         alarmRepository: AlarmRepository,
         alarmScheduler: AlarmScheduler
     ) {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            "Alarm restoration skipped because notifications are disabled".logd(TAG)
+            return
+        }
         val pendingResult = goAsync()
         
         coroutineScope.launch {
@@ -285,6 +290,10 @@ class SystemBootReceiver : BroadcastReceiver() {
     }
 
     private fun tryShowResident(serviceManager: HealthServiceManager?) {
+        if (!NotificationFeatureSwitch.foregroundServiceEnabled) {
+            "Resident service restart skipped after boot".logd(TAG)
+            return
+        }
         serviceManager?.startHealthService()
     }
 }

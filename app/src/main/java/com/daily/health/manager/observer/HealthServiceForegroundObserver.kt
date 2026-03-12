@@ -1,6 +1,7 @@
 package com.daily.health.manager.observer
 
 import com.daily.health.manager.App
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.helper.NotificationHelper
 import com.daily.health.manager.manager.HealthServiceManager
 import com.daily.health.manager.strategy.PushOrchestrator
@@ -46,6 +47,13 @@ class HealthServiceForegroundObserver(
         private const val TAG = "HealthServiceForegroundObserver"
     }
     override fun onAppForeground() {
+        if (!NotificationFeatureSwitch.foregroundServiceEnabled) {
+            if (BuildState.debug) {
+                "Foreground observer disabled on app foreground".logd(TAG)
+            }
+            return
+        }
+
         // 应用回到前台时，启动健康服务
         if (BuildState.debug) {
             "App entered foreground, attempting to start HealthService".logd(TAG)
@@ -66,6 +74,13 @@ class HealthServiceForegroundObserver(
     }
 
     override fun onAppBackground() {
+        if (!NotificationFeatureSwitch.foregroundServiceEnabled) {
+            if (BuildState.debug) {
+                "Foreground observer disabled on app background".logd(TAG)
+            }
+            return
+        }
+
         // 应用进入后台时的逻辑（可选）
         // 当前不需要特殊处理，因为：
         // 1. HealthService 会保持运行（如果已启动）

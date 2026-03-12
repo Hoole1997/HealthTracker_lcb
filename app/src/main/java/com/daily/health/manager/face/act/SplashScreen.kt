@@ -66,6 +66,7 @@ import com.daily.health.manager.constants.LANDING_NOTIFICATION_TITLE
 import com.daily.health.manager.constants.UNINSTALL
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.TrActivitySplashBinding
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.hasNewGuide
 import com.daily.health.manager.receiver.NotificationActionReceiver
 import com.daily.health.manager.face.history.HistoryRecordItem
@@ -216,7 +217,9 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
             
             // 2. 通知权限检查（并行）
             val permissionJob = async {
-                checkNotificationPermissionFlow()
+                if (NotificationFeatureSwitch.notificationPermissionPromptEnabled) {
+                    checkNotificationPermissionFlow()
+                }
             }
             
             // 3. 广告加载（并行，会被 LaunchAds 内部阻塞直到 cancelInterceptor）

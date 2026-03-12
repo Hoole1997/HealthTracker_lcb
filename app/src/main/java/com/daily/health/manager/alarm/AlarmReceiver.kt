@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.PowerManager
 import com.daily.health.manager.data.entity.AlarmRecord
 import com.daily.health.manager.data.repository.AlarmRepository
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
 import com.healthtracker.framework.ext.logw
@@ -42,6 +43,10 @@ class AlarmReceiver : BroadcastReceiver() {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     
     override fun onReceive(context: Context, intent: Intent) {
+        if (!NotificationFeatureSwitch.notificationsEnabled) {
+            "AlarmReceiver ignored because notifications are disabled".logd(TAG)
+            return
+        }
         "Alarm broadcast received".logd(TAG)
 
         val koin = runCatching { GlobalContext.get() }.getOrNull()

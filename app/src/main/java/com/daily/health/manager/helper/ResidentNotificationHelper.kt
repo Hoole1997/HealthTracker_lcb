@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import com.daily.health.manager.R
 import com.daily.health.manager.alarm.PermissionManager
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_FROM
+import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.receiver.NotificationActionReceiver
 import com.daily.health.manager.service.HealthServiceConstants
 import com.daily.health.manager.service.HealthServiceConstants.NOTIFICATION_ID_HEALTH_SERVICE
@@ -118,6 +119,10 @@ class ResidentNotificationHelper(
      * @return true 表示发送成功
      */
     fun sendNormalNotification(): Boolean {
+        if (!NotificationFeatureSwitch.notificationsEnabled || !NotificationFeatureSwitch.foregroundServiceEnabled) {
+            "Normal resident notification disabled by product decision".logw(TAG)
+            return false
+        }
         // 检查通知权限
         if (!permissionManager.isNotificationPermissionGranted()) {
             "Cannot send normal notification: permission not granted".logw(TAG)
