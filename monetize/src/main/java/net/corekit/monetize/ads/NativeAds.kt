@@ -238,7 +238,7 @@ class NativeAds private constructor() {
             AdLogger.logW(TAG, "展示失败 | 位置: %s | 原因: 平台频控拦截 | 累计失败: %d", position, totalShowFailCount)
 
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to finalAdUnitId,
                     "position" to position,
@@ -259,7 +259,7 @@ class NativeAds private constructor() {
                 AdLogger.logW(TAG, "展示失败 | 位置: %s | 原因: 拦截器拦截 | 累计失败: %d", position, totalShowFailCount)
                 
                 reportAdData(
-                    eventName = "ad_show_fail",
+                    eventName = "ad_show_error",
                     params = mapOf(
                         "ad_unit_name" to finalAdUnitId,
                         "position" to position,
@@ -361,7 +361,7 @@ class NativeAds private constructor() {
                             super.onAdDismissedFullScreenContent()
                             totalCloseCount++
                             reportAdData(
-                                eventName = "ad_close",
+                                eventName = "ad_dismiss",
                                 params = mapOf(
                                     "ad_unit_name" to finalAdUnitId,
                                     "position" to position,
@@ -389,7 +389,7 @@ class NativeAds private constructor() {
                     AdLogger.logW(TAG, "展示失败 | 位置: %s | 原因: %s | 累计失败: %d", position, result.error.message, totalShowFailCount)
                     
                     reportAdData(
-                        eventName = "ad_show_fail",
+                        eventName = "ad_show_error",
                         params = mapOf(
                             "ad_unit_name" to finalAdUnitId,
                             "position" to position,
@@ -411,7 +411,7 @@ class NativeAds private constructor() {
             AdLogger.logE(TAG, "展示异常 | 位置: %s | 原因: %s | 累计失败: %d", position, e.message, totalShowFailCount)
             
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to finalAdUnitId,
                     "position" to position,

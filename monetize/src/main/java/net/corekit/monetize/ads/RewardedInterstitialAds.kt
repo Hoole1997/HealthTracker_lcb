@@ -175,7 +175,7 @@ class RewardedInterstitialAds private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)) {
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to finalAdUnitId,
                     "position" to position,
@@ -363,7 +363,7 @@ class RewardedInterstitialAds private constructor() {
                     )
 
                     reportAdData(
-                        "ad_close",
+                        "ad_dismiss",
                         mapOf(
                             "ad_unit_name" to adUnitId,
                             "position" to position,
@@ -392,7 +392,7 @@ class RewardedInterstitialAds private constructor() {
 
                     AdLogger.w("插页激励广告显示失败: %s", fullScreenContentError.message)
                     reportAdData(
-                        "ad_show_fail",
+                        "ad_show_error",
                         mapOf(
                             "ad_unit_name" to adUnitId,
                             "position" to position,

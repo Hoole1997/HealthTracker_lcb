@@ -223,7 +223,7 @@ class PangleBannerAdController private constructor() {
         ) {
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail", mapOf(
+                "ad_show_error", mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,
                     "number" to totalShowFailCount,
@@ -314,7 +314,7 @@ class PangleBannerAdController private constructor() {
                         AdLogger.logD(TAG, "广告关闭 | 位置: %s | 累计关闭: %d", currentPosition, totalCloseCount)
                         
                         reportAdData(
-                            eventName = "ad_close",
+                            eventName = "ad_dismiss",
                             params = mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
@@ -332,7 +332,7 @@ class PangleBannerAdController private constructor() {
                             currentPosition, error.errorCode, error.errorMessage)
                         
                         reportAdData(
-                            eventName = "ad_show_fail",
+                            eventName = "ad_show_error",
                             params = mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
@@ -359,7 +359,7 @@ class PangleBannerAdController private constructor() {
             AdLogger.e("[$TAG] 渲染 Banner 广告失败", e)
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail", mapOf(
+                "ad_show_error", mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,
                     "number" to totalShowFailCount,

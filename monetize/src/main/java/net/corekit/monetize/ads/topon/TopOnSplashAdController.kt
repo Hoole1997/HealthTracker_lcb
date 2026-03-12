@@ -340,7 +340,7 @@ class TopOnSplashAdController private constructor() {
                         AdLogger.d("[$TAG] 开屏广告已关闭")
                         totalCloseCount++
                         reportAdData(
-                            "ad_close",
+                            "ad_dismiss",
                             mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
@@ -394,7 +394,7 @@ class TopOnSplashAdController private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.TOPON, BiddingAdType.SPLASH)) {
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,
@@ -413,7 +413,7 @@ class TopOnSplashAdController private constructor() {
             AdLogger.w("[$TAG] 没有可用的缓存广告")
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,

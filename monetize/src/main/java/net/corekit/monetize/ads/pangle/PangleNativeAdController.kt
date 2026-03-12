@@ -251,7 +251,7 @@ class PangleNativeAdController private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.PANGLE, BiddingAdType.NATIVE)) {
             totalShowFailCount++
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,
@@ -415,7 +415,7 @@ class PangleNativeAdController private constructor() {
                         AdLogger.logD(TAG, "广告关闭 | 位置: %s | 累计关闭: %d", currentPosition, totalCloseCount)
                         
                         reportAdData(
-                            eventName = "ad_close",
+                            eventName = "ad_dismiss",
                             params = mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
@@ -433,7 +433,7 @@ class PangleNativeAdController private constructor() {
                             currentPosition, error.errorCode, error.errorMessage)
                         
                         reportAdData(
-                            eventName = "ad_show_fail",
+                            eventName = "ad_show_error",
                             params = mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "position" to currentPosition,
@@ -452,7 +452,7 @@ class PangleNativeAdController private constructor() {
             AdLogger.e("[$TAG] Pangle 原生广告渲染失败", e)
             totalShowFailCount++
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,

@@ -183,7 +183,7 @@ class RewardedAds private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.ADMOB, BiddingAdType.REWARDED)) {
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to finalAdUnitId,
                     "position" to position,
@@ -318,7 +318,7 @@ class RewardedAds private constructor() {
                         rewardAmount = rewardItem?.amount
                     )
                     reportAdData(
-                        "ad_close",
+                        "ad_dismiss",
                         mapOf(
                             "ad_unit_name" to finalAdUnitId,
                             "position" to position,
@@ -343,7 +343,7 @@ class RewardedAds private constructor() {
                     AdLogger.e("激励广告展示失败: %s", fullScreenContentError.message)
                     val error = AdErrorCode.AD_SHOW_FAILED.toAdException("show failed: ${fullScreenContentError.message}")
                     reportAdData(
-                        "ad_show_fail",
+                        "ad_show_error",
                         mapOf(
                             "ad_unit_name" to finalAdUnitId,
                             "position" to position,

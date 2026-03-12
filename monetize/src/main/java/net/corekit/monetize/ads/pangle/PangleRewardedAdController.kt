@@ -208,7 +208,7 @@ class PangleRewardedAdController private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.PANGLE, BiddingAdType.REWARDED)) {
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -227,7 +227,7 @@ class PangleRewardedAdController private constructor() {
             AdLogger.w("[$TAG] 没有可用的缓存广告")
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -309,7 +309,7 @@ class PangleRewardedAdController private constructor() {
                 AdLogger.d("[$TAG] 激励广告已关闭, 是否获得奖励: %s", hasEarnedReward)
                 totalCloseCount++
                 reportAdData(
-                    "ad_close",
+                    "ad_dismiss",
                     mapOf(
                         "ad_unit_name" to adUnitId,
                         "position" to position,

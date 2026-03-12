@@ -413,7 +413,7 @@ class BannerAds private constructor() {
             AdLogger.w("Banner展示失败 | 位置: %s | 原因: 平台频控拦截 | 累计失败: %d", position, totalShowFailCount)
 
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to finalAdUnitId,
                     "position" to position,
@@ -433,7 +433,7 @@ class BannerAds private constructor() {
                 AdLogger.d("Banner广告累积展示失败次数: $totalShowFailCount")
                 
                 reportAdData(
-                    eventName = "ad_show_fail",
+                    eventName = "ad_show_error",
                     params = mapOf(
                         "ad_unit_name" to finalAdUnitId,
                         "position" to position,
@@ -524,7 +524,7 @@ class BannerAds private constructor() {
                         AdLogger.d("Banner广告关闭")
                         totalCloseCount++
                         reportAdData(
-                            eventName = "ad_close",
+                            eventName = "ad_dismiss",
                             params = mapOf(
                                 "ad_unit_name" to finalAdUnitId,
                                 "position" to position,
@@ -560,7 +560,7 @@ class BannerAds private constructor() {
                 AdLogger.d("Banner广告累积展示失败次数: $totalShowFailCount")
 
                 reportAdData(
-                    eventName = "ad_show_fail",
+                    eventName = "ad_show_error",
                     params = mapOf(
                         "ad_unit_name" to finalAdUnitId,
                         "position" to position,
@@ -573,7 +573,7 @@ class BannerAds private constructor() {
             }
         } catch (e: Exception) {
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to finalAdUnitId,
                     "position" to position,

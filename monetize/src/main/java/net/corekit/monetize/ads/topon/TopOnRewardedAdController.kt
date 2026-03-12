@@ -159,7 +159,7 @@ class TopOnRewardedAdController private constructor() {
             AdLogger.w("[$TAG] 没有可用的缓存广告")
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -327,7 +327,7 @@ class TopOnRewardedAdController private constructor() {
             AdLogger.e("[$TAG] 激励广告播放失败: %s", error?.fullErrorInfo)
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,
@@ -363,7 +363,7 @@ class TopOnRewardedAdController private constructor() {
             AdLogger.d("[$TAG] 激励广告已关闭, 是否获得奖励: %s", hasEarnedReward)
             totalCloseCount++
             reportAdData(
-                "ad_close",
+                "ad_dismiss",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,

@@ -241,7 +241,7 @@ class TopOnNativeAdController private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.TOPON, BiddingAdType.NATIVE)) {
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -259,7 +259,7 @@ class TopOnNativeAdController private constructor() {
         if (nativeAd == null) {
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -354,7 +354,7 @@ class TopOnNativeAdController private constructor() {
             AdLogger.e("[$TAG] TopOn 原生广告渲染失败", e)
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,

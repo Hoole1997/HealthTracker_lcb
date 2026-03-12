@@ -412,7 +412,7 @@ class LaunchAds private constructor() {
             AdLogger.w("开屏广告展示失败 | 位置: %s | 原因: 平台频控拦截 | 累计失败: %d", position, totalShowFailCount)
             onLoaded?.invoke(false)
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to (adUnitId ?: ""),
                     "position" to position,
@@ -431,7 +431,7 @@ class LaunchAds private constructor() {
                 AdLogger.d("开屏广告累积展示失败次数: $totalShowFailCount")
                 onLoaded?.invoke(false)
                 reportAdData(
-                    eventName = "ad_show_fail",
+                    eventName = "ad_show_error",
                     params = mapOf(
                         "ad_unit_name" to (adUnitId ?: ""),
                         "position" to position,
@@ -639,7 +639,7 @@ class LaunchAds private constructor() {
                     totalCloseCount ++
                     AdLogger.d("开屏广告关闭")
                     reportAdData(
-                        eventName = "ad_close",
+                        eventName = "ad_dismiss",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
                             "position" to position,
@@ -660,7 +660,7 @@ class LaunchAds private constructor() {
                     AdLogger.w("开屏广告显示失败: %s", fullScreenContentError.message)
                     totalShowFailCount++
                     reportAdData(
-                        eventName = "ad_show_fail",
+                        eventName = "ad_show_error",
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
                             "position" to position,

@@ -288,7 +288,7 @@ class TopOnBannerAdController private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.TOPON, BiddingAdType.BANNER)) {
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to currentPosition,
@@ -303,7 +303,7 @@ class TopOnBannerAdController private constructor() {
         if (view == null) {
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -330,7 +330,7 @@ class TopOnBannerAdController private constructor() {
             AdLogger.e("[$TAG] 渲染 Banner 广告失败", e)
             totalShowFailCount++
             reportAdData(
-                "ad_show_fail",
+                "ad_show_error",
                 mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,

@@ -306,7 +306,7 @@ class PangleAppOpenAdController private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.PANGLE, BiddingAdType.SPLASH)) {
             totalShowFailCount++
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -325,7 +325,7 @@ class PangleAppOpenAdController private constructor() {
             AdLogger.w("[$TAG] 没有可用的缓存广告")
             totalShowFailCount++
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -406,7 +406,7 @@ class PangleAppOpenAdController private constructor() {
                 AdLogger.d("[$TAG] 开屏广告已关闭")
                 totalCloseCount++
                 reportAdData(
-                    eventName = "ad_close",
+                    eventName = "ad_dismiss",
                     params = mapOf(
                         "ad_unit_name" to adUnitId,
                         "position" to currentPosition,

@@ -58,7 +58,7 @@ object AdjustTracker {
         MetricsLogger.d("登录参数已设置到ReportDataManager: $loginParams")
 
         // 初始化埋点
-        ReportDataManager.reportData("adjust_init", mapOf())
+        ReportDataManager.reportData("adjustInit", mapOf())
         try {
             val appToken = BuildConfig.ADJUST_APP_TOKEN
             if (appToken.isBlank()) {
@@ -105,7 +105,7 @@ object AdjustTracker {
                             .toInt()
                     MetricsLogger.d("Adjust初始化到归因回调总耗时: ${totalDurationSeconds}秒")
                     ReportDataManager.reportData(
-                        "adjust_get_success",
+                        "adjustGetSuccess",
                         mapOf("pass_time" to totalDurationSeconds)
                     )
 

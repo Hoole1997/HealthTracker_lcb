@@ -319,7 +319,7 @@ class PangleInterstitialAdController private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.PANGLE, BiddingAdType.INTERSTITIAL)) {
             totalShowFailCount++
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -337,7 +337,7 @@ class PangleInterstitialAdController private constructor() {
             AdLogger.w("[$TAG] 没有可用的缓存广告")
             totalShowFailCount++
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to adUnitId,
                     "position" to position,
@@ -424,7 +424,7 @@ class PangleInterstitialAdController private constructor() {
                 AdLogger.d("[$TAG] 插页广告已关闭")
                 totalCloseCount++
                 reportAdData(
-                    eventName = "ad_close",
+                    eventName = "ad_dismiss",
                     params = mapOf(
                         "ad_unit_name" to adUnitId,
                         "position" to currentPosition,

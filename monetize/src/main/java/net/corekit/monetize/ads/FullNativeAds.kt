@@ -157,7 +157,7 @@ class FullNativeAds private constructor() {
         totalCloseCount++
 
         reportAdData(
-            eventName = "ad_close",
+            eventName = "ad_dismiss",
             params = mapOf(
                 "ad_unit_name" to adUnitId,
                 "position" to position.ifBlank { currentPosition },
@@ -227,7 +227,7 @@ class FullNativeAds private constructor() {
             AdLogger.w("全屏原生广告展示失败 | 位置: %s | 原因: 平台频控拦截 | 累计失败: %d", position, totalShowFailCount)
 
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to adUnitId.orEmpty(),
                     "position" to position,
@@ -248,7 +248,7 @@ class FullNativeAds private constructor() {
                 AdLogger.d("全屏原生广告累积展示失败次数: $totalShowFailCount")
 
                 reportAdData(
-                    eventName = "ad_show_fail",
+                    eventName = "ad_show_error",
                     params = mapOf(
                         "ad_unit_name" to adUnitId.orEmpty(),
                         "position" to position,
@@ -288,7 +288,7 @@ class FullNativeAds private constructor() {
                 is AdResult.Failure -> {
                     AdLogger.e("全屏原生广告加载失败: %s", result.error.message)
                     reportAdData(
-                        eventName = "ad_show_fail",
+                        eventName = "ad_show_error",
                         params = mapOf(
                             "ad_unit_name" to adUnitId.orEmpty(),
                             "position" to position,
@@ -307,7 +307,7 @@ class FullNativeAds private constructor() {
         } catch (e: Exception) {
             AdLogger.e("显示全屏原生广告失败", e)
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to adUnitId.orEmpty(),
                     "position" to position,
@@ -621,7 +621,7 @@ class FullNativeAds private constructor() {
                             totalCloseCount++
 
                             reportAdData(
-                                eventName = "ad_close",
+                                eventName = "ad_dismiss",
                                 params = mapOf(
                                     "ad_unit_name" to adUnitId,
                                     "position" to currentPosition,

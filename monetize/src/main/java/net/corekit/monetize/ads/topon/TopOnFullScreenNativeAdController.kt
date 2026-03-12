@@ -164,7 +164,7 @@ class TopOnFullScreenNativeAdController private constructor() {
             totalShowFailCount++
             AdLogger.w("[$TAG] 平台频控拦截 | 位置: %s | 当前展示: %d | 当前点击: %d", position, freqShowCount, freqClickCount)
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to finalPlacementId,
                     "position" to position,
@@ -181,7 +181,7 @@ class TopOnFullScreenNativeAdController private constructor() {
                 totalShowFailCount++
                 AdLogger.w("[$TAG] 应用级拦截器检查失败: %s", interceptResult.error.message)
                 reportAdData(
-                    eventName = "ad_show_fail",
+                    eventName = "ad_show_error",
                     params = mapOf(
                         "ad_unit_name" to finalPlacementId,
                         "position" to position,
@@ -224,7 +224,7 @@ class TopOnFullScreenNativeAdController private constructor() {
                             val revenueCurrency = adInfo.currency ?: "USD"
 
                             reportAdData(
-                                eventName = "ad_close",
+                                eventName = "ad_dismiss",
                                 params = mapOf(
                                     "ad_unit_name" to finalPlacementId,
                                     "position" to position,
@@ -247,7 +247,7 @@ class TopOnFullScreenNativeAdController private constructor() {
                     } else {
                         totalShowFailCount++
                         reportAdData(
-                            eventName = "ad_show_fail",
+                            eventName = "ad_show_error",
                             params = mapOf(
                                 "ad_unit_name" to finalPlacementId,
                                 "position" to position,
@@ -261,7 +261,7 @@ class TopOnFullScreenNativeAdController private constructor() {
                 is AdResult.Failure -> {
                     totalShowFailCount++
                     reportAdData(
-                        eventName = "ad_show_fail",
+                        eventName = "ad_show_error",
                         params = mapOf(
                             "ad_unit_name" to finalPlacementId,
                             "position" to position,
@@ -280,7 +280,7 @@ class TopOnFullScreenNativeAdController private constructor() {
             AdLogger.e("显示TopOn全屏原生广告失败", e)
             totalShowFailCount++
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to finalPlacementId,
                     "position" to position,
@@ -573,7 +573,7 @@ class TopOnFullScreenNativeAdController private constructor() {
         totalCloseCount++
 
         reportAdData(
-            eventName = "ad_close",
+            eventName = "ad_dismiss",
             params = mapOf(
                 "ad_unit_name" to placementId,
                 "position" to position,
@@ -692,5 +692,4 @@ class TopOnFullScreenNativeAdController private constructor() {
 
     fun getEcpm(adUnitId: String? = null) = getCurrentAd(adUnitId)?.checkValidAdCaches()?.firstOrNull()?.publisherRevenue ?: 0.0
 }
-
 

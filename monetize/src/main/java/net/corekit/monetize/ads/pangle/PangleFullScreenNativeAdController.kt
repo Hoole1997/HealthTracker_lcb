@@ -124,7 +124,7 @@ class PangleFullScreenNativeAdController private constructor() {
             "currency" to (currencyCode ?: "USD")
         )
         reportAdData(
-            eventName = "ad_close",
+            eventName = "ad_dismiss",
             params = params
         )
     }
@@ -164,7 +164,7 @@ class PangleFullScreenNativeAdController private constructor() {
         if (!PlatformFrequencyManager.canParticipate(BiddingPlatform.PANGLE, BiddingAdType.FULL_NATIVE)) {
             totalShowFailCount++
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = mapOf(
                     "ad_unit_name" to finalAdUnitId,
                     "position" to "",
@@ -185,7 +185,7 @@ class PangleFullScreenNativeAdController private constructor() {
                     "reason" to interceptResult.error.message.orEmpty()
                 )
                 reportAdData(
-                    eventName = "ad_show_fail",
+                    eventName = "ad_show_error",
                     params = failParams
                 )
                 return AdResult.Failure(interceptResult.error)
@@ -312,7 +312,7 @@ class PangleFullScreenNativeAdController private constructor() {
                                     error.errorMessage
                                 )
                                 reportAdData(
-                                    eventName = "ad_show_fail",
+                                    eventName = "ad_show_error",
                                     params = mapOf<String, Any>(
                                         "ad_unit_name" to finalAdUnitId,
                                         "position" to "",
@@ -330,7 +330,7 @@ class PangleFullScreenNativeAdController private constructor() {
                     } else {
                         totalShowFailCount++
                         reportAdData(
-                            eventName = "ad_show_fail",
+                            eventName = "ad_show_error",
                             params = mapOf<String, Any>(
                                 "ad_unit_name" to finalAdUnitId,
                                 "position" to "",
@@ -350,7 +350,7 @@ class PangleFullScreenNativeAdController private constructor() {
                         "reason" to (result.error.message ?: "")
                     )
                     reportAdData(
-                        eventName = "ad_show_fail",
+                        eventName = "ad_show_error",
                         params = failParams
                     )
                     AdResult.Failure(result.error)
@@ -366,7 +366,7 @@ class PangleFullScreenNativeAdController private constructor() {
                 "reason" to e.message.orEmpty()
             )
             reportAdData(
-                eventName = "ad_show_fail",
+                eventName = "ad_show_error",
                 params = failParams
             )
             AdLogger.e("Pangle全屏原生广告展示异常", e)

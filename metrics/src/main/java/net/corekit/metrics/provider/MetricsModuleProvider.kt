@@ -43,13 +43,13 @@ class MetricsModuleProvider : ContentProvider() {
                 )
                 ReportDataManager.setReporters(listOf(ThinkingReporter(), FirebaseReporter()))
 
-                // 初始化数数SDK控制器
-                ThinkingReporter.init(ctx)
-
-                // 初始化Adjust控制器
-                AdjustTracker.init(ctx)
+//                // 初始化数数SDK控制器
+//                ThinkingReporter.init(ctx)
+//
+//                // 初始化Adjust控制器
+//                AdjustTracker.init(ctx)
                 
-                MetricsLogger.d("MetricsModuleProvider 初始化完成")
+                MetricsLogger.d("MetricsModuleProvider 初始化完成 (已禁用自动初始化)")
             } catch (e: Exception) {
                 MetricsLogger.e("MetricsModuleProvider 初始化失败", e)
             }
