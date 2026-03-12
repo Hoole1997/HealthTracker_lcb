@@ -9,8 +9,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.libraries.ads.mobile.sdk.nativead.MediaView
-import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
+import com.google.android.gms.ads.nativead.MediaView
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView as GmaNativeAdView
 import net.corekit.monetize.R
 import net.corekit.monetize.ads.log.AdLogger
 
@@ -55,7 +56,6 @@ class NativeAdView {
                 context.lifecycle.addObserver(object : DefaultLifecycleObserver{
                     override fun onDestroy(owner: LifecycleOwner) {
                         super.onDestroy(owner)
-                        nativeAd.adEventCallback = null
                         nativeAd.destroy()
                         context.lifecycle.removeObserver(this)
                     }
@@ -76,9 +76,9 @@ class NativeAdView {
     private fun createNativeAdLayout(
         context: Context,
         style: NativeAdStyle
-    ): com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView {
+    ): GmaNativeAdView {
         return LayoutInflater.from(context)
-            .inflate(style.layoutResId, null) as com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView
+            .inflate(style.layoutResId, null) as GmaNativeAdView
     }
 
     /**
@@ -86,7 +86,7 @@ class NativeAdView {
      */
     private fun bindNativeAdData(
         style: NativeAdStyle,
-        adView: com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdView,
+        adView: GmaNativeAdView,
         nativeAd: NativeAd
     ) {
         try {
@@ -145,8 +145,9 @@ class NativeAdView {
             adView.advertiserView = null
             adView.priceView = null
             adView.storeView = null
+            adView.mediaView = mediaView
             // 绑定广告数据
-            adView.registerNativeAd(nativeAd,mediaView)
+            adView.setNativeAd(nativeAd)
 
             AdLogger.d("原生广告数据绑定完成")
 

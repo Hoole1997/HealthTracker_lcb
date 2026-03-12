@@ -3,7 +3,7 @@ package net.corekit.monetize.ui
 import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
+import com.google.android.gms.ads.AdView
 import net.corekit.monetize.ads.log.AdLogger
 
 /**
@@ -27,26 +27,20 @@ class BannerAdView {
     fun bindBannerAdToContainer(
         context: Context,
         container: ViewGroup,
-        ad: BannerAd,
+        ad: AdView,
         onExpandCallback: ((Boolean) -> Unit)? = null
     ): Boolean {
         return try {
             // 清空容器
             container.removeAllViews()
-            
-            // 创建Banner广告容器布局
-//            val bannerContainer = createBannerContainerLayout(context)
-            
-            // 将AdView添加到容器中
-//            val adContainer = bannerContainer.findViewById<FrameLayout>(net.corekit.monetize.R.id.ads_fl_container)
-//            adContainer.removeAllViews()
-//            adContainer.addView(adView)
-            
+
+            // AdView 可能来自缓存，重新挂载前先从旧父节点移除。
+            (ad.parent as? ViewGroup)?.removeView(ad)
+
             // 添加到目标容器
             if (context is Activity) {
-                container.addView(ad.getView(context))
+                container.addView(ad)
             }
-
 
             AdLogger.d("Banner广告视图绑定成功")
             true

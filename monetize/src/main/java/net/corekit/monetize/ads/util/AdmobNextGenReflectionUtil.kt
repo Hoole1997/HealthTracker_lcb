@@ -1,386 +1,45 @@
 package net.corekit.monetize.ads.util
 
-import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
-import com.google.android.libraries.ads.mobile.sdk.common.AdValue
-import com.google.android.libraries.ads.mobile.sdk.common.PrecisionType
-import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAd
-import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
-import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardedAd
-import com.google.android.libraries.ads.mobile.sdk.rewardedinterstitial.RewardedInterstitialAd
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
+import com.google.android.gms.ads.AdValue
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.appopen.AppOpenAd
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 import net.corekit.monetize.ads.log.AdLogger
-import java.lang.reflect.Constructor
-import java.lang.reflect.Field
-import java.util.LinkedHashMap
 
 /**
- * AdMob Next-Gen SDK 反射工具类
- * 用于在广告展示前通过反射获取 eCPM 值，实现客户端竞价
- * 
- * 注意：此工具依赖 SDK 内部实现，SDK 版本升级可能导致反射路径失效
- * 建议添加日志监控反射成功率，并保留递归查找作为降级方案
+ * 展示前 eCPM 反射读取入口。
+ *
+ * 经典 GMA 24.9.0 没有稳定、可验证的内部字段路径可复用，因此这里统一安全降级为 null，
+ * 让上层竞价流程继续走既有 fallback，而不是把反射逻辑散落到各控制器里。
  */
 object AdmobNextGenReflectionUtil {
 
     private const val TAG = "AdmobReflection"
 
-    private const val FIELD_CACHE_MAX_SIZE = 512
-    private const val DECLARED_FIELDS_CACHE_MAX_SIZE = 256
+    fun getRevenue(ad: Any?): AdValue? = getRevenueByPath(ad)
 
-    private class SynchronizedLruCache<K : Any, V : Any>(
-        private val maxSize: Int
-    ) {
-        private val lock = Any()
-        private val map = object : LinkedHashMap<K, V>(maxSize, 0.75f, true) {
-            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<K, V>): Boolean {
-                return size > maxSize
-            }
-        }
-
-        fun get(key: K): V? = synchronized(lock) { map[key] }
-
-        fun put(key: K, value: V) {
-            synchronized(lock) { map[key] = value }
-        }
-    }
-
-    private data class FieldKey(
-        val clazz: Class<*>,
-        val fieldName: String
-    )
-
-    private sealed class FieldLookupResult {
-        data class Found(val field: Field) : FieldLookupResult()
-        object NotFound : FieldLookupResult()
-    }
-
-    private val declaredFieldCache = SynchronizedLruCache<FieldKey, FieldLookupResult>(FIELD_CACHE_MAX_SIZE)
-    private val declaredFieldsCache = SynchronizedLruCache<Class<*>, Array<Field>>(DECLARED_FIELDS_CACHE_MAX_SIZE)
-    @Volatile
-    private var adValueConstructor: Constructor<AdValue>? = null
-
-    private fun getDeclaredFieldsCached(clazz: Class<*>): Array<Field> {
-        declaredFieldsCache.get(clazz)?.let { return it }
-        val fields = try {
-            clazz.declaredFields
-        } catch (_: Throwable) {
-            emptyArray<Field>()
-        }
-
-        for (f in fields) {
-            try {
-                f.isAccessible = true
-            } catch (_: Throwable) {
-            }
-        }
-
-        declaredFieldsCache.put(clazz, fields)
-        return fields
-    }
-
-    private fun getDeclaredFieldCached(clazz: Class<*>, fieldName: String): Field? {
-        val key = FieldKey(clazz, fieldName)
-        when (val cached = declaredFieldCache.get(key)) {
-            is FieldLookupResult.Found -> return cached.field
-            is FieldLookupResult.NotFound -> return null
-            null -> {
-            }
-        }
-
-        val field = try {
-            clazz.getDeclaredField(fieldName).apply { isAccessible = true }
-        } catch (_: Throwable) {
-            null
-        }
-
-        if (field != null) {
-            declaredFieldCache.put(key, FieldLookupResult.Found(field))
-        } else {
-            declaredFieldCache.put(key, FieldLookupResult.NotFound)
-        }
-        return field
-    }
-
-    private fun getAdValueConstructorCached(): Constructor<AdValue>? {
-        adValueConstructor?.let { return it }
-        synchronized(this) {
-            adValueConstructor?.let { return it }
-            val ctor = try {
-                AdValue::class.java.getDeclaredConstructor(
-                    PrecisionType::class.java,
-                    Long::class.javaPrimitiveType,
-                    String::class.java
-                ).apply { isAccessible = true }
-            } catch (_: Throwable) {
-                null
-            }
-            adValueConstructor = ctor
-            return ctor
-        }
-    }
-
-    // 各广告类型的固定反射路径
-    // 插屏广告路径
-    private val ivStackV1 = arrayOf("b", "k", "L", "e", "b", "j", "a", "M", "c", "m")
-    private val ivStackV2 = arrayOf("b", "k", "M", "c", "m")
-
-    // 开屏广告路径
-    private val spStack = arrayOf("b", "k", "M", "c", "m")
-
-    // 原生广告路径
-    private val nativeStackV1 = arrayOf("b", "l", "j", "e", "b", "j", "a", "M", "c", "m")
-    private val nativeStackV2 = arrayOf("b", "l", "s", "e", "m")
-
-    // Banner广告路径
-    private val bannerStack = arrayOf("b", "k", "a", "d", "d", "a", "m")
-
-    // 激励视频路径
-    private val rvStack = arrayOf("c", "a", "a", "k", "M", "c", "m")
-
-    /**
-     * 通过反射获取任意 AdMob 广告收益信息，当前支持 Banner、开屏、插页、激励、原生。
-     * 使用递归查找方式，适用于未知路径的情况。
-     * @param ad 广告对象
-     * @return [AdValue]，未获取到返回 null
-     */
-    fun getRevenue(ad: Any?): AdValue? {
-        if (ad == null) return null
-        return when (ad) {
-            is InterstitialAd -> findAdValueRecursively(ad, "插页")
-            is AppOpenAd -> findAdValueRecursively(ad, "开屏")
-            is RewardedAd -> findAdValueRecursively(ad, "激励")
-            is RewardedInterstitialAd -> findAdValueRecursively(ad, "插页激励")
-            is NativeAd -> findAdValueRecursively(ad, "原生")
-            is BannerAd -> findAdValueRecursively(ad, "Banner")
-            else -> null
-        } ?: run {
-            AdLogger.w("[%s] 未能通过递归反射解析到收益信息，ad=%s", TAG, ad::class.java.simpleName)
-            null
-        }
-    }
-
-    /**
-     * 通过固定路径获取任意 AdMob 广告收益信息，当前支持 Banner、开屏、插页、激励、原生。
-     * 使用固定路径方式，性能更好，适用于已知路径的情况。
-     * @param ad 广告对象
-     * @return [AdValue]，未获取到返回 null
-     */
     fun getRevenueByPath(ad: Any?): AdValue? {
-        if (ad == null) return null
-        return when (ad) {
-            is InterstitialAd -> findAdValueByPath(ad, "插页", listOf(ivStackV1, ivStackV2))
-            is AppOpenAd -> findAdValueByPath(ad, "开屏", listOf(spStack))
-            is RewardedAd -> findAdValueByPath(ad, "激励", listOf(rvStack))
-            is RewardedInterstitialAd -> findAdValueRecursively(ad, "插页激励")
-            is NativeAd -> findAdValueByPath(ad, "原生", listOf(nativeStackV1, nativeStackV2))
-            is BannerAd -> findAdValueByPath(ad, "Banner", listOf(bannerStack))
-            else -> null
-        } ?: run {
-            AdLogger.w("[%s] 未能通过固定路径解析到收益信息，ad=%s，尝试递归查找", TAG, ad::class.java.simpleName)
-            // 固定路径失败时，降级到递归查找
-            getRevenue(ad)
+        if (ad == null) {
+            return null
         }
-    }
 
-    /**
-     * 通过固定路径查找 AdValue
-     * 如果第一个路径的价格为0，则尝试第二个路径
-     */
-    private fun findAdValueByPath(ad: Any, adType: String, pathList: List<Array<String>>): AdValue? {
-        var lastAdValue: AdValue? = null
-        val hasMultiplePaths = pathList.size > 1
-        
-        pathList.forEachIndexed { index, stack ->
-            val leaf = traverse(ad, stack, adType)
-            if (leaf != null) {
-                val adValue = parseLeaf(leaf, stack, adType)
-                if (adValue != null) {
-                    // 如果价格不为0，直接返回
-                    if (adValue.valueMicros > 0) {
-                        AdLogger.d("[%s] [%s] 通过路径获取到有效价格: %d 微元", TAG, adType, adValue.valueMicros)
-                        return adValue
-                    }
-                    // 如果价格为0，保存并继续尝试下一个路径
-                    lastAdValue = adValue
-                    if (hasMultiplePaths && index < pathList.size - 1) {
-                        AdLogger.d("[%s] [%s] 路径价格为0，尝试下一个路径", TAG, adType)
-                    }
-                }
-            }
+        if (ad is InterstitialAd ||
+            ad is AppOpenAd ||
+            ad is RewardedAd ||
+            ad is RewardedInterstitialAd ||
+            ad is NativeAd ||
+            ad is AdView
+        ) {
+            AdLogger.d(
+                "[%s] 展示前收益反射已对 classic GMA 安全降级，ad=%s",
+                TAG,
+                ad::class.java.simpleName
+            )
         }
-        return lastAdValue
-    }
 
-    /**
-     * 根据路径遍历获取对象
-     */
-    private fun traverse(target: Any, stack: Array<String>, adType: String): Any? {
-        var current: Any? = target
-        stack.forEach { fieldName ->
-            val fieldValue = current?.getValue(fieldName) ?: return null
-            current = fieldValue
-        }
-        return current
-    }
-
-    /**
-     * 解析叶子节点
-     */
-    private fun parseLeaf(leaf: Any, stack: Array<String>, adType: String): AdValue? {
-        // 如果是 AdValue 类型，直接返回
-        if (leaf is AdValue) {
-            return leaf
-        }
-        // 检查当前对象是否包含 AdValue 的特征字段
-        return checkAndCreateAdValue(leaf, adType)
-    }
-
-    /**
-     * 递归查找 AdValue 对象
-     */
-    private fun findAdValueRecursively(
-        obj: Any?, 
-        adType: String, 
-        visited: MutableSet<Any> = mutableSetOf(), 
-        depth: Int = 0
-    ): AdValue? {
-        if (obj == null || depth > 10) return null
-        
-        val identity = System.identityHashCode(obj)
-        if (visited.any { System.identityHashCode(it) == identity }) return null
-        visited.add(obj)
-
-        return try {
-            if (obj is AdValue) return obj
-            
-            checkAndCreateAdValue(obj, adType)?.let { return it }
-
-            var clazz: Class<*>? = obj::class.java
-            while (clazz != null) {
-                val fields = getDeclaredFieldsCached(clazz)
-                for (field in fields) {
-                    try {
-                        val fieldValue = field.get(obj) ?: continue
-                        if (isPrimitiveOrBasicType(field.type)) continue
-                        findAdValueRecursively(fieldValue, adType, visited, depth + 1)?.let { return it }
-                    } catch (_: Throwable) {
-                        continue
-                    }
-                }
-                clazz = clazz.superclass
-            }
-            null
-        } catch (_: Throwable) {
-            null
-        }
-    }
-
-    /**
-     * 检查对象是否包含 AdValue 的特征字段，并尝试创建 AdValue
-     */
-    private fun checkAndCreateAdValue(obj: Any, adType: String): AdValue? {
-        return try {
-            var precision: PrecisionType? = null
-            var valueMicros: Long? = null
-            var currencyCode: String? = null
-
-            var clazz: Class<*>? = obj::class.java
-            while (clazz != null) {
-                val fields = getDeclaredFieldsCached(clazz)
-                for (field in fields) {
-                    try {
-                        val fieldValue = field.get(obj) ?: continue
-
-                        when {
-                            field.type == PrecisionType::class.java && fieldValue is PrecisionType -> {
-                                precision = fieldValue
-                            }
-                            (field.type == Long::class.javaPrimitiveType || field.type == Long::class.javaObjectType) 
-                                    && fieldValue is Long -> {
-                                if (valueMicros == null || (fieldValue > 0 && fieldValue > (valueMicros ?: 0))) {
-                                    valueMicros = fieldValue
-                                }
-                            }
-                            field.type == String::class.java && fieldValue is String && fieldValue.isNotBlank() -> {
-                                if (currencyCode == null || (fieldValue.length <= 5 && fieldValue.length >= 2)) {
-                                    currencyCode = fieldValue
-                                }
-                            }
-                        }
-                    } catch (_: Throwable) {
-                        continue
-                    }
-                }
-                clazz = clazz.superclass
-            }
-
-            if (precision != null && valueMicros != null && currencyCode != null) {
-                createAdValue(precision, valueMicros, currencyCode)
-            } else {
-                null
-            }
-        } catch (_: Throwable) {
-            null
-        }
-    }
-
-    /**
-     * 通过字段名获取对象的值
-     */
-    private fun Any?.getValue(fieldName: String): Any? {
-        if (this == null) return null
-        return try {
-            var clazz: Class<*>? = this::class.java
-            var field: Field? = null
-            while (clazz != null) {
-                try {
-                    field = getDeclaredFieldCached(clazz, fieldName)
-                    if (field != null) {
-                        break
-                    }
-                    clazz = clazz.superclass
-                } catch (_: Throwable) {
-                    clazz = clazz.superclass
-                }
-            }
-            field?.get(this)
-        } catch (_: Throwable) {
-            null
-        }
-    }
-
-    /**
-     * 判断是否为基础类型
-     */
-    private fun isPrimitiveOrBasicType(type: Class<*>): Boolean {
-        val componentType = type.componentType
-        return when {
-            type.isPrimitive -> true
-            type == Boolean::class.javaObjectType || type == Boolean::class.javaPrimitiveType -> true
-            type == Byte::class.javaObjectType || type == Byte::class.javaPrimitiveType -> true
-            type == Character::class.javaObjectType || type == Char::class.javaPrimitiveType -> true
-            type == Short::class.javaObjectType || type == Short::class.javaPrimitiveType -> true
-            type == Int::class.javaObjectType || type == Int::class.javaPrimitiveType -> true
-            type == Long::class.javaObjectType || type == Long::class.javaPrimitiveType -> true
-            type == Float::class.javaObjectType || type == Float::class.javaPrimitiveType -> true
-            type == Double::class.javaObjectType || type == Double::class.javaPrimitiveType -> true
-            type == String::class.java -> true
-            type.isArray && componentType != null && isPrimitiveOrBasicType(componentType) -> true
-            type.name.startsWith("java.lang.") -> true
-            else -> false
-        }
-    }
-
-    /**
-     * 通过反射创建 AdValue 实例
-     */
-    private fun createAdValue(precision: PrecisionType, valueMicros: Long, currencyCode: String): AdValue? {
-        return try {
-            val constructor = getAdValueConstructorCached() ?: return null
-            constructor.newInstance(precision, valueMicros, currencyCode) as AdValue
-        } catch (e: Throwable) {
-            AdLogger.e("[%s] 创建 AdValue 失败: %s", TAG, e.message)
-            null
-        }
+        return null
     }
 }

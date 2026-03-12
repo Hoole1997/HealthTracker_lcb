@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
+import com.google.android.gms.ads.AdSize
 import com.healthtracker.framework.util.ScreenUtil
 import com.thinkup.banner.api.TUBannerListener
 import com.thinkup.banner.api.TUBannerView

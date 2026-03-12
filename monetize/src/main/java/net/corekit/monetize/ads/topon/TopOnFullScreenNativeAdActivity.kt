@@ -1,6 +1,4 @@
 package net.corekit.monetize.ads.topon
-
-import ads_mobile_sdk.po
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color

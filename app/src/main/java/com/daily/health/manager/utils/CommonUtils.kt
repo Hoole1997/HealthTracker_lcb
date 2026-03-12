@@ -11,12 +11,12 @@ import android.os.Process
 import com.bytedance.sdk.openadsdk.activity.TTAdActivity
 import com.bytedance.sdk.openadsdk.activity.TTAppOpenAdActivity
 import com.facebook.ads.AudienceNetworkActivity
-import com.google.android.libraries.ads.mobile.sdk.common.AdActivity
 import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
 import com.daily.health.manager.constants.KEY_APP_OPEN_TIMES
 import com.daily.health.manager.constants.KEY_APP_START_TIME
 import com.daily.health.manager.face.act.GuideAct
 import com.daily.health.manager.face.act.SplashScreen
+import com.google.android.gms.ads.AdActivity
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils

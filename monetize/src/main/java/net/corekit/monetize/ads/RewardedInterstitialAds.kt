@@ -2,14 +2,15 @@ package net.corekit.monetize.ads
 
 import android.app.Activity
 import android.content.Context
-import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
-import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
-import com.google.android.libraries.ads.mobile.sdk.common.AdValue
-import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
-import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
-import com.google.android.libraries.ads.mobile.sdk.rewarded.RewardItem
-import com.google.android.libraries.ads.mobile.sdk.rewardedinterstitial.RewardedInterstitialAd
-import com.google.android.libraries.ads.mobile.sdk.rewardedinterstitial.RewardedInterstitialAdEventCallback
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdValue
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.OnPaidEventListener
+import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 import net.corekit.monetize.ads.report.IpuController
 import net.corekit.monetize.ads.report.RpuController
 import net.corekit.monetize.ads.report.FpuController
@@ -262,11 +263,13 @@ class RewardedInterstitialAds private constructor() {
             
             totalLoadCount++
             val startTime = System.currentTimeMillis()
-            val adRequest = AdRequest.Builder(adUnitId).build()
+            val adRequest = AdRequest.Builder().build()
 
             RewardedInterstitialAd.load(
+                context,
+                adUnitId,
                 adRequest,
-                object : AdLoadCallback<RewardedInterstitialAd> {
+                object : RewardedInterstitialAdLoadCallback() {
                     override fun onAdLoaded(ad: RewardedInterstitialAd) {
                         if (!continuation.isActive) {
                             return
@@ -279,7 +282,7 @@ class RewardedInterstitialAds private constructor() {
                             mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "number" to totalLoadSucCount,
-                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                                 "pass_time" to ceil(loadTime / 1000.0).toInt()
                             )
                         )
@@ -299,7 +302,7 @@ class RewardedInterstitialAds private constructor() {
                             mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "number" to totalLoadFailCount,
-                                "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "ad_source" to (adError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                                 "pass_time" to ceil(loadTime / 1000.0).toInt(),
                                 "reason" to adError.message,
                                 "code" to adError.code
@@ -320,40 +323,38 @@ class RewardedInterstitialAds private constructor() {
         return suspendCancellableCoroutine { continuation ->
             var rewardItem: RewardItem? = null
 
-            ad.adEventCallback = object : RewardedInterstitialAdEventCallback {
-                override fun onAdPaid(value: AdValue) {
-                    super.onAdPaid(value)
-                    currentAdValue = value
-                    AdLogger.d("插页激励广告收益回调: value=%d, currency=%s", value.valueMicros, value.currencyCode)
-                    AdConfigManager.getRewardedInterstitialConfig().recordShow()
-                    PlatformFrequencyManager.recordShow(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)
-                    reportRevenue(ad, adUnitId, value)
+            ad.onPaidEventListener = OnPaidEventListener { value ->
+                currentAdValue = value
+                AdLogger.d("插页激励广告收益回调: value=%d, currency=%s", value.valueMicros, value.currencyCode)
+                AdConfigManager.getRewardedInterstitialConfig().recordShow()
+                PlatformFrequencyManager.recordShow(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)
+                reportRevenue(ad, adUnitId, value)
 
-                    reportAdData(
-                        "ad_impression",
-                        mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "position" to position,
-                            "number" to totalShowCount,
-                            "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
-                            "value" to (value.valueMicros / 1_000_000.0),
-                            "currency" to value.currencyCode
-                        )
+                reportAdData(
+                    "ad_impression",
+                    mapOf(
+                        "ad_unit_name" to adUnitId,
+                        "position" to position,
+                        "number" to totalShowCount,
+                        "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                        "value" to (value.valueMicros / 1_000_000.0),
+                        "currency" to value.currencyCode
                     )
+                )
 
-                    IpuController.onAdImpression("RVI", value.valueMicros)
-                    RpuController.onAdRevenue("RVI", value.valueMicros)
-                }
+                IpuController.onAdImpression("RVI", value.valueMicros)
+                RpuController.onAdRevenue("RVI", value.valueMicros)
+            }
+
+            ad.fullScreenContentCallback = object : FullScreenContentCallback() {
 
                 override fun onAdShowedFullScreenContent() {
-                    super.onAdShowedFullScreenContent()
                     isShowing = true
                     totalShowCount++
                     AdLogger.d("插页激励广告开始显示，总展示次数: %d", totalShowCount)
                 }
 
                 override fun onAdDismissedFullScreenContent() {
-                    super.onAdDismissedFullScreenContent()
                     totalCloseCount++
 
                     val outcome = RewardedAds.RewardOutcome(
@@ -369,7 +370,7 @@ class RewardedInterstitialAds private constructor() {
                             "position" to position,
                             "number" to totalCloseCount,
                             "reward_granted" to outcome.rewarded,
-                            "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
                             "currency" to (currentAdValue?.currencyCode ?: "")
                         )
@@ -383,22 +384,20 @@ class RewardedInterstitialAds private constructor() {
                     if (continuation.isActive) {
                         continuation.resume(result)
                     }
-                    ad.adEventCallback = null
                 }
 
-                override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
-                    super.onAdFailedToShowFullScreenContent(fullScreenContentError)
+                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                     totalShowFailCount++
 
-                    AdLogger.w("插页激励广告显示失败: %s", fullScreenContentError.message)
+                    AdLogger.w("插页激励广告显示失败: %s", adError.message)
                     reportAdData(
                         "ad_show_error",
                         mapOf(
                             "ad_unit_name" to adUnitId,
                             "position" to position,
-                            "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
-                            "reason" to fullScreenContentError.message,
-                            "code" to fullScreenContentError.code,
+                            "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "reason" to adError.message,
+                            "code" to adError.code,
                             "number" to totalShowFailCount
                         )
                     )
@@ -407,20 +406,17 @@ class RewardedInterstitialAds private constructor() {
                     isShowing = false
                     currentAdValue = null
                     
-                    val result = AdResult.Failure(createAdException("show failed: ${fullScreenContentError.message}"))
+                    val result = AdResult.Failure(createAdException("show failed: ${adError.message}"))
                     if (continuation.isActive) {
                         continuation.resume(result)
                     }
-                    ad.adEventCallback = null
                 }
 
                 override fun onAdImpression() {
-                    super.onAdImpression()
                     AdLogger.d("插页激励广告曝光完成")
                 }
 
                 override fun onAdClicked() {
-                    super.onAdClicked()
                     totalClickCount++
                     AdConfigManager.getRewardedInterstitialConfig().recordClick()
                     PlatformFrequencyManager.recordClick(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)
@@ -432,7 +428,7 @@ class RewardedInterstitialAds private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to position,
                             "number" to totalClickCount,
-                            "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                             "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
                             "currency" to (currentAdValue?.currencyCode ?: "")
                         )
@@ -451,7 +447,7 @@ class RewardedInterstitialAds private constructor() {
                         "number" to totalRewardCount,
                         "type" to item.type,
                         "amount" to item.amount,
-                        "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty())
+                        "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty())
                     )
                 )
             }
@@ -486,9 +482,9 @@ class RewardedInterstitialAds private constructor() {
                 value = adValue.valueMicros / 1_000_000.0,
                 currencyCode = adValue.currencyCode
             ),
-            adRevenueNetwork = ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty(),
+            adRevenueNetwork = ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty(),
             adRevenueUnit = adUnitId,
-            adRevenuePlacement = ad.getResponseInfo().loadedAdSourceResponseInfo?.instanceName.orEmpty(),
+            adRevenuePlacement = ad.responseInfo?.loadedAdapterResponseInfo?.adSourceInstanceName.orEmpty(),
             adFormat = "RewardedInterstitial"
         )
 

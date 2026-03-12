@@ -5,13 +5,13 @@ import android.content.Context
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
-import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAdEventCallback
-import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
-import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
-import com.google.android.libraries.ads.mobile.sdk.common.AdValue
-import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
-import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdValue
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.OnPaidEventListener
+import com.google.android.gms.ads.appopen.AppOpenAd
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import net.corekit.monetize.ads.report.IpuController
@@ -292,10 +292,9 @@ class LaunchAds private constructor() {
             suspendCancellableCoroutine { continuation ->
                 val startTime = System.currentTimeMillis()
     
-                val adRequest = AdRequest.Builder(adUnitId)
-                    .build()
-    
-                val loadCallback = object : AdLoadCallback<AppOpenAd> {
+                val adRequest = AdRequest.Builder().build()
+
+                val loadCallback = object : AppOpenAd.AppOpenAdLoadCallback() {
                     override fun onAdLoaded(ad: AppOpenAd) {
                         val loadTime = System.currentTimeMillis() - startTime
                         AdLogger.d("开屏广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
@@ -314,7 +313,7 @@ class LaunchAds private constructor() {
                             params = mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "number" to totalLoadSucCount,
-                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                                 "pass_time" to ceil(loadTime / 1000.0).toInt()
                             )
                         )
@@ -328,7 +327,7 @@ class LaunchAds private constructor() {
                         AdLogger.e("开屏广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, loadAdError.message)
                         
                         // 失败 deferred
-                        deferred.complete(AdResult.Failure(AdException(loadAdError.code.ordinal, loadAdError.message)))
+                        deferred.complete(AdResult.Failure(AdException(loadAdError.code, loadAdError.message)))
                         synchronized(this@LaunchAds) {
                             if (loadingDeferred == deferred) {
                                 loadingDeferred = null
@@ -340,7 +339,7 @@ class LaunchAds private constructor() {
                             params = mapOf(
                                 "ad_unit_name" to adUnitId,
                                 "number" to totalLoadFailCount,
-                                "ad_source" to (loadAdError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "ad_source" to (loadAdError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                                 "pass_time" to ceil(loadTime / 1000.0).toInt(),
                                 "reason" to loadAdError.message
                             )
@@ -350,7 +349,7 @@ class LaunchAds private constructor() {
                 }
     
                 // 启动广告加载
-                AppOpenAd.load(adRequest, loadCallback)
+                AppOpenAd.load(context, adUnitId, adRequest, loadCallback)
             }
         } catch (e: Exception) {
             deferred.complete(AdResult.Failure(AdErrorCode.AD_LOAD_EXCEPTION.toAdException(e)))
@@ -607,34 +606,33 @@ class LaunchAds private constructor() {
         return suspendCancellableCoroutine { continuation ->
             // 临时变量保存收益数据
             var currentAdValue: AdValue? = null
-            
-            // 设置收益监听器
-            appOpenAd.adEventCallback = object : AppOpenAdEventCallback {
-                override fun onAdPaid(value: AdValue) {
-                    AdLogger.d("开屏广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
 
-                    // 保存到临时变量
-                    currentAdValue = value
+            appOpenAd.onPaidEventListener = OnPaidEventListener { value ->
+                AdLogger.d("开屏广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
 
-                    reportAdData(
-                        eventName = "ad_impression",
-                        params = mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "position" to position,
-                            "number" to totalShowCount,
-                            "ad_source" to (appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
-                            "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
-                            "currency" to (currentAdValue?.currencyCode ?: "")
-                        )
+                // 保存到临时变量
+                currentAdValue = value
+
+                reportAdData(
+                    eventName = "ad_impression",
+                    params = mapOf(
+                        "ad_unit_name" to adUnitId,
+                        "position" to position,
+                        "number" to totalShowCount,
+                        "ad_source" to (appOpenAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                        "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
+                        "currency" to (currentAdValue?.currencyCode ?: "")
                     )
+                )
 
-                    // 上报真实的广告收益数据
-                    reportAdRevenueWithValue(appOpenAd, adUnitId,value)
+                // 上报真实的广告收益数据
+                reportAdRevenueWithValue(appOpenAd, adUnitId, value)
 
-                    IpuController.onAdImpression("SP", value.valueMicros)
-                    RpuController.onAdRevenue("SP", value.valueMicros)
-                }
+                IpuController.onAdImpression("SP", value.valueMicros)
+                RpuController.onAdRevenue("SP", value.valueMicros)
+            }
 
+            appOpenAd.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
                     totalCloseCount ++
                     AdLogger.d("开屏广告关闭")
@@ -644,20 +642,19 @@ class LaunchAds private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to position,
                             "number" to totalCloseCount,
-                            "ad_source" to (appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "ad_source" to (appOpenAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                             "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
                             "currency" to (currentAdValue?.currencyCode ?: "")
                         )
                     )
-                    appOpenAd.destroy()
                     val result = AdResult.Success(Unit)
                     if (continuation.isActive) {
                         continuation.resume(result)
                     }
                 }
 
-                override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
-                    AdLogger.w("开屏广告显示失败: %s", fullScreenContentError.message)
+                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                    AdLogger.w("开屏广告显示失败: %s", adError.message)
                     totalShowFailCount++
                     reportAdData(
                         eventName = "ad_show_error",
@@ -665,11 +662,10 @@ class LaunchAds private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to position,
                             "number" to totalShowFailCount,
-                            "reason" to fullScreenContentError.message
+                            "reason" to adError.message
                         )
                     )
-                    appOpenAd.destroy()
-                    val result = AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("Show failed: ${fullScreenContentError.message}"))
+                    val result = AdResult.Failure(AdErrorCode.AD_SHOW_FAILED.toAdException("Show failed: ${adError.message}"))
                     if (continuation.isActive) {
                         continuation.resume(result)
                     }
@@ -687,7 +683,6 @@ class LaunchAds private constructor() {
                 }
 
                 override fun onAdClicked() {
-                    super.onAdClicked()
                     AdLogger.d("开屏广告被点击")
 
                     // 累积点击统计
@@ -703,7 +698,7 @@ class LaunchAds private constructor() {
                             "ad_unit_name" to adUnitId,
                             "position" to position,
                             "number" to totalClickCount,
-                            "ad_source" to (appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "ad_source" to (appOpenAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                             "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
                             "currency" to (currentAdValue?.currencyCode ?: "")
                         )
@@ -712,7 +707,6 @@ class LaunchAds private constructor() {
                 }
 
                 override fun onAdImpression() {
-                    super.onAdImpression()
                     AdLogger.d("开屏广告展示完成")
 
                     // 异步预加载下一个广告到缓存（如果缓存未满）
@@ -739,9 +733,9 @@ class LaunchAds private constructor() {
                 value = adValue.valueMicros / 1_000_000.0,
                 currencyCode = adValue.currencyCode
             ),
-            adRevenueNetwork = appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty(),
+            adRevenueNetwork = appOpenAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty(),
             adRevenueUnit = adUnitId,
-            adRevenuePlacement = appOpenAd.getResponseInfo().loadedAdSourceResponseInfo?.instanceName.orEmpty(),
+            adRevenuePlacement = appOpenAd.responseInfo?.loadedAdapterResponseInfo?.adSourceInstanceName.orEmpty(),
             adFormat = "Splash"
         )
 

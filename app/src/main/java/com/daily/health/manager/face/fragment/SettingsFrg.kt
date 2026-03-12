@@ -52,9 +52,9 @@ import com.daily.health.manager.helper.HealthTrackerEvaluateListener
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.app.raise.AppraiseManager
 import com.app.raise.config.EvaluateConfig
+import com.google.android.gms.ads.MobileAds
 import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.report.ReportDataManager
-import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import net.corekit.monetize.ui.debug.AdDebugPanel
@@ -135,7 +135,7 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>()
             }
 
             SettingsAction.TermsOfService -> {
-                MobileAds.openAdInspector { }
+                MobileAds.openAdInspector(requireContext()) { }
             }
 
             SettingsAction.AdDebugPanel -> {

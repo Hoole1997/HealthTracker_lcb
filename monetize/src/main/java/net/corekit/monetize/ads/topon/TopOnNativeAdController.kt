@@ -7,7 +7,6 @@ import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
 import com.healthtracker.framework.ext.dp2px
 import com.healthtracker.framework.util.ScreenUtil
 import com.thinkup.nativead.api.TUNative

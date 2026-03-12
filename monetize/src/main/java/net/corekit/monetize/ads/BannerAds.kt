@@ -4,13 +4,14 @@ import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.ViewGroup
-import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdEventCallback
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
-import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
-import com.google.android.libraries.ads.mobile.sdk.common.AdValue
-import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
+import com.google.ads.mediation.admob.AdMobAdapter
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.AdValue
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.OnPaidEventListener
 import com.healthtracker.framework.util.ScreenUtil
 import net.corekit.monetize.ads.report.IpuController
 import net.corekit.monetize.ads.report.RpuController
@@ -105,7 +106,7 @@ class BannerAds private constructor() {
      * 缓存的Banner广告数据类
      */
     private data class CachedBannerAd(
-        val ad: BannerAd,
+        val ad: AdView,
         val adUnitId: String,
         val loadTime: Long = System.currentTimeMillis()
     ) {
@@ -119,8 +120,8 @@ class BannerAds private constructor() {
     private val bannerView = BannerAdView()
     
     // 状态流
-    private val _loadingState = MutableStateFlow<AdResult<BannerAd>>(AdResult.Loading)
-    val loadingState: StateFlow<AdResult<BannerAd>> = _loadingState.asStateFlow()
+    private val _loadingState = MutableStateFlow<AdResult<AdView>>(AdResult.Loading)
+    val loadingState: StateFlow<AdResult<AdView>> = _loadingState.asStateFlow()
     
     private val _adExpiredState = MutableStateFlow(false)
     val adExpiredState: StateFlow<Boolean> = _adExpiredState.asStateFlow()
@@ -152,7 +153,7 @@ class BannerAds private constructor() {
     /**
      * 查看缓存中的广告（不移除）
      */
-    private fun peekCachedAd(adUnitId: String? = null): BannerAd? {
+    private fun peekCachedAd(adUnitId: String? = null): AdView? {
         val finalAdUnitId = adUnitId ?: BuildConfig.ADMOB_BANNER_ID
         synchronized(adCachePool) {
             return adCachePool.firstOrNull { it.adUnitId == finalAdUnitId && !it.isExpired() }?.ad
@@ -245,7 +246,7 @@ class BannerAds private constructor() {
      * @param context 上下文
      * @param adUnitId 广告单元id
      */
-    private suspend fun loadAdInternal(context: Context, adUnitId: String): BannerAd? {
+    private suspend fun loadAdInternal(context: Context, adUnitId: String): AdView? {
         // 频控前置检查（只检查配额，不检查间隔）
         val (canLoad, reason) = PlatformFrequencyManager.canLoadAd(BiddingPlatform.ADMOB, BiddingAdType.BANNER)
         if (!canLoad) {
@@ -272,32 +273,40 @@ class BannerAds private constructor() {
         )
         
         return suspendCancellableCoroutine { continuation ->
-            val adRequest = BannerAdRequest.Builder(adUnitId, getAdSize(context)).setGoogleExtrasBundle(
-                Bundle().apply {
-//                    putString("collapsible", "bottom")
-                }).build()
-            BannerAd.load(adRequest,object : AdLoadCallback<BannerAd>{
-                private var loadStartTime = System.currentTimeMillis()
+            val adView = AdView(context.applicationContext).apply {
+                this.adUnitId = adUnitId
+                setAdSize(getAdSize(context))
+            }
+            val adRequest = AdRequest.Builder()
+                .addNetworkExtrasBundle(
+                    AdMobAdapter::class.java,
+                    Bundle().apply {
+//                        putString("collapsible", "bottom")
+                    }
+                )
+                .build()
+            val loadStartTime = System.currentTimeMillis()
+            adView.adListener = object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     val loadTime = System.currentTimeMillis() - loadStartTime
-                        totalLoadFailCount++
-                        AdLogger.e("Banner广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
-                        reportAdData(
-                            eventName = "ad_load_fail",
-                            params = mapOf(
-                                "ad_unit_name" to adUnitId,
-                                "number" to totalLoadFailCount,
-                                "ad_source" to (adError.responseInfo?.loadedAdSourceResponseInfo?.name.orEmpty()),
-                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
-                                "reason" to adError.message
-                            )
+                    totalLoadFailCount++
+                    AdLogger.e("Banner广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
+                    reportAdData(
+                        eventName = "ad_load_fail",
+                        params = mapOf(
+                            "ad_unit_name" to adUnitId,
+                            "number" to totalLoadFailCount,
+                            "ad_source" to (adError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                            "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                            "reason" to adError.message
                         )
-
-                    // 重置开始时间，为下次刷新做准备
-                    loadStartTime = System.currentTimeMillis()
-                    continuation.resume(null)
+                    )
+                    if (continuation.isActive) {
+                        continuation.resume(null)
+                    }
                 }
-                override fun onAdLoaded(ad: BannerAd) {
+
+                override fun onAdLoaded() {
                     val loadTime = System.currentTimeMillis() - loadStartTime
                     AdLogger.d("Banner广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
                     totalLoadSucCount++
@@ -306,16 +315,17 @@ class BannerAds private constructor() {
                         params = mapOf(
                             "ad_unit_name" to adUnitId,
                             "number" to totalLoadSucCount,
-                            "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                            "ad_source" to (adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                             "pass_time" to ceil(loadTime / 1000.0).toInt()
                         )
                     )
-                    // 重置开始时间，为下次刷新做准备
-                    loadStartTime = System.currentTimeMillis()
                     FpuController.onAdFill("BA")
-                    continuation.resume(ad)
+                    if (continuation.isActive) {
+                        continuation.resume(adView)
+                    }
                 }
-            })
+            }
+            adView.loadAd(adRequest)
         }
     }
     
@@ -461,8 +471,7 @@ class BannerAds private constructor() {
                 AdLogger.d("使用缓存中的Banner广告，广告位ID: %s", finalAdUnitId)
                 val ad = cachedAd.ad
 
-                ad.adEventCallback = object : BannerAdEventCallback{
-                    override fun onAdPaid(value: AdValue) {
+                ad.onPaidEventListener = OnPaidEventListener { value ->
                         AdLogger.d("Banner广告收益回调: value=${value.valueMicros}, currency=${value.currencyCode}")
 
                         // 存储当前广告的收益信息
@@ -474,7 +483,7 @@ class BannerAds private constructor() {
                                 "ad_unit_name" to finalAdUnitId,
                                 "position" to position,
                                 "number" to totalShowCount,
-                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                                 "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
                                 "currency" to (currentAdValue?.currencyCode ?: "")
                             )
@@ -485,10 +494,10 @@ class BannerAds private constructor() {
 
                         IpuController.onAdImpression("BA", value.valueMicros)
                         RpuController.onAdRevenue("BA", value.valueMicros)
-                    }
+                }
 
+                ad.adListener = object : AdListener() {
                     override fun onAdClicked() {
-                        super.onAdClicked()
                         AdLogger.d("Banner广告被点击")
                         onClick?.invoke()
                         // 累积点击统计
@@ -504,7 +513,7 @@ class BannerAds private constructor() {
                                 "ad_unit_name" to finalAdUnitId,
                                 "position" to position,
                                 "number" to totalClickCount,
-                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                                 "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
                                 "currency" to (currentAdValue?.currencyCode ?: "")
                             )
@@ -519,7 +528,7 @@ class BannerAds private constructor() {
                         AdLogger.d("Banner广告累积展示次数: $totalShowCount")
                     }
 
-                    override fun onAdDismissedFullScreenContent() {
+                    override fun onAdClosed() {
                         onClose?.invoke()
                         AdLogger.d("Banner广告关闭")
                         totalCloseCount++
@@ -529,7 +538,7 @@ class BannerAds private constructor() {
                                 "ad_unit_name" to finalAdUnitId,
                                 "position" to position,
                                 "number" to totalCloseCount,
-                                "ad_source" to (ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty()),
+                                "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
                                 "value" to ((currentAdValue?.valueMicros ?: 0) / 1_000_000.0),
                                 "currency" to (currentAdValue?.currencyCode ?: "")
                             )
@@ -630,16 +639,16 @@ class BannerAds private constructor() {
      * @param adUnitId
      * @param adValue 广告收益值
      */
-    private fun reportAdRevenueWithValue(ad: BannerAd,adUnitId: String, adValue: AdValue) {
+    private fun reportAdRevenueWithValue(ad: AdView,adUnitId: String, adValue: AdValue) {
         // 创建广告收益数据
         val adRevenueData = RevenueAdData(
             revenue = RevenueInfo(
                 value = adValue.valueMicros / 1_000_000.0,
                 currencyCode = adValue.currencyCode
             ),
-            adRevenueNetwork = ad.getResponseInfo().loadedAdSourceResponseInfo?.name.orEmpty(),
+            adRevenueNetwork = ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty(),
             adRevenueUnit = adUnitId,
-            adRevenuePlacement = ad.getResponseInfo().loadedAdSourceResponseInfo?.instanceName.orEmpty(),
+            adRevenuePlacement = ad.responseInfo?.loadedAdapterResponseInfo?.adSourceInstanceName.orEmpty(),
             adFormat = "Banner"
         )
         
