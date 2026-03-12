@@ -182,16 +182,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
         lifecycleScope.launch {
             try {
                 if (!isTaskRoot) {
-                    val activityList = ActivityUtils.getActivityList()
-                    if (isAdPage(activityList[1])) {
-                        finish()
-                        return@launch
-                    }
-
-                    if(!App.INSTANCE.isLongLeaveApp() && (App.INSTANCE.isClickAdLeave || App.INSTANCE.isFeatureLeave || App.INSTANCE.isGoSetting)){
-                        finish()
-                        return@launch
-                    }
+                   finish()
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
