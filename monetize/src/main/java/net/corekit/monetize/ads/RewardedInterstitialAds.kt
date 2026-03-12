@@ -29,6 +29,7 @@ import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
+import net.corekit.monetize.ads.util.runClassicGmaOnMain
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import kotlin.coroutines.resume
 import kotlin.math.ceil
@@ -251,7 +252,8 @@ class RewardedInterstitialAds private constructor() {
     }
 
     private suspend fun loadInternal(context: Context, adUnitId: String): RewardedInterstitialAd? =
-        suspendCancellableCoroutine { continuation ->
+        runClassicGmaOnMain {
+            suspendCancellableCoroutine { continuation ->
             // 频控前置检查
             val (canLoad, reason) = PlatformFrequencyManager.canLoadAd(BiddingPlatform.ADMOB, BiddingAdType.REWARDED_INTERSTITIAL)
             if (!canLoad) {
@@ -312,6 +314,7 @@ class RewardedInterstitialAds private constructor() {
                     }
                 }
             )
+            }
         }
 
     private suspend fun showAdInternal(

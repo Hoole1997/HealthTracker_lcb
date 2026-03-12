@@ -34,6 +34,7 @@ import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.report.IpuController
 import net.corekit.monetize.ads.report.RpuController
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
+import net.corekit.monetize.ads.util.runClassicGmaOnMain
 import net.corekit.monetize.ui.AdmobFullScreenNativeAdActivity
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import kotlin.coroutines.resume
@@ -373,55 +374,57 @@ class InterstitialAds private constructor() {
             )
         )
         
-        return suspendCancellableCoroutine { continuation ->
-            val startTime = System.currentTimeMillis()
-            
-            val adRequest = AdRequest.Builder().build()
+        return runClassicGmaOnMain {
+            suspendCancellableCoroutine { continuation ->
+                val startTime = System.currentTimeMillis()
 
-            InterstitialAd.load(context, adUnitId, adRequest, object : InterstitialAdLoadCallback() {
-                override fun onAdLoaded(ad: InterstitialAd) {
-                    if (!continuation.isActive) {
-                        return
-                    }
-                    val loadTime = System.currentTimeMillis() - startTime
-                    AdLogger.d("插页广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
-                    totalLoadSucCount++
-                    reportAdData(
-                        eventName = "ad_loaded",
-                        params = mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "number" to totalLoadSucCount,
-                            "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                            "pass_time" to ceil(loadTime / 1000.0).toInt()
-                        )
-                    )
-                    FpuController.onAdFill("IV")
-                    
-                    continuation.resume(ad)
-                }
+                val adRequest = AdRequest.Builder().build()
 
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    if (!continuation.isActive) {
-                        return
-                    }
-                    totalLoadFailCount++
-                    val loadTime = System.currentTimeMillis() - startTime
-                    AdLogger.e("插页广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
-                    
-                    reportAdData(
-                        eventName = "ad_load_fail",
-                        params = mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "number" to totalLoadFailCount,
-                            "ad_source" to (adError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                            "pass_time" to ceil(loadTime / 1000.0).toInt(),
-                            "reason" to adError.message
+                InterstitialAd.load(context, adUnitId, adRequest, object : InterstitialAdLoadCallback() {
+                    override fun onAdLoaded(ad: InterstitialAd) {
+                        if (!continuation.isActive) {
+                            return
+                        }
+                        val loadTime = System.currentTimeMillis() - startTime
+                        AdLogger.d("插页广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
+                        totalLoadSucCount++
+                        reportAdData(
+                            eventName = "ad_loaded",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadSucCount,
+                                "ad_source" to (ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                                "pass_time" to ceil(loadTime / 1000.0).toInt()
+                            )
                         )
-                    )
-                    
-                    continuation.resume(null)
-                }
-            })
+                        FpuController.onAdFill("IV")
+
+                        continuation.resume(ad)
+                    }
+
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        if (!continuation.isActive) {
+                            return
+                        }
+                        totalLoadFailCount++
+                        val loadTime = System.currentTimeMillis() - startTime
+                        AdLogger.e("插页广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
+
+                        reportAdData(
+                            eventName = "ad_load_fail",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadFailCount,
+                                "ad_source" to (adError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                                "reason" to adError.message
+                            )
+                        )
+
+                        continuation.resume(null)
+                    }
+                })
+            }
         }
     }
 

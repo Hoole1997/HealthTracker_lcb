@@ -39,6 +39,7 @@ import net.corekit.monetize.ads.frequency.PlatformFrequencyManager
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
 import net.corekit.monetize.ads.util.AdmobNextGenReflectionUtil
+import net.corekit.monetize.ads.util.runClassicGmaOnMain
 import net.corekit.monetize.ui.dialog.ADLoadingDialog
 import kotlin.coroutines.resume
 import kotlin.math.ceil
@@ -122,16 +123,14 @@ class RewardedAds private constructor() {
         }
 
         return try {
-            val rewardedAd = withContext(Dispatchers.Main) {
-                reportAdData(
-                    eventName = "ad_start_load",
-                    params = mapOf(
-                        "ad_unit_name" to finalAdUnitId,
-                        "number" to totalLoadCount
-                    )
+            reportAdData(
+                eventName = "ad_start_load",
+                params = mapOf(
+                    "ad_unit_name" to finalAdUnitId,
+                    "number" to totalLoadCount
                 )
-                loadInternal(context.applicationContext, finalAdUnitId)
-            }
+            )
+            val rewardedAd = loadInternal(context.applicationContext, finalAdUnitId)
             if (rewardedAd != null) {
                 synchronized(cacheLock) {
                     adCachePool.add(CachedRewardedAd(rewardedAd, finalAdUnitId))
@@ -426,7 +425,8 @@ class RewardedAds private constructor() {
     }
 
     private suspend fun loadInternal(context: Context, adUnitId: String): RewardedAd? =
-        suspendCancellableCoroutine { continuation ->
+        runClassicGmaOnMain {
+            suspendCancellableCoroutine { continuation ->
             // 频控前置检查（只检查配额，不检查间隔）
             // 注意：这里是在协程内，但为了安全起见使用同步调用，或者如果 canLoadAd 内部只是简单的内存检查也可以
             val (canLoad, reason) = net.corekit.monetize.ads.frequency.PlatformFrequencyManager.canLoadAd(
@@ -505,6 +505,7 @@ class RewardedAds private constructor() {
                     }
                 }
             )
+            }
         }
 
     fun peekCachedAd(adUnitId: String? = null): RewardedAd? {

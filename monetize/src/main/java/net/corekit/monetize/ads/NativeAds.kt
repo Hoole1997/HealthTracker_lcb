@@ -34,6 +34,7 @@ import net.corekit.monetize.ads.interceptor.ShowCountLimitInterceptor
 import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
+import net.corekit.monetize.ads.util.runClassicGmaOnMain
 import net.corekit.monetize.ui.NativeAdStyle
 import net.corekit.monetize.ui.NativeAdView
 import kotlin.coroutines.resume
@@ -397,135 +398,137 @@ class NativeAds private constructor() {
             style
         )
         
-        return suspendCancellableCoroutine { continuation ->
-            _loadingState.value = AdResult.Loading
-            val startTime = System.currentTimeMillis()
-            val videoOptions = VideoOptions.Builder().setStartMuted(true).build()
-            val nativeAdOptions = NativeAdOptions.Builder()
-                .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_RIGHT)
-                .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_ANY)
-                .setVideoOptions(videoOptions)
-                .build()
-            var loadedNativeAd: NativeAd? = null
-            val adLoader = AdLoader.Builder(context, adUnitId)
-                .forNativeAd { nativeAd ->
-                    loadedNativeAd = nativeAd
-                    val loadTime = System.currentTimeMillis() - startTime
-                    AdLogger.d("原生广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
-                    totalLoadSucCount++
-                    reportAdData(
-                        eventName = "ad_loaded",
-                        params = mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "number" to totalLoadSucCount,
-                            "ad_source" to (nativeAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                            "pass_time" to ceil(loadTime / 1000.0).toInt()
-                        ),
-                        style
-                    )
-                    FpuController.onAdFill("NA")
-
-                    val result = AdResult.Success(nativeAd)
-                    _loadingState.value = result
-                    if (continuation.isActive) {
-                        continuation.resume(nativeAd)
-                    }
-                }
-                .withNativeAdOptions(nativeAdOptions)
-                .withAdListener(object : AdListener() {
-                    override fun onAdFailedToLoad(adError: LoadAdError) {
+        return runClassicGmaOnMain {
+            suspendCancellableCoroutine { continuation ->
+                _loadingState.value = AdResult.Loading
+                val startTime = System.currentTimeMillis()
+                val videoOptions = VideoOptions.Builder().setStartMuted(true).build()
+                val nativeAdOptions = NativeAdOptions.Builder()
+                    .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_RIGHT)
+                    .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_ANY)
+                    .setVideoOptions(videoOptions)
+                    .build()
+                var loadedNativeAd: NativeAd? = null
+                val adLoader = AdLoader.Builder(context, adUnitId)
+                    .forNativeAd { nativeAd ->
+                        loadedNativeAd = nativeAd
                         val loadTime = System.currentTimeMillis() - startTime
-                        AdLogger.e("原生广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
-
-                        totalLoadFailCount++
+                        AdLogger.d("原生广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
+                        totalLoadSucCount++
                         reportAdData(
-                            eventName = "ad_load_fail",
+                            eventName = "ad_loaded",
                             params = mapOf(
                                 "ad_unit_name" to adUnitId,
-                                "number" to totalLoadFailCount,
-                                "ad_source" to (adError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
-                                "reason" to adError.message
-                            )
+                                "number" to totalLoadSucCount,
+                                "ad_source" to (nativeAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                                "pass_time" to ceil(loadTime / 1000.0).toInt()
+                            ),
+                            style
                         )
+                        FpuController.onAdFill("NA")
 
-                        val result = AdResult.Failure(
-                            AdException(
-                                code = adError.code,
-                                message = adError.message
-                            )
-                        )
+                        val result = AdResult.Success(nativeAd)
                         _loadingState.value = result
                         if (continuation.isActive) {
-                            continuation.resume(null)
+                            continuation.resume(nativeAd)
                         }
                     }
+                    .withNativeAdOptions(nativeAdOptions)
+                    .withAdListener(object : AdListener() {
+                        override fun onAdFailedToLoad(adError: LoadAdError) {
+                            val loadTime = System.currentTimeMillis() - startTime
+                            AdLogger.e("原生广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
 
-                    override fun onAdClicked() {
-                        val nativeAd = loadedNativeAd ?: return
-                        AdLogger.d("原生广告被点击")
+                            totalLoadFailCount++
+                            reportAdData(
+                                eventName = "ad_load_fail",
+                                params = mapOf(
+                                    "ad_unit_name" to adUnitId,
+                                    "number" to totalLoadFailCount,
+                                    "ad_source" to (adError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                                    "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                                    "reason" to adError.message
+                                )
+                            )
 
-                        totalClickCount++
-                        currentClickCallback?.invoke()
-                        AdLogger.logD(TAG, "用户点击 | 位置: %s | 累计点击: %d", currentDisplayPosition, totalClickCount)
-
-                        AdConfigManager.getNativeConfig().recordClick()
-                        PlatformFrequencyManager.recordClick(BiddingPlatform.ADMOB, BiddingAdType.NATIVE)
-
-                        reportAdData(
-                            eventName = "ad_click",
-                            params = mapOf(
-                                "ad_unit_name" to currentDisplayAdUnitId,
-                                "position" to currentDisplayPosition,
-                                "number" to totalClickCount,
-                                "ad_source" to (nativeAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                                "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
-                                "currency" to (currentAdValue?.currencyCode ?: "")
-                            ),
-                            currentDisplayStyle
-                        )
-
-                        if (PlatformFrequencyManager.isClickLimitReached(BiddingPlatform.ADMOB, BiddingAdType.NATIVE)) {
-                            AdLogger.logW(TAG, "点击达到配额上限，移除正在展示的广告 | 位置: %s", currentDisplayPosition)
-                            currentContainer?.removeAllViews()
+                            val result = AdResult.Failure(
+                                AdException(
+                                    code = adError.code,
+                                    message = adError.message
+                                )
+                            )
+                            _loadingState.value = result
+                            if (continuation.isActive) {
+                                continuation.resume(null)
+                            }
                         }
-                    }
 
-                    override fun onAdImpression() {
-                        totalShowCount++
-                        AdLogger.logD(TAG, "展示成功 | 平台: AdMob | 位置: %s | 累计展示: %d", currentDisplayPosition, totalShowCount)
+                        override fun onAdClicked() {
+                            val nativeAd = loadedNativeAd ?: return
+                            AdLogger.d("原生广告被点击")
 
-                        AdConfigManager.getNativeConfig().recordShow()
+                            totalClickCount++
+                            currentClickCallback?.invoke()
+                            AdLogger.logD(TAG, "用户点击 | 位置: %s | 累计点击: %d", currentDisplayPosition, totalClickCount)
 
-                        if (!isCacheFull(adUnitId)) {
-                            PreloadController.preloadPlatformAdType(
-                                context,
-                                net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB,
-                                net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE
+                            AdConfigManager.getNativeConfig().recordClick()
+                            PlatformFrequencyManager.recordClick(BiddingPlatform.ADMOB, BiddingAdType.NATIVE)
+
+                            reportAdData(
+                                eventName = "ad_click",
+                                params = mapOf(
+                                    "ad_unit_name" to currentDisplayAdUnitId,
+                                    "position" to currentDisplayPosition,
+                                    "number" to totalClickCount,
+                                    "ad_source" to (nativeAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                    "currency" to (currentAdValue?.currencyCode ?: "")
+                                ),
+                                currentDisplayStyle
+                            )
+
+                            if (PlatformFrequencyManager.isClickLimitReached(BiddingPlatform.ADMOB, BiddingAdType.NATIVE)) {
+                                AdLogger.logW(TAG, "点击达到配额上限，移除正在展示的广告 | 位置: %s", currentDisplayPosition)
+                                currentContainer?.removeAllViews()
+                            }
+                        }
+
+                        override fun onAdImpression() {
+                            totalShowCount++
+                            AdLogger.logD(TAG, "展示成功 | 平台: AdMob | 位置: %s | 累计展示: %d", currentDisplayPosition, totalShowCount)
+
+                            AdConfigManager.getNativeConfig().recordShow()
+
+                            if (!isCacheFull(adUnitId)) {
+                                PreloadController.preloadPlatformAdType(
+                                    context,
+                                    net.corekit.monetize.ads.bidding.BiddingWinner.ADMOB,
+                                    net.corekit.monetize.ads.bidding.BiddingAdType.NATIVE
+                                )
+                            }
+                        }
+
+                        override fun onAdClosed() {
+                            val nativeAd = loadedNativeAd ?: return
+                            totalCloseCount++
+                            reportAdData(
+                                eventName = "ad_dismiss",
+                                params = mapOf(
+                                    "ad_unit_name" to currentDisplayAdUnitId,
+                                    "position" to currentDisplayPosition,
+                                    "number" to totalCloseCount,
+                                    "ad_source" to (nativeAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                                    "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
+                                    "currency" to (currentAdValue?.currencyCode ?: "")
+                                ),
+                                currentDisplayStyle
                             )
                         }
-                    }
+                    })
+                    .build()
 
-                    override fun onAdClosed() {
-                        val nativeAd = loadedNativeAd ?: return
-                        totalCloseCount++
-                        reportAdData(
-                            eventName = "ad_dismiss",
-                            params = mapOf(
-                                "ad_unit_name" to currentDisplayAdUnitId,
-                                "position" to currentDisplayPosition,
-                                "number" to totalCloseCount,
-                                "ad_source" to (nativeAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                                "value" to (currentAdValue?.let { it.valueMicros / 1_000_000.0 } ?: 0.0),
-                                "currency" to (currentAdValue?.currencyCode ?: "")
-                            ),
-                            currentDisplayStyle
-                        )
-                    }
-                })
-                .build()
-
-            adLoader.loadAd(AdRequest.Builder().build())
+                adLoader.loadAd(AdRequest.Builder().build())
+            }
         }
     }
     

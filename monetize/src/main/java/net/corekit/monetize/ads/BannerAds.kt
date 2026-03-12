@@ -36,6 +36,7 @@ import net.corekit.monetize.ads.interceptor.ShowCountLimitInterceptor
 import net.corekit.monetize.ads.interceptor.ShowIntervalLimitInterceptor
 import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ads.report.FpuController
+import net.corekit.monetize.ads.util.runClassicGmaOnMain
 import net.corekit.monetize.ui.BannerAdView
 import kotlin.coroutines.resume
 import kotlin.math.ceil
@@ -272,60 +273,62 @@ class BannerAds private constructor() {
             )
         )
         
-        return suspendCancellableCoroutine { continuation ->
-            val adView = AdView(context.applicationContext).apply {
-                this.adUnitId = adUnitId
-                setAdSize(getAdSize(context))
-            }
-            val adRequest = AdRequest.Builder()
-                .addNetworkExtrasBundle(
-                    AdMobAdapter::class.java,
-                    Bundle().apply {
+        return runClassicGmaOnMain {
+            suspendCancellableCoroutine { continuation ->
+                val adView = AdView(context.applicationContext).apply {
+                    this.adUnitId = adUnitId
+                    setAdSize(getAdSize(context))
+                }
+                val adRequest = AdRequest.Builder()
+                    .addNetworkExtrasBundle(
+                        AdMobAdapter::class.java,
+                        Bundle().apply {
 //                        putString("collapsible", "bottom")
-                    }
-                )
-                .build()
-            val loadStartTime = System.currentTimeMillis()
-            adView.adListener = object : AdListener() {
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    val loadTime = System.currentTimeMillis() - loadStartTime
-                    totalLoadFailCount++
-                    AdLogger.e("Banner广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
-                    reportAdData(
-                        eventName = "ad_load_fail",
-                        params = mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "number" to totalLoadFailCount,
-                            "ad_source" to (adError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                            "pass_time" to ceil(loadTime / 1000.0).toInt(),
-                            "reason" to adError.message
-                        )
+                        }
                     )
-                    if (continuation.isActive) {
-                        continuation.resume(null)
+                    .build()
+                val loadStartTime = System.currentTimeMillis()
+                adView.adListener = object : AdListener() {
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        val loadTime = System.currentTimeMillis() - loadStartTime
+                        totalLoadFailCount++
+                        AdLogger.e("Banner广告加载失败，广告位ID: %s, 耗时: %dms, 错误: %s", adUnitId, loadTime, adError.message)
+                        reportAdData(
+                            eventName = "ad_load_fail",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadFailCount,
+                                "ad_source" to (adError.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                                "pass_time" to ceil(loadTime / 1000.0).toInt(),
+                                "reason" to adError.message
+                            )
+                        )
+                        if (continuation.isActive) {
+                            continuation.resume(null)
+                        }
                     }
-                }
 
-                override fun onAdLoaded() {
-                    val loadTime = System.currentTimeMillis() - loadStartTime
-                    AdLogger.d("Banner广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
-                    totalLoadSucCount++
-                    reportAdData(
-                        eventName = "ad_loaded",
-                        params = mapOf(
-                            "ad_unit_name" to adUnitId,
-                            "number" to totalLoadSucCount,
-                            "ad_source" to (adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
-                            "pass_time" to ceil(loadTime / 1000.0).toInt()
+                    override fun onAdLoaded() {
+                        val loadTime = System.currentTimeMillis() - loadStartTime
+                        AdLogger.d("Banner广告加载成功，广告位ID: %s, 耗时: %dms", adUnitId, loadTime)
+                        totalLoadSucCount++
+                        reportAdData(
+                            eventName = "ad_loaded",
+                            params = mapOf(
+                                "ad_unit_name" to adUnitId,
+                                "number" to totalLoadSucCount,
+                                "ad_source" to (adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName.orEmpty()),
+                                "pass_time" to ceil(loadTime / 1000.0).toInt()
+                            )
                         )
-                    )
-                    FpuController.onAdFill("BA")
-                    if (continuation.isActive) {
-                        continuation.resume(adView)
+                        FpuController.onAdFill("BA")
+                        if (continuation.isActive) {
+                            continuation.resume(adView)
+                        }
                     }
                 }
+                adView.loadAd(adRequest)
             }
-            adView.loadAd(adRequest)
         }
     }
     
