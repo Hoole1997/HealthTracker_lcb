@@ -355,6 +355,7 @@
     <string name="tr_personal_info">Kişisel bilgi</string>
     <string name="tr_feedback">Geri Bildirim</string>
     <string name="tr_privacy_policy">Gizlilik Politikası</string>
+    <string name="tr_splash_privacy_prefix">Şunu okudum:</string>
     <string name="tr_settings_section_tracking_and_targets">Takip ve Hedefler</string>
     <string name="tr_settings_section_preferences">Tercihler</string>
     <string name="tr_settings_section_help_and_feedback">Yardım ve Geri Bildirim</string>

@@ -362,6 +362,7 @@
     <string name="tr_personal_info">Persönliche Daten</string>
     <string name="tr_feedback">Feedback</string>
     <string name="tr_privacy_policy">Datenschutzrichtlinie</string>
+    <string name="tr_splash_privacy_prefix">Ich habe die</string>
     <string name="tr_settings_section_tracking_and_targets">Tracking &amp; Ziele</string>
     <string name="tr_settings_section_preferences">Einstellungen</string>
     <string name="tr_settings_section_help_and_feedback">Hilfe &amp; Feedback</string>

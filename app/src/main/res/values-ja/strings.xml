@@ -375,6 +375,7 @@
     <string name="tr_personal_info">個人情報</string>
     <string name="tr_feedback">フィードバック</string>
     <string name="tr_privacy_policy">プライバシーポリシー</string>
+    <string name="tr_splash_privacy_prefix">内容を確認しました</string>
     <string name="tr_settings_section_tracking_and_targets">記録と目標</string>
     <string name="tr_settings_section_preferences">アプリ設定</string>
     <string name="tr_settings_section_help_and_feedback">ヘルプとフィードバック</string>
@@ -769,4 +770,3 @@
     <string name="tr_onboarding_desc_4">このアプリは、個人の日々の血圧記録を目的として設計されており、専門的な医療アドバイスを提供するものではありません。専門的な健康指導や診断については、資格のある医療従事者または医療機関にご相談ください。</string>
     <string name="tr_onboarding_start">開始</string>
 </resources>
-

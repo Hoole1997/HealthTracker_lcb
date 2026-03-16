@@ -364,6 +364,7 @@
     <string name="tr_personal_info">Informations personnelles</string>
     <string name="tr_feedback">Retour d\'information</string>
     <string name="tr_privacy_policy">Politique de confidentialité</string>
+    <string name="tr_splash_privacy_prefix">J\'ai lu la</string>
     <string name="tr_settings_section_tracking_and_targets">Suivi &amp; Objectifs</string>
     <string name="tr_settings_section_preferences">Préférences</string>
     <string name="tr_settings_section_help_and_feedback">Aide &amp; Retour</string>

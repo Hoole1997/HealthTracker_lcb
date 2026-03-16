@@ -1345,6 +1345,7 @@
     <string name="tr_personal_info">Personal info</string>
     <string name="tr_feedback">Feedback</string>
     <string name="tr_privacy_policy">Privacy Policy</string>
+    <string name="tr_splash_privacy_prefix">I have read the</string>
     <string name="tr_settings_section_tracking_and_targets">Tracking &amp; Targets</string>
     <string name="tr_settings_section_preferences">Preferences</string>
     <string name="tr_settings_section_help_and_feedback">Help &amp; Feedback</string>

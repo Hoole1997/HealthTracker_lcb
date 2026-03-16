@@ -355,6 +355,7 @@
     <string name="tr_personal_info">व्यक्तिगत जानकारी</string>
     <string name="tr_feedback">प्रतिक्रिया</string>
     <string name="tr_privacy_policy">गोपनीयता नीति</string>
+    <string name="tr_splash_privacy_prefix">मैंने पढ़ लिया है:</string>
     <string name="tr_settings_section_tracking_and_targets">ट्रैकिंग और लक्ष्य</string>
     <string name="tr_settings_section_preferences">प्राथमिकताएं</string>
     <string name="tr_settings_section_help_and_feedback">सहायता और प्रतिक्रिया</string>

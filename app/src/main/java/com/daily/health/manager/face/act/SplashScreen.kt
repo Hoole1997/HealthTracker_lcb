@@ -4,9 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,29 +38,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.daily.health.manager.App
+import com.daily.health.manager.BuildConfig
 import com.daily.health.manager.R
 import com.daily.health.manager.constants.KEY_FROM_SHORTCUT
 import com.daily.health.manager.constants.LANDING_NOTIFICATION_CONTENT
@@ -112,7 +121,6 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
 
     companion object {
         private const val TAG = "SplashScreen"
-
     }
 
     private var isAdLoaded = false
@@ -645,19 +653,24 @@ private fun SplashScreen(
     val startAnimation by startAnimationFlow.collectAsState()
     val recentRecord by recentRecordFlow.collectAsState()
     val onAnimationCompletedState by rememberUpdatedState(onAnimationCompleted)
+    val context = LocalContext.current
 
     val contentAlpha = remember { Animatable(0f) }
     var hasSentAnimationCompleted by remember { mutableStateOf(false) }
+    var showLogoShadow by remember { mutableStateOf(false) }
 
     LaunchedEffect(startAnimation) {
         if (!startAnimation) {
             return@LaunchedEffect
         }
         hasSentAnimationCompleted = false
+        showLogoShadow = false
         contentAlpha.snapTo(0f)
 
-        delay(200)
+        delay(120)
         contentAlpha.animateTo(1f, animationSpec = tween(durationMillis = 1000))
+        delay(120)
+        showLogoShadow = true
 
         if (!hasSentAnimationCompleted) {
             hasSentAnimationCompleted = true
@@ -665,146 +678,220 @@ private fun SplashScreen(
         }
     }
 
-    // 一次性读取当前日期时间（启动页期间无需刷新）
-    val now = remember { Date() }
-    val dateText = remember { SimpleDateFormat("MMMM d", Locale.ENGLISH).format(now) }
-    val timeWeekText = remember { SimpleDateFormat("h:mm a, EEEE", Locale.ENGLISH).format(now) }
+    val appName = stringResource(id = R.string.app_name).replace("\n", " ")
+    val accentColor = Color(0xFFFF7C3F)
+    val accentTrackColor = Color(0xFFFFE8D8)
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.c1))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFFFCF6),
+                        Color(0xFFF8F4F6),
+                    )
+                )
+            )
     ) {
+        SplashWarmGlow()
 
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (logoBackground, logo, appName, loadingBar, loadingText, recentCard, dateTimeBlock) = createRefs()
-            val centerGuideline = createGuidelineFromTop(0.22f)
-            val bottomGuideline = createGuidelineFromBottom(0.12f)
-
-            // 右上角日期时间
-            Column(
-                modifier = Modifier
-                    .constrainAs(dateTimeBlock) {
-                        top.linkTo(parent.top, margin = 48.dp)
-                        end.linkTo(parent.end, margin = 20.dp)
-                    },
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = dateText,
-                    color = colorResource(id = R.color.t1),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.alpha(contentAlpha.value)
-                )
-                Box(Modifier.size(
-                    height = 4.dp,
-                    width = 0.dp
-                ))
-                Text(
-                    text = timeWeekText,
-                    color = colorResource(id = R.color.color_464545),
-                    lineHeight = 16.sp,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Light,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.alpha(contentAlpha.value)
-                )
-            }
-
-            // 图标圆形模糊背景光晕（替换为设计图资源 tr_bg_splash_logo）
-            Image(
-                painter = painterResource(id = R.mipmap.tr_bg_splash_logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(logoBackground) {
-                        top.linkTo(logo.top)
-                        bottom.linkTo(logo.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                contentScale = ContentScale.FillWidth
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 132.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LauncherLogo(
+                alpha = contentAlpha.value,
+                showShadow = showLogoShadow
             )
-
-            Image(
-                painter = painterResource(id = R.mipmap.tr_ic_logo_sq),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(96.dp)
-                    .constrainAs(logo) {
-                        top.linkTo(centerGuideline)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                alpha = contentAlpha.value
-            )
-
+            Spacer(modifier = Modifier.height(22.dp))
             Text(
-                text = stringResource(id = R.string.app_name),
+                text = appName,
                 color = colorResource(id = R.color.t1),
                 fontSize = 24.sp,
                 fontFamily = FontFamily(Font(FrameworkR.font.inter_bold)),
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
-                lineHeight = 32.sp,
-                modifier = Modifier.constrainAs(appName) {
-                    top.linkTo(logo.bottom, margin = 20.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }.alpha(contentAlpha.value),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 56.dp)
+                    .alpha(contentAlpha.value),
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
+        }
 
-            recentRecord?.let {
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(start = 36.dp, end = 36.dp, bottom = 34.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (recentRecord != null) {
                 RecentRecordCard(
-                    modifier = Modifier.constrainAs(recentCard) {
-                        bottom.linkTo(loadingBar.top, margin = 26.dp)
-                        start.linkTo(loadingBar.start)
-                        end.linkTo(loadingBar.end)
-                        width = Dimension.fillToConstraints
-                    },
-                    item = it
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(contentAlpha.value),
+                    item = recentRecord
                 )
+                Spacer(modifier = Modifier.height(26.dp))
             }
 
             LinearProgressIndicator(
                 modifier = Modifier
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .constrainAs(loadingBar) {
-                        bottom.linkTo(loadingText.top, margin = 12.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        width = Dimension.percent(0.8f)
-                    },
-                color = colorResource(id = R.color.c5),
-                trackColor = Color(0xFFD2E2FF)
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .alpha(contentAlpha.value),
+                color = accentColor,
+                trackColor = accentTrackColor,
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = stringResource(id = R.string.tr_loading_pure),
-                color = colorResource(id = R.color.c5),
+                color = accentColor,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(FrameworkR.font.inter_medium)),
-                modifier = Modifier.constrainAs(loadingText) {
-                    bottom.linkTo(bottomGuideline)
-                    start.linkTo(loadingBar.start)
-                    end.linkTo(loadingBar.end)
-                },
+                modifier = Modifier.alpha(contentAlpha.value),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(34.dp))
+
+            PrivacyAgreementRow(
+                modifier = Modifier.alpha(contentAlpha.value),
+                accentColor = accentColor,
+                onClick = {
+                    InnerWebAct.start(context, BuildConfig.PRIVACY_POLICY)
+                }
             )
         }
     }
 }
 
 @Composable
+private fun SplashWarmGlow() {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val glowSpecs = listOf(
+            Triple(Offset(size.width * 0.12f, size.height * 0.10f), size.width * 0.26f, 0.30f),
+            Triple(Offset(size.width * 0.28f, size.height * 0.20f), size.width * 0.22f, 0.12f),
+            Triple(Offset(size.width * 0.52f, size.height * 0.08f), size.width * 0.34f, 0.14f),
+            Triple(Offset(size.width * 0.82f, size.height * 0.11f), size.width * 0.28f, 0.28f),
+            Triple(Offset(size.width * 0.92f, size.height * 0.23f), size.width * 0.18f, 0.10f),
+        )
+        glowSpecs.forEach { (center, radius, alpha) ->
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        Color(0xFFFFD58C).copy(alpha = alpha),
+                        Color.Transparent,
+                    ),
+                    center = center,
+                    radius = radius,
+                ),
+                radius = radius,
+                center = center,
+            )
+        }
+    }
+}
+
+@Composable
+private fun LauncherLogo(
+    modifier: Modifier = Modifier,
+    alpha: Float = 1f,
+    showShadow: Boolean = true,
+) {
+    val shadowElevation by animateDpAsState(
+        targetValue = if (showShadow) 10.dp else 0.dp,
+        animationSpec = tween(durationMillis = 220),
+        label = "launcher_logo_shadow"
+    )
+    Image(
+        painter = painterResource(id = R.mipmap.tr_ic_logo_sq),
+        contentDescription = null,
+        modifier = modifier
+            .size(110.dp)
+            .shadow(elevation = shadowElevation, shape = RoundedCornerShape(24.dp)),
+        contentScale = ContentScale.Fit,
+        alpha = alpha
+    )
+}
+
+@Composable
+private fun PrivacyAgreementRow(
+    accentColor: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val policyText = stringResource(id = R.string.tr_privacy_policy)
+    val description = buildAnnotatedString {
+        append(stringResource(id = R.string.tr_splash_privacy_prefix))
+        append(" ")
+        withStyle(style = SpanStyle(color = accentColor)) {
+            append(policyText)
+        }
+    }
+
+    Row(
+        modifier = modifier.clickable(onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        PrivacyCheckedIcon(accentColor = accentColor)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = description,
+            color = colorResource(id = R.color.t1),
+            fontSize = 12.sp,
+            fontFamily = FontFamily(Font(FrameworkR.font.inter_regular)),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun PrivacyCheckedIcon(
+    accentColor: Color,
+    modifier: Modifier = Modifier,
+) {
+    Canvas(
+        modifier = modifier.size(14.dp)
+    ) {
+        val strokeWidth = 1.6.dp.toPx()
+        drawCircle(color = accentColor)
+        val checkPath = Path().apply {
+            moveTo(size.width * 0.28f, size.height * 0.52f)
+            lineTo(size.width * 0.44f, size.height * 0.69f)
+            lineTo(size.width * 0.74f, size.height * 0.34f)
+        }
+        drawPath(
+            path = checkPath,
+            color = Color.White,
+            style = Stroke(
+                width = strokeWidth,
+                cap = StrokeCap.Round,
+                join = StrokeJoin.Round,
+            )
+        )
+    }
+}
+
+@Composable
 private fun RecentRecordCard(
     modifier: Modifier = Modifier,
-    item: HistoryRecordItem
+    item: HistoryRecordItem?
 ) {
+    if (item == null) {
+        return
+    }
     val context = LocalContext.current
 
     val typeName = when (item.getRecordType()) {
@@ -834,9 +921,9 @@ private fun RecentRecordCard(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.color_F1F8F6))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF2E9))
     ) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
             Text(
                 text = title,
                 color = colorResource(id = R.color.t1),
@@ -889,7 +976,7 @@ private fun RecentRecordCard(
                         .width(4.dp)
                         .height(74.dp)
                         .clip(RoundedCornerShape(2.dp))
-                        .background(colorResource(id = item.getLeveColorRes()))
+                        .background(Color(0xFFFF7C3F))
                 )
                 Spacer(modifier = Modifier.width(16.dp))
 

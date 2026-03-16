@@ -213,9 +213,11 @@
     <string name="tr_personal_info">Info personali</string>
     <string name="tr_feedback">Feedback</string>
     <string name="tr_privacy_policy">Privacy Policy</string>
+    <string name="tr_splash_privacy_prefix">Ho letto la</string>
     <string name="tr_settings_section_preferences">Preferenze</string>
     <string name="tr_btn_submit">Invia</string>
     <string name="tr_feedback_submitted">Inviato</string>
+    <string name="tr_last_measurement">Ultima misurazione: %1$s</string>
     <string name="tr_permission_denied">Autorizzazione negata</string>
     <string-array name="tr_week_simple">
         <item>Lun</item>

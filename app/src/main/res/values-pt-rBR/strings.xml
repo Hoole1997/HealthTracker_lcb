@@ -731,6 +731,7 @@
     <string name="tr_personal_info">Informações pessoais</string>
     <string name="tr_feedback">Feedback</string>
     <string name="tr_privacy_policy">Política de Privacidade</string>
+    <string name="tr_splash_privacy_prefix">Li a</string>
     <string name="tr_settings_section_tracking_and_targets">Rastreamento e Metas</string>
     <string name="tr_settings_section_preferences">Preferências</string>
     <string name="tr_settings_section_help_and_feedback">Ajuda e Feedback</string>

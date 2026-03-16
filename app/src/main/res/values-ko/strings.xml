@@ -375,6 +375,7 @@
     <string name="tr_personal_info">개인 정보</string>
     <string name="tr_feedback">피드백</string>
     <string name="tr_privacy_policy">개인정보 처리방침</string>
+    <string name="tr_splash_privacy_prefix">다음을 읽었습니다:</string>
     <string name="tr_settings_section_tracking_and_targets">기록 및 목표</string>
     <string name="tr_settings_section_preferences">환경 설정</string>
     <string name="tr_settings_section_help_and_feedback">도움말 및 피드백</string>
@@ -769,4 +770,3 @@
     <string name="tr_onboarding_desc_4">이 앱은 개인의 일상적인 혈압 추적을 위해 설계되었으며 전문적인 의료 조언을 제공하지 않습니다. 전문적인 건강 상담과 진단이 필요하다면 자격을 갖춘 의료 전문가나 의료 기관에 문의하시기 바랍니다.</string>
     <string name="tr_onboarding_start">시작</string>
 </resources>
-
