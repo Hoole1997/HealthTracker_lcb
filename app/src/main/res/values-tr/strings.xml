@@ -389,13 +389,13 @@
     <string name="tr_uninstall_reason_hint">Lütfen %1$s\'ı neden kaldırdığınızı belirtin</string>
 
     <string name="tr_permission_denied">İzin reddedildi</string>
-    <string name="tr_onboarding_title_1">Trendleri takip edin</string>
-    <string name="tr_onboarding_desc_1">Kalp atış hızınızı istediğiniz zaman kontrol edip kaydedin. Formunuzu ve iyilik halinizi kolayca takip edin.</string>
-    <string name="tr_onboarding_title_2">Çeşitli vücut verilerini izleyin</string>
-    <string name="tr_onboarding_desc_2">Vücudunuzla ilgili çeşitli ölçümleri kaydedin ve zaman içindeki değişimleri izleyerek sağlık eğilimlerinizi daha iyi anlayın.</string>
-    <string name="tr_onboarding_title_3">İlaç hatırlatıcıları ayarlayın</string>
-    <string name="tr_onboarding_desc_3">İlaçlarınız için hatırlatıcılar ayarlayın ve zamanında bildirim alın. Hiçbir dozu kaçırmayın ve tedavinizi düzenli sürdürün.</string>
+    <string name="tr_onboarding_title_1">Birden fazla vücut ölçümünü izleyin</string>
+    <string name="tr_onboarding_desc_1">Kalp atış hızınızı istediğiniz zaman kontrol edip kaydedin. Formunuzu kolayca takip edin.</string>
+    <string name="tr_onboarding_title_2">İlaç hatırlatıcıları ayarlayın</string>
+    <string name="tr_onboarding_desc_2">İlaç hatırlatıcıları ayarlayın ve zamanında bildirim alın. Hiçbir dozu kaçırmayın ve düzeninizi koruyun.</string>
+    <string name="tr_onboarding_title_3">Ayrıntılı raporlar ve trendler</string>
+    <string name="tr_onboarding_desc_3">Çeşitli vücut verilerini kaydedin ve zaman içindeki değişimleri izleyerek sağlık eğilimlerinizi daha iyi anlayın.</string>
     <string name="tr_onboarding_title_4">Sorumluluk Reddi</string>
-    <string name="tr_onboarding_desc_4">Bu uygulama, kişisel günlük tansiyon takibi için tasarlanmıştır ve profesyonel tıbbi tavsiye sunmaz. Profesyonel sağlık yönlendirmesi ve teşhis için lütfen nitelikli bir sağlık uzmanına veya sağlık kuruluşuna başvurun.</string>
+    <string name="tr_onboarding_desc_4">Yalnızca kişisel günlük tansiyon takibi içindir. Profesyonel tıbbi tavsiyenin yerine geçmez. Teşhis için bir sağlık uzmanına danışın.</string>
     <string name="tr_onboarding_start">Başla</string>
 </resources>

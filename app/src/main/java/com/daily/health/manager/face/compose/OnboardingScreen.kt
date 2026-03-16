@@ -2,22 +2,25 @@ package com.daily.health.manager.face.compose
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.shape.GenericShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -28,17 +31,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -48,35 +50,11 @@ import com.daily.health.manager.face.act.reportGuide
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import kotlinx.coroutines.launch
 
-private val OnboardingBlue = Color(0xFF1D6BF2)
+private val OnboardingAccent = Color(0xFFFF7C3F)
 private val OnboardingTextPrimary = Color(0xFF333333)
 private val OnboardingTextSecondary = Color(0xFF666666)
-private val OnboardingIndicatorInactive = Color(0xFFD2E2FF)
-private val OnboardingPanel = Color(0xFFF4F8FF)
-
-private val OnboardingPanelShape = GenericShape { size, _ ->
-    val sideY = size.height * (29.8833f / 394f)
-    moveTo(0f, sideY)
-    cubicTo(
-        0f,
-        sideY,
-        size.width * (89f / 375f),
-        0f,
-        size.width * (187f / 375f),
-        0f
-    )
-    cubicTo(
-        size.width * (285f / 375f),
-        0f,
-        size.width,
-        sideY,
-        size.width,
-        sideY
-    )
-    lineTo(size.width, size.height)
-    lineTo(0f, size.height)
-    close()
-}
+private val OnboardingIndicatorInactive = Color(0xFFFFE6D2)
+private val OnboardingIllustrationHalo = Color(0xFFFCECCF)
 
 private data class OnboardingTextLayout(
     val isAdaptive: Boolean,
@@ -87,24 +65,29 @@ private data class OnboardingTextLayout(
 )
 
 private data class OnboardingPageUi(
-    @DrawableRes val imageRes: Int,
+    @DrawableRes val figureRes: Int,
     @StringRes val titleRes: Int,
     @StringRes val descriptionRes: Int,
     @StringRes val buttonRes: Int,
     val showArrow: Boolean,
-    val imageTop: Dp,
-    val imageWidth: Dp,
-    val imageHeight: Dp,
+    val illustrationTop: Dp = 133.dp,
+    val illustrationBoxWidth: Dp = 278.dp,
+    val illustrationBoxHeight: Dp = 266.dp,
+    val illustrationWidth: Dp = 278.dp,
+    val illustrationHeight: Dp = 266.dp,
+    val illustrationOffsetX: Dp = 0.dp,
+    val illustrationOffsetY: Dp = 0.dp,
+    val haloSize: Dp? = null,
+    val haloOffsetY: Dp = 0.dp,
+    val titleTop: Dp = 474.dp,
     val titleWidth: Dp = 319.dp,
-    val descriptionWidth: Dp,
+    val descriptionTop: Dp = 513.dp,
+    val descriptionWidth: Dp = 312.dp,
     val descriptionHeight: Dp = 66.dp,
-    val adaptiveDescriptionWidth: Dp = 344.dp,
-    val adaptiveDescriptionHeight: Dp = 128.dp,
-    val imageScale: ContentScale = ContentScale.Fit,
-    val titleTop: Dp = 63.dp,
-    val descriptionTop: Dp = 101.dp,
-    val actionTop: Dp = 223.dp,
-    val indicatorTop: Dp = 242.dp,
+    val adaptiveDescriptionWidth: Dp = 338.dp,
+    val adaptiveDescriptionHeight: Dp = 110.dp,
+    val indicatorTop: Dp = 607.dp,
+    val actionTop: Dp = 660.dp,
 )
 
 @Composable
@@ -141,56 +124,48 @@ private fun rememberTextLayout(page: OnboardingPageUi): OnboardingTextLayout {
 
 private val PreviewOnboardingPages = listOf(
     OnboardingPageUi(
-        imageRes = R.mipmap.tr_ic_guide_1,
+        figureRes = R.mipmap.tr_onboarding_figure_1,
         titleRes = R.string.tr_onboarding_title_1,
         descriptionRes = R.string.tr_onboarding_desc_1,
         buttonRes = R.string.tr_next,
         showArrow = true,
-        imageTop = 139.dp,
-        imageWidth = 264.2.dp,
-        imageHeight = 216.9.dp,
-        descriptionWidth = 312.dp,
-        descriptionHeight = 66.dp,
-        imageScale = ContentScale.Fit
+        haloSize = 233.dp,
+        haloOffsetY = 17.dp,
     ),
     OnboardingPageUi(
-        imageRes = R.mipmap.tr_ic_guide_2,
+        figureRes = R.mipmap.tr_onboarding_figure_2,
         titleRes = R.string.tr_onboarding_title_2,
         descriptionRes = R.string.tr_onboarding_desc_2,
         buttonRes = R.string.tr_next,
         showArrow = true,
-        imageTop = 183.dp,
-        imageWidth = 264.2.dp,
-        imageHeight = 173.2.dp,
+        illustrationWidth = 264.dp,
+        illustrationHeight = 260.dp,
+        illustrationOffsetY = (-5).dp,
+        haloSize = 233.dp,
         descriptionWidth = 312.dp,
         descriptionHeight = 66.dp,
-        imageScale = ContentScale.Fit
     ),
     OnboardingPageUi(
-        imageRes = R.mipmap.tr_ic_guide_3,
+        figureRes = R.mipmap.tr_onboarding_figure_3,
         titleRes = R.string.tr_onboarding_title_3,
         descriptionRes = R.string.tr_onboarding_desc_3,
         buttonRes = R.string.tr_next,
         showArrow = true,
-        imageTop = 144.dp,
-        imageWidth = 264.2.dp,
-        imageHeight = 221.3.dp,
         descriptionWidth = 338.dp,
-        descriptionHeight = 66.dp,
-        imageScale = ContentScale.Fit
+        descriptionHeight = 88.dp,
+        adaptiveDescriptionHeight = 128.dp,
     ),
     OnboardingPageUi(
-        imageRes = R.mipmap.tr_ic_guide_4,
+        figureRes = R.mipmap.tr_onboarding_figure_4,
         titleRes = R.string.tr_onboarding_title_4,
         descriptionRes = R.string.tr_onboarding_desc_4,
         buttonRes = R.string.tr_onboarding_start,
         showArrow = false,
-        imageTop = 107.dp,
-        imageWidth = 264.2.dp,
-        imageHeight = 267.2.dp,
+        haloSize = 233.dp,
+        haloOffsetY = 17.dp,
         descriptionWidth = 338.dp,
-        descriptionHeight = 110.dp,
-        imageScale = ContentScale.Fit
+        descriptionHeight = 88.dp,
+        adaptiveDescriptionHeight = 136.dp,
     )
 )
 
@@ -240,99 +215,104 @@ private fun OnboardingScreen(
 ) {
     val current = pages[currentPage]
     val textLayout = rememberTextLayout(current)
-    val configuration = LocalConfiguration.current
-    val density = LocalDensity.current
-    val screenHeight = remember(configuration, density) {
-        with(density) { configuration.screenHeightDp.dp.toPx() }
-    }
+    val descriptionScrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color.White, Color(0xFFEAF2FF)),
-                    startY = screenHeight * 0.15f,
-                    endY = screenHeight
-                )
-            )
+            .background(Color.White)
     ) {
         content()
 
-        Box(
+        Text(
+            text = stringResource(current.titleRes),
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .width(375.dp)
-                .height(394.dp)
-                .clip(OnboardingPanelShape)
-                .background(OnboardingPanel)
-        ) {
-            Text(
-                text = stringResource(current.titleRes),
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = current.titleTop)
-                    .width(current.titleWidth),
-                color = OnboardingTextPrimary,
-                fontSize = nonScaledSp(20),
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                lineHeight = nonScaledSp(23)
-            )
-            val descriptionScrollState = rememberScrollState()
-            Text(
-                text = stringResource(current.descriptionRes),
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = current.descriptionTop)
-                    .width(textLayout.descriptionWidth)
-                    .height(textLayout.descriptionHeight)
-                    .then(
-                        if (textLayout.isAdaptive) {
-                            Modifier.verticalScroll(descriptionScrollState)
-                        } else {
-                            Modifier
-                        }
-                    ),
-                color = OnboardingTextSecondary,
-                fontSize = nonScaledSp(textLayout.descriptionFontSize),
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                lineHeight = nonScaledSp(textLayout.descriptionLineHeight),
-                overflow = TextOverflow.Clip
-            )
-            OnboardingPagination(
-                pageCount = pages.size,
-                currentPage = currentPage,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = 17.dp, y = current.indicatorTop)
-            )
-            OnboardingActionButton(
-                text = stringResource(current.buttonRes),
-                showArrow = current.showArrow,
-                onClick = onActionClick,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = 242.dp, y = current.actionTop)
-            )
-        }
+                .align(Alignment.TopCenter)
+                .offset(y = current.titleTop)
+                .width(current.titleWidth),
+            color = OnboardingTextPrimary,
+            fontSize = nonScaledSp(20),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Text(
+            text = stringResource(current.descriptionRes),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = current.descriptionTop)
+                .width(textLayout.descriptionWidth)
+                .height(textLayout.descriptionHeight)
+                .then(
+                    if (textLayout.isAdaptive) {
+                        Modifier.verticalScroll(descriptionScrollState)
+                    } else {
+                        Modifier
+                    }
+                ),
+            color = OnboardingTextSecondary,
+            fontSize = nonScaledSp(textLayout.descriptionFontSize),
+            fontWeight = FontWeight.Normal,
+            textAlign = TextAlign.Center,
+            lineHeight = nonScaledSp(textLayout.descriptionLineHeight),
+            overflow = TextOverflow.Clip
+        )
+
+        OnboardingPagination(
+            pageCount = pages.size,
+            currentPage = currentPage,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = current.indicatorTop)
+        )
+
+        OnboardingActionButton(
+            text = stringResource(current.buttonRes),
+            showArrow = current.showArrow,
+            onClick = onActionClick,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = current.actionTop)
+        )
     }
 }
 
 @Composable
 private fun OnboardingPage(page: OnboardingPageUi) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(page.imageRes),
-            contentDescription = null,
+        Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = page.imageTop)
-                .width(page.imageWidth)
-                .height(page.imageHeight),
-            contentScale = page.imageScale
-        )
+                .offset(y = page.illustrationTop)
+                .width(page.illustrationBoxWidth)
+                .height(page.illustrationBoxHeight)
+        ) {
+            if (page.haloSize != null) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset(y = page.haloOffsetY)
+                        .size(page.haloSize)
+                        .background(
+                            color = OnboardingIllustrationHalo,
+                            shape = CircleShape
+                        )
+                )
+            }
+
+            Image(
+                painter = painterResource(page.figureRes),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(x = page.illustrationOffsetX, y = page.illustrationOffsetY)
+                    .width(page.illustrationWidth)
+                    .height(page.illustrationHeight),
+                contentScale = ContentScale.Fit
+            )
+        }
     }
 }
 
@@ -342,15 +322,20 @@ private fun OnboardingPagination(
     currentPage: Int,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.width(113.dp).height(6.dp)) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(3.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         repeat(pageCount) { index ->
             Box(
                 modifier = Modifier
-                    .offset(x = (29 * index).dp)
                     .width(26.dp)
                     .height(6.dp)
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
-                    .background(if (index == currentPage) OnboardingBlue else OnboardingIndicatorInactive)
+                    .background(
+                        color = if (index == currentPage) OnboardingAccent else OnboardingIndicatorInactive,
+                        shape = RoundedCornerShape(4.dp)
+                    )
             )
         }
     }
@@ -368,35 +353,33 @@ private fun OnboardingActionButton(
         modifier = modifier
             .width(116.dp)
             .height(44.dp),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(37.dp),
+        shape = RoundedCornerShape(37.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = OnboardingBlue,
+            containerColor = OnboardingAccent,
             contentColor = Color.White
         ),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = text,
                 color = Color.White,
                 fontSize = nonScaledSp(16),
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .offset(x = if (showArrow) (-9).dp else 0.dp)
+                fontWeight = FontWeight.SemiBold
             )
             if (showArrow) {
                 OnboardingArrow(
                     modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .offset(x = 87.dp, y = 17.dp)
+                        .offset(x = 7.dp)
                         .size(width = 13.dp, height = 10.dp)
                 )
             }
         }
     }
 }
-
 
 @Composable
 private fun OnboardingArrow(
@@ -405,38 +388,35 @@ private fun OnboardingArrow(
     Canvas(modifier = modifier) {
         val strokeWidth = 1.6.dp.toPx()
         val midY = size.height / 2f
-        val startX = 0f
-        val tipX = size.width
         val shaftEndX = size.width * 0.62f
         drawLine(
             color = Color.White,
-            start = androidx.compose.ui.geometry.Offset(startX, midY),
-            end = androidx.compose.ui.geometry.Offset(shaftEndX, midY),
+            start = Offset(0f, midY),
+            end = Offset(shaftEndX, midY),
             strokeWidth = strokeWidth
         )
         drawLine(
             color = Color.White,
-            start = androidx.compose.ui.geometry.Offset(size.width * 0.44f, size.height * 0.14f),
-            end = androidx.compose.ui.geometry.Offset(tipX, midY),
+            start = Offset(size.width * 0.44f, size.height * 0.14f),
+            end = Offset(size.width, midY),
             strokeWidth = strokeWidth
         )
         drawLine(
             color = Color.White,
-            start = androidx.compose.ui.geometry.Offset(size.width * 0.44f, size.height * 0.86f),
-            end = androidx.compose.ui.geometry.Offset(tipX, midY),
+            start = Offset(size.width * 0.44f, size.height * 0.86f),
+            end = Offset(size.width, midY),
             strokeWidth = strokeWidth
         )
     }
 }
 
 @Preview(
-    name = "Onboarding Flow",
+    name = "Onboarding Page 1",
     showBackground = true,
     backgroundColor = 0xFFFFFFFF,
     widthDp = 375,
     heightDp = 812,
     showSystemUi = true,
-    locale = "it"
 )
 @Composable
 private fun OnboardingScreenPreview() {
@@ -497,7 +477,6 @@ private fun OnboardingThirdPagePreview() {
     widthDp = 375,
     heightDp = 812,
     showSystemUi = true,
-    locale = "it"
 )
 @Composable
 private fun OnboardingLastPagePreview() {

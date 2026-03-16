@@ -397,13 +397,13 @@
     <string name="tr_uninstall_reason_hint">Bitte geben Sie den Grund ein, warum Sie %1$s deinstallieren</string>
     <string name="tr_permission_denied">Berechtigung verweigert</string>
 
-    <string name="tr_onboarding_title_1">Trends im Blick behalten</string>
-    <string name="tr_onboarding_desc_1">Überprüfen und erfassen Sie Ihre Herzfrequenz jederzeit. Behalten Sie Ihre Fitness und Ihr Wohlbefinden ganz einfach im Blick.</string>
-    <string name="tr_onboarding_title_2">Verschiedene Körperdaten überwachen</string>
-    <string name="tr_onboarding_desc_2">Erfassen Sie verschiedene Messwerte Ihres Körpers und beobachten Sie Veränderungen im Laufe der Zeit, um Ihre Gesundheitstrends besser zu verstehen.</string>
-    <string name="tr_onboarding_title_3">Medikamentenerinnerungen einrichten</string>
-    <string name="tr_onboarding_desc_3">Stellen Sie Erinnerungen für Ihre Medikamente ein und erhalten Sie rechtzeitig Benachrichtigungen. Verpassen Sie keine Dosis und bleiben Sie bei Ihrer Behandlung auf Kurs.</string>
+    <string name="tr_onboarding_title_1">Überwachung mehrerer Körperwerte</string>
+    <string name="tr_onboarding_desc_1">Herzfrequenz jederzeit prüfen und aufzeichnen. Behalten Sie Ihre Fitness ganz einfach im Blick.</string>
+    <string name="tr_onboarding_title_2">Medikamentenerinnerungen einrichten</string>
+    <string name="tr_onboarding_desc_2">Legen Sie Medikamentenerinnerungen fest und erhalten Sie rechtzeitig Benachrichtigungen. Verpassen Sie keine Dosis und bleiben Sie im Plan.</string>
+    <string name="tr_onboarding_title_3">Detaillierte Berichte &amp; Trends</string>
+    <string name="tr_onboarding_desc_3">Erfassen Sie verschiedene Körperdaten und verfolgen Sie Veränderungen im Laufe der Zeit, um Ihre Gesundheitstrends besser zu verstehen.</string>
     <string name="tr_onboarding_title_4">Haftungsausschlüsse</string>
-    <string name="tr_onboarding_desc_4">Diese App dient der persönlichen täglichen Blutdruckaufzeichnung und bietet keine professionelle medizinische Beratung. Für professionelle Gesundheitsberatung und Diagnosen wenden Sie sich bitte an qualifizierte Gesundheitsdienstleister oder medizinische Einrichtungen.</string>
+    <string name="tr_onboarding_desc_4">Nur für die persönliche tägliche Blutdruckdokumentation. Kein Ersatz für professionelle medizinische Beratung. Wenden Sie sich für eine Diagnose an medizinisches Fachpersonal.</string>
     <string name="tr_onboarding_start">Starten</string>
 </resources>

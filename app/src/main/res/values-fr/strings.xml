@@ -399,13 +399,13 @@
     <string name="tr_uninstall_reason_hint">Veuillez entrer la raison pour laquelle vous désinstallez %1$s</string>
     <string name="tr_permission_denied">Autorisation refusée</string>
 
-    <string name="tr_onboarding_title_1">Suivez les tendances</string>
-    <string name="tr_onboarding_desc_1">Vérifiez et enregistrez votre fréquence cardiaque à tout moment. Suivez facilement votre forme et votre bien-être.</string>
-    <string name="tr_onboarding_title_2">Suivi de diverses données corporelles</string>
-    <string name="tr_onboarding_desc_2">Enregistrez diverses mesures de votre corps et surveillez leur évolution au fil du temps pour mieux comprendre vos tendances de santé.</string>
-    <string name="tr_onboarding_title_3">Définissez des rappels de médicaments</string>
-    <string name="tr_onboarding_desc_3">Définissez des rappels pour vos médicaments et recevez des alertes à temps. Ne manquez jamais une dose et restez sur la bonne voie pour votre traitement.</string>
+    <string name="tr_onboarding_title_1">Suivi de plusieurs indicateurs corporels</string>
+    <string name="tr_onboarding_desc_1">Vérifiez et enregistrez votre fréquence cardiaque à tout moment. Suivez facilement votre forme.</string>
+    <string name="tr_onboarding_title_2">Définissez des rappels de médicaments</string>
+    <string name="tr_onboarding_desc_2">Définissez des rappels de médicaments et recevez des alertes à temps. Ne manquez aucune dose et restez sur la bonne voie.</string>
+    <string name="tr_onboarding_title_3">Rapports détaillés et tendances</string>
+    <string name="tr_onboarding_desc_3">Enregistrez diverses données corporelles et suivez leur évolution au fil du temps pour mieux comprendre vos tendances de santé.</string>
     <string name="tr_onboarding_title_4">Avertissements</string>
-    <string name="tr_onboarding_desc_4">Cette application est conçue pour le suivi quotidien personnel de la tension artérielle et ne fournit pas de conseils médicaux professionnels. Pour des conseils de santé et un diagnostic professionnels, nous vous encourageons vivement à consulter un professionnel de santé qualifié ou un établissement médical.</string>
+    <string name="tr_onboarding_desc_4">Pour le suivi quotidien personnel de la pression artérielle uniquement. Ne remplace pas un avis médical professionnel. Consultez un professionnel de santé pour un diagnostic.</string>
     <string name="tr_onboarding_start">Commencer</string>
 </resources>
