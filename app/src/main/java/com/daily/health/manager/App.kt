@@ -69,6 +69,11 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
         return SplashScreen::class.java as Class<in Any>?
     }
 
+    override fun tep(): List<Class<in Any>?>? {
+        // TODO 返回app中所有的activity的引用
+        return arrayListOf(SplashScreen::class.java) as List<Class<in Any>?>?
+    }
+
     override fun attachBaseContext(base: Context?) {
         MultiDex.install(this)
         try {
@@ -90,6 +95,17 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
 
     override fun onCreate() {
         super.onCreate()
+
+        iiy {
+            // TODO 设置买量归因回调
+            val network = it.dzo()
+            val campaign = it.gwe()
+            val adgroup = it.bbs()
+            val creative = it.qsu()
+            val jsonResponse = it.kpm()
+            val isOrganic = it.cgo()
+        }
+
         // 只在主进程中进行初始化 (对应原App.kt中的isMainProcess检查)
         if (isMainProcess(this)) {
             startKoin {
