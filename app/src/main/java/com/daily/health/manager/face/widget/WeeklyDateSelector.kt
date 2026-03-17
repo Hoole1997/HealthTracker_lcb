@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.daily.health.manager.R
@@ -86,8 +87,8 @@ class WeeklyDateSelector @JvmOverloads constructor(
     private val viewPager: ViewPager2 = root.findViewById(R.id.viewPager)
 
     // 自定义属性
-    private var selectedBackgroundColor: Int = Color.parseColor("#1D6BF2")
-    private var unselectedTextColor: Int = Color.parseColor("#666666")
+    private var selectedBackgroundColor: Int = ContextCompat.getColor(context, R.color.c5)
+    private var unselectedTextColor: Int = ContextCompat.getColor(context, R.color.color_666)
     private var selectedTextColor: Int = Color.WHITE
     private var selectedWeekTextColor: Int = selectedBackgroundColor
     private var dayNumberSelectedBackgroundResId: Int = R.drawable.fc_bg_week_day_selected

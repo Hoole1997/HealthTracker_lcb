@@ -317,7 +317,7 @@
 
     <!-- Diastolic 线条样式（青色） -->
     <style name="DiastolicLineStyle">
-        <item name="android:color">#4AD7FF</item>
+        <item name="android:color">@color/chart_line_bp_diastolic</item>
         <item name="thickness">@dimen/dp_1</item>
         <item name="android:strokeLineCap">round</item>
         <item name="pointSize">@dimen/dp_8</item>
@@ -327,7 +327,7 @@
 
     <!-- Diastolic 数据点样式 -->
     <style name="DiastolicPointStyle">
-        <item name="android:color">#4AD7FF</item>
+        <item name="android:color">@color/chart_line_bp_diastolic</item>
         <item name="strokeColor">#FFFFFF</item>
         <item name="strokeThickness">@dimen/dp_1</item>
         <item name="shapeStyle">@style/CircleShape</item>

@@ -50,8 +50,6 @@ import com.daily.health.manager.R
 import com.daily.health.manager.data.entity.AlarmRecord
 import kotlinx.coroutines.delay
 
-/** 主题绿色 c5 */
-private val C5Green = Color(0xFF1D6BF2)
 /** 灰色预览区域背景 */
 private val GrayPreviewBg = Color(0xFFE8E8EC)
 /** 手机示意框内部背景 */
@@ -149,6 +147,7 @@ private fun PhoneBorderFrame(
     alarmType: Int,
     modifier: Modifier = Modifier
 ) {
+    val accentColor = colorResource(id = R.color.c5)
     val borderWidth = 5.dp
     val cornerRadius = 22.dp
 
@@ -184,7 +183,7 @@ private fun PhoneBorderFrame(
 
                 drawPath(
                     path = path,
-                    color = C5Green.copy(alpha = frameAlpha), // 方案 B：边框渐显
+                    color = accentColor.copy(alpha = frameAlpha), // 方案 B：边框渐显
                     style = Stroke(width = strokeWidthPx)
                 )
             }
@@ -216,6 +215,7 @@ private fun PhoneBorderFrame(
 @Composable
 private fun NotificationPreviewCard(alarmType: Int) {
     val previewData = getNotificationPreviewData(alarmType)
+    val accentColor = colorResource(id = R.color.c5)
 
     Box(
         modifier = Modifier
@@ -274,7 +274,7 @@ private fun NotificationPreviewCard(alarmType: Int) {
                     modifier = Modifier
                         .alpha(0.6f)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(C5Green)
+                        .background(accentColor)
                         .padding(horizontal = 20.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -310,6 +310,7 @@ private fun WhiteContentArea(
     onButtonClick: () -> Unit
 ) {
     val previewData = getNotificationPreviewData(alarmType)
+    val accentColor = colorResource(id = R.color.c5)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -348,7 +349,7 @@ private fun WhiteContentArea(
                 .height(48.dp),
             shape = RoundedCornerShape(100.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = C5Green,
+                containerColor = accentColor,
                 contentColor = Color.White
             )
         ) {

@@ -28,7 +28,7 @@
         app:layout_constraintBaseline_toBaselineOf="@id/tv_reminder_title"
         app:layout_constraintEnd_toEndOf="parent"
         android:textSize="14sp"
-        android:textColor="#02BC77"
+        android:textColor="@color/color_02BC77"
         android:textStyle="bold"/>
 
     <!-- 空视图：当没有任何提醒时间时显示 -->

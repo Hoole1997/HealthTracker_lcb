@@ -96,7 +96,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/dp_30"
-                    app:backColor="#E5F9F2"
+                    app:backColor="@color/color_E5F9F2"
                     app:backWidth="@dimen/dp_12"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"

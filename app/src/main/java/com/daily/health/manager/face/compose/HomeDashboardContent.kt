@@ -1,6 +1,7 @@
 package com.daily.health.manager.face.compose
 
 import android.graphics.Rect
+import androidx.annotation.ColorRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,6 +44,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -91,8 +93,8 @@ data class HomeHeroUi(
 @Immutable
 sealed class HomeFeatureCardUi(
     open val title: String,
-    open val backgroundColor: Color,
-    open val titleColor: Color,
+    @ColorRes open val backgroundColorRes: Int,
+    @ColorRes open val titleColorRes: Int,
     open val titleWidth: Dp,
     open val illustrationOffsetX: Dp,
     open val illustrationOffsetY: Dp,
@@ -105,8 +107,8 @@ sealed class HomeFeatureCardUi(
         val unit: String,
     ) : HomeFeatureCardUi(
         title = title,
-        backgroundColor = Color(0xFFFFE9E8),
-        titleColor = Color(0xFFEE4F74),
+        backgroundColorRes = R.color.fc_home_card_bs_bg,
+        titleColorRes = R.color.fc_home_card_bs_title,
         titleWidth = 133.dp,
         illustrationOffsetX = 83.dp,
         illustrationOffsetY = 46.dp,
@@ -120,8 +122,8 @@ sealed class HomeFeatureCardUi(
         val unit: String,
     ) : HomeFeatureCardUi(
         title = title,
-        backgroundColor = Color(0xFFDEFAFF),
-        titleColor = Color(0xFF34CDD2),
+        backgroundColorRes = R.color.fc_home_card_bp_bg,
+        titleColorRes = R.color.fc_home_card_bp_title,
         titleWidth = 141.dp,
         illustrationOffsetX = 80.dp,
         illustrationOffsetY = 46.dp,
@@ -135,8 +137,8 @@ sealed class HomeFeatureCardUi(
         val unit: String,
     ) : HomeFeatureCardUi(
         title = title,
-        backgroundColor = Color(0xFFF7E9FF),
-        titleColor = Color(0xFFBB89DE),
+        backgroundColorRes = R.color.fc_home_card_bmi_bg,
+        titleColorRes = R.color.fc_home_card_bmi_title,
         titleWidth = 145.dp,
         illustrationOffsetX = 91.dp,
         illustrationOffsetY = 58.dp,
@@ -150,8 +152,8 @@ sealed class HomeFeatureCardUi(
         val unit: String,
     ) : HomeFeatureCardUi(
         title = title,
-        backgroundColor = Color(0xFFFFF4E2),
-        titleColor = Color(0xFFFFAE2E),
+        backgroundColorRes = R.color.fc_home_card_chol_bg,
+        titleColorRes = R.color.fc_home_card_chol_title,
         titleWidth = 133.dp,
         illustrationOffsetX = 83.dp,
         illustrationOffsetY = 50.dp,
@@ -165,8 +167,8 @@ sealed class HomeFeatureCardUi(
         val stepsUnit: String,
     ) : HomeFeatureCardUi(
         title = title,
-        backgroundColor = Color(0xFFFFEBD8),
-        titleColor = Color(0xFFFF6A00),
+        backgroundColorRes = R.color.fc_home_card_step_bg,
+        titleColorRes = R.color.fc_home_card_step_title,
         titleWidth = 107.dp,
         illustrationOffsetX = 81.dp,
         illustrationOffsetY = 49.dp,
@@ -181,8 +183,8 @@ sealed class HomeFeatureCardUi(
         val unit: String,
     ) : HomeFeatureCardUi(
         title = title,
-        backgroundColor = Color(0xFFE8F9FF),
-        titleColor = Color(0xFF04B8FE),
+        backgroundColorRes = R.color.fc_home_card_hydrate_bg,
+        titleColorRes = R.color.fc_home_card_hydrate_title,
         titleWidth = 137.dp,
         illustrationOffsetX = 83.dp,
         illustrationOffsetY = 51.dp,
@@ -316,7 +318,10 @@ private fun HeroCard(
                     .clip(cardShape)
                     .background(
                         Brush.linearGradient(
-                            colors = listOf(Color(0xFFFCE4C2), Color(0xFFFBCDB8)),
+                            colors = listOf(
+                                colorResource(id = R.color.fc_home_hero_bg_start),
+                                colorResource(id = R.color.fc_home_hero_bg_end),
+                            ),
                             start = Offset.Zero,
                             end = Offset(343f, 184f),
                         )
@@ -355,7 +360,7 @@ private fun HeroCard(
 
                 Text(
                     text = hero.title,
-                    color = Color(0xFFFF7C3F),
+                    color = colorResource(id = R.color.fc_home_tab_selected),
                     fontSize = 20.sp,
                     lineHeight = 24.sp,
                     fontWeight = FontWeight.Bold,
@@ -374,7 +379,7 @@ private fun HeroCard(
                         .offset(126.dp * scale, 75.dp * scale)
                         .size(width = 194.dp * scale, height = 50.dp * scale)
                         .clip(RoundedCornerShape(12.dp * scale))
-                        .background(Color(0xFFFF7C3F))
+                        .background(colorResource(id = R.color.fc_home_tab_selected))
                         .clickable(onClick = onClick)
                         .onGloballyPositioned { coordinates ->
                             onButtonBoundsChanged?.invoke(coordinates.toAndroidWindowRect())
@@ -409,7 +414,7 @@ private fun HeroCard(
                 ) {
                     Text(
                         text = hero.footerText,
-                        color = Color(0xFFC07D5E),
+                        color = colorResource(id = R.color.fc_home_hero_footer_text),
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium,
                         maxLines = 1,
@@ -428,20 +433,20 @@ private fun HeroCard(
                     ) {
                         Text(
                             text = hero.value,
-                            color = Color(0xFFEF8756),
+                            color = colorResource(id = R.color.fc_home_hero_metric),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
                             text = hero.valueUnit.asFooterUnit(),
-                            color = Color(0xFFEF8756),
+                            color = colorResource(id = R.color.fc_home_hero_metric),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.offset(y = 2.dp * scale)
                         )
                         Image(
                             painter = painterResource(id = R.drawable.fc_ic_blood_suger_status_arrow),
-                            colorFilter = ColorFilter.tint(Color(0xFFEF8756)),
+                            colorFilter = ColorFilter.tint(colorResource(id = R.color.fc_home_hero_metric)),
                             contentDescription = null,
                             modifier = Modifier
                                 .offset(y = 1.dp * scale)
@@ -464,7 +469,7 @@ private fun FeatureCard(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = card.backgroundColor),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = card.backgroundColorRes)),
     ) {
         Box(
             modifier = Modifier
@@ -477,7 +482,7 @@ private fun FeatureCard(
         ) {
             Text(
                 text = card.title,
-                color = card.titleColor,
+                color = colorResource(id = card.titleColorRes),
                 fontSize = 20.sp,
                 lineHeight = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -499,9 +504,9 @@ private fun FeatureCard(
                     MetricValue(
                         modifier = Modifier.offset(15.dp, 84.dp),
                         value = card.value,
-                        valueColor = Color(0xFFEE4F74),
+                        valueColorRes = R.color.fc_home_card_bs_title,
                         unit = card.unit,
-                        unitColor = Color(0xFFD57B87),
+                        unitColorRes = R.color.fc_home_card_bs_unit,
                     )
                 }
 
@@ -509,9 +514,9 @@ private fun FeatureCard(
                     MetricValue(
                         modifier = Modifier.offset(15.dp, 84.dp),
                         value = card.value,
-                        valueColor = Color(0xFF28A5B3),
+                        valueColorRes = R.color.fc_home_card_bp_value,
                         unit = card.unit,
-                        unitColor = Color(0xFF74C2C9),
+                        unitColorRes = R.color.fc_home_card_bp_unit,
                     )
                 }
 
@@ -519,9 +524,9 @@ private fun FeatureCard(
                     MetricValue(
                         modifier = Modifier.offset(15.dp, 84.dp),
                         value = card.value,
-                        valueColor = Color(0xFFBB89DE),
+                        valueColorRes = R.color.fc_home_card_bmi_title,
                         unit = card.unit,
-                        unitColor = Color(0xFF9F87B1),
+                        unitColorRes = R.color.fc_home_card_bmi_unit,
                     )
                 }
 
@@ -529,9 +534,9 @@ private fun FeatureCard(
                     MetricValue(
                         modifier = Modifier.offset(15.dp, 84.dp),
                         value = card.value,
-                        valueColor = Color(0xFFFFAE2E),
+                        valueColorRes = R.color.fc_home_card_chol_title,
                         unit = card.unit,
-                        unitColor = Color(0xFFD9B781),
+                        unitColorRes = R.color.fc_home_card_chol_unit,
                     )
                 }
 
@@ -539,9 +544,9 @@ private fun FeatureCard(
                     MetricValue(
                         modifier = Modifier.offset(15.dp, 84.dp),
                         value = card.stepsValue,
-                        valueColor = Color(0xFFFF6A00),
+                        valueColorRes = R.color.fc_home_card_step_title,
                         unit = card.stepsUnit,
-                        unitColor = Color(0xFFEA995F),
+                        unitColorRes = R.color.fc_home_card_step_unit,
                     )
                 }
 
@@ -579,7 +584,7 @@ private fun HeroMetricLine(
         text = buildAnnotatedString {
             withStyle(
                 SpanStyle(
-                    color = Color(0xFFFF7C3F),
+                    color = colorResource(id = R.color.fc_home_tab_selected),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -589,7 +594,7 @@ private fun HeroMetricLine(
             }
             withStyle(
                 SpanStyle(
-                    color = Color(0xFFD7A07D),
+                    color = colorResource(id = R.color.fc_brand_primary_hint),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Medium,
                 )
@@ -671,6 +676,10 @@ private fun BloodSugarIllustration(modifier: Modifier = Modifier) {
 
 @Composable
 private fun BloodPressureIllustration(modifier: Modifier = Modifier) {
+    val accentColor = colorResource(id = R.color.color_30A6ED)
+    val accentLightColor = colorResource(id = R.color.color_4AD7FF)
+    val surfaceColor = colorResource(id = R.color.color_DAFFE5)
+
     Box(modifier = modifier) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val cable = Path().apply {
@@ -694,11 +703,11 @@ private fun BloodPressureIllustration(modifier: Modifier = Modifier) {
             }
             drawPath(
                 path = cable,
-                color = Color(0xFF54D3DA),
+                color = accentColor,
                 style = Stroke(width = size.minDimension * 0.07f, cap = StrokeCap.Round),
             )
             drawCircle(
-                color = Color(0xFFA4EFF0),
+                color = surfaceColor,
                 radius = size.minDimension * 0.10f,
                 center = Offset(size.width * 0.52f, size.height * 0.13f),
             )
@@ -729,10 +738,10 @@ private fun BloodPressureIllustration(modifier: Modifier = Modifier) {
                 .clip(RoundedCornerShape(9.dp))
                 .background(
                     Brush.linearGradient(
-                        colors = listOf(Color(0xFFF9FEFE), Color(0xFFD2F2F3)),
+                        colors = listOf(Color.White, surfaceColor),
                     )
                 )
-                .border(1.5.dp, Color(0xFF93DFE4), RoundedCornerShape(9.dp))
+                .border(1.5.dp, accentLightColor, RoundedCornerShape(9.dp))
         ) {
             Box(
                 modifier = Modifier
@@ -743,7 +752,7 @@ private fun BloodPressureIllustration(modifier: Modifier = Modifier) {
             )
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawLine(
-                    color = Color(0xFF5CD7DE),
+                    color = accentColor,
                     start = Offset(size.width * 0.32f, size.height * 0.80f),
                     end = Offset(size.width * 0.68f, size.height * 0.80f),
                     strokeWidth = size.minDimension * 0.06f,
@@ -759,10 +768,10 @@ private fun BloodPressureIllustration(modifier: Modifier = Modifier) {
                 .clip(RoundedCornerShape(6.dp))
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color(0xFFC4F2F4), Color(0xFF93E4E8)),
+                        colors = listOf(surfaceColor, accentLightColor),
                     )
                 )
-                .border(1.dp, Color(0xFF7DD6DB), RoundedCornerShape(6.dp))
+                .border(1.dp, accentLightColor, RoundedCornerShape(6.dp))
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val strokeWidth = size.minDimension * 0.11f
@@ -779,7 +788,7 @@ private fun BloodPressureIllustration(modifier: Modifier = Modifier) {
                 }
                 repeat(3) { index ->
                     drawCircle(
-                        color = Color(0xFF4CCFD6),
+                        color = accentColor,
                         radius = size.minDimension * 0.10f,
                         center = Offset(size.width * (0.25f + index * 0.23f), size.height * 0.78f),
                     )
@@ -911,6 +920,10 @@ private fun CholesterolIllustration(modifier: Modifier = Modifier) {
 
 @Composable
 private fun HydrateIllustration(modifier: Modifier = Modifier) {
+    val accentColor = colorResource(id = R.color.color_30A6ED)
+    val accentLightColor = colorResource(id = R.color.color_4AD7FF)
+    val accentDeepColor = colorResource(id = R.color.color_02BC77)
+
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center,
@@ -923,7 +936,7 @@ private fun HydrateIllustration(modifier: Modifier = Modifier) {
                 .clip(RoundedCornerShape(14.dp))
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color(0xFF75D8FF), Color(0xFF12A8F8)),
+                        colors = listOf(accentLightColor, accentColor),
                     )
                 )
         )
@@ -935,7 +948,7 @@ private fun HydrateIllustration(modifier: Modifier = Modifier) {
                 .clip(RoundedCornerShape(6.dp))
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color(0xFF56CCFF), Color(0xFF149CF3)),
+                        colors = listOf(accentLightColor, accentColor),
                     )
                 )
         )
@@ -945,11 +958,11 @@ private fun HydrateIllustration(modifier: Modifier = Modifier) {
                 .size(width = 15.dp, height = 5.dp)
                 .rotate(14f)
                 .clip(RoundedCornerShape(3.dp))
-                .background(Color(0xFF1D9BF4))
+                .background(accentDeepColor)
         )
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawLine(
-                color = Color(0xFF3CBFFF),
+                color = accentLightColor,
                 start = Offset(size.width * 0.62f, size.height * 0.18f),
                 end = Offset(size.width * 0.80f, size.height * 0.27f),
                 strokeWidth = size.minDimension * 0.045f,
@@ -963,14 +976,14 @@ private fun HydrateIllustration(modifier: Modifier = Modifier) {
                 cap = StrokeCap.Round,
             )
             drawLine(
-                color = Color(0xFF0D91EC).copy(alpha = 0.35f),
+                color = accentColor.copy(alpha = 0.35f),
                 start = Offset(size.width * 0.44f, size.height * 0.42f),
                 end = Offset(size.width * 0.68f, size.height * 0.46f),
                 strokeWidth = size.minDimension * 0.035f,
                 cap = StrokeCap.Round,
             )
             drawLine(
-                color = Color(0xFF0D91EC).copy(alpha = 0.35f),
+                color = accentColor.copy(alpha = 0.35f),
                 start = Offset(size.width * 0.46f, size.height * 0.54f),
                 end = Offset(size.width * 0.70f, size.height * 0.58f),
                 strokeWidth = size.minDimension * 0.035f,
@@ -1178,10 +1191,13 @@ private fun torsoPath(width: Float, height: Float): Path {
 private fun MetricValue(
     modifier: Modifier,
     value: String,
-    valueColor: Color,
+    @ColorRes valueColorRes: Int,
     unit: String,
-    unitColor: Color,
+    @ColorRes unitColorRes: Int,
 ) {
+    val valueColor = colorResource(id = valueColorRes)
+    val unitColor = colorResource(id = unitColorRes)
+
     Column(modifier = modifier) {
         Text(
             text = value,
@@ -1207,12 +1223,16 @@ private fun HydrateMetricValue(
     targetValue: String,
     unit: String,
 ) {
+    val accentColor = colorResource(id = R.color.fc_home_card_hydrate_value)
+    val accentLightColor = colorResource(id = R.color.fc_home_card_hydrate_value_secondary)
+    val accentHintColor = colorResource(id = R.color.fc_home_card_hydrate_unit)
+
     Column(modifier = modifier) {
         Text(
             text = buildAnnotatedString {
                 withStyle(
                     SpanStyle(
-                        color = Color(0xFF04B8FE),
+                        color = accentColor,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                     )
@@ -1221,7 +1241,7 @@ private fun HydrateMetricValue(
                 }
                 withStyle(
                     SpanStyle(
-                        color = Color(0xFFB4DDEF),
+                        color = accentLightColor,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Normal,
                     )
@@ -1230,7 +1250,7 @@ private fun HydrateMetricValue(
                 }
                 withStyle(
                     SpanStyle(
-                        color = Color(0xFFB4DDEF),
+                        color = accentLightColor,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                     )
@@ -1241,7 +1261,7 @@ private fun HydrateMetricValue(
         )
         Text(
             text = unit,
-            color = Color(0xFF97C4D0),
+            color = accentHintColor,
             fontSize = 13.sp,
             lineHeight = 16.sp,
             fontWeight = FontWeight.Normal,
@@ -1252,7 +1272,7 @@ private fun HydrateMetricValue(
 @Preview(
     name = "Home Dashboard",
     showBackground = true,
-    backgroundColor = 0xFFF5F8FD,
+    backgroundColor = 0xFFFFF8F2,
     widthDp = 375,
     heightDp = 812,
 )

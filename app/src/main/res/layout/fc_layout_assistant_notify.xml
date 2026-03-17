@@ -51,7 +51,7 @@
        android:scaleType="center"
 
        android:background="@drawable/fc_circle_shape"
-       android:backgroundTint="#02BC77"
+       android:backgroundTint="@color/color_02BC77"
        android:src="@drawable/fc_ic_call_decline"/>
 
 

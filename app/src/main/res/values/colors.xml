@@ -7,19 +7,61 @@
     <color name="bg_window">@color/color_f8f8f8</color>
 
     <color name="c1">@color/white</color>
+    <color name="fc_brand_primary">#FF7C3F</color>
+    <color name="fc_brand_primary_deep">#FF6A00</color>
+    <color name="fc_brand_primary_light">#FFB37A</color>
+    <color name="fc_brand_primary_hint">#D7A07D</color>
+    <color name="fc_brand_surface">#FFEFE2</color>
+    <color name="fc_brand_surface_soft">#FFEAE0</color>
+    <color name="fc_brand_surface_alt">#FFF5EA</color>
+    <color name="fc_brand_surface_card">#FFF2E9</color>
+    <color name="fc_brand_surface_pale">#FFF8F2</color>
+    <color name="fc_brand_indicator_inactive">#FFE6D2</color>
+    <color name="fc_brand_halo">#FCECCF</color>
+    <color name="fc_brand_progress_track">#FFE8D8</color>
+    <color name="fc_brand_glow">#FFD58C</color>
+    <color name="fc_brand_primary_alpha_10">#0AFF7C3F</color>
+    <color name="fc_brand_primary_alpha_12">#1FFF7C3F</color>
+    <color name="fc_home_hero_bg_start">#FCE4C2</color>
+    <color name="fc_home_hero_bg_end">#FBCDB8</color>
+    <color name="fc_home_hero_footer_text">#C07D5E</color>
+    <color name="fc_home_hero_metric">#EF8756</color>
+    <color name="fc_splash_bg_start">#FFFCF6</color>
+    <color name="fc_splash_bg_end">#F8F4F6</color>
+    <color name="fc_home_card_bs_bg">#FFE9E8</color>
+    <color name="fc_home_card_bs_title">#EE4F74</color>
+    <color name="fc_home_card_bs_unit">#D57B87</color>
+    <color name="fc_home_card_bmi_bg">#F7E9FF</color>
+    <color name="fc_home_card_bmi_title">#BB89DE</color>
+    <color name="fc_home_card_bmi_unit">#9F87B1</color>
+    <color name="fc_home_card_chol_bg">#FFF4E2</color>
+    <color name="fc_home_card_chol_title">#FFAE2E</color>
+    <color name="fc_home_card_chol_unit">#D9B781</color>
+    <color name="fc_home_card_step_bg">#FFEBD8</color>
+    <color name="fc_home_card_step_title">@color/fc_brand_primary_deep</color>
+    <color name="fc_home_card_step_unit">#EA995F</color>
+    <color name="fc_home_card_bp_bg">#DEFAFF</color>
+    <color name="fc_home_card_bp_title">#34CDD2</color>
+    <color name="fc_home_card_bp_value">#28A5B3</color>
+    <color name="fc_home_card_bp_unit">#74C2C9</color>
+    <color name="fc_home_card_hydrate_bg">#E8F9FF</color>
+    <color name="fc_home_card_hydrate_title">#04B8FE</color>
+    <color name="fc_home_card_hydrate_value">#04B8FE</color>
+    <color name="fc_home_card_hydrate_value_secondary">#B4DDEF</color>
+    <color name="fc_home_card_hydrate_unit">#97C4D0</color>
     <color name="c5">@color/fc_home_tab_selected</color>
     <color name="fc_home_host_bg_top">#FFFFFF</color>
     <color name="fc_home_host_bg">#FFFFFF</color>
-    <color name="fc_subpage_bg">#FFF8F2</color>
-    <color name="fc_home_tab_selected">#FF7C3F</color>
+    <color name="fc_subpage_bg">@color/fc_brand_surface_pale</color>
+    <color name="fc_home_tab_selected">@color/fc_brand_primary</color>
     <color name="fc_language_item_bg">@color/color_f7f7f7</color>
-    <color name="fc_language_item_selected_bg">#0AFF7C3F</color>
+    <color name="fc_language_item_selected_bg">@color/fc_brand_primary_alpha_10</color>
     <color name="fc_language_item_selected_border">@color/fc_home_tab_selected</color>
     <color name="fc_language_item_radio_unselected">@color/t1</color>
-    <color name="fc_meds_calendar_bg">#FFF5EA</color>
+    <color name="fc_meds_calendar_bg">@color/fc_brand_surface_alt</color>
     <color name="fc_home_tab_icon_unselected">#C0C2C3</color>
     <color name="fc_home_tab_unselected">#999999</color>
-    <color name="c5_8">#FFEAE0</color>
+    <color name="c5_8">@color/fc_brand_surface_soft</color>
     <color name="t1">#333333</color>
     <color name="color_444">#444444</color>
     <color name="color_BFBFBF">#BFBFBF</color>
@@ -31,33 +73,33 @@
 
     <color name="color_F9F9FA">#F9F9FA</color>
     <color name="color_F6F6F6">#F6F6F6</color>
-    <color name="color_2AA1FC">#2AA1FC</color>
+    <color name="color_2AA1FC">@color/fc_brand_primary</color>
     <color name="color_FF4420">#FF4420</color>
     <color name="color_F0832D">#F0832D</color>
-    <color name="color_FFEFE2">#FFEFE2</color>
-    <color name="color_30A6ED">#30A6ED</color>
+    <color name="color_FFEFE2">@color/fc_brand_surface</color>
+    <color name="color_30A6ED">@color/fc_brand_primary</color>
     <color name="color_CCCCCC">#CCCCCC</color>
-    <color name="color_DAFFE5">#DAFFE5</color>
+    <color name="color_DAFFE5">@color/fc_brand_surface</color>
     <color name="color_DFF5FF">@color/color_FFEFE2</color>
-    <color name="color_E5F9F2">#FFEAE0</color>
-    <color name="color_low">#3489FE</color>
+    <color name="color_E5F9F2">@color/fc_brand_surface_soft</color>
+    <color name="color_low">@color/fc_brand_primary</color>
     <color name="color_normal">@color/c5</color>
     <color name="color_prediabetes">#FFB901</color>
     <color name="color_diabetes">#FA0202</color>
-    <color name="color_13ABA1">#13ABA1</color>
+    <color name="color_13ABA1">@color/fc_brand_primary</color>
     <color name="color_f5f5f5">#F5F5F5</color>
 
     <color name="color_DFDFDF">#DFDFDF</color>
 
     
     <!-- 图片中定义的颜色资源 -->
-    <color name="color_3487FC">#3487FC</color>
-    <color name="color_05BA7B">#05BA7B</color>
+    <color name="color_3487FC">@color/fc_brand_primary</color>
+    <color name="color_05BA7B">@color/fc_brand_primary</color>
     <color name="color_FFE902">#FFE902</color>
     <color name="color_FFB909">#FFB909</color>
     <color name="color_FF8000">#FF8000</color>
     <color name="color_FB0301">#FB0301</color>
-    <color name="color_EFFBF7">#EFFBF7</color>
+    <color name="color_EFFBF7">@color/fc_brand_surface</color>
     <color name="color_111111_40">#66111111</color>
 
     <!-- BMI grade colors -->
@@ -68,30 +110,30 @@
     <color name="color_464545">#464545</color>
 
 
-    <color name="color_02BC77">#02BC77</color>
+    <color name="color_02BC77">@color/fc_brand_primary</color>
     <color name="color_f7f7f7">#F7F7F7</color>
     <color name="color_f4f4f4">#F4F4F4</color>
     <color name="color_ffe4e3">#FFE4E3</color>
     <color name="color_FF6B4D">#FF6B4D</color>
-    <color name="color_4AD7FF">#4AD7FF</color>
+    <color name="color_4AD7FF">@color/fc_brand_primary_light</color>
 
     <!-- Chart specific colors -->
     <color name="chart_line_bp_systolic">@color/color_FF6B4D</color>
-    <color name="chart_line_bp_diastolic">#FFB37A</color>
+    <color name="chart_line_bp_diastolic">@color/fc_brand_primary_light</color>
     <color name="chart_line_bs">@color/color_FF6B4D</color>
     <color name="chart_line_heart_rate">@color/color_FF6B4D</color>
     <color name="chart_line_bmi">@color/color_FF6B4D</color>
     <color name="chart_line_cholesterol_tg">#9B4AFF</color>
     <color name="chart_line_cholesterol_ldl">@color/color_FF6B4D</color>
-    <color name="chart_line_cholesterol_hdl">#FFB37A</color>
+    <color name="chart_line_cholesterol_hdl">@color/fc_brand_primary_light</color>
     <color name="chart_point_stroke">@color/white</color>
     <color name="chart_grid">#E5E5E5</color>
     <color name="chart_axis_label">#9E9E9E</color>
-    <color name="color_ffeae0">#FFEAE0</color>
+    <color name="color_ffeae0">@color/fc_brand_surface_soft</color>
     <color name="color_EAEAEA">#EAEAEA</color>
-    <color name="color_3b82f6">#3b82f6</color>
+    <color name="color_3b82f6">@color/fc_brand_primary</color>
     <color name="color_f8f8f8">#f8f8f8</color>
-    <color name="color_F1F8F6">#F1F8F6</color>
+    <color name="color_F1F8F6">@color/fc_brand_surface</color>
     <color name="color_C7C7CC">#C7C7CC</color>
     <color name="color_B0B0B0">#B0B0B0</color>
     <color name="color_E0E0E0">#E0E0E0</color>

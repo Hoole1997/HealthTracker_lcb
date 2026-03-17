@@ -551,8 +551,10 @@ private fun SplashScreen(
     }
 
     val appName = stringResource(id = R.string.app_name).replace("\n", " ")
-    val accentColor = Color(0xFFFF7C3F)
-    val accentTrackColor = Color(0xFFFFE8D8)
+    val accentColor = colorResource(id = R.color.fc_home_tab_selected)
+    val accentTrackColor = colorResource(id = R.color.fc_brand_progress_track)
+    val splashBgStart = colorResource(id = R.color.fc_splash_bg_start)
+    val splashBgEnd = colorResource(id = R.color.fc_splash_bg_end)
 
     Box(
         modifier = Modifier
@@ -560,8 +562,8 @@ private fun SplashScreen(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFFFFCF6),
-                        Color(0xFFF8F4F6),
+                        splashBgStart,
+                        splashBgEnd,
                     )
                 )
             )
@@ -650,6 +652,8 @@ private fun SplashScreen(
 
 @Composable
 private fun SplashWarmGlow() {
+    val glowColor = colorResource(id = R.color.fc_brand_glow)
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         val glowSpecs = listOf(
             Triple(Offset(size.width * 0.12f, size.height * 0.10f), size.width * 0.26f, 0.30f),
@@ -662,7 +666,7 @@ private fun SplashWarmGlow() {
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(
-                        Color(0xFFFFD58C).copy(alpha = alpha),
+                        glowColor.copy(alpha = alpha),
                         Color.Transparent,
                     ),
                     center = center,
@@ -793,7 +797,7 @@ private fun RecentRecordCard(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF2E9))
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.fc_brand_surface_card))
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
             Text(
@@ -848,7 +852,7 @@ private fun RecentRecordCard(
                         .width(4.dp)
                         .height(74.dp)
                         .clip(RoundedCornerShape(2.dp))
-                        .background(Color(0xFFFF7C3F))
+                        .background(colorResource(id = R.color.fc_home_tab_selected))
                 )
                 Spacer(modifier = Modifier.width(16.dp))
 

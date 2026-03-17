@@ -92,9 +92,11 @@ private const val HORIZONTAL_LABEL_SPACING = 1
  * 使用示例：
  * ```kotlin
  * val chartConfig = ChartConfigHelper()
+ * val primaryHex = obtainPrimaryChartColor()
+ * val secondaryHex = obtainSecondaryChartColor()
  * val chart = chartConfig.createDualLineChart(
- *     line1Color = "#FF6B4D",
- *     line2Color = "#4AD7FF"
+ *     line1Color = primaryHex,
+ *     line2Color = secondaryHex
  * )
  * chartView.chart = chart
  * ```

@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,11 +51,22 @@ import com.daily.health.manager.face.act.reportGuide
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import kotlinx.coroutines.launch
 
-private val OnboardingAccent = Color(0xFFFF7C3F)
-private val OnboardingTextPrimary = Color(0xFF333333)
-private val OnboardingTextSecondary = Color(0xFF666666)
-private val OnboardingIndicatorInactive = Color(0xFFFFE6D2)
-private val OnboardingIllustrationHalo = Color(0xFFFCECCF)
+private data class OnboardingPalette(
+    val accent: Color,
+    val textPrimary: Color,
+    val textSecondary: Color,
+    val indicatorInactive: Color,
+    val illustrationHalo: Color,
+)
+
+@Composable
+private fun rememberOnboardingPalette() = OnboardingPalette(
+    accent = colorResource(id = R.color.fc_home_tab_selected),
+    textPrimary = colorResource(id = R.color.t1),
+    textSecondary = colorResource(id = R.color.color_666),
+    indicatorInactive = colorResource(id = R.color.fc_brand_indicator_inactive),
+    illustrationHalo = colorResource(id = R.color.fc_brand_halo),
+)
 
 private data class OnboardingTextLayout(
     val isAdaptive: Boolean,
@@ -216,6 +228,7 @@ private fun OnboardingScreen(
     val current = pages[currentPage]
     val textLayout = rememberTextLayout(current)
     val descriptionScrollState = rememberScrollState()
+    val palette = rememberOnboardingPalette()
 
     Box(
         modifier = Modifier
@@ -230,7 +243,7 @@ private fun OnboardingScreen(
                 .align(Alignment.TopCenter)
                 .offset(y = current.titleTop)
                 .width(current.titleWidth),
-            color = OnboardingTextPrimary,
+            color = palette.textPrimary,
             fontSize = nonScaledSp(20),
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -252,7 +265,7 @@ private fun OnboardingScreen(
                         Modifier
                     }
                 ),
-            color = OnboardingTextSecondary,
+            color = palette.textSecondary,
             fontSize = nonScaledSp(textLayout.descriptionFontSize),
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Center,
@@ -263,6 +276,7 @@ private fun OnboardingScreen(
         OnboardingPagination(
             pageCount = pages.size,
             currentPage = currentPage,
+            palette = palette,
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .offset(y = current.indicatorTop)
@@ -271,6 +285,7 @@ private fun OnboardingScreen(
         OnboardingActionButton(
             text = stringResource(current.buttonRes),
             showArrow = current.showArrow,
+            palette = palette,
             onClick = onActionClick,
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -282,6 +297,8 @@ private fun OnboardingScreen(
 @Composable
 private fun OnboardingPage(page: OnboardingPageUi) {
     Box(modifier = Modifier.fillMaxSize()) {
+        val palette = rememberOnboardingPalette()
+
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -296,7 +313,7 @@ private fun OnboardingPage(page: OnboardingPageUi) {
                         .offset(y = page.haloOffsetY)
                         .size(page.haloSize)
                         .background(
-                            color = OnboardingIllustrationHalo,
+                            color = palette.illustrationHalo,
                             shape = CircleShape
                         )
                 )
@@ -320,6 +337,7 @@ private fun OnboardingPage(page: OnboardingPageUi) {
 private fun OnboardingPagination(
     pageCount: Int,
     currentPage: Int,
+    palette: OnboardingPalette,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -333,7 +351,7 @@ private fun OnboardingPagination(
                     .width(26.dp)
                     .height(6.dp)
                     .background(
-                        color = if (index == currentPage) OnboardingAccent else OnboardingIndicatorInactive,
+                        color = if (index == currentPage) palette.accent else palette.indicatorInactive,
                         shape = RoundedCornerShape(4.dp)
                     )
             )
@@ -345,6 +363,7 @@ private fun OnboardingPagination(
 private fun OnboardingActionButton(
     text: String,
     showArrow: Boolean,
+    palette: OnboardingPalette,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -355,7 +374,7 @@ private fun OnboardingActionButton(
             .height(44.dp),
         shape = RoundedCornerShape(37.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = OnboardingAccent,
+            containerColor = palette.accent,
             contentColor = Color.White
         ),
         contentPadding = PaddingValues(0.dp)
