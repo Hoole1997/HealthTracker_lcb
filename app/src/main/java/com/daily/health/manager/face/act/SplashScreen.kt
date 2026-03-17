@@ -180,13 +180,13 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
             }
         }
         lifecycleScope.launch {
-            try {
-                if (!isTaskRoot) {
-                   finish()
-                }
-            } catch (e: Throwable) {
-                e.printStackTrace()
-            }
+//            try {
+//                if (!isTaskRoot) {
+//                   finish()
+//                }
+//            } catch (e: Throwable) {
+//                e.printStackTrace()
+//            }
 
             launchTime = System.currentTimeMillis()
             logEvent("loading_page_show")
