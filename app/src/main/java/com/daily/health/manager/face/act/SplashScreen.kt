@@ -215,7 +215,8 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
             
             // 3. 广告加载（并行，会被 LaunchAds 内部阻塞直到 cancelInterceptor）
             val adJob = async {
-                initializeAndShowAd()
+                // initializeAndShowAd()
+                false
             }
             
             try {
@@ -237,7 +238,8 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
                 
                 // 7. 超时任务（UMP 完成后才开始计时，仅针对广告展示阶段）
                 val timeoutJob = async {
-                    delay(timeout * 1000L)
+                    // delay(timeout * 1000L)
+                    delay(0L)
                 }
                 
                 // 8. 等待广告完成或超时
