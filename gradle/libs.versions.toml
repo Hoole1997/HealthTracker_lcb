@@ -120,9 +120,9 @@ xxpermissions = { module = "com.github.getActivity:XXPermissions", version.ref =
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase_bom_verison" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config" }
-firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
-firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
-firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-perf-ktx = { module = "com.google.firebase:firebase-perf" }
 firebase-appdistribution-gradle = { module = "com.google.firebase:firebase-appdistribution-gradle", version.ref = "firebaseAppDist" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 firebase-analytics-mock = { module = "com.google.firebase:firebase-analytics-mock", version.ref = "firebase_mock_version" }

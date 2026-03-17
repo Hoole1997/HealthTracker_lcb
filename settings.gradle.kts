@@ -9,6 +9,7 @@ pluginManagement {
         maven("https://maven.aliyun.com/nexus/content/repositories/jcenter")
         maven("https://maven.aliyun.com/nexus/content/repositories/google")
         maven("https://maven.aliyun.com/nexus/content/repositories/gradle-plugin")
+        maven("https://repo.dgtverse.cn/repository/maven-public")
     }
 }
 dependencyResolutionManagement {
@@ -41,6 +42,8 @@ dependencyResolutionManagement {
             maven("https://maven.aliyun.com/nexus/content/repositories/gradle-plugin")
             isAllowInsecureProtocol = false
         }
+
+        maven("https://repo.dgtverse.cn/repository/maven-public")
     }
 }
 

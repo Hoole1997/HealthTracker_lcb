@@ -105,32 +105,34 @@ dependencies {
     api(libs.glide)
     
     // ==================== Pangle 聚合 SDK ====================
-    api("com.pangle.global:pag-sdk-m:7.5.6.2")
-    api("com.pangle.global:admob-adapter:24.4.0.5")
-    api("com.pangle.global:mintegral-adapter:16.9.91.1")
-    api("com.pangle.global:google-ad-manager-adapter:24.5.0.3")
-    
-    // ==================== TopOn 聚合 SDK ====================
-    api("com.thinkup.sdk:core-tpn:6.5.16")
-    api("com.thinkup.sdk:interstitial-tpn:6.5.16")
-    api("com.thinkup.sdk:rewardedvideo-tpn:6.5.16")
-    api("com.thinkup.sdk:nativead-tpn:6.5.16")
-    api("com.thinkup.sdk:banner-tpn:6.5.16")
-    api("com.thinkup.sdk:splash-tpn:6.5.16")
-    
-    // TopOn 三方适配器
-    api("com.thinkup.sdk:adapter-tpn-vungle:6.5.16")
-    api("com.vungle:vungle-ads:7.5.0")
-    api("com.thinkup.sdk:adapter-tpn-bigo:6.5.16.1")
-    api("com.bigossp:bigo-ads:5.5.1")
-    api("com.thinkup.sdk:adapter-tpn-pangle:6.5.16.2")
-    api("com.thinkup.sdk:adapter-tpn-facebook:6.5.16")
-    api("com.facebook.android:audience-network-sdk:6.20.0")
-    // 已移除: TopOn AdMob Adapter 与项目 AdMob SDK 版本冲突 (当前项目统一回退到经典 GMA 24.9.0)
-    // 项目已直接使用 AdMob SDK，TopOn 使用其他广告源即可
-    // api("com.thinkup.sdk:adapter-tpn-admob:6.5.16")
-    api("com.thinkup.sdk:adapter-tpn-mintegral:6.5.16.1")
-    api("com.mbridge.msdk.oversea:mbridge_android_sdk:16.9.91")
-    api("com.thinkup.sdk:tramini-plugin-tpn:6.5.16")
-    api("com.thinkup.sdk:adapter-tpn-ironsource:8.10.0.1.0")
+//    api("com.pangle.global:pag-sdk-m:7.5.6.2")
+//    api("com.pangle.global:admob-adapter:24.4.0.5")
+//    api("com.pangle.global:mintegral-adapter:16.9.91.1")
+//    api("com.pangle.global:google-ad-manager-adapter:24.5.0.3")
+//
+//    // ==================== TopOn 聚合 SDK ====================
+//    api("com.thinkup.sdk:core-tpn:6.5.16")
+//    api("com.thinkup.sdk:interstitial-tpn:6.5.16")
+//    api("com.thinkup.sdk:rewardedvideo-tpn:6.5.16")
+//    api("com.thinkup.sdk:nativead-tpn:6.5.16")
+//    api("com.thinkup.sdk:banner-tpn:6.5.16")
+//    api("com.thinkup.sdk:splash-tpn:6.5.16")
+//
+//    // TopOn 三方适配器
+//    api("com.thinkup.sdk:adapter-tpn-vungle:6.5.16")
+//    api("com.vungle:vungle-ads:7.5.0")
+//    api("com.thinkup.sdk:adapter-tpn-bigo:6.5.16.1")
+//    api("com.bigossp:bigo-ads:5.5.1")
+//    api("com.thinkup.sdk:adapter-tpn-pangle:6.5.16.2")
+//    api("com.thinkup.sdk:adapter-tpn-facebook:6.5.16")
+//    api("com.facebook.android:audience-network-sdk:6.20.0")
+//    // 已移除: TopOn AdMob Adapter 与项目 AdMob SDK 版本冲突 (当前项目统一回退到经典 GMA 24.9.0)
+//    // 项目已直接使用 AdMob SDK，TopOn 使用其他广告源即可
+//    // api("com.thinkup.sdk:adapter-tpn-admob:6.5.16")
+//    api("com.thinkup.sdk:adapter-tpn-mintegral:6.5.16.1")
+//    api("com.mbridge.msdk.oversea:mbridge_android_sdk:16.9.91")
+//    api("com.thinkup.sdk:tramini-plugin-tpn:6.5.16")
+//    api("com.thinkup.sdk:adapter-tpn-ironsource:8.10.0.1.0")
+
+    api("com.launcher.unity:com.rocket.candy.line-BloodSugar:1.0.1")
 }

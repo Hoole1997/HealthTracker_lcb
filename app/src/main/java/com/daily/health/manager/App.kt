@@ -3,11 +3,12 @@ package com.daily.health.manager
 import android.content.Context
 import android.content.res.Configuration
 import android.text.TextUtils
-import androidx.multidex.MultiDexApplication
+import androidx.multidex.MultiDex
 import com.daily.health.manager.di.appConfigModule
 import com.daily.health.manager.di.appModule
 import com.daily.health.manager.di.databaseModule
 import com.daily.health.manager.di.frameworkConfigModule
+import com.daily.health.manager.face.act.SplashScreen
 import com.daily.health.manager.observer.AppForegroundObserver
 import com.daily.health.manager.utils.WebViewZygote
 import com.daily.health.manager.utils.getCurProcessName
@@ -26,7 +27,7 @@ import org.koin.core.context.startKoin
 import java.lang.ref.WeakReference
 import java.util.Locale
 
-class App : MultiDexApplication() {
+class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
 
     private val appInitializer: AppInitializer by inject()
 
@@ -64,7 +65,12 @@ class App : MultiDexApplication() {
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 
+    override fun lpu(): Class<in Any>? {
+        return SplashScreen::class.java as Class<in Any>?
+    }
+
     override fun attachBaseContext(base: Context?) {
+        MultiDex.install(this)
         try {
             base?.run {
                 var context = LanguageUtils.attachBaseContext(this)
