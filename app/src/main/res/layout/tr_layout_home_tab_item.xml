@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/home_nav_bar_height"
-    android:paddingTop="@dimen/dp_4"
-    android:paddingBottom="@dimen/dp_6">
+    android:paddingTop="@dimen/dp_2"
+    android:paddingBottom="@dimen/dp_8">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_tab_icon"
@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:tint="@color/tr_selector_tab_color"
+        app:tint="@color/tr_selector_tab_icon_color"
         tools:src="@drawable/tr_ic_tab_home_selected" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -32,7 +32,7 @@
         android:maxLines="1"
         android:text="@string/tr_home"
         android:textColor="@color/tr_selector_tab_color"
-        android:textSize="@dimen/sp_12"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

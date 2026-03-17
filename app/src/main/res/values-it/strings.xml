@@ -14,7 +14,7 @@
     <string name="tr_rate_us">Valutaci</string>
     <string name="tr_last_report">Ultimo rapporto:</string>
     <string name="tr_test_and_record_hr">Testa e registra la frequenza cardiaca</string>
-    <string name="tr_measure_now">Misura ora</string>
+    <string name="tr_measure_now">Misura</string>
     <string name="tr_measure_title">Misura</string>
     <string name="tr_measure_finger_instruction">Posiziona il dito sulla fotocamera e non rimuoverlo fino alla fine.</string>
     <string name="tr_camera_permission_title">Autorizzazione fotocamera richiesta</string>
@@ -142,6 +142,8 @@
     <string name="tr_every_weekend">Ogni fine settimana</string>
     <string name="tr_everyday">Ogni giorno</string>
     <string name="tr_once">Una volta</string>
+    <string name="tr_meds_remind_empty">Nessun dato per ora. Tocca il pulsante in basso per aggiungerne.</string>
+    <string name="tr_meds_add">+Aggiungi</string>
     <string name="tr_add">Aggiungi</string>
     <string name="tr_add_reminder">Aggiungi promemoria</string>
     <string name="tr_medication_name">Nome farmaco</string>
@@ -198,6 +200,10 @@
     <string name="tr_max">Max</string>
     <string name="tr_hydrate">Idratazione</string>
     <string name="tr_walking">Camminata</string>
+    <string name="tr_drink_btn_format">Bevi %1$d %2$s</string>
+    <string name="tr_drink_btn_compact_format">Bevi %1$d%2$s</string>
+    <string name="tr_hydrate_empty_today">Non hai ancora bevuto acqua oggi!</string>
+    <string name="tr_hydrate_partial_today_format">Hai bevuto solo %1$d%2$s oggi.</string>
     <string name="tr_done">Fatto</string>
     <string name="tr_daily_water_intake">Acqua giornaliera</string>
     <string name="tr_cup_size">Dimensione bicchiere</string>

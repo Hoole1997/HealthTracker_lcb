@@ -3,23 +3,26 @@ package com.daily.health.manager.face.act
 import android.content.Intent
 import android.os.Bundle
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -36,12 +39,12 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
 import com.daily.health.manager.config.models.PushConfig
+import com.daily.health.manager.face.compose.HealthTopBar
 import com.daily.health.manager.databinding.TrActivityLanguageSelectBinding
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -49,11 +52,10 @@ import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.LanguageUtils.getLanguageList
-import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.AdPosition
+import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
-import com.daily.health.manager.face.compose.HealthTopBar
 
 
 class LanguageAct: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBinding>() {
@@ -197,6 +199,10 @@ private fun LanguageSelectScreen(
     val bgColor = colorResource(R.color.c1)
     val titleColor = colorResource(R.color.t1)
     val primaryColor = colorResource(R.color.c5)
+    val itemBackgroundColor = colorResource(R.color.tr_language_item_bg)
+    val itemSelectedBackgroundColor = colorResource(R.color.tr_language_item_selected_bg)
+    val itemSelectedBorderColor = colorResource(R.color.tr_language_item_selected_border)
+    val radioUnselectedColor = colorResource(R.color.tr_language_item_radio_unselected)
 
     Column(
         modifier = Modifier
@@ -207,20 +213,16 @@ private fun LanguageSelectScreen(
             title = stringResource(R.string.tr_choose_language),
             onBack = if (applyChange) onBack else null,
             rightAction = {
-                TextButton(
+                IconButton(
                     onClick = { onConfirm(selectedIndex) },
                     enabled = confirmEnabled,
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = colorResource(R.color.c5),
-                        disabledContentColor = Color(android.graphics.Color.DKGRAY)
-                    ),
-                    contentPadding = ButtonDefaults.TextButtonContentPadding
+                    modifier = Modifier.size(40.dp)
                 ) {
-                    val confirmColor = if (confirmEnabled) colorResource(R.color.c5) else Color(android.graphics.Color.DKGRAY)
-                    Text(
-                        text = stringResource(R.string.tr_confirm),
-                        color = confirmColor,
-                        fontSize = 16.sp,
+                    Icon(
+                        painter = painterResource(R.drawable.tr_ic_confirm),
+                        contentDescription = stringResource(R.string.tr_confirm),
+                        tint = if (confirmEnabled) titleColor else colorResource(R.color.color_BFBFBF),
+                        modifier = Modifier.size(22.dp),
                     )
                 }
             }
@@ -229,10 +231,10 @@ private fun LanguageSelectScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = colorResource(R.color.bg_window))
+                .background(color = bgColor)
                 .weight(1f),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             itemsIndexed(list) { index, item ->
                 val isSelected = index == selectedIndex
@@ -245,8 +247,9 @@ private fun LanguageSelectScreen(
                         }
                     },
                     titleColor = if (isSelected) primaryColor else titleColor,
-                    titleFontFamily = FontFamily.Default,
-                    titleFontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    backgroundColor = if (isSelected) itemSelectedBackgroundColor else itemBackgroundColor,
+                    borderColor = if (isSelected) itemSelectedBorderColor else Color.Transparent,
+                    indicatorColor = if (isSelected) itemSelectedBorderColor else radioUnselectedColor,
                 )
             }
         }
@@ -259,44 +262,71 @@ private fun LanguageItem(
     isSelected: Boolean,
     onClick: () -> Unit,
     titleColor: Color,
-    titleFontFamily: FontFamily,
-    titleFontWeight: FontWeight,
+    backgroundColor: Color,
+    borderColor: Color,
+    indicatorColor: Color,
 ) {
-    val shape = RoundedCornerShape(8.dp)
-    val bgColor = if (isSelected) colorResource(R.color.color_EFFBF7) else Color.White
-    val borderColor = if (isSelected) colorResource(R.color.c5) else Color.Transparent
+    val shape = RoundedCornerShape(10.dp)
 
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(57.dp),
         shape = shape,
-        color = bgColor,
+        color = backgroundColor,
         border = if (isSelected) BorderStroke(1.dp, borderColor) else null,
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
         onClick = onClick,
-        enabled = !isSelected,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 18.dp),
+                .height(57.dp)
+                .padding(start = 8.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            LanguageSelectionIndicator(
+                isSelected = isSelected,
+                selectedColor = borderColor,
+                unselectedColor = indicatorColor,
+            )
+
             Text(
                 text = title,
                 color = titleColor,
                 fontSize = 16.sp,
-                fontFamily = titleFontFamily,
-                fontWeight = titleFontWeight,
-                modifier = Modifier.weight(1f)
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp)
             )
-            if (isSelected) {
-                Image(
-                    painter = painterResource(R.drawable.tr_ic_checked),
-                    contentDescription = "selected",
-                    modifier = Modifier.size(18.dp)
-                )
-            }
+        }
+    }
+}
+
+@Composable
+private fun LanguageSelectionIndicator(
+    isSelected: Boolean,
+    selectedColor: Color,
+    unselectedColor: Color,
+) {
+    Box(
+        modifier = Modifier
+            .size(19.dp)
+            .border(
+                width = 1.5.dp,
+                color = if (isSelected) selectedColor else unselectedColor,
+                shape = CircleShape
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .size(9.dp)
+                    .background(selectedColor, CircleShape)
+            )
         }
     }
 }

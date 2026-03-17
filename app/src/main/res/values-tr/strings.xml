@@ -194,7 +194,8 @@
     <string name="tr_every_weekend">Her hafta sonu</string>
     <string name="tr_everyday">Her gün</string>
     <string name="tr_once">Bir kez</string>
-    <string name="tr_meds_remind_empty">Hatırlatıcılarınızı eklemek için \naşağıdaki düğmeye dokunun</string>
+    <string name="tr_meds_remind_empty">Henüz veri yok. Eklemek için aşağıdaki düğmeye dokunun.</string>
+    <string name="tr_meds_add">+Ekle</string>
     <string name="tr_add">Ekle</string>
     <string name="tr_add_reminder">Hatırlatıcı Ekle</string>
     <string name="tr_medication_name">İlaç Adı</string>
@@ -240,7 +241,7 @@
     <string name="tr_create_label_failed">Etiket oluşturma başarısız</string>
     <string name="tr_last_report">Son rapor:</string>
     <string name="tr_test_and_record_hr">Nabız ölç ve kaydet</string>
-    <string name="tr_measure_now">Şimdi Ölç</string>
+    <string name="tr_measure_now">Ölç</string>
     <string name="tr_measure_title">Ölç</string>
     <string name="tr_measure_finger_instruction">Lütfen parmağınızı kameranın üzerine koyun ve sonuna kadar kaldırmayın.</string>
     <string name="tr_camera_permission_title">Kamera İzni Gerekli</string>
@@ -323,7 +324,9 @@
     <string name="tr_hydrate">Hidrasyon</string>
     <string name="tr_walking">Yürüyüş</string>
     <string name="tr_drink_btn_format">%1$d %2$s iç</string>
-    <string name="tr_hydrate_cup_count_format">Bugün %d bardak su içtiniz</string>
+    <string name="tr_drink_btn_compact_format">%1$d%2$s iç</string>
+    <string name="tr_hydrate_empty_today">Bugün henüz su içmediniz!</string>
+    <string name="tr_hydrate_partial_today_format">Bugün sadece %1$d%2$s içtiniz.</string>
     <string name="tr_hydrate_complete_message">Tebrikler! Su hedefinizi tamamladınız!</string>
     <string name="tr_done">Tamam</string>
     <string name="tr_hydrate_empty_record">Henüz su içme kaydı yok.</string>

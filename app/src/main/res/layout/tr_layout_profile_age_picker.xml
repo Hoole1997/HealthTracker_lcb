@@ -10,40 +10,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:npv_DividerColor="@color/color_EAEAEA"
+        app:npv_DividerHeight="1dp"
         app:npv_ItemPaddingHorizontal="@dimen/dp_24"
-        app:npv_ItemPaddingVertical="@dimen/dp_10"
-        app:npv_SelectedItemBackground="@drawable/tr_bg_age_select"
-        app:npv_ShowDivider="false"
+        app:npv_ItemPaddingVertical="6dp"
+        app:npv_ShowDivider="true"
         app:npv_ShownCount="3"
         app:npv_TextColorNormal="@color/color_BFBFBF"
         app:npv_TextColorSelected="@color/c5"
-        app:npv_TextSizeNormal="@dimen/sp_24"
-        app:npv_TextSizeSelected="@dimen/sp_24"
+        app:npv_TextSizeNormal="20sp"
+        app:npv_TextSizeSelected="28sp"
         app:npv_WrapSelectorWheel="true"
         tools:npv_TextArray="@array/tr_hours" />
 
     <View
-        android:id="@+id/v_age_select"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_56"
-        android:layout_marginHorizontal="@dimen/dp_16"
-        android:background="@drawable/tr_bg_age_select"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/numberPicker"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/numberPicker" />
-
-    <View
         android:id="@+id/v_gradient_top"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="28dp"
         android:background="@drawable/tr_gradient_npv_top"
-        app:layout_constraintBottom_toTopOf="@id/v_age_select"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/numberPicker" />
@@ -51,11 +39,10 @@
     <View
         android:id="@+id/v_gradient_bottom"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="28dp"
         android:background="@drawable/tr_gradient_npv_bottom"
         app:layout_constraintBottom_toBottomOf="@id/numberPicker"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/v_age_select" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

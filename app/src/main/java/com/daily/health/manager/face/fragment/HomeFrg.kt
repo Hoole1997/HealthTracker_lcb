@@ -21,6 +21,7 @@ import com.daily.health.manager.data.enums.BmiUnit
 import com.daily.health.manager.data.enums.BsUnit
 import com.daily.health.manager.databinding.TrFragmentHomeBinding
 import com.daily.health.manager.face.act.HealthRecordAct
+import com.daily.health.manager.face.act.HealthStatisticsAct
 import com.daily.health.manager.face.act.HistoryRecordAct
 import com.daily.health.manager.face.act.HydrateAct
 import com.daily.health.manager.face.act.MainAct
@@ -35,9 +36,11 @@ import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
 import com.daily.health.manager.face.viewmodel.HomeViewModel
+import com.daily.health.manager.face.history.HistoryRecordItem
 import com.daily.health.manager.hasAddProfile
 import com.daily.health.manager.hasShowHomeEntryGuideV2
 import com.daily.health.manager.saveShowHomeEntryGuideV2
+import com.daily.health.manager.tips.HealthMetric
 import com.daily.health.manager.util.CholesterolCalculator
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.startActivity
@@ -110,19 +113,24 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
                     onHeartRateClick = {
                         navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
                     },
-                    onBloodSugarCardClick = {
+                    onBloodSugarClick = {
                         openBloodSugarHistoryOrRecord(bloodSugarRecord?.id)
                     },
-                    onBloodSugarRecordClick = ::openBloodSugarRecord,
-                    onBloodPressureClick = ::openBloodPressureRecord,
+                    onBloodPressureClick = {
+                        openBloodPressureHistoryOrRecord(bloodPressureRecord?.id)
+                    },
                     onCholesterolClick = {
-                        navigateToActivityWithProfileCheck(PendingActivityType.CHOLESTEROL)
+                        openCholesterolHistoryOrRecord(cholesterolRecord?.id)
                     },
                     onBmiClick = {
-                        navigateToActivityWithProfileCheck(PendingActivityType.BMI)
+                        openBmiHistoryOrRecord(bmiRecord?.id)
                     },
-                    onHydrateClick = ::openHydrate,
-                    onStepCountClick = ::openStepCount,
+                    onHydrateClick = {
+                        openHydrateHistoryOrRecord(todayTotalIntakeMl > 0)
+                    },
+                    onStepCountClick = {
+                        openStepCountHistoryOrRecord((todayStepStat?.steps ?: 0) > 0)
+                    },
                     onGuideAnchorBoundsChanged = { target, rect ->
                         guideAnchorRects[target] = Rect(rect)
                         updateGuideOverlayUi()
@@ -165,8 +173,8 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
         finishHomeGuide()
         when (step) {
             HomeGuideStep.HEART_RATE -> navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
-            HomeGuideStep.BLOOD_PRESSURE -> openBloodPressureRecord()
-            HomeGuideStep.BLOOD_SUGAR -> openBloodSugarRecord()
+            HomeGuideStep.BLOOD_PRESSURE -> openBloodPressureHistoryOrRecord(mViewModel.latestBloodPressureRecord.value?.id)
+            HomeGuideStep.BLOOD_SUGAR -> openBloodSugarHistoryOrRecord(mViewModel.latestBloodSugarRecord.value?.id)
         }
     }
 
@@ -202,7 +210,6 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
         val footerText = record?.recordTime?.let(::formatAbsoluteTime) ?: getString(R.string.tr_click_to_record)
         return HomeHeroUi(
             title = getString(R.string.tr_heart_rate),
-            subtitle = getString(R.string.tr_home_heart_subtitle),
             cta = getString(R.string.tr_measure_now),
             value = bpmText,
             valueUnit = getString(R.string.tr_bpm),
@@ -220,11 +227,6 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
     ): List<HomeFeatureCardUi> {
         val targetMl = HydrateSettingManager.getDailyTargetMl()
         return listOf(
-            HomeFeatureCardUi.BloodPressure(
-                title = getString(R.string.tr_blood_pressure),
-                value = bloodPressureRecord?.let { "${it.systolicPressure}/${it.diastolicPressure}" } ?: "-/-",
-                unit = getString(R.string.tr_mmHg),
-            ),
             HomeFeatureCardUi.BloodSugar(
                 title = getString(R.string.tr_blood_suger),
                 value = bloodSugarRecord?.getFormattedDisplayValue() ?: "--",
@@ -236,36 +238,85 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
                     }
                 } ?: BsUnit.MG_DL.displayName,
             ),
-            HomeFeatureCardUi.Cholesterol(
-                title = getString(R.string.tr_cholesterol),
-                value = formatCholesterolValue(cholesterolRecord),
-                unit = BsUnit.MG_DL.displayName,
+            HomeFeatureCardUi.BloodPressure(
+                title = getString(R.string.tr_blood_pressure),
+                value = bloodPressureRecord?.let { "${it.systolicPressure}/${it.diastolicPressure}" } ?: "-/-",
+                unit = getString(R.string.tr_mmHg),
             ),
             HomeFeatureCardUi.Bmi(
                 title = getString(R.string.tr_weight_and_bmi),
                 value = bmiRecord?.getDisplayWeightValue() ?: "--",
                 unit = BmiUnit.getWeightUnitLabel(),
             ),
-            HomeFeatureCardUi.Hydrate(
-                title = getString(R.string.tr_hydrate),
-                currentValue = todayTotalIntakeMl.toString(),
-                targetValue = targetMl.toString(),
-                unit = getString(R.string.tr_ml).lowercase(Locale.ROOT),
+            HomeFeatureCardUi.Cholesterol(
+                title = getString(R.string.tr_cholesterol),
+                value = formatCholesterolValue(cholesterolRecord),
+                unit = BsUnit.MG_DL.displayName,
             ),
             HomeFeatureCardUi.StepCount(
                 title = getString(R.string.tr_step_count),
                 stepsValue = todayStepStat?.steps?.toString() ?: "0",
                 stepsUnit = getString(R.string.tr_text_steps).lowercase(Locale.ROOT),
-                kcalValue = formatKcal(todayStepStat?.kcal),
-                kcalUnit = getString(R.string.tr_kcal).lowercase(Locale.ROOT),
+            ),
+            HomeFeatureCardUi.Hydrate(
+                title = getString(R.string.tr_hydrate),
+                currentValue = todayTotalIntakeMl.toString(),
+                targetValue = targetMl.toString(),
+                unit = getString(R.string.tr_ml),
             ),
         )
     }
 
     private fun openBloodSugarHistoryOrRecord(recordId: Long?) {
         recordId?.let {
-            requireActivity().startActivity<HistoryRecordAct>()
+            HistoryRecordAct.start(
+                requireActivity(),
+                recordType = HistoryRecordItem.RecordType.BLOOD_SUGAR,
+            )
         } ?: openBloodSugarRecord()
+    }
+
+    private fun openBloodPressureHistoryOrRecord(recordId: Long?) {
+        recordId?.let {
+            HistoryRecordAct.start(
+                requireActivity(),
+                recordType = HistoryRecordItem.RecordType.BLOOD_PRESSURE,
+            )
+        } ?: openBloodPressureRecord()
+    }
+
+    private fun openCholesterolHistoryOrRecord(recordId: Long?) {
+        recordId?.let {
+            HistoryRecordAct.start(
+                requireActivity(),
+                recordType = HistoryRecordItem.RecordType.CHOLESTEROL,
+            )
+        } ?: navigateToActivityWithProfileCheck(PendingActivityType.CHOLESTEROL)
+    }
+
+    private fun openBmiHistoryOrRecord(recordId: Long?) {
+        recordId?.let {
+            HistoryRecordAct.start(
+                requireActivity(),
+                recordType = HistoryRecordItem.RecordType.BMI_RECORD,
+            )
+        } ?: navigateToActivityWithProfileCheck(PendingActivityType.BMI)
+    }
+
+    private fun openHydrateHistoryOrRecord(hasData: Boolean) {
+        if (hasData) {
+            HealthStatisticsAct.start(requireActivity(), HealthMetric.HYDRATION)
+        } else {
+            openHydrate()
+        }
+    }
+
+    private fun openStepCountHistoryOrRecord(hasData: Boolean) {
+        if (hasData) {
+            HealthStatisticsAct.start(requireActivity(), HealthMetric.STEPS)
+        } else {
+            openStepCount()
+        }
     }
 
     private fun openBloodSugarRecord() {
@@ -314,18 +365,6 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
                 0,
             )
         } ?: "--"
-    }
-
-    private fun formatKcal(kcal: Double?): String {
-        if (kcal == null) {
-            return "0"
-        }
-        val decimalCount = if (kcal % 1.0 == 0.0) 0 else 1
-        return NumberFormatter.formatNumber(
-            kcal,
-            LanguageUtils.getAppLocale(requireContext()),
-            decimalCount,
-        )
     }
 
     private fun formatAbsoluteTime(recordTime: Date): String {

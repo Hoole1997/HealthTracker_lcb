@@ -14,7 +14,7 @@
     <string name="tr_rate_us">Bewerten Sie uns</string>
     <string name="tr_last_report">Letzter Bericht:</string>
     <string name="tr_test_and_record_hr">Herzfrequenz testen und aufzeichnen</string>
-    <string name="tr_measure_now">Jetzt messen</string>
+    <string name="tr_measure_now">Messen</string>
     <string name="tr_measure_title">Messen</string>
     <string name="tr_measure_finger_instruction">Bitte legen Sie Ihren Finger auf die Kamera und entfernen Sie ihn nicht bis zum Ende.</string>
     <string name="tr_camera_permission_title">Kameraberechtigung erforderlich</string>
@@ -213,7 +213,8 @@
     <string name="tr_every_weekend">Jedes Wochenende</string>
     <string name="tr_everyday">Jeden Tag</string>
     <string name="tr_once">Einmal</string>
-    <string name="tr_meds_remind_empty">Tippen Sie auf die Schaltfläche unten, um \nIhre Erinnerungen hinzuzufügen</string>
+    <string name="tr_meds_remind_empty">Noch keine Daten. Tippen Sie unten auf die Schaltfläche, um welche hinzuzufügen!</string>
+    <string name="tr_meds_add">+Hinzufügen</string>
     <string name="tr_add">Hinzufügen</string>
     <string name="tr_add_reminder">Erinnerung hinzufügen</string>
     <string name="tr_medication_name">Medikamentenname</string>
@@ -323,7 +324,9 @@
     <string name="tr_hydrate">Trinken</string>
     <string name="tr_walking">Gehen</string>
     <string name="tr_drink_btn_format">%1$d %2$s trinken</string>
-    <string name="tr_hydrate_cup_count_format">Sie haben heute %d Gläser Wasser getrunken</string>
+    <string name="tr_drink_btn_compact_format">%1$d%2$s trinken</string>
+    <string name="tr_hydrate_empty_today">Sie haben heute noch kein Wasser getrunken!</string>
+    <string name="tr_hydrate_partial_today_format">Sie haben heute nur %1$d%2$s getrunken.</string>
     <string name="tr_hydrate_complete_message">Gut gemacht! Sie haben Ihr Wasser getrunken!</string>
     <string name="tr_done">Fertig</string>
     <string name="tr_hydrate_empty_record">Noch kein Wasseraufnahme-Eintrag.</string>

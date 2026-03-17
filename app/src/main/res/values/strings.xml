@@ -13,7 +13,7 @@
     <string name="tr_rate_us">Rate Us</string>
     <string name="tr_last_report">Last report:</string>
     <string name="tr_test_and_record_hr">Test and record heart rate</string>
-    <string name="tr_measure_now">Measure Now</string>
+    <string name="tr_measure_now">Measure</string>
     <string name="tr_home_heart_subtitle">Take the first measurement today!</string>
     <string name="tr_measure_title">Measure</string>
     <string name="tr_measure_finger_instruction">Please place your finger on the camera and do not remove it until the end.</string>
@@ -966,7 +966,8 @@
     <string name="tr_every_weekend">Every weekend</string>
     <string name="tr_everyday">Everyday</string>
     <string name="tr_once">Once</string>
-    <string name="tr_meds_remind_empty">Tap the button below to \nadd your reminders</string>
+    <string name="tr_meds_remind_empty">No data yet. Tap the button below to add some!</string>
+    <string name="tr_meds_add">+Add</string>
     <string name="tr_add">Add</string>
     <string name="tr_add_reminder">Add Reminder</string>
     <string name="tr_medication_name">Medication Name</string>
@@ -1217,7 +1218,9 @@
     <string name="tr_hydrate">Hydrate</string>
     <string name="tr_walking">Walking</string>
     <string name="tr_drink_btn_format">Drink %1$d %2$s</string>
-    <string name="tr_hydrate_cup_count_format">You drink %d cups of water today</string>
+    <string name="tr_drink_btn_compact_format">Drink %1$d%2$s</string>
+    <string name="tr_hydrate_empty_today">You haven\'t drunk any water today!</string>
+    <string name="tr_hydrate_partial_today_format">You only drank %1$d%2$s today.</string>
     <string name="tr_hydrate_complete_message">Well done! You\'ve finished your water!</string>
     <string name="tr_done">Done</string>
     <string name="tr_hydrate_empty_record">No water intake record yet.</string>

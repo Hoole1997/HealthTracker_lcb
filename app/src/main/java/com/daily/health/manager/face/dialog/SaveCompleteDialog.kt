@@ -53,5 +53,4 @@ class SaveCompleteDialog(private val onEnd:(() -> Unit)? = null): BaseVbDialogFr
         }
     }
 
-
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_12"
+    android:paddingTop="@dimen/dp_6"
     android:paddingBottom="@dimen/dp_8">
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -16,13 +16,13 @@
         android:paddingHorizontal="@dimen/dp_16"
         android:text="@string/tr_hydrate_quick_add"
         android:textColor="@color/t1"
-        android:textSize="@dimen/sp_18" />
+        android:textSize="@dimen/sp_16" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_14"
         android:nestedScrollingEnabled="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="horizontal"

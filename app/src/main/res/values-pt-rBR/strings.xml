@@ -360,7 +360,8 @@
     <string name="tr_every_weekend">Todo fim de semana</string>
     <string name="tr_everyday">Todos os dias</string>
     <string name="tr_once">Uma vez</string>
-    <string name="tr_meds_remind_empty">Toque no botão abaixo para \nadicionar seus lembretes</string>
+    <string name="tr_meds_remind_empty">Ainda não há dados. Toque no botão abaixo para adicionar.</string>
+    <string name="tr_meds_add">+Adicionar</string>
     <string name="tr_add">Adicionar</string>
     <string name="tr_add_reminder">Adicionar Lembrete</string>
     <string name="tr_medication_name">Nome do Medicamento</string>
@@ -408,7 +409,7 @@
     <string name="tr_create_label_failed">Falha ao criar rótulo</string>
     <string name="tr_last_report">Último relatório:</string>
     <string name="tr_test_and_record_hr">Medir e registrar FC</string>
-    <string name="tr_measure_now">Medir Agora</string>
+    <string name="tr_measure_now">Medir</string>
     <string name="tr_measure_title">Medir</string>
     <string name="tr_measure_finger_instruction">Coloque o dedo na câmera e não o remova até o fim.</string>
     <string name="tr_camera_permission_title">Permissão de Câmera Necessária</string>
@@ -614,7 +615,9 @@
     <string name="tr_hydrate">Hidratação</string>
     <string name="tr_walking">Caminhada</string>
     <string name="tr_drink_btn_format">Beber %1$d %2$s</string>
-    <string name="tr_hydrate_cup_count_format">Você bebeu %d copos de água hoje</string>
+    <string name="tr_drink_btn_compact_format">Beber %1$d%2$s</string>
+    <string name="tr_hydrate_empty_today">Você ainda não bebeu água hoje!</string>
+    <string name="tr_hydrate_partial_today_format">Você bebeu apenas %1$d%2$s hoje.</string>
     <string name="tr_hydrate_complete_message">Parabéns! Você completou sua meta de água!</string>
     <string name="tr_done">Concluído</string>
     <string name="tr_hydrate_empty_record">Ainda não há registro de ingestão de água.</string>

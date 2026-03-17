@@ -208,7 +208,8 @@
     <string name="tr_every_weekend">週末毎日</string>
     <string name="tr_everyday">毎日</string>
     <string name="tr_once">一回のみ</string>
-    <string name="tr_meds_remind_empty">下のボタンをタップして\nリマインダーを追加</string>
+    <string name="tr_meds_remind_empty">まだデータがありません。下のボタンをタップして追加してください。</string>
+    <string name="tr_meds_add">+追加</string>
     <string name="tr_add">追加</string>
     <string name="tr_add_reminder">リマインダーを追加</string>
     <string name="tr_medication_name">薬の名前</string>
@@ -255,7 +256,7 @@
     <string name="tr_create_label_failed">ラベルの作成に失敗しました</string>
     <string name="tr_last_report">最新のレポート：</string>
     <string name="tr_test_and_record_hr">心拍数の測定と记录</string>
-    <string name="tr_measure_now">今すぐ測定</string>
+    <string name="tr_measure_now">測定</string>
     <string name="tr_measure_title">測定</string>
     <string name="tr_measure_finger_instruction">指をカメラに当て、測定が終わるまで離さないでください。</string>
     <string name="tr_camera_permission_title">カメラの権限が必要です</string>
@@ -343,7 +344,9 @@
     <string name="tr_hydrate">水分補給</string>
     <string name="tr_walking">ウォーキング</string>
     <string name="tr_drink_btn_format">%1$d %2$s 飲む</string>
-    <string name="tr_hydrate_cup_count_format">今日は水を%d杯飲みました</string>
+    <string name="tr_drink_btn_compact_format">%1$d%2$s 飲む</string>
+    <string name="tr_hydrate_empty_today">今日はまだ水を飲んでいません！</string>
+    <string name="tr_hydrate_partial_today_format">今日は%1$d%2$sしか飲んでいません。</string>
     <string name="tr_hydrate_complete_message">よくできました！水分補給目標を達成しました！</string>
     <string name="tr_done">完了</string>
     <string name="tr_hydrate_empty_record">水分摂取記録はまだありません。</string>

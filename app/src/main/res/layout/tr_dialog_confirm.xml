@@ -36,7 +36,7 @@
         android:layout_marginVertical="@dimen/dp_12"
         app:layout_constraintTop_toBottomOf="@id/bs_status_view"
         android:background="@drawable/tr_bg_rect_white_12"
-        android:backgroundTint="#EEF5FF"/>
+        android:backgroundTint="@color/color_DFF5FF"/>
 
 
     <androidx.appcompat.widget.LinearLayoutCompat

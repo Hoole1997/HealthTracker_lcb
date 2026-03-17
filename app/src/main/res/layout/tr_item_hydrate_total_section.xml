@@ -27,8 +27,8 @@
             android:id="@+id/totalWaterUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
             android:layout_marginStart="2dp"
+            android:textSize="14sp"
             android:textColor="#666666"/>
 
     </LinearLayout>
@@ -38,11 +38,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
         android:textAlignment="center"
         android:maxLines="2"
         android:ellipsize="end"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
         android:textSize="14sp"
         android:textColor="#999999"/>
 
@@ -98,7 +98,6 @@
            app:layout_constraintDimensionRatio="230:264"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
-           android:background="@drawable/tr_bg_cup_cover"
            />
 
 
@@ -118,13 +117,13 @@
         android:orientation="horizontal"
         android:gravity="center_horizontal"
         android:layout_marginTop="20dp">
-        
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/drinkLess"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
             android:src="@drawable/tr_ic_hydrate_subtract"
-            android:background="@mipmap/tr_bg_drink_btn"
+            android:background="@drawable/tr_bg_hydrate_action_circle"
             android:layout_marginEnd="@dimen/dp_20"/>
 
         <com.google.android.material.button.MaterialButton
@@ -137,13 +136,14 @@
             android:gravity="center"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            app:cornerRadius="@dimen/dp_10" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/drinkMore"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
-            android:background="@mipmap/tr_bg_drink_btn"
+            android:background="@drawable/tr_bg_hydrate_action_circle"
             android:padding="@dimen/dp_12"
             android:src="@drawable/tr_ic_hydrate_add"
             android:layout_marginStart="@dimen/dp_20"/>

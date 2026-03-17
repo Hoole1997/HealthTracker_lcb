@@ -181,7 +181,11 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
         } else {
             currentDrinkAmountMl
         }
-        mViewBind.totalSection.drinkBtn.text = String.format(drinkTextFormat, displayAmount, unitText)
+        mViewBind.totalSection.drinkBtn.text = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
+            String.format(drinkTextFormat, displayAmount, unitText)
+        } else {
+            getString(R.string.tr_drink_btn_compact_format, displayAmount, unitText)
+        }
     }
 
     private fun bindTotalSection(data: UiData) {
@@ -198,12 +202,12 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
         } else {
             data.totalMl
         }
-        val displayTarget = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
-            HydrateSettingManager.fromMl(data.targetMl, HydrateSettingManager.CupUnit.FL_OZ)
-        } else {
-            data.targetMl
-        }
         val unitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.tr_fl_oz) else getString(R.string.tr_unit_ml)
+        val descriptionUnitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
+            unitLabel.lowercase()
+        } else {
+            "ml"
+        }
 
         // 计算进度
         val targetMl = data.targetMl.coerceAtLeast(1)
@@ -231,8 +235,12 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
         lastDisplayTotal = displayTotal
         lastProgress = progress
 
-        mViewBind.totalSection.totalWaterUnit.text = "/$displayTarget$unitLabel"
-        mViewBind.totalSection.totalWaterDesc.text = String.format(getString(R.string.tr_hydrate_cup_count_format), data.count)
+        mViewBind.totalSection.totalWaterUnit.text = unitLabel
+        mViewBind.totalSection.totalWaterDesc.text = if (data.count == 0) {
+            getString(R.string.tr_hydrate_empty_today)
+        } else {
+            getString(R.string.tr_hydrate_partial_today_format, displayTotal, descriptionUnitLabel)
+        }
 
         updateDrinkButtonText()
     }

@@ -2,7 +2,6 @@ package com.daily.health.manager.utils
 
 import android.app.Application
 import com.daily.health.manager.App
-import com.daily.health.manager.constants.KEY_INSIGHTS_DETAIL_READY
 import com.daily.health.manager.constants.KEY_INSIGHTS_LIST_READY
 import com.daily.health.manager.constants.KEY_NEWS_READY
 import com.healthtracker.framework.BuildState
@@ -22,11 +21,16 @@ object InsightAssetPreparer {
     private const val TAG = "InsightAssetPreparer"
     private const val DIR_INSIGHTS_LIST = "insights_list"
     private const val DIR_NEWS = "insights_content"
+    private const val INSIGHTS_LIST_ASSET_VERSION = 2
+    private const val INSIGHTS_CONTENT_ASSET_VERSION = 1
 
     private data class AssetConfig(
         val assetName: String,
-        val readyKey: String
-    )
+        val readyKey: String,
+        val version: Int
+    ) {
+        val versionKey: String = "${readyKey}_version"
+    }
 
     data class InsightArticle(
         val title: String,
@@ -36,8 +40,9 @@ object InsightAssetPreparer {
     )
 
     private val assetConfigs = listOf(
-        AssetConfig(DIR_INSIGHTS_LIST, KEY_INSIGHTS_LIST_READY),
-        AssetConfig(DIR_NEWS, KEY_NEWS_READY)
+        // Bump the asset version when bundled files change so installed apps re-extract them.
+        AssetConfig(DIR_INSIGHTS_LIST, KEY_INSIGHTS_LIST_READY, INSIGHTS_LIST_ASSET_VERSION),
+        AssetConfig(DIR_NEWS, KEY_NEWS_READY, INSIGHTS_CONTENT_ASSET_VERSION)
     )
 
     private val articleCache = mutableMapOf<String, List<InsightArticle>>()
@@ -94,7 +99,11 @@ object InsightAssetPreparer {
     ): Boolean {
         val targetDir = File(application.filesDir, config.assetName)
         val ready = SpUtils.getBoolean(config.readyKey, false)
-        return !ready || !targetDir.exists() || targetDir.list()?.isEmpty() == true
+        val currentVersion = SpUtils.getInt(config.versionKey, 0)
+        return !ready ||
+            currentVersion != config.version ||
+            !targetDir.exists() ||
+            targetDir.list()?.isEmpty() == true
     }
 
     private fun extractAsset(
@@ -123,8 +132,10 @@ object InsightAssetPreparer {
                 articleCache.clear()
             }
             SpUtils.putBoolean(config.readyKey, true)
+            SpUtils.putInt(config.versionKey, config.version)
         } catch (e: Exception) {
             SpUtils.putBoolean(config.readyKey, false)
+            SpUtils.putInt(config.versionKey, 0)
             throw e
         } finally {
             tempZipFile.delete()

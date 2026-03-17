@@ -14,7 +14,7 @@
     <string name="tr_rate_us">Évaluez-nous</string>
     <string name="tr_last_report">Dernier rapport:</string>
     <string name="tr_test_and_record_hr">Tester et enregistrer le rythme cardiaque</string>
-    <string name="tr_measure_now">Mesurer maintenant</string>
+    <string name="tr_measure_now">Mesurer</string>
     <string name="tr_measure_title">Mesurer</string>
     <string name="tr_measure_finger_instruction">Veuillez placer votre doigt sur la caméra et ne le retirez pas jusqu\'à la fin.</string>
     <string name="tr_camera_permission_title">Autorisation de la caméra requise</string>
@@ -215,7 +215,8 @@
     <string name="tr_every_weekend">Chaque week-end</string>
     <string name="tr_everyday">Tous les jours</string>
     <string name="tr_once">Une fois</string>
-    <string name="tr_meds_remind_empty">Appuyez sur le bouton ci-dessous pour \najouter vos rappels</string>
+    <string name="tr_meds_remind_empty">Aucune donnée pour le moment. Appuyez sur le bouton ci-dessous pour en ajouter.</string>
+    <string name="tr_meds_add">+Ajouter</string>
     <string name="tr_add">Ajouter</string>
     <string name="tr_add_reminder">Ajouter un rappel</string>
     <string name="tr_medication_name">Nom du médicament</string>
@@ -325,7 +326,9 @@
     <string name="tr_hydrate">Hydratation</string>
     <string name="tr_walking">Marche</string>
     <string name="tr_drink_btn_format">Boire %1$d %2$s</string>
-    <string name="tr_hydrate_cup_count_format">Vous avez bu %d verres d\'eau aujourd\'hui</string>
+    <string name="tr_drink_btn_compact_format">Boire %1$d%2$s</string>
+    <string name="tr_hydrate_empty_today">Vous n\'avez pas encore bu d\'eau aujourd\'hui !</string>
+    <string name="tr_hydrate_partial_today_format">Vous n\'avez bu que %1$d%2$s aujourd\'hui.</string>
     <string name="tr_hydrate_complete_message">Bravo! Vous avez fini votre eau!</string>
     <string name="tr_done">Terminé</string>
     <string name="tr_hydrate_empty_record">Pas encore d\'enregistrement d\'hydratation.</string>

@@ -285,7 +285,7 @@
                 android:layout_marginHorizontal="@dimen/dp_16"
                 app:layout_constraintTop_toBottomOf="@id/cholesterol_status_view"
                 android:background="@drawable/tr_bg_rect_white_12"
-                android:backgroundTint="#EEF5FF"/>
+                android:backgroundTint="@color/color_DFF5FF"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,8 +1,6 @@
 package com.daily.health.manager.face.adapter
 
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -116,7 +113,7 @@ class HydrateAdapter(
         private val onDeleteClick: (HydrateRecordItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private var adapter: RecordAdapter? = null
-        private var emptyContainer: ConstraintLayout? = null
+        private var emptyContainer: LinearLayout? = null
         private var lastUnitLabel: String? = null
 
         fun bind(item: HydrateItem.RecordSection) {
@@ -132,56 +129,43 @@ class HydrateAdapter(
             }
             if (item.records.isEmpty()) {
                 if (emptyContainer == null) {
-                    // 容器：约束布局，图片居中于父，文字水平居中且与图片底对齐
-                    emptyContainer = ConstraintLayout(binding.root.context).apply {
+                    emptyContainer = LinearLayout(binding.root.context).apply {
                         layoutParams = LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
-                            dpToPx(158)
+                            dpToPx(140)
                         ).apply {
                             topMargin = dpToPx(12)
-                            bottomMargin = dpToPx(12)
+                            bottomMargin = dpToPx(8)
                         }
-                        background = GradientDrawable().apply {
-                            setColor(Color.WHITE)
-                            cornerRadius = dpToPx(8).toFloat()
-                        }
+                        gravity = Gravity.CENTER_HORIZONTAL
+                        orientation = LinearLayout.VERTICAL
+                        setPadding(0, dpToPx(20), 0, dpToPx(16))
+                        setBackgroundResource(R.drawable.tr_bg_hydrate_empty_card)
                     }
 
-                    // 图片：居中于父
                     val iv = ImageView(binding.root.context).apply {
-                        id = View.generateViewId()
                         setImageResource(R.drawable.tr_ic_empty_hydrate_record)
                         adjustViewBounds = true
                         scaleType = ImageView.ScaleType.CENTER_INSIDE
                         contentDescription = binding.root.context.getString(R.string.tr_hydrate_empty_record)
-                        layoutParams = ConstraintLayout.LayoutParams(
-                            dpToPx(150),
-                            dpToPx(120)
-                        ).apply {
-                            startToStart = ConstraintLayout.LayoutParams.PARENT_ID
-                            endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-                            topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-                            bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-                            bottomMargin = dpToPx(16)
-                        }
+                        layoutParams = LinearLayout.LayoutParams(
+                            dpToPx(120),
+                            dpToPx(80)
+                        )
                     }
 
                     val tv = TextView(binding.root.context).apply {
-                        id = View.generateViewId()
                         val emptyHint = binding.root.context.getString(R.string.tr_hydrate_empty_record)
                         text = emptyHint
                         setTextColor("#999999".toColorInt())
-                        textSize = 14f
+                        textSize = 12f
                         gravity = Gravity.CENTER
                         setPadding(dpToPx(16), dpToPx(0), dpToPx(16), dpToPx(0))
-                        layoutParams = ConstraintLayout.LayoutParams(
+                        layoutParams = LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT
                         ).apply {
-                            startToStart = ConstraintLayout.LayoutParams.PARENT_ID
-                            endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-                            topToBottom = iv.id
-                            topMargin = dpToPx(-20)
+                            topMargin = dpToPx(8)
                         }
                     }
 

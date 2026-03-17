@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.compose.runtime.getValue
@@ -238,7 +239,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
                     ReportDataManager.reportData("Tracker_tab_enter",mapOf())
                     // Record页面：隐藏提醒按钮
                     ivRemind.gone()
-                    R.string.tr_tracker
+                    R.string.tr_record
                 }
 
                 4 -> {
@@ -249,6 +250,10 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
 
                 else -> R.string.tr_home
             }
+            tvTitle.setTextSize(
+                TypedValue.COMPLEX_UNIT_SP,
+                if (position == 1) 18f else 20f
+            )
             tvTitle.text = getString(titleRes)
         }
     }
@@ -481,7 +486,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
                 Pair(R.drawable.tr_selector_nav_home, R.string.tr_home),
                 Pair(R.drawable.tr_selector_nav_meds, R.string.tr_meds),
                 Pair(R.drawable.tr_selector_nav_insights, R.string.tr_insights),
-                Pair(R.drawable.tr_selector_nav_record, R.string.tr_tracker),
+                Pair(R.drawable.tr_selector_nav_record, R.string.tr_record),
                 Pair(R.drawable.tr_selector_nav_settings, R.string.tr_settings),
 
                 )

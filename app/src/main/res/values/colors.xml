@@ -7,12 +7,19 @@
     <color name="bg_window">@color/color_f8f8f8</color>
 
     <color name="c1">@color/white</color>
-    <color name="c5">#1D6BF2</color>
-    <color name="tr_home_host_bg_top">#CCE6FB</color>
-    <color name="tr_home_host_bg">#F5F8FD</color>
-    <color name="tr_subpage_bg">#F5F7FB</color>
-    <color name="tr_home_tab_unselected">#AAB5C7</color>
-    <color name="c5_8">#D2E2FF</color>
+    <color name="c5">@color/tr_home_tab_selected</color>
+    <color name="tr_home_host_bg_top">#FFFFFF</color>
+    <color name="tr_home_host_bg">#FFFFFF</color>
+    <color name="tr_subpage_bg">#FFF8F2</color>
+    <color name="tr_home_tab_selected">#FF7C3F</color>
+    <color name="tr_language_item_bg">@color/color_f7f7f7</color>
+    <color name="tr_language_item_selected_bg">#0AFF7C3F</color>
+    <color name="tr_language_item_selected_border">@color/tr_home_tab_selected</color>
+    <color name="tr_language_item_radio_unselected">@color/t1</color>
+    <color name="tr_meds_calendar_bg">#FFF5EA</color>
+    <color name="tr_home_tab_icon_unselected">#C0C2C3</color>
+    <color name="tr_home_tab_unselected">#999999</color>
+    <color name="c5_8">#FFEAE0</color>
     <color name="t1">#333333</color>
     <color name="color_444">#444444</color>
     <color name="color_BFBFBF">#BFBFBF</color>
@@ -31,8 +38,8 @@
     <color name="color_30A6ED">#30A6ED</color>
     <color name="color_CCCCCC">#CCCCCC</color>
     <color name="color_DAFFE5">#DAFFE5</color>
-    <color name="color_DFF5FF">#DFF5FF</color>
-    <color name="color_E5F9F2">#E5F9F2</color>
+    <color name="color_DFF5FF">@color/color_FFEFE2</color>
+    <color name="color_E5F9F2">#FFEAE0</color>
     <color name="color_low">#3489FE</color>
     <color name="color_normal">@color/c5</color>
     <color name="color_prediabetes">#FFB901</color>
@@ -70,13 +77,13 @@
 
     <!-- Chart specific colors -->
     <color name="chart_line_bp_systolic">@color/color_FF6B4D</color>
-    <color name="chart_line_bp_diastolic">@color/color_4AD7FF</color>
+    <color name="chart_line_bp_diastolic">#FFB37A</color>
     <color name="chart_line_bs">@color/color_FF6B4D</color>
     <color name="chart_line_heart_rate">@color/color_FF6B4D</color>
     <color name="chart_line_bmi">@color/color_FF6B4D</color>
     <color name="chart_line_cholesterol_tg">#9B4AFF</color>
     <color name="chart_line_cholesterol_ldl">@color/color_FF6B4D</color>
-    <color name="chart_line_cholesterol_hdl">@color/color_4AD7FF</color>
+    <color name="chart_line_cholesterol_hdl">#FFB37A</color>
     <color name="chart_point_stroke">@color/white</color>
     <color name="chart_grid">#E5E5E5</color>
     <color name="chart_axis_label">#9E9E9E</color>
@@ -88,7 +95,7 @@
     <color name="color_C7C7CC">#C7C7CC</color>
     <color name="color_B0B0B0">#B0B0B0</color>
     <color name="color_E0E0E0">#E0E0E0</color>
-    <color name="color_E6FFF6">#E6FFF6</color>
+    <color name="color_E6FFF6">@color/color_FFEFE2</color>
     <color name="color_d3d3d3">#D3D3D3</color>
     <!-- 错误颜色 -->
 </resources>

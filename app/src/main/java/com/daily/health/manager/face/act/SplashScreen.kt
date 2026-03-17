@@ -2,7 +2,6 @@ package com.daily.health.manager.face.act
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -81,9 +80,8 @@ import com.daily.health.manager.receiver.NotificationActionReceiver
 import com.daily.health.manager.face.history.HistoryRecordItem
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.viewmodel.SplashViewModel
-import com.daily.health.manager.util.logEvent
-import com.daily.health.manager.utils.isAdPage
 import com.daily.health.manager.face.tracker.trackUninstallClick
+import com.daily.health.manager.util.logEvent
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -99,19 +97,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import net.corekit.core.report.ReportDataManager
 import net.corekit.core.utils.ConfigRemoteManager
-import net.corekit.monetize.ads.AdResult
-import net.corekit.monetize.ads.FullNativeAds
-import net.corekit.monetize.ads.InterstitialAds
-import net.corekit.monetize.ads.LaunchAds
-import net.corekit.monetize.ads.SplashBiddingManager
-import net.corekit.monetize.ads.config.AdConfigManager
-import net.corekit.monetize.ads.AdPosition
-import net.corekit.monetize.ads.log.AdLogger
 import net.corekit.monetize.ump.UmpConsentController
 import com.daily.health.manager.alarm.PermissionManager
 import kotlin.math.ceil
@@ -123,12 +112,6 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
         private const val TAG = "SplashScreen"
     }
 
-    private var isAdLoaded = false
-    private val hasFullNativeShowing: Boolean
-        get() = FullNativeAds.getInstance().checkAdShowing()
-    private val hasInterstitialShowing: Boolean
-        get() = InterstitialAds.getInstance().checkAdShowing()
-    
     private val startAnimationFlow = MutableStateFlow(false)
     
     // 权限管理器
@@ -174,7 +157,6 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
     override fun getVMModelClass() = SplashViewModel::class.java
     private var launchTime = 0L
     override fun initView(savedInstanceState: Bundle?) {
-        LaunchAds.getInstance().resetInterceptor()
         mViewBind.composeView.setViewCompositionStrategy(
             ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
         )
@@ -200,86 +182,37 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
             logEvent("loading_page_show")
             playAnimations()
             checkNotificationOpen()
-            
-            // ========== 并行执行：IP 预取、通知权限、广告加载 ==========
-            val timeout = AdConfigManager.getSplashTimeout()
-            AdLogger.d("[$TAG] 启动页面，超时时长：$timeout s")
-            
-            // 1. IP 国家代码预取（并行）
+
+            // 并行执行初始化准备，但不再展示开屏广告
             val ipJob = async {
                 try {
                     UmpConsentController.prefetchCountryCode()
                 } catch (e: Exception) {
-                    AdLogger.e("[$TAG] IP 预取异常: ${e.message}")
+                    if (BuildState.debug) "IP 预取异常: ${e.message}".loge(TAG)
                 }
             }
-            
-            // 2. 通知权限检查（并行）
+
             val permissionJob = async {
                 if (NotificationFeatureSwitch.notificationPermissionPromptEnabled) {
                     checkNotificationPermissionFlow()
                 }
             }
-            
-            // 3. 广告加载（并行，会被 LaunchAds 内部阻塞直到 cancelInterceptor）
-            val adJob = async {
-                initializeAndShowAd()
-            }
-            
+
             try {
-                // 4. 等待权限和 IP 预取完成（广告加载不阻塞，继续在后台）
                 permissionJob.await()
                 ipJob.await()
-                
-                // 5. UMP 同意检查（使用已缓存的 IP 结果）
-                try {
-                    AdLogger.d("[$TAG] 开始 UMP 同意检查")
-                    UmpConsentController.checkAndShowConsentIfNeeded(this@SplashScreen)
-                    AdLogger.d("[$TAG] UMP 同意检查完成")
-                } catch (e: Exception) {
-                    AdLogger.e("[$TAG] UMP 同意检查异常: ${e.message}")
-                }
-                
-                // 6. 放开广告展示阻塞
-                stateMachine.onPermissionCheckCompleted()
-                
-                // 7. 超时任务（UMP 完成后才开始计时，仅针对广告展示阶段）
-                val timeoutJob = async {
-                    delay(timeout * 1000L)
-                }
-                
-                // 8. 等待广告完成或超时
-                val timeoutTriggered = select<Boolean> {
-                    adJob.onAwait { false }
-                    timeoutJob.onAwait { true }
-                }
 
-                if (timeoutTriggered) {
-                    "触发超时".logd(TAG)
-                    val hasAdLoaded = isAdLoaded
-                    if (!hasAdLoaded && !hasFullNativeShowing && !hasInterstitialShowing) {
-                        if (BuildState.debug) Log.d(TAG, "${timeout}秒超时兜底：无广告，执行继续流程")
-                    } else {
-                        if (BuildState.debug) Log.d(
-                            TAG,
-                            "${timeout}秒超时兜底：有广告(loaded=$hasAdLoaded, fullNative=$hasFullNativeShowing, interstitial=$hasInterstitialShowing)，等待广告完成"
-                        )
-                        adJob.await()
-                    }
-                } else {
-                    "非超时触发".logd(TAG)
+                try {
+                    UmpConsentController.checkAndShowConsentIfNeeded(this@SplashScreen)
+                } catch (e: Exception) {
+                    if (BuildState.debug) "UMP 同意检查异常: ${e.message}".loge(TAG)
                 }
             } catch (e: Throwable) {
-                AdLogger.e("[$TAG] 启动流程异常: ${e.message}")
+                if (BuildState.debug) "启动流程异常: ${e.message}".loge(TAG)
             } finally {
-                stateMachine.onAdCompleted()
+                stateMachine.onPermissionCheckCompleted()
             }
-
-
-
-
         }
-
     }
 
     private fun checkNotificationOpen() {
@@ -354,54 +287,6 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
 
             }
         )
-    }
-
-    /**
-     * 初始化 AdMob 并显示开屏广告
-     * 根据配置决定是使用竞价模式还是传统模式
-     * @return 广告是否加载成功
-     */
-    private suspend fun initializeAndShowAd(): Boolean {
-        try {
-            if (BuildState.debug) "AdMob SDK 初始化成功，准备显示开屏广告".logd(TAG)
-
-            // 检查是否启用竞价模式
-            val useBidding = SplashBiddingManager.shouldUseBidding()
-            AdLogger.d("[SplashActivity] 竞价模式: %s", if (useBidding) "启用" else "禁用")
-
-            val adResult = if (useBidding) {
-                // 竞价模式：同时请求开屏和插屏，展示eCPM更高的
-                if (BuildState.debug) "使用竞价模式加载广告".logd(TAG)
-                SplashBiddingManager.smartBidAndShow(
-                    activity = this,
-                    container = mViewBind.adContainer,
-                    onAdLoaded = { isSuccess ->
-                        isAdLoaded = isSuccess
-                    }
-                )
-            } else {
-                // 传统模式：只请求开屏广告
-                if (BuildState.debug) "使用传统模式加载开屏广告".logd(TAG)
-                LaunchAds.getInstance().displayAd(
-                    activity = this,
-                    position = AdPosition.SP_APP_START,
-                    onLoaded = { isSuccess ->
-                        isAdLoaded = isSuccess
-                    }
-                )
-            }
-
-            if (adResult is AdResult.Success) {
-                if (BuildState.debug) "广告展示完成并关闭".logd(TAG)
-                return true
-            } else {
-                if (BuildState.debug) "广告显示失败: ${(adResult as? AdResult.Failure)?.error?.message}".logd(TAG)
-                return false
-            }
-        } catch (e: Exception) {
-            if (BuildState.debug) "广告初始化或显示异常 e:$e".loge(TAG)
-            return false
-        }
     }
 
     override fun onResume() {
@@ -484,7 +369,6 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
 
         private var animationDone = false
         private var permissionDone = false
-        private var adDone = false
         private var isForeground = true
         private var pendingForegroundNavigation = false
         private var hasNavigated = false
@@ -506,18 +390,6 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
             }
             permissionDone = true
             if (BuildState.debug) "Permission check completed".logd(TAG)
-            if(BuildState.debug) "设置开屏拦截等待结束".logd(TAG)
-            LaunchAds.getInstance().cancelInterceptor()
-            tryNavigate()
-
-        }
-
-        fun onAdCompleted() {
-            if (adDone) {
-                return
-            }
-            adDone = true
-            if (BuildState.debug) "Ad completed".logd(TAG)
             tryNavigate()
         }
 
@@ -543,7 +415,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
                 return
             }
 
-            if (!(animationDone && permissionDone && adDone)) {
+            if (!(animationDone && permissionDone)) {
                 if (BuildState.debug) "Waiting for completion - Animation: $animationDone, Permission: $permissionDone".logd(
                     TAG
                 )

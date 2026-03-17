@@ -34,7 +34,7 @@
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:background="@drawable/tr_bg_rect_white_12"
-            android:backgroundTint="@color/color_EFFBF7"
+            android:backgroundTint="@color/tr_meds_calendar_bg"
             app:round="@dimen/dp_12"
             android:scaleType="center"
             app:layout_constraintStart_toStartOf="parent"

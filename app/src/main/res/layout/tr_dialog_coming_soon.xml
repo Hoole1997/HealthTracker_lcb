@@ -62,7 +62,7 @@
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:importantForAccessibility="no"
-            android:src="@mipmap/tr_ic_hydrate_hint_bg" />
+            android:background="@drawable/tr_bg_hydrate_hint_orange" />
 
         <ImageView
             android:id="@+id/imgAlarm"

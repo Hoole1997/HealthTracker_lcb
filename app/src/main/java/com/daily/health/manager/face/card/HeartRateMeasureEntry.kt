@@ -212,7 +212,7 @@ private fun MeasureButton(
         Icon(
             painter = painterResource(R.drawable.hr_measure_bg_heart),
             contentDescription = null,
-            tint = colorResource(R.color.color_E6FFF6),
+            tint = Color.White,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(6.dp))

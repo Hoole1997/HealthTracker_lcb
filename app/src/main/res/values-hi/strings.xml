@@ -194,7 +194,8 @@
     <string name="tr_every_weekend">हर सप्ताहांत</string>
     <string name="tr_everyday">हर दिन</string>
     <string name="tr_once">एक बार</string>
-    <string name="tr_meds_remind_empty">अपने रिमाइंडर जोड़ने के लिए \nनीचे बटन पर टैप करें</string>
+    <string name="tr_meds_remind_empty">अभी तक कोई डेटा नहीं है। कुछ जोड़ने के लिए नीचे दिए गए बटन पर टैप करें।</string>
+    <string name="tr_meds_add">+जोड़ें</string>
     <string name="tr_add">जोड़ें</string>
     <string name="tr_add_reminder">रिमाइंडर जोड़ें</string>
     <string name="tr_medication_name">दवा का नाम</string>
@@ -233,7 +234,7 @@
     <string name="tr_create_label_failed">लेबल बनाना विफल</string>
     <string name="tr_last_report">अंतिम रिपोर्ट:</string>
     <string name="tr_test_and_record_hr">हृदय गति मापें और रिकॉर्ड करें</string>
-    <string name="tr_measure_now">अभी मापें</string>
+    <string name="tr_measure_now">मापें</string>
     <string name="tr_measure_title">मापें</string>
     <string name="tr_measure_finger_instruction">कृपया अपनी उंगली कैमरे पर रखें और अंत तक न हटाएं।</string>
     <string name="tr_camera_permission_title">कैमरा अनुमति आवश्यक है</string>
@@ -323,7 +324,9 @@
     <string name="tr_hydrate">हाइड्रेट</string>
     <string name="tr_walking">चलना</string>
     <string name="tr_drink_btn_format">%1$d %2$s पिएं</string>
-    <string name="tr_hydrate_cup_count_format">आज आपने %d गिलास पानी पिया</string>
+    <string name="tr_drink_btn_compact_format">%1$d%2$s पिएं</string>
+    <string name="tr_hydrate_empty_today">आपने आज अभी तक पानी नहीं पिया!</string>
+    <string name="tr_hydrate_partial_today_format">आपने आज केवल %1$d%2$s पानी पिया।</string>
     <string name="tr_hydrate_complete_message">बहुत बढ़िया! आपने अपना पानी पूरा कर लिया!</string>
     <string name="tr_done">हो गया</string>
     <string name="tr_hydrate_empty_record">अभी तक कोई पानी रिकॉर्ड नहीं।</string>

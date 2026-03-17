@@ -372,8 +372,8 @@ private fun HeartRateMeasureScreenContent(
         )
     }
 
-    // 背景色使用Figma设计的#F5F7FB
-    val backgroundColor = Color(0xFFF5F7FB)
+    // 子页面背景统一跟随全局暖色主题
+    val backgroundColor = colorResource(R.color.tr_subpage_bg)
 
     Column(
         modifier = Modifier

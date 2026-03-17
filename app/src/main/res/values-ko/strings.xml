@@ -208,7 +208,8 @@
     <string name="tr_every_weekend">주말 매일</string>
     <string name="tr_everyday">매일</string>
     <string name="tr_once">한 번</string>
-    <string name="tr_meds_remind_empty">아래 버튼을 탭하여\n알림을 추가하세요</string>
+    <string name="tr_meds_remind_empty">아직 데이터가 없습니다. 아래 버튼을 눌러 추가하세요.</string>
+    <string name="tr_meds_add">+추가</string>
     <string name="tr_add">추가</string>
     <string name="tr_add_reminder">알림 추가</string>
     <string name="tr_medication_name">약 이름</string>
@@ -255,7 +256,7 @@
     <string name="tr_create_label_failed">라벨 생성 실패</string>
     <string name="tr_last_report">최근 리포트:</string>
     <string name="tr_test_and_record_hr">심박수 측정 및 기록</string>
-    <string name="tr_measure_now">지금 측정</string>
+    <string name="tr_measure_now">측정</string>
     <string name="tr_measure_title">측정</string>
     <string name="tr_measure_finger_instruction">카메라 위에 손가락을 대고 측정이 끝날 때까지 떼지 마세요.</string>
     <string name="tr_camera_permission_title">카메라 권한 필요</string>
@@ -343,7 +344,9 @@
     <string name="tr_hydrate">수분 섭취</string>
     <string name="tr_walking">걷기</string>
     <string name="tr_drink_btn_format">%1$d %2$s 마시기</string>
-    <string name="tr_hydrate_cup_count_format">오늘 물을 %d잔 마셨습니다</string>
+    <string name="tr_drink_btn_compact_format">%1$d%2$s 마시기</string>
+    <string name="tr_hydrate_empty_today">오늘은 아직 물을 마시지 않았어요!</string>
+    <string name="tr_hydrate_partial_today_format">오늘은 물을 %1$d%2$s만 마셨어요.</string>
     <string name="tr_hydrate_complete_message">잘하셨습니다! 수분 섭취 목표를 달성했습니다!</string>
     <string name="tr_done">완료</string>
     <string name="tr_hydrate_empty_record">수분 섭취 기록이 아직 없습니다.</string>

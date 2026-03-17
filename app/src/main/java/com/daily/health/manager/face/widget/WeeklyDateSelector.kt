@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -91,6 +92,8 @@ class WeeklyDateSelector @JvmOverloads constructor(
     private var selectedWeekTextColor: Int = selectedBackgroundColor
     private var dayNumberSelectedBackgroundResId: Int = R.drawable.tr_bg_week_day_selected
     private var dayNumberNormalBackgroundResId: Int = R.drawable.tr_bg_week_day_normal
+    private var dateTextSizePx: Float = 0f
+    private var weekdayTextSizePx: Float = 0f
     private var weekStartOnMonday: Boolean = true
     private var horizontalPadding: Int = 0
     private var customWeekdayNames: Array<String>? = null
@@ -133,6 +136,8 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 R.styleable.WeeklyDateSelector_dayNumberNormalBackground,
                 dayNumberNormalBackgroundResId
             )
+            dateTextSizePx = typedArray.getDimension(R.styleable.WeeklyDateSelector_dateTextSize, 0f)
+            weekdayTextSizePx = typedArray.getDimension(R.styleable.WeeklyDateSelector_weekdayTextSize, 0f)
             
             weekStartOnMonday = typedArray.getBoolean(R.styleable.WeeklyDateSelector_weekStartOnMonday, true)
             disablePastDates = typedArray.getBoolean(R.styleable.WeeklyDateSelector_disablePastDates, false)
@@ -279,6 +284,8 @@ class WeeklyDateSelector @JvmOverloads constructor(
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekViewHolder {
             val container = LinearLayout(context).apply {
+                clipChildren = false
+                clipToPadding = false
                 orientation = LinearLayout.HORIZONTAL
                 // ViewPager2要求子视图必须填满整个ViewPager2的宽度和高度
                 layoutParams = ViewGroup.LayoutParams(
@@ -329,6 +336,13 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 
                 val tvDayNumber: TextView = dayView.findViewById(R.id.tvDayNumber)
                 val tvWeekName: TextView = dayView.findViewById(R.id.tvWeekName)
+
+                if (dateTextSizePx > 0f) {
+                    tvDayNumber.setTextSize(TypedValue.COMPLEX_UNIT_PX, dateTextSizePx)
+                }
+                if (weekdayTextSizePx > 0f) {
+                    tvWeekName.setTextSize(TypedValue.COMPLEX_UNIT_PX, weekdayTextSizePx)
+                }
                 
                 // 设置日期数字
                 val calendar = Calendar.getInstance()
@@ -340,13 +354,14 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 
                 // 检查是否为选中日期
                 val isSelected = DateTimeUtils.isSameDay(dayDate, selectedDate)
-                val isToday = DateTimeUtils.isSameDay(dayDate, today)
                 val isPastDate = disablePastDates && dayDate.before(today) && !DateTimeUtils.isSameDay(dayDate, today)
                 
                 if (isSelected) {
                     tvDayNumber.setBackgroundResource(dayNumberSelectedBackgroundResId)
                     tvDayNumber.setTextColor(selectedTextColor)
                     tvWeekName.setTextColor(selectedWeekTextColor)
+                    tvDayNumber.alpha = 1.0f
+                    tvWeekName.alpha = 1.0f
                 } else if (isPastDate) {
                     tvDayNumber.setBackgroundResource(dayNumberNormalBackgroundResId)
                     tvDayNumber.setTextColor(unselectedTextColor)
