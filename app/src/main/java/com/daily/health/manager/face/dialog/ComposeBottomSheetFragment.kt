@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import com.daily.health.manager.databinding.TrDialogNotificationPermissionV2Binding
+import com.daily.health.manager.databinding.FcDialogNotificationPermissionV2Binding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 
 /**
@@ -22,7 +22,7 @@ import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
  * 子类只需实现 [Content] 方法提供 Compose UI 即可。
  */
 abstract class ComposeBottomSheetFragment :
-    BaseBottomSheetDialogFragment<TrDialogNotificationPermissionV2Binding>() {
+    BaseBottomSheetDialogFragment<FcDialogNotificationPermissionV2Binding>() {
 
     /**
      * 子类实现此方法提供 Compose UI 内容
@@ -52,7 +52,7 @@ abstract class ComposeBottomSheetFragment :
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = TrDialogNotificationPermissionV2Binding.inflate(inflater, parent, attachToParent)
+    ) = FcDialogNotificationPermissionV2Binding.inflate(inflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.composeView?.apply {

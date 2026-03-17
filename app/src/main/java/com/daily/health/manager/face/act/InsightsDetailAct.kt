@@ -42,7 +42,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
-import com.daily.health.manager.databinding.TrActivityInsightsDetailBinding
+import com.daily.health.manager.databinding.FcActivityInsightsDetailBinding
 import com.daily.health.manager.utils.InsightAssetPreparer
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseViewModel
@@ -53,7 +53,7 @@ import java.io.File
 import com.healthtracker.framework.R as FrameworkR
 
 class InsightsDetailAct :
-    BaseInterActivity<BaseViewModel, TrActivityInsightsDetailBinding>() {
+    BaseInterActivity<BaseViewModel, FcActivityInsightsDetailBinding>() {
 
     companion object {
         private const val EXTRA_TITLE = "extra_title"
@@ -75,7 +75,7 @@ class InsightsDetailAct :
 
     private var isWebViewMode = false
 
-    override fun createViewBinding() = TrActivityInsightsDetailBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityInsightsDetailBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -218,18 +218,18 @@ private fun InsightsDetailScreen(
                         scaleType = ImageView.ScaleType.CENTER_CROP
                         round = ctx.resources.getDimension(FrameworkR.dimen.dp_12)
                         setBackgroundColor(ContextCompat.getColor(ctx, R.color.c1))
-                        contentDescription = ctx.getString(R.string.tr_insights)
+                        contentDescription = ctx.getString(R.string.fc_insights)
                     }
                 },
                 update = { imageView ->
                     if (imagePath.isNotEmpty()) {
                         Glide.with(imageView)
                             .load(File(imagePath))
-                            .placeholder(R.drawable.tr_bg_rect_white_12)
+                            .placeholder(R.drawable.fc_bg_rect_white_12)
                             .transition(DrawableTransitionOptions.withCrossFade())
                             .into(imageView)
                     } else {
-                        imageView.setImageResource(R.drawable.tr_bg_rect_white_12)
+                        imageView.setImageResource(R.drawable.fc_bg_rect_white_12)
                     }
                 }
             )
@@ -277,7 +277,7 @@ private fun InsightsTopBar(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.tr_ic_back),
+                    painter = painterResource(R.drawable.fc_ic_back),
                     contentDescription = "back",
                     tint = Color.Unspecified
                 )
@@ -285,7 +285,7 @@ private fun InsightsTopBar(
         }
 
         Text(
-            text = stringResource(R.string.tr_insights),
+            text = stringResource(R.string.fc_insights),
             color = colorResource(R.color.t1),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,

@@ -77,10 +77,10 @@ class AlarmNotificationManager(
                 // 统一的健康提醒通知渠道（合并了血糖和血压提醒）
                 val alarmChannel = NotificationChannel(
                     CHANNEL_ID_ALARM,
-                    context.getString(R.string.tr_notification_channel_alarm_name),
+                    context.getString(R.string.fc_notification_channel_alarm_name),
                     NotificationManager.IMPORTANCE_HIGH
                 ).apply {
-                    description = context.getString(R.string.tr_notification_channel_alarm_description)
+                    description = context.getString(R.string.fc_notification_channel_alarm_description)
                     enableVibration(true)
                     enableLights(true)
                     setShowBadge(true)
@@ -111,7 +111,7 @@ class AlarmNotificationManager(
 
             val notificationId = generateNotificationId(alarmRecord)
             val icon = when (alarmRecord.type) {
-                AlarmRecord.TYPE_BLOOD_PRESSURE -> R.drawable.tr_ic_notifcation_pb
+                AlarmRecord.TYPE_BLOOD_PRESSURE -> R.drawable.fc_ic_notifcation_pb
                 else -> R.drawable.ic_notification_bs
             }
             // 创建点击意图
@@ -164,13 +164,13 @@ class AlarmNotificationManager(
         
         // 血糖类型使用专属布局
         return if (alarmRecord.type == AlarmRecord.TYPE_BLOOD_SUGAR) {
-            RemoteViews(context.packageName, R.layout.tr_layout_bs_notify).apply {
+            RemoteViews(context.packageName, R.layout.fc_layout_bs_notify).apply {
                 setTextViewText(R.id.tv_time, time)
                 setTextViewText(R.id.tv_time_type, title)
                 setTextViewText(R.id.tv_action, btnText)
             }
         } else {
-            RemoteViews(context.packageName, R.layout.tr_layout_meds_notify).apply {
+            RemoteViews(context.packageName, R.layout.fc_layout_meds_notify).apply {
                 // 设置标题和按钮文字
                 setTextViewText(R.id.tv_title, desc)
                 setTextViewText(R.id.tv_time, time)
@@ -197,13 +197,13 @@ class AlarmNotificationManager(
         
         // 血糖类型使用专属布局
         return if (alarmRecord.type == AlarmRecord.TYPE_BLOOD_SUGAR) {
-            RemoteViews(context.packageName, R.layout.tr_layout_bs_notify_big).apply {
+            RemoteViews(context.packageName, R.layout.fc_layout_bs_notify_big).apply {
                 setTextViewText(R.id.tv_time, time)
                 setTextViewText(R.id.tv_time_des, desc)
                 setTextViewText(R.id.tv_action, btnText)
             }
         } else {
-            RemoteViews(context.packageName, R.layout.tr_layout_meds_notify_big).apply {
+            RemoteViews(context.packageName, R.layout.fc_layout_meds_notify_big).apply {
                 // 设置背景（如果有）
                 notifResources?.decorIcon?.let { bg ->
                     setImageViewResource(R.id.ic_bg_icon, bg)
@@ -294,57 +294,57 @@ class AlarmNotificationManager(
                 NotificationContent(
                     time = alarmRecord.getFormattedTime(),
                     title = "",
-                    desc = context.getString(R.string.tr_alarm_blood_pressure_content),
-                    btnText = context.getString(R.string.tr_record_now)
+                    desc = context.getString(R.string.fc_alarm_blood_pressure_content),
+                    btnText = context.getString(R.string.fc_record_now)
                 )
             }
             AlarmRecord.TYPE_MEDICATION -> {
                 NotificationContent(
                     time = alarmRecord.getFormattedTime(),
                     title = "",
-                    desc = context.getString(R.string.tr_medication_reminder_content),
-                    btnText = context.getString(R.string.tr_take_now)
+                    desc = context.getString(R.string.fc_medication_reminder_content),
+                    btnText = context.getString(R.string.fc_take_now)
                 )
             }
             AlarmRecord.TYPE_HYDRATION -> {
                 NotificationContent(
                     time = alarmRecord.getFormattedTime(),
                     title = "",
-                    desc = context.getString(R.string.tr_alarm_hydration_content),
-                    btnText = context.getString(R.string.tr_drink_now)
+                    desc = context.getString(R.string.fc_alarm_hydration_content),
+                    btnText = context.getString(R.string.fc_drink_now)
                 )
             }
             AlarmRecord.TYPE_HEART_RATE -> {
                 NotificationContent(
                     time = alarmRecord.getFormattedTime(),
                     title = "",
-                    desc = context.getString(R.string.tr_alarm_heart_rate_content),
-                    btnText = context.getString(R.string.tr_record_now)
+                    desc = context.getString(R.string.fc_alarm_heart_rate_content),
+                    btnText = context.getString(R.string.fc_record_now)
                 )
             }
             AlarmRecord.TYPE_BMI -> {
                 NotificationContent(
                     time = alarmRecord.getFormattedTime(),
                     title = "",
-                    desc = context.getString(R.string.tr_alarm_bmi_content),
-                    btnText = context.getString(R.string.tr_record_now)
+                    desc = context.getString(R.string.fc_alarm_bmi_content),
+                    btnText = context.getString(R.string.fc_record_now)
                 )
             }
             AlarmRecord.TYPE_CHOLESTEROL -> {
                 NotificationContent(
                     time = alarmRecord.getFormattedTime(),
                     title = "",
-                    desc = context.getString(R.string.tr_alarm_cholesterol_content),
-                    btnText = context.getString(R.string.tr_record_now)
+                    desc = context.getString(R.string.fc_alarm_cholesterol_content),
+                    btnText = context.getString(R.string.fc_record_now)
                 )
             }
             else -> {
                 // 默认使用健康提醒
                 NotificationContent(
-                    time = context.getString(R.string.tr_alarm_default_title),
+                    time = context.getString(R.string.fc_alarm_default_title),
                     title = "",
-                    desc = context.getString(R.string.tr_alarm_default_content),
-                    btnText = context.getString(R.string.tr_view_now)
+                    desc = context.getString(R.string.fc_alarm_default_content),
+                    btnText = context.getString(R.string.fc_view_now)
                 )
             }
         }
@@ -404,51 +404,51 @@ class AlarmNotificationManager(
     private fun getAlarmNotificationRes(recordType:Int) = when(recordType){
         AlarmRecord.TYPE_BLOOD_SUGAR -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.tr_bg_rect_white_12,
-            largeIcon = R.drawable.tr_ic_remind_notify,
-            decorIcon = R.mipmap.tr_home_card_bs,
+            background = R.drawable.fc_bg_rect_white_12,
+            largeIcon = R.drawable.fc_ic_remind_notify,
+            decorIcon = R.mipmap.fc_home_card_bs,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_BLOOD_PRESSURE-> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.tr_bg_rect_white_12,
-            largeIcon = R.drawable.tr_ic_remind_notify,
-            decorIcon = R.mipmap.tr_home_card_bp,
+            background = R.drawable.fc_bg_rect_white_12,
+            largeIcon = R.drawable.fc_ic_remind_notify,
+            decorIcon = R.mipmap.fc_home_card_bp,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_MEDICATION -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.tr_bg_rect_white_12,
-            largeIcon = R.drawable.tr_ic_remind_notify,
-            decorIcon = R.mipmap.tr_ic_meds_notify,
+            background = R.drawable.fc_bg_rect_white_12,
+            largeIcon = R.drawable.fc_ic_remind_notify,
+            decorIcon = R.mipmap.fc_ic_meds_notify,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_HYDRATION -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.tr_bg_rect_white_12,
-            largeIcon = R.drawable.tr_ic_remind_notify,
-            decorIcon = R.mipmap.tr_home_card_water,
+            background = R.drawable.fc_bg_rect_white_12,
+            largeIcon = R.drawable.fc_ic_remind_notify,
+            decorIcon = R.mipmap.fc_home_card_water,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_HEART_RATE -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.tr_bg_rect_white_12,
-            largeIcon = R.drawable.tr_ic_remind_notify,
-            decorIcon = R.mipmap.tr_home_hero_heart,
+            background = R.drawable.fc_bg_rect_white_12,
+            largeIcon = R.drawable.fc_ic_remind_notify,
+            decorIcon = R.mipmap.fc_home_hero_heart,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_BMI -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.tr_bg_rect_white_12,
-            largeIcon = R.drawable.tr_ic_remind_notify,
-            decorIcon = R.mipmap.tr_home_card_weight,
+            background = R.drawable.fc_bg_rect_white_12,
+            largeIcon = R.drawable.fc_ic_remind_notify,
+            decorIcon = R.mipmap.fc_home_card_weight,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         AlarmRecord.TYPE_CHOLESTEROL -> NotificationResources(
             smallIcon = R.drawable.ic_notification_bs,
-            background = R.drawable.tr_bg_rect_white_12,
-            largeIcon = R.drawable.tr_ic_remind_notify,
-            decorIcon = R.mipmap.tr_home_card_cholesterol,
+            background = R.drawable.fc_bg_rect_white_12,
+            largeIcon = R.drawable.fc_ic_remind_notify,
+            decorIcon = R.mipmap.fc_home_card_cholesterol,
             btnTextColor = com.healthtracker.framework.R.color.white
         )
         else -> null

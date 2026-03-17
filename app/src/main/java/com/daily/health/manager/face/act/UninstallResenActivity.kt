@@ -39,7 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.TrActivityUninstallResenBinding
+import com.daily.health.manager.databinding.FcActivityUninstallResenBinding
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.utils.loadInterstitial
 import com.daily.health.manager.utils.loadNative
@@ -51,9 +51,9 @@ import net.corekit.monetize.ui.NativeAdStyle
 import com.daily.health.manager.face.tracker.trackPage1DontClick
 import com.daily.health.manager.face.tracker.trackPage1UninstallClick
 
-class UninstallResenActivity : BaseMVVMActivity<BaseViewModel, TrActivityUninstallResenBinding>() {
+class UninstallResenActivity : BaseMVVMActivity<BaseViewModel, FcActivityUninstallResenBinding>() {
 
-    override fun createViewBinding() = TrActivityUninstallResenBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityUninstallResenBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -137,10 +137,10 @@ private fun UninstallResenScreen(
     val primaryColor = colorResource(R.color.c5)
 
     val features = listOf(
-        FeatureItem(R.drawable.tr_ic_bs_primery, R.string.tr_uninstall_feature_blood_sugar),
-        FeatureItem(R.drawable.tr_ic_statistical, R.string.tr_uninstall_feature_trend),
-        FeatureItem(R.drawable.tr_ic_meds, R.string.tr_uninstall_feature_reminder),
-        FeatureItem(R.drawable.tr_ic_tips, R.string.tr_uninstall_feature_insights)
+        FeatureItem(R.drawable.fc_ic_bs_primery, R.string.fc_uninstall_feature_blood_sugar),
+        FeatureItem(R.drawable.fc_ic_statistical, R.string.fc_uninstall_feature_trend),
+        FeatureItem(R.drawable.fc_ic_meds, R.string.fc_uninstall_feature_reminder),
+        FeatureItem(R.drawable.fc_ic_tips, R.string.fc_uninstall_feature_insights)
     )
 
     Column(
@@ -164,7 +164,7 @@ private fun UninstallResenScreen(
 
             // Illustration
             Image(
-                painter = painterResource(R.drawable.tr_ic_placeholder_uninstall),
+                painter = painterResource(R.drawable.fc_ic_placeholder_uninstall),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -175,7 +175,7 @@ private fun UninstallResenScreen(
 
             // Title
             Text(
-                text = stringResource(R.string.tr_uninstall_lose_access_title),
+                text = stringResource(R.string.fc_uninstall_lose_access_title),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = colorResource(R.color.t1),
@@ -221,7 +221,7 @@ private fun UninstallResenScreen(
                 )
             ) {
                 Text(
-                    text = stringResource(R.string.tr_uninstall_btn_dont_uninstall),
+                    text = stringResource(R.string.fc_uninstall_btn_dont_uninstall),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -232,7 +232,7 @@ private fun UninstallResenScreen(
 
             // Uninstall button (secondary - text only)
             Text(
-                text = stringResource(R.string.tr_uninstall_btn_uninstall),
+                text = stringResource(R.string.fc_uninstall_btn_uninstall),
                 fontSize = 14.sp,
                 color = colorResource(com.android.common.weather.R.color.color_999),
                 modifier = Modifier
@@ -267,7 +267,7 @@ private fun TopBar(onBack: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.tr_ic_back),
+                    painter = painterResource(R.drawable.fc_ic_back),
                     contentDescription = "back",
                     tint = Color.Unspecified
                 )

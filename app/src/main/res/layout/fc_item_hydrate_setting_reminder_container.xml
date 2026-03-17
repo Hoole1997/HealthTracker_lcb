@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_12"
+    android:background="@drawable/fc_bg_rect_white_12"
+    android:padding="@dimen/dp_16">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_reminder_title"
+        style="@style/TextViewFont_RobotoBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fc_hydration_reminder_time"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_reminder_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fc_hydration_reminder_edit"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_reminder_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="14sp"
+        android:textColor="#02BC77"
+        android:textStyle="bold"/>
+
+    <!-- 空视图：当没有任何提醒时间时显示 -->
+    <LinearLayout
+        android:id="@+id/emptyReminderView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/tv_reminder_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/imgEmptyReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/fc_ic_hydrate_no_reminder"
+            android:contentDescription="@string/fc_hydration_reminder_time"/>
+
+        <TextView
+            android:id="@+id/tvEmptyReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fc_hydrate_reminder_empty_message"
+            android:textColor="@color/color_999"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcyReminderTimes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintTop_toBottomOf="@id/tv_reminder_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -82,7 +82,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import kotlinx.coroutines.delay
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.TrActivityLanguageSelectBinding
+import com.daily.health.manager.databinding.FcActivityLanguageSelectBinding
 import com.daily.health.manager.face.dialog.SaveCompleteDialog
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.viewmodel.HeartRateMeasureViewModel
@@ -119,7 +119,7 @@ import com.daily.health.manager.face.card.PpgExplainBottomSheet
  * 
  * 通过摄像头和闪光灯进行 PPG 心率测量
  */
-class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBinding>() {
+class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, FcActivityLanguageSelectBinding>() {
 
     companion object {
         const val EXTRA_RESULT_BPM = "result_bpm"
@@ -141,7 +141,7 @@ class HeartRateMeasureScreen : BaseMVVMActivity<BaseViewModel, TrActivityLanguag
     private var showPermissionDenied by mutableStateOf(false)
     private var showPermissionDialog by mutableStateOf(false)
 
-    override fun createViewBinding() = TrActivityLanguageSelectBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityLanguageSelectBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -373,7 +373,7 @@ private fun HeartRateMeasureScreenContent(
     }
 
     // 子页面背景统一跟随全局暖色主题
-    val backgroundColor = colorResource(R.color.tr_subpage_bg)
+    val backgroundColor = colorResource(R.color.fc_subpage_bg)
 
     Column(
         modifier = Modifier
@@ -441,7 +441,7 @@ private fun TopBar(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.tr_ic_back),
+                    painter = painterResource(R.drawable.fc_ic_back),
                     contentDescription = "back",
                     tint = Color.Unspecified,
                 )
@@ -449,7 +449,7 @@ private fun TopBar(
         }
 
         Text(
-            text = stringResource(R.string.tr_measure_title),
+            text = stringResource(R.string.fc_measure_title),
             color = titleColor,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
@@ -463,7 +463,7 @@ private fun TopBar(
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
-                painter = painterResource(R.drawable.tr_ic_questing),
+                painter = painterResource(R.drawable.fc_ic_questing),
                 contentDescription = "help",
                 tint = Color.Unspecified,
             )
@@ -500,7 +500,7 @@ private fun CameraPermissionBottomSheet(
         ) {
             // 图标
             Icon(
-                painter = painterResource(R.drawable.tr_ic_measure_camera),
+                painter = painterResource(R.drawable.fc_ic_measure_camera),
                 contentDescription = null,
                 tint = Color.Unspecified,
                 modifier = Modifier.size(64.dp)
@@ -511,8 +511,8 @@ private fun CameraPermissionBottomSheet(
             // 标题
             Text(
                 text = stringResource(
-                    if (isPermissionDenied) R.string.tr_camera_permission_denied_title
-                    else R.string.tr_camera_permission_title
+                    if (isPermissionDenied) R.string.fc_camera_permission_denied_title
+                    else R.string.fc_camera_permission_title
                 ),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -525,8 +525,8 @@ private fun CameraPermissionBottomSheet(
             // 描述
             Text(
                 text = stringResource(
-                    if (isPermissionDenied) R.string.tr_camera_permission_denied_desc
-                    else R.string.tr_camera_permission_desc
+                    if (isPermissionDenied) R.string.fc_camera_permission_denied_desc
+                    else R.string.fc_camera_permission_desc
                 ),
                 fontSize = 14.sp,
                 color = colorResource(R.color.color_666),
@@ -539,8 +539,8 @@ private fun CameraPermissionBottomSheet(
             // 主要按钮
             PrimaryButton(
                 text = stringResource(
-                    if (isPermissionDenied) R.string.tr_go_to_settings
-                    else R.string.tr_grant_permission
+                    if (isPermissionDenied) R.string.fc_go_to_settings
+                    else R.string.fc_grant_permission
                 ),
                 onClick = if (isPermissionDenied) onGoToSettings else onGrantPermission
             )
@@ -549,7 +549,7 @@ private fun CameraPermissionBottomSheet(
 
             // 取消按钮
             Text(
-                text = stringResource(R.string.tr_cancel),
+                text = stringResource(R.string.fc_cancel),
                 fontSize = 14.sp,
                 color = colorResource(R.color.color_666),
                 modifier = Modifier
@@ -622,7 +622,7 @@ private fun MeasureContent(
 
                 // 免责声明文案
                 Text(
-                    text = stringResource(R.string.tr_measure_disclaimer),
+                    text = stringResource(R.string.fc_measure_disclaimer),
                     fontSize = 14.sp,
                     color = colorResource(R.color.t1),
                     textAlign = TextAlign.Center,
@@ -635,7 +635,7 @@ private fun MeasureContent(
 
                 // 手指引导提示文案
                 Text(
-                    text = stringResource(R.string.tr_measure_finger_instruction),
+                    text = stringResource(R.string.fc_measure_finger_instruction),
                     fontSize = 14.sp,
                     color = colorResource(R.color.color_666),
                     textAlign = TextAlign.Center,
@@ -687,7 +687,7 @@ private fun MeasureContent(
 
                     // 绿色勾选图标 - 底部居中
                     Image(
-                        painter = painterResource(R.drawable.tr_ic_checked),
+                        painter = painterResource(R.drawable.fc_ic_checked),
                         contentDescription = null,
                         modifier = Modifier
                             .size(66.dp).offset(y = 40.dp)
@@ -716,7 +716,7 @@ private fun MeasureContent(
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = stringResource(R.string.tr_stabilizing_tip),
+                            text = stringResource(R.string.fc_stabilizing_tip),
                             fontSize = 13.sp,
                             color = colorResource(R.color.color_666),
                             lineHeight = 18.sp
@@ -772,7 +772,7 @@ private fun MeasureContent(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = stringResource(R.string.tr_measure_complete),
+                    text = stringResource(R.string.fc_measure_complete),
                     fontSize = 18.sp,
                     color = colorResource(R.color.c5),
                     fontWeight = FontWeight.Bold,
@@ -926,7 +926,7 @@ private fun HeartIconArea(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             BpmValueText(text = measuredBpm.toString())
                             Text(
-                                text = stringResource(R.string.tr_bpm),
+                                text = stringResource(R.string.fc_bpm),
                                 fontSize = 12.sp,
                                 color = Color.White
                             )
@@ -984,8 +984,8 @@ private fun StartMeasureButton(onClick: () -> Unit) {
     ) {
         // 播放图标（三角形）
         Icon(
-            painter = painterResource(R.drawable.tr_ic_play),
-            contentDescription = stringResource(R.string.tr_start_measure),
+            painter = painterResource(R.drawable.fc_ic_play),
+            contentDescription = stringResource(R.string.fc_start_measure),
             tint = Color.White,
             modifier = Modifier.size(28.dp)
         )
@@ -1215,7 +1215,7 @@ private fun MeasureStatusHeader() {
     
     // "Measuring..."
     Text(
-        text = stringResource(R.string.tr_stabilizing_title),
+        text = stringResource(R.string.fc_stabilizing_title),
         fontSize = 16.sp,
         color = colorResource(R.color.t1),
         fontWeight = FontWeight.Bold,
@@ -1226,7 +1226,7 @@ private fun MeasureStatusHeader() {
     
     // "Great! Waiting for the reading..."
     Text(
-        text = stringResource(R.string.tr_stabilizing_subtitle),
+        text = stringResource(R.string.fc_stabilizing_subtitle),
         fontSize = 14.sp,
         color = colorResource(R.color.color_666),
         textAlign = TextAlign.Center,

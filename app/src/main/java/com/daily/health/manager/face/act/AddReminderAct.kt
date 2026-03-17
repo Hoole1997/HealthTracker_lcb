@@ -15,7 +15,7 @@ import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.data.utils.DateTimeUtils
-import com.daily.health.manager.databinding.TrActivityAddReminderBinding
+import com.daily.health.manager.databinding.FcActivityAddReminderBinding
 import com.daily.health.manager.face.adapter.ReminderTimeAdapter
 import com.daily.health.manager.face.dialog.AlarmTimeSelectDialog
 import com.daily.health.manager.face.dialog.DosesTimesDialog
@@ -31,7 +31,7 @@ import com.healthtracker.framework.ext.hideSoftKeyBoard
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.AdPosition
 
-class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddReminderBinding>(){
+class AddReminderAct : BaseInterActivity<AddReminderViewModel, FcActivityAddReminderBinding>(){
 
 
     private val startForProfileImageResult =
@@ -59,7 +59,7 @@ class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddRemi
 
     private lateinit var timeAdapter: ReminderTimeAdapter
 
-    override fun createViewBinding() = TrActivityAddReminderBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityAddReminderBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = AddReminderViewModel::class.java
 
@@ -205,10 +205,10 @@ class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddRemi
             // 更新保存按钮状态和文字
             btnSave.isEnabled = state.isFormValid
             btnSave.text =
-                if (state.isEditMode) getString(R.string.tr_save_changes) else getString(R.string.tr_save)
+                if (state.isEditMode) getString(R.string.fc_save_changes) else getString(R.string.fc_save)
 
             Glide.with(this@AddReminderAct)
-                .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.tr_ic_camera))
+                .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.fc_ic_camera))
                 .load(state.coverUri)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(ivImg)
@@ -224,7 +224,7 @@ class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddRemi
 
             is SaveState.Loading -> {
                 mViewBind.btnSave.isEnabled = false
-                mViewBind.btnSave.text = getString(R.string.tr_saving)
+                mViewBind.btnSave.text = getString(R.string.fc_saving)
             }
 
             is SaveState.Success -> {

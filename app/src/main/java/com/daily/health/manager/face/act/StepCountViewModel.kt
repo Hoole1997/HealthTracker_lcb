@@ -119,7 +119,7 @@ class StepCountViewModel : BaseViewModel() {
         )
 
         return ChartPayload(
-            labels = getText(R.array.tr_week_simple).toList(), // Use the centralized utility method
+            labels = getText(R.array.fc_week_simple).toList(), // Use the centralized utility method
             xValues = xValues,
             yValues = yValues,
             stats = stats,

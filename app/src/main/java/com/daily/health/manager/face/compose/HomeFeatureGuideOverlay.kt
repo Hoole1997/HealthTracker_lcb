@@ -109,9 +109,9 @@ private fun HomeGuideStep.layoutSpec(): HomeGuideLayoutSpec = when (this) {
         messageTopFromHighlightBottom = 73f,
         buttonLeft = 141f,
         buttonTopFromHighlightBottom = 101f,
-        buttonTextRes = R.string.tr_next,
-        messageRes = R.string.tr_guide_hr_des,
-        accentRes = R.string.tr_heart_rate,
+        buttonTextRes = R.string.fc_next,
+        messageRes = R.string.fc_guide_hr_des,
+        accentRes = R.string.fc_heart_rate,
     )
 
     HomeGuideStep.BLOOD_SUGAR -> HomeGuideLayoutSpec(
@@ -120,9 +120,9 @@ private fun HomeGuideStep.layoutSpec(): HomeGuideLayoutSpec = when (this) {
         messageTopFromHighlightBottom = 69f,
         buttonLeft = 131f,
         buttonTopFromHighlightBottom = 99f,
-        buttonTextRes = R.string.tr_next,
-        messageRes = R.string.tr_guide_bs_des,
-        accentRes = R.string.tr_blood_suger,
+        buttonTextRes = R.string.fc_next,
+        messageRes = R.string.fc_guide_bs_des,
+        accentRes = R.string.fc_blood_suger,
     )
 
     HomeGuideStep.BLOOD_PRESSURE -> HomeGuideLayoutSpec(
@@ -131,9 +131,9 @@ private fun HomeGuideStep.layoutSpec(): HomeGuideLayoutSpec = when (this) {
         messageTopFromHighlightBottom = 69f,
         buttonLeft = 177f,
         buttonTopFromHighlightBottom = 99f,
-        buttonTextRes = R.string.tr_onboarding_start,
-        messageRes = R.string.tr_guide_bp_des,
-        accentRes = R.string.tr_blood_pressure,
+        buttonTextRes = R.string.fc_onboarding_start,
+        messageRes = R.string.fc_guide_bp_des,
+        accentRes = R.string.fc_blood_pressure,
     )
 }
 

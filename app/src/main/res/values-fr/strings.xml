@@ -1,164 +1,164 @@
 <resources>
     <string name="app_name">Glycémie &amp; Suivi Tension</string>
-    <string name="tr_meds_manager">Gestionnaire de Médicaments</string>
-    <string name="tr_blood_suger">Glycémie</string>
-    <string name="tr_blood_pressure">Tension Artérielle</string>
-    <string name="tr_home">Accueil</string>
-    <string name="tr_home_heart_subtitle">Faites la première mesure aujourd\'hui !</string>
-    <string name="tr_record">Enregister</string>
-    <string name="tr_meds">Médicaments</string>
-    <string name="tr_insights">Analyses</string>
-    <string name="tr_tracker">Suivi</string>
-    <string name="tr_settings">Paramètres</string>
-    <string name="tr_record_now">Enregistrer maintenant</string>
-    <string name="tr_rate_us">Évaluez-nous</string>
-    <string name="tr_last_report">Dernier rapport:</string>
-    <string name="tr_test_and_record_hr">Tester et enregistrer le rythme cardiaque</string>
-    <string name="tr_measure_now">Mesurer</string>
-    <string name="tr_measure_title">Mesurer</string>
-    <string name="tr_measure_finger_instruction">Veuillez placer votre doigt sur la caméra et ne le retirez pas jusqu\'à la fin.</string>
-    <string name="tr_camera_permission_title">Autorisation de la caméra requise</string>
-    <string name="tr_camera_permission_desc">Pour mesurer votre rythme cardiaque, nous avons besoin d\'accéder à votre caméra. Placez votre doigt sur l\'objectif de la caméra pour détecter votre pouls.</string>
-    <string name="tr_camera_permission_denied_title">Autorisation de la caméra refusée</string>
-    <string name="tr_camera_permission_denied_desc">Veuillez activer l\'autorisation de la caméra dans les paramètres pour utiliser la fonction de mesure du rythme cardiaque.</string>
-    <string name="tr_grant_permission">Accorder l\'autorisation</string>
-    <string name="tr_go_to_settings">Aller aux paramètres</string>
-    <string name="tr_start_measure">Commencer la mesure</string>
-    <string name="tr_measure_disclaimer">Les mesures du rythme cardiaque via la caméra avec flash sont uniquement à titre indicatif et peuvent être inexactes. Non destiné à un usage médical. Pour des données précises, veuillez utiliser un équipement médical professionnel.</string>
-    <string name="tr_ppg_tips_title">Conseils de mesure</string>
-    <string name="tr_ppg_tips_subtitle">Lorsque le doigt devient <font color="#FB4248">rouge</font>, vous faites bien</string>
-    <string name="tr_ppg_tips_step1">Placez votre doigt sur la caméra, mais évitez le flash car il peut devenir chaud.</string>
-    <string name="tr_ppg_tips_step2">Restez calme et immobile jusqu\'à ce que la mesure soit terminée!</string>
-    <string name="tr_ppg_tips_step3">Assurez-vous d\'être dans un endroit bien éclairé, ou gardez le flash allumé pour de meilleurs résultats.</string>
-    <string name="tr_cancel">Annuler</string>
-    <string name="tr_stabilizing_title">Mesure en cours…</string>
-    <string name="tr_stabilizing_subtitle">Parfait! En attente de données stabilisées…</string>
-    <string name="tr_stabilizing_tip">Lorsque le doigt devient rouge, cela signifie que vous faites bien.</string>
-    <string name="tr_measure_complete">Mesure terminée!</string>
-    <string name="tr_history">Historique</string>
-    <string name="tr_click_to_record">Cliquer pour enregistrer</string>
-    <string name="tr_new_record">Nouvel enregistrement</string>
-    <string name="tr_edit_record">Modifier l\'enregistrement</string>
-    <string name="tr_status">Statut</string>
-    <string name="tr_text_default">Par défaut</string>
+    <string name="fc_meds_manager">Gestionnaire de Médicaments</string>
+    <string name="fc_blood_suger">Glycémie</string>
+    <string name="fc_blood_pressure">Tension Artérielle</string>
+    <string name="fc_home">Accueil</string>
+    <string name="fc_home_heart_subtitle">Faites la première mesure aujourd\'hui !</string>
+    <string name="fc_record">Enregister</string>
+    <string name="fc_meds">Médicaments</string>
+    <string name="fc_insights">Analyses</string>
+    <string name="fc_tracker">Suivi</string>
+    <string name="fc_settings">Paramètres</string>
+    <string name="fc_record_now">Enregistrer maintenant</string>
+    <string name="fc_rate_us">Évaluez-nous</string>
+    <string name="fc_last_report">Dernier rapport:</string>
+    <string name="fc_test_and_record_hr">Tester et enregistrer le rythme cardiaque</string>
+    <string name="fc_measure_now">Mesurer</string>
+    <string name="fc_measure_title">Mesurer</string>
+    <string name="fc_measure_finger_instruction">Veuillez placer votre doigt sur la caméra et ne le retirez pas jusqu\'à la fin.</string>
+    <string name="fc_camera_permission_title">Autorisation de la caméra requise</string>
+    <string name="fc_camera_permission_desc">Pour mesurer votre rythme cardiaque, nous avons besoin d\'accéder à votre caméra. Placez votre doigt sur l\'objectif de la caméra pour détecter votre pouls.</string>
+    <string name="fc_camera_permission_denied_title">Autorisation de la caméra refusée</string>
+    <string name="fc_camera_permission_denied_desc">Veuillez activer l\'autorisation de la caméra dans les paramètres pour utiliser la fonction de mesure du rythme cardiaque.</string>
+    <string name="fc_grant_permission">Accorder l\'autorisation</string>
+    <string name="fc_go_to_settings">Aller aux paramètres</string>
+    <string name="fc_start_measure">Commencer la mesure</string>
+    <string name="fc_measure_disclaimer">Les mesures du rythme cardiaque via la caméra avec flash sont uniquement à titre indicatif et peuvent être inexactes. Non destiné à un usage médical. Pour des données précises, veuillez utiliser un équipement médical professionnel.</string>
+    <string name="fc_ppg_tips_title">Conseils de mesure</string>
+    <string name="fc_ppg_tips_subtitle">Lorsque le doigt devient <font color="#FB4248">rouge</font>, vous faites bien</string>
+    <string name="fc_ppg_tips_step1">Placez votre doigt sur la caméra, mais évitez le flash car il peut devenir chaud.</string>
+    <string name="fc_ppg_tips_step2">Restez calme et immobile jusqu\'à ce que la mesure soit terminée!</string>
+    <string name="fc_ppg_tips_step3">Assurez-vous d\'être dans un endroit bien éclairé, ou gardez le flash allumé pour de meilleurs résultats.</string>
+    <string name="fc_cancel">Annuler</string>
+    <string name="fc_stabilizing_title">Mesure en cours…</string>
+    <string name="fc_stabilizing_subtitle">Parfait! En attente de données stabilisées…</string>
+    <string name="fc_stabilizing_tip">Lorsque le doigt devient rouge, cela signifie que vous faites bien.</string>
+    <string name="fc_measure_complete">Mesure terminée!</string>
+    <string name="fc_history">Historique</string>
+    <string name="fc_click_to_record">Cliquer pour enregistrer</string>
+    <string name="fc_new_record">Nouvel enregistrement</string>
+    <string name="fc_edit_record">Modifier l\'enregistrement</string>
+    <string name="fc_status">Statut</string>
+    <string name="fc_text_default">Par défaut</string>
 
     <!-- Niveaux de glycémie -->
-    <string name="tr_blood_sugar_level_low">Bas</string>
-    <string name="tr_blood_sugar_level_normal">Normal</string>
-    <string name="tr_blood_sugar_level_prediabetes">Prédiabète</string>
-    <string name="tr_blood_sugar_level_diabetes">Diabète</string>
+    <string name="fc_blood_sugar_level_low">Bas</string>
+    <string name="fc_blood_sugar_level_normal">Normal</string>
+    <string name="fc_blood_sugar_level_prediabetes">Prédiabète</string>
+    <string name="fc_blood_sugar_level_diabetes">Diabète</string>
 
     <!-- Niveaux de cholestérol -->
-    <string name="tr_cholesterol_level_normal">Normal</string>
-    <string name="tr_cholesterol_level_normal_desc">CT &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
-    <string name="tr_cholesterol_level_near_optimal">Presque optimal</string>
-    <string name="tr_cholesterol_level_near_optimal_desc">CT &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
-    <string name="tr_cholesterol_level_borderline">Limite</string>
-    <string name="tr_cholesterol_level_borderline_desc">CT 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
-    <string name="tr_cholesterol_level_high">Élevé</string>
-    <string name="tr_cholesterol_level_high_desc">CT ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
-    <string name="tr_cholesterol_level_very_high">Très élevé</string>
-    <string name="tr_cholesterol_level_very_high_desc">CT ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
-    <string name="tr_cholesterol_level_unknown">Inconnu</string>
-    <string name="tr_cholesterol_level_unknown_desc">Données insuffisantes pour déterminer le niveau de cholestérol</string>
-    <string name="tr_cholesterol_hdl_label">HDL</string>
-    <string name="tr_cholesterol_ldl_label">LDL</string>
-    <string name="tr_cholesterol_tg_label">TG</string>
+    <string name="fc_cholesterol_level_normal">Normal</string>
+    <string name="fc_cholesterol_level_normal_desc">CT &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
+    <string name="fc_cholesterol_level_near_optimal">Presque optimal</string>
+    <string name="fc_cholesterol_level_near_optimal_desc">CT &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
+    <string name="fc_cholesterol_level_borderline">Limite</string>
+    <string name="fc_cholesterol_level_borderline_desc">CT 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
+    <string name="fc_cholesterol_level_high">Élevé</string>
+    <string name="fc_cholesterol_level_high_desc">CT ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
+    <string name="fc_cholesterol_level_very_high">Très élevé</string>
+    <string name="fc_cholesterol_level_very_high_desc">CT ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
+    <string name="fc_cholesterol_level_unknown">Inconnu</string>
+    <string name="fc_cholesterol_level_unknown_desc">Données insuffisantes pour déterminer le niveau de cholestérol</string>
+    <string name="fc_cholesterol_hdl_label">HDL</string>
+    <string name="fc_cholesterol_ldl_label">LDL</string>
+    <string name="fc_cholesterol_tg_label">TG</string>
 
     <!-- Niveaux de tension artérielle -->
-    <string name="tr_blood_pressure_level_low">Hypotension</string>
-    <string name="tr_blood_pressure_level_normal">Normal</string>
-    <string name="tr_blood_pressure_level_elevated">Élevé</string>
-    <string name="tr_blood_pressure_level_high_stage_1">Hypertension stade 1</string>
-    <string name="tr_blood_pressure_level_high_stage_2">Hypertension stade 2</string>
-    <string name="tr_blood_pressure_level_hypertensive_crisis">Crise hypertensive</string>
+    <string name="fc_blood_pressure_level_low">Hypotension</string>
+    <string name="fc_blood_pressure_level_normal">Normal</string>
+    <string name="fc_blood_pressure_level_elevated">Élevé</string>
+    <string name="fc_blood_pressure_level_high_stage_1">Hypertension stade 1</string>
+    <string name="fc_blood_pressure_level_high_stage_2">Hypertension stade 2</string>
+    <string name="fc_blood_pressure_level_hypertensive_crisis">Crise hypertensive</string>
 
     <!-- Plage de tension artérielle court -->
-    <string name="tr_blood_pressure_range_low_short">SYS %1$s ou DIA %2$s</string>
-    <string name="tr_blood_pressure_range_normal_short">SYS %1$s et DIA %2$s</string>
-    <string name="tr_blood_pressure_range_elevated_short">SYS %1$s et DIA %2$s</string>
-    <string name="tr_blood_pressure_range_high_stage_1_short">SYS %1$s ou DIA %2$s</string>
-    <string name="tr_blood_pressure_range_high_stage_2_short">SYS %1$s ou DIA %2$s</string>
-    <string name="tr_blood_pressure_range_hypertensive_crisis_short">SYS %1$s ou DIA %2$s</string>
+    <string name="fc_blood_pressure_range_low_short">SYS %1$s ou DIA %2$s</string>
+    <string name="fc_blood_pressure_range_normal_short">SYS %1$s et DIA %2$s</string>
+    <string name="fc_blood_pressure_range_elevated_short">SYS %1$s et DIA %2$s</string>
+    <string name="fc_blood_pressure_range_high_stage_1_short">SYS %1$s ou DIA %2$s</string>
+    <string name="fc_blood_pressure_range_high_stage_2_short">SYS %1$s ou DIA %2$s</string>
+    <string name="fc_blood_pressure_range_hypertensive_crisis_short">SYS %1$s ou DIA %2$s</string>
 
     <!-- Plage de tension artérielle complet -->
-    <string name="tr_blood_pressure_range_low_full">Systolique %1$s ou Diastolique %2$s</string>
-    <string name="tr_blood_pressure_range_normal_full">Systolique %1$s et Diastolique %2$s</string>
-    <string name="tr_blood_pressure_range_elevated_full">Systolique %1$s et Diastolique %2$s</string>
-    <string name="tr_blood_pressure_range_high_stage_1_full">Systolique %1$s ou Diastolique %2$s</string>
-    <string name="tr_blood_pressure_range_high_stage_2_full">Systolique %1$s ou Diastolique %2$s</string>
-    <string name="tr_blood_pressure_range_hypertensive_crisis_full">Systolique %1$s ou Diastolique %2$s</string>
+    <string name="fc_blood_pressure_range_low_full">Systolique %1$s ou Diastolique %2$s</string>
+    <string name="fc_blood_pressure_range_normal_full">Systolique %1$s et Diastolique %2$s</string>
+    <string name="fc_blood_pressure_range_elevated_full">Systolique %1$s et Diastolique %2$s</string>
+    <string name="fc_blood_pressure_range_high_stage_1_full">Systolique %1$s ou Diastolique %2$s</string>
+    <string name="fc_blood_pressure_range_high_stage_2_full">Systolique %1$s ou Diastolique %2$s</string>
+    <string name="fc_blood_pressure_range_hypertensive_crisis_full">Systolique %1$s ou Diastolique %2$s</string>
 
     <!-- Notifications -->
-    <string name="tr_notification_channel_alarm_name">Rappel Santé</string>
-    <string name="tr_notification_channel_alarm_description">Notifications de rappel de suivi santé</string>
-    <string name="tr_alarm_blood_sugar_content">C\'est l\'heure d\'enregistrer votre glycémie!</string>
+    <string name="fc_notification_channel_alarm_name">Rappel Santé</string>
+    <string name="fc_notification_channel_alarm_description">Notifications de rappel de suivi santé</string>
+    <string name="fc_alarm_blood_sugar_content">C\'est l\'heure d\'enregistrer votre glycémie!</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="tr_bs_notify_desc_fasting_am">Mesurez votre glycémie avant le petit-déjeuner.</string>
-    <string name="tr_bs_notify_desc_post_breakfast">Mesurez votre glycémie 2 heures après le petit-déjeuner.</string>
-    <string name="tr_bs_notify_desc_pre_lunch">C\'est l\'heure de mesurer votre glycémie avant le déjeuner.</string>
-    <string name="tr_bs_notify_desc_post_lunch">Mesurez votre glycémie 2 heures après le déjeuner.</string>
-    <string name="tr_bs_notify_desc_pre_dinner">Mesurez votre glycémie avant le dîner.</string>
-    <string name="tr_bs_notify_desc_post_dinner">Mesurez votre glycémie 2 heures après le dîner.</string>
-    <string name="tr_bs_notify_desc_bedtime">Mesurez votre glycémie avant de vous coucher.</string>
-    <string name="tr_bs_notify_btn_check">Vérifier</string>
+    <string name="fc_bs_notify_desc_fasting_am">Mesurez votre glycémie avant le petit-déjeuner.</string>
+    <string name="fc_bs_notify_desc_post_breakfast">Mesurez votre glycémie 2 heures après le petit-déjeuner.</string>
+    <string name="fc_bs_notify_desc_pre_lunch">C\'est l\'heure de mesurer votre glycémie avant le déjeuner.</string>
+    <string name="fc_bs_notify_desc_post_lunch">Mesurez votre glycémie 2 heures après le déjeuner.</string>
+    <string name="fc_bs_notify_desc_pre_dinner">Mesurez votre glycémie avant le dîner.</string>
+    <string name="fc_bs_notify_desc_post_dinner">Mesurez votre glycémie 2 heures après le dîner.</string>
+    <string name="fc_bs_notify_desc_bedtime">Mesurez votre glycémie avant de vous coucher.</string>
+    <string name="fc_bs_notify_btn_check">Vérifier</string>
 
-    <string name="tr_alarm_blood_pressure_content">C\'est l\'heure d\'enregistrer votre tension artérielle!</string>
+    <string name="fc_alarm_blood_pressure_content">C\'est l\'heure d\'enregistrer votre tension artérielle!</string>
 
     <!-- Statut glycémie -->
-    <string name="tr_blood_sugar_status_default">Par défaut</string>
-    <string name="tr_blood_sugar_status_fasting">À jeun</string>
-    <string name="tr_blood_sugar_status_before_meal">Avant le repas</string>
-    <string name="tr_blood_sugar_status_bedtime">Avant le coucher</string>
-    <string name="tr_blood_sugar_status_after_exercise">Après l\'exercice</string>
-    <string name="tr_blood_sugar_status_one_hour_after_meal">1h après le repas</string>
-    <string name="tr_blood_sugar_status_before_exercise">Avant l\'exercice</string>
-    <string name="tr_blood_sugar_status_two_hours_after_meal">2h après le repas</string>
+    <string name="fc_blood_sugar_status_default">Par défaut</string>
+    <string name="fc_blood_sugar_status_fasting">À jeun</string>
+    <string name="fc_blood_sugar_status_before_meal">Avant le repas</string>
+    <string name="fc_blood_sugar_status_bedtime">Avant le coucher</string>
+    <string name="fc_blood_sugar_status_after_exercise">Après l\'exercice</string>
+    <string name="fc_blood_sugar_status_one_hour_after_meal">1h après le repas</string>
+    <string name="fc_blood_sugar_status_before_exercise">Avant l\'exercice</string>
+    <string name="fc_blood_sugar_status_two_hours_after_meal">2h après le repas</string>
 
     <!-- Boutons -->
-    <string name="tr_save">Enregistrer</string>
-    <string name="tr_save_changes">Enregistrer les modifications</string>
-    <string name="tr_saving">Enregistrement...</string>
-    <string name="tr_date_time"><![CDATA[Date&Heure]]></string>
-    <string name="tr_label">Étiquette</string>
+    <string name="fc_save">Enregistrer</string>
+    <string name="fc_save_changes">Enregistrer les modifications</string>
+    <string name="fc_saving">Enregistrement...</string>
+    <string name="fc_date_time"><![CDATA[Date&Heure]]></string>
+    <string name="fc_label">Étiquette</string>
 
     <!-- Temps relatif -->
-    <string name="tr_latest">Plus récent</string>
-    <string name="tr_just_now">À l\'instant</string>
-    <string name="tr_seconds_ago">Il y a %d secondes</string>
-    <string name="tr_minutes_ago">Il y a %d minutes</string>
-    <string name="tr_hours_ago">Il y a %d heures</string>
-    <string name="tr_days_ago">Il y a %d jours</string>
-    <string name="tr_systolic">Systolique</string>
-    <string name="tr_diastolic">Diastolique</string>
-    <string name="tr_pulse">Pouls</string>
-    <string name="tr_type">Type</string>
-    <string name="tr_bp_range_des">Selon les dernières directives de l\'AHA (American Heart Association)</string>
-    <string name="tr_cholesterol_range_des">CT: Cholestérol Total\nHDL: Lipoprotéine de Haute Densité\nLDL: Lipoprotéine de Basse Densité\nTG: Triglycérides\nNon-HDL: Lipoprotéine Non-Haute Densité\n\nSelon les directives de la Cleveland Clinic.</string>
-    <string name="tr_got_it">Compris</string>
-    <string name="tr_all_types">Tous les types</string>
-    <string name="tr_no_records">Aucun enregistrement</string>
-    <string name="tr_load_fail_please_try_again">Échec du chargement, veuillez réessayer</string>
-    <string name="tr_try_again">Réessayer</string>
-    <string name="tr_delete_record_remind_title">Supprimer cet enregistrement?</string>
-    <string name="tr_tips">Conseils</string>
-    <string name="tr_delete_tips_content">Êtes-vous sûr de vouloir supprimer cet élément?</string>
-    <string name="tr_confirm">Confirmer</string>
-    <string name="tr_delete_record_remind">Impossible de récupérer après la suppression</string>
-    <string name="tr_add_record">Ajouter un enregistrement</string>
+    <string name="fc_latest">Plus récent</string>
+    <string name="fc_just_now">À l\'instant</string>
+    <string name="fc_seconds_ago">Il y a %d secondes</string>
+    <string name="fc_minutes_ago">Il y a %d minutes</string>
+    <string name="fc_hours_ago">Il y a %d heures</string>
+    <string name="fc_days_ago">Il y a %d jours</string>
+    <string name="fc_systolic">Systolique</string>
+    <string name="fc_diastolic">Diastolique</string>
+    <string name="fc_pulse">Pouls</string>
+    <string name="fc_type">Type</string>
+    <string name="fc_bp_range_des">Selon les dernières directives de l\'AHA (American Heart Association)</string>
+    <string name="fc_cholesterol_range_des">CT: Cholestérol Total\nHDL: Lipoprotéine de Haute Densité\nLDL: Lipoprotéine de Basse Densité\nTG: Triglycérides\nNon-HDL: Lipoprotéine Non-Haute Densité\n\nSelon les directives de la Cleveland Clinic.</string>
+    <string name="fc_got_it">Compris</string>
+    <string name="fc_all_types">Tous les types</string>
+    <string name="fc_no_records">Aucun enregistrement</string>
+    <string name="fc_load_fail_please_try_again">Échec du chargement, veuillez réessayer</string>
+    <string name="fc_try_again">Réessayer</string>
+    <string name="fc_delete_record_remind_title">Supprimer cet enregistrement?</string>
+    <string name="fc_tips">Conseils</string>
+    <string name="fc_delete_tips_content">Êtes-vous sûr de vouloir supprimer cet élément?</string>
+    <string name="fc_confirm">Confirmer</string>
+    <string name="fc_delete_record_remind">Impossible de récupérer après la suppression</string>
+    <string name="fc_add_record">Ajouter un enregistrement</string>
 
-    <string name="tr_assistant_answer">Répondre</string>
-    <string name="tr_assistant_neglect">Ignorer</string>
-    <string name="tr_alarm_management">Gestion des alarmes</string>
-    <string name="tr_reminder_for">Rappel pour %s</string>
-    <string name="tr_step_stats_max_title">Maximum</string>
-    <string name="tr_step_stats_min_title">Minimum</string>
-    <string name="tr_step_stats_avg_title">Moyenne</string>
-    <string name="tr_ai_assistant_title">Assistant Santé IA</string>
-    <string name="tr_ai_empty_desc">Cette fonctionnalité est actuellement en développement et n\'est pas encore disponible. Merci de votre compréhension.</string>
+    <string name="fc_assistant_answer">Répondre</string>
+    <string name="fc_assistant_neglect">Ignorer</string>
+    <string name="fc_alarm_management">Gestion des alarmes</string>
+    <string name="fc_reminder_for">Rappel pour %s</string>
+    <string name="fc_step_stats_max_title">Maximum</string>
+    <string name="fc_step_stats_min_title">Minimum</string>
+    <string name="fc_step_stats_avg_title">Moyenne</string>
+    <string name="fc_ai_assistant_title">Assistant Santé IA</string>
+    <string name="fc_ai_empty_desc">Cette fonctionnalité est actuellement en développement et n\'est pas encore disponible. Merci de votre compréhension.</string>
 
-    <string-array name="tr_blood_sugar_labels">
+    <string-array name="fc_blood_sugar_labels">
         <item>Excité</item>
         <item>Après cardio</item>
         <item>Déprimé</item>
@@ -169,7 +169,7 @@
         <item>Après avoir bu</item>
     </string-array>
 
-    <string-array name="tr_blood_pressure_labels">
+    <string-array name="fc_blood_pressure_labels">
         <item>Gauche</item>
         <item>Droite</item>
         <item>Après médicament</item>
@@ -182,16 +182,16 @@
     </string-array>
 
     <!-- Niveaux IMC -->
-    <string name="tr_bmi_level_very_severely_underweight">Insuffisance pondérale très sévère</string>
-    <string name="tr_bmi_level_severely_underweight">Insuffisance pondérale sévère</string>
-    <string name="tr_bmi_level_underweight">Insuffisance pondérale</string>
-    <string name="tr_bmi_level_normal">Normal</string>
-    <string name="tr_bmi_level_overweight">Surpoids</string>
-    <string name="tr_bmi_level_obesity_class_1">Obésité classe I</string>
-    <string name="tr_bmi_level_obesity_class_2">Obésité classe II</string>
-    <string name="tr_bmi_level_obesity_class_3">Obésité classe III</string>
+    <string name="fc_bmi_level_very_severely_underweight">Insuffisance pondérale très sévère</string>
+    <string name="fc_bmi_level_severely_underweight">Insuffisance pondérale sévère</string>
+    <string name="fc_bmi_level_underweight">Insuffisance pondérale</string>
+    <string name="fc_bmi_level_normal">Normal</string>
+    <string name="fc_bmi_level_overweight">Surpoids</string>
+    <string name="fc_bmi_level_obesity_class_1">Obésité classe I</string>
+    <string name="fc_bmi_level_obesity_class_2">Obésité classe II</string>
+    <string name="fc_bmi_level_obesity_class_3">Obésité classe III</string>
 
-    <string-array name="tr_week_simple">
+    <string-array name="fc_week_simple">
         <item>Lun</item>
         <item>Mar</item>
         <item>Mer</item>
@@ -201,7 +201,7 @@
         <item>Dim</item>
     </string-array>
 
-    <string-array name="tr_week_full">
+    <string-array name="fc_week_full">
         <item>Dimanche</item>
         <item>Lundi</item>
         <item>Mardi</item>
@@ -211,204 +211,204 @@
         <item>Samedi</item>
     </string-array>
 
-    <string name="tr_every_weekday">Chaque jour de semaine</string>
-    <string name="tr_every_weekend">Chaque week-end</string>
-    <string name="tr_everyday">Tous les jours</string>
-    <string name="tr_once">Une fois</string>
-    <string name="tr_meds_remind_empty">Aucune donnée pour le moment. Appuyez sur le bouton ci-dessous pour en ajouter.</string>
-    <string name="tr_meds_add">+Ajouter</string>
-    <string name="tr_add">Ajouter</string>
-    <string name="tr_add_reminder">Ajouter un rappel</string>
-    <string name="tr_medication_name">Nom du médicament</string>
-    <string name="tr_enter_medication_name">Entrer le nom du médicament</string>
-    <string name="tr_number_of_daily_doses">Nombre de doses quotidiennes:</string>
-    <string name="tr_notes">Notes</string>
-    <string name="tr_hint_meds_notes">Instructions: Après les repas, 3x par jour.</string>
-    <string name="tr_sync_with_calendar">Synchroniser avec le calendrier</string>
-    <string name="tr_take_now">Prendre maintenant</string>
-    <string name="tr_view_now">Voir maintenant</string>
-    <string name="tr_edit">Modifier</string>
-    <string name="tr_delete">Supprimer</string>
+    <string name="fc_every_weekday">Chaque jour de semaine</string>
+    <string name="fc_every_weekend">Chaque week-end</string>
+    <string name="fc_everyday">Tous les jours</string>
+    <string name="fc_once">Une fois</string>
+    <string name="fc_meds_remind_empty">Aucune donnée pour le moment. Appuyez sur le bouton ci-dessous pour en ajouter.</string>
+    <string name="fc_meds_add">+Ajouter</string>
+    <string name="fc_add">Ajouter</string>
+    <string name="fc_add_reminder">Ajouter un rappel</string>
+    <string name="fc_medication_name">Nom du médicament</string>
+    <string name="fc_enter_medication_name">Entrer le nom du médicament</string>
+    <string name="fc_number_of_daily_doses">Nombre de doses quotidiennes:</string>
+    <string name="fc_notes">Notes</string>
+    <string name="fc_hint_meds_notes">Instructions: Après les repas, 3x par jour.</string>
+    <string name="fc_sync_with_calendar">Synchroniser avec le calendrier</string>
+    <string name="fc_take_now">Prendre maintenant</string>
+    <string name="fc_view_now">Voir maintenant</string>
+    <string name="fc_edit">Modifier</string>
+    <string name="fc_delete">Supprimer</string>
 
-    <string name="tr_medication_reminder_content">C\'est l\'heure de vos médicaments, veuillez les prendre à temps et prenez soin de vous.</string>
+    <string name="fc_medication_reminder_content">C\'est l\'heure de vos médicaments, veuillez les prendre à temps et prenez soin de vous.</string>
 
-    <string name="tr_turn_on">Activer</string>
-    <string name="tr_close">Fermer</string>
-    <string name="tr_notification_grant_permissions">Ne manquez pas une habitude saine</string>
-    <string name="tr_notification_grant_permissions_des">Activez les notifications pour recevoir des rappels en temps voulu pour construire des habitudes saines. Ne manquez rien!</string>
-    <string name="tr_notification_des_blood_sugar">Recevez des rappels en temps voulu pour enregistrer votre glycémie</string>
-    <string name="tr_notification_des_blood_pressure">Recevez des rappels en temps voulu pour enregistrer votre tension artérielle</string>
-    <string name="tr_notification_des_heart_rate">Recevez des rappels en temps voulu pour mesurer votre rythme cardiaque</string>
-    <string name="tr_notification_des_bmi">Recevez des rappels en temps voulu pour contrôler votre IMC</string>
-    <string name="tr_notification_des_cholesterol">Recevez des rappels en temps voulu pour contrôler votre cholestérol</string>
-    <string name="tr_choose_your_gender">Choisissez votre sexe</string>
-    <string name="tr_please_choose_your_gender">Veuillez choisir votre sexe</string>
-    <string name="tr_txt_profile_des">Ceci sera utilisé pour générer vos données personnalisées</string>
-    <string name="tr_male">Homme</string>
-    <string name="tr_female">Femme</string>
-    <string name="tr_choose_your_age">Choisissez votre âge</string>
-    <string name="tr_please_choose_your_age">Veuillez choisir votre âge</string>
-    <string name="tr_text_continue">Continuer</string>
-    <string name="tr_take_a_photo">Prendre une photo</string>
-    <string name="tr_choose_from_photos">Choisir dans les photos</string>
-    <string name="tr_please_select">Veuillez sélectionner</string>
-    <string name="tr_confirm_delete_title">Supprimer l\'étiquette</string>
-    <string name="tr_confirm_delete_message">Êtes-vous sûr de vouloir supprimer cette étiquette?</string>
-    <string name="tr_temp_age">Âge: %1$s</string>
-    <string name="tr_enter_new_label">Entrer une nouvelle étiquette</string>
-    <string name="tr_add_label">Ajouter une étiquette</string>
-    <string name="tr_weight">Poids</string>
-    <string name="tr_height">Taille</string>
-    <string name="tr_create_label_failed">Échec de la création de l\'étiquette</string>
-    <string name="tr_heart_rate">Rythme cardiaque</string>
-    <string name="tr_heart_rate_no_tags">Aucune étiquette</string>
-    <string name="tr_record_not_ready">Chargement de l\'enregistrement</string>
-    <string name="tr_delete_record_failed">Échec de la suppression de l\'enregistrement</string>
-    <string name="tr_cholesterol">Cholestérol</string>
-    <string name="tr_weight_and_bmi"><![CDATA[Poids & IMC]]></string>
+    <string name="fc_turn_on">Activer</string>
+    <string name="fc_close">Fermer</string>
+    <string name="fc_notification_grant_permissions">Ne manquez pas une habitude saine</string>
+    <string name="fc_notification_grant_permissions_des">Activez les notifications pour recevoir des rappels en temps voulu pour construire des habitudes saines. Ne manquez rien!</string>
+    <string name="fc_notification_des_blood_sugar">Recevez des rappels en temps voulu pour enregistrer votre glycémie</string>
+    <string name="fc_notification_des_blood_pressure">Recevez des rappels en temps voulu pour enregistrer votre tension artérielle</string>
+    <string name="fc_notification_des_heart_rate">Recevez des rappels en temps voulu pour mesurer votre rythme cardiaque</string>
+    <string name="fc_notification_des_bmi">Recevez des rappels en temps voulu pour contrôler votre IMC</string>
+    <string name="fc_notification_des_cholesterol">Recevez des rappels en temps voulu pour contrôler votre cholestérol</string>
+    <string name="fc_choose_your_gender">Choisissez votre sexe</string>
+    <string name="fc_please_choose_your_gender">Veuillez choisir votre sexe</string>
+    <string name="fc_txt_profile_des">Ceci sera utilisé pour générer vos données personnalisées</string>
+    <string name="fc_male">Homme</string>
+    <string name="fc_female">Femme</string>
+    <string name="fc_choose_your_age">Choisissez votre âge</string>
+    <string name="fc_please_choose_your_age">Veuillez choisir votre âge</string>
+    <string name="fc_text_continue">Continuer</string>
+    <string name="fc_take_a_photo">Prendre une photo</string>
+    <string name="fc_choose_from_photos">Choisir dans les photos</string>
+    <string name="fc_please_select">Veuillez sélectionner</string>
+    <string name="fc_confirm_delete_title">Supprimer l\'étiquette</string>
+    <string name="fc_confirm_delete_message">Êtes-vous sûr de vouloir supprimer cette étiquette?</string>
+    <string name="fc_temp_age">Âge: %1$s</string>
+    <string name="fc_enter_new_label">Entrer une nouvelle étiquette</string>
+    <string name="fc_add_label">Ajouter une étiquette</string>
+    <string name="fc_weight">Poids</string>
+    <string name="fc_height">Taille</string>
+    <string name="fc_create_label_failed">Échec de la création de l\'étiquette</string>
+    <string name="fc_heart_rate">Rythme cardiaque</string>
+    <string name="fc_heart_rate_no_tags">Aucune étiquette</string>
+    <string name="fc_record_not_ready">Chargement de l\'enregistrement</string>
+    <string name="fc_delete_record_failed">Échec de la suppression de l\'enregistrement</string>
+    <string name="fc_cholesterol">Cholestérol</string>
+    <string name="fc_weight_and_bmi"><![CDATA[Poids & IMC]]></string>
 
     <!-- Rythme cardiaque -->
-    <string name="tr_heart_rate_status_slow">Lent</string>
-    <string name="tr_heart_rate_status_normal">Normal</string>
-    <string name="tr_heart_rate_status_fast">Rapide</string>
-    <string name="tr_heart_rate_desc_slow">Rythme cardiaque au repos &lt; 60 BPM</string>
-    <string name="tr_heart_rate_desc_normal">Rythme cardiaque au repos 60–100 BPM</string>
-    <string name="tr_heart_rate_desc_fast">Rythme cardiaque au repos &gt;100 BPM</string>
-    <string name="tr_total_cholesterol">Cholestérol total %1$s</string>
-    <string name="tr_hdl">HDL</string>
-    <string name="tr_ldl">LDL</string>
-    <string name="tr_tg">TG</string>
-    <string name="tr_non_hdl">Non-HDL</string>
-    <string name="tr_tc_hdl">CT/HDL</string>
-    <string name="tr_ldl_hdl">LDL/HDL</string>
-    <string name="tr_result">Résultat</string>
-    <string name="tr_exclusive_advice">Conseil exclusif</string>
-    <string name="tr_bmi">IMC</string>
-    <string name="tr_watch_ads_to_see_exclusive_advice">Regardez des publicités pour voir des conseils exclusifs.</string>
-    <string name="tr_get_exclusive_tips">Obtenir des conseils exclusifs</string>
-    <string name="tr_kindly_note">Veuillez noter</string>
-    <string name="tr_your_health_data_requires">Vos données de santé nécessitent une attention particulière. Débloquez des recommandations professionnelles personnalisées adaptées à vos mesures</string>
-    <string name="tr_free_unlock">Débloquer gratuitement</string>
-    <string name="tr_skip">Passer</string>
-    <string name="tr_next">Suivant</string>
-    <string name="tr_guide_hr_des">Cliquez pour ajouter votre première mesure de fréquence cardiaque maintenant.</string>
-    <string name="tr_guide_bp_des">Cliquez pour ajouter votre première mesure de pression artérielle maintenant.</string>
-    <string name="tr_guide_bs_des">Cliquez pour ajouter votre première lecture de glycémie maintenant.</string>
-    <string name="tr_target_range">Plage cible</string>
-    <string name="tr_target_range_temp">Plage cible(%1$s)</string>
-    <string name="tr_reset">Réinitialiser</string>
+    <string name="fc_heart_rate_status_slow">Lent</string>
+    <string name="fc_heart_rate_status_normal">Normal</string>
+    <string name="fc_heart_rate_status_fast">Rapide</string>
+    <string name="fc_heart_rate_desc_slow">Rythme cardiaque au repos &lt; 60 BPM</string>
+    <string name="fc_heart_rate_desc_normal">Rythme cardiaque au repos 60–100 BPM</string>
+    <string name="fc_heart_rate_desc_fast">Rythme cardiaque au repos &gt;100 BPM</string>
+    <string name="fc_total_cholesterol">Cholestérol total %1$s</string>
+    <string name="fc_hdl">HDL</string>
+    <string name="fc_ldl">LDL</string>
+    <string name="fc_tg">TG</string>
+    <string name="fc_non_hdl">Non-HDL</string>
+    <string name="fc_tc_hdl">CT/HDL</string>
+    <string name="fc_ldl_hdl">LDL/HDL</string>
+    <string name="fc_result">Résultat</string>
+    <string name="fc_exclusive_advice">Conseil exclusif</string>
+    <string name="fc_bmi">IMC</string>
+    <string name="fc_watch_ads_to_see_exclusive_advice">Regardez des publicités pour voir des conseils exclusifs.</string>
+    <string name="fc_get_exclusive_tips">Obtenir des conseils exclusifs</string>
+    <string name="fc_kindly_note">Veuillez noter</string>
+    <string name="fc_your_health_data_requires">Vos données de santé nécessitent une attention particulière. Débloquez des recommandations professionnelles personnalisées adaptées à vos mesures</string>
+    <string name="fc_free_unlock">Débloquer gratuitement</string>
+    <string name="fc_skip">Passer</string>
+    <string name="fc_next">Suivant</string>
+    <string name="fc_guide_hr_des">Cliquez pour ajouter votre première mesure de fréquence cardiaque maintenant.</string>
+    <string name="fc_guide_bp_des">Cliquez pour ajouter votre première mesure de pression artérielle maintenant.</string>
+    <string name="fc_guide_bs_des">Cliquez pour ajouter votre première lecture de glycémie maintenant.</string>
+    <string name="fc_target_range">Plage cible</string>
+    <string name="fc_target_range_temp">Plage cible(%1$s)</string>
+    <string name="fc_reset">Réinitialiser</string>
 
-    <string name="tr_please_input_complete_data">Veuillez entrer des données complètes</string>
-    <string name="tr_range_order_error">Les valeurs de plage doivent être en ordre croissant</string>
-    <string name="tr_range_bounds_error">Les valeurs de plage sont hors des limites acceptables</string>
-    <string name="tr_reset_all_ranges_confirm">Réinitialiser toutes les plages cibles aux valeurs par défaut?</string>
-    <string name="tr_reset_success">Réinitialisation réussie</string>
-    <string name="tr_save_success">Enregistré avec succès</string>
+    <string name="fc_please_input_complete_data">Veuillez entrer des données complètes</string>
+    <string name="fc_range_order_error">Les valeurs de plage doivent être en ordre croissant</string>
+    <string name="fc_range_bounds_error">Les valeurs de plage sont hors des limites acceptables</string>
+    <string name="fc_reset_all_ranges_confirm">Réinitialiser toutes les plages cibles aux valeurs par défaut?</string>
+    <string name="fc_reset_success">Réinitialisation réussie</string>
+    <string name="fc_save_success">Enregistré avec succès</string>
 
-    <string name="tr_health_service_channel_name">Service de suivi santé</string>
-    <string name="tr_health_service_channel_description">Affiche une notification persistante pour un enregistrement rapide des données de santé</string>
+    <string name="fc_health_service_channel_name">Service de suivi santé</string>
+    <string name="fc_health_service_channel_description">Affiche une notification persistante pour un enregistrement rapide des données de santé</string>
 
-    <string name="tr_exit">Quitter</string>
-    <string name="tr_are_you_sure_exit">Êtes-vous sûr de vouloir quitter l\'application?</string>
-    <string name="tr__7_days">7 jours</string>
-    <string name="tr__1_month">1 mois</string>
-    <string name="tr__3_month">3 mois</string>
-    <string name="tr_select">Sélectionner</string>
-    <string name="tr_avg">Moy.</string>
-    <string name="tr_min">Min</string>
-    <string name="tr_max">Max</string>
-    <string name="tr_all_history">Tout l\'historique</string>
-    <string name="tr_health_tips">Conseils santé</string>
-    <string name="tr_no_date">Pas de date</string>
-    <string name="tr_add_now">Ajouter maintenant</string>
+    <string name="fc_exit">Quitter</string>
+    <string name="fc_are_you_sure_exit">Êtes-vous sûr de vouloir quitter l\'application?</string>
+    <string name="fc__7_days">7 jours</string>
+    <string name="fc__1_month">1 mois</string>
+    <string name="fc__3_month">3 mois</string>
+    <string name="fc_select">Sélectionner</string>
+    <string name="fc_avg">Moy.</string>
+    <string name="fc_min">Min</string>
+    <string name="fc_max">Max</string>
+    <string name="fc_all_history">Tout l\'historique</string>
+    <string name="fc_health_tips">Conseils santé</string>
+    <string name="fc_no_date">Pas de date</string>
+    <string name="fc_add_now">Ajouter maintenant</string>
 
     <!-- Hydratation -->
-    <string name="tr_hydrate">Hydratation</string>
-    <string name="tr_walking">Marche</string>
-    <string name="tr_drink_btn_format">Boire %1$d %2$s</string>
-    <string name="tr_drink_btn_compact_format">Boire %1$d%2$s</string>
-    <string name="tr_hydrate_empty_today">Vous n\'avez pas encore bu d\'eau aujourd\'hui !</string>
-    <string name="tr_hydrate_partial_today_format">Vous n\'avez bu que %1$d%2$s aujourd\'hui.</string>
-    <string name="tr_hydrate_complete_message">Bravo! Vous avez fini votre eau!</string>
-    <string name="tr_done">Terminé</string>
-    <string name="tr_hydrate_empty_record">Pas encore d\'enregistrement d\'hydratation.</string>
-    <string name="tr_daily_water_intake">Apport en eau quotidien</string>
-    <string name="tr_cup_size">Taille du verre</string>
-    <string name="tr_hydration_reminder_time">Heure du rappel d\'hydratation</string>
-    <string name="tr_hydration_reminder_edit">Modifier</string>
-    <string name="tr_hydrate_reminder_delete_confirm_message">Êtes-vous sûr de vouloir supprimer cette alarme?</string>
-    <string name="tr_coming_soon_title">Bientôt disponible!</string>
-    <string name="tr_coming_soon_message">Vous êtes un voyageur du temps! Ce jour n\'est pas encore arrivé. Veuillez sélectionner une date antérieure ou revenir à aujourd\'hui.</string>
-    <string name="tr_back_to_today">RETOUR À AUJOURD\'HUI</string>
-    <string name="tr_hydrate_reminder_exist">L\'heure du rappel a déjà été définie.</string>
-    <string name="tr_hydrate_reminder_empty_message">Vous n\'avez pas encore défini de rappels d\'eau. Commencez à construire votre habitude d\'hydratation en ajoutant votre premier rappel!</string>
-    <string name="tr_alarm_hydration_content">C\'est l\'heure de boire de l\'eau!</string>
-    <string name="tr_alarm_heart_rate_content">C\'est l\'heure de mesurer le rythme cardiaque</string>
-    <string name="tr_alarm_bmi_content">C\'est l\'heure de mesurer l\'IMC</string>
-    <string name="tr_alarm_cholesterol_content">C\'est l\'heure de mesurer le cholestérol</string>
+    <string name="fc_hydrate">Hydratation</string>
+    <string name="fc_walking">Marche</string>
+    <string name="fc_drink_btn_format">Boire %1$d %2$s</string>
+    <string name="fc_drink_btn_compact_format">Boire %1$d%2$s</string>
+    <string name="fc_hydrate_empty_today">Vous n\'avez pas encore bu d\'eau aujourd\'hui !</string>
+    <string name="fc_hydrate_partial_today_format">Vous n\'avez bu que %1$d%2$s aujourd\'hui.</string>
+    <string name="fc_hydrate_complete_message">Bravo! Vous avez fini votre eau!</string>
+    <string name="fc_done">Terminé</string>
+    <string name="fc_hydrate_empty_record">Pas encore d\'enregistrement d\'hydratation.</string>
+    <string name="fc_daily_water_intake">Apport en eau quotidien</string>
+    <string name="fc_cup_size">Taille du verre</string>
+    <string name="fc_hydration_reminder_time">Heure du rappel d\'hydratation</string>
+    <string name="fc_hydration_reminder_edit">Modifier</string>
+    <string name="fc_hydrate_reminder_delete_confirm_message">Êtes-vous sûr de vouloir supprimer cette alarme?</string>
+    <string name="fc_coming_soon_title">Bientôt disponible!</string>
+    <string name="fc_coming_soon_message">Vous êtes un voyageur du temps! Ce jour n\'est pas encore arrivé. Veuillez sélectionner une date antérieure ou revenir à aujourd\'hui.</string>
+    <string name="fc_back_to_today">RETOUR À AUJOURD\'HUI</string>
+    <string name="fc_hydrate_reminder_exist">L\'heure du rappel a déjà été définie.</string>
+    <string name="fc_hydrate_reminder_empty_message">Vous n\'avez pas encore défini de rappels d\'eau. Commencez à construire votre habitude d\'hydratation en ajoutant votre premier rappel!</string>
+    <string name="fc_alarm_hydration_content">C\'est l\'heure de boire de l\'eau!</string>
+    <string name="fc_alarm_heart_rate_content">C\'est l\'heure de mesurer le rythme cardiaque</string>
+    <string name="fc_alarm_bmi_content">C\'est l\'heure de mesurer l\'IMC</string>
+    <string name="fc_alarm_cholesterol_content">C\'est l\'heure de mesurer le cholestérol</string>
     <!-- 通用场景通知权限弹窗 -->
-    <string name="tr_alarm_general_content">C\'est l\'heure d\'un bilan rapide</string>
-    <string name="tr_notification_des_general">Activez les notifications pour recevoir des rappels de santé en temps voulu et ne manquer aucun bilan important.</string>
-    <string name="tr_alarm_delete_confirm_title">Êtes-vous sûr de vouloir supprimer cette alarme?</string>
-    <string name="tr_drink_now">Voir maintenant</string>
-    <string name="tr_hydrate_quick_add">Ajout rapide</string>
-    <string name="tr_step_count">Nombre de pas</string>
-    <string name="tr_today">Aujourd\'hui</string>
-    <string name="tr_today_s_goal">Objectif du jour</string>
-    <string name="tr_step_goal">Objectif de pas</string>
-    <string name="tr_text_steps">Pas</string>
-    <string name="tr_enable_step_count">Autorisation d\'activité physique requise</string>
-    <string name="tr_without_this_authorization_step_count_will_not_work">Sans cette autorisation, la fonction de comptage de pas <font color="#02BC77">ne fonctionnera pas</font></string>
+    <string name="fc_alarm_general_content">C\'est l\'heure d\'un bilan rapide</string>
+    <string name="fc_notification_des_general">Activez les notifications pour recevoir des rappels de santé en temps voulu et ne manquer aucun bilan important.</string>
+    <string name="fc_alarm_delete_confirm_title">Êtes-vous sûr de vouloir supprimer cette alarme?</string>
+    <string name="fc_drink_now">Voir maintenant</string>
+    <string name="fc_hydrate_quick_add">Ajout rapide</string>
+    <string name="fc_step_count">Nombre de pas</string>
+    <string name="fc_today">Aujourd\'hui</string>
+    <string name="fc_today_s_goal">Objectif du jour</string>
+    <string name="fc_step_goal">Objectif de pas</string>
+    <string name="fc_text_steps">Pas</string>
+    <string name="fc_enable_step_count">Autorisation d\'activité physique requise</string>
+    <string name="fc_without_this_authorization_step_count_will_not_work">Sans cette autorisation, la fonction de comptage de pas <font color="#02BC77">ne fonctionnera pas</font></string>
 
-    <string name="tr_go_to_set">CONFIGURER</string>
-    <string name="tr_choose_language">Choisir la langue</string>
-    <string name="tr_language">Langue</string>
-    <string name="tr_target_range_settings">Paramètres de plage cible</string>
-    <string name="tr_personal_info">Informations personnelles</string>
-    <string name="tr_feedback">Retour d\'information</string>
-    <string name="tr_privacy_policy">Politique de confidentialité</string>
-    <string name="tr_splash_privacy_prefix">J\'ai lu la</string>
-    <string name="tr_settings_section_tracking_and_targets">Suivi &amp; Objectifs</string>
-    <string name="tr_settings_section_preferences">Préférences</string>
-    <string name="tr_settings_section_help_and_feedback">Aide &amp; Retour</string>
-    <string name="tr_settings_section_legal_and_policies">Légal &amp; Politiques</string>
-    <string name="tr_settings_version_format">Version %1$s</string>
+    <string name="fc_go_to_set">CONFIGURER</string>
+    <string name="fc_choose_language">Choisir la langue</string>
+    <string name="fc_language">Langue</string>
+    <string name="fc_target_range_settings">Paramètres de plage cible</string>
+    <string name="fc_personal_info">Informations personnelles</string>
+    <string name="fc_feedback">Retour d\'information</string>
+    <string name="fc_privacy_policy">Politique de confidentialité</string>
+    <string name="fc_splash_privacy_prefix">J\'ai lu la</string>
+    <string name="fc_settings_section_tracking_and_targets">Suivi &amp; Objectifs</string>
+    <string name="fc_settings_section_preferences">Préférences</string>
+    <string name="fc_settings_section_help_and_feedback">Aide &amp; Retour</string>
+    <string name="fc_settings_section_legal_and_policies">Légal &amp; Politiques</string>
+    <string name="fc_settings_version_format">Version %1$s</string>
 
-    <string name="tr_please_tell_more">Veuillez nous donner plus de détails afin que nous puissions localiser et résoudre votre problème plus rapidement</string>
-    <string name="tr_upload_screenshots">Télécharger des captures d\'écran</string>
-    <string name="tr_btn_submit">Soumettre</string>
-    <string name="tr_feedback_email_title">Retour %s</string>
-    <string name="tr_feedback_sending_failed">Échec de l\'envoi, veuillez vérifier votre application de messagerie.</string>
-    <string name="tr_max_upload_photos">Vous pouvez télécharger jusqu\'à %d photos</string>
-    <string name="tr_feedback_submitted">Soumis avec succès</string>
-    <string name="tr_last_measurement">Dernière mesure: %1$s</string>
+    <string name="fc_please_tell_more">Veuillez nous donner plus de détails afin que nous puissions localiser et résoudre votre problème plus rapidement</string>
+    <string name="fc_upload_screenshots">Télécharger des captures d\'écran</string>
+    <string name="fc_btn_submit">Soumettre</string>
+    <string name="fc_feedback_email_title">Retour %s</string>
+    <string name="fc_feedback_sending_failed">Échec de l\'envoi, veuillez vérifier votre application de messagerie.</string>
+    <string name="fc_max_upload_photos">Vous pouvez télécharger jusqu\'à %d photos</string>
+    <string name="fc_feedback_submitted">Soumis avec succès</string>
+    <string name="fc_last_measurement">Dernière mesure: %1$s</string>
     <string name="shortcut_uninstall_short">Désinstaller</string>
 
     <!-- Désinstallation -->
-    <string name="tr_uninstall_lose_access_title">Si vous désinstallez cette application, vous perdrez l\'accès aux fonctionnalités suivantes:</string>
-    <string name="tr_uninstall_feature_blood_sugar">Suivi glycémie &amp; tension artérielle</string>
-    <string name="tr_uninstall_feature_trend">Analyse des tendances des données de santé</string>
-    <string name="tr_uninstall_feature_reminder">Rappels de médicaments &amp; santé</string>
-    <string name="tr_uninstall_feature_insights">Analyses santé &amp; conseils personnalisés</string>
-    <string name="tr_uninstall_btn_dont_uninstall">Ne pas désinstaller</string>
-    <string name="tr_uninstall_btn_uninstall">Désinstaller</string>
-    <string name="tr_uninstall_reason_title">Pourquoi désinstaller %1$s?</string>
-    <string name="tr_uninstall_reason_difficult">Difficile à utiliser</string>
-    <string name="tr_uninstall_reason_too_many_ads">Trop de publicités</string>
-    <string name="tr_uninstall_reason_poor_experience">Mauvaise expérience utilisateur</string>
-    <string name="tr_uninstall_reason_similar_installed">Produits similaires déjà installés</string>
-    <string name="tr_uninstall_reason_unable_meet_demand">Ne répond pas aux besoins</string>
-    <string name="tr_uninstall_reason_others">Autres</string>
-    <string name="tr_uninstall_reason_hint">Veuillez entrer la raison pour laquelle vous désinstallez %1$s</string>
-    <string name="tr_permission_denied">Autorisation refusée</string>
+    <string name="fc_uninstall_lose_access_title">Si vous désinstallez cette application, vous perdrez l\'accès aux fonctionnalités suivantes:</string>
+    <string name="fc_uninstall_feature_blood_sugar">Suivi glycémie &amp; tension artérielle</string>
+    <string name="fc_uninstall_feature_trend">Analyse des tendances des données de santé</string>
+    <string name="fc_uninstall_feature_reminder">Rappels de médicaments &amp; santé</string>
+    <string name="fc_uninstall_feature_insights">Analyses santé &amp; conseils personnalisés</string>
+    <string name="fc_uninstall_btn_dont_uninstall">Ne pas désinstaller</string>
+    <string name="fc_uninstall_btn_uninstall">Désinstaller</string>
+    <string name="fc_uninstall_reason_title">Pourquoi désinstaller %1$s?</string>
+    <string name="fc_uninstall_reason_difficult">Difficile à utiliser</string>
+    <string name="fc_uninstall_reason_too_many_ads">Trop de publicités</string>
+    <string name="fc_uninstall_reason_poor_experience">Mauvaise expérience utilisateur</string>
+    <string name="fc_uninstall_reason_similar_installed">Produits similaires déjà installés</string>
+    <string name="fc_uninstall_reason_unable_meet_demand">Ne répond pas aux besoins</string>
+    <string name="fc_uninstall_reason_others">Autres</string>
+    <string name="fc_uninstall_reason_hint">Veuillez entrer la raison pour laquelle vous désinstallez %1$s</string>
+    <string name="fc_permission_denied">Autorisation refusée</string>
 
-    <string name="tr_onboarding_title_1">Suivi de plusieurs indicateurs corporels</string>
-    <string name="tr_onboarding_desc_1">Vérifiez et enregistrez votre fréquence cardiaque à tout moment. Suivez facilement votre forme.</string>
-    <string name="tr_onboarding_title_2">Définissez des rappels de médicaments</string>
-    <string name="tr_onboarding_desc_2">Définissez des rappels de médicaments et recevez des alertes à temps. Ne manquez aucune dose et restez sur la bonne voie.</string>
-    <string name="tr_onboarding_title_3">Rapports détaillés et tendances</string>
-    <string name="tr_onboarding_desc_3">Enregistrez diverses données corporelles et suivez leur évolution au fil du temps pour mieux comprendre vos tendances de santé.</string>
-    <string name="tr_onboarding_title_4">Avertissements</string>
-    <string name="tr_onboarding_desc_4">Pour le suivi quotidien personnel de la pression artérielle uniquement. Ne remplace pas un avis médical professionnel. Consultez un professionnel de santé pour un diagnostic.</string>
-    <string name="tr_onboarding_start">Commencer</string>
+    <string name="fc_onboarding_title_1">Suivi de plusieurs indicateurs corporels</string>
+    <string name="fc_onboarding_desc_1">Vérifiez et enregistrez votre fréquence cardiaque à tout moment. Suivez facilement votre forme.</string>
+    <string name="fc_onboarding_title_2">Définissez des rappels de médicaments</string>
+    <string name="fc_onboarding_desc_2">Définissez des rappels de médicaments et recevez des alertes à temps. Ne manquez aucune dose et restez sur la bonne voie.</string>
+    <string name="fc_onboarding_title_3">Rapports détaillés et tendances</string>
+    <string name="fc_onboarding_desc_3">Enregistrez diverses données corporelles et suivez leur évolution au fil du temps pour mieux comprendre vos tendances de santé.</string>
+    <string name="fc_onboarding_title_4">Avertissements</string>
+    <string name="fc_onboarding_desc_4">Pour le suivi quotidien personnel de la pression artérielle uniquement. Ne remplace pas un avis médical professionnel. Consultez un professionnel de santé pour un diagnostic.</string>
+    <string name="fc_onboarding_start">Commencer</string>
 </resources>

@@ -14,7 +14,7 @@ import com.google.android.flexbox.JustifyContent
 import com.daily.health.manager.R
 import com.daily.health.manager.data.entity.HealthTag
 import com.daily.health.manager.data.enums.TagType
-import com.daily.health.manager.databinding.TrDialogLabelSelectBinding
+import com.daily.health.manager.databinding.FcDialogLabelSelectBinding
 import com.daily.health.manager.face.adapter.HealthTagAdapter
 import com.daily.health.manager.face.dialog.ConfirmDialog.Companion.BUTTON_OK
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
@@ -36,7 +36,7 @@ class HealthTagDialog(
     private val onSave: ((List<HealthTag>) -> Unit)? = null,
     private val onDelete: ((HealthTag) -> Unit)? = null,
     private val onAdd: ((String) -> Unit)? = null
-) : BaseBottomSheetDialogFragment<TrDialogLabelSelectBinding>() {
+) : BaseBottomSheetDialogFragment<FcDialogLabelSelectBinding>() {
 
     constructor() : this(
         tagType = TagType.BLOOD_SUGAR,
@@ -131,7 +131,7 @@ class HealthTagDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = TrDialogLabelSelectBinding.inflate(layoutInflater, parent, attachToParent)
+    ) = FcDialogLabelSelectBinding.inflate(layoutInflater, parent, attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         initRecyclerView()
@@ -177,14 +177,14 @@ class HealthTagDialog(
      */
     private fun updateTagsData() {
         val labelsArray = when (tagType) {
-            TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.tr_blood_sugar_labels)
-            TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.tr_blood_pressure_labels)
+            TagType.BLOOD_SUGAR -> resources.getStringArray(R.array.fc_blood_sugar_labels)
+            TagType.BLOOD_PRESSURE -> resources.getStringArray(R.array.fc_blood_pressure_labels)
             TagType.BMI -> {
-                val resId = resources.getIdentifier("tr_bmi_labels", "array", requireContext().packageName)
+                val resId = resources.getIdentifier("fc_bmi_labels", "array", requireContext().packageName)
                 if (resId != 0) resources.getStringArray(resId) else emptyArray()
             }
             TagType.HEART_RATE -> {
-                val resId = resources.getIdentifier("tr_heart_rate_labels", "array", requireContext().packageName)
+                val resId = resources.getIdentifier("fc_heart_rate_labels", "array", requireContext().packageName)
                 if (resId != 0) resources.getStringArray(resId) else emptyArray()
             }
         }
@@ -211,8 +211,8 @@ class HealthTagDialog(
     private fun handleTagSelection(tag: HealthTag) {
         if (isDeleteMode) {
             ConfirmDialog(
-                getString(R.string.tr_confirm_delete_title),
-                getString(R.string.tr_confirm_delete_message),
+                getString(R.string.fc_confirm_delete_title),
+                getString(R.string.fc_confirm_delete_message),
                 object : DialogListener {
                     override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                         super.onItemClick(dialogFragment, which)
@@ -233,8 +233,8 @@ class HealthTagDialog(
                     }
 
                 },
-                getString(R.string.tr_cancel),
-                getString(R.string.tr_delete)
+                getString(R.string.fc_cancel),
+                getString(R.string.fc_delete)
             ).show(childFragmentManager)
             return
         }

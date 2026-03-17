@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">bill</string>
-    <string name="tr_bill_ad_loading">AD loading…</string>
+    <string name="fc_bill_ad_loading">AD loading…</string>
 </resources>

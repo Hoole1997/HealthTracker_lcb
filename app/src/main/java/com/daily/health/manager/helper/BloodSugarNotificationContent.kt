@@ -36,12 +36,12 @@ object BloodSugarNotificationContent {
      * 复用现有血糖测量状态文案
      */
     fun getTitleResId(sceneId: String?): Int = when (sceneId) {
-        SCENE_FASTING_AM -> R.string.tr_blood_sugar_status_fasting
+        SCENE_FASTING_AM -> R.string.fc_blood_sugar_status_fasting
         SCENE_POST_BREAKFAST, SCENE_POST_LUNCH, SCENE_POST_DINNER -> 
-            R.string.tr_blood_sugar_status_two_hours_after_meal
-        SCENE_PRE_LUNCH, SCENE_PRE_DINNER -> R.string.tr_blood_sugar_status_before_meal
-        SCENE_BEDTIME -> R.string.tr_blood_sugar_status_bedtime
-        else -> R.string.tr_alarm_blood_sugar_content // 默认文案
+            R.string.fc_blood_sugar_status_two_hours_after_meal
+        SCENE_PRE_LUNCH, SCENE_PRE_DINNER -> R.string.fc_blood_sugar_status_before_meal
+        SCENE_BEDTIME -> R.string.fc_blood_sugar_status_bedtime
+        else -> R.string.fc_alarm_blood_sugar_content // 默认文案
     }
 
     /**
@@ -49,18 +49,18 @@ object BloodSugarNotificationContent {
      * 使用新增的场景差异化描述文案
      */
     fun getDescResId(sceneId: String?): Int = when (sceneId) {
-        SCENE_FASTING_AM -> R.string.tr_bs_notify_desc_fasting_am
-        SCENE_POST_BREAKFAST -> R.string.tr_bs_notify_desc_post_breakfast
-        SCENE_PRE_LUNCH -> R.string.tr_bs_notify_desc_pre_lunch
-        SCENE_POST_LUNCH -> R.string.tr_bs_notify_desc_post_lunch
-        SCENE_PRE_DINNER -> R.string.tr_bs_notify_desc_pre_dinner
-        SCENE_POST_DINNER -> R.string.tr_bs_notify_desc_post_dinner
-        SCENE_BEDTIME -> R.string.tr_bs_notify_desc_bedtime
-        else -> R.string.tr_alarm_blood_sugar_content
+        SCENE_FASTING_AM -> R.string.fc_bs_notify_desc_fasting_am
+        SCENE_POST_BREAKFAST -> R.string.fc_bs_notify_desc_post_breakfast
+        SCENE_PRE_LUNCH -> R.string.fc_bs_notify_desc_pre_lunch
+        SCENE_POST_LUNCH -> R.string.fc_bs_notify_desc_post_lunch
+        SCENE_PRE_DINNER -> R.string.fc_bs_notify_desc_pre_dinner
+        SCENE_POST_DINNER -> R.string.fc_bs_notify_desc_post_dinner
+        SCENE_BEDTIME -> R.string.fc_bs_notify_desc_bedtime
+        else -> R.string.fc_alarm_blood_sugar_content
     }
 
     /**
      * 获取通知按钮文案资源 ID
      */
-    fun getButtonResId(): Int = R.string.tr_bs_notify_btn_check
+    fun getButtonResId(): Int = R.string.fc_bs_notify_btn_check
 }

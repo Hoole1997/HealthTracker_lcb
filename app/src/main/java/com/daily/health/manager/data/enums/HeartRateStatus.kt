@@ -16,22 +16,22 @@ enum class HeartRateStatus(
     SLOW(
         minInclusive = null,
         maxInclusive = 59,
-        statusTextRes = R.string.tr_heart_rate_status_slow,
-        descriptionRes = R.string.tr_heart_rate_desc_slow,
+        statusTextRes = R.string.fc_heart_rate_status_slow,
+        descriptionRes = R.string.fc_heart_rate_desc_slow,
         colorRes = R.color.color_low
     ),
     NORMAL(
         minInclusive = 60,
         maxInclusive = 100,
-        statusTextRes = R.string.tr_heart_rate_status_normal,
-        descriptionRes = R.string.tr_heart_rate_desc_normal,
+        statusTextRes = R.string.fc_heart_rate_status_normal,
+        descriptionRes = R.string.fc_heart_rate_desc_normal,
         colorRes = R.color.color_05BA7B
     ),
     FAST(
         minInclusive = 101,
         maxInclusive = null,
-        statusTextRes = R.string.tr_heart_rate_status_fast,
-        descriptionRes = R.string.tr_heart_rate_desc_fast,
+        statusTextRes = R.string.fc_heart_rate_status_fast,
+        descriptionRes = R.string.fc_heart_rate_desc_fast,
         colorRes = R.color.color_FF8000
     );
 

@@ -341,7 +341,7 @@ private fun HeroCard(
                         .background(Color.White.copy(alpha = 0.18f))
                 )
                 Image(
-                    painter = painterResource(id = R.mipmap.tr_home_hero_shadow_figma),
+                    painter = painterResource(id = R.mipmap.fc_home_hero_shadow_figma),
                     contentDescription = null,
                     modifier = Modifier
                         .offset(37.dp * scale, 119.dp * scale)
@@ -440,7 +440,7 @@ private fun HeroCard(
                             modifier = Modifier.offset(y = 2.dp * scale)
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.tr_ic_blood_suger_status_arrow),
+                            painter = painterResource(id = R.drawable.fc_ic_blood_suger_status_arrow),
                             colorFilter = ColorFilter.tint(Color(0xFFEF8756)),
                             contentDescription = null,
                             modifier = Modifier
@@ -617,19 +617,19 @@ private fun FeatureIllustration(
 @Composable
 private fun HeartRateHeroIllustration(modifier: Modifier = Modifier) {
     Image(
-        painter = painterResource(id = R.mipmap.tr_home_hero_heart_figma),
+        painter = painterResource(id = R.mipmap.fc_home_hero_heart_figma),
         contentDescription = null,
         modifier = modifier,
     )
 }
 
 private fun illustrationResForCard(card: HomeFeatureCardUi): Int = when (card) {
-    is HomeFeatureCardUi.BloodSugar -> R.mipmap.tr_home_card_bs_figma
-    is HomeFeatureCardUi.BloodPressure -> R.mipmap.tr_home_card_bp_figma
-    is HomeFeatureCardUi.Bmi -> R.mipmap.tr_home_card_weight_figma
-    is HomeFeatureCardUi.Cholesterol -> R.mipmap.tr_home_card_cholesterol_figma
-    is HomeFeatureCardUi.StepCount -> R.mipmap.tr_home_card_step_figma
-    is HomeFeatureCardUi.Hydrate -> R.mipmap.tr_home_card_water_figma
+    is HomeFeatureCardUi.BloodSugar -> R.mipmap.fc_home_card_bs_figma
+    is HomeFeatureCardUi.BloodPressure -> R.mipmap.fc_home_card_bp_figma
+    is HomeFeatureCardUi.Bmi -> R.mipmap.fc_home_card_weight_figma
+    is HomeFeatureCardUi.Cholesterol -> R.mipmap.fc_home_card_cholesterol_figma
+    is HomeFeatureCardUi.StepCount -> R.mipmap.fc_home_card_step_figma
+    is HomeFeatureCardUi.Hydrate -> R.mipmap.fc_home_card_water_figma
 }
 
 @Composable
@@ -1274,27 +1274,27 @@ private fun HomeDashboardScreenPreview() {
                     unit = "mmol/L",
                 ),
                 HomeFeatureCardUi.BloodPressure(
-                    title = stringResource(R.string.tr_blood_pressure),
+                    title = stringResource(R.string.fc_blood_pressure),
                     value = "108/78",
                     unit = "mmHg",
                 ),
                 HomeFeatureCardUi.Bmi(
-                    title = stringResource(R.string.tr_weight_and_bmi),
+                    title = stringResource(R.string.fc_weight_and_bmi),
                     value = "65",
                     unit = "kg",
                 ),
                 HomeFeatureCardUi.Cholesterol(
-                    title = stringResource(R.string.tr_cholesterol),
+                    title = stringResource(R.string.fc_cholesterol),
                     value = "178",
                     unit = "mg/dL",
                 ),
                 HomeFeatureCardUi.StepCount(
-                    title = stringResource(R.string.tr_step_count),
+                    title = stringResource(R.string.fc_step_count),
                     stepsValue = "1752",
                     stepsUnit = "steps",
                 ),
                 HomeFeatureCardUi.Hydrate(
-                    title = stringResource(R.string.tr_hydrate),
+                    title = stringResource(R.string.fc_hydrate),
                     currentValue = "0",
                     targetValue = "2000",
                     unit = "mL",

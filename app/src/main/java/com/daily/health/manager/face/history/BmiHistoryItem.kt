@@ -42,8 +42,8 @@ class BmiHistoryItem(private val record: BmiRecord) : HistoryRecordItem() {
     }
 
     override fun getStatus(context: Context): String? {
-        val heightStr = context.getString(R.string.tr_height)
-        val weightStr = context.getString(R.string.tr_weight)
+        val heightStr = context.getString(R.string.fc_height)
+        val weightStr = context.getString(R.string.fc_weight)
 
         val heightUnit = BmiUnit.getPreferredHeightUnit()
         val weightUnit = BmiUnit.getPreferredWeightUnit()
@@ -52,9 +52,9 @@ class BmiHistoryItem(private val record: BmiRecord) : HistoryRecordItem() {
         val displayWeight = BmiUnit.formatDisplayWeight(record.weightKg.toFloat(), weightUnit)
 
         val heightUnitLabel = if (heightUnit == BmiUnit.METRIC) context.getString(
-            R.string.tr_unit_cm) else context.getString(R.string.tr_unit_ft_in)
+            R.string.fc_unit_cm) else context.getString(R.string.fc_unit_ft_in)
         val weightUnitLabel = if (weightUnit == BmiUnit.METRIC) context.getString(
-            R.string.tr_unit_kg) else context.getString(R.string.tr_unit_lb)
+            R.string.fc_unit_kg) else context.getString(R.string.fc_unit_lb)
 
         return "$heightStr : $displayHeight$heightUnitLabel  $weightStr : $displayWeight$weightUnitLabel"
     }

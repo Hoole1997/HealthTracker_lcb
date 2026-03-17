@@ -82,7 +82,7 @@ fun PpgExplainBottomSheet(
 
             // 标题
             Text(
-                text = stringResource(R.string.tr_ppg_tips_title),
+                text = stringResource(R.string.fc_ppg_tips_title),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = colorResource(R.color.t1)
@@ -101,11 +101,11 @@ fun PpgExplainBottomSheet(
             Spacer(modifier = Modifier.height(20.dp))
 
             // 步骤列表
-            StepItem(1, stringResource(R.string.tr_ppg_tips_step1))
+            StepItem(1, stringResource(R.string.fc_ppg_tips_step1))
             Spacer(modifier = Modifier.height(20.dp))
-            StepItem(2, stringResource(R.string.tr_ppg_tips_step2))
+            StepItem(2, stringResource(R.string.fc_ppg_tips_step2))
             Spacer(modifier = Modifier.height(20.dp))
-            StepItem(3, stringResource(R.string.tr_ppg_tips_step3))
+            StepItem(3, stringResource(R.string.fc_ppg_tips_step3))
 
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -122,7 +122,7 @@ fun PpgExplainBottomSheet(
                 shape = RoundedCornerShape(28.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.tr_got_it),
+                    text = stringResource(R.string.fc_got_it),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -134,7 +134,7 @@ fun PpgExplainBottomSheet(
 
 @Composable
 private fun SubtitleWithHighlight() {
-    val fullText = stringResource(R.string.tr_ppg_tips_subtitle)
+    val fullText = stringResource(R.string.fc_ppg_tips_subtitle)
     
     // 使用正则提取被 <font color="#FB4248">...</font> 包裹的关键词
     // 注意处理可能存在的转义字符

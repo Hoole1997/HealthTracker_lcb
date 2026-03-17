@@ -3,7 +3,7 @@ package com.daily.health.manager.face.widget
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.PopupWindow
-import com.daily.health.manager.databinding.TrLayoutMedsRemindMenuBinding
+import com.daily.health.manager.databinding.FcLayoutMedsRemindMenuBinding
 import com.healthtracker.framework.ext.click
 
 
@@ -13,7 +13,7 @@ class MedsRemindDropdownMenu(
     private val onSelect: ((MenuAction) -> Unit)? = null
 ) : PopupWindow(context) {
 
-    private val binding = TrLayoutMedsRemindMenuBinding.inflate(LayoutInflater.from(context))
+    private val binding = FcLayoutMedsRemindMenuBinding.inflate(LayoutInflater.from(context))
 
     init {
         setupView()

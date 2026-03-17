@@ -82,7 +82,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val inflater = LayoutInflater.from(context)
-    private val root: View = inflater.inflate(R.layout.tr_layout_weekly_date_selector, this, true)
+    private val root: View = inflater.inflate(R.layout.fc_layout_weekly_date_selector, this, true)
     private val viewPager: ViewPager2 = root.findViewById(R.id.viewPager)
 
     // 自定义属性
@@ -90,8 +90,8 @@ class WeeklyDateSelector @JvmOverloads constructor(
     private var unselectedTextColor: Int = Color.parseColor("#666666")
     private var selectedTextColor: Int = Color.WHITE
     private var selectedWeekTextColor: Int = selectedBackgroundColor
-    private var dayNumberSelectedBackgroundResId: Int = R.drawable.tr_bg_week_day_selected
-    private var dayNumberNormalBackgroundResId: Int = R.drawable.tr_bg_week_day_normal
+    private var dayNumberSelectedBackgroundResId: Int = R.drawable.fc_bg_week_day_selected
+    private var dayNumberNormalBackgroundResId: Int = R.drawable.fc_bg_week_day_normal
     private var dateTextSizePx: Float = 0f
     private var weekdayTextSizePx: Float = 0f
     private var weekStartOnMonday: Boolean = true
@@ -332,7 +332,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
             
             for (i in 0..6) {
                 val dayDate = addDays(weekStartDate, i)
-                val dayView = inflater.inflate(R.layout.tr_item_week_day, null)
+                val dayView = inflater.inflate(R.layout.fc_item_week_day, null)
                 
                 val tvDayNumber: TextView = dayView.findViewById(R.id.tvDayNumber)
                 val tvWeekName: TextView = dayView.findViewById(R.id.tvWeekName)

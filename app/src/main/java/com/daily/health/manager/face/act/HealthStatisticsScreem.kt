@@ -19,7 +19,7 @@ import com.daily.health.manager.data.entity.CholesterolRecord
 import com.daily.health.manager.data.entity.HeartRateRecord
 import com.daily.health.manager.data.enums.BloodSugarStatus
 import com.daily.health.manager.data.enums.getStatusStringRes
-import com.daily.health.manager.databinding.TrActivityHealthStatisticsBinding
+import com.daily.health.manager.databinding.FcActivityHealthStatisticsBinding
 import com.daily.health.manager.tips.HealthMetric
 import com.daily.health.manager.tips.HealthTips
 import com.daily.health.manager.face.chart.HealthLineChartManager
@@ -51,7 +51,7 @@ import java.util.TimeZone
  * Health Statistics Activity
  */
 class HealthStatisticsAct :
-    BaseInterActivity<HealthStatisticsViewModel, TrActivityHealthStatisticsBinding>() {
+    BaseInterActivity<HealthStatisticsViewModel, FcActivityHealthStatisticsBinding>() {
 
     companion object {
         // Intent extra keys - must match ViewModel's SavedStateHandle keys
@@ -111,8 +111,8 @@ class HealthStatisticsAct :
     private var dimensionMenu: StatisticDimensionMenu? = null
     private var currentMetricType: HealthMetric = HealthMetric.BLOOD_SUGAR
 
-    override fun createViewBinding(): TrActivityHealthStatisticsBinding {
-        return TrActivityHealthStatisticsBinding.inflate(layoutInflater)
+    override fun createViewBinding(): FcActivityHealthStatisticsBinding {
+        return FcActivityHealthStatisticsBinding.inflate(layoutInflater)
     }
 
     override fun getVMModelClass(): Class<HealthStatisticsViewModel> {
@@ -359,7 +359,7 @@ class HealthStatisticsAct :
 
     private fun updateStatusDisplay(status: BloodSugarStatus?) {
         val text = if (status == null) {
-            getString(R.string.tr_all_types)
+            getString(R.string.fc_all_types)
         } else {
             getString(getStatusStringRes(status.statusType))
         }
@@ -423,20 +423,20 @@ class HealthStatisticsAct :
             HealthMetric.BLOOD_SUGAR, HealthMetric.HEART_RATE, HealthMetric.BMI -> {
                 val titleRes = when (metricType) {
                     HealthMetric.HEART_RATE -> {
-                        R.string.tr_heart_rate
+                        R.string.fc_heart_rate
                     }
                     HealthMetric.BMI -> {
-                        R.string.tr_weight_and_bmi
+                        R.string.fc_weight_and_bmi
                     }
                     else -> {
-                        R.string.tr_blood_suger
+                        R.string.fc_blood_suger
                     }
                 }
                 mViewBind.tvTitle.text = getString(titleRes)
                 // 显示 Avg/Min/Max，绿色
-                mViewBind.tvAvg.text = getString(R.string.tr_avg)
-                mViewBind.tvMin.text = getString(R.string.tr_min)
-                mViewBind.tvMax.text = getString(R.string.tr_max)
+                mViewBind.tvAvg.text = getString(R.string.fc_avg)
+                mViewBind.tvMin.text = getString(R.string.fc_min)
+                mViewBind.tvMax.text = getString(R.string.fc_max)
 
                 val greenColor = ContextCompat.getColor(this,R.color.c5)
                 mViewBind.tvAvg.setTextColor(greenColor)
@@ -444,10 +444,10 @@ class HealthStatisticsAct :
                 mViewBind.tvMax.setTextColor(greenColor)
             }
             HealthMetric.STEPS -> {
-                mViewBind.tvTitle.text = getString(R.string.tr_step_count)
-                mViewBind.tvAvg.text = getString(R.string.tr_avg)
-                mViewBind.tvMin.text = getString(R.string.tr_min)
-                mViewBind.tvMax.text = getString(R.string.tr_max)
+                mViewBind.tvTitle.text = getString(R.string.fc_step_count)
+                mViewBind.tvAvg.text = getString(R.string.fc_avg)
+                mViewBind.tvMin.text = getString(R.string.fc_min)
+                mViewBind.tvMax.text = getString(R.string.fc_max)
 
                 val greenColor = ContextCompat.getColor(this, R.color.c5)
                 mViewBind.tvAvg.setTextColor(greenColor)
@@ -455,12 +455,12 @@ class HealthStatisticsAct :
                 mViewBind.tvMax.setTextColor(greenColor)
             }
             HealthMetric.BLOOD_PRESSURE -> {
-                mViewBind.tvTitle.text = getString(R.string.tr_blood_pressure)
+                mViewBind.tvTitle.text = getString(R.string.fc_blood_pressure)
                 mViewBind.tvFilterStatu.setTypeface(getRobotoMedium(this))
                 // 显示 Systolic/Diastolic/Pulse，灰色
-                mViewBind.tvAvg.text = getString(R.string.tr_systolic)
-                mViewBind.tvMin.text = getString(R.string.tr_diastolic)
-                mViewBind.tvMax.text = getString(R.string.tr_pulse)
+                mViewBind.tvAvg.text = getString(R.string.fc_systolic)
+                mViewBind.tvMin.text = getString(R.string.fc_diastolic)
+                mViewBind.tvMax.text = getString(R.string.fc_pulse)
 
 
                 val grayColor = ContextCompat.getColor(this,R.color.color_999)
@@ -470,12 +470,12 @@ class HealthStatisticsAct :
                 mViewBind.llBpChartDes.root.visible()
             }
             HealthMetric.CHOLESTEROL -> {
-                mViewBind.tvTitle.text = getString(R.string.tr_cholesterol)
+                mViewBind.tvTitle.text = getString(R.string.fc_cholesterol)
                 mViewBind.tvFilterStatu.setTypeface(getRobotoMedium(this))
                 // 显示 TG/LDL/HDL，灰色
-                mViewBind.tvAvg.text = getString(R.string.tr_hdl)
-                mViewBind.tvMin.text = getString(R.string.tr_ldl)
-                mViewBind.tvMax.text = getString(R.string.tr_tg)
+                mViewBind.tvAvg.text = getString(R.string.fc_hdl)
+                mViewBind.tvMin.text = getString(R.string.fc_ldl)
+                mViewBind.tvMax.text = getString(R.string.fc_tg)
 
                 val grayColor = ContextCompat.getColor(this,R.color.color_999)
                 mViewBind.tvAvg.setTextColor(grayColor)
@@ -485,10 +485,10 @@ class HealthStatisticsAct :
 
             }
             HealthMetric.HYDRATION -> {
-                mViewBind.tvTitle.text = getString(R.string.tr_hydrate)
-                mViewBind.tvAvg.text = getString(R.string.tr_avg)
-                mViewBind.tvMin.text = getString(R.string.tr_min)
-                mViewBind.tvMax.text = getString(R.string.tr_max)
+                mViewBind.tvTitle.text = getString(R.string.fc_hydrate)
+                mViewBind.tvAvg.text = getString(R.string.fc_avg)
+                mViewBind.tvMin.text = getString(R.string.fc_min)
+                mViewBind.tvMax.text = getString(R.string.fc_max)
 
                 val greenColor = ContextCompat.getColor(this, R.color.c5)
                 mViewBind.tvAvg.setTextColor(greenColor)
@@ -497,18 +497,18 @@ class HealthStatisticsAct :
             }
             else -> {
                 // 其他指标默认显示 Avg/Min/Max
-                mViewBind.tvAvg.text = getString(R.string.tr_avg)
-                mViewBind.tvMin.text = getString(R.string.tr_min)
-                mViewBind.tvMax.text = getString(R.string.tr_max)
+                mViewBind.tvAvg.text = getString(R.string.fc_avg)
+                mViewBind.tvMin.text = getString(R.string.fc_min)
+                mViewBind.tvMax.text = getString(R.string.fc_max)
             }
         }
     }
 
     private fun updateDimensionDisplay(dimension: StatisticDimension) {
         val text = when (dimension) {
-            StatisticDimension.AVG -> getString(R.string.tr_avg)
-            StatisticDimension.MIN -> getString(R.string.tr_min)
-            StatisticDimension.MAX -> getString(R.string.tr_max)
+            StatisticDimension.AVG -> getString(R.string.fc_avg)
+            StatisticDimension.MIN -> getString(R.string.fc_min)
+            StatisticDimension.MAX -> getString(R.string.fc_max)
         }
         mViewBind.tvFilterStatu.text = text
     }

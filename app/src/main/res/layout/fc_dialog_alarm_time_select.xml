@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/fc_bg_bottom_dialog"
+    android:paddingVertical="@dimen/dp_16">
+
+    <View
+        android:id="@+id/v_bar"
+        android:layout_width="@dimen/dp_66"
+        android:layout_height="@dimen/dp_8"
+        android:background="@drawable/fc_bg_dialog_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.daily.health.manager.face.widget.NumberPickerView
+        android:id="@+id/hourPicker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dot_div"
+        app:layout_constraintTop_toBottomOf="@+id/v_bar"
+        
+        app:npv_ItemPaddingHorizontal="@dimen/dp_20"
+        app:npv_ItemPaddingVertical="@dimen/dp_10"
+        app:npv_ShowDivider="false"
+        app:npv_ShownCount="3"
+        app:npv_TextArray="@array/fc_hours"
+        app:npv_TextColorNormal="@color/color_BFBFBF"
+        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextSizeNormal="@dimen/sp_24"
+        app:npv_TextSizeSelected="@dimen/sp_24"
+        app:npv_WrapSelectorWheel="true" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_dot_div"
+        style="@style/TextViewFont_RobotoBlack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_3"
+        android:text=":"
+        android:textColor="@color/t1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintBottom_toBottomOf="@id/hourPicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/hourPicker" />
+
+    <!-- 分钟选择器 -->
+    <com.daily.health.manager.face.widget.NumberPickerView
+        android:id="@+id/minutePicker"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_20"
+        app:layout_constraintStart_toEndOf="@+id/tv_dot_div"
+        app:layout_constraintTop_toTopOf="@+id/hourPicker"
+        
+        app:npv_ItemPaddingHorizontal="@dimen/dp_20"
+        app:npv_ItemPaddingVertical="@dimen/dp_10"
+        app:npv_ShowDivider="false"
+        app:npv_ShownCount="3"
+        app:npv_TextArray="@array/fc_minutes"
+        app:npv_TextColorNormal="@color/color_BFBFBF"
+        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextSizeNormal="@dimen/sp_24"
+        app:npv_TextSizeSelected="@dimen/sp_24"
+        app:npv_WrapSelectorWheel="true" />
+
+    <!-- 顶部渐变遮罩 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:background="@drawable/fc_gradient_npv_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/hourPicker" />
+
+    <!-- 底部渐变遮罩 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:background="@drawable/fc_gradient_npv_bottom"
+        app:layout_constraintBottom_toBottomOf="@id/hourPicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save"
+        style="@style/MaterialButton.b1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginHorizontal="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:text="@string/fc_save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hourPicker" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

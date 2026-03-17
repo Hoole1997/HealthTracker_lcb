@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.daily.health.manager.R
 import com.daily.health.manager.data.enums.BsUnit
 import com.daily.health.manager.data.enums.getStatusStringRes
-import com.daily.health.manager.databinding.TrItemTargetRangeBinding
+import com.daily.health.manager.databinding.FcItemTargetRangeBinding
 import com.daily.health.manager.face.viewmodel.RangeItem
 import com.healthtracker.framework.ext.click
 
@@ -21,7 +21,7 @@ class TargetRangeAdapter(
 ) : ListAdapter<RangeItem, TargetRangeAdapter.ViewHolder>(RangeItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = TrItemTargetRangeBinding.inflate(
+        val binding = FcItemTargetRangeBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -33,7 +33,7 @@ class TargetRangeAdapter(
         holder.bind(getItem(position))
     }
 
-    inner class ViewHolder(private val binding: TrItemTargetRangeBinding) :
+    inner class ViewHolder(private val binding: FcItemTargetRangeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: RangeItem) {
@@ -49,18 +49,18 @@ class TargetRangeAdapter(
                 tvLeveDiaValue.text = "≥ ${BsUnit.formatValue(item.ranges.diabetesLow, currentUnit)} $unitText"
 
                 tvLeveLowName.apply {
-                    text = context.getString(R.string.tr_blood_sugar_level_low)
+                    text = context.getString(R.string.fc_blood_sugar_level_low)
                 }
                 tvLeveNormalName.apply {
-                    text = context.getString(R.string.tr_blood_sugar_level_normal)
+                    text = context.getString(R.string.fc_blood_sugar_level_normal)
                 }
 
                 tvLevePreName.apply {
-                    text = context.getString(R.string.tr_blood_sugar_level_prediabetes)
+                    text = context.getString(R.string.fc_blood_sugar_level_prediabetes)
                 }
 
                 tvLeveLowName.apply {
-                    text = context.getString(R.string.tr_blood_sugar_level_diabetes)
+                    text = context.getString(R.string.fc_blood_sugar_level_diabetes)
                 }
 
                 // 点击事件

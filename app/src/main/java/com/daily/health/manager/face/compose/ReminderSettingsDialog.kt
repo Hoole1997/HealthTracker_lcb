@@ -24,15 +24,15 @@ fun ReminderSettingsDialog(
     val initialRepeatFlag = 0x7F
 
     val typeNameRes = when (alarmType) {
-        com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_SUGAR -> R.string.tr_blood_suger
-        com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_PRESSURE -> R.string.tr_blood_pressure
-        com.daily.health.manager.data.entity.AlarmRecord.TYPE_HEART_RATE -> R.string.tr_heart_rate
-        com.daily.health.manager.data.entity.AlarmRecord.TYPE_BMI -> R.string.tr_bmi
-        com.daily.health.manager.data.entity.AlarmRecord.TYPE_CHOLESTEROL -> R.string.tr_cholesterol
-        else -> R.string.tr_alarm_default_title
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_SUGAR -> R.string.fc_blood_suger
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_BLOOD_PRESSURE -> R.string.fc_blood_pressure
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_HEART_RATE -> R.string.fc_heart_rate
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_BMI -> R.string.fc_bmi
+        com.daily.health.manager.data.entity.AlarmRecord.TYPE_CHOLESTEROL -> R.string.fc_cholesterol
+        else -> R.string.fc_alarm_default_title
     }
     val typeName = stringResource(typeNameRes)
-    val dialogTitle = stringResource(R.string.tr_reminder_for, typeName)
+    val dialogTitle = stringResource(R.string.fc_reminder_for, typeName)
 
     CommonAlarmConfigDialog(
         initialHour = initialHour,
@@ -40,7 +40,7 @@ fun ReminderSettingsDialog(
         initialRepeatFlag = initialRepeatFlag,
         title = dialogTitle,
         description = null, // Sync with AlarmEditDialog: No description
-        confirmButtonText = stringResource(R.string.tr_save), // Sync with AlarmEditDialog: "Save"
+        confirmButtonText = stringResource(R.string.fc_save), // Sync with AlarmEditDialog: "Save"
         onDismiss = {
             onDismiss()
         },

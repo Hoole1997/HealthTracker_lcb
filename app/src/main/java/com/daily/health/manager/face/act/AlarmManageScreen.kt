@@ -1,7 +1,7 @@
 package com.daily.health.manager.face.act
 
 import android.os.Bundle
-import com.daily.health.manager.databinding.TrActivityAlarmManagerBinding
+import com.daily.health.manager.databinding.FcActivityAlarmManagerBinding
 import com.daily.health.manager.face.viewmodel.AlarmViewModel
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -12,9 +12,9 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.face.compose.AlarmListContent
 
-class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, TrActivityAlarmManagerBinding>() {
+class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, FcActivityAlarmManagerBinding>() {
 
-    override fun createViewBinding() = TrActivityAlarmManagerBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityAlarmManagerBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = AlarmViewModel::class.java
 

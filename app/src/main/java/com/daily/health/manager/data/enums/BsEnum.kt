@@ -244,22 +244,22 @@ enum class BloodSugarLevel(
     override val colorRes: Int,
     val statusTextRes: Int
 ) : LevelCategory {
-    LOW(0, R.color.color_low, R.string.tr_blood_sugar_level_low),
-    NORMAL(1, R.color.color_normal, R.string.tr_blood_sugar_level_normal),
-    PREDIABETES(2, R.color.color_prediabetes, R.string.tr_blood_sugar_level_prediabetes),
-    DIABETES(3, R.color.color_diabetes, R.string.tr_blood_sugar_level_diabetes)
+    LOW(0, R.color.color_low, R.string.fc_blood_sugar_level_low),
+    NORMAL(1, R.color.color_normal, R.string.fc_blood_sugar_level_normal),
+    PREDIABETES(2, R.color.color_prediabetes, R.string.fc_blood_sugar_level_prediabetes),
+    DIABETES(3, R.color.color_diabetes, R.string.fc_blood_sugar_level_diabetes)
 }
 
 fun getStatusStringRes(statusType: Int): Int {
     return when (statusType) {
-        BloodSugarStatus.FASTING.statusType -> R.string.tr_blood_sugar_status_fasting
-        BloodSugarStatus.BEFORE_MEAL.statusType -> R.string.tr_blood_sugar_status_before_meal
-        BloodSugarStatus.BEDTIME.statusType -> R.string.tr_blood_sugar_status_bedtime
-        BloodSugarStatus.AFTER_EXERCISE.statusType -> R.string.tr_blood_sugar_status_after_exercise
-        BloodSugarStatus.ONE_HOUR_AFTER_MEAL.statusType -> R.string.tr_blood_sugar_status_one_hour_after_meal
-        BloodSugarStatus.BEFORE_EXERCISE.statusType -> R.string.tr_blood_sugar_status_before_exercise
-        BloodSugarStatus.TWO_HOURS_AFTER_MEAL.statusType -> R.string.tr_blood_sugar_status_two_hours_after_meal
-        else -> R.string.tr_blood_sugar_status_default
+        BloodSugarStatus.FASTING.statusType -> R.string.fc_blood_sugar_status_fasting
+        BloodSugarStatus.BEFORE_MEAL.statusType -> R.string.fc_blood_sugar_status_before_meal
+        BloodSugarStatus.BEDTIME.statusType -> R.string.fc_blood_sugar_status_bedtime
+        BloodSugarStatus.AFTER_EXERCISE.statusType -> R.string.fc_blood_sugar_status_after_exercise
+        BloodSugarStatus.ONE_HOUR_AFTER_MEAL.statusType -> R.string.fc_blood_sugar_status_one_hour_after_meal
+        BloodSugarStatus.BEFORE_EXERCISE.statusType -> R.string.fc_blood_sugar_status_before_exercise
+        BloodSugarStatus.TWO_HOURS_AFTER_MEAL.statusType -> R.string.fc_blood_sugar_status_two_hours_after_meal
+        else -> R.string.fc_blood_sugar_status_default
     }
 }
 

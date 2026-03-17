@@ -70,7 +70,7 @@ class FullScreenNativeAdActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tr_activity_fullscreen_native_ad)
+        setContentView(R.layout.fc_activity_fullscreen_native_ad)
 
         initViews()
         setupViews()

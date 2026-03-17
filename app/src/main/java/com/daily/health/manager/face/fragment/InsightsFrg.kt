@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.TrFragmentInsightsBinding
-import com.daily.health.manager.databinding.TrItemInsightsViewpageBinding
+import com.daily.health.manager.databinding.FcFragmentInsightsBinding
+import com.daily.health.manager.databinding.FcItemInsightsViewpageBinding
 import com.daily.health.manager.face.act.InsightsDetailAct
 import com.daily.health.manager.face.adapter.InsightsArticleAdapter
 import com.daily.health.manager.utils.InsightAssetPreparer
@@ -30,7 +30,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 
-class InsightsFrg: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() {
+class InsightsFrg: BaseMVVMFragment<BaseViewModel, FcFragmentInsightsBinding>() {
 
     private data class InsightCategory(
         val titleRes: Int,
@@ -41,7 +41,7 @@ class InsightsFrg: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() 
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = TrFragmentInsightsBinding.inflate(inflater,parent,attachToParent)
+    ) = FcFragmentInsightsBinding.inflate(inflater,parent,attachToParent)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -52,11 +52,11 @@ class InsightsFrg: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() 
     }
 
     private val insightCategories = listOf(
-        InsightCategory(R.string.tr_blood_suger, "blood_sugar"),
-        InsightCategory(R.string.tr_blood_pressure, "blood_pressure"),
-        InsightCategory(R.string.tr_heart_rate, "heart_rate"),
-        InsightCategory(R.string.tr_hydrate, "hydrate"),
-        InsightCategory(R.string.tr_walking, "walking")
+        InsightCategory(R.string.fc_blood_suger, "blood_sugar"),
+        InsightCategory(R.string.fc_blood_pressure, "blood_pressure"),
+        InsightCategory(R.string.fc_heart_rate, "heart_rate"),
+        InsightCategory(R.string.fc_hydrate, "hydrate"),
+        InsightCategory(R.string.fc_walking, "walking")
     )
 
     private fun setupViewPager() {
@@ -151,7 +151,7 @@ class InsightsFrg: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() 
         private val inflater = LayoutInflater.from(requireContext())
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val itemBinding = TrItemInsightsViewpageBinding.inflate(inflater, container, false)
+            val itemBinding = FcItemInsightsViewpageBinding.inflate(inflater, container, false)
             itemBinding.rvInsights.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = InsightsArticleAdapter(::openArticleDetail).also { adapter ->

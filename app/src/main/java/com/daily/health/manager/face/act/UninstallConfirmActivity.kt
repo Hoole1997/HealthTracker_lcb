@@ -51,7 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.TrActivityUninstallConfirmBinding
+import com.daily.health.manager.databinding.FcActivityUninstallConfirmBinding
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.utils.loadInterstitial
 import com.daily.health.manager.utils.loadNative
@@ -63,9 +63,9 @@ import net.corekit.monetize.ui.NativeAdStyle
 import com.daily.health.manager.face.tracker.trackPage2DontClick
 import com.daily.health.manager.face.tracker.trackPage2UninstallClick
 
-class UninstallConfirmActivity : BaseMVVMActivity<BaseViewModel, TrActivityUninstallConfirmBinding>() {
+class UninstallConfirmActivity : BaseMVVMActivity<BaseViewModel, FcActivityUninstallConfirmBinding>() {
 
-    override fun createViewBinding() = TrActivityUninstallConfirmBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityUninstallConfirmBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -160,12 +160,12 @@ private fun UninstallConfirmScreen(
     var otherReasonText by rememberSaveable { mutableStateOf("") }
 
     val reasons = listOf(
-        ReasonItem(0, R.string.tr_uninstall_reason_difficult),
-        ReasonItem(1, R.string.tr_uninstall_reason_too_many_ads),
-        ReasonItem(2, R.string.tr_uninstall_reason_poor_experience),
-        ReasonItem(3, R.string.tr_uninstall_reason_similar_installed),
-        ReasonItem(4, R.string.tr_uninstall_reason_unable_meet_demand),
-        ReasonItem(5, R.string.tr_uninstall_reason_others)
+        ReasonItem(0, R.string.fc_uninstall_reason_difficult),
+        ReasonItem(1, R.string.fc_uninstall_reason_too_many_ads),
+        ReasonItem(2, R.string.fc_uninstall_reason_poor_experience),
+        ReasonItem(3, R.string.fc_uninstall_reason_similar_installed),
+        ReasonItem(4, R.string.fc_uninstall_reason_unable_meet_demand),
+        ReasonItem(5, R.string.fc_uninstall_reason_others)
     )
 
     Column(
@@ -188,7 +188,7 @@ private fun UninstallConfirmScreen(
             // Title
             val appName = stringResource(R.string.app_name)
             Text(
-                text = stringResource(R.string.tr_uninstall_reason_title, appName),
+                text = stringResource(R.string.fc_uninstall_reason_title, appName),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = colorResource(R.color.t1),
@@ -217,7 +217,7 @@ private fun UninstallConfirmScreen(
                 OtherReasonTextField(
                     value = otherReasonText,
                     onValueChange = { otherReasonText = it },
-                    hint = stringResource(R.string.tr_uninstall_reason_hint, appName)
+                    hint = stringResource(R.string.fc_uninstall_reason_hint, appName)
                 )
             }
 
@@ -244,7 +244,7 @@ private fun UninstallConfirmScreen(
                 )
             ) {
                 Text(
-                    text = stringResource(R.string.tr_uninstall_btn_dont_uninstall),
+                    text = stringResource(R.string.fc_uninstall_btn_dont_uninstall),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -255,7 +255,7 @@ private fun UninstallConfirmScreen(
 
             // Uninstall button (secondary - text only)
             Text(
-                text = stringResource(R.string.tr_uninstall_btn_uninstall),
+                text = stringResource(R.string.fc_uninstall_btn_uninstall),
                 fontSize = 14.sp,
                 color = colorResource(com.android.common.weather.R.color.color_999),
                 modifier = Modifier
@@ -290,7 +290,7 @@ private fun TopBar(onBack: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.tr_ic_back),
+                    painter = painterResource(R.drawable.fc_ic_back),
                     contentDescription = "back",
                     tint = Color.Unspecified
                 )
@@ -339,7 +339,7 @@ private fun ReasonOptionItem(
         ) {
             if (isSelected) {
                 Image(
-                    painter = painterResource(R.drawable.tr_ic_checked),
+                    painter = painterResource(R.drawable.fc_ic_checked),
                     contentDescription = null,
                     modifier = Modifier.size(18.dp)
                 )

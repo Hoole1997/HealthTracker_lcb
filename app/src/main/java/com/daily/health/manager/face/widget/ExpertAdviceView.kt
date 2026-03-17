@@ -14,7 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.TrLayoutExpertAdviceBinding
+import com.daily.health.manager.databinding.FcLayoutExpertAdviceBinding
 import com.daily.health.manager.face.act.showFreeLockConfirm
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
@@ -51,7 +51,7 @@ class ExpertAdviceView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     // ViewBinding
-    private val binding: TrLayoutExpertAdviceBinding
+    private val binding: FcLayoutExpertAdviceBinding
 
     // 状态
     private var isMaskVisible = false
@@ -118,7 +118,7 @@ class ExpertAdviceView @JvmOverloads constructor(
     init {
         // 加载布局
         val inflater = LayoutInflater.from(context)
-        binding = TrLayoutExpertAdviceBinding.inflate(inflater, this)
+        binding = FcLayoutExpertAdviceBinding.inflate(inflater, this)
 
         // 读取自定义属性
         context.obtainStyledAttributes(attrs, R.styleable.ExpertAdviceView).apply {

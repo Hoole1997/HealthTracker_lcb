@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.TrActivityHistoryRecordBinding
+import com.daily.health.manager.databinding.FcActivityHistoryRecordBinding
 import com.daily.health.manager.data.enums.BloodSugarStatus
 import com.daily.health.manager.data.enums.getStatusStringRes
 import com.daily.health.manager.face.dialog.ConfirmDialog
@@ -31,7 +31,7 @@ import com.healthtracker.framework.ext.startActivity
 import com.healthtracker.framework.ext.visible
 import java.util.Date
 
-class HistoryRecordAct: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryRecordBinding>() {
+class HistoryRecordAct: BaseMVVMActivity<HistoryViewModel, FcActivityHistoryRecordBinding>() {
 
     // 历史记录适配器
     private lateinit var historyAdapter: HistoryAdapter
@@ -51,7 +51,7 @@ class HistoryRecordAct: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryReco
     }
 
 
-    override fun createViewBinding() = TrActivityHistoryRecordBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityHistoryRecordBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HistoryViewModel::class.java
 
@@ -193,10 +193,10 @@ class HistoryRecordAct: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryReco
 
     private fun showDeleteConfirm(recordId: Long, recordType: HistoryRecordItem.RecordType) {
         ConfirmDialog(
-            title = getString(R.string.tr_delete_record_remind_title),
-            message = getString(R.string.tr_delete_record_remind),
-            leftText = getString(R.string.tr_cancel),
-            rightText = getString(R.string.tr_confirm),
+            title = getString(R.string.fc_delete_record_remind_title),
+            message = getString(R.string.fc_delete_record_remind),
+            leftText = getString(R.string.fc_cancel),
+            rightText = getString(R.string.fc_confirm),
             onDialogListener = object : DialogListener {
                 override fun onItemClick(dialogFragment: DialogFragment, which: Int) {
                     super.onItemClick(dialogFragment, which)
@@ -267,7 +267,7 @@ class HistoryRecordAct: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryReco
      */
     private fun updateStatusDisplay(status: BloodSugarStatus?) {
         mViewBind.tvFilterStatu.text =
-            if (status == null) getString(R.string.tr_all_types) else {
+            if (status == null) getString(R.string.fc_all_types) else {
                 getString(getStatusStringRes(status.statusType))
             }
     }

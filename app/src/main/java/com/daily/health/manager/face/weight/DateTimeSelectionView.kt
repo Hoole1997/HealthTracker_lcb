@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.TrLayoutDatetimeSelectionBinding
+import com.daily.health.manager.databinding.FcLayoutDatetimeSelectionBinding
 import java.util.*
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.healthtracker.framework.ext.clickWithDuration
@@ -21,7 +21,7 @@ class DateTimeSelectionView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     // 加载布局
-    private val binding: TrLayoutDatetimeSelectionBinding = TrLayoutDatetimeSelectionBinding.inflate(
+    private val binding: FcLayoutDatetimeSelectionBinding = FcLayoutDatetimeSelectionBinding.inflate(
         LayoutInflater.from(context), this, true
     )
 
@@ -51,9 +51,9 @@ class DateTimeSelectionView @JvmOverloads constructor(
             val typedArray = context.obtainStyledAttributes(it, R.styleable.DateTimeSelectionView)
             try {
                 titleText = typedArray.getString(R.styleable.DateTimeSelectionView_titleText) 
-                    ?: context.getString(R.string.tr_date_time)
+                    ?: context.getString(R.string.fc_date_time)
                 labelText = typedArray.getString(R.styleable.DateTimeSelectionView_labelText) 
-                    ?: context.getString(R.string.tr_label)
+                    ?: context.getString(R.string.fc_label)
                 showLabel = typedArray.getBoolean(R.styleable.DateTimeSelectionView_showLabel, true)
             } finally {
                 typedArray.recycle()

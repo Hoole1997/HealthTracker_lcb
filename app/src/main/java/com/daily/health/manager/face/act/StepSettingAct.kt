@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.constants.KEY_STEP_COUNT_GOLE
 import com.daily.health.manager.data.enums.BmiUnit
-import com.daily.health.manager.databinding.TrActivityStepSettingBinding
+import com.daily.health.manager.databinding.FcActivityStepSettingBinding
 import com.daily.health.manager.face.dialog.StepGoalSelectDialog
 import com.daily.health.manager.face.viewmodel.StepSettingViewModel
 import com.daily.health.manager.utils.loadInterstitial
@@ -14,8 +14,8 @@ import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ads.AdPosition
 
-class StepSettingAct: BaseInterActivity<StepSettingViewModel, TrActivityStepSettingBinding>() {
-    override fun createViewBinding() = TrActivityStepSettingBinding.inflate(layoutInflater)
+class StepSettingAct: BaseInterActivity<StepSettingViewModel, FcActivityStepSettingBinding>() {
+    override fun createViewBinding() = FcActivityStepSettingBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = StepSettingViewModel::class.java
 

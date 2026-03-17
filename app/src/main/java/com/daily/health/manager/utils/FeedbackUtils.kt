@@ -110,7 +110,7 @@ object FeedbackUtils {
      */
     private fun buildSubject(context: Context, subAppend: String?): String {
         val baseSubject = context.getString(
-            R.string.tr_feedback_email_title,
+            R.string.fc_feedback_email_title,
             context.getString(R.string.app_name)
         )
         return if (subAppend.isNullOrBlank()) {

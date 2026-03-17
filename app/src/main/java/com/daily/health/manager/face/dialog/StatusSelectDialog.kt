@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.TrDialogStatusSelectBinding
-import com.daily.health.manager.databinding.TrItemStatusBinding
+import com.daily.health.manager.databinding.FcDialogStatusSelectBinding
+import com.daily.health.manager.databinding.FcItemStatusBinding
 import com.daily.health.manager.data.enums.BloodSugarStatus
 import com.daily.health.manager.data.enums.getStatusStringRes
 import com.daily.health.manager.face.weight.WrapLayoutLinearLayoutManager
@@ -18,7 +18,7 @@ class StatusSelectDialog(
     private val currentStatus: BloodSugarStatus?,
     private val showAllOption: Boolean,
     private val onSelect: ((BloodSugarStatus?) -> Unit)? = null
-) : BaseBottomSheetDialogFragment<TrDialogStatusSelectBinding>() {
+) : BaseBottomSheetDialogFragment<FcDialogStatusSelectBinding>() {
 
     companion object{
         fun show(
@@ -37,7 +37,7 @@ class StatusSelectDialog(
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = TrDialogStatusSelectBinding.inflate(inflater,parent,attachToParent)
+    ) = FcDialogStatusSelectBinding.inflate(inflater,parent,attachToParent)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.let {
@@ -45,7 +45,7 @@ class StatusSelectDialog(
                 .map { status -> StatuItem(status.statusType, getStatusStringRes(status.statusType)) }
                 .toMutableList()
             if (showAllOption) {
-                dataSource.add(0, StatuItem(statuType = -1, displayNameRes = R.string.tr_all_types))
+                dataSource.add(0, StatuItem(statuType = -1, displayNameRes = R.string.fc_all_types))
             }
             it.rvStatus.adapter = StatusAdapter(dataSource)
             it.rvStatus.layoutManager = WrapLayoutLinearLayoutManager(view.context)
@@ -67,7 +67,7 @@ class StatusSelectDialog(
         }
 
 
-        inner class SatusViewHolder(private val itemBinding: TrItemStatusBinding) : RecyclerView.ViewHolder(itemBinding.root),
+        inner class SatusViewHolder(private val itemBinding: FcItemStatusBinding) : RecyclerView.ViewHolder(itemBinding.root),
             View.OnClickListener {
             init {
                 itemBinding.root.setOnClickListener(this@SatusViewHolder)
@@ -81,7 +81,7 @@ class StatusSelectDialog(
 
                     val statusType = list[position].statuType
                     val displayStatusStr = if(statusType == -1){
-                        tvSatusName.context.getString(R.string.tr_all_types)
+                        tvSatusName.context.getString(R.string.fc_all_types)
                     }else {
                         tvSatusName.context.getString(getStatusStringRes(statusType))
                     }
@@ -108,7 +108,7 @@ class StatusSelectDialog(
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SatusViewHolder {
-            val itemBinding = TrItemStatusBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val itemBinding = FcItemStatusBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return SatusViewHolder(itemBinding)
         }
 

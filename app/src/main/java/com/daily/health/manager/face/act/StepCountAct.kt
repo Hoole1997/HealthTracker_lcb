@@ -12,7 +12,7 @@ import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.constants.KEY_STEP_COUNT_GOLE
-import com.daily.health.manager.databinding.TrActivityStepCountBinding
+import com.daily.health.manager.databinding.FcActivityStepCountBinding
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.service.HTService
 import com.daily.health.manager.face.chart.HealthLineChartManager
@@ -24,17 +24,17 @@ import com.healthtracker.framework.util.NumberFormatter
 import com.healthtracker.framework.util.SpUtils
 import org.koin.android.ext.android.inject
 
-class StepCountAct : BaseInterActivity<StepCountViewModel, TrActivityStepCountBinding>() {
+class StepCountAct : BaseInterActivity<StepCountViewModel, FcActivityStepCountBinding>() {
 
     private val chartManagerFactory: HealthLineChartManager.Factory by inject()
 
     private var chartManager: HealthLineChartManager? = null
 
     private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) startHealthService() else Toast.makeText(this, getString(R.string.tr_permission_denied), Toast.LENGTH_SHORT).show()
+        if (granted) startHealthService() else Toast.makeText(this, getString(R.string.fc_permission_denied), Toast.LENGTH_SHORT).show()
     }
 
-    override fun createViewBinding() = TrActivityStepCountBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityStepCountBinding.inflate(layoutInflater)
     override fun getVMModelClass() = StepCountViewModel::class.java
 
     override fun initView(savedInstanceState: Bundle?) {

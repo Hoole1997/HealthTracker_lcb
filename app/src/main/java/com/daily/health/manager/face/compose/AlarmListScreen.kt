@@ -62,16 +62,16 @@ fun AlarmListContent(
     val cholAlarms by viewModel.cholesterolAlarms.collectAsState(initial = emptyList())
 
     val context = LocalContext.current as? FragmentActivity
-    val bsTitle = stringResource(R.string.tr_blood_suger)
-    val bpTitle = stringResource(R.string.tr_blood_pressure)
-    val hrTitle = stringResource(R.string.tr_heart_rate)
-    val bmiTitle = stringResource(R.string.tr_bmi)
-    val cholTitle = stringResource(R.string.tr_cholesterol)
+    val bsTitle = stringResource(R.string.fc_blood_suger)
+    val bpTitle = stringResource(R.string.fc_blood_pressure)
+    val hrTitle = stringResource(R.string.fc_heart_rate)
+    val bmiTitle = stringResource(R.string.fc_bmi)
+    val cholTitle = stringResource(R.string.fc_cholesterol)
 
     Scaffold(
         topBar = {
             HealthTopBar(
-                title = stringResource(R.string.tr_alarm_management),
+                title = stringResource(R.string.fc_alarm_management),
                 onBack = onBack
             )
         },
@@ -207,7 +207,7 @@ fun AlarmCategoryHeader(
             modifier = Modifier.size(32.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.tr_ic_alarm_add),
+                painter = painterResource(id = R.drawable.fc_ic_alarm_add),
                 contentDescription = "Add Alarm",
                 tint = colorResource(R.color.c5) // Use brand secondary/primary color
             )

@@ -29,13 +29,13 @@ import com.daily.health.manager.data.enums.BsUnit
 import com.daily.health.manager.data.enums.TagType
 import com.daily.health.manager.data.enums.getStatusStringRes
 import com.daily.health.manager.data.utils.DateTimeUtils
-import com.daily.health.manager.databinding.TrActivityBsRecordBinding
-import com.daily.health.manager.databinding.TrActivityBmiRecordBinding
-import com.daily.health.manager.databinding.TrActivityBpRecordBinding
-import com.daily.health.manager.databinding.TrActivityCholesterolRecordBinding
-import com.daily.health.manager.databinding.TrActivityHeartRateRecordBinding
-import com.daily.health.manager.databinding.TrActivityHealthRecordBinding
-import com.daily.health.manager.databinding.TrLayoutCholesterolDetailValueBinding
+import com.daily.health.manager.databinding.FcActivityBsRecordBinding
+import com.daily.health.manager.databinding.FcActivityBmiRecordBinding
+import com.daily.health.manager.databinding.FcActivityBpRecordBinding
+import com.daily.health.manager.databinding.FcActivityCholesterolRecordBinding
+import com.daily.health.manager.databinding.FcActivityHeartRateRecordBinding
+import com.daily.health.manager.databinding.FcActivityHealthRecordBinding
+import com.daily.health.manager.databinding.FcLayoutCholesterolDetailValueBinding
 import com.daily.health.manager.face.dialog.BmiPickerDialog
 import com.daily.health.manager.face.dialog.HealthTagDialog
 import com.daily.health.manager.face.dialog.LevelExplainDialog
@@ -74,7 +74,7 @@ import com.healthtracker.framework.util.getRobotoBold
 import com.healthtracker.framework.util.getRobotoRegular
 import java.util.Calendar
 
-class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordBinding>() {
+class HealthRecordAct : BaseInterActivity<BaseViewModel, FcActivityHealthRecordBinding>() {
 
     companion object {
         private const val EXTRA_RECORD_TYPE = "extra_record_type"
@@ -90,7 +90,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
     }
 
     private fun setupBloodPressure(root: View) {
-        val binding = TrActivityBpRecordBinding.bind(root)
+        val binding = FcActivityBpRecordBinding.bind(root)
         val healthTags = mutableListOf<HealthTag>()
         val addTagIds = mutableListOf<Long>()
         var latestSystolic = 120
@@ -99,7 +99,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         val editRecordId = recordId
         if (editRecordId != null) {
             bpViewModel.loadEditRecord(editRecordId)
-            binding.actionBar.tvTitle.text = getString(R.string.tr_edit_record)
+            binding.actionBar.tvTitle.text = getString(R.string.fc_edit_record)
         }
         bpViewModel.initializeTags()
 
@@ -150,7 +150,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
             val items = ArrayList(LeveDataFactory.BloodPressure.buildExplainItems(this))
             LevelExplainDialog.show(
                 supportFragmentManager,
-                des = getString(R.string.tr_bp_range_des),
+                des = getString(R.string.fc_bp_range_des),
                 items = items
             )
         }
@@ -185,7 +185,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
                     lifecycleScope.launch {
                         val id = bpViewModel.createCustomTag(tagName)
                         if (id <= 0L) {
-                            showToast(getString(R.string.tr_create_label_failed))
+                            showToast(getString(R.string.fc_create_label_failed))
                         }
                     }
                 }
@@ -245,9 +245,9 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         collectLatest(bpViewModel.isLoading) { isLoading ->
             binding.btnSave.isEnabled = !isLoading
             binding.btnSave.text = if (isLoading) {
-                getString(R.string.tr_saving)
+                getString(R.string.fc_saving)
             } else {
-                getString(R.string.tr_save)
+                getString(R.string.fc_save)
             }
         }
 
@@ -265,7 +265,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
     }
 
     private fun setupBmi(root: View) {
-        val binding = TrActivityBmiRecordBinding.bind(root)
+        val binding = FcActivityBmiRecordBinding.bind(root)
         val healthTags = mutableListOf<HealthTag>()
         val addTagIds = mutableListOf<Long>()
 
@@ -278,17 +278,17 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
 
         binding.actionBar.btnBack.clickWithDuration { handleBackPress() }
         if (recordId != null) {
-            binding.actionBar.tvTitle.text = getString(R.string.tr_edit_record)
+            binding.actionBar.tvTitle.text = getString(R.string.fc_edit_record)
         }
 
         fun getUnitLabelText(isWeight: Boolean, unit: BmiUnit): String {
             val unitName = when {
-                isWeight && unit == BmiUnit.METRIC -> getString(R.string.tr_unit_kg)
-                isWeight && unit == BmiUnit.IMPERIAL -> getString(R.string.tr_unit_lb)
-                !isWeight && unit == BmiUnit.METRIC -> getString(R.string.tr_unit_cm)
-                else -> getString(R.string.tr_unit_ft_in)
+                isWeight && unit == BmiUnit.METRIC -> getString(R.string.fc_unit_kg)
+                isWeight && unit == BmiUnit.IMPERIAL -> getString(R.string.fc_unit_lb)
+                !isWeight && unit == BmiUnit.METRIC -> getString(R.string.fc_unit_cm)
+                else -> getString(R.string.fc_unit_ft_in)
             }
-            return getString(R.string.tr_unit_in_brackets, unitName.lowercase())
+            return getString(R.string.fc_unit_in_brackets, unitName.lowercase())
         }
 
         fun updateDisplayValues() {
@@ -376,7 +376,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
                     lifecycleScope.launch {
                         val id = bmiViewModel.createCustomTag(tagName)
                         if (id <= 0L) {
-                            showToast(getString(R.string.tr_create_label_failed))
+                            showToast(getString(R.string.fc_create_label_failed))
                         }
                     }
                 }
@@ -445,9 +445,9 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         collectLatest(bmiViewModel.isLoading) { isLoading ->
             binding.btnSave.isEnabled = !isLoading
             binding.btnSave.text = if (isLoading) {
-                getString(R.string.tr_saving)
+                getString(R.string.fc_saving)
             } else {
-                getString(R.string.tr_save)
+                getString(R.string.fc_save)
             }
         }
 
@@ -464,7 +464,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
     }
 
     private fun setupHeartRate(root: View) {
-        val binding = TrActivityHeartRateRecordBinding.bind(root)
+        val binding = FcActivityHeartRateRecordBinding.bind(root)
         val healthTags = mutableListOf<HealthTag>()
         val addTagIds = mutableListOf<Long>()
         var latestHeartRate = 70
@@ -472,7 +472,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         val recordId = recordId
         heartRateViewModel.initialize(recordId)
         if (recordId != null) {
-            binding.actionBar.tvTitle.text = getString(R.string.tr_edit_record)
+            binding.actionBar.tvTitle.text = getString(R.string.fc_edit_record)
         }
 
         binding.cvMeasureEntry.setViewCompositionStrategy(
@@ -534,8 +534,8 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         }
 
         binding.dateTimeSelectionView.apply {
-            setTitleText(getString(R.string.tr_date_time))
-            setLabelText(getString(R.string.tr_label))
+            setTitleText(getString(R.string.fc_date_time))
+            setLabelText(getString(R.string.fc_label))
             setOnLabelClickListener {
                 val selected = if (addTagIds.isEmpty()) {
                     null
@@ -560,7 +560,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
                         lifecycleScope.launch {
                             val newId = heartRateViewModel.createCustomTag(name)
                             if (newId <= 0L) {
-                                showToast(getString(R.string.tr_create_label_failed))
+                                showToast(getString(R.string.fc_create_label_failed))
                             }
                         }
                     }
@@ -597,9 +597,9 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         collectLatest(heartRateViewModel.isLoading) { loading ->
             binding.btnSave.isEnabled = !loading
             binding.btnSave.text = if (loading) {
-                getString(R.string.tr_saving)
+                getString(R.string.fc_saving)
             } else {
-                getString(R.string.tr_save)
+                getString(R.string.fc_save)
             }
         }
 
@@ -616,13 +616,13 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
     }
 
     private fun setupCholesterol(root: View) {
-        val binding = TrActivityCholesterolRecordBinding.bind(root)
-        val detailBinding = TrLayoutCholesterolDetailValueBinding.inflate(layoutInflater)
+        val binding = FcActivityCholesterolRecordBinding.bind(root)
+        val detailBinding = FcLayoutCholesterolDetailValueBinding.inflate(layoutInflater)
 
         val recordId = recordId
         cholesterolViewModel.initialize(recordId)
         if (recordId != null) {
-            binding.actionBar.tvTitle.text = getString(R.string.tr_edit_record)
+            binding.actionBar.tvTitle.text = getString(R.string.fc_edit_record)
         }
 
         binding.actionBar.btnBack.clickWithDuration { handleBackPress() }
@@ -688,7 +688,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
             val items = ArrayList(LeveDataFactory.Cholesterol.buildExplainItems(this))
             LevelExplainDialog.show(
                 supportFragmentManager,
-                des = getString(R.string.tr_cholesterol_range_des),
+                des = getString(R.string.fc_cholesterol_range_des),
                 items = items
             )
         }
@@ -710,7 +710,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
 
         fun updateMetrics(metrics: CholesterolMetrics) {
             val totalValue = metrics.totalCholesterol?.let { formatCholesterolValue(it) } ?: "--"
-            binding.tvTc.text = getString(R.string.tr_total_cholesterol, totalValue)
+            binding.tvTc.text = getString(R.string.fc_total_cholesterol, totalValue)
             detailBinding.tvNonHdlValue.text = metrics.nonHdl?.let { formatCholesterolValue(it) } ?: "--"
             detailBinding.tvTcHdlValue.text = metrics.tcHdlRatio?.let { formatRatioValue(it) } ?: "--"
             detailBinding.tvLdlHdlValue.text = metrics.ldlHdlRatio?.let { formatRatioValue(it) } ?: "--"
@@ -735,9 +735,9 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         collectLatest(cholesterolViewModel.isSaving) { saving ->
             binding.btnSave.isEnabled = !saving
             binding.btnSave.text = if (saving) {
-                getString(R.string.tr_saving)
+                getString(R.string.fc_saving)
             } else {
-                getString(R.string.tr_save)
+                getString(R.string.fc_save)
             }
         }
 
@@ -778,11 +778,11 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
 
         fun toLayoutRes(): Int {
             return when (this) {
-                BLOOD_SUGAR -> R.layout.tr_activity_bs_record
-                BLOOD_PRESSURE -> R.layout.tr_activity_bp_record
-                BMI -> R.layout.tr_activity_bmi_record
-                HEART_RATE -> R.layout.tr_activity_heart_rate_record
-                CHOLESTEROL -> R.layout.tr_activity_cholesterol_record
+                BLOOD_SUGAR -> R.layout.fc_activity_bs_record
+                BLOOD_PRESSURE -> R.layout.fc_activity_bp_record
+                BMI -> R.layout.fc_activity_bmi_record
+                HEART_RATE -> R.layout.fc_activity_heart_rate_record
+                CHOLESTEROL -> R.layout.fc_activity_cholesterol_record
             }
         }
 
@@ -810,7 +810,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         obtainViewModel(CholesterolRecordViewModel::class.java)
     }
 
-    private var bsBinding: TrActivityBsRecordBinding? = null
+    private var bsBinding: FcActivityBsRecordBinding? = null
     private val bsHealthTags = mutableListOf<HealthTag>()
     private val bsAddTagIds = mutableListOf<Long>()
 
@@ -823,7 +823,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
     }
 
 
-    override fun createViewBinding() = TrActivityHealthRecordBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityHealthRecordBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -867,7 +867,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
     }
 
     private fun setupBloodSugar(root: View) {
-        val binding = TrActivityBsRecordBinding.bind(root)
+        val binding = FcActivityBsRecordBinding.bind(root)
         bsBinding = binding
 
         bsViewModel.initializeWithRecord(recordId)
@@ -880,7 +880,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         }
 
         if (recordId != null) {
-            binding.actionBar.tvTitle.text = getString(R.string.tr_edit_record)
+            binding.actionBar.tvTitle.text = getString(R.string.fc_edit_record)
         }
 
         binding.clRangeTarget.clickWithDuration {
@@ -911,7 +911,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
                     lifecycleScope.launch {
                         val id = bsViewModel.createCustomTag(tagName)
                         if (id <= 0L) {
-                            showToast(getString(R.string.tr_create_label_failed))
+                            showToast(getString(R.string.fc_create_label_failed))
                         }
                     }
                 }
@@ -927,7 +927,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         loadNative(binding.adContainer, AdPosition.NA_NEW_RECORD_BLOOD_SUGAR_BOTTOM, style = NativeAdStyle.STANDARD)
     }
 
-    private fun setupBloodSugarRulerView(binding: TrActivityBsRecordBinding) {
+    private fun setupBloodSugarRulerView(binding: FcActivityBsRecordBinding) {
         binding.rulerView.setOnChooseResultListener(object : RulerView.OnChooseResultListener {
             override fun onEndResult(result: Float) {
                 runCatching {
@@ -945,7 +945,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         })
     }
 
-    private fun setupBloodSugarUnitSwitcher(binding: TrActivityBsRecordBinding) {
+    private fun setupBloodSugarUnitSwitcher(binding: FcActivityBsRecordBinding) {
         binding.rgUnit.setOnCheckedChangeListener { _, checkedId ->
             val newUnit = when (checkedId) {
                 binding.rbMgdl.id -> BsUnit.MG_DL
@@ -959,7 +959,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         }
     }
 
-    private fun setupBloodSugarStatusSelector(binding: TrActivityBsRecordBinding) {
+    private fun setupBloodSugarStatusSelector(binding: FcActivityBsRecordBinding) {
         binding.clStatu.click {
             StatusSelectDialog.show(supportFragmentManager, bsViewModel.currentStatus.value) {
                 it?.run {
@@ -969,7 +969,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         }
     }
 
-    private fun setupBloodSugarSaveButton(binding: TrActivityBsRecordBinding) {
+    private fun setupBloodSugarSaveButton(binding: FcActivityBsRecordBinding) {
         binding.btnSave.clickWithDuration {
             trackAddNewRecord(HealthType.BLOOD_SUGAR)
             lifecycleScope.launch {
@@ -984,7 +984,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         }
     }
 
-    private fun observeBloodSugarViewModel(binding: TrActivityBsRecordBinding) {
+    private fun observeBloodSugarViewModel(binding: FcActivityBsRecordBinding) {
         // 使用 combine 合并 unit 和 value 的 Flow，确保配置和定位的原子性
         // 避免单位切换时两个独立 collector 执行顺序不确定导致的位置计算错误
         lifecycleScope.launch {
@@ -1014,9 +1014,9 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         collect(bsViewModel.isLoading) { isLoading ->
             binding.btnSave.isEnabled = !isLoading
             binding.btnSave.text = if (isLoading) {
-                getString(R.string.tr_saving)
+                getString(R.string.fc_saving)
             } else {
-                getString(R.string.tr_save)
+                getString(R.string.fc_save)
             }
         }
 
@@ -1047,13 +1047,13 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         }
     }
 
-    private fun updateBloodSugarDisplayValues(binding: TrActivityBsRecordBinding) {
+    private fun updateBloodSugarDisplayValues(binding: FcActivityBsRecordBinding) {
         val currentValue = bsViewModel.currentValue.value
         val currentUnit = bsViewModel.currentUnit.value
         binding.tvSelectValue.text = BsUnit.formatValue(currentValue, currentUnit)
     }
 
-    private fun updateBloodSugarRangeView(binding: TrActivityBsRecordBinding) {
+    private fun updateBloodSugarRangeView(binding: FcActivityBsRecordBinding) {
         binding.rangeView.setCurrentState(
             bsViewModel.currentValue.value,
             bsViewModel.currentUnit.value,
@@ -1061,7 +1061,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         )
     }
 
-    private fun updateBloodSugarUnitRadioButtons(binding: TrActivityBsRecordBinding, unit: BsUnit) {
+    private fun updateBloodSugarUnitRadioButtons(binding: FcActivityBsRecordBinding, unit: BsUnit) {
         binding.rgUnit.check(
             when (unit) {
                 BsUnit.MG_DL -> binding.rbMgdl.id

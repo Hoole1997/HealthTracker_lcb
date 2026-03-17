@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="end|center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/dp_16">
+
+    <View
+        android:layout_width="@dimen/dp_6"
+        android:layout_height="@dimen/dp_6"
+        android:background="@drawable/fc_bg_rect_white_12"
+        android:backgroundTint="@color/chart_line_cholesterol_tg"
+        android:layout_marginEnd="@dimen/dp_4"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fc_cholesterol_tg_label"
+        android:textColor="@color/color_999"
+        android:textSize="@dimen/sp_11"
+        android:layout_marginEnd="@dimen/dp_10"
+        style="@style/TextViewFont_RobotoRegular"/>
+
+    <View
+        android:layout_width="@dimen/dp_6"
+        android:layout_height="@dimen/dp_6"
+        android:background="@drawable/fc_bg_rect_white_12"
+        android:backgroundTint="@color/chart_line_cholesterol_ldl"
+        android:layout_marginEnd="@dimen/dp_4"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fc_cholesterol_ldl_label"
+        android:textColor="@color/color_999"
+        android:textSize="@dimen/sp_11"
+        android:layout_marginEnd="@dimen/dp_10"
+        style="@style/TextViewFont_RobotoRegular"/>
+
+    <View
+        android:layout_width="@dimen/dp_6"
+        android:layout_height="@dimen/dp_6"
+        android:background="@drawable/fc_bg_rect_white_12"
+        android:backgroundTint="@color/chart_line_cholesterol_hdl"
+        android:layout_marginEnd="@dimen/dp_4"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fc_cholesterol_hdl_label"
+        android:textColor="@color/color_999"
+        android:textSize="@dimen/sp_11"
+        style="@style/TextViewFont_RobotoRegular"/>
+</androidx.appcompat.widget.LinearLayoutCompat>

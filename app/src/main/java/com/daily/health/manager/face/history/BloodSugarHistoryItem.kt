@@ -34,10 +34,10 @@ class BloodSugarHistoryItem(private val record: BloodSugarRecord) : HistoryRecor
     override fun getLevel(context: Context): String {
 
         return when (getLevel()) {
-            BloodSugarLevel.LOW -> context.getString(R.string.tr_blood_sugar_level_low)
-            BloodSugarLevel.NORMAL -> context.getString(R.string.tr_blood_sugar_level_normal)
-            BloodSugarLevel.PREDIABETES -> context.getString(R.string.tr_blood_sugar_level_prediabetes)
-            BloodSugarLevel.DIABETES -> context.getString(R.string.tr_blood_sugar_level_diabetes)
+            BloodSugarLevel.LOW -> context.getString(R.string.fc_blood_sugar_level_low)
+            BloodSugarLevel.NORMAL -> context.getString(R.string.fc_blood_sugar_level_normal)
+            BloodSugarLevel.PREDIABETES -> context.getString(R.string.fc_blood_sugar_level_prediabetes)
+            BloodSugarLevel.DIABETES -> context.getString(R.string.fc_blood_sugar_level_diabetes)
         }
     }
     

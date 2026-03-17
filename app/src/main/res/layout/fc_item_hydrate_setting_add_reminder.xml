@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_24"
+    android:layout_marginBottom="@dimen/dp_12">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAddReminder"
+        style="@style/MaterialButton.b1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/dp_30"
+        android:paddingVertical="@dimen/dp_14"
+        app:icon="@drawable/fc_ic_add_hydrate_reminder"
+        app:iconTint="@color/white"
+        app:iconPadding="@dimen/dp_8"
+        app:iconGravity="textStart"
+        android:text="@string/fc_add_reminder"/>
+    
+</FrameLayout>
+

@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
 import com.daily.health.manager.config.models.PushConfig
 import com.daily.health.manager.face.compose.HealthTopBar
-import com.daily.health.manager.databinding.TrActivityLanguageSelectBinding
+import com.daily.health.manager.databinding.FcActivityLanguageSelectBinding
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
@@ -58,10 +58,10 @@ import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
 
-class LanguageAct: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBinding>() {
+class LanguageAct: BaseMVVMActivity<BaseViewModel, FcActivityLanguageSelectBinding>() {
 
 
-    override fun createViewBinding() = TrActivityLanguageSelectBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityLanguageSelectBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -199,10 +199,10 @@ private fun LanguageSelectScreen(
     val bgColor = colorResource(R.color.c1)
     val titleColor = colorResource(R.color.t1)
     val primaryColor = colorResource(R.color.c5)
-    val itemBackgroundColor = colorResource(R.color.tr_language_item_bg)
-    val itemSelectedBackgroundColor = colorResource(R.color.tr_language_item_selected_bg)
-    val itemSelectedBorderColor = colorResource(R.color.tr_language_item_selected_border)
-    val radioUnselectedColor = colorResource(R.color.tr_language_item_radio_unselected)
+    val itemBackgroundColor = colorResource(R.color.fc_language_item_bg)
+    val itemSelectedBackgroundColor = colorResource(R.color.fc_language_item_selected_bg)
+    val itemSelectedBorderColor = colorResource(R.color.fc_language_item_selected_border)
+    val radioUnselectedColor = colorResource(R.color.fc_language_item_radio_unselected)
 
     Column(
         modifier = Modifier
@@ -210,7 +210,7 @@ private fun LanguageSelectScreen(
             .background(bgColor)
     ) {
         HealthTopBar(
-            title = stringResource(R.string.tr_choose_language),
+            title = stringResource(R.string.fc_choose_language),
             onBack = if (applyChange) onBack else null,
             rightAction = {
                 IconButton(
@@ -219,8 +219,8 @@ private fun LanguageSelectScreen(
                     modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.tr_ic_confirm),
-                        contentDescription = stringResource(R.string.tr_confirm),
+                        painter = painterResource(R.drawable.fc_ic_confirm),
+                        contentDescription = stringResource(R.string.fc_confirm),
                         tint = if (confirmEnabled) titleColor else colorResource(R.color.color_BFBFBF),
                         modifier = Modifier.size(22.dp),
                     )

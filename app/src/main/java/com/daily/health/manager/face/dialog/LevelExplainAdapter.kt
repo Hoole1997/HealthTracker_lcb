@@ -3,15 +3,15 @@ package com.daily.health.manager.face.dialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.daily.health.manager.databinding.TrItemLevelExplainBinding
+import com.daily.health.manager.databinding.FcItemLevelExplainBinding
 
 class LevelExplainAdapter(private var items: List<LevelExplainItem>) :
     RecyclerView.Adapter<LevelExplainAdapter.VH>() {
 
-    inner class VH(val binding: TrItemLevelExplainBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class VH(val binding: FcItemLevelExplainBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val binding = TrItemLevelExplainBinding.inflate(
+        val binding = FcItemLevelExplainBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return VH(binding)

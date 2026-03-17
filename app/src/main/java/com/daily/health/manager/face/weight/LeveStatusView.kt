@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentManager
 import com.daily.health.manager.R
 import com.daily.health.manager.face.dialog.AgeChooseDialog
 import com.daily.health.manager.face.dialog.GenderChooseDialog
-import com.daily.health.manager.databinding.TrLeveStatusViewBinding
+import com.daily.health.manager.databinding.FcLeveStatusViewBinding
 import com.daily.health.manager.getUserAge
 import com.daily.health.manager.isMale
 import com.healthtracker.framework.ext.clickWithDuration
@@ -33,8 +33,8 @@ class LeveStatusView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val binding: TrLeveStatusViewBinding =
-        TrLeveStatusViewBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding: FcLeveStatusViewBinding =
+        FcLeveStatusViewBinding.inflate(LayoutInflater.from(context), this, true)
 
     /** 是否为“添加记录”场景（默认 false） */
     private var isAddRecordScene: Boolean = false
@@ -143,7 +143,7 @@ class LeveStatusView @JvmOverloads constructor(
         val showIcon = explainClickable && onExplainClick != null
         if (showIcon) {
             binding.rangeText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                0, 0, R.drawable.tr_ic_blood_detail, 0
+                0, 0, R.drawable.fc_ic_blood_detail, 0
             )
         } else {
             binding.rangeText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
@@ -223,8 +223,8 @@ class LeveStatusView @JvmOverloads constructor(
 
     fun updateProfile(){
         if (!showProfileInfo) return
-        binding.tvGender.text = context.getString(if (isMale()) R.string.tr_male else R.string.tr_female)
-        binding.tvAge.text = context.getString(R.string.tr_temp_age, getUserAge().toString())
+        binding.tvGender.text = context.getString(if (isMale()) R.string.fc_male else R.string.fc_female)
+        binding.tvAge.text = context.getString(R.string.fc_temp_age, getUserAge().toString())
     }
 
     private fun showAgeDialog() {

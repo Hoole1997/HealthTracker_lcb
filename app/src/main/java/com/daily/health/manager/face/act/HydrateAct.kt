@@ -10,7 +10,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
-import com.daily.health.manager.databinding.TrActivityHydrateBinding
+import com.daily.health.manager.databinding.FcActivityHydrateBinding
 import com.daily.health.manager.face.dialog.ComingSoonDialog
 import com.daily.health.manager.face.adapter.HydrateAdapter
 import com.daily.health.manager.face.adapter.HydrateItem
@@ -24,11 +24,11 @@ import com.healthtracker.framework.ext.startActivity
 import kotlinx.coroutines.flow.combine
 import net.corekit.core.report.ReportDataManager
 
-class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>() {
+class HydrateAct : BaseInterActivity<HydrateViewModel, FcActivityHydrateBinding>() {
 
     private var actionBarBaseHeight: Int = -1
     private var currentDrinkAmountMl: Int = 100
-    private val drinkTextFormat: String by lazy { getString(R.string.tr_drink_btn_format) }
+    private val drinkTextFormat: String by lazy { getString(R.string.fc_drink_btn_format) }
 
     // 用于区分首次加载和饮水操作
     private var initializationComplete = false
@@ -46,8 +46,8 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
 
     override fun getStatusBarColor() = R.color.bg_window
 
-    override fun createViewBinding(): TrActivityHydrateBinding =
-        TrActivityHydrateBinding.inflate(layoutInflater)
+    override fun createViewBinding(): FcActivityHydrateBinding =
+        FcActivityHydrateBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HydrateViewModel::class.java
 
@@ -127,7 +127,7 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
             // 绑定 TotalSection
             bindTotalSection(data)
             // 绑定 RecyclerView（QuickAdd + Records）
-            val unitLabel = if (data.cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.tr_fl_oz) else getString(R.string.tr_unit_ml)
+            val unitLabel = if (data.cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.fc_fl_oz) else getString(R.string.fc_unit_ml)
             val quickAddSection = HydrateItem.QuickAddSection(values = listOf(100, 200, 250, 300, 500, 800), unit = unitLabel)
             val recordSection = HydrateItem.RecordSection(records = data.records, unit = unitLabel)
             adapter.submitList(listOf(quickAddSection, recordSection))
@@ -175,7 +175,7 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
 
     private fun updateDrinkButtonText() {
         val cupUnit = HydrateSettingManager.getCupUnit()
-        val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.tr_fl_oz) else getString(R.string.tr_unit_ml)
+        val unitText = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.fc_fl_oz) else getString(R.string.fc_unit_ml)
         val displayAmount = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
             HydrateSettingManager.fromMl(currentDrinkAmountMl, HydrateSettingManager.CupUnit.FL_OZ)
         } else {
@@ -184,7 +184,7 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
         mViewBind.totalSection.drinkBtn.text = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
             String.format(drinkTextFormat, displayAmount, unitText)
         } else {
-            getString(R.string.tr_drink_btn_compact_format, displayAmount, unitText)
+            getString(R.string.fc_drink_btn_compact_format, displayAmount, unitText)
         }
     }
 
@@ -202,7 +202,7 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
         } else {
             data.totalMl
         }
-        val unitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.tr_fl_oz) else getString(R.string.tr_unit_ml)
+        val unitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) getString(R.string.fc_fl_oz) else getString(R.string.fc_unit_ml)
         val descriptionUnitLabel = if (cupUnit == HydrateSettingManager.CupUnit.FL_OZ) {
             unitLabel.lowercase()
         } else {
@@ -237,9 +237,9 @@ class HydrateAct : BaseInterActivity<HydrateViewModel, TrActivityHydrateBinding>
 
         mViewBind.totalSection.totalWaterUnit.text = unitLabel
         mViewBind.totalSection.totalWaterDesc.text = if (data.count == 0) {
-            getString(R.string.tr_hydrate_empty_today)
+            getString(R.string.fc_hydrate_empty_today)
         } else {
-            getString(R.string.tr_hydrate_partial_today_format, displayTotal, descriptionUnitLabel)
+            getString(R.string.fc_hydrate_partial_today_format, displayTotal, descriptionUnitLabel)
         }
 
         updateDrinkButtonText()

@@ -24,32 +24,32 @@ object LeveDataFactory {
             val order = BloodPressureCategory.entries.filter { it != BloodPressureCategory.UNKNOWN }
             return order.map { cat ->
                 val shortRangeRes = when (cat) {
-                    BloodPressureCategory.LOW -> R.string.tr_blood_pressure_range_low_short
-                    BloodPressureCategory.NORMAL -> R.string.tr_blood_pressure_range_normal_short
-                    BloodPressureCategory.ELEVATED -> R.string.tr_blood_pressure_range_elevated_short
-                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.tr_blood_pressure_range_high_stage_1_short
-                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.tr_blood_pressure_range_high_stage_2_short
-                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.tr_blood_pressure_range_hypertensive_crisis_short
-                    BloodPressureCategory.UNKNOWN -> R.string.tr_blood_pressure_range_normal_short // 不会使用到
+                    BloodPressureCategory.LOW -> R.string.fc_blood_pressure_range_low_short
+                    BloodPressureCategory.NORMAL -> R.string.fc_blood_pressure_range_normal_short
+                    BloodPressureCategory.ELEVATED -> R.string.fc_blood_pressure_range_elevated_short
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.fc_blood_pressure_range_high_stage_1_short
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.fc_blood_pressure_range_high_stage_2_short
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.fc_blood_pressure_range_hypertensive_crisis_short
+                    BloodPressureCategory.UNKNOWN -> R.string.fc_blood_pressure_range_normal_short // 不会使用到
                 }
 
                 val sysRes = when (cat) {
-                    BloodPressureCategory.LOW -> R.string.tr_bp_range_low_sys
-                    BloodPressureCategory.NORMAL -> R.string.tr_bp_range_normal_sys
-                    BloodPressureCategory.ELEVATED -> R.string.tr_bp_range_elevated_sys
-                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.tr_bp_range_high_stage_1_sys
-                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.tr_bp_range_high_stage_2_sys
-                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.tr_bp_range_hypertensive_crisis_sys
-                    BloodPressureCategory.UNKNOWN -> R.string.tr_bp_range_normal_sys
+                    BloodPressureCategory.LOW -> R.string.fc_bp_range_low_sys
+                    BloodPressureCategory.NORMAL -> R.string.fc_bp_range_normal_sys
+                    BloodPressureCategory.ELEVATED -> R.string.fc_bp_range_elevated_sys
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.fc_bp_range_high_stage_1_sys
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.fc_bp_range_high_stage_2_sys
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.fc_bp_range_hypertensive_crisis_sys
+                    BloodPressureCategory.UNKNOWN -> R.string.fc_bp_range_normal_sys
                 }
                 val diaRes = when (cat) {
-                    BloodPressureCategory.LOW -> R.string.tr_bp_range_low_dia
-                    BloodPressureCategory.NORMAL -> R.string.tr_bp_range_normal_dia
-                    BloodPressureCategory.ELEVATED -> R.string.tr_bp_range_elevated_dia
-                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.tr_bp_range_high_stage_1_dia
-                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.tr_bp_range_high_stage_2_dia
-                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.tr_bp_range_hypertensive_crisis_dia
-                    BloodPressureCategory.UNKNOWN -> R.string.tr_bp_range_normal_dia
+                    BloodPressureCategory.LOW -> R.string.fc_bp_range_low_dia
+                    BloodPressureCategory.NORMAL -> R.string.fc_bp_range_normal_dia
+                    BloodPressureCategory.ELEVATED -> R.string.fc_bp_range_elevated_dia
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.fc_bp_range_high_stage_1_dia
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.fc_bp_range_high_stage_2_dia
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.fc_bp_range_hypertensive_crisis_dia
+                    BloodPressureCategory.UNKNOWN -> R.string.fc_bp_range_normal_dia
                 }
 
                 LevelItem(
@@ -84,31 +84,31 @@ object LeveDataFactory {
             val order = BloodPressureCategory.entries.filter { it != BloodPressureCategory.UNKNOWN }
             return order.map { cat ->
                 val fullRangeRes = when (cat) {
-                    BloodPressureCategory.LOW -> R.string.tr_blood_pressure_range_low_full
-                    BloodPressureCategory.NORMAL -> R.string.tr_blood_pressure_range_normal_full
-                    BloodPressureCategory.ELEVATED -> R.string.tr_blood_pressure_range_elevated_full
-                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.tr_blood_pressure_range_high_stage_1_full
-                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.tr_blood_pressure_range_high_stage_2_full
-                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.tr_blood_pressure_range_hypertensive_crisis_full
-                    BloodPressureCategory.UNKNOWN -> R.string.tr_blood_pressure_range_normal_full
+                    BloodPressureCategory.LOW -> R.string.fc_blood_pressure_range_low_full
+                    BloodPressureCategory.NORMAL -> R.string.fc_blood_pressure_range_normal_full
+                    BloodPressureCategory.ELEVATED -> R.string.fc_blood_pressure_range_elevated_full
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.fc_blood_pressure_range_high_stage_1_full
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.fc_blood_pressure_range_high_stage_2_full
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.fc_blood_pressure_range_hypertensive_crisis_full
+                    BloodPressureCategory.UNKNOWN -> R.string.fc_blood_pressure_range_normal_full
                 }
                 val sysRes = when (cat) {
-                    BloodPressureCategory.LOW -> R.string.tr_bp_range_low_sys
-                    BloodPressureCategory.NORMAL -> R.string.tr_bp_range_normal_sys
-                    BloodPressureCategory.ELEVATED -> R.string.tr_bp_range_elevated_sys
-                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.tr_bp_range_high_stage_1_sys
-                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.tr_bp_range_high_stage_2_sys
-                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.tr_bp_range_hypertensive_crisis_sys
-                    BloodPressureCategory.UNKNOWN -> R.string.tr_bp_range_normal_sys
+                    BloodPressureCategory.LOW -> R.string.fc_bp_range_low_sys
+                    BloodPressureCategory.NORMAL -> R.string.fc_bp_range_normal_sys
+                    BloodPressureCategory.ELEVATED -> R.string.fc_bp_range_elevated_sys
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.fc_bp_range_high_stage_1_sys
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.fc_bp_range_high_stage_2_sys
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.fc_bp_range_hypertensive_crisis_sys
+                    BloodPressureCategory.UNKNOWN -> R.string.fc_bp_range_normal_sys
                 }
                 val diaRes = when (cat) {
-                    BloodPressureCategory.LOW -> R.string.tr_bp_range_low_dia
-                    BloodPressureCategory.NORMAL -> R.string.tr_bp_range_normal_dia
-                    BloodPressureCategory.ELEVATED -> R.string.tr_bp_range_elevated_dia
-                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.tr_bp_range_high_stage_1_dia
-                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.tr_bp_range_high_stage_2_dia
-                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.tr_bp_range_hypertensive_crisis_dia
-                    BloodPressureCategory.UNKNOWN -> R.string.tr_bp_range_normal_dia
+                    BloodPressureCategory.LOW -> R.string.fc_bp_range_low_dia
+                    BloodPressureCategory.NORMAL -> R.string.fc_bp_range_normal_dia
+                    BloodPressureCategory.ELEVATED -> R.string.fc_bp_range_elevated_dia
+                    BloodPressureCategory.HIGH_STAGE_1 -> R.string.fc_bp_range_high_stage_1_dia
+                    BloodPressureCategory.HIGH_STAGE_2 -> R.string.fc_bp_range_high_stage_2_dia
+                    BloodPressureCategory.HYPERTENSIVE_CRISIS -> R.string.fc_bp_range_hypertensive_crisis_dia
+                    BloodPressureCategory.UNKNOWN -> R.string.fc_bp_range_normal_dia
                 }
 
                 com.daily.health.manager.face.dialog.LevelExplainItem(
@@ -157,7 +157,7 @@ object LeveDataFactory {
     object BMI {
         /** 构建等级项列表（名称与范围来自资源数组） */
         fun buildItems(context: Context): List<LevelItem> {
-            val ranges = context.resources.getStringArray(R.array.tr_bmi_level_ranges)
+            val ranges = context.resources.getStringArray(R.array.fc_bmi_level_ranges)
             val categories = BMIEnum.values()
             return categories.map { cat ->
                 LevelItem(
@@ -170,7 +170,7 @@ object LeveDataFactory {
 
         /** 构建说明弹窗所需的完整范围文案列表（同 ranges） */
         fun buildExplainItems(context: Context): List<com.daily.health.manager.face.dialog.LevelExplainItem> {
-            val ranges = context.resources.getStringArray(R.array.tr_bmi_level_ranges)
+            val ranges = context.resources.getStringArray(R.array.fc_bmi_level_ranges)
             val categories = BMIEnum.values()
             return categories.map { cat ->
                 com.daily.health.manager.face.dialog.LevelExplainItem(

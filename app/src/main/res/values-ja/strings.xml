@@ -1,154 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">血糖値＆血圧トラッカー</string>
-    <string name="tr_meds_manager">服薬管理</string>
-    <string name="tr_blood_suger">血糖値</string>
-    <string name="tr_blood_pressure">血圧</string>
-    <string name="tr_home">ホーム</string>
-    <string name="tr_home_heart_subtitle">今日、最初の測定をしましょう！</string>
-    <string name="tr_record">記録</string>
-    <string name="tr_meds">服薬</string>
-    <string name="tr_insights">分析</string>
-    <string name="tr_tracker">記録</string>
-    <string name="tr_record_now">今すぐ記録</string>
-    <string name="tr_rate_us">評価する</string>
-    <string name="tr_history">履歴</string>
-    <string name="tr_click_to_record">クリックして記録</string>
+    <string name="fc_meds_manager">服薬管理</string>
+    <string name="fc_blood_suger">血糖値</string>
+    <string name="fc_blood_pressure">血圧</string>
+    <string name="fc_home">ホーム</string>
+    <string name="fc_home_heart_subtitle">今日、最初の測定をしましょう！</string>
+    <string name="fc_record">記録</string>
+    <string name="fc_meds">服薬</string>
+    <string name="fc_insights">分析</string>
+    <string name="fc_tracker">記録</string>
+    <string name="fc_record_now">今すぐ記録</string>
+    <string name="fc_rate_us">評価する</string>
+    <string name="fc_history">履歴</string>
+    <string name="fc_click_to_record">クリックして記録</string>
 
-    <string name="tr_assistant_answer">応答</string>
-    <string name="tr_assistant_neglect">拒否</string>
-    <string name="tr_new_record">新規記録</string>
-    <string name="tr_edit_record">記録を編集</string>
-    <string name="tr_status">ステータス</string>
-    <string name="tr_text_default">デフォルト</string>
+    <string name="fc_assistant_answer">応答</string>
+    <string name="fc_assistant_neglect">拒否</string>
+    <string name="fc_new_record">新規記録</string>
+    <string name="fc_edit_record">記録を編集</string>
+    <string name="fc_status">ステータス</string>
+    <string name="fc_text_default">デフォルト</string>
 
     <!-- 血糖等级 -->
-    <string name="tr_blood_sugar_level_low">低い</string>
-    <string name="tr_blood_sugar_level_normal">正常</string>
-    <string name="tr_blood_sugar_level_prediabetes">糖尿病予備軍</string>
-    <string name="tr_blood_sugar_level_diabetes">糖尿病</string>
+    <string name="fc_blood_sugar_level_low">低い</string>
+    <string name="fc_blood_sugar_level_normal">正常</string>
+    <string name="fc_blood_sugar_level_prediabetes">糖尿病予備軍</string>
+    <string name="fc_blood_sugar_level_diabetes">糖尿病</string>
 
     <!-- 总胆固醇风险等级 -->
-    <string name="tr_cholesterol_level_normal">正常</string>
-    <string name="tr_cholesterol_level_normal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
-    <string name="tr_cholesterol_level_near_optimal">理想に近い</string>
-    <string name="tr_cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
-    <string name="tr_cholesterol_level_borderline">境界域</string>
-    <string name="tr_cholesterol_level_borderline_desc">TC 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
-    <string name="tr_cholesterol_level_high">高い</string>
-    <string name="tr_cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
-    <string name="tr_cholesterol_level_very_high">非常に高い</string>
-    <string name="tr_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
-    <string name="tr_cholesterol_level_unknown">不明</string>
-    <string name="tr_cholesterol_level_unknown_desc">コレステロール値を判定するためのデータが不足しています</string>
-    <string name="tr_cholesterol_hdl_label">HDL</string>
-    <string name="tr_cholesterol_ldl_label">LDL</string>
-    <string name="tr_cholesterol_tg_label">TG</string>
+    <string name="fc_cholesterol_level_normal">正常</string>
+    <string name="fc_cholesterol_level_normal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL &lt; 100; HDL &gt; 40</string>
+    <string name="fc_cholesterol_level_near_optimal">理想に近い</string>
+    <string name="fc_cholesterol_level_near_optimal_desc">TC &lt; 200; Non-HDL &lt; 130; LDL 100~129; HDL ≤ 45</string>
+    <string name="fc_cholesterol_level_borderline">境界域</string>
+    <string name="fc_cholesterol_level_borderline_desc">TC 200~239; Non-HDL 130~159; LDL 130~159; HDL ≤ 45</string>
+    <string name="fc_cholesterol_level_high">高い</string>
+    <string name="fc_cholesterol_level_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL 160~189; HDL ≤ 45</string>
+    <string name="fc_cholesterol_level_very_high">非常に高い</string>
+    <string name="fc_cholesterol_level_very_high_desc">TC ≥ 240; Non-HDL ≥ 130; LDL ≥ 190; HDL ≤ 45</string>
+    <string name="fc_cholesterol_level_unknown">不明</string>
+    <string name="fc_cholesterol_level_unknown_desc">コレステロール値を判定するためのデータが不足しています</string>
+    <string name="fc_cholesterol_hdl_label">HDL</string>
+    <string name="fc_cholesterol_ldl_label">LDL</string>
+    <string name="fc_cholesterol_tg_label">TG</string>
 
     <!-- 血压等级 -->
-    <string name="tr_blood_pressure_level_low">低血圧</string>
-    <string name="tr_blood_pressure_level_normal">正常</string>
-    <string name="tr_blood_pressure_level_elevated">正常高値</string>
-    <string name="tr_blood_pressure_level_high_stage_1">高血圧 ステージ1</string>
-    <string name="tr_blood_pressure_level_high_stage_2">高血圧 ステージ2</string>
-    <string name="tr_blood_pressure_level_hypertensive_crisis">高血圧クリーゼ</string>
+    <string name="fc_blood_pressure_level_low">低血圧</string>
+    <string name="fc_blood_pressure_level_normal">正常</string>
+    <string name="fc_blood_pressure_level_elevated">正常高値</string>
+    <string name="fc_blood_pressure_level_high_stage_1">高血圧 ステージ1</string>
+    <string name="fc_blood_pressure_level_high_stage_2">高血圧 ステージ2</string>
+    <string name="fc_blood_pressure_level_hypertensive_crisis">高血圧クリーゼ</string>
 
     <!-- 血压范围描述 - 状态显示用（缩写） -->
-    <string name="tr_blood_pressure_range_low_short">SYS %1$s または DIA %2$s</string>
-    <string name="tr_blood_pressure_range_normal_short">SYS %1$s かつ DIA %2$s</string>
-    <string name="tr_blood_pressure_range_elevated_short">SYS %1$s かつ DIA %2$s</string>
-    <string name="tr_blood_pressure_range_high_stage_1_short">SYS %1$s または DIA %2$s</string>
-    <string name="tr_blood_pressure_range_high_stage_2_short">SYS %1$s または DIA %2$s</string>
-    <string name="tr_blood_pressure_range_hypertensive_crisis_short">SYS %1$s または DIA %2$s</string>
+    <string name="fc_blood_pressure_range_low_short">SYS %1$s または DIA %2$s</string>
+    <string name="fc_blood_pressure_range_normal_short">SYS %1$s かつ DIA %2$s</string>
+    <string name="fc_blood_pressure_range_elevated_short">SYS %1$s かつ DIA %2$s</string>
+    <string name="fc_blood_pressure_range_high_stage_1_short">SYS %1$s または DIA %2$s</string>
+    <string name="fc_blood_pressure_range_high_stage_2_short">SYS %1$s または DIA %2$s</string>
+    <string name="fc_blood_pressure_range_hypertensive_crisis_short">SYS %1$s または DIA %2$s</string>
 
     <!-- 血压范围描述 - 列表视图用（全写） -->
-    <string name="tr_blood_pressure_range_low_full">収縮期 %1$s または 拡張期 %2$s</string>
-    <string name="tr_blood_pressure_range_normal_full">収縮期 %1$s かつ 拡張期 %2$s</string>
-    <string name="tr_blood_pressure_range_elevated_full">収縮期 %1$s かつ 拡張期 %2$s</string>
-    <string name="tr_blood_pressure_range_high_stage_1_full">収縮期 %1$s または 拡張期 %2$s</string>
-    <string name="tr_blood_pressure_range_high_stage_2_full">収縮期 %1$s または 拡張期 %2$s</string>
-    <string name="tr_blood_pressure_range_hypertensive_crisis_full">収縮期 %1$s または 拡張期 %2$s</string>
+    <string name="fc_blood_pressure_range_low_full">収縮期 %1$s または 拡張期 %2$s</string>
+    <string name="fc_blood_pressure_range_normal_full">収縮期 %1$s かつ 拡張期 %2$s</string>
+    <string name="fc_blood_pressure_range_elevated_full">収縮期 %1$s かつ 拡張期 %2$s</string>
+    <string name="fc_blood_pressure_range_high_stage_1_full">収縮期 %1$s または 拡張期 %2$s</string>
+    <string name="fc_blood_pressure_range_high_stage_2_full">収縮期 %1$s または 拡張期 %2$s</string>
+    <string name="fc_blood_pressure_range_hypertensive_crisis_full">収縮期 %1$s または 拡張期 %2$s</string>
 
     <!-- 闹钟通知相关字符串 -->
-    <string name="tr_notification_channel_alarm_name">健康リマインダー</string>
-    <string name="tr_notification_channel_alarm_description">健康モニタリングのリマインダー通知</string>
+    <string name="fc_notification_channel_alarm_name">健康リマインダー</string>
+    <string name="fc_notification_channel_alarm_description">健康モニタリングのリマインダー通知</string>
 
     <!-- 血糖提醒通知 -->
-    <string name="tr_alarm_blood_sugar_content">血糖値を記録する時間です！</string>
+    <string name="fc_alarm_blood_sugar_content">血糖値を記録する時間です！</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
-    <string name="tr_bs_notify_desc_fasting_am">朝食前に血糖値を測定してください。</string>
-    <string name="tr_bs_notify_desc_post_breakfast">朝食の2時間後に血糖値を測定してください。</string>
-    <string name="tr_bs_notify_desc_pre_lunch">昼食前に血糖値を測定する時間です。</string>
-    <string name="tr_bs_notify_desc_post_lunch">昼食の2時間後に血糖値を測定してください。</string>
-    <string name="tr_bs_notify_desc_pre_dinner">夕食前に血糖値を測定してください。</string>
-    <string name="tr_bs_notify_desc_post_dinner">夕食の2時間後に血糖値を測定してください。</string>
-    <string name="tr_bs_notify_desc_bedtime">就寝前に血糖値を測定してください。</string>
-    <string name="tr_bs_notify_btn_check">確認する</string>
+    <string name="fc_bs_notify_desc_fasting_am">朝食前に血糖値を測定してください。</string>
+    <string name="fc_bs_notify_desc_post_breakfast">朝食の2時間後に血糖値を測定してください。</string>
+    <string name="fc_bs_notify_desc_pre_lunch">昼食前に血糖値を測定する時間です。</string>
+    <string name="fc_bs_notify_desc_post_lunch">昼食の2時間後に血糖値を測定してください。</string>
+    <string name="fc_bs_notify_desc_pre_dinner">夕食前に血糖値を測定してください。</string>
+    <string name="fc_bs_notify_desc_post_dinner">夕食の2時間後に血糖値を測定してください。</string>
+    <string name="fc_bs_notify_desc_bedtime">就寝前に血糖値を測定してください。</string>
+    <string name="fc_bs_notify_btn_check">確認する</string>
 
     <!-- 血压提醒通知 -->
-    <string name="tr_alarm_blood_pressure_content">血圧を記録する時間です！</string>
+    <string name="fc_alarm_blood_pressure_content">血圧を記録する時間です！</string>
 
-    <string name="tr_alarm_heart_rate_content">心拍数を測定する時間です</string>
-    <string name="tr_alarm_bmi_content">BMIを測定する時間です</string>
-    <string name="tr_alarm_cholesterol_content">コレステロールを測定する時間です</string>
+    <string name="fc_alarm_heart_rate_content">心拍数を測定する時間です</string>
+    <string name="fc_alarm_bmi_content">BMIを測定する時間です</string>
+    <string name="fc_alarm_cholesterol_content">コレステロールを測定する時間です</string>
     <!-- 通用场景通知权限弹窗 -->
-    <string name="tr_alarm_general_content">クイックチェックインの時間です</string>
-    <string name="tr_notification_des_general">通知を有効にして、タイムリーな健康リマインダーを受け取り、重要なチェックインを見逃さないようにしましょう。</string>
-    <string name="tr_alarm_delete_confirm_title">このアラームを削除してもよろしいですか？</string>
+    <string name="fc_alarm_general_content">クイックチェックインの時間です</string>
+    <string name="fc_notification_des_general">通知を有効にして、タイムリーな健康リマインダーを受け取り、重要なチェックインを見逃さないようにしましょう。</string>
+    <string name="fc_alarm_delete_confirm_title">このアラームを削除してもよろしいですか？</string>
 
     <!-- 血压范围具体数值 -->
 
     <!-- 血糖测量状态 -->
-    <string name="tr_blood_sugar_status_default">デフォルト</string>
-    <string name="tr_blood_sugar_status_fasting">空腹時</string>
-    <string name="tr_blood_sugar_status_before_meal">食前</string>
-    <string name="tr_blood_sugar_status_bedtime">就寝前</string>
-    <string name="tr_blood_sugar_status_after_exercise">運動後</string>
-    <string name="tr_blood_sugar_status_one_hour_after_meal">食後1時間</string>
-    <string name="tr_blood_sugar_status_before_exercise">運動前</string>
-    <string name="tr_blood_sugar_status_two_hours_after_meal">食後2時間</string>
+    <string name="fc_blood_sugar_status_default">デフォルト</string>
+    <string name="fc_blood_sugar_status_fasting">空腹時</string>
+    <string name="fc_blood_sugar_status_before_meal">食前</string>
+    <string name="fc_blood_sugar_status_bedtime">就寝前</string>
+    <string name="fc_blood_sugar_status_after_exercise">運動後</string>
+    <string name="fc_blood_sugar_status_one_hour_after_meal">食後1時間</string>
+    <string name="fc_blood_sugar_status_before_exercise">運動前</string>
+    <string name="fc_blood_sugar_status_two_hours_after_meal">食後2時間</string>
 
     <!-- 按钮和操作 -->
-    <string name="tr_save">保存</string>
-    <string name="tr_save_changes">変更を保存</string>
-    <string name="tr_cancel">キャンセル</string>
-    <string name="tr_saving">保存中...</string>
-    <string name="tr_date_time">日時</string>
-    <string name="tr_label">ラベル</string>
+    <string name="fc_save">保存</string>
+    <string name="fc_save_changes">変更を保存</string>
+    <string name="fc_cancel">キャンセル</string>
+    <string name="fc_saving">保存中...</string>
+    <string name="fc_date_time">日時</string>
+    <string name="fc_label">ラベル</string>
 
     <!-- 相对时间显示 -->
-    <string name="tr_latest">最新</string>
-    <string name="tr_just_now">たった今</string>
-    <string name="tr_seconds_ago">%d秒前</string>
-    <string name="tr_minutes_ago">%d分前</string>
-    <string name="tr_hours_ago">%d時間前</string>
-    <string name="tr_days_ago">%d日前</string>
-    <string name="tr_systolic">収縮期</string>
-    <string name="tr_diastolic">拡張期</string>
-    <string name="tr_pulse">脈拍</string>
-    <string name="tr_type">タイプ</string>
-    <string name="tr_bp_range_des">AHA（米国心臓協会）の最新ガイドラインに基づく</string>
-    <string name="tr_cholesterol_range_des">TC: 総コレステロール\nHDL: 高密度リポタンパク質\nLDL: 低密度リポタンパク質\nTG: 中性脂肪\nNon-HDL: 非高密度リポタンパク質\n\nクリーブランド・クリニックのガイドラインに基づく。</string>
-    <string name="tr_got_it">OK</string>
-    <string name="tr_all_types">すべてのタイプ</string>
-    <string name="tr_no_records">記録なし</string>
-    <string name="tr_load_fail_please_try_again">読み込みに失敗しました。もう一度お試しください</string>
-    <string name="tr_try_again">再試行</string>
-    <string name="tr_delete_record_remind_title">この記録を削除しますか？</string>
-    <string name="tr_tips">ヒント</string>
-    <string name="tr_delete_tips_content">本当に削除しますか？</string>
-    <string name="tr_confirm">確認</string>
-    <string name="tr_delete_record_remind">削除後は元に戻せません</string>
-    <string name="tr_add_record">記録を追加</string>
-    <string name="tr_alarm_management">アラーム管理</string>
-    <string name="tr_reminder_for">%s のリマインダー</string>
-    <string name="tr_ai_assistant_title">AI健康アシスタント</string>
-    <string name="tr_ai_empty_desc">この機能は現在開発中のため、まだ利用できません。ご理解ありがとうございます。</string>
-    <string name="tr_step_stats_max_title">最大</string>
-    <string name="tr_step_stats_min_title">最小</string>
-    <string name="tr_step_stats_avg_title">平均</string>
-    <string-array name="tr_blood_sugar_labels">
+    <string name="fc_latest">最新</string>
+    <string name="fc_just_now">たった今</string>
+    <string name="fc_seconds_ago">%d秒前</string>
+    <string name="fc_minutes_ago">%d分前</string>
+    <string name="fc_hours_ago">%d時間前</string>
+    <string name="fc_days_ago">%d日前</string>
+    <string name="fc_systolic">収縮期</string>
+    <string name="fc_diastolic">拡張期</string>
+    <string name="fc_pulse">脈拍</string>
+    <string name="fc_type">タイプ</string>
+    <string name="fc_bp_range_des">AHA（米国心臓協会）の最新ガイドラインに基づく</string>
+    <string name="fc_cholesterol_range_des">TC: 総コレステロール\nHDL: 高密度リポタンパク質\nLDL: 低密度リポタンパク質\nTG: 中性脂肪\nNon-HDL: 非高密度リポタンパク質\n\nクリーブランド・クリニックのガイドラインに基づく。</string>
+    <string name="fc_got_it">OK</string>
+    <string name="fc_all_types">すべてのタイプ</string>
+    <string name="fc_no_records">記録なし</string>
+    <string name="fc_load_fail_please_try_again">読み込みに失敗しました。もう一度お試しください</string>
+    <string name="fc_try_again">再試行</string>
+    <string name="fc_delete_record_remind_title">この記録を削除しますか？</string>
+    <string name="fc_tips">ヒント</string>
+    <string name="fc_delete_tips_content">本当に削除しますか？</string>
+    <string name="fc_confirm">確認</string>
+    <string name="fc_delete_record_remind">削除後は元に戻せません</string>
+    <string name="fc_add_record">記録を追加</string>
+    <string name="fc_alarm_management">アラーム管理</string>
+    <string name="fc_reminder_for">%s のリマインダー</string>
+    <string name="fc_ai_assistant_title">AI健康アシスタント</string>
+    <string name="fc_ai_empty_desc">この機能は現在開発中のため、まだ利用できません。ご理解ありがとうございます。</string>
+    <string name="fc_step_stats_max_title">最大</string>
+    <string name="fc_step_stats_min_title">最小</string>
+    <string name="fc_step_stats_avg_title">平均</string>
+    <string-array name="fc_blood_sugar_labels">
         <item>興奮</item>
         <item>有酸素運動後</item>
         <item>気分が落ち込む</item>
@@ -159,7 +159,7 @@
         <item>飲酒後</item>
     </string-array>
 
-    <string-array name="tr_blood_pressure_labels">
+    <string-array name="fc_blood_pressure_labels">
         <item>左腕</item>
         <item>右腕</item>
         <item>服薬後</item>
@@ -174,18 +174,18 @@
     <!-- BMI classification names (8 levels) -->
 
     <!-- BMI classification names (single items for mapping) -->
-    <string name="tr_bmi_level_very_severely_underweight">非常に深刻な痩せすぎ</string>
-    <string name="tr_bmi_level_severely_underweight">深刻な痩せすぎ</string>
-    <string name="tr_bmi_level_underweight">痩せすぎ</string>
-    <string name="tr_bmi_level_normal">正常</string>
-    <string name="tr_bmi_level_overweight">前肥満</string>
-    <string name="tr_bmi_level_obesity_class_1">肥満(1度)</string>
-    <string name="tr_bmi_level_obesity_class_2">肥満(2度)</string>
-    <string name="tr_bmi_level_obesity_class_3">肥満(3度)</string>
+    <string name="fc_bmi_level_very_severely_underweight">非常に深刻な痩せすぎ</string>
+    <string name="fc_bmi_level_severely_underweight">深刻な痩せすぎ</string>
+    <string name="fc_bmi_level_underweight">痩せすぎ</string>
+    <string name="fc_bmi_level_normal">正常</string>
+    <string name="fc_bmi_level_overweight">前肥満</string>
+    <string name="fc_bmi_level_obesity_class_1">肥満(1度)</string>
+    <string name="fc_bmi_level_obesity_class_2">肥満(2度)</string>
+    <string name="fc_bmi_level_obesity_class_3">肥満(3度)</string>
 
     <!-- BMI record tag labels -->
 
-    <string-array name="tr_week_simple">
+    <string-array name="fc_week_simple">
         <item>日</item>
         <item>月</item>
         <item>火</item>
@@ -194,7 +194,7 @@
         <item>金</item>
         <item>土</item>
     </string-array>
-    <string-array name="tr_week_full">
+    <string-array name="fc_week_full">
         <item>日曜日</item>
         <item>月曜日</item>
         <item>火曜日</item>
@@ -204,199 +204,199 @@
         <item>土曜日</item>
     </string-array>
 
-    <string name="tr_every_weekday">平日毎日</string>
-    <string name="tr_every_weekend">週末毎日</string>
-    <string name="tr_everyday">毎日</string>
-    <string name="tr_once">一回のみ</string>
-    <string name="tr_meds_remind_empty">まだデータがありません。下のボタンをタップして追加してください。</string>
-    <string name="tr_meds_add">+追加</string>
-    <string name="tr_add">追加</string>
-    <string name="tr_add_reminder">リマインダーを追加</string>
-    <string name="tr_medication_name">薬の名前</string>
-    <string name="tr_enter_medication_name">薬の名前を入力</string>
-    <string name="tr_number_of_daily_doses">1日の服用回数:</string>
-    <string name="tr_notes">メモ</string>
-    <string name="tr_hint_meds_notes">指示: 食後、1日3回</string>
-    <string name="tr_sync_with_calendar">カレンダーと同期</string>
-    <string name="tr_take_now">今すぐ服用</string>
-    <string name="tr_view_now">今すぐ確認</string>
-    <string name="tr_edit">編集</string>
-    <string name="tr_delete">削除</string>
+    <string name="fc_every_weekday">平日毎日</string>
+    <string name="fc_every_weekend">週末毎日</string>
+    <string name="fc_everyday">毎日</string>
+    <string name="fc_once">一回のみ</string>
+    <string name="fc_meds_remind_empty">まだデータがありません。下のボタンをタップして追加してください。</string>
+    <string name="fc_meds_add">+追加</string>
+    <string name="fc_add">追加</string>
+    <string name="fc_add_reminder">リマインダーを追加</string>
+    <string name="fc_medication_name">薬の名前</string>
+    <string name="fc_enter_medication_name">薬の名前を入力</string>
+    <string name="fc_number_of_daily_doses">1日の服用回数:</string>
+    <string name="fc_notes">メモ</string>
+    <string name="fc_hint_meds_notes">指示: 食後、1日3回</string>
+    <string name="fc_sync_with_calendar">カレンダーと同期</string>
+    <string name="fc_take_now">今すぐ服用</string>
+    <string name="fc_view_now">今すぐ確認</string>
+    <string name="fc_edit">編集</string>
+    <string name="fc_delete">削除</string>
     <!-- 药物提醒通知相关字符串 -->
-    <string name="tr_medication_reminder_content">お薬の時間です。忘れずに服用して、お大事になさってください。</string>
+    <string name="fc_medication_reminder_content">お薬の時間です。忘れずに服用して、お大事になさってください。</string>
 
     <!-- 通知权限相关字符串 -->
-    <string name="tr_turn_on">オンにする</string>
-    <string name="tr_close">閉じる</string>
-    <string name="tr_notification_grant_permissions">健康習慣を見逃さない</string>
-    <string name="tr_notification_grant_permissions_des">通知を有効にして、健康的な習慣を身につけるためのタイムリーなリマインダーを受け取りましょう。見逃さないようにしましょう！</string>
-    <string name="tr_notification_des_blood_sugar">血糖値を記録するためのタイムリーなリマインダーを受け取る</string>
-    <string name="tr_notification_des_blood_pressure">血圧を記録するためのタイムリーなリマインダーを受け取る</string>
-    <string name="tr_notification_des_heart_rate">心拍数を測定するためのタイムリーなリマインダーを受け取る</string>
-    <string name="tr_notification_des_bmi">BMIを管理するためのタイムリーなリマインダーを受け取る</string>
-    <string name="tr_notification_des_cholesterol">コレステロールを管理するためのタイムリーなリマインダーを受け取る</string>
-    <string name="tr_choose_your_gender">性別を選択</string>
-    <string name="tr_please_choose_your_gender">性別を選択してください</string>
-    <string name="tr_txt_profile_des">これはパーソナライズされたデータを作成するために使用されます</string>
-    <string name="tr_male">男性</string>
-    <string name="tr_female">女性</string>
-    <string name="tr_choose_your_age">年齢を選択</string>
-    <string name="tr_please_choose_your_age">年齢を選択してください</string>
-    <string name="tr_text_continue">続行</string>
-    <string name="tr_take_a_photo">写真を撮る</string>
-    <string name="tr_choose_from_photos">写真から選択</string>
-    <string name="tr_please_select">選択してください</string>
-    <string name="tr_confirm_delete_title">タグを削除</string>
-    <string name="tr_confirm_delete_message">このタグを削除してもよろしいですか？</string>
-    <string name="tr_temp_age">年齢 : %1$s</string>
-    <string name="tr_enter_new_label">新しいラベルを入力</string>
-    <string name="tr_add_label">ラベルを追加</string>
-    <string name="tr_weight">体重</string>
-    <string name="tr_height">身長</string>
-    <string name="tr_create_label_failed">ラベルの作成に失敗しました</string>
-    <string name="tr_last_report">最新のレポート：</string>
-    <string name="tr_test_and_record_hr">心拍数の測定と记录</string>
-    <string name="tr_measure_now">測定</string>
-    <string name="tr_measure_title">測定</string>
-    <string name="tr_measure_finger_instruction">指をカメラに当て、測定が終わるまで離さないでください。</string>
-    <string name="tr_camera_permission_title">カメラの権限が必要です</string>
-    <string name="tr_camera_permission_desc">心拍数を測定するには、カメラへのアクセスが必要です。指をカメラレンズに当てて脈拍を検出します。</string>
-    <string name="tr_camera_permission_denied_title">カメラの権限が拒否されました</string>
-    <string name="tr_camera_permission_denied_desc">心拍数測定機能を使用するには、設定からカメラの権限を有効にしてください。</string>
-    <string name="tr_measure_disclaimer">フラッシュカメラによる心拍数測定は参考用であり、不正確な場合があります。医療用ではありません。正確なデータについては、専門の医療機器を使用してください。</string>
-    <string name="tr_ppg_tips_title">測定のヒント</string>
-    <string name="tr_ppg_tips_subtitle">指が<font color="#FB4248">赤色</font>に変われば、正しく測定できています</string>
-    <string name="tr_ppg_tips_step1">指をカメラの上に置きます。熱くなることがあるため、フラッシュには直接触れないようにしてください。</string>
-    <string name="tr_ppg_tips_step2">測定が完了するまで、リラックスして動かないようにしてください！</string>
-    <string name="tr_ppg_tips_step3">明るい場所で測定するか、より良い結果を得るためにフラッシュをオンにしてください。</string>
-    <string name="tr_grant_permission">権限を許可</string>
-    <string name="tr_go_to_settings">設定へ移動</string>
-    <string name="tr_stabilizing_title">測定中…</string>
-    <string name="tr_stabilizing_subtitle">OK！安定したデータを読み取るまでお待ちください…</string>
-    <string name="tr_stabilizing_tip">指が赤色に変われば、正しく測定できています。</string>
-    <string name="tr_measure_complete">測定完了！</string>
-    <string name="tr_start_measure">測定を開始</string>
-    <string name="tr_heart_rate">心拍数</string>
-    <string name="tr_heart_rate_no_tags">タグなし</string>
-    <string name="tr_record_not_ready">記録を読み込み中</string>
-    <string name="tr_delete_record_failed">記録の削除に失敗しました</string>
-    <string name="tr_cholesterol">コレステロール</string>
-    <string name="tr_weight_and_bmi">体重・BMI</string>
+    <string name="fc_turn_on">オンにする</string>
+    <string name="fc_close">閉じる</string>
+    <string name="fc_notification_grant_permissions">健康習慣を見逃さない</string>
+    <string name="fc_notification_grant_permissions_des">通知を有効にして、健康的な習慣を身につけるためのタイムリーなリマインダーを受け取りましょう。見逃さないようにしましょう！</string>
+    <string name="fc_notification_des_blood_sugar">血糖値を記録するためのタイムリーなリマインダーを受け取る</string>
+    <string name="fc_notification_des_blood_pressure">血圧を記録するためのタイムリーなリマインダーを受け取る</string>
+    <string name="fc_notification_des_heart_rate">心拍数を測定するためのタイムリーなリマインダーを受け取る</string>
+    <string name="fc_notification_des_bmi">BMIを管理するためのタイムリーなリマインダーを受け取る</string>
+    <string name="fc_notification_des_cholesterol">コレステロールを管理するためのタイムリーなリマインダーを受け取る</string>
+    <string name="fc_choose_your_gender">性別を選択</string>
+    <string name="fc_please_choose_your_gender">性別を選択してください</string>
+    <string name="fc_txt_profile_des">これはパーソナライズされたデータを作成するために使用されます</string>
+    <string name="fc_male">男性</string>
+    <string name="fc_female">女性</string>
+    <string name="fc_choose_your_age">年齢を選択</string>
+    <string name="fc_please_choose_your_age">年齢を選択してください</string>
+    <string name="fc_text_continue">続行</string>
+    <string name="fc_take_a_photo">写真を撮る</string>
+    <string name="fc_choose_from_photos">写真から選択</string>
+    <string name="fc_please_select">選択してください</string>
+    <string name="fc_confirm_delete_title">タグを削除</string>
+    <string name="fc_confirm_delete_message">このタグを削除してもよろしいですか？</string>
+    <string name="fc_temp_age">年齢 : %1$s</string>
+    <string name="fc_enter_new_label">新しいラベルを入力</string>
+    <string name="fc_add_label">ラベルを追加</string>
+    <string name="fc_weight">体重</string>
+    <string name="fc_height">身長</string>
+    <string name="fc_create_label_failed">ラベルの作成に失敗しました</string>
+    <string name="fc_last_report">最新のレポート：</string>
+    <string name="fc_test_and_record_hr">心拍数の測定と记录</string>
+    <string name="fc_measure_now">測定</string>
+    <string name="fc_measure_title">測定</string>
+    <string name="fc_measure_finger_instruction">指をカメラに当て、測定が終わるまで離さないでください。</string>
+    <string name="fc_camera_permission_title">カメラの権限が必要です</string>
+    <string name="fc_camera_permission_desc">心拍数を測定するには、カメラへのアクセスが必要です。指をカメラレンズに当てて脈拍を検出します。</string>
+    <string name="fc_camera_permission_denied_title">カメラの権限が拒否されました</string>
+    <string name="fc_camera_permission_denied_desc">心拍数測定機能を使用するには、設定からカメラの権限を有効にしてください。</string>
+    <string name="fc_measure_disclaimer">フラッシュカメラによる心拍数測定は参考用であり、不正確な場合があります。医療用ではありません。正確なデータについては、専門の医療機器を使用してください。</string>
+    <string name="fc_ppg_tips_title">測定のヒント</string>
+    <string name="fc_ppg_tips_subtitle">指が<font color="#FB4248">赤色</font>に変われば、正しく測定できています</string>
+    <string name="fc_ppg_tips_step1">指をカメラの上に置きます。熱くなることがあるため、フラッシュには直接触れないようにしてください。</string>
+    <string name="fc_ppg_tips_step2">測定が完了するまで、リラックスして動かないようにしてください！</string>
+    <string name="fc_ppg_tips_step3">明るい場所で測定するか、より良い結果を得るためにフラッシュをオンにしてください。</string>
+    <string name="fc_grant_permission">権限を許可</string>
+    <string name="fc_go_to_settings">設定へ移動</string>
+    <string name="fc_stabilizing_title">測定中…</string>
+    <string name="fc_stabilizing_subtitle">OK！安定したデータを読み取るまでお待ちください…</string>
+    <string name="fc_stabilizing_tip">指が赤色に変われば、正しく測定できています。</string>
+    <string name="fc_measure_complete">測定完了！</string>
+    <string name="fc_start_measure">測定を開始</string>
+    <string name="fc_heart_rate">心拍数</string>
+    <string name="fc_heart_rate_no_tags">タグなし</string>
+    <string name="fc_record_not_ready">記録を読み込み中</string>
+    <string name="fc_delete_record_failed">記録の削除に失敗しました</string>
+    <string name="fc_cholesterol">コレステロール</string>
+    <string name="fc_weight_and_bmi">体重・BMI</string>
 
     <!-- Heart rate -->
-    <string name="tr_heart_rate_status_slow">遅い</string>
-    <string name="tr_heart_rate_status_normal">正常</string>
-    <string name="tr_heart_rate_status_fast">速い</string>
-    <string name="tr_heart_rate_desc_slow">安静時心拍数 &lt; 60 BPM</string>
-    <string name="tr_heart_rate_desc_normal">安静時心拍数 60–100 BPM</string>
-    <string name="tr_heart_rate_desc_fast">安静時心拍数 &gt;100 BPM</string>
-    <string name="tr_total_cholesterol">総コレステロール %1$s</string>
-    <string name="tr_hdl">HDL</string>
-    <string name="tr_ldl">LDL</string>
-    <string name="tr_tg">TG</string>
-    <string name="tr_non_hdl">Non-HDL</string>
-    <string name="tr_tc_hdl">TC/HDL</string>
-    <string name="tr_ldl_hdl">LDL/HDL</string>
-    <string name="tr_result">結果</string>
-    <string name="tr_exclusive_advice">特別アドバイス</string>
-    <string name="tr_bmi">BMI</string>
-    <string name="tr_watch_ads_to_see_exclusive_advice">広告を見て特別アドバイスを確認</string>
-    <string name="tr_get_exclusive_tips">特別なヒントを入手</string>
-    <string name="tr_kindly_note">ご注意</string>
-    <string name="tr_your_health_data_requires">健康データに注意が必要です。測定値に合わせた専門的な推奨事項をロック解除してください。</string>
-    <string name="tr_free_unlock">無料でロック解除</string>
-    <string name="tr_skip">スキップ</string>
-    <string name="tr_next">次へ</string>
-    <string name="tr_guide_hr_des">クリックして最初の心拍数記録を追加しましょう。</string>
-    <string name="tr_guide_bp_des">クリックして最初の血圧記録を追加しましょう。</string>
-    <string name="tr_guide_bs_des">クリックして最初の血糖値記録を追加しましょう。</string>
-    <string name="tr_target_range">目標範囲</string>
-    <string name="tr_target_range_temp">目標範囲(%1$s)</string>
-    <string name="tr_reset">リセット</string>
+    <string name="fc_heart_rate_status_slow">遅い</string>
+    <string name="fc_heart_rate_status_normal">正常</string>
+    <string name="fc_heart_rate_status_fast">速い</string>
+    <string name="fc_heart_rate_desc_slow">安静時心拍数 &lt; 60 BPM</string>
+    <string name="fc_heart_rate_desc_normal">安静時心拍数 60–100 BPM</string>
+    <string name="fc_heart_rate_desc_fast">安静時心拍数 &gt;100 BPM</string>
+    <string name="fc_total_cholesterol">総コレステロール %1$s</string>
+    <string name="fc_hdl">HDL</string>
+    <string name="fc_ldl">LDL</string>
+    <string name="fc_tg">TG</string>
+    <string name="fc_non_hdl">Non-HDL</string>
+    <string name="fc_tc_hdl">TC/HDL</string>
+    <string name="fc_ldl_hdl">LDL/HDL</string>
+    <string name="fc_result">結果</string>
+    <string name="fc_exclusive_advice">特別アドバイス</string>
+    <string name="fc_bmi">BMI</string>
+    <string name="fc_watch_ads_to_see_exclusive_advice">広告を見て特別アドバイスを確認</string>
+    <string name="fc_get_exclusive_tips">特別なヒントを入手</string>
+    <string name="fc_kindly_note">ご注意</string>
+    <string name="fc_your_health_data_requires">健康データに注意が必要です。測定値に合わせた専門的な推奨事項をロック解除してください。</string>
+    <string name="fc_free_unlock">無料でロック解除</string>
+    <string name="fc_skip">スキップ</string>
+    <string name="fc_next">次へ</string>
+    <string name="fc_guide_hr_des">クリックして最初の心拍数記録を追加しましょう。</string>
+    <string name="fc_guide_bp_des">クリックして最初の血圧記録を追加しましょう。</string>
+    <string name="fc_guide_bs_des">クリックして最初の血糖値記録を追加しましょう。</string>
+    <string name="fc_target_range">目標範囲</string>
+    <string name="fc_target_range_temp">目標範囲(%1$s)</string>
+    <string name="fc_reset">リセット</string>
 
-    <string name="tr_please_input_complete_data">完全なデータを入力してください</string>
-    <string name="tr_range_order_error">範囲の値は昇順である必要があります</string>
-    <string name="tr_range_bounds_error">範囲の値が許容範囲外です</string>
-    <string name="tr_reset_all_ranges_confirm">すべての目標範囲をデフォルト値にリセットしますか？</string>
-    <string name="tr_reset_success">リセットしました</string>
-    <string name="tr_save_success">保存しました</string>
+    <string name="fc_please_input_complete_data">完全なデータを入力してください</string>
+    <string name="fc_range_order_error">範囲の値は昇順である必要があります</string>
+    <string name="fc_range_bounds_error">範囲の値が許容範囲外です</string>
+    <string name="fc_reset_all_ranges_confirm">すべての目標範囲をデフォルト値にリセットしますか？</string>
+    <string name="fc_reset_success">リセットしました</string>
+    <string name="fc_save_success">保存しました</string>
 
     <!-- 健康服务通知渠道 -->
-    <string name="tr_health_service_channel_name">健康モニタリングサービス</string>
-    <string name="tr_health_service_channel_description">健康データを素早く記録するための常駐通知を表示します</string>
+    <string name="fc_health_service_channel_name">健康モニタリングサービス</string>
+    <string name="fc_health_service_channel_description">健康データを素早く記録するための常駐通知を表示します</string>
 
     <!-- 自定义推送通知渠道 -->
-    <string name="tr_exit">終了</string>
-    <string name="tr_are_you_sure_exit">アプリを終了してもよろしいですか？</string>
-    <string name="tr__7_days">7日間</string>
-    <string name="tr__1_month">1ヶ月</string>
-    <string name="tr__3_month">3ヶ月</string>
-    <string name="tr_select">選択</string>
-    <string name="tr_avg">平均</string>
-    <string name="tr_min">最小</string>
-    <string name="tr_max">最大</string>
-    <string name="tr_all_history">全履歴</string>
-    <string name="tr_health_tips">健康のヒント</string>
-    <string name="tr_no_date">日付なし</string>
-    <string name="tr_add_now">今すぐ追加</string>
+    <string name="fc_exit">終了</string>
+    <string name="fc_are_you_sure_exit">アプリを終了してもよろしいですか？</string>
+    <string name="fc__7_days">7日間</string>
+    <string name="fc__1_month">1ヶ月</string>
+    <string name="fc__3_month">3ヶ月</string>
+    <string name="fc_select">選択</string>
+    <string name="fc_avg">平均</string>
+    <string name="fc_min">最小</string>
+    <string name="fc_max">最大</string>
+    <string name="fc_all_history">全履歴</string>
+    <string name="fc_health_tips">健康のヒント</string>
+    <string name="fc_no_date">日付なし</string>
+    <string name="fc_add_now">今すぐ追加</string>
 
     <!-- 补水 -->
-    <string name="tr_hydrate">水分補給</string>
-    <string name="tr_walking">ウォーキング</string>
-    <string name="tr_drink_btn_format">%1$d %2$s 飲む</string>
-    <string name="tr_drink_btn_compact_format">%1$d%2$s 飲む</string>
-    <string name="tr_hydrate_empty_today">今日はまだ水を飲んでいません！</string>
-    <string name="tr_hydrate_partial_today_format">今日は%1$d%2$sしか飲んでいません。</string>
-    <string name="tr_hydrate_complete_message">よくできました！水分補給目標を達成しました！</string>
-    <string name="tr_done">完了</string>
-    <string name="tr_hydrate_empty_record">水分摂取記録はまだありません。</string>
-    <string name="tr_daily_water_intake">1日の水分摂取量</string>
-    <string name="tr_cup_size">カップサイズ</string>
-    <string name="tr_hydration_reminder_time">水分補給リマインダー時間</string>
-    <string name="tr_hydration_reminder_edit">編集</string>
-    <string name="tr_hydrate_reminder_delete_confirm_message">このアラームを削除してもよろしいですか？</string>
-    <string name="tr_coming_soon_title">近日公開！</string>
-    <string name="tr_coming_soon_message">あなたはタイムトラベラーですね！この日はまだ来ていません。過去の日付を選択するか、今日に戻ってください。</string>
-    <string name="tr_back_to_today">今日へ戻る</string>
-    <string name="tr_hydrate_reminder_exist">リマインダー時間はすでに設定されています。</string>
-    <string name="tr_hydrate_reminder_empty_message">水分補給リマインダーがまだ設定されていません。最初のリマインダーを追加して、水分補給の習慣を作りましょう！</string>
+    <string name="fc_hydrate">水分補給</string>
+    <string name="fc_walking">ウォーキング</string>
+    <string name="fc_drink_btn_format">%1$d %2$s 飲む</string>
+    <string name="fc_drink_btn_compact_format">%1$d%2$s 飲む</string>
+    <string name="fc_hydrate_empty_today">今日はまだ水を飲んでいません！</string>
+    <string name="fc_hydrate_partial_today_format">今日は%1$d%2$sしか飲んでいません。</string>
+    <string name="fc_hydrate_complete_message">よくできました！水分補給目標を達成しました！</string>
+    <string name="fc_done">完了</string>
+    <string name="fc_hydrate_empty_record">水分摂取記録はまだありません。</string>
+    <string name="fc_daily_water_intake">1日の水分摂取量</string>
+    <string name="fc_cup_size">カップサイズ</string>
+    <string name="fc_hydration_reminder_time">水分補給リマインダー時間</string>
+    <string name="fc_hydration_reminder_edit">編集</string>
+    <string name="fc_hydrate_reminder_delete_confirm_message">このアラームを削除してもよろしいですか？</string>
+    <string name="fc_coming_soon_title">近日公開！</string>
+    <string name="fc_coming_soon_message">あなたはタイムトラベラーですね！この日はまだ来ていません。過去の日付を選択するか、今日に戻ってください。</string>
+    <string name="fc_back_to_today">今日へ戻る</string>
+    <string name="fc_hydrate_reminder_exist">リマインダー時間はすでに設定されています。</string>
+    <string name="fc_hydrate_reminder_empty_message">水分補給リマインダーがまだ設定されていません。最初のリマインダーを追加して、水分補給の習慣を作りましょう！</string>
     <!-- Hydration alarm -->
-    <string name="tr_alarm_hydration_content">水を飲む時間です！</string>
-    <string name="tr_drink_now">今すぐ確認</string>
-    <string name="tr_hydrate_quick_add">クイック追加</string>
-    <string name="tr_step_count">歩数</string>
-    <string name="tr_today">今日</string>
-    <string name="tr_today_s_goal">今日の目標</string>
-    <string name="tr_step_goal">歩数目標</string>
-    <string name="tr_text_steps">歩</string>
-    <string name="tr_enable_step_count">身体活動の権限が必要です</string>
-    <string name="tr_without_this_authorization_step_count_will_not_work">この権限がないと、歩数カウント機能は<font color="#02BC77">動作しません</font></string>
-    <string name="tr_go_to_set">設定へ</string>
-    <string name="tr_choose_language">言語を選択</string>
-    <string name="tr_language">言語</string>
-    <string name="tr_target_range_settings">目標範囲設定</string>
-    <string name="tr_personal_info">個人情報</string>
-    <string name="tr_feedback">フィードバック</string>
-    <string name="tr_privacy_policy">プライバシーポリシー</string>
-    <string name="tr_splash_privacy_prefix">内容を確認しました</string>
-    <string name="tr_settings_section_tracking_and_targets">記録と目標</string>
-    <string name="tr_settings_section_preferences">アプリ設定</string>
-    <string name="tr_settings_section_help_and_feedback">ヘルプとフィードバック</string>
-    <string name="tr_settings_section_legal_and_policies">規約・ポリシー</string>
-    <string name="tr_settings_version_format">バージョン %1$s</string>
-    <string name="tr_settings">設定</string>
+    <string name="fc_alarm_hydration_content">水を飲む時間です！</string>
+    <string name="fc_drink_now">今すぐ確認</string>
+    <string name="fc_hydrate_quick_add">クイック追加</string>
+    <string name="fc_step_count">歩数</string>
+    <string name="fc_today">今日</string>
+    <string name="fc_today_s_goal">今日の目標</string>
+    <string name="fc_step_goal">歩数目標</string>
+    <string name="fc_text_steps">歩</string>
+    <string name="fc_enable_step_count">身体活動の権限が必要です</string>
+    <string name="fc_without_this_authorization_step_count_will_not_work">この権限がないと、歩数カウント機能は<font color="#02BC77">動作しません</font></string>
+    <string name="fc_go_to_set">設定へ</string>
+    <string name="fc_choose_language">言語を選択</string>
+    <string name="fc_language">言語</string>
+    <string name="fc_target_range_settings">目標範囲設定</string>
+    <string name="fc_personal_info">個人情報</string>
+    <string name="fc_feedback">フィードバック</string>
+    <string name="fc_privacy_policy">プライバシーポリシー</string>
+    <string name="fc_splash_privacy_prefix">内容を確認しました</string>
+    <string name="fc_settings_section_tracking_and_targets">記録と目標</string>
+    <string name="fc_settings_section_preferences">アプリ設定</string>
+    <string name="fc_settings_section_help_and_feedback">ヘルプとフィードバック</string>
+    <string name="fc_settings_section_legal_and_policies">規約・ポリシー</string>
+    <string name="fc_settings_version_format">バージョン %1$s</string>
+    <string name="fc_settings">設定</string>
 
     <!-- 反馈相关字符串 -->
-    <string name="tr_please_tell_more">問題をより早く特定し解決できるよう、詳細をお聞かせください</string>
-    <string name="tr_upload_screenshots">スクリーンショットをアップロード</string>
-    <string name="tr_btn_submit">送信</string>
-    <string name="tr_feedback_email_title">%s フィードバック</string>
-    <string name="tr_feedback_sending_failed">送信に失敗しました。メールアプリを確認してください。</string>
-    <string name="tr_max_upload_photos">最大%d枚の写真をアップロードできます</string>
-    <string name="tr_feedback_submitted">送信完了</string>
+    <string name="fc_please_tell_more">問題をより早く特定し解決できるよう、詳細をお聞かせください</string>
+    <string name="fc_upload_screenshots">スクリーンショットをアップロード</string>
+    <string name="fc_btn_submit">送信</string>
+    <string name="fc_feedback_email_title">%s フィードバック</string>
+    <string name="fc_feedback_sending_failed">送信に失敗しました。メールアプリを確認してください。</string>
+    <string name="fc_max_upload_photos">最大%d枚の写真をアップロードできます</string>
+    <string name="fc_feedback_submitted">送信完了</string>
 
     <!-- 血糖等级专家建议文案数组 -->
-    <string-array name="tr_bs_level_expert_advice">
+    <string-array name="fc_bs_level_expert_advice">
         <!-- 低血糖建议 -->
         <item>血糖値が&lt;font color="#3489FE"&gt;&lt;b&gt;低い&lt;/b&gt;&lt;/font&gt;です（低血糖）。すぐに血糖値を上げるための対処が必要です。簡単な提案をいくつか紹介します：&lt;br&gt;&lt;b&gt;即効性のある糖分を摂取する：&lt;/b&gt;&lt;br&gt;ブドウ糖タブレット、ジュース、通常のソーダ、または少量のレーズンなど、15〜20gの即効性のある炭水化物を摂取して、血糖値を素早く上げましょう。&lt;br&gt;&lt;b&gt;15分後に血糖値を測定する：&lt;/b&gt;&lt;br&gt;まだ低い場合は、同じ手順を繰り返してください。&lt;br&gt;&lt;b&gt;バランスの取れた軽食や食事をとる：&lt;/b&gt;&lt;br&gt;血糖値が上がったら、タンパク質、複合炭水化物、健康的な脂肪を含むバランスの取れた軽食や食事をとって安定させましょう。これにより、血糖値を正常に保ち、再度の低下を防ぐことができます。全粒粉クラッカーとピーナッツバター、小さなサンドイッチ、またはフルーツとナッツなどが良い選択肢です。&lt;br&gt;&lt;b&gt;医療提供者に相談する：&lt;/b&gt;&lt;br&gt;頻繁に低血糖になる場合は、医療提供者に相談することが重要です。根本的な原因を評価し、治療計画を調整してくれます。血糖値をより良く管理するために、薬の変更、食事、運動習慣の改善を勧められることがあります。</item>
 
@@ -410,7 +410,7 @@
         <item>&lt;font color="#FA0202"&gt;&lt;b&gt;糖尿病&lt;/b&gt;&lt;/font&gt;の場合、血糖値を安定させ、合併症を防ぐために、病状を効果的に管理することが重要です。&lt;br&gt;&lt;b&gt;定期的な受診：&lt;/b&gt;&lt;br&gt;定期的に医療機関を受診し、糖尿病のモニタリングと必要な治療を受けましょう。これには、定期検診、血液検査、眼科検診、足の検査などが含まれます。医療提供者は、薬の見直し、教育の提供、効果的な管理のための指導も行います。&lt;br&gt;&lt;b&gt;糖尿病管理日誌をつける：&lt;/b&gt;&lt;br&gt;日々の活動、食事、血糖値、服薬量、および顕著な症状やパターンを記録する日誌をつけましょう。これにより、傾向を特定し、さまざまな要因が血糖値にどのように影響するかを理解し、糖尿病管理計画に情報に基づいた調整を加えることができます。&lt;br&gt;&lt;b&gt;病気の時の計画を立てる：&lt;/b&gt;&lt;br&gt;病気や感染症は血糖値に影響を与え、糖尿病管理計画の調整が必要になる場合があります。医療提供者と協力して、血糖値のモニタリング、必要に応じた薬の調整、水分補給、症状が悪化した場合の受診の目安などを含む、病気の時の計画を作成しておきましょう。</item>
     </string-array>
 
-    <string-array name="tr_bp_level_expert_advice">
+    <string-array name="fc_bp_level_expert_advice">
         <!-- Low Blood Pressure -->
         <item>
             <![CDATA[
@@ -544,7 +544,7 @@
         </item>
     </string-array>
     <!-- 心率等级专家建议文案数组 -->
-    <string-array name="tr_hr_level_expert_advice">
+    <string-array name="fc_hr_level_expert_advice">
         <!-- 低心率建议 -->
         <item>
             <![CDATA[
@@ -613,7 +613,7 @@
     </string-array>
 
     <!-- BMI 等级专家建议文案数组 -->
-    <string-array name="tr_bmi_level_expert_advice">
+    <string-array name="fc_bmi_level_expert_advice">
         <!-- 严重体重过轻 -->
         <item>体重が非常に低く、健康に深刻なリスクをもたらします。健康的な体重に戻すために、すぐに行動を起こす必要があります。&lt;br&gt;&lt;b&gt;緊急の医療相談：&lt;/b&gt;&lt;br&gt;医師や管理栄養士の指導を直ちに受け、根本的な疾患がないか確認してください。&lt;br&gt;&lt;b&gt;計画的な栄養摂取：&lt;/b&gt;&lt;br&gt;専門家の監督の下、高カロリーで栄養価の高い食事を摂ってください。&lt;br&gt;&lt;b&gt;経過のモニタリング：&lt;/b&gt;&lt;br&gt;毎週体重の増加を記録し、健康的な範囲に向かっているか確認してください。&lt;br&gt;&lt;b&gt;筋力トレーニング：&lt;/b&gt;&lt;br&gt;軽いレジスタンス運動を取り入れ、安全に筋肉量を増やしましょう。</item>
 
@@ -640,7 +640,7 @@
     </string-array>
 
     <!-- 胆固醇等级专家建议文案数组 -->
-    <string-array name="tr_cholesterol_level_expert_advice">
+    <string-array name="fc_cholesterol_level_expert_advice">
         <!-- UNKNOWN - 数据不足 -->
         <item>コレステロール値を評価するためのデータが不足しています。HDL、LDL、総コレステロール、中性脂肪を含む完全なコレステロール測定を行ってください。&lt;br&gt;&lt;b&gt;完全な検査：&lt;/b&gt;&lt;br&gt;医療提供者による包括的な脂質パネル検査を受けてください。&lt;br&gt;&lt;b&gt;データの記録：&lt;/b&gt;&lt;br&gt;すべてのコレステロール測定値を定期的に記録してください。&lt;br&gt;&lt;b&gt;専門家に相談：&lt;/b&gt;&lt;br&gt;コレステロールの健康について医師や管理栄養士に相談してください。</item>
 
@@ -661,115 +661,115 @@
     </string-array>
 
     <!-- Blood Pressure -->
-    <string-array name="tr_health_tips_blood_pressure_titles">
+    <string-array name="fc_health_tips_blood_pressure_titles">
         <item>血圧を最適に保つ</item>
         <item>心臓のために動く</item>
         <item>健康のためにリラックス</item>
     </string-array>
-    <string-array name="tr_health_tips_blood_pressure_texts">
+    <string-array name="fc_health_tips_blood_pressure_texts">
         <item>塩分摂取に注意し、バナナなどのカリウムを多く含む食品を摂取して、健康的な血圧を維持しましょう。</item>
         <item>定期的なウォーキングや軽い運動は、血管を柔軟に保ち、血圧を管理するのに最適です。</item>
         <item>深呼吸や瞑想でストレスを管理することは、血圧レベルに良い影響を与えます。</item>
     </string-array>
 
     <!-- Blood Sugar -->
-    <string-array name="tr_health_tips_blood_sugar_titles">
+    <string-array name="fc_health_tips_blood_sugar_titles">
         <item>食事のバランスを整える</item>
         <item>賢く炭水化物を選ぶ</item>
         <item>毎日アクティブに</item>
     </string-array>
-    <string-array name="tr_health_tips_blood_sugar_texts">
+    <string-array name="fc_health_tips_blood_sugar_texts">
         <item>食後の血糖値を安定させるために、お皿の半分を非デンプン質の野菜で満たしましょう。</item>
         <item>安定したエネルギーを供給し、急激な血糖値上昇を避けるために、精製されたものよりもオート麦のような全粒穀物を選びましょう。</item>
         <item>食後の短い散歩は、体が血糖値をより効果的に管理するのに大いに役立ちます。</item>
     </string-array>
 
     <!-- Cholesterol -->
-    <string-array name="tr_health_tips_cholesterol_titles">
+    <string-array name="fc_health_tips_cholesterol_titles">
         <item>良質な脂質を摂る</item>
         <item>食物繊維をたっぷり摂る</item>
         <item>数値を改善するために動く</item>
     </string-array>
-    <string-array name="tr_health_tips_cholesterol_texts">
+    <string-array name="fc_health_tips_cholesterol_texts">
         <item>アボカド、ナッツ、オリーブオイルなどの心臓に良い脂質を選び、健康的なコレステロール値をサポートしましょう。</item>
         <item>リンゴやオート麦など、水溶性食物繊維を多く含む食品は、LDL（悪玉）コレステロールの管理に役立ちます。</item>
         <item>定期的な身体活動は、HDL（善玉）コレステロールを増やし、LDLを減らすための重要な要素です。</item>
     </string-array>
 
     <!-- Heart Rate -->
-    <string-array name="tr_health_tips_heart_rate_titles">
+    <string-array name="fc_health_tips_heart_rate_titles">
         <item>心を落ち着ける</item>
         <item>水分補給で心拍を安定</item>
         <item>継続が鍵</item>
     </string-array>
-    <string-array name="tr_health_tips_heart_rate_texts">
+    <string-array name="fc_health_tips_heart_rate_texts">
         <item>瞑想や深呼吸などの習慣は、時間の経過とともに安静時心拍数を下げるのに役立ちます。</item>
         <item>脱水症状は心臓に負担をかけます。十分な水を飲むことは、正常な心拍数を維持するのに役立ちます。</item>
         <item>定期的な適度な運動は心筋を強化し、安静時により効率的に血液を送り出せるようにします。</item>
     </string-array>
 
     <!-- BMI -->
-    <string-array name="tr_health_tips_bmi_titles">
+    <string-array name="fc_health_tips_bmi_titles">
         <item>栄養のある一口を</item>
         <item>持続可能な習慣を作る</item>
         <item>体の声を聞く</item>
     </string-array>
-    <string-array name="tr_health_tips_bmi_texts">
+    <string-array name="fc_health_tips_bmi_texts">
         <item>満腹感を得て健康的な体重を維持するために、自然食品を豊富に含むバランスの取れた食事に焦点を当てましょう。</item>
         <item>楽しめる身体活動を見つけることで、アクティブな状態を維持し、長期的に体重を管理することが容易になります。</item>
         <item>食べ過ぎを防ぎ、健康的なバランスを保つために、空腹感と満腹感の合図に注意を払いましょう。</item>
     </string-array>
 
     <!-- Steps -->
-    <string-array name="tr_health_tips_steps_titles">
+    <string-array name="fc_health_tips_steps_titles">
         <item>毎日ステップアップ</item>
         <item>一日を分割する</item>
         <item>ウォーキングを楽しむ</item>
     </string-array>
-    <string-array name="tr_health_tips_steps_texts">
+    <string-array name="fc_health_tips_steps_texts">
         <item>一貫した毎日の歩数を目指しましょう。わずかな増加でも心血管の健康状態の改善に寄与します。</item>
         <item>代謝を活発に保つために、1時間ごとに立ち上がって数分間歩くようにリマインダーを設定しましょう。</item>
         <item>友人と歩いたり、ポッドキャストを聴いたり、新しい公園を探索したりして、歩くことを楽しみましょう。</item>
     </string-array>
 
     <!-- Hydration -->
-    <string-array name="tr_health_tips_hydration_titles">
+    <string-array name="fc_health_tips_hydration_titles">
         <item>水で一日を始める</item>
         <item>常にボトルを近くに</item>
         <item>水分を食べる</item>
     </string-array>
-    <string-array name="tr_health_tips_hydration_texts">
+    <string-array name="fc_health_tips_hydration_texts">
         <item>水分補給と代謝を活性化させるために、朝一番にコップ一杯の水を飲みましょう。</item>
         <item>水を目に見える場所に置き、手の届くところに置いておくと、一日中こまめに飲むようになります。</item>
         <item>スイカやキュウリなど、水分含有量の高い果物や野菜を楽しんで、水分補給に役立てましょう。</item>
     </string-array>
-    <string name="tr_last_measurement">最新の測定 : %1$s</string>
+    <string name="fc_last_measurement">最新の測定 : %1$s</string>
 
     <!-- Uninstall Intercept Strings -->
-    <string name="tr_uninstall_lose_access_title">このアプリをアンインストールすると、以下の機能にアクセスできなくなります：</string>
-    <string name="tr_uninstall_feature_blood_sugar">血糖値・血圧の記録</string>
-    <string name="tr_uninstall_feature_trend">健康データのトレンド分析</string>
-    <string name="tr_uninstall_feature_reminder">服薬・健康リマインダー</string>
-    <string name="tr_uninstall_feature_insights">健康インサイト・パーソナライズされたヒント</string>
-    <string name="tr_uninstall_btn_dont_uninstall">まだアンインストールしない</string>
-    <string name="tr_uninstall_btn_uninstall">アンインストール</string>
-    <string name="tr_uninstall_reason_title">%1$sをアンインストールする理由は？</string>
-    <string name="tr_uninstall_reason_difficult">使いにくい</string>
-    <string name="tr_uninstall_reason_too_many_ads">広告が多すぎる</string>
-    <string name="tr_uninstall_reason_poor_experience">ユーザー体験が悪い</string>
-    <string name="tr_uninstall_reason_similar_installed">類似のアプリをインストール済み</string>
-    <string name="tr_uninstall_reason_unable_meet_demand">ニーズを満たせない</string>
-    <string name="tr_uninstall_reason_others">その他</string>
-    <string name="tr_uninstall_reason_hint">%1$sをアンインストールする理由を入力してください</string>
+    <string name="fc_uninstall_lose_access_title">このアプリをアンインストールすると、以下の機能にアクセスできなくなります：</string>
+    <string name="fc_uninstall_feature_blood_sugar">血糖値・血圧の記録</string>
+    <string name="fc_uninstall_feature_trend">健康データのトレンド分析</string>
+    <string name="fc_uninstall_feature_reminder">服薬・健康リマインダー</string>
+    <string name="fc_uninstall_feature_insights">健康インサイト・パーソナライズされたヒント</string>
+    <string name="fc_uninstall_btn_dont_uninstall">まだアンインストールしない</string>
+    <string name="fc_uninstall_btn_uninstall">アンインストール</string>
+    <string name="fc_uninstall_reason_title">%1$sをアンインストールする理由は？</string>
+    <string name="fc_uninstall_reason_difficult">使いにくい</string>
+    <string name="fc_uninstall_reason_too_many_ads">広告が多すぎる</string>
+    <string name="fc_uninstall_reason_poor_experience">ユーザー体験が悪い</string>
+    <string name="fc_uninstall_reason_similar_installed">類似のアプリをインストール済み</string>
+    <string name="fc_uninstall_reason_unable_meet_demand">ニーズを満たせない</string>
+    <string name="fc_uninstall_reason_others">その他</string>
+    <string name="fc_uninstall_reason_hint">%1$sをアンインストールする理由を入力してください</string>
     <string name="shortcut_uninstall_short">アンインストール</string>
-    <string name="tr_permission_denied">権限が拒否されました</string>
-    <string name="tr_onboarding_title_1">複数の身体指標をモニタリング</string>
-    <string name="tr_onboarding_desc_1">いつでも心拍数を確認して記録できます。健康状態を手軽に把握しましょう。</string>
-    <string name="tr_onboarding_title_2">服薬リマインダーを設定</string>
-    <string name="tr_onboarding_desc_2">薬のリマインダーを設定し、時間どおりに通知を受け取りましょう。飲み忘れを防ぎ、しっかり管理できます。</string>
-    <string name="tr_onboarding_title_3">詳細レポートとトレンド</string>
-    <string name="tr_onboarding_desc_3">さまざまな身体データを記録し、時間の経過による変化を追うことで、健康の傾向をより深く理解できます。</string>
-    <string name="tr_onboarding_title_4">免責事項</string>
-    <string name="tr_onboarding_desc_4">個人の日常的な血圧記録専用です。専門的な医療アドバイスの代わりにはなりません。診断については医療専門家にご相談ください。</string>
-    <string name="tr_onboarding_start">開始</string>
+    <string name="fc_permission_denied">権限が拒否されました</string>
+    <string name="fc_onboarding_title_1">複数の身体指標をモニタリング</string>
+    <string name="fc_onboarding_desc_1">いつでも心拍数を確認して記録できます。健康状態を手軽に把握しましょう。</string>
+    <string name="fc_onboarding_title_2">服薬リマインダーを設定</string>
+    <string name="fc_onboarding_desc_2">薬のリマインダーを設定し、時間どおりに通知を受け取りましょう。飲み忘れを防ぎ、しっかり管理できます。</string>
+    <string name="fc_onboarding_title_3">詳細レポートとトレンド</string>
+    <string name="fc_onboarding_desc_3">さまざまな身体データを記録し、時間の経過による変化を追うことで、健康の傾向をより深く理解できます。</string>
+    <string name="fc_onboarding_title_4">免責事項</string>
+    <string name="fc_onboarding_desc_4">個人の日常的な血圧記録専用です。専門的な医療アドバイスの代わりにはなりません。診断については医療専門家にご相談ください。</string>
+    <string name="fc_onboarding_start">開始</string>
 </resources>

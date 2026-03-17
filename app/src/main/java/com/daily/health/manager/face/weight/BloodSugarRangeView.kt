@@ -148,11 +148,11 @@ class BloodSugarRangeView @JvmOverloads constructor(
 
     private fun getLevelStringRes(level: Int): Int {
         return when (level) {
-            0 -> R.string.tr_blood_sugar_level_low
-            1 -> R.string.tr_blood_sugar_level_normal
-            2 -> R.string.tr_blood_sugar_level_prediabetes
-            3 -> R.string.tr_blood_sugar_level_diabetes
-            else -> R.string.tr_blood_sugar_level_normal
+            0 -> R.string.fc_blood_sugar_level_low
+            1 -> R.string.fc_blood_sugar_level_normal
+            2 -> R.string.fc_blood_sugar_level_prediabetes
+            3 -> R.string.fc_blood_sugar_level_diabetes
+            else -> R.string.fc_blood_sugar_level_normal
         }
     }
 

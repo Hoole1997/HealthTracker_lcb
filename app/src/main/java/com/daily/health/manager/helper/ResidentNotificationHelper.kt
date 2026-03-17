@@ -62,7 +62,7 @@ class ResidentNotificationHelper(
         // 创建自定义通知布局
         val remoteViews = RemoteViews(
             context.packageName,
-            R.layout.tr_layout_resident_notify
+            R.layout.fc_layout_resident_notify
         )
 
         // 获取本地化 Context 以正确加载多语言资源
@@ -73,9 +73,9 @@ class ResidentNotificationHelper(
 
         // 显式设置本地化文本
         // 注意：RemoteViews 默认使用系统语言，必须手动设置才能支持应用内语言切换
-        remoteViews.setTextViewText(R.id.tv_bs_text, localizedContext.getString(R.string.tr_blood_suger))
-        remoteViews.setTextViewText(R.id.tv_bp_text, localizedContext.getString(R.string.tr_blood_pressure))
-        remoteViews.setTextViewText(R.id.tv_hr_text, localizedContext.getString(R.string.tr_heart_rate))
+        remoteViews.setTextViewText(R.id.tv_bs_text, localizedContext.getString(R.string.fc_blood_suger))
+        remoteViews.setTextViewText(R.id.tv_bp_text, localizedContext.getString(R.string.fc_blood_pressure))
+        remoteViews.setTextViewText(R.id.tv_hr_text, localizedContext.getString(R.string.fc_heart_rate))
 
         // 设置三个区域的点击事件
         remoteViews.setOnClickPendingIntent(

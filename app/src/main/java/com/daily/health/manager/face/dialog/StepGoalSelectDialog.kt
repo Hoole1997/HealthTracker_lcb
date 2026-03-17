@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.daily.health.manager.constants.KEY_STEP_COUNT_GOLE
-import com.daily.health.manager.databinding.TrDialogSelectStepGoalBinding
+import com.daily.health.manager.databinding.FcDialogSelectStepGoalBinding
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.util.SpUtils
 import com.healthtracker.framework.util.getRobotoBold
 
 class StepGoalSelectDialog(private val callBack: ((Int) -> Unit)? = null) :
-    BaseBottomSheetDialogFragment<TrDialogSelectStepGoalBinding>() {
+    BaseBottomSheetDialogFragment<FcDialogSelectStepGoalBinding>() {
 
     constructor() : this(null)
 
@@ -20,7 +20,7 @@ class StepGoalSelectDialog(private val callBack: ((Int) -> Unit)? = null) :
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = TrDialogSelectStepGoalBinding.inflate(layoutInflater)
+    ) = FcDialogSelectStepGoalBinding.inflate(layoutInflater)
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.run {

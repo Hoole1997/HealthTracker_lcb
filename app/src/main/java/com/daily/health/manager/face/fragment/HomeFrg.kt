@@ -19,7 +19,7 @@ import com.daily.health.manager.data.entity.DailyStepStat
 import com.daily.health.manager.data.entity.HeartRateRecord
 import com.daily.health.manager.data.enums.BmiUnit
 import com.daily.health.manager.data.enums.BsUnit
-import com.daily.health.manager.databinding.TrFragmentHomeBinding
+import com.daily.health.manager.databinding.FcFragmentHomeBinding
 import com.daily.health.manager.face.act.HealthRecordAct
 import com.daily.health.manager.face.act.HealthStatisticsAct
 import com.daily.health.manager.face.act.HistoryRecordAct
@@ -52,7 +52,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
+class HomeFrg : BaseMVVMFragment<HomeViewModel, FcFragmentHomeBinding>() {
 
     private val profileLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -82,7 +82,7 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean,
-    ) = TrFragmentHomeBinding.inflate(inflater, parent, attachToParent)
+    ) = FcFragmentHomeBinding.inflate(inflater, parent, attachToParent)
 
     override fun getVMModelClass() = HomeViewModel::class.java
 
@@ -207,12 +207,12 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
 
     private fun buildHeroUi(record: HeartRateRecord?): HomeHeroUi {
         val bpmText = record?.heartRateBpm?.toString() ?: "--"
-        val footerText = record?.recordTime?.let(::formatAbsoluteTime) ?: getString(R.string.tr_click_to_record)
+        val footerText = record?.recordTime?.let(::formatAbsoluteTime) ?: getString(R.string.fc_click_to_record)
         return HomeHeroUi(
-            title = getString(R.string.tr_heart_rate),
-            cta = getString(R.string.tr_measure_now),
+            title = getString(R.string.fc_heart_rate),
+            cta = getString(R.string.fc_measure_now),
             value = bpmText,
-            valueUnit = getString(R.string.tr_bpm),
+            valueUnit = getString(R.string.fc_bpm),
             footerText = footerText,
         )
     }
@@ -228,7 +228,7 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
         val targetMl = HydrateSettingManager.getDailyTargetMl()
         return listOf(
             HomeFeatureCardUi.BloodSugar(
-                title = getString(R.string.tr_blood_suger),
+                title = getString(R.string.fc_blood_suger),
                 value = bloodSugarRecord?.getFormattedDisplayValue() ?: "--",
                 unit = bloodSugarRecord?.let {
                     if (it.selectedUnit == BsUnit.MG_DL.value) {
@@ -239,30 +239,30 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
                 } ?: BsUnit.MG_DL.displayName,
             ),
             HomeFeatureCardUi.BloodPressure(
-                title = getString(R.string.tr_blood_pressure),
+                title = getString(R.string.fc_blood_pressure),
                 value = bloodPressureRecord?.let { "${it.systolicPressure}/${it.diastolicPressure}" } ?: "-/-",
-                unit = getString(R.string.tr_mmHg),
+                unit = getString(R.string.fc_mmHg),
             ),
             HomeFeatureCardUi.Bmi(
-                title = getString(R.string.tr_weight_and_bmi),
+                title = getString(R.string.fc_weight_and_bmi),
                 value = bmiRecord?.getDisplayWeightValue() ?: "--",
                 unit = BmiUnit.getWeightUnitLabel(),
             ),
             HomeFeatureCardUi.Cholesterol(
-                title = getString(R.string.tr_cholesterol),
+                title = getString(R.string.fc_cholesterol),
                 value = formatCholesterolValue(cholesterolRecord),
                 unit = BsUnit.MG_DL.displayName,
             ),
             HomeFeatureCardUi.StepCount(
-                title = getString(R.string.tr_step_count),
+                title = getString(R.string.fc_step_count),
                 stepsValue = todayStepStat?.steps?.toString() ?: "0",
-                stepsUnit = getString(R.string.tr_text_steps).lowercase(Locale.ROOT),
+                stepsUnit = getString(R.string.fc_text_steps).lowercase(Locale.ROOT),
             ),
             HomeFeatureCardUi.Hydrate(
-                title = getString(R.string.tr_hydrate),
+                title = getString(R.string.fc_hydrate),
                 currentValue = todayTotalIntakeMl.toString(),
                 targetValue = targetMl.toString(),
-                unit = getString(R.string.tr_ml),
+                unit = getString(R.string.fc_ml),
             ),
         )
     }
@@ -379,22 +379,22 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
         val timeDiff = currentTime - recordTimeMs
 
         if (timeDiff < 0) {
-            return getString(R.string.tr_latest)
+            return getString(R.string.fc_latest)
         }
 
         val seconds = timeDiff / 1000
         return when {
             seconds < 60 -> {
                 if (seconds <= 0) {
-                    getString(R.string.tr_just_now)
+                    getString(R.string.fc_just_now)
                 } else {
-                    getString(R.string.tr_seconds_ago, seconds.toInt())
+                    getString(R.string.fc_seconds_ago, seconds.toInt())
                 }
             }
 
-            seconds < 3600 -> getString(R.string.tr_minutes_ago, (seconds / 60).toInt())
-            seconds < 86400 -> getString(R.string.tr_hours_ago, (seconds / 3600).toInt())
-            else -> getString(R.string.tr_days_ago, (seconds / 86400).toInt())
+            seconds < 3600 -> getString(R.string.fc_minutes_ago, (seconds / 60).toInt())
+            seconds < 86400 -> getString(R.string.fc_hours_ago, (seconds / 3600).toInt())
+            else -> getString(R.string.fc_days_ago, (seconds / 86400).toInt())
         }
     }
 

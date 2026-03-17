@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/home_nav_bar_height"
+    android:paddingTop="@dimen/dp_2"
+    android:paddingBottom="@dimen/dp_8">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_tab_icon"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:contentDescription="@string/fc_home"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/tv_tab_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:tint="@color/fc_selector_tab_icon_color"
+        tools:src="@drawable/fc_ic_tab_home_selected" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_tab_text"
+        style="@style/TextViewFont_RobotoMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="@string/fc_home"
+        android:textColor="@color/fc_selector_tab_color"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_tab_icon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

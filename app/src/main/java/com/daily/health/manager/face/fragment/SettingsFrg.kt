@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daily.health.manager.BuildConfig
 import com.daily.health.manager.R
-import com.daily.health.manager.databinding.TrFragmentSettingsBinding
+import com.daily.health.manager.databinding.FcFragmentSettingsBinding
 import com.daily.health.manager.face.act.AlarmManageScreen
 import com.daily.health.manager.face.act.FeedbackAct
 import com.daily.health.manager.face.act.InnerWebAct
@@ -60,7 +60,7 @@ import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import net.corekit.monetize.ui.debug.AdDebugPanel
 
 
-class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>() {
+class SettingsFrg : BaseMVVMFragment<BaseViewModel, FcFragmentSettingsBinding>() {
 
     private var hasRatedState = androidx.compose.runtime.mutableStateOf(false)
 
@@ -75,7 +75,7 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>()
         inflater: LayoutInflater,
         parent: ViewGroup?,
         attachToParent: Boolean
-    ) = TrFragmentSettingsBinding.inflate(inflater, parent, attachToParent)
+    ) = FcFragmentSettingsBinding.inflate(inflater, parent, attachToParent)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -200,34 +200,34 @@ private fun SettingsScreen(
 
     val remindersAndGoalsItems = buildList {
         if (NotificationFeatureSwitch.reminderEntryEnabled) {
-            add(SettingsItemUi(SettingsAction.AlarmManagement, R.string.tr_alarm_management, R.drawable.tr_ic_setting_alarm))
+            add(SettingsItemUi(SettingsAction.AlarmManagement, R.string.fc_alarm_management, R.drawable.fc_ic_setting_alarm))
         }
-//        add(SettingsItemUi(SettingsAction.UnitSettings, R.string.tr_unit_settings, R.drawable.tr_ic_setting_unit))
-        add(SettingsItemUi(SettingsAction.TargetRangeSettings, R.string.tr_target_range_settings, R.drawable.tr_ic_setting_target))
+//        add(SettingsItemUi(SettingsAction.UnitSettings, R.string.fc_unit_settings, R.drawable.fc_ic_setting_unit))
+        add(SettingsItemUi(SettingsAction.TargetRangeSettings, R.string.fc_target_range_settings, R.drawable.fc_ic_setting_target))
     }
     val generalItems = listOf(
-        SettingsItemUi(SettingsAction.PersonalInfo, R.string.tr_personal_info, R.drawable.tr_ic_setting_profile),
-        SettingsItemUi(SettingsAction.Language, R.string.tr_language, R.drawable.tr_ic_setting_language)
+        SettingsItemUi(SettingsAction.PersonalInfo, R.string.fc_personal_info, R.drawable.fc_ic_setting_profile),
+        SettingsItemUi(SettingsAction.Language, R.string.fc_language, R.drawable.fc_ic_setting_language)
     )
     val helpAndFeedbackItems = mutableListOf<SettingsItemUi>()
     if (!hasRated) {
         helpAndFeedbackItems.add(
-            SettingsItemUi(SettingsAction.RateUs, R.string.tr_rate_us, R.drawable.tr_ic_setting_rate)
+            SettingsItemUi(SettingsAction.RateUs, R.string.fc_rate_us, R.drawable.fc_ic_setting_rate)
         )
     }
     helpAndFeedbackItems.add(
-        SettingsItemUi(SettingsAction.Feedback, R.string.tr_feedback, R.drawable.tr_ic_setting_feedback)
+        SettingsItemUi(SettingsAction.Feedback, R.string.fc_feedback, R.drawable.fc_ic_setting_feedback)
     )
     val legalItems = listOf(
-//        SettingsItemUi(SettingsAction.Disclaimers, R.string.tr_disclaimers, R.drawable.tr_ic_setting_disclaimers, isLegal = true),
-        SettingsItemUi(SettingsAction.PrivacyPolicy, R.string.tr_privacy_policy, R.drawable.tr_ic_setting_privacy, isLegal = true),
-//        SettingsItemUi(SettingsAction.TermsOfService, R.string.tr_terms_of_service, R.drawable.tr_ic_setting_terms, isLegal = true)
+//        SettingsItemUi(SettingsAction.Disclaimers, R.string.fc_disclaimers, R.drawable.fc_ic_setting_disclaimers, isLegal = true),
+        SettingsItemUi(SettingsAction.PrivacyPolicy, R.string.fc_privacy_policy, R.drawable.fc_ic_setting_privacy, isLegal = true),
+//        SettingsItemUi(SettingsAction.TermsOfService, R.string.fc_terms_of_service, R.drawable.fc_ic_setting_terms, isLegal = true)
     )
 
     // 开发者工具（仅 DEBUG 版本显示）
     val developerItems = if (BuildConfig.DEBUG) {
         listOf(
-            SettingsItemUi(SettingsAction.AdDebugPanel, R.string.tr_ad_debug_panel, R.drawable.tr_ic_setting)
+            SettingsItemUi(SettingsAction.AdDebugPanel, R.string.fc_ad_debug_panel, R.drawable.fc_ic_setting)
         )
     } else {
         emptyList()
@@ -236,14 +236,14 @@ private fun SettingsScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.tr_subpage_bg))
+            .background(colorResource(R.color.fc_subpage_bg))
             .padding(horizontal = 16.dp),
         contentPadding = PaddingValues(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
             SettingsSection(
-                titleRes = R.string.tr_settings_section_tracking_and_targets,
+                titleRes = R.string.fc_settings_section_tracking_and_targets,
                 items = remindersAndGoalsItems,
                 iconTintCore = iconTintCore,
                 iconTintLegal = iconTintLegal,
@@ -253,7 +253,7 @@ private fun SettingsScreen(
         }
         item {
             SettingsSection(
-                titleRes = R.string.tr_settings_section_preferences,
+                titleRes = R.string.fc_settings_section_preferences,
                 items = generalItems,
                 iconTintCore = iconTintCore,
                 iconTintLegal = iconTintLegal,
@@ -263,7 +263,7 @@ private fun SettingsScreen(
         }
         item {
             SettingsSection(
-                titleRes = R.string.tr_settings_section_help_and_feedback,
+                titleRes = R.string.fc_settings_section_help_and_feedback,
                 items = helpAndFeedbackItems,
                 iconTintCore = iconTintCore,
                 iconTintLegal = iconTintLegal,
@@ -273,7 +273,7 @@ private fun SettingsScreen(
         }
         item {
             SettingsSection(
-                titleRes = R.string.tr_settings_section_legal_and_policies,
+                titleRes = R.string.fc_settings_section_legal_and_policies,
                 items = legalItems,
                 iconTintCore = iconTintCore,
                 iconTintLegal = iconTintLegal,
@@ -285,7 +285,7 @@ private fun SettingsScreen(
         if (developerItems.isNotEmpty()) {
             item {
                 SettingsSection(
-                    titleRes = R.string.tr_settings_section_developer,
+                    titleRes = R.string.fc_settings_section_developer,
                     items = developerItems,
                     iconTintCore = iconTintCore,
                     iconTintLegal = iconTintLegal,
@@ -298,7 +298,7 @@ private fun SettingsScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(
-                    R.string.tr_settings_version_format,
+                    R.string.fc_settings_version_format,
                     BuildConfig.VERSION_NAME
                 ),
                 modifier = Modifier
@@ -380,7 +380,7 @@ private fun SettingsRow(
             color = colorResource(R.color.t1)
         )
         androidx.compose.material3.Icon(
-            painter = painterResource(R.drawable.tr_ic_status_arrow),
+            painter = painterResource(R.drawable.fc_ic_status_arrow),
             contentDescription = null,
             modifier = Modifier.size(14.dp),
             tint = chevronTint

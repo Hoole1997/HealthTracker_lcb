@@ -5,13 +5,13 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.config.HydrateSettingManager
-import com.daily.health.manager.databinding.TrActivityHydrateSettingBinding
+import com.daily.health.manager.databinding.FcActivityHydrateSettingBinding
 import com.daily.health.manager.face.adapter.HydrateSettingAdapter
 import com.daily.health.manager.face.viewmodel.HydrateSettingViewModel
 import com.healthtracker.framework.ext.collect
 import com.healthtracker.framework.ext.startActivity
 
-class HydrateSettingAct : BaseInterActivity<HydrateSettingViewModel, TrActivityHydrateSettingBinding>() {
+class HydrateSettingAct : BaseInterActivity<HydrateSettingViewModel, FcActivityHydrateSettingBinding>() {
 
     companion object {
         fun start(context: Context) {
@@ -19,8 +19,8 @@ class HydrateSettingAct : BaseInterActivity<HydrateSettingViewModel, TrActivityH
         }
     }
 
-    override fun createViewBinding(): TrActivityHydrateSettingBinding =
-        TrActivityHydrateSettingBinding.inflate(layoutInflater)
+    override fun createViewBinding(): FcActivityHydrateSettingBinding =
+        FcActivityHydrateSettingBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = HydrateSettingViewModel::class.java
 

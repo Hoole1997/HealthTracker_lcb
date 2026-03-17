@@ -54,7 +54,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.constants.KEY_HAS_ADD_PROFILE
-import com.daily.health.manager.databinding.TrActivityProfileBinding
+import com.daily.health.manager.databinding.FcActivityProfileBinding
 import com.daily.health.manager.getUserAge
 import com.daily.health.manager.isMale
 import com.daily.health.manager.face.widget.NumberPickerView
@@ -69,7 +69,7 @@ import com.hjq.toast.Toaster
 import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 
-class ProfileActivity: BaseInterActivity<BaseViewModel, TrActivityProfileBinding>() {
+class ProfileActivity: BaseInterActivity<BaseViewModel, FcActivityProfileBinding>() {
     companion object{
         private const val TAG = "ProfileActivity"
 
@@ -108,7 +108,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, TrActivityProfileBinding
 
 
 
-    override fun createViewBinding() = TrActivityProfileBinding.inflate(layoutInflater)
+    override fun createViewBinding() = FcActivityProfileBinding.inflate(layoutInflater)
 
     override fun getVMModelClass() = BaseViewModel::class.java
 
@@ -175,7 +175,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, TrActivityProfileBinding
         saveUserAge(age)
         saveUserGender(gender)
         SpUtils.putBoolean(KEY_HAS_ADD_PROFILE, true)
-        Toaster.show(getString(R.string.tr_save_success))
+        Toaster.show(getString(R.string.fc_save_success))
 
         when (launchMode) {
             MODE_GUIDE -> {
@@ -211,7 +211,7 @@ private fun ProfileScreen(
         !hasGuide || hasChanges
     }
     val actionEnabled = if (isGuideMode) true else saveEnabled
-    val actionTextRes = if (isGuideMode) R.string.tr_text_continue else R.string.tr_save
+    val actionTextRes = if (isGuideMode) R.string.fc_text_continue else R.string.fc_save
     val listState = rememberLazyListState()
 
     LaunchedEffect(isGuideMode) {
@@ -253,7 +253,7 @@ private fun ProfileScreen(
                     Box(modifier = Modifier.height(6.dp))
 
                     Text(
-                        text = stringResource(R.string.tr_choose_your_gender),
+                        text = stringResource(R.string.fc_choose_your_gender),
                         color = Color(0xFF222222),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -261,7 +261,7 @@ private fun ProfileScreen(
                     )
 
                     Text(
-                        text = stringResource(R.string.tr_txt_profile_des),
+                        text = stringResource(R.string.fc_txt_profile_des),
                         color = Color(0xFF666666),
                         fontSize = 14.sp,
                         lineHeight = 18.sp,
@@ -277,15 +277,15 @@ private fun ProfileScreen(
                         GenderCard(
                             modifier = Modifier.weight(1f),
                             selected = gender == 0,
-                            illustrationRes = R.mipmap.tr_profile_gender_male,
-                            labelRes = R.string.tr_male,
+                            illustrationRes = R.mipmap.fc_profile_gender_male,
+                            labelRes = R.string.fc_male,
                             onClick = { onGenderChanged(0) }
                         )
                         GenderCard(
                             modifier = Modifier.weight(1f),
                             selected = gender == 1,
-                            illustrationRes = R.mipmap.tr_profile_gender_female,
-                            labelRes = R.string.tr_female,
+                            illustrationRes = R.mipmap.fc_profile_gender_female,
+                            labelRes = R.string.fc_female,
                             onClick = { onGenderChanged(1) }
                         )
                     }
@@ -294,7 +294,7 @@ private fun ProfileScreen(
 
             item {
                 Text(
-                    text = stringResource(R.string.tr_choose_your_age),
+                    text = stringResource(R.string.fc_choose_your_age),
                     color = Color(0xFF222222),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -312,7 +312,7 @@ private fun ProfileScreen(
                         modifier = Modifier.fillMaxWidth(),
                         factory = { ctx ->
                             val root = LayoutInflater.from(ctx)
-                                .inflate(R.layout.tr_layout_profile_age_picker, null, false)
+                                .inflate(R.layout.fc_layout_profile_age_picker, null, false)
                             val picker = root.findViewById<NumberPickerView>(R.id.numberPicker)
 
                             picker.apply {
@@ -386,7 +386,7 @@ private fun ProfileTopBar(
             modifier = Modifier.size(40.dp)
         ) {
             Icon(
-                painter = painterResource(R.drawable.tr_ic_back),
+                painter = painterResource(R.drawable.fc_ic_back),
                 contentDescription = "back",
                 tint = Color.Unspecified,
                 modifier = Modifier.size(24.dp)

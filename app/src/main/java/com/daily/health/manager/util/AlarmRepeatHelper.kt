@@ -33,16 +33,16 @@ object AlarmRepeatHelper {
      */
     fun getRepeatDescription(context: Context, repeatFlag: Int): String {
         if (!isRepeating(repeatFlag)) {
-            return context.getString(R.string.tr_once)
+            return context.getString(R.string.fc_once)
         }
         
         val selectedWeekDays = getSelectedWeekDays(repeatFlag)
-        val dayNames = context.resources.getStringArray(R.array.tr_week_full)
+        val dayNames = context.resources.getStringArray(R.array.fc_week_full)
         
         return when {
-            selectedWeekDays.size == 7 -> context.getString(R.string.tr_everyday)
-            isWeekdays(repeatFlag) -> context.getString(R.string.tr_every_weekday)
-            isWeekend(repeatFlag) -> context.getString(R.string.tr_every_weekend)
+            selectedWeekDays.size == 7 -> context.getString(R.string.fc_everyday)
+            isWeekdays(repeatFlag) -> context.getString(R.string.fc_every_weekday)
+            isWeekend(repeatFlag) -> context.getString(R.string.fc_every_weekend)
             else -> {
                 val dayLabels = selectedWeekDays.map { dayNames[it.index] }
                 dayLabels.joinToString(", ")
@@ -58,16 +58,16 @@ object AlarmRepeatHelper {
      */
     fun getShortRepeatDescription(context: Context, repeatFlag: Int): String {
         if (!isRepeating(repeatFlag)) {
-            return context.getString(R.string.tr_once)
+            return context.getString(R.string.fc_once)
         }
         
         val selectedWeekDays = getSelectedWeekDays(repeatFlag)
-        val dayNames = context.resources.getStringArray(R.array.tr_week_simple)
+        val dayNames = context.resources.getStringArray(R.array.fc_week_simple)
         
         return when {
-            selectedWeekDays.size == 7 -> context.getString(R.string.tr_everyday)
-            isWeekdays(repeatFlag) -> context.getString(R.string.tr_every_weekday)
-            isWeekend(repeatFlag) -> context.getString(R.string.tr_every_weekend)
+            selectedWeekDays.size == 7 -> context.getString(R.string.fc_everyday)
+            isWeekdays(repeatFlag) -> context.getString(R.string.fc_every_weekday)
+            isWeekend(repeatFlag) -> context.getString(R.string.fc_every_weekend)
             else -> {
                 val dayLabels = selectedWeekDays.map { dayNames[it.index] }
                 dayLabels.joinToString(", ")
@@ -187,10 +187,10 @@ object AlarmRepeatHelper {
      */
     fun getPredefinedPatterns(context: Context): List<Pair<Int, String>> {
         return listOf(
-            REPEAT_ONCE to context.getString(R.string.tr_once),
-            REPEAT_DAILY to context.getString(R.string.tr_everyday),
-            REPEAT_WEEKDAYS to context.getString(R.string.tr_every_weekday),
-            REPEAT_WEEKEND to context.getString(R.string.tr_every_weekend)
+            REPEAT_ONCE to context.getString(R.string.fc_once),
+            REPEAT_DAILY to context.getString(R.string.fc_everyday),
+            REPEAT_WEEKDAYS to context.getString(R.string.fc_every_weekday),
+            REPEAT_WEEKEND to context.getString(R.string.fc_every_weekend)
         )
     }
 }

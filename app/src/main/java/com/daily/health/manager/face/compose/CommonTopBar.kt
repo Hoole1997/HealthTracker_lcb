@@ -55,7 +55,7 @@ fun HealthTopBar(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.tr_ic_back),
+                        painter = painterResource(R.drawable.fc_ic_back),
                         contentDescription = "back",
                         tint = Color.Unspecified,
                     )

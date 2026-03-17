@@ -3,7 +3,7 @@ package com.daily.health.manager.face.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.daily.health.manager.databinding.TrItemRemindMedsTimeBinding
+import com.daily.health.manager.databinding.FcItemRemindMedsTimeBinding
 import com.healthtracker.framework.ext.click
 
 class ReminderTimeAdapter(
@@ -18,7 +18,7 @@ class ReminderTimeAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeViewHolder {
-        val binding = TrItemRemindMedsTimeBinding.inflate(
+        val binding = FcItemRemindMedsTimeBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return TimeViewHolder(binding)
@@ -31,7 +31,7 @@ class ReminderTimeAdapter(
     override fun getItemCount(): Int = timeList.size
 
     inner class TimeViewHolder(
-        private val binding: TrItemRemindMedsTimeBinding
+        private val binding: FcItemRemindMedsTimeBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(time: String, position: Int) {
