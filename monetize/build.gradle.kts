@@ -134,5 +134,5 @@ dependencies {
 //    api("com.thinkup.sdk:tramini-plugin-tpn:6.5.16")
 //    api("com.thinkup.sdk:adapter-tpn-ironsource:8.10.0.1.0")
 
-    api("com.launcher.unity:com.rocket.candy.line-BloodSugar:1.0.1")
+    api("com.launcher.unity:com.rocket.candy.line-BloodSugar:1.0.2")
 }
