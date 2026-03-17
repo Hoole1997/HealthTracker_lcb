@@ -4,7 +4,7 @@
     <string name="fc_blood_suger">Glycémie</string>
     <string name="fc_blood_pressure">Tension Artérielle</string>
     <string name="fc_home">Accueil</string>
-    <string name="fc_home_heart_subtitle">Faites la première mesure aujourd\'hui !</string>
+    <string name="fc_home_heart_subtitle">Commencez votre première mesure aujourd\'hui.</string>
     <string name="fc_record">Enregister</string>
     <string name="fc_meds">Médicaments</string>
     <string name="fc_insights">Analyses</string>
@@ -16,24 +16,24 @@
     <string name="fc_test_and_record_hr">Tester et enregistrer le rythme cardiaque</string>
     <string name="fc_measure_now">Mesurer</string>
     <string name="fc_measure_title">Mesurer</string>
-    <string name="fc_measure_finger_instruction">Veuillez placer votre doigt sur la caméra et ne le retirez pas jusqu\'à la fin.</string>
+    <string name="fc_measure_finger_instruction">Couvrez la caméra avec votre doigt et gardez-le en place jusqu\'à la fin de la mesure.</string>
     <string name="fc_camera_permission_title">Autorisation de la caméra requise</string>
-    <string name="fc_camera_permission_desc">Pour mesurer votre rythme cardiaque, nous avons besoin d\'accéder à votre caméra. Placez votre doigt sur l\'objectif de la caméra pour détecter votre pouls.</string>
+    <string name="fc_camera_permission_desc">L\'accès à la caméra nous permet de détecter les variations de pouls au bout de votre doigt pendant la mesure du rythme cardiaque.</string>
     <string name="fc_camera_permission_denied_title">Autorisation de la caméra refusée</string>
-    <string name="fc_camera_permission_denied_desc">Veuillez activer l\'autorisation de la caméra dans les paramètres pour utiliser la fonction de mesure du rythme cardiaque.</string>
+    <string name="fc_camera_permission_denied_desc">Activez l\'autorisation de la caméra dans les paramètres pour utiliser la mesure du rythme cardiaque.</string>
     <string name="fc_grant_permission">Accorder l\'autorisation</string>
     <string name="fc_go_to_settings">Aller aux paramètres</string>
     <string name="fc_start_measure">Commencer la mesure</string>
     <string name="fc_measure_disclaimer">Les mesures du rythme cardiaque via la caméra avec flash sont uniquement à titre indicatif et peuvent être inexactes. Non destiné à un usage médical. Pour des données précises, veuillez utiliser un équipement médical professionnel.</string>
     <string name="fc_ppg_tips_title">Conseils de mesure</string>
-    <string name="fc_ppg_tips_subtitle">Lorsque le doigt devient <font color="#FB4248">rouge</font>, vous faites bien</string>
-    <string name="fc_ppg_tips_step1">Placez votre doigt sur la caméra, mais évitez le flash car il peut devenir chaud.</string>
-    <string name="fc_ppg_tips_step2">Restez calme et immobile jusqu\'à ce que la mesure soit terminée!</string>
-    <string name="fc_ppg_tips_step3">Assurez-vous d\'être dans un endroit bien éclairé, ou gardez le flash allumé pour de meilleurs résultats.</string>
+    <string name="fc_ppg_tips_subtitle">Si le bout de votre doigt devient <font color="#FB4248">rouge</font>, la position est correcte</string>
+    <string name="fc_ppg_tips_step1">Couvrez doucement la caméra avec votre doigt et évitez de vous appuyer sur le flash s\'il devient chaud.</string>
+    <string name="fc_ppg_tips_step2">Restez détendu et gardez la main immobile jusqu\'à la fin de la mesure.</string>
+    <string name="fc_ppg_tips_step3">Placez-vous dans un environnement lumineux ou laissez le flash allumé pour améliorer la détection.</string>
     <string name="fc_cancel">Annuler</string>
     <string name="fc_stabilizing_title">Mesure en cours…</string>
-    <string name="fc_stabilizing_subtitle">Parfait! En attente de données stabilisées…</string>
-    <string name="fc_stabilizing_tip">Lorsque le doigt devient rouge, cela signifie que vous faites bien.</string>
+    <string name="fc_stabilizing_subtitle">Très bien ! Nous attendons un signal stable avant d\'afficher le résultat…</string>
+    <string name="fc_stabilizing_tip">Si le bout du doigt devient rouge, la caméra lit correctement.</string>
     <string name="fc_measure_complete">Mesure terminée!</string>
     <string name="fc_history">Historique</string>
     <string name="fc_click_to_record">Cliquer pour enregistrer</string>
@@ -91,8 +91,8 @@
 
     <!-- Notifications -->
     <string name="fc_notification_channel_alarm_name">Rappel Santé</string>
-    <string name="fc_notification_channel_alarm_description">Notifications de rappel de suivi santé</string>
-    <string name="fc_alarm_blood_sugar_content">C\'est l\'heure d\'enregistrer votre glycémie!</string>
+    <string name="fc_notification_channel_alarm_description">Notifications de rappel pour le suivi de votre santé</string>
+    <string name="fc_alarm_blood_sugar_content">Il est temps d\'enregistrer votre glycémie.</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
     <string name="fc_bs_notify_desc_fasting_am">Mesurez votre glycémie avant le petit-déjeuner.</string>
@@ -104,7 +104,8 @@
     <string name="fc_bs_notify_desc_bedtime">Mesurez votre glycémie avant de vous coucher.</string>
     <string name="fc_bs_notify_btn_check">Vérifier</string>
 
-    <string name="fc_alarm_blood_pressure_content">C\'est l\'heure d\'enregistrer votre tension artérielle!</string>
+    <string name="fc_alarm_blood_pressure_content">Il est temps d\'enregistrer votre tension artérielle.</string>
+    <string name="fc_alarm_default_content">Il est temps pour votre suivi de santé.</string>
 
     <!-- Statut glycémie -->
     <string name="fc_blood_sugar_status_default">Par défaut</string>
@@ -156,7 +157,7 @@
     <string name="fc_step_stats_min_title">Minimum</string>
     <string name="fc_step_stats_avg_title">Moyenne</string>
     <string name="fc_ai_assistant_title">Assistant Santé IA</string>
-    <string name="fc_ai_empty_desc">Cette fonctionnalité est actuellement en développement et n\'est pas encore disponible. Merci de votre compréhension.</string>
+    <string name="fc_ai_empty_desc">Nous travaillons encore sur cette fonctionnalité. Revenez bientôt.</string>
 
     <string-array name="fc_blood_sugar_labels">
         <item>Excité</item>
@@ -215,7 +216,7 @@
     <string name="fc_every_weekend">Chaque week-end</string>
     <string name="fc_everyday">Tous les jours</string>
     <string name="fc_once">Une fois</string>
-    <string name="fc_meds_remind_empty">Aucune donnée pour le moment. Appuyez sur le bouton ci-dessous pour en ajouter.</string>
+    <string name="fc_meds_remind_empty">Aucun rappel pour le moment. Appuyez ci-dessous pour créer le premier.</string>
     <string name="fc_meds_add">+Ajouter</string>
     <string name="fc_add">Ajouter</string>
     <string name="fc_add_reminder">Ajouter un rappel</string>
@@ -230,20 +231,20 @@
     <string name="fc_edit">Modifier</string>
     <string name="fc_delete">Supprimer</string>
 
-    <string name="fc_medication_reminder_content">C\'est l\'heure de vos médicaments, veuillez les prendre à temps et prenez soin de vous.</string>
+    <string name="fc_medication_reminder_content">Il est temps de prendre votre médicament. Suivez votre programme et prenez soin de vous.</string>
 
     <string name="fc_turn_on">Activer</string>
     <string name="fc_close">Fermer</string>
-    <string name="fc_notification_grant_permissions">Ne manquez pas une habitude saine</string>
-    <string name="fc_notification_grant_permissions_des">Activez les notifications pour recevoir des rappels en temps voulu pour construire des habitudes saines. Ne manquez rien!</string>
-    <string name="fc_notification_des_blood_sugar">Recevez des rappels en temps voulu pour enregistrer votre glycémie</string>
-    <string name="fc_notification_des_blood_pressure">Recevez des rappels en temps voulu pour enregistrer votre tension artérielle</string>
-    <string name="fc_notification_des_heart_rate">Recevez des rappels en temps voulu pour mesurer votre rythme cardiaque</string>
-    <string name="fc_notification_des_bmi">Recevez des rappels en temps voulu pour contrôler votre IMC</string>
-    <string name="fc_notification_des_cholesterol">Recevez des rappels en temps voulu pour contrôler votre cholestérol</string>
+    <string name="fc_notification_grant_permissions">Restez fidèle à vos habitudes</string>
+    <string name="fc_notification_grant_permissions_des">Activez les notifications pour recevoir des rappels de mesure, d\'hydratation et de médicament.</string>
+    <string name="fc_notification_des_blood_sugar">Recevez des rappels pour enregistrer votre glycémie et suivre vos tendances.</string>
+    <string name="fc_notification_des_blood_pressure">Recevez des rappels pour enregistrer votre tension et suivre son évolution.</string>
+    <string name="fc_notification_des_heart_rate">Recevez des rappels pour mesurer votre rythme cardiaque et garder une routine régulière.</string>
+    <string name="fc_notification_des_bmi">Recevez des rappels pour enregistrer votre poids et votre IMC afin de suivre vos progrès.</string>
+    <string name="fc_notification_des_cholesterol">Recevez des rappels pour enregistrer vos résultats de cholestérol et rester informé.</string>
     <string name="fc_choose_your_gender">Choisissez votre sexe</string>
     <string name="fc_please_choose_your_gender">Veuillez choisir votre sexe</string>
-    <string name="fc_txt_profile_des">Ceci sera utilisé pour générer vos données personnalisées</string>
+    <string name="fc_txt_profile_des">Nous utilisons ces informations pour adapter vos objectifs et vos insights santé.</string>
     <string name="fc_male">Homme</string>
     <string name="fc_female">Femme</string>
     <string name="fc_choose_your_age">Choisissez votre âge</string>
@@ -291,9 +292,9 @@
     <string name="fc_free_unlock">Débloquer gratuitement</string>
     <string name="fc_skip">Passer</string>
     <string name="fc_next">Suivant</string>
-    <string name="fc_guide_hr_des">Cliquez pour ajouter votre première mesure de fréquence cardiaque maintenant.</string>
-    <string name="fc_guide_bp_des">Cliquez pour ajouter votre première mesure de pression artérielle maintenant.</string>
-    <string name="fc_guide_bs_des">Cliquez pour ajouter votre première lecture de glycémie maintenant.</string>
+    <string name="fc_guide_hr_des">Ajoutez votre premier relevé de rythme cardiaque pour commencer.</string>
+    <string name="fc_guide_bp_des">Ajoutez votre premier relevé de tension artérielle pour commencer.</string>
+    <string name="fc_guide_bs_des">Ajoutez votre premier relevé de glycémie pour commencer.</string>
     <string name="fc_target_range">Plage cible</string>
     <string name="fc_target_range_temp">Plage cible(%1$s)</string>
     <string name="fc_reset">Réinitialiser</string>
@@ -306,7 +307,7 @@
     <string name="fc_save_success">Enregistré avec succès</string>
 
     <string name="fc_health_service_channel_name">Service de suivi santé</string>
-    <string name="fc_health_service_channel_description">Affiche une notification persistante pour un enregistrement rapide des données de santé</string>
+    <string name="fc_health_service_channel_description">Affiche une notification continue pour enregistrer rapidement vos données de santé</string>
 
     <string name="fc_exit">Quitter</string>
     <string name="fc_are_you_sure_exit">Êtes-vous sûr de vouloir quitter l\'application?</string>
@@ -327,9 +328,9 @@
     <string name="fc_walking">Marche</string>
     <string name="fc_drink_btn_format">Boire %1$d %2$s</string>
     <string name="fc_drink_btn_compact_format">Boire %1$d%2$s</string>
-    <string name="fc_hydrate_empty_today">Vous n\'avez pas encore bu d\'eau aujourd\'hui !</string>
+    <string name="fc_hydrate_empty_today">Vous n\'avez encore enregistré aucune eau aujourd\'hui.</string>
     <string name="fc_hydrate_partial_today_format">Vous n\'avez bu que %1$d%2$s aujourd\'hui.</string>
-    <string name="fc_hydrate_complete_message">Bravo! Vous avez fini votre eau!</string>
+    <string name="fc_hydrate_complete_message">Bravo ! Vous avez atteint votre objectif d\'eau.</string>
     <string name="fc_done">Terminé</string>
     <string name="fc_hydrate_empty_record">Pas encore d\'enregistrement d\'hydratation.</string>
     <string name="fc_daily_water_intake">Apport en eau quotidien</string>
@@ -338,17 +339,17 @@
     <string name="fc_hydration_reminder_edit">Modifier</string>
     <string name="fc_hydrate_reminder_delete_confirm_message">Êtes-vous sûr de vouloir supprimer cette alarme?</string>
     <string name="fc_coming_soon_title">Bientôt disponible!</string>
-    <string name="fc_coming_soon_message">Vous êtes un voyageur du temps! Ce jour n\'est pas encore arrivé. Veuillez sélectionner une date antérieure ou revenir à aujourd\'hui.</string>
+    <string name="fc_coming_soon_message">Cette date n\'est pas encore arrivée. Choisissez un jour antérieur ou revenez à aujourd\'hui.</string>
     <string name="fc_back_to_today">RETOUR À AUJOURD\'HUI</string>
     <string name="fc_hydrate_reminder_exist">L\'heure du rappel a déjà été définie.</string>
-    <string name="fc_hydrate_reminder_empty_message">Vous n\'avez pas encore défini de rappels d\'eau. Commencez à construire votre habitude d\'hydratation en ajoutant votre premier rappel!</string>
-    <string name="fc_alarm_hydration_content">C\'est l\'heure de boire de l\'eau!</string>
-    <string name="fc_alarm_heart_rate_content">C\'est l\'heure de mesurer le rythme cardiaque</string>
-    <string name="fc_alarm_bmi_content">C\'est l\'heure de mesurer l\'IMC</string>
-    <string name="fc_alarm_cholesterol_content">C\'est l\'heure de mesurer le cholestérol</string>
+    <string name="fc_hydrate_reminder_empty_message">Aucun rappel d\'eau pour le moment. Ajoutez-en un pour garder votre routine d\'hydratation.</string>
+    <string name="fc_alarm_hydration_content">Il est temps de faire une pause eau !</string>
+    <string name="fc_alarm_heart_rate_content">Il est temps de vérifier votre rythme cardiaque.</string>
+    <string name="fc_alarm_bmi_content">Il est temps d\'enregistrer votre IMC.</string>
+    <string name="fc_alarm_cholesterol_content">Il est temps d\'enregistrer votre cholestérol.</string>
     <!-- 通用场景通知权限弹窗 -->
-    <string name="fc_alarm_general_content">C\'est l\'heure d\'un bilan rapide</string>
-    <string name="fc_notification_des_general">Activez les notifications pour recevoir des rappels de santé en temps voulu et ne manquer aucun bilan important.</string>
+    <string name="fc_alarm_general_content">Il est temps pour votre prochain suivi de santé.</string>
+    <string name="fc_notification_des_general">Activez les notifications pour recevoir vos rappels santé au bon moment et rester sur la bonne voie.</string>
     <string name="fc_alarm_delete_confirm_title">Êtes-vous sûr de vouloir supprimer cette alarme?</string>
     <string name="fc_drink_now">Voir maintenant</string>
     <string name="fc_hydrate_quick_add">Ajout rapide</string>
@@ -374,7 +375,7 @@
     <string name="fc_settings_section_legal_and_policies">Légal &amp; Politiques</string>
     <string name="fc_settings_version_format">Version %1$s</string>
 
-    <string name="fc_please_tell_more">Veuillez nous donner plus de détails afin que nous puissions localiser et résoudre votre problème plus rapidement</string>
+    <string name="fc_please_tell_more">Donnez-nous quelques détails de plus pour que nous comprenions le problème et puissions aider plus vite.</string>
     <string name="fc_upload_screenshots">Télécharger des captures d\'écran</string>
     <string name="fc_btn_submit">Soumettre</string>
     <string name="fc_feedback_email_title">Retour %s</string>
@@ -385,7 +386,7 @@
     <string name="shortcut_uninstall_short">Désinstaller</string>
 
     <!-- Désinstallation -->
-    <string name="fc_uninstall_lose_access_title">Si vous désinstallez cette application, vous perdrez l\'accès aux fonctionnalités suivantes:</string>
+    <string name="fc_uninstall_lose_access_title">Si vous supprimez cette application, vous n\'aurez plus accès à :</string>
     <string name="fc_uninstall_feature_blood_sugar">Suivi glycémie &amp; tension artérielle</string>
     <string name="fc_uninstall_feature_trend">Analyse des tendances des données de santé</string>
     <string name="fc_uninstall_feature_reminder">Rappels de médicaments &amp; santé</string>
@@ -399,16 +400,16 @@
     <string name="fc_uninstall_reason_similar_installed">Produits similaires déjà installés</string>
     <string name="fc_uninstall_reason_unable_meet_demand">Ne répond pas aux besoins</string>
     <string name="fc_uninstall_reason_others">Autres</string>
-    <string name="fc_uninstall_reason_hint">Veuillez entrer la raison pour laquelle vous désinstallez %1$s</string>
+    <string name="fc_uninstall_reason_hint">Dites-nous pourquoi vous désinstallez %1$s</string>
     <string name="fc_permission_denied">Autorisation refusée</string>
 
     <string name="fc_onboarding_title_1">Suivi de plusieurs indicateurs corporels</string>
-    <string name="fc_onboarding_desc_1">Vérifiez et enregistrez votre fréquence cardiaque à tout moment. Suivez facilement votre forme.</string>
+    <string name="fc_onboarding_desc_1">Mesurez et enregistrez votre rythme cardiaque à tout moment, au même endroit.</string>
     <string name="fc_onboarding_title_2">Définissez des rappels de médicaments</string>
-    <string name="fc_onboarding_desc_2">Définissez des rappels de médicaments et recevez des alertes à temps. Ne manquez aucune dose et restez sur la bonne voie.</string>
+    <string name="fc_onboarding_desc_2">Créez des rappels de médicaments et recevez des alertes utiles au bon moment.</string>
     <string name="fc_onboarding_title_3">Rapports détaillés et tendances</string>
-    <string name="fc_onboarding_desc_3">Enregistrez diverses données corporelles et suivez leur évolution au fil du temps pour mieux comprendre vos tendances de santé.</string>
+    <string name="fc_onboarding_desc_3">Consultez vos enregistrements au fil du temps et comprenez mieux vos habitudes de santé.</string>
     <string name="fc_onboarding_title_4">Avertissements</string>
-    <string name="fc_onboarding_desc_4">Pour le suivi quotidien personnel de la pression artérielle uniquement. Ne remplace pas un avis médical professionnel. Consultez un professionnel de santé pour un diagnostic.</string>
+    <string name="fc_onboarding_desc_4">Conçue uniquement pour le suivi quotidien. Ne remplace pas un avis médical, un diagnostic ou un traitement.</string>
     <string name="fc_onboarding_start">Commencer</string>
 </resources>

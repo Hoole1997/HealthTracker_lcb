@@ -4,7 +4,7 @@
     <string name="fc_blood_suger">Glicemia</string>
     <string name="fc_blood_pressure">Pressão Arterial</string>
     <string name="fc_home">Início</string>
-    <string name="fc_home_heart_subtitle">Faça a primeira medição hoje!</string>
+    <string name="fc_home_heart_subtitle">Comece hoje com sua primeira medição.</string>
     <string name="fc_record">Registrar</string>
     <string name="fc_meds">Medicamentos</string>
     <string name="fc_insights">Análises</string>
@@ -68,10 +68,10 @@
 
     <!-- 闹钟通知相关字符串 -->
     <string name="fc_notification_channel_alarm_name">Lembrete de Saúde</string>
-    <string name="fc_notification_channel_alarm_description">Notificações de lembrete de monitoramento de saúde</string>
+    <string name="fc_notification_channel_alarm_description">Notificações de lembrete para seu acompanhamento de saúde</string>
 
     <!-- 血糖提醒通知 -->
-    <string name="fc_alarm_blood_sugar_content">Hora de registrar sua glicemia!</string>
+    <string name="fc_alarm_blood_sugar_content">Hora de registrar sua glicemia.</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
     <string name="fc_bs_notify_desc_fasting_am">Meça sua glicemia antes do café da manhã.</string>
@@ -84,18 +84,18 @@
     <string name="fc_bs_notify_btn_check">Verificar</string>
 
     <!-- 血压提醒通知 -->
-    <string name="fc_alarm_blood_pressure_content">Hora de registrar sua pressão arterial!</string>
+    <string name="fc_alarm_blood_pressure_content">Hora de registrar sua pressão arterial.</string>
 
     <!-- 默认健康提醒 -->
     <string name="fc_alarm_default_title">Lembrete de Saúde</string>
-    <string name="fc_alarm_default_content">Por favor, monitore sua saúde no horário</string>
+    <string name="fc_alarm_default_content">É hora do seu check-in de saúde.</string>
 
-    <string name="fc_alarm_heart_rate_content">Hora de medir a frequência cardíaca</string>
-    <string name="fc_alarm_bmi_content">Hora de medir o IMC</string>
-    <string name="fc_alarm_cholesterol_content">Hora de medir o colesterol</string>
+    <string name="fc_alarm_heart_rate_content">Hora de verificar sua frequência cardíaca.</string>
+    <string name="fc_alarm_bmi_content">Hora de registrar seu IMC.</string>
+    <string name="fc_alarm_cholesterol_content">Hora de registrar seu colesterol.</string>
     <!-- 通用场景通知权限弹窗 -->
-    <string name="fc_alarm_general_content">Hora de um check-in rápido</string>
-    <string name="fc_notification_des_general">Ative as notificações para receber lembretes de saúde no momento certo e nunca perder um check-in importante.</string>
+    <string name="fc_alarm_general_content">Hora do seu próximo check-in de saúde.</string>
+    <string name="fc_notification_des_general">Ative as notificações para receber lembretes de saúde na hora certa e manter o ritmo.</string>
     <string name="fc_alarm_delete_confirm_title">Tem certeza de que deseja excluir este alarme?</string>
 
     <!-- 血糖测量状态 -->
@@ -146,7 +146,7 @@
     <string name="fc_alarm_management">Gerenciar Alarmes</string>
     <string name="fc_reminder_for">Lembrete para %s</string>
     <string name="fc_ai_assistant_title">Assistente de Saúde com IA</string>
-    <string name="fc_ai_empty_desc">Este recurso está atualmente em desenvolvimento e ainda não está disponível. Obrigado pela sua compreensão.</string>
+    <string name="fc_ai_empty_desc">Ainda estamos trabalhando neste recurso. Volte em breve.</string>
     <string name="fc_step_stats_max_title">Máximo</string>
     <string name="fc_step_stats_min_title">Mínimo</string>
     <string name="fc_step_stats_avg_title">Média</string>
@@ -360,7 +360,7 @@
     <string name="fc_every_weekend">Todo fim de semana</string>
     <string name="fc_everyday">Todos os dias</string>
     <string name="fc_once">Uma vez</string>
-    <string name="fc_meds_remind_empty">Ainda não há dados. Toque no botão abaixo para adicionar.</string>
+    <string name="fc_meds_remind_empty">Ainda não há lembretes. Toque abaixo para criar o primeiro.</string>
     <string name="fc_meds_add">+Adicionar</string>
     <string name="fc_add">Adicionar</string>
     <string name="fc_add_reminder">Adicionar Lembrete</string>
@@ -376,21 +376,21 @@
     <string name="fc_delete">Excluir</string>
 
     <!-- 药物提醒通知相关字符串 -->
-    <string name="fc_medication_reminder_content">Hora do seu medicamento, tome no horário e cuide-se.</string>
+    <string name="fc_medication_reminder_content">Hora de tomar seu medicamento. Siga o horário e cuide-se.</string>
 
     <!-- 通知权限相关字符串 -->
     <string name="fc_turn_on">Ativar</string>
     <string name="fc_close">Fechar</string>
-    <string name="fc_notification_grant_permissions">Não perca um hábito saudável</string>
-    <string name="fc_notification_grant_permissions_des">Ative as notificações para receber lembretes oportunos para construir hábitos saudáveis. Não perca nada!</string>
-    <string name="fc_notification_des_blood_sugar">Receba lembretes oportunos para registrar seu açúcar no sangue</string>
-    <string name="fc_notification_des_blood_pressure">Receba lembretes oportunos para registrar sua pressão arterial</string>
-    <string name="fc_notification_des_heart_rate">Receba lembretes oportunos para medir sua frequência cardíaca</string>
-    <string name="fc_notification_des_bmi">Receba lembretes oportunos para controlar seu IMC</string>
-    <string name="fc_notification_des_cholesterol">Receba lembretes oportunos para controlar seu colesterol</string>
+    <string name="fc_notification_grant_permissions">Mantenha sua rotina em dia</string>
+    <string name="fc_notification_grant_permissions_des">Ative as notificações para receber lembretes de medição, hidratação e medicamento.</string>
+    <string name="fc_notification_des_blood_sugar">Receba lembretes para registrar a glicemia e acompanhar suas tendências.</string>
+    <string name="fc_notification_des_blood_pressure">Receba lembretes para registrar a pressão arterial e acompanhar as mudanças ao longo do tempo.</string>
+    <string name="fc_notification_des_heart_rate">Receba lembretes para medir a frequência cardíaca e manter sua rotina.</string>
+    <string name="fc_notification_des_bmi">Receba lembretes para registrar peso e IMC e acompanhar seu progresso.</string>
+    <string name="fc_notification_des_cholesterol">Receba lembretes para registrar seus resultados de colesterol e se manter informado.</string>
     <string name="fc_choose_your_gender">Escolha seu gênero</string>
     <string name="fc_please_choose_your_gender">Por favor, escolha seu gênero</string>
-    <string name="fc_txt_profile_des">Isso será usado para gerar seus dados personalizados</string>
+    <string name="fc_txt_profile_des">Usamos isso para personalizar seus insights e metas de saúde.</string>
     <string name="fc_male">Masculino</string>
     <string name="fc_female">Feminino</string>
     <string name="fc_choose_your_age">escolha sua idade</string>
@@ -411,22 +411,22 @@
     <string name="fc_test_and_record_hr">Medir e registrar FC</string>
     <string name="fc_measure_now">Medir</string>
     <string name="fc_measure_title">Medir</string>
-    <string name="fc_measure_finger_instruction">Coloque o dedo na câmera e não o remova até o fim.</string>
+    <string name="fc_measure_finger_instruction">Cubra a câmera com o dedo e mantenha-o no lugar até a leitura terminar.</string>
     <string name="fc_camera_permission_title">Permissão de Câmera Necessária</string>
-    <string name="fc_camera_permission_desc">Para medir sua frequência cardíaca, precisamos de acesso à sua câmera. Coloque o dedo na lente da câmera para detectar seu pulso.</string>
+    <string name="fc_camera_permission_desc">O acesso à câmera nos permite detectar mudanças no pulso pela ponta do dedo durante a medição da frequência cardíaca.</string>
     <string name="fc_camera_permission_denied_title">Permissão de Câmera Negada</string>
     <string name="fc_camera_permission_denied_desc">Ative a permissão da câmera nas Configurações para usar o recurso de medição de frequência cardíaca.</string>
     <string name="fc_measure_disclaimer">As medições de frequência cardíaca por meio da câmera com flash são apenas para referência e podem ser imprecisas. Não para uso médico. Para dados precisos, use equipamento médico profissional.</string>
     <string name="fc_ppg_tips_title">Dicas de Medição</string>
-    <string name="fc_ppg_tips_subtitle">Quando o dedo fica <font color="#FB4248">vermelho</font>, você está fazendo certo</string>
-    <string name="fc_ppg_tips_step1">Coloque o dedo sobre a câmera, mas evite o flash, pois ele pode aquecer.</string>
-    <string name="fc_ppg_tips_step2">Mantenha a calma e fique parado até que a medição termine!</string>
-    <string name="fc_ppg_tips_step3">Certifique-se de estar em uma área bem iluminada ou mantenha o flash ligado para melhores resultados.</string>
+    <string name="fc_ppg_tips_subtitle">Se a ponta do dedo ficar <font color="#FB4248">vermelha</font>, a posição está correta</string>
+    <string name="fc_ppg_tips_step1">Cubra a câmera suavemente com o dedo e evite apoiar sobre o flash se ele estiver quente.</string>
+    <string name="fc_ppg_tips_step2">Relaxe e mantenha a mão parada até a leitura terminar.</string>
+    <string name="fc_ppg_tips_step3">Use um ambiente bem iluminado ou deixe o flash ligado para melhorar a detecção.</string>
     <string name="fc_grant_permission">Conceder permissão</string>
     <string name="fc_go_to_settings">Ir para Configurações</string>
     <string name="fc_stabilizing_title">Medindo…</string>
-    <string name="fc_stabilizing_subtitle">Ótimo! Aguardando a leitura para obter dados estabilizados…</string>
-    <string name="fc_stabilizing_tip">Quando o dedo fica vermelho, significa que você está fazendo corretamente.</string>
+    <string name="fc_stabilizing_subtitle">Ótimo. Estamos aguardando um sinal estável antes de mostrar o resultado…</string>
+    <string name="fc_stabilizing_tip">Se a ponta do dedo ficar vermelha, a câmera está lendo corretamente.</string>
     <string name="fc_measure_complete">Medição Concluída!</string>
     <string name="fc_start_measure">Iniciar medição</string>
     <string name="fc_heart_rate">Frequência cardíaca</string>
@@ -460,9 +460,9 @@
     <string name="fc_free_unlock">Desbloquear Grátis</string>
     <string name="fc_skip">Pular</string>
     <string name="fc_next">Próximo</string>
-    <string name="fc_guide_hr_des">Clique para adicionar sua primeira leitura de Frequência Cardíaca agora.</string>
-    <string name="fc_guide_bp_des">Clique para adicionar sua primeira leitura de Pressão Arterial agora.</string>
-    <string name="fc_guide_bs_des">Clique para adicionar sua primeira leitura de Glicemia agora.</string>
+    <string name="fc_guide_hr_des">Adicione seu primeiro registro de frequência cardíaca para começar.</string>
+    <string name="fc_guide_bp_des">Adicione seu primeiro registro de pressão arterial para começar.</string>
+    <string name="fc_guide_bs_des">Adicione seu primeiro registro de glicemia para começar.</string>
     <string name="fc_target_range">Faixa Alvo</string>
     <string name="fc_target_range_temp">Faixa Alvo(%1$s)</string>
     <string name="fc_reset">Redefinir</string>
@@ -594,7 +594,7 @@
 
     <!-- 健康服务通知渠道 -->
     <string name="fc_health_service_channel_name">Serviço de Monitoramento de Saúde</string>
-    <string name="fc_health_service_channel_description">Exibe notificação persistente para registro rápido de dados de saúde</string>
+    <string name="fc_health_service_channel_description">Mostra uma notificação contínua para registrar saúde rapidamente</string>
 
     <!-- 自定义推送通知渠道 -->
     <string name="fc_exit">Sair</string>
@@ -616,9 +616,9 @@
     <string name="fc_walking">Caminhada</string>
     <string name="fc_drink_btn_format">Beber %1$d %2$s</string>
     <string name="fc_drink_btn_compact_format">Beber %1$d%2$s</string>
-    <string name="fc_hydrate_empty_today">Você ainda não bebeu água hoje!</string>
+    <string name="fc_hydrate_empty_today">Você ainda não registrou água hoje.</string>
     <string name="fc_hydrate_partial_today_format">Você bebeu apenas %1$d%2$s hoje.</string>
-    <string name="fc_hydrate_complete_message">Parabéns! Você completou sua meta de água!</string>
+    <string name="fc_hydrate_complete_message">Muito bem! Você atingiu sua meta de água.</string>
     <string name="fc_done">Concluído</string>
     <string name="fc_hydrate_empty_record">Ainda não há registro de ingestão de água.</string>
     <string name="fc_daily_water_intake">Ingestão Diária de Água</string>
@@ -627,12 +627,12 @@
     <string name="fc_hydration_reminder_edit">Editar</string>
     <string name="fc_hydrate_reminder_delete_confirm_message">Tem certeza que deseja excluir este alarme?</string>
     <string name="fc_coming_soon_title">Em Breve!</string>
-    <string name="fc_coming_soon_message">Você é um viajante do tempo! Este dia ainda não chegou. Por favor, selecione uma data anterior ou volte para hoje.</string>
+    <string name="fc_coming_soon_message">Essa data ainda está no futuro. Escolha um dia anterior ou volte para hoje.</string>
     <string name="fc_back_to_today">VOLTAR PARA HOJE</string>
     <string name="fc_hydrate_reminder_exist">O horário do lembrete já foi definido.</string>
-    <string name="fc_hydrate_reminder_empty_message">Você ainda não definiu nenhum lembrete de água. Comece a criar seu hábito de hidratação adicionando seu primeiro lembrete!</string>
+    <string name="fc_hydrate_reminder_empty_message">Ainda não há lembretes de água. Adicione um para manter sua rotina de hidratação.</string>
     <!-- Hydration alarm -->
-    <string name="fc_alarm_hydration_content">Hora de beber água!</string>
+    <string name="fc_alarm_hydration_content">Hora de fazer uma pausa para beber água.</string>
     <string name="fc_drink_now">Ver Agora</string>
     <string name="fc_hydrate_quick_add">Adicionar Rápido</string>
     <string name="fc_step_count">Contagem de Passos</string>
@@ -741,7 +741,7 @@
     <string name="fc_settings_section_legal_and_policies">Legal e Políticas</string>
     <string name="fc_settings_version_format">Versão %1$s</string>
 
-    <string name="fc_please_tell_more">Por favor, conte-nos mais detalhes para que possamos localizar e resolver seu problema mais rapidamente</string>
+    <string name="fc_please_tell_more">Compartilhe mais alguns detalhes para entendermos o problema e ajudar mais rápido.</string>
     <string name="fc_upload_screenshots">Enviar Capturas de Tela</string>
     <string name="fc_btn_submit">Enviar</string>
     <string name="fc_feedback_email_title">Feedback %s</string>
@@ -752,7 +752,7 @@
     <string name="shortcut_uninstall_short">Desinstalar</string>
 
     <!-- Uninstall Intercept Strings -->
-    <string name="fc_uninstall_lose_access_title">Se você desinstalar este APP, perderá acesso aos seguintes recursos:</string>
+    <string name="fc_uninstall_lose_access_title">Se você remover este app, deixará de ter acesso a:</string>
     <string name="fc_uninstall_feature_blood_sugar">Rastreamento de Glicemia e Pressão</string>
     <string name="fc_uninstall_feature_trend">Análise de Tendências de Dados de Saúde</string>
     <string name="fc_uninstall_feature_reminder">Lembretes de Medicamentos e Saúde</string>
@@ -766,16 +766,16 @@
     <string name="fc_uninstall_reason_similar_installed">Produtos similares foram instalados</string>
     <string name="fc_uninstall_reason_unable_meet_demand">Não atende às necessidades</string>
     <string name="fc_uninstall_reason_others">Outros</string>
-    <string name="fc_uninstall_reason_hint">Por favor, insira o motivo pelo qual está desinstalando %1$s</string>
+    <string name="fc_uninstall_reason_hint">Conte para nós por que você está desinstalando %1$s</string>
 
     <string name="fc_permission_denied">Permissão negada</string>
     <string name="fc_onboarding_title_1">Monitoramento de múltiplas métricas corporais</string>
-    <string name="fc_onboarding_desc_1">Verifique e registre sua frequência cardíaca a qualquer momento. Acompanhe sua forma física com facilidade.</string>
+    <string name="fc_onboarding_desc_1">Meça e registre a frequência cardíaca quando precisar, tudo em um só lugar.</string>
     <string name="fc_onboarding_title_2">Defina lembretes de medicamentos</string>
-    <string name="fc_onboarding_desc_2">Defina lembretes de medicamentos e receba alertas na hora certa. Não perca nenhuma dose e mantenha-se no caminho certo.</string>
+    <string name="fc_onboarding_desc_2">Crie lembretes de medicamento e receba alertas úteis exatamente quando precisar.</string>
     <string name="fc_onboarding_title_3">Relatórios detalhados e tendências</string>
-    <string name="fc_onboarding_desc_3">Registre vários dados do corpo e acompanhe as mudanças ao longo do tempo para entender melhor suas tendências de saúde.</string>
+    <string name="fc_onboarding_desc_3">Veja seus registros ao longo do tempo e entenda melhor seus padrões de saúde.</string>
     <string name="fc_onboarding_title_4">Isenções de Responsabilidade</string>
-    <string name="fc_onboarding_desc_4">Apenas para acompanhamento diário pessoal da pressão arterial. Não substitui aconselhamento médico profissional. Consulte um profissional de saúde para diagnóstico.</string>
+    <string name="fc_onboarding_desc_4">Feito apenas para acompanhamento diário. Não substitui orientação médica, diagnóstico ou tratamento.</string>
     <string name="fc_onboarding_start">Começar</string>
 </resources>

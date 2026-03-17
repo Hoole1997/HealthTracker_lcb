@@ -5,7 +5,7 @@
     <string name="fc_blood_suger">혈당</string>
     <string name="fc_blood_pressure">혈압</string>
     <string name="fc_home">홈</string>
-    <string name="fc_home_heart_subtitle">오늘 첫 측정을 해보세요!</string>
+    <string name="fc_home_heart_subtitle">오늘 첫 기록부터 시작해 보세요.</string>
     <string name="fc_record">기록</string>
     <string name="fc_meds">약</string>
     <string name="fc_insights">분석</string>
@@ -71,10 +71,10 @@
 
     <!-- 闹钟通知相关字符串 -->
     <string name="fc_notification_channel_alarm_name">건강 알림</string>
-    <string name="fc_notification_channel_alarm_description">건강 모니터링 알림 통지</string>
+    <string name="fc_notification_channel_alarm_description">건강 기록을 위한 리마인더 알림</string>
 
     <!-- 血糖提醒通知 -->
-    <string name="fc_alarm_blood_sugar_content">혈당을 기록할 시간입니다!</string>
+    <string name="fc_alarm_blood_sugar_content">혈당을 기록할 시간입니다.</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
     <string name="fc_bs_notify_desc_fasting_am">아침 식사 전에 혈당을 측정하세요.</string>
@@ -87,14 +87,15 @@
     <string name="fc_bs_notify_btn_check">확인하기</string>
 
     <!-- 血压提醒通知 -->
-    <string name="fc_alarm_blood_pressure_content">혈압을 기록할 시간입니다!</string>
+    <string name="fc_alarm_blood_pressure_content">혈압을 기록할 시간입니다.</string>
+    <string name="fc_alarm_default_content">건강 체크인 시간입니다.</string>
 
-    <string name="fc_alarm_heart_rate_content">심박수를 측정할 시간입니다</string>
-    <string name="fc_alarm_bmi_content">BMI를 측정할 시간입니다</string>
-    <string name="fc_alarm_cholesterol_content">콜레스테롤을 측정할 시간입니다</string>
+    <string name="fc_alarm_heart_rate_content">심박수를 확인할 시간입니다.</string>
+    <string name="fc_alarm_bmi_content">BMI를 기록할 시간입니다.</string>
+    <string name="fc_alarm_cholesterol_content">콜레스테롤을 기록할 시간입니다.</string>
     <!-- 通用场景通知权限弹窗 -->
-    <string name="fc_alarm_general_content">빠른 체크인 시간입니다</string>
-    <string name="fc_notification_des_general">알림을 활성화하여 적시에 건강 알림을 받고 중요한 체크인을 놓치지 마세요.</string>
+    <string name="fc_alarm_general_content">다음 건강 체크인 시간입니다.</string>
+    <string name="fc_notification_des_general">알림을 켜서 건강 리마인더를 제때 받고 루틴을 이어가세요.</string>
     <string name="fc_alarm_delete_confirm_title">이 알람을 삭제하시겠습니까?</string>
 
     <!-- 血压范围具体数值 -->
@@ -144,7 +145,7 @@
     <string name="fc_alarm_management">알람 관리</string>
     <string name="fc_reminder_for">%s 알림</string>
     <string name="fc_ai_assistant_title">AI 건강 어시스턴트</string>
-    <string name="fc_ai_empty_desc">이 기능은 현재 개발 중이며 아직 사용할 수 없습니다. 양해해 주셔서 감사합니다.</string>
+    <string name="fc_ai_empty_desc">이 기능은 아직 준비 중입니다. 곧 다시 확인해 주세요.</string>
     <string name="fc_step_stats_max_title">최대</string>
     <string name="fc_step_stats_min_title">최소</string>
     <string name="fc_step_stats_avg_title">평균</string>
@@ -208,7 +209,7 @@
     <string name="fc_every_weekend">주말 매일</string>
     <string name="fc_everyday">매일</string>
     <string name="fc_once">한 번</string>
-    <string name="fc_meds_remind_empty">아직 데이터가 없습니다. 아래 버튼을 눌러 추가하세요.</string>
+    <string name="fc_meds_remind_empty">아직 리마인더가 없습니다. 아래에서 첫 리마인더를 만들어 보세요.</string>
     <string name="fc_meds_add">+추가</string>
     <string name="fc_add">추가</string>
     <string name="fc_add_reminder">알림 추가</string>
@@ -223,21 +224,21 @@
     <string name="fc_edit">편집</string>
     <string name="fc_delete">삭제</string>
     <!-- 药物提醒通知相关字符串 -->
-    <string name="fc_medication_reminder_content">약 드실 시간입니다. 잊지 말고 복용하시고 건강 챙기세요.</string>
+    <string name="fc_medication_reminder_content">약을 복용할 시간입니다. 일정에 맞춰 챙기고 건강도 돌보세요.</string>
 
     <!-- 通知权限相关字符串 -->
     <string name="fc_turn_on">켜기</string>
     <string name="fc_close">닫기</string>
-    <string name="fc_notification_grant_permissions">건강 습관을 놓치지 마세요</string>
-    <string name="fc_notification_grant_permissions_des">알림을 활성화하여 건강한 습관을 기르기 위한 시기적절한 알림을 받으세요. 놓치지 마세요!</string>
-    <string name="fc_notification_des_blood_sugar">혈당을 기록하기 위한 시기적절한 알림을 받으세요</string>
-    <string name="fc_notification_des_blood_pressure">혈압을 기록하기 위한 시기적절한 알림을 받으세요</string>
-    <string name="fc_notification_des_heart_rate">심박수를 측정하기 위한 시기적절한 알림을 받으세요</string>
-    <string name="fc_notification_des_bmi">BMI를 관리하기 위한 시기적절한 알림을 받으세요</string>
-    <string name="fc_notification_des_cholesterol">콜레스테롤을 관리하기 위한 시기적절한 알림을 받으세요</string>
+    <string name="fc_notification_grant_permissions">일상을 꾸준히 이어가세요</string>
+    <string name="fc_notification_grant_permissions_des">측정, 수분 섭취, 복약 리마인더를 받으려면 알림을 켜세요.</string>
+    <string name="fc_notification_des_blood_sugar">혈당을 기록하고 추이를 확인할 수 있도록 리마인더를 받아 보세요.</string>
+    <string name="fc_notification_des_blood_pressure">혈압을 기록하고 시간에 따른 변화를 확인할 수 있도록 리마인더를 받아 보세요.</string>
+    <string name="fc_notification_des_heart_rate">심박수를 측정하고 루틴을 유지할 수 있도록 리마인더를 받아 보세요.</string>
+    <string name="fc_notification_des_bmi">체중과 BMI를 기록해 진행 상황을 확인할 수 있도록 리마인더를 받아 보세요.</string>
+    <string name="fc_notification_des_cholesterol">콜레스테롤 결과를 기록하고 상태를 확인할 수 있도록 리마인더를 받아 보세요.</string>
     <string name="fc_choose_your_gender">성별 선택</string>
     <string name="fc_please_choose_your_gender">성별을 선택해 주세요</string>
-    <string name="fc_txt_profile_des">이는 개인화된 데이터를 생성하는 데 사용됩니다</string>
+    <string name="fc_txt_profile_des">건강 인사이트와 목표를 더 잘 맞추는 데 이 정보를 사용합니다.</string>
     <string name="fc_male">남성</string>
     <string name="fc_female">여성</string>
     <string name="fc_choose_your_age">연령 선택</string>
@@ -258,22 +259,22 @@
     <string name="fc_test_and_record_hr">심박수 측정 및 기록</string>
     <string name="fc_measure_now">측정</string>
     <string name="fc_measure_title">측정</string>
-    <string name="fc_measure_finger_instruction">카메라 위에 손가락을 대고 측정이 끝날 때까지 떼지 마세요.</string>
+    <string name="fc_measure_finger_instruction">손가락으로 카메라를 덮고 측정이 끝날 때까지 그대로 유지하세요.</string>
     <string name="fc_camera_permission_title">카메라 권한 필요</string>
-    <string name="fc_camera_permission_desc">심박수를 측정하려면 카메라 권한이 필요합니다. 카메라 렌즈에 손가락을 대고 맥박을 감지하세요.</string>
+    <string name="fc_camera_permission_desc">심박수 측정 중 손끝의 맥박 변화를 감지하려면 카메라 권한이 필요합니다.</string>
     <string name="fc_camera_permission_denied_title">카메라 권한 거부됨</string>
     <string name="fc_camera_permission_denied_desc">심박수 측정 기능을 사용하려면 설정에서 카메라 권한을 활성화해 주세요.</string>
     <string name="fc_measure_disclaimer">플래시 카메라를 이용한 심박수 측정은 참고용일 뿐이며 정확하지 않을 수 있습니다. 의료용이 아닙니다. 정확한 데이터는 전문 의료 장비를 사용하세요.</string>
     <string name="fc_ppg_tips_title">측정 팁</string>
-    <string name="fc_ppg_tips_subtitle">손가락이 <font color="#FB4248">빨간색</font>으로 변하면 올바르게 하고 있는 것입니다</string>
-    <string name="fc_ppg_tips_step1">카메라 위에 손가락을 올리되, 뜨거워질 수 있는 플래시는 피해서 대세요.</string>
-    <string name="fc_ppg_tips_step2">측정이 끝날 때까지 평온을 유지하고 움직이지 마세요!</string>
-    <string name="fc_ppg_tips_step3">밝은 곳에서 측정하거나, 더 나은 결과를 위해 플래시를 켠 상태를 유지하세요.</string>
+    <string name="fc_ppg_tips_subtitle">손끝이 <font color="#FB4248">빨갛게</font> 보이면 위치가 올바릅니다</string>
+    <string name="fc_ppg_tips_step1">손가락으로 카메라를 부드럽게 덮고, 플래시가 뜨겁다면 그 위에 누르지 마세요.</string>
+    <string name="fc_ppg_tips_step2">긴장을 풀고 측정이 끝날 때까지 손을 움직이지 마세요.</string>
+    <string name="fc_ppg_tips_step3">인식률을 높이려면 밝은 곳에서 사용하거나 플래시를 켜 두세요.</string>
     <string name="fc_grant_permission">권한 허용</string>
     <string name="fc_go_to_settings">설정으로 이동</string>
     <string name="fc_stabilizing_title">측정 중…</string>
-    <string name="fc_stabilizing_subtitle">좋습니다! 안정된 데이터 판독을 위해 대기 중…</string>
-    <string name="fc_stabilizing_tip">손가락이 빨간색으로 변하면 올바르게 하고 있는 것입니다.</string>
+    <string name="fc_stabilizing_subtitle">좋아요. 결과를 보여주기 전에 안정적인 신호를 기다리고 있어요…</string>
+    <string name="fc_stabilizing_tip">손끝이 빨갛게 보이면 카메라가 제대로 읽고 있는 상태입니다.</string>
     <string name="fc_measure_complete">측정 완료!</string>
     <string name="fc_start_measure">측정 시작</string>
     <string name="fc_heart_rate">심박수</string>
@@ -307,9 +308,9 @@
     <string name="fc_free_unlock">무료 잠금 해제</string>
     <string name="fc_skip">건너뛰기</string>
     <string name="fc_next">다음</string>
-    <string name="fc_guide_hr_des">클릭하여 첫 심박수 기록을 추가하세요.</string>
-    <string name="fc_guide_bp_des">클릭하여 첫 혈압 기록을 추가하세요.</string>
-    <string name="fc_guide_bs_des">클릭하여 첫 혈당 기록을 추가하세요.</string>
+    <string name="fc_guide_hr_des">시작하려면 첫 심박수 기록을 추가하세요.</string>
+    <string name="fc_guide_bp_des">시작하려면 첫 혈압 기록을 추가하세요.</string>
+    <string name="fc_guide_bs_des">시작하려면 첫 혈당 기록을 추가하세요.</string>
     <string name="fc_target_range">목표 범위</string>
     <string name="fc_target_range_temp">목표 범위(%1$s)</string>
     <string name="fc_reset">초기화</string>
@@ -323,7 +324,7 @@
 
     <!-- 건강 서비스 알림 채널 -->
     <string name="fc_health_service_channel_name">건강 모니터링 서비스</string>
-    <string name="fc_health_service_channel_description">건강 데이터를 빠르게 기록하기 위한 상주 알림 표시</string>
+    <string name="fc_health_service_channel_description">건강 기록을 빠르게 남길 수 있도록 상시 알림을 표시합니다</string>
 
     <!-- 사용자 정의 푸시 알림 채널 -->
     <string name="fc_exit">종료</string>
@@ -345,9 +346,9 @@
     <string name="fc_walking">걷기</string>
     <string name="fc_drink_btn_format">%1$d %2$s 마시기</string>
     <string name="fc_drink_btn_compact_format">%1$d%2$s 마시기</string>
-    <string name="fc_hydrate_empty_today">오늘은 아직 물을 마시지 않았어요!</string>
+    <string name="fc_hydrate_empty_today">오늘은 아직 물을 기록하지 않았어요.</string>
     <string name="fc_hydrate_partial_today_format">오늘은 물을 %1$d%2$s만 마셨어요.</string>
-    <string name="fc_hydrate_complete_message">잘하셨습니다! 수분 섭취 목표를 달성했습니다!</string>
+    <string name="fc_hydrate_complete_message">잘했어요! 오늘의 물 목표를 달성했습니다.</string>
     <string name="fc_done">완료</string>
     <string name="fc_hydrate_empty_record">수분 섭취 기록이 아직 없습니다.</string>
     <string name="fc_daily_water_intake">일일 수분 섭취량</string>
@@ -356,12 +357,12 @@
     <string name="fc_hydration_reminder_edit">편집</string>
     <string name="fc_hydrate_reminder_delete_confirm_message">이 알람을 삭제하시겠습니까?</string>
     <string name="fc_coming_soon_title">곧 출시됩니다!</string>
-    <string name="fc_coming_soon_message">시간 여행자시군요! 이 날짜는 아직 오지 않았습니다. 과거 날짜를 선택하거나 오늘로 돌아가세요.</string>
+    <string name="fc_coming_soon_message">해당 날짜는 아직 오지 않았어요. 이전 날짜를 선택하거나 오늘로 돌아가세요.</string>
     <string name="fc_back_to_today">오늘로 돌아가기</string>
     <string name="fc_hydrate_reminder_exist">알림 시간이 이미 설정되어 있습니다.</string>
-    <string name="fc_hydrate_reminder_empty_message">수분 섭취 알림이 아직 설정되지 않았습니다. 첫 알림을 추가하고 수분 섭취 습관을 만들어보세요!</string>
+    <string name="fc_hydrate_reminder_empty_message">아직 물 리마인더가 없습니다. 수분 섭취 루틴을 유지할 수 있도록 하나 추가해 보세요.</string>
     <!-- Hydration alarm -->
-    <string name="fc_alarm_hydration_content">물 마실 시간입니다!</string>
+    <string name="fc_alarm_hydration_content">물 마실 시간을 챙겨 보세요.</string>
     <string name="fc_drink_now">지금 확인</string>
     <string name="fc_hydrate_quick_add">빠른 추가</string>
     <string name="fc_step_count">걸음 수</string>
@@ -387,7 +388,7 @@
     <string name="fc_settings">설정</string>
 
     <!-- 反馈相关字符串 -->
-    <string name="fc_please_tell_more">문제를 더 빠르게 파악하고 해결할 수 있도록 자세한 내용을 알려주세요</string>
+    <string name="fc_please_tell_more">문제를 더 빨리 이해하고 도와드릴 수 있도록 자세한 내용을 알려주세요.</string>
     <string name="fc_upload_screenshots">스크린샷 업로드</string>
     <string name="fc_btn_submit">제출</string>
     <string name="fc_feedback_email_title">%s 피드백</string>
@@ -746,7 +747,7 @@
     <string name="fc_last_measurement">최근 측정 : %1$s</string>
 
     <!-- Uninstall Intercept Strings -->
-    <string name="fc_uninstall_lose_access_title">이 앱을 삭제하면 다음 기능에 접근할 수 없게 됩니다:</string>
+    <string name="fc_uninstall_lose_access_title">이 앱을 삭제하면 더 이상 다음 기능을 사용할 수 없습니다:</string>
     <string name="fc_uninstall_feature_blood_sugar">혈당 및 혈압 추적</string>
     <string name="fc_uninstall_feature_trend">건강 데이터 트렌드 분석</string>
     <string name="fc_uninstall_feature_reminder">복약 및 건강 알림</string>
@@ -760,16 +761,16 @@
     <string name="fc_uninstall_reason_similar_installed">유사한 제품이 이미 설치됨</string>
     <string name="fc_uninstall_reason_unable_meet_demand">요구 사항을 충족할 수 없음</string>
     <string name="fc_uninstall_reason_others">기타</string>
-    <string name="fc_uninstall_reason_hint">%1$s을(를) 삭제하는 이유를 입력해 주세요</string>
+    <string name="fc_uninstall_reason_hint">%1$s을(를) 삭제하려는 이유를 알려주세요</string>
     <string name="shortcut_uninstall_short">삭제</string>
     <string name="fc_permission_denied">권한이 거부되었습니다</string>
     <string name="fc_onboarding_title_1">다양한 신체 지표 모니터링</string>
-    <string name="fc_onboarding_desc_1">언제든지 심박수를 확인하고 기록하세요. 건강 상태를 쉽게 추적할 수 있습니다.</string>
+    <string name="fc_onboarding_desc_1">필요할 때마다 심박수를 측정하고 한곳에서 기록하세요.</string>
     <string name="fc_onboarding_title_2">복약 알림 설정</string>
-    <string name="fc_onboarding_desc_2">약 복용 알림을 설정하고 제때 알림을 받으세요. 복용을 놓치지 말고 꾸준히 관리하세요.</string>
+    <string name="fc_onboarding_desc_2">복약 리마인더를 만들고 필요한 순간에 유용한 알림을 받아 보세요.</string>
     <string name="fc_onboarding_title_3">상세 보고서 및 추세</string>
-    <string name="fc_onboarding_desc_3">다양한 신체 데이터를 기록하고 시간에 따른 변화를 추적하여 건강 추세를 더 잘 이해하세요.</string>
+    <string name="fc_onboarding_desc_3">시간 흐름에 따라 기록을 보고 건강 패턴을 더 잘 이해하세요.</string>
     <string name="fc_onboarding_title_4">면책 조항</string>
-    <string name="fc_onboarding_desc_4">개인의 일상적인 혈압 추적 전용입니다. 전문적인 의료 조언을 대신하지 않습니다. 진단은 의료 전문가와 상담하세요.</string>
+    <string name="fc_onboarding_desc_4">일상적인 기록용 기능이며, 의료 조언·진단·치료를 대신하지 않습니다.</string>
     <string name="fc_onboarding_start">시작</string>
 </resources>

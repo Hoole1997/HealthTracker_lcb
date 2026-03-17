@@ -4,7 +4,7 @@
     <string name="fc_blood_suger">Kan Şekeri</string>
     <string name="fc_blood_pressure">Tansiyon</string>
     <string name="fc_home">Ana Sayfa</string>
-    <string name="fc_home_heart_subtitle">Bugün ilk ölçümünüzü yapın!</string>
+    <string name="fc_home_heart_subtitle">İlk ölçümünüze bugün başlayın.</string>
     <string name="fc_record">Kaydet</string>
     <string name="fc_meds">İlaçlar</string>
     <string name="fc_insights">Analizler</string>
@@ -62,9 +62,9 @@
     <string name="fc_blood_pressure_range_hypertensive_crisis_full">Sistolik %1$s veya Diastolik %2$s</string>
 
     <string name="fc_notification_channel_alarm_name">Sağlık Hatırlatıcısı</string>
-    <string name="fc_notification_channel_alarm_description">Sağlık izleme hatırlatma bildirimleri</string>
+    <string name="fc_notification_channel_alarm_description">Sağlık takibi için hatırlatma bildirimleri</string>
 
-    <string name="fc_alarm_blood_sugar_content">Kan şekerinizi kaydetme zamanı!</string>
+    <string name="fc_alarm_blood_sugar_content">Kan şekerinizi kaydetme zamanı.</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
     <string name="fc_bs_notify_desc_fasting_am">Kahvaltıdan önce kan şekerinizi ölçün.</string>
@@ -76,17 +76,17 @@
     <string name="fc_bs_notify_desc_bedtime">Yatmadan önce kan şekerinizi ölçün.</string>
     <string name="fc_bs_notify_btn_check">Kontrol Et</string>
 
-    <string name="fc_alarm_blood_pressure_content">Tansiyonunuzu kaydetme zamanı!</string>
+    <string name="fc_alarm_blood_pressure_content">Tansiyonunuzu kaydetme zamanı.</string>
 
     <string name="fc_alarm_default_title">Sağlık Hatırlatıcısı</string>
-    <string name="fc_alarm_default_content">Lütfen sağlığınızı zamanında izleyin</string>
+    <string name="fc_alarm_default_content">Sağlık kontrolünüzün zamanı geldi.</string>
 
-    <string name="fc_alarm_heart_rate_content">Kalp atış hızını ölçme zamanı</string>
-    <string name="fc_alarm_bmi_content">VKİ ölçme zamanı</string>
-    <string name="fc_alarm_cholesterol_content">Kolesterolü ölçme zamanı</string>
+    <string name="fc_alarm_heart_rate_content">Kalp atış hızınızı kontrol etme zamanı.</string>
+    <string name="fc_alarm_bmi_content">VKİ kaydı yapma zamanı.</string>
+    <string name="fc_alarm_cholesterol_content">Kolesterolünüzü kaydetme zamanı.</string>
     <!-- 通用场景通知权限弹窗 -->
-    <string name="fc_alarm_general_content">Hızlı bir kontrol zamanı</string>
-    <string name="fc_notification_des_general">Zamanında sağlık hatırlatmaları almak ve önemli bir kontrolü kaçırmamak için bildirimleri etkinleştirin.</string>
+    <string name="fc_alarm_general_content">Bir sonraki sağlık kontrolünüzün zamanı.</string>
+    <string name="fc_notification_des_general">Sağlık hatırlatmalarını zamanında almak ve rutininizi sürdürmek için bildirimleri açın.</string>
     <string name="fc_alarm_delete_confirm_title">Bu alarmı silmek istediğinizden emin misiniz?</string>
 
     <string name="fc_blood_sugar_status_default">Varsayılan</string>
@@ -134,7 +134,7 @@
     <string name="fc_alarm_management">Alarm Yönetimi</string>
     <string name="fc_reminder_for">%s için hatırlatıcı</string>
     <string name="fc_ai_assistant_title">Yapay Zekâ Sağlık Asistanı</string>
-    <string name="fc_ai_empty_desc">Bu özellik şu anda geliştirme aşamasında ve henüz kullanılamıyor. Anlayışınız için teşekkür ederiz.</string>
+    <string name="fc_ai_empty_desc">Bu özellik üzerinde hâlâ çalışıyoruz. Lütfen yakında tekrar bakın.</string>
     <string name="fc_step_stats_max_title">Maksimum</string>
     <string name="fc_step_stats_min_title">Minimum</string>
     <string name="fc_step_stats_avg_title">Ortalama</string>
@@ -194,7 +194,7 @@
     <string name="fc_every_weekend">Her hafta sonu</string>
     <string name="fc_everyday">Her gün</string>
     <string name="fc_once">Bir kez</string>
-    <string name="fc_meds_remind_empty">Henüz veri yok. Eklemek için aşağıdaki düğmeye dokunun.</string>
+    <string name="fc_meds_remind_empty">Henüz hatırlatıcı yok. İlkini oluşturmak için aşağıya dokunun.</string>
     <string name="fc_meds_add">+Ekle</string>
     <string name="fc_add">Ekle</string>
     <string name="fc_add_reminder">Hatırlatıcı Ekle</string>
@@ -209,20 +209,20 @@
     <string name="fc_edit">Düzenle</string>
     <string name="fc_delete">Sil</string>
 
-    <string name="fc_medication_reminder_content">İlacınızı alma zamanı, lütfen zamanında alın ve kendinize iyi bakın.</string>
+    <string name="fc_medication_reminder_content">İlacınızı alma zamanı. Programınıza uyun ve kendinize iyi bakın.</string>
 
     <string name="fc_turn_on">Aç</string>
     <string name="fc_close">Kapat</string>
-    <string name="fc_notification_grant_permissions">Sağlıklı bir alışkanlığı asla kaçırmayın</string>
-    <string name="fc_notification_grant_permissions_des">Sağlıklı alışkanlıklar oluşturmak için zamanında hatırlatıcılar almak üzere bildirimleri etkinleştirin. Hiçbir şeyi kaçırmayın!</string>
-    <string name="fc_notification_des_blood_sugar">Kan şekerinizi kaydetmek için zamanında hatırlatıcılar alın</string>
-    <string name="fc_notification_des_blood_pressure">Tansiyonunuzu kaydetmek için zamanında hatırlatıcılar alın</string>
-    <string name="fc_notification_des_heart_rate">Kalp atış hızınızı ölçmek için zamanında hatırlatıcılar alın</string>
-    <string name="fc_notification_des_bmi">VKİ\'nizi kontrol etmek için zamanında hatırlatıcılar alın</string>
-    <string name="fc_notification_des_cholesterol">Kolesterolünüzü kontrol etmek için zamanında hatırlatıcılar alın</string>
+    <string name="fc_notification_grant_permissions">Rutinlerinizi aksatmayın</string>
+    <string name="fc_notification_grant_permissions_des">Ölçüm, su ve ilaç hatırlatmaları almak için bildirimleri açın.</string>
+    <string name="fc_notification_des_blood_sugar">Kan şekerinizi kaydetmek ve eğilimleri takip etmek için hatırlatmalar alın.</string>
+    <string name="fc_notification_des_blood_pressure">Tansiyonunuzu kaydetmek ve zaman içindeki değişimleri görmek için hatırlatmalar alın.</string>
+    <string name="fc_notification_des_heart_rate">Kalp atış hızınızı ölçmek ve rutininizi sürdürmek için hatırlatmalar alın.</string>
+    <string name="fc_notification_des_bmi">İlerlemenizi görmek için kilo ve VKİ kaydı hatırlatmaları alın.</string>
+    <string name="fc_notification_des_cholesterol">Kolesterol sonuçlarınızı kaydetmek ve bilgi sahibi olmak için hatırlatmalar alın.</string>
     <string name="fc_choose_your_gender">Cinsiyetinizi seçin</string>
     <string name="fc_please_choose_your_gender">Lütfen cinsiyetinizi seçin</string>
-    <string name="fc_txt_profile_des">Bu, kişiselleştirilmiş verilerinizi oluşturmak için kullanılacaktır</string>
+    <string name="fc_txt_profile_des">Bunu sağlık içgörülerinizi ve hedeflerinizi size göre uyarlamak için kullanıyoruz.</string>
     <string name="fc_male">Erkek</string>
     <string name="fc_female">Kadın</string>
     <string name="fc_choose_your_age">yaşınızı seçin</string>
@@ -243,22 +243,22 @@
     <string name="fc_test_and_record_hr">Nabız ölç ve kaydet</string>
     <string name="fc_measure_now">Ölç</string>
     <string name="fc_measure_title">Ölç</string>
-    <string name="fc_measure_finger_instruction">Lütfen parmağınızı kameranın üzerine koyun ve sonuna kadar kaldırmayın.</string>
+    <string name="fc_measure_finger_instruction">Parmağınızla kamerayı kapatın ve okuma tamamlanana kadar aynı şekilde tutun.</string>
     <string name="fc_camera_permission_title">Kamera İzni Gerekli</string>
-    <string name="fc_camera_permission_desc">Kalp atış hızınızı ölçmek için kameranıza erişmemiz gerekiyor. Nabzınızı algılamak için parmağınızı kamera merceğinin üzerine koyun.</string>
+    <string name="fc_camera_permission_desc">Kalp atış hızı ölçümü sırasında parmak ucunuzdaki nabız değişimlerini algılayabilmemiz için kamera erişimine ihtiyacımız var.</string>
     <string name="fc_camera_permission_denied_title">Kamera İzni Reddedildi</string>
-    <string name="fc_camera_permission_denied_desc">Kalp atış hızı ölçüm özelliğini kullanmak için lütfen Ayarlar\'dan kamera iznini etkinleştirin.</string>
+    <string name="fc_camera_permission_denied_desc">Kalp atış hızı ölçümünü kullanmak için Ayarlar\'dan kamera iznini açın.</string>
     <string name="fc_measure_disclaimer">Flaşlı kamera aracılığıyla yapılan kalp atış hızı ölçümleri yalnızca referans amaçlıdır ve hatalı olabilir. Tıbbi kullanım için değildir. Kesin veriler için lütfen profesyonel tıbbi ekipman kullanın.</string>
     <string name="fc_ppg_tips_title">Ölçüm İpuçları</string>
-    <string name="fc_ppg_tips_subtitle">Parmak <font color="#FB4248">kırmızıya</font> döndüğünde, doğru yapıyorsunuz demektir</string>
-    <string name="fc_ppg_tips_step1">Parmağınızı kameranın üzerine koyun, ancak sıcak olabileceği için flaşın üzerine koymaktan kaçının.</string>
-    <string name="fc_ppg_tips_step2">Sakin kalın ve ölçüm bitene kadar hareket etmeyin!</string>
-    <string name="fc_ppg_tips_step3">İyi aydınlatılmış bir alanda olduğunuzdan emin olun veya daha iyi sonuçlar için flaşı açık tutun.</string>
+    <string name="fc_ppg_tips_subtitle">Parmak ucunuz <font color="#FB4248">kırmızı</font> görünüyorsa konum doğrudur</string>
+    <string name="fc_ppg_tips_step1">Parmağınızla kamerayı nazikçe kapatın ve sıcaksa flaşın üzerine bastırmayın.</string>
+    <string name="fc_ppg_tips_step2">Rahatlayın ve okuma tamamlanana kadar elinizi sabit tutun.</string>
+    <string name="fc_ppg_tips_step3">Algılamayı iyileştirmek için aydınlık bir ortam kullanın veya flaşı açık tutun.</string>
     <string name="fc_grant_permission">İzin ver</string>
     <string name="fc_go_to_settings">Ayarlara Git</string>
     <string name="fc_stabilizing_title">Ölçülüyor…</string>
-    <string name="fc_stabilizing_subtitle">Harika! Dengeli veriler almak için okuma bekleniyor…</string>
-    <string name="fc_stabilizing_tip">Parmağınız kırmızıya döndüğünde, bu doğru yaptığınız anlamına gelir.</string>
+    <string name="fc_stabilizing_subtitle">Güzel. Sonucu göstermeden önce kararlı bir sinyal bekliyoruz…</string>
+    <string name="fc_stabilizing_tip">Parmak ucunuz kırmızı görünüyorsa kamera doğru okuyor demektir.</string>
     <string name="fc_measure_complete">Ölçüm Tamamlandı!</string>
     <string name="fc_start_measure">Ölçümü Başlat</string>
     <string name="fc_heart_rate">Kalp Atış Hızı</string>
@@ -291,9 +291,9 @@
     <string name="fc_free_unlock">Ücretsiz Aç</string>
     <string name="fc_skip">Atla</string>
     <string name="fc_next">İleri</string>
-    <string name="fc_guide_hr_des">İlk Kalp Atış Hızı ölçümünüzü eklemek için şimdi tıklayın.</string>
-    <string name="fc_guide_bp_des">İlk Tansiyon ölçümünüzü eklemek için şimdi tıklayın.</string>
-    <string name="fc_guide_bs_des">İlk Kan Şekeri okumanızı eklemek için şimdi tıklayın.</string>
+    <string name="fc_guide_hr_des">Başlamak için ilk kalp atış hızı kaydınızı ekleyin.</string>
+    <string name="fc_guide_bp_des">Başlamak için ilk tansiyon kaydınızı ekleyin.</string>
+    <string name="fc_guide_bs_des">Başlamak için ilk kan şekeri kaydınızı ekleyin.</string>
     <string name="fc_target_range">Hedef Aralık</string>
     <string name="fc_target_range_temp">Hedef Aralık(%1$s)</string>
     <string name="fc_reset">Sıfırla</string>
@@ -306,7 +306,7 @@
     <string name="fc_save_success">Başarıyla kaydedildi</string>
 
     <string name="fc_health_service_channel_name">Sağlık İzleme Hizmeti</string>
-    <string name="fc_health_service_channel_description">Hızlı sağlık verisi kaydı için kalıcı bildirim görüntüler</string>
+    <string name="fc_health_service_channel_description">Sağlık kayıtlarını hızlıca tutmak için sürekli bir bildirim gösterir</string>
     <string name="fc_exit">Çıkış</string>
     <string name="fc_are_you_sure_exit">Uygulamadan çıkmak istediğinizden emin misiniz?</string>
     <string name="fc__7_days">7 Gün</string>
@@ -325,9 +325,9 @@
     <string name="fc_walking">Yürüyüş</string>
     <string name="fc_drink_btn_format">%1$d %2$s iç</string>
     <string name="fc_drink_btn_compact_format">%1$d%2$s iç</string>
-    <string name="fc_hydrate_empty_today">Bugün henüz su içmediniz!</string>
+    <string name="fc_hydrate_empty_today">Bugün henüz su kaydı yapmadınız.</string>
     <string name="fc_hydrate_partial_today_format">Bugün sadece %1$d%2$s içtiniz.</string>
-    <string name="fc_hydrate_complete_message">Tebrikler! Su hedefinizi tamamladınız!</string>
+    <string name="fc_hydrate_complete_message">Harika! Su hedefinize ulaştınız.</string>
     <string name="fc_done">Tamam</string>
     <string name="fc_hydrate_empty_record">Henüz su içme kaydı yok.</string>
     <string name="fc_daily_water_intake">Günlük Su Alımı</string>
@@ -336,11 +336,11 @@
     <string name="fc_hydration_reminder_edit">Düzenle</string>
     <string name="fc_hydrate_reminder_delete_confirm_message">Bu alarmı silmek istediğinizden emin misiniz?</string>
     <string name="fc_coming_soon_title">Yakında!</string>
-    <string name="fc_coming_soon_message">Bir zaman yolcususunuz! Bu gün henüz gelmedi. Lütfen önceki bir tarih seçin veya bugüne dönün.</string>
+    <string name="fc_coming_soon_message">Bu tarih henüz gelmedi. Daha önceki bir günü seçin ya da bugüne dönün.</string>
     <string name="fc_back_to_today">BUGÜNE DÖN</string>
     <string name="fc_hydrate_reminder_exist">Hatırlatma saati zaten ayarlandı.</string>
-    <string name="fc_hydrate_reminder_empty_message">Henüz su hatırlatıcısı ayarlamadınız. İlk hatırlatıcınızı ekleyerek hidrasyon alışkanlığınızı oluşturmaya başlayın!</string>
-    <string name="fc_alarm_hydration_content">Su içme zamanı!</string>
+    <string name="fc_hydrate_reminder_empty_message">Henüz su hatırlatıcınız yok. Su düzeninizi sürdürmek için bir tane ekleyin.</string>
+    <string name="fc_alarm_hydration_content">Su molası verme zamanı.</string>
     <string name="fc_drink_now">Şimdi Gör</string>
     <string name="fc_hydrate_quick_add">Hızlı Ekle</string>
     <string name="fc_step_count">Adım Sayısı</string>
@@ -365,7 +365,7 @@
     <string name="fc_settings_section_legal_and_policies">Yasal ve Politikalar</string>
     <string name="fc_settings_version_format">Sürüm %1$s</string>
 
-    <string name="fc_please_tell_more">Lütfen sorununuzu daha hızlı bulup çözmemiz için bize daha fazla ayrıntı verin</string>
+    <string name="fc_please_tell_more">Sorunu daha hızlı anlayıp yardımcı olabilmemiz için biraz daha ayrıntı paylaşın.</string>
     <string name="fc_upload_screenshots">Ekran Görüntülerini Yükle</string>
     <string name="fc_btn_submit">Gönder</string>
     <string name="fc_feedback_email_title">%s Geri Bildirimi</string>
@@ -375,7 +375,7 @@
     <string name="fc_last_measurement">Son Ölçüm: %1$s</string>
     <string name="shortcut_uninstall_short">Kaldır</string>
 
-    <string name="fc_uninstall_lose_access_title">Bu uygulamayı kaldırırsanız, aşağıdaki özelliklere erişiminizi kaybedersiniz:</string>
+    <string name="fc_uninstall_lose_access_title">Bu uygulamayı kaldırırsanız artık şunlara erişemezsiniz:</string>
     <string name="fc_uninstall_feature_blood_sugar">Kan Şekeri ve Tansiyon Takibi</string>
     <string name="fc_uninstall_feature_trend">Sağlık Verisi Trend Analizi</string>
     <string name="fc_uninstall_feature_reminder">İlaç ve Sağlık Hatırlatıcıları</string>
@@ -389,16 +389,16 @@
     <string name="fc_uninstall_reason_similar_installed">Benzer ürünler yüklü</string>
     <string name="fc_uninstall_reason_unable_meet_demand">İhtiyaçları karşılayamıyor</string>
     <string name="fc_uninstall_reason_others">Diğer</string>
-    <string name="fc_uninstall_reason_hint">Lütfen %1$s\'ı neden kaldırdığınızı belirtin</string>
+    <string name="fc_uninstall_reason_hint">%1$s uygulamasını neden kaldırdığınızı bize söyleyin</string>
 
     <string name="fc_permission_denied">İzin reddedildi</string>
     <string name="fc_onboarding_title_1">Birden fazla vücut ölçümünü izleyin</string>
-    <string name="fc_onboarding_desc_1">Kalp atış hızınızı istediğiniz zaman kontrol edip kaydedin. Formunuzu kolayca takip edin.</string>
+    <string name="fc_onboarding_desc_1">İhtiyacınız olduğunda kalp atış hızınızı ölçün ve tek yerde kaydedin.</string>
     <string name="fc_onboarding_title_2">İlaç hatırlatıcıları ayarlayın</string>
-    <string name="fc_onboarding_desc_2">İlaç hatırlatıcıları ayarlayın ve zamanında bildirim alın. Hiçbir dozu kaçırmayın ve düzeninizi koruyun.</string>
+    <string name="fc_onboarding_desc_2">İlaç hatırlatıcıları oluşturun ve tam gerektiğinde yararlı uyarılar alın.</string>
     <string name="fc_onboarding_title_3">Ayrıntılı raporlar ve trendler</string>
-    <string name="fc_onboarding_desc_3">Çeşitli vücut verilerini kaydedin ve zaman içindeki değişimleri izleyerek sağlık eğilimlerinizi daha iyi anlayın.</string>
+    <string name="fc_onboarding_desc_3">Kayıtlarınızı zaman içinde görüntüleyin ve sağlık düzeninizi daha iyi anlayın.</string>
     <string name="fc_onboarding_title_4">Sorumluluk Reddi</string>
-    <string name="fc_onboarding_desc_4">Yalnızca kişisel günlük tansiyon takibi içindir. Profesyonel tıbbi tavsiyenin yerine geçmez. Teşhis için bir sağlık uzmanına danışın.</string>
+    <string name="fc_onboarding_desc_4">Yalnızca günlük takip içindir. Tıbbi tavsiye, teşhis veya tedavinin yerine geçmez.</string>
     <string name="fc_onboarding_start">Başla</string>
 </resources>

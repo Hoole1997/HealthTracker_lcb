@@ -4,7 +4,7 @@
     <string name="fc_blood_suger">ब्लड शुगर</string>
     <string name="fc_blood_pressure">रक्तचाप</string>
     <string name="fc_home">होम</string>
-    <string name="fc_home_heart_subtitle">आज पहला माप लें!</string>
+    <string name="fc_home_heart_subtitle">आज अपनी पहली रीडिंग से शुरुआत करें।</string>
     <string name="fc_record">रिकॉर्ड</string>
     <string name="fc_meds">दवाइयाँ</string>
     <string name="fc_insights">विश्लेषण</string>
@@ -62,9 +62,9 @@
     <string name="fc_blood_pressure_range_hypertensive_crisis_full">सिस्टोलिक %1$s या डायस्टोलिक %2$s</string>
 
     <string name="fc_notification_channel_alarm_name">स्वास्थ्य रिमाइंडर</string>
-    <string name="fc_notification_channel_alarm_description">स्वास्थ्य निगरानी रिमाइंडर नोटिफिकेशन</string>
+    <string name="fc_notification_channel_alarm_description">स्वास्थ्य ट्रैकिंग के लिए रिमाइंडर नोटिफिकेशन</string>
 
-    <string name="fc_alarm_blood_sugar_content">अपना ब्लड शुगर रिकॉर्ड करने का समय!</string>
+    <string name="fc_alarm_blood_sugar_content">ब्लड शुगर लॉग करने का समय है।</string>
 
     <!-- 血糖场景通知文案 (7 种场景) -->
     <string name="fc_bs_notify_desc_fasting_am">नाश्ते से पहले अपना ब्लड शुगर मापें।</string>
@@ -76,17 +76,17 @@
     <string name="fc_bs_notify_desc_bedtime">सोने से पहले अपना ब्लड शुगर मापें।</string>
     <string name="fc_bs_notify_btn_check">जाँचें</string>
 
-    <string name="fc_alarm_blood_pressure_content">अपना रक्तचाप रिकॉर्ड करने का समय!</string>
+    <string name="fc_alarm_blood_pressure_content">रक्तचाप लॉग करने का समय है।</string>
 
     <string name="fc_alarm_default_title">स्वास्थ्य रिमाइंडर</string>
-    <string name="fc_alarm_default_content">कृपया समय पर अपने स्वास्थ्य की निगरानी करें</string>
+    <string name="fc_alarm_default_content">आपके स्वास्थ्य चेक-इन का समय है।</string>
 
-    <string name="fc_alarm_heart_rate_content">हृदय गति मापने का समय है</string>
-    <string name="fc_alarm_bmi_content">BMI मापने का समय है</string>
-    <string name="fc_alarm_cholesterol_content">कोलेस्ट्रॉल मापने का समय है</string>
+    <string name="fc_alarm_heart_rate_content">हृदय गति जांचने का समय है।</string>
+    <string name="fc_alarm_bmi_content">अपना BMI लॉग करने का समय है।</string>
+    <string name="fc_alarm_cholesterol_content">कोलेस्ट्रॉल लॉग करने का समय है।</string>
     <!-- 通用场景通知权限弹窗 -->
-    <string name="fc_alarm_general_content">एक त्वरित चेक-इन का समय है</string>
-    <string name="fc_notification_des_general">समय पर स्वास्थ्य रिमाइंडर प्राप्त करने के लिए नोटिफिकेशन सक्षम करें और कोई भी महत्वपूर्ण चेक-इन न चूकें।</string>
+    <string name="fc_alarm_general_content">आपके अगले स्वास्थ्य चेक-इन का समय है।</string>
+    <string name="fc_notification_des_general">समय पर स्वास्थ्य रिमाइंडर पाने और अपनी दिनचर्या बनाए रखने के लिए नोटिफिकेशन चालू करें।</string>
     <string name="fc_alarm_delete_confirm_title">क्या आप वाकई इस अलार्म को हटाना चाहते हैं?</string>
 
     <string name="fc_blood_sugar_status_default">डिफ़ॉल्ट</string>
@@ -134,7 +134,7 @@
     <string name="fc_alarm_management">अलार्म प्रबंधन</string>
     <string name="fc_reminder_for">%s के लिए रिमाइंडर</string>
     <string name="fc_ai_assistant_title">AI स्वास्थ्य सहायक</string>
-    <string name="fc_ai_empty_desc">यह सुविधा वर्तमान में विकसित की जा रही है और अभी उपलब्ध नहीं है। आपकी समझ के लिए धन्यवाद।</string>
+    <string name="fc_ai_empty_desc">हम अभी इस फीचर पर काम कर रहे हैं। कृपया जल्द फिर देखें।</string>
     <string name="fc_step_stats_max_title">अधिकतम</string>
     <string name="fc_step_stats_min_title">न्यूनतम</string>
     <string name="fc_step_stats_avg_title">औसत</string>
@@ -194,7 +194,7 @@
     <string name="fc_every_weekend">हर सप्ताहांत</string>
     <string name="fc_everyday">हर दिन</string>
     <string name="fc_once">एक बार</string>
-    <string name="fc_meds_remind_empty">अभी तक कोई डेटा नहीं है। कुछ जोड़ने के लिए नीचे दिए गए बटन पर टैप करें।</string>
+    <string name="fc_meds_remind_empty">अभी कोई रिमाइंडर नहीं है। पहला रिमाइंडर बनाने के लिए नीचे टैप करें।</string>
     <string name="fc_meds_add">+जोड़ें</string>
     <string name="fc_add">जोड़ें</string>
     <string name="fc_add_reminder">रिमाइंडर जोड़ें</string>
@@ -209,13 +209,13 @@
     <string name="fc_edit">संपादित करें</string>
     <string name="fc_delete">हटाएं</string>
 
-    <string name="fc_medication_reminder_content">आपकी दवा का समय हो गया है, कृपया समय पर लें और अपना ख्याल रखें।</string>
+    <string name="fc_medication_reminder_content">दवा लेने का समय है। अपनी दिनचर्या बनाए रखें और अपना ख्याल रखें।</string>
 
     <string name="fc_turn_on">चालू करें</string>
     <string name="fc_close">बंद करें</string>
     <string name="fc_choose_your_gender">अपना लिंग चुनें</string>
     <string name="fc_please_choose_your_gender">कृपया अपना लिंग चुनें</string>
-    <string name="fc_txt_profile_des">यह आपके व्यक्तिगत डेटा उत्पन्न करने के लिए उपयोग किया जाएगा</string>
+    <string name="fc_txt_profile_des">हम इसका उपयोग आपकी स्वास्थ्य जानकारी और लक्ष्यों को आपके मुताबिक बनाने के लिए करते हैं।</string>
     <string name="fc_male">पुरुष</string>
     <string name="fc_female">महिला</string>
     <string name="fc_choose_your_age">अपनी उम्र चुनें</string>
@@ -236,22 +236,22 @@
     <string name="fc_test_and_record_hr">हृदय गति मापें और रिकॉर्ड करें</string>
     <string name="fc_measure_now">मापें</string>
     <string name="fc_measure_title">मापें</string>
-    <string name="fc_measure_finger_instruction">कृपया अपनी उंगली कैमरे पर रखें और अंत तक न हटाएं।</string>
+    <string name="fc_measure_finger_instruction">अपनी उंगली से कैमरा ढकें और रीडिंग पूरी होने तक उसे वहीं रखें।</string>
     <string name="fc_camera_permission_title">कैमरा अनुमति आवश्यक है</string>
-    <string name="fc_camera_permission_desc">अपनी हृदय गति मापने के लिए, हमें आपके कैमरे तक पहुंच की आवश्यकता है। अपनी नब्ज का पता लगाने के लिए अपनी उंगली को कैमरा लेंस पर रखें।</string>
+    <string name="fc_camera_permission_desc">हृदय गति मापते समय आपकी उंगली के सिरे से पल्स में होने वाले बदलाव पहचानने के लिए हमें कैमरा एक्सेस चाहिए।</string>
     <string name="fc_camera_permission_denied_title">कैमरा अनुमति अस्वीकृत</string>
-    <string name="fc_camera_permission_denied_desc">हृदय गति माप सुविधा का उपयोग करने के लिए कृपया सेटिंग में कैमरा अनुमति सक्षम करें।</string>
+    <string name="fc_camera_permission_denied_desc">हृदय गति मापने के लिए सेटिंग्स में कैमरा अनुमति चालू करें।</string>
     <string name="fc_measure_disclaimer">फ्लैशलाइट कैमरे के माध्यम से हृदय गति माप केवल संदर्भ के लिए हैं और गलत हो सकते हैं। चिकित्सा उपयोग के लिए नहीं। सटीक डेटा के लिए, कृपया पेशेवर चिकित्सा उपकरणों का उपयोग करें।</string>
     <string name="fc_ppg_tips_title">माप युक्तियाँ</string>
-    <string name="fc_ppg_tips_subtitle">जब उंगली <font color="#FB4248">लाल</font> हो जाती है, तो आप सही कर रहे हैं</string>
-    <string name="fc_ppg_tips_step1">अपनी उंगली कैमरे के ऊपर रखें, लेकिन फ्लैशलाइट से बचें क्योंकि यह गर्म हो सकती है।</string>
-    <string name="fc_ppg_tips_step2">शांत रहें और माप पूरा होने तक न हिलें!</string>
-    <string name="fc_ppg_tips_step3">सुनिश्चित करें कि आप एक अच्छी तरह से प्रकाशित क्षेत्र में हैं, या बेहतर परिणामों के लिए फ्लैशलाइट चालू रखें।</string>
+    <string name="fc_ppg_tips_subtitle">अगर आपकी उंगली का सिरा <font color="#FB4248">लाल</font> दिखे, तो स्थिति सही है</string>
+    <string name="fc_ppg_tips_step1">अपनी उंगली से कैमरे को हल्के से ढकें और अगर फ्लैशलाइट गर्म लगे तो उस पर दबाव न दें।</string>
+    <string name="fc_ppg_tips_step2">आराम से रहें और रीडिंग पूरी होने तक हाथ स्थिर रखें।</string>
+    <string name="fc_ppg_tips_step3">बेहतर पहचान के लिए रोशनी वाली जगह का उपयोग करें या फ्लैशलाइट चालू रखें।</string>
     <string name="fc_grant_permission">अनुमति दें</string>
     <string name="fc_go_to_settings">सेटिंग में जाएं</string>
     <string name="fc_stabilizing_title">माप रहा है…</string>
-    <string name="fc_stabilizing_subtitle">बहुत बढ़िया! स्थिर डेटा प्राप्त करने के लिए रीडिंग की प्रतीक्षा की जा रही है…</string>
-    <string name="fc_stabilizing_tip">जब आपकी उंगली लाल हो जाती है, तो इसका मतलब है कि आप इसे सही ढंग से कर रहे हैं।</string>
+    <string name="fc_stabilizing_subtitle">अच्छा है! परिणाम दिखाने से पहले हम स्थिर सिग्नल का इंतजार कर रहे हैं…</string>
+    <string name="fc_stabilizing_tip">उंगली का सिरा लाल दिखना बताता है कि कैमरा सही पढ़ रहा है।</string>
     <string name="fc_measure_complete">माप पूरा हुआ!</string>
     <string name="fc_start_measure">माप शुरू करें</string>
     <string name="fc_heart_rate">हृदय गति</string>
@@ -260,13 +260,13 @@
     <string name="fc_delete_record_failed">रिकॉर्ड हटाना विफल</string>
     <string name="fc_cholesterol">कोलेस्ट्रॉल</string>
     <string name="fc_weight_and_bmi"><![CDATA[वजन & BMI]]></string>
-    <string name="fc_notification_grant_permissions">स्वास्थ्य की आदत कभी न छोड़ें</string>
-    <string name="fc_notification_grant_permissions_des">स्वस्थ आदतें बनाने के लिए समय पर रिमाइंडर प्राप्त करने के लिए नोटिफिकेशन सक्षम करें। कुछ भी न चूकें!</string>
-    <string name="fc_notification_des_blood_sugar">अपना ब्लड शुगर रिकॉर्ड करने के लिए समय पर रिमाइंडर प्राप्त करें</string>
-    <string name="fc_notification_des_blood_pressure">अपना रक्तचाप रिकॉर्ड करने के लिए समय पर रिमाइंडर प्राप्त करें</string>
-    <string name="fc_notification_des_heart_rate">अपनी हृदय गति मापने के लिए समय पर रिमाइंडर प्राप्त करें</string>
-    <string name="fc_notification_des_bmi">अपने BMI को नियंत्रित करने के लिए समय पर रिमाइंडर प्राप्त करें</string>
-    <string name="fc_notification_des_cholesterol">अपने कोलेस्ट्रॉल को नियंत्रित करने के लिए समय पर रिमाइंडर प्राप्त करें</string>
+    <string name="fc_notification_grant_permissions">अपनी दिनचर्या पर बने रहें</string>
+    <string name="fc_notification_grant_permissions_des">माप, पानी और दवा रिमाइंडर पाने के लिए नोटिफिकेशन चालू करें।</string>
+    <string name="fc_notification_des_blood_sugar">ब्लड शुगर लॉग करने और रुझान पर नजर रखने के लिए रिमाइंडर पाएं।</string>
+    <string name="fc_notification_des_blood_pressure">रक्तचाप रिकॉर्ड करने और समय के साथ बदलाव देखने के लिए रिमाइंडर पाएं।</string>
+    <string name="fc_notification_des_heart_rate">हृदय गति मापने और अपनी दिनचर्या बनाए रखने के लिए रिमाइंडर पाएं।</string>
+    <string name="fc_notification_des_bmi">वजन और BMI लॉग करने के लिए रिमाइंडर पाएं ताकि आप प्रगति देख सकें।</string>
+    <string name="fc_notification_des_cholesterol">कोलेस्ट्रॉल परिणाम दर्ज करने और जानकारी में बने रहने के लिए रिमाइंडर पाएं।</string>
 
     <string name="fc_heart_rate_status_slow">धीमी</string>
     <string name="fc_heart_rate_status_normal">सामान्य</string>
@@ -291,9 +291,9 @@
     <string name="fc_free_unlock">मुफ्त अनलॉक</string>
     <string name="fc_skip">छोड़ें</string>
     <string name="fc_next">अगला</string>
-    <string name="fc_guide_hr_des">अभी अपनी पहली हार्ट रेट रीडिंग जोड़ने के लिए क्लिक करें।</string>
-    <string name="fc_guide_bp_des">अभी अपनी पहली ब्लड प्रेशर रीडिंग जोड़ने के लिए क्लिक करें।</string>
-    <string name="fc_guide_bs_des">अभी अपनी पहली ब्लड शुगर रीडिंग जोड़ने के लिए क्लिक करें।</string>
+    <string name="fc_guide_hr_des">शुरुआत करने के लिए अपना पहला हार्ट रेट रिकॉर्ड जोड़ें।</string>
+    <string name="fc_guide_bp_des">शुरुआत करने के लिए अपना पहला ब्लड प्रेशर रिकॉर्ड जोड़ें।</string>
+    <string name="fc_guide_bs_des">शुरुआत करने के लिए अपना पहला ब्लड शुगर रिकॉर्ड जोड़ें।</string>
     <string name="fc_target_range">लक्ष्य सीमा</string>
     <string name="fc_target_range_temp">लक्ष्य सीमा(%1$s)</string>
     <string name="fc_reset">रीसेट</string>
@@ -306,7 +306,7 @@
     <string name="fc_save_success">सफलतापूर्वक सहेजा गया</string>
 
     <string name="fc_health_service_channel_name">स्वास्थ्य निगरानी सेवा</string>
-    <string name="fc_health_service_channel_description">त्वरित स्वास्थ्य डेटा रिकॉर्डिंग के लिए स्थायी नोटिफिकेशन प्रदर्शित करता है</string>
+    <string name="fc_health_service_channel_description">त्वरित स्वास्थ्य लॉगिंग के लिए लगातार नोटिफिकेशन दिखाता है</string>
     <string name="fc_exit">बाहर निकलें</string>
     <string name="fc_are_you_sure_exit">क्या आप ऐप से बाहर निकलना चाहते हैं?</string>
     <string name="fc__7_days">7 दिन</string>
@@ -325,9 +325,9 @@
     <string name="fc_walking">चलना</string>
     <string name="fc_drink_btn_format">%1$d %2$s पिएं</string>
     <string name="fc_drink_btn_compact_format">%1$d%2$s पिएं</string>
-    <string name="fc_hydrate_empty_today">आपने आज अभी तक पानी नहीं पिया!</string>
+    <string name="fc_hydrate_empty_today">आपने आज अभी तक पानी लॉग नहीं किया है।</string>
     <string name="fc_hydrate_partial_today_format">आपने आज केवल %1$d%2$s पानी पिया।</string>
-    <string name="fc_hydrate_complete_message">बहुत बढ़िया! आपने अपना पानी पूरा कर लिया!</string>
+    <string name="fc_hydrate_complete_message">बहुत बढ़िया! आपने अपना पानी का लक्ष्य पूरा कर लिया।</string>
     <string name="fc_done">हो गया</string>
     <string name="fc_hydrate_empty_record">अभी तक कोई पानी रिकॉर्ड नहीं।</string>
     <string name="fc_daily_water_intake">दैनिक पानी का सेवन</string>
@@ -336,11 +336,11 @@
     <string name="fc_hydration_reminder_edit">संपादित करें</string>
     <string name="fc_hydrate_reminder_delete_confirm_message">क्या आप इस अलार्म को हटाना चाहते हैं?</string>
     <string name="fc_coming_soon_title">जल्द आ रहा है!</string>
-    <string name="fc_coming_soon_message">आप एक टाइम ट्रैवलर हैं! यह दिन अभी नहीं आया है। कृपया पिछली तारीख चुनें या आज पर वापस जाएं।</string>
+    <string name="fc_coming_soon_message">वह तारीख अभी आगे है। कोई पिछला दिन चुनें या आज पर वापस आएं।</string>
     <string name="fc_back_to_today">आज पर वापस जाएं</string>
     <string name="fc_hydrate_reminder_exist">रिमाइंडर का समय पहले से सेट है।</string>
-    <string name="fc_hydrate_reminder_empty_message">आपने अभी तक कोई पानी रिमाइंडर सेट नहीं किया है। अपना पहला रिमाइंडर जोड़कर अपनी हाइड्रेशन आदत बनाना शुरू करें!</string>
-    <string name="fc_alarm_hydration_content">पानी पीने का समय!</string>
+    <string name="fc_hydrate_reminder_empty_message">अभी कोई पानी रिमाइंडर नहीं है। अपनी हाइड्रेशन दिनचर्या बनाए रखने के लिए एक जोड़ें।</string>
+    <string name="fc_alarm_hydration_content">पानी पीने के लिए छोटा ब्रेक लें।</string>
     <string name="fc_drink_now">अभी देखें</string>
     <string name="fc_hydrate_quick_add">त्वरित जोड़ें</string>
     <string name="fc_step_count">कदम गिनती</string>
@@ -365,7 +365,7 @@
     <string name="fc_settings_section_legal_and_policies">कानूनी और नीतियां</string>
     <string name="fc_settings_version_format">संस्करण %1$s</string>
 
-    <string name="fc_please_tell_more">कृपया हमें अधिक विवरण बताएं ताकि हम आपकी समस्या को तेजी से ढूंढ और हल कर सकें</string>
+    <string name="fc_please_tell_more">थोड़ा और विवरण साझा करें ताकि हम समस्या समझकर जल्दी मदद कर सकें।</string>
     <string name="fc_upload_screenshots">स्क्रीनशॉट अपलोड करें</string>
     <string name="fc_btn_submit">जमा करें</string>
     <string name="fc_feedback_email_title">%s प्रतिक्रिया</string>
@@ -375,7 +375,7 @@
     <string name="fc_last_measurement">अंतिम माप: %1$s</string>
     <string name="shortcut_uninstall_short">अनइंस्टॉल</string>
 
-    <string name="fc_uninstall_lose_access_title">यदि आप इस ऐप को अनइंस्टॉल करते हैं, तो आप निम्न सुविधाओं तक पहुंच खो देंगे:</string>
+    <string name="fc_uninstall_lose_access_title">अगर आप इस ऐप को हटाते हैं, तो आप इन सुविधाओं का उपयोग नहीं कर पाएंगे:</string>
     <string name="fc_uninstall_feature_blood_sugar">ब्लड शुगर और प्रेशर ट्रैकिंग</string>
     <string name="fc_uninstall_feature_trend">स्वास्थ्य डेटा ट्रेंड विश्लेषण</string>
     <string name="fc_uninstall_feature_reminder">दवा और स्वास्थ्य रिमाइंडर</string>
@@ -389,16 +389,16 @@
     <string name="fc_uninstall_reason_similar_installed">समान उत्पाद पहले से इंस्टॉल हैं</string>
     <string name="fc_uninstall_reason_unable_meet_demand">मांग को पूरा करने में असमर्थ</string>
     <string name="fc_uninstall_reason_others">अन्य</string>
-    <string name="fc_uninstall_reason_hint">कृपया बताएं कि आप %1$s को क्यों अनइंस्टॉल कर रहे हैं</string>
+    <string name="fc_uninstall_reason_hint">हमें बताएं कि आप %1$s को क्यों अनइंस्टॉल कर रहे हैं</string>
 
     <string name="fc_permission_denied">अनुमति अस्वीकार कर दी गई</string>
     <string name="fc_onboarding_title_1">कई शारीरिक मापदंडों की निगरानी</string>
-    <string name="fc_onboarding_desc_1">किसी भी समय अपनी हृदय गति जांचें और रिकॉर्ड करें। अपनी फिटनेस को आसानी से ट्रैक करें।</string>
+    <string name="fc_onboarding_desc_1">जब चाहें हृदय गति मापें और लॉग करें, सब कुछ एक ही जगह पर।</string>
     <string name="fc_onboarding_title_2">दवाइयों के रिमाइंडर सेट करें</string>
-    <string name="fc_onboarding_desc_2">दवाइयों के लिए रिमाइंडर सेट करें और समय पर अलर्ट पाएं। कोई भी खुराक न चूकें और सही ट्रैक पर रहें।</string>
+    <string name="fc_onboarding_desc_2">दवा रिमाइंडर बनाएं और जरूरत पड़ने पर उपयोगी अलर्ट पाएं।</string>
     <string name="fc_onboarding_title_3">विस्तृत रिपोर्ट और रुझान</string>
-    <string name="fc_onboarding_desc_3">शरीर के विभिन्न आंकड़े रिकॉर्ड करें और समय के साथ बदलावों की निगरानी करें, ताकि आप अपने स्वास्थ्य रुझानों को बेहतर समझ सकें।</string>
+    <string name="fc_onboarding_desc_3">समय के साथ अपने रिकॉर्ड देखें और स्वास्थ्य पैटर्न को बेहतर समझें।</string>
     <string name="fc_onboarding_title_4">अस्वीकरण</string>
-    <string name="fc_onboarding_desc_4">केवल व्यक्तिगत दैनिक रक्तचाप ट्रैकिंग के लिए। यह पेशेवर चिकित्सीय सलाह का विकल्प नहीं है। निदान के लिए किसी योग्य स्वास्थ्य सेवा प्रदाता से परामर्श करें।</string>
+    <string name="fc_onboarding_desc_4">यह केवल दैनिक ट्रैकिंग के लिए है। यह चिकित्सकीय सलाह, निदान या उपचार का विकल्प नहीं है।</string>
     <string name="fc_onboarding_start">शुरू करें</string>
 </resources>
