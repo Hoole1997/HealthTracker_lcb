@@ -44,7 +44,7 @@ class MetricsModuleProvider : ContentProvider() {
                 ReportDataManager.setReporters(listOf(ThinkingReporter(), FirebaseReporter()))
 
 //                // 初始化数数SDK控制器
-//                ThinkingReporter.init(ctx)
+                ThinkingReporter.init(ctx)
 //
 //                // 初始化Adjust控制器
 //                AdjustTracker.init(ctx)
