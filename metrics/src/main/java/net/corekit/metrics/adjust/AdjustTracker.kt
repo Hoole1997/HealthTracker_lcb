@@ -31,6 +31,7 @@ object AdjustTracker {
     private var isInitialized = false
     private var attributionData: AdjustAttribution? = null
     private var initStartTime: Long = 0
+    private var hasPreparedReportParams = false
 
     /**
      * 初始化Adjust SDK
@@ -46,16 +47,7 @@ object AdjustTracker {
         initStartTime = System.currentTimeMillis()
         MetricsLogger.d("Adjust SDK 初始化开始")
 
-        // 初始化登录相关参数
-        SharedParamsManager.initLoginData()
-        MetricsLogger.d("登录参数初始化完成 - login_day: ${SharedParamsManager.loginDay ?: ""}, is_new: ${SharedParamsManager.isNew ?: ""}")
-
-        // 先设置登录参数到ReportDataManager
-        val loginParams = SharedParamsManager.retrieveAllCommonParams()
-        val userParams = SharedParamsManager.retrieveUserCommonParams()
-        ReportDataManager.setCommonParams(loginParams)
-        ReportDataManager.setUserParams(userParams)
-        MetricsLogger.d("登录参数已设置到ReportDataManager: $loginParams")
+        ensureReportParamsPrepared()
 
         // 初始化埋点
         ReportDataManager.reportData("adjustInit", mapOf())
@@ -78,56 +70,7 @@ object AdjustTracker {
             adjustConfig.enableCostDataInAttribution()
 
             // 设置归因回调
-            adjustConfig.setOnAttributionChangedListener { attribution ->
-                attributionData = attribution
-                MetricsLogger.d("Adjust归因数据更新: $attribution")
-
-                // 设置公共参数
-                attribution?.let { attr ->
-                    // 设置公共参数，并限制长度
-                    SharedParamsManager.adNetwork = (attr.network ?: "").take(10)
-                    SharedParamsManager.campaign = (attr.campaign ?: "").take(20)
-                    SharedParamsManager.adgroup = (attr.adgroup ?: "").take(10)
-                    SharedParamsManager.creative = (attr.creative ?: "").take(20)
-
-                    MetricsLogger.d("公共参数设置完成 - ad_network: ${SharedParamsManager.adNetwork}, campaign: ${SharedParamsManager.campaign}, adgroup: ${SharedParamsManager.adgroup}, creative: ${SharedParamsManager.creative}")
-
-                    // 将公共参数设置到ReportDataManager
-                    val commonParams = SharedParamsManager.retrieveAllCommonParams()
-                    val userParams = SharedParamsManager.retrieveUserCommonParams()
-                    ReportDataManager.setCommonParams(commonParams)
-                    ReportDataManager.setUserParams(userParams)
-                    MetricsLogger.d("公共参数已设置到ReportDataManager: $commonParams")
-
-                    // 计算从初始化开始到归因回调的总耗时（秒数，向上取整）
-                    val totalDurationSeconds =
-                        kotlin.math.ceil((System.currentTimeMillis() - initStartTime) / 1000.0)
-                            .toInt()
-                    MetricsLogger.d("Adjust初始化到归因回调总耗时: ${totalDurationSeconds}秒")
-                    ReportDataManager.reportData(
-                        "adjustGetSuccess",
-                        mapOf("pass_time" to totalDurationSeconds)
-                    )
-
-                    // 设置当前用户渠道类型
-                    val userChannelType = if (MetricsLogger.checkLogEnabled()) {
-                        // 内部版本强制设置为买量类型
-                        MetricsLogger.d("内部版本强制设置为买量类型")
-                        ChannelUserController.UserChannelType.PAID
-                    } else {
-                        determineUserChannelType(attr)
-                    }
-                    MetricsLogger.d("根据归因数据判断用户渠道类型: $userChannelType")
-
-                    // 设置用户渠道类型
-                    val success = ChannelUserController.setChannel(userChannelType)
-                    if (success) {
-                        MetricsLogger.i("用户渠道类型设置成功: $userChannelType")
-                    } else {
-                        MetricsLogger.w("用户渠道类型已经设置过，无法修改")
-                    }
-                }
-            }
+            adjustConfig.setOnAttributionChangedListener(createAttributionChangedListener())
 
             // 设置事件跟踪成功回调
             adjustConfig.setOnEventTrackingSucceededListener { eventSuccessResponseData ->
@@ -158,7 +101,7 @@ object AdjustTracker {
             }
 
             // 启动Adjust SDK
-            Adjust.initSdk(adjustConfig)
+//            Adjust.initSdk(adjustConfig)
 
             isInitialized = true
             MetricsLogger.i("Adjust SDK 初始化成功，App Token: $appToken")
@@ -166,6 +109,143 @@ object AdjustTracker {
         } catch (e: Exception) {
             MetricsLogger.e("Adjust SDK 初始化失败", e)
         }
+    }
+
+    /**
+     * 创建Adjust归因变化监听器，供SDK初始化时复用。
+     */
+    fun createAttributionChangedListener(): OnAttributionChangedListener {
+        return OnAttributionChangedListener { attribution ->
+            handleAttributionChanged(attribution)
+        }
+    }
+
+    /**
+     * 处理Adjust SDK原生归因回调。
+     */
+    fun handleAttributionChanged(attribution: AdjustAttribution?) {
+        processAttributionChanged(attribution = attribution)
+    }
+
+    /**
+     * 处理外部透传的归因结果，供App层回调直接复用。
+     */
+    fun handleAttributionChanged(
+        network: String?,
+        campaign: String?,
+        adgroup: String?,
+        creative: String?,
+        jsonResponse: String?,
+        isOrganic: Boolean? = null,
+    ) {
+        val attribution = AdjustAttribution().apply {
+            this.network = network
+            this.campaign = campaign
+            this.adgroup = adgroup
+            this.creative = creative
+            this.jsonResponse = jsonResponse
+        }
+        val userChannelType = isOrganic?.let { organic ->
+            if (organic) {
+                ChannelUserController.UserChannelType.NATURAL
+            } else {
+                ChannelUserController.UserChannelType.PAID
+            }
+        }
+        processAttributionChanged(
+            attribution = attribution,
+            userChannelTypeOverride = userChannelType
+        )
+    }
+
+    private fun processAttributionChanged(
+        attribution: AdjustAttribution?,
+        userChannelTypeOverride: ChannelUserController.UserChannelType? = null,
+    ) {
+        ensureReportParamsPrepared()
+        if (!isInitialized) {
+            isInitialized = true
+            MetricsLogger.d("通过归因回调同步Adjust初始化状态")
+        }
+
+        attributionData = attribution
+        MetricsLogger.d("Adjust归因数据更新: $attribution")
+
+        attribution?.let { attr ->
+            // 设置公共参数，并限制长度
+            SharedParamsManager.adNetwork = (attr.network ?: "").take(10)
+            SharedParamsManager.campaign = (attr.campaign ?: "").take(20)
+            SharedParamsManager.adgroup = (attr.adgroup ?: "").take(10)
+            SharedParamsManager.creative = (attr.creative ?: "").take(20)
+
+            MetricsLogger.d("公共参数设置完成 - ad_network: ${SharedParamsManager.adNetwork}, campaign: ${SharedParamsManager.campaign}, adgroup: ${SharedParamsManager.adgroup}, creative: ${SharedParamsManager.creative}")
+
+            // 将公共参数设置到ReportDataManager
+            val commonParams = SharedParamsManager.retrieveAllCommonParams()
+            val userParams = SharedParamsManager.retrieveUserCommonParams()
+            ReportDataManager.setCommonParams(commonParams)
+            ReportDataManager.setUserParams(userParams)
+            MetricsLogger.d("公共参数已设置到ReportDataManager: $commonParams")
+
+            reportAttributionSuccess()
+
+            // 设置当前用户渠道类型
+            val userChannelType = when {
+                MetricsLogger.checkLogEnabled() -> {
+                    // 内部版本强制设置为买量类型
+                    MetricsLogger.d("内部版本强制设置为买量类型")
+                    ChannelUserController.UserChannelType.PAID
+                }
+
+                userChannelTypeOverride != null -> userChannelTypeOverride
+                else -> determineUserChannelType(attr)
+            }
+            MetricsLogger.d("根据归因数据判断用户渠道类型: $userChannelType")
+
+            // 设置用户渠道类型
+            val success = ChannelUserController.setChannel(userChannelType)
+            if (success) {
+                MetricsLogger.i("用户渠道类型设置成功: $userChannelType")
+            } else {
+                MetricsLogger.w("用户渠道类型已经设置过，无法修改")
+            }
+        }
+    }
+
+    private fun ensureReportParamsPrepared() {
+        if (hasPreparedReportParams) {
+            return
+        }
+
+        // 初始化登录相关参数
+        SharedParamsManager.initLoginData()
+        MetricsLogger.d("登录参数初始化完成 - login_day: ${SharedParamsManager.loginDay ?: ""}, is_new: ${SharedParamsManager.isNew ?: ""}")
+
+        // 先设置登录参数到ReportDataManager
+        val loginParams = SharedParamsManager.retrieveAllCommonParams()
+        val userParams = SharedParamsManager.retrieveUserCommonParams()
+        ReportDataManager.setCommonParams(loginParams)
+        ReportDataManager.setUserParams(userParams)
+        MetricsLogger.d("登录参数已设置到ReportDataManager: $loginParams")
+
+        hasPreparedReportParams = true
+    }
+
+    private fun reportAttributionSuccess() {
+        if (initStartTime <= 0L) {
+            MetricsLogger.d("未记录Adjust初始化开始时间，跳过归因耗时统计")
+            return
+        }
+
+        // 计算从初始化开始到归因回调的总耗时（秒数，向上取整）
+        val totalDurationSeconds =
+            kotlin.math.ceil((System.currentTimeMillis() - initStartTime) / 1000.0)
+                .toInt()
+        MetricsLogger.d("Adjust初始化到归因回调总耗时: ${totalDurationSeconds}秒")
+        ReportDataManager.reportData(
+            "adjustGetSuccess",
+            mapOf("pass_time" to totalDurationSeconds)
+        )
     }
 
     /**

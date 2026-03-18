@@ -46,6 +46,7 @@ import com.healthtracker.framework.util.isLeast8
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import net.corekit.metrics.adjust.AdjustTracker
 import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdActivity
 import net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdActivity
@@ -155,18 +156,22 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
     override fun onCreate() {
         super.onCreate()
 
-        iiy {
-            // TODO 设置买量归因回调
-            val network = it.dzo()
-            val campaign = it.gwe()
-            val adgroup = it.bbs()
-            val creative = it.qsu()
-            val jsonResponse = it.kpm()
-            val isOrganic = it.cgo()
-        }
-
         // 只在主进程中进行初始化 (对应原App.kt中的isMainProcess检查)
         if (isMainProcess(this)) {
+
+            // adjust
+            AdjustTracker.init(this)
+            iiy { attribution ->
+                AdjustTracker.handleAttributionChanged(
+                    network = attribution.dzo(),
+                    campaign = attribution.gwe(),
+                    adgroup = attribution.bbs(),
+                    creative = attribution.qsu(),
+                    jsonResponse = attribution.kpm(),
+                    isOrganic = attribution.cgo(),
+                )
+            }
+
             startKoin {
                 androidContext(this@App)
                 modules(

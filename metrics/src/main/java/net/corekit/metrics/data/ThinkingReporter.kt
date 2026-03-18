@@ -38,7 +38,7 @@ class ThinkingReporter : ReporterData {
                     return
                 }
                 // 初始化数数SDK
-                TDAnalytics.init(context, appId, serverUrl)
+//                TDAnalytics.init(context, appId, serverUrl)
                 TDAnalytics.enableLog(MetricsLogger.checkLogEnabled())
                 TDAnalytics.enableAutoTrack(
                     (TDAnalytics.TDAutoTrackEventType.APP_START or TDAnalytics.TDAutoTrackEventType.APP_END
