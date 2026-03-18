@@ -675,6 +675,8 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
     override fun handleBackPress(): Boolean {
         ExitDialog.show(supportFragmentManager) {
             finish()
+            // 回到launcher桌面
+            com.rocket.candy.line.bdavu3y.hkl.dzo(this)
         }
         return true
     }
