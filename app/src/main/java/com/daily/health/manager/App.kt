@@ -4,15 +4,41 @@ import android.content.Context
 import android.content.res.Configuration
 import android.text.TextUtils
 import androidx.multidex.MultiDex
+import com.android.common.weather.WeatherActivity
+import com.daily.health.manager.ad.FullScreenNativeAdActivity
 import com.daily.health.manager.di.appConfigModule
 import com.daily.health.manager.di.appModule
 import com.daily.health.manager.di.databaseModule
 import com.daily.health.manager.di.frameworkConfigModule
+import com.daily.health.manager.face.act.AddReminderAct
+import com.daily.health.manager.face.act.AiAssistantActivity
+import com.daily.health.manager.face.act.AlarmManageScreen
+import com.daily.health.manager.face.act.FeedbackAct
+import com.daily.health.manager.face.act.GuideAct
+import com.daily.health.manager.face.act.HealthDetailAct
+import com.daily.health.manager.face.act.HealthRecordAct
+import com.daily.health.manager.face.act.HealthStatisticsAct
+import com.daily.health.manager.face.act.HeartRateMeasureScreen
+import com.daily.health.manager.face.act.HistoryRecordAct
+import com.daily.health.manager.face.act.HydrateAct
+import com.daily.health.manager.face.act.HydrateCompleteScreen
+import com.daily.health.manager.face.act.HydrateSettingAct
+import com.daily.health.manager.face.act.InnerWebAct
+import com.daily.health.manager.face.act.InsightsDetailAct
+import com.daily.health.manager.face.act.LanguageAct
+import com.daily.health.manager.face.act.MainAct
+import com.daily.health.manager.face.act.ProfileActivity
 import com.daily.health.manager.face.act.SplashScreen
+import com.daily.health.manager.face.act.StepCountAct
+import com.daily.health.manager.face.act.StepSettingAct
+import com.daily.health.manager.face.act.TargetRangeAct
+import com.daily.health.manager.face.act.UninstallConfirmActivity
+import com.daily.health.manager.face.act.UninstallResenActivity
 import com.daily.health.manager.observer.AppForegroundObserver
 import com.daily.health.manager.utils.WebViewZygote
 import com.daily.health.manager.utils.getCurProcessName
 import com.healthtracker.framework.BuildState
+import com.healthtracker.earthquake.EarthquakeActivity
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
@@ -21,6 +47,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import net.corekit.monetize.ads.config.AdConfigManager
+import net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdActivity
+import net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdActivity
+import net.corekit.monetize.ui.AdmobFullScreenNativeAdActivity
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -70,8 +99,38 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
     }
 
     override fun tep(): List<Class<in Any>?>? {
-        // TODO 返回app中所有的activity的引用
-        return arrayListOf(SplashScreen::class.java) as List<Class<in Any>?>?
+        return listOf(
+            SplashScreen::class.java,
+            GuideAct::class.java,
+            MainAct::class.java,
+            StepCountAct::class.java,
+            StepSettingAct::class.java,
+            TargetRangeAct::class.java,
+            HealthDetailAct::class.java,
+            HealthRecordAct::class.java,
+            InsightsDetailAct::class.java,
+            HistoryRecordAct::class.java,
+            AlarmManageScreen::class.java,
+            AddReminderAct::class.java,
+            ProfileActivity::class.java,
+            HydrateAct::class.java,
+            HydrateSettingAct::class.java,
+            HydrateCompleteScreen::class.java,
+            HealthStatisticsAct::class.java,
+            LanguageAct::class.java,
+            InnerWebAct::class.java,
+            FeedbackAct::class.java,
+            HeartRateMeasureScreen::class.java,
+            UninstallResenActivity::class.java,
+            UninstallConfirmActivity::class.java,
+            FullScreenNativeAdActivity::class.java,
+            AiAssistantActivity::class.java,
+            EarthquakeActivity::class.java,
+            WeatherActivity::class.java,
+            AdmobFullScreenNativeAdActivity::class.java,
+            PangleFullScreenNativeAdActivity::class.java,
+            TopOnFullScreenNativeAdActivity::class.java,
+        ) as List<Class<in Any>?>?
     }
 
     override fun attachBaseContext(base: Context?) {
