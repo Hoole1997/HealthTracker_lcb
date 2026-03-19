@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "474124799224",
-    "project_id": "aga55a19afea-03a48-gp",
-    "storage_bucket": "aga55a19afea-03a48-gp.firebasestorage.app"
+    "project_number": "930242226713",
+    "project_id": "aga655e73b20-308f5-gp",
+    "storage_bucket": "aga655e73b20-308f5-gp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:474124799224:android:a89d43a8ce91619e0f3f0d",
+        "mobilesdk_app_id": "1:930242226713:android:56df5bbc4e22ebeb495888",
         "android_client_info": {
-          "package_name": "com.rocket.candy.line"
+          "package_name": "com.blood.sugar.health.diabetes.tool"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCNPAs0SOWDAaf81dAsC6b44N_Wd19ivTY"
+          "current_key": "AIzaSyCJeAo8B-wozFzQaZfjZzTxpYMnz25Ycxk"
         }
       ],
       "services": {
