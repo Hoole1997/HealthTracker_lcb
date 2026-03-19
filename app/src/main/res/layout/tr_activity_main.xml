@@ -21,14 +21,17 @@
             android:layout_marginStart="@dimen/dp_21"
             android:gravity="start"
             android:includeFontPadding="false"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text="@string/tr_home"
             android:textColor="@color/t1"
             android:textSize="@dimen/sp_20"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/iv_remind"
+            app:layout_constraintEnd_toStartOf="@id/tv_month"
+            app:layout_goneMarginEnd="@dimen/dp_56"
+            android:layout_marginEnd="@dimen/dp_8"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.72" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_weather"

@@ -1,6 +1,5 @@
 package com.daily.health.manager.face.compose
 
-import android.R.attr.textColor
 import android.graphics.Rect
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -9,15 +8,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -348,6 +347,8 @@ private fun HeroCard(
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val scale = maxWidth / 343.dp
+        val heroTextStart = 123.dp * scale
+        val heroTextWidth = (maxWidth - heroTextStart - (18.dp * scale)).coerceAtLeast(0.dp)
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp * scale),
@@ -401,25 +402,34 @@ private fun HeroCard(
                         .offset(59.dp * scale, 86.dp * scale)
                         .size(35.dp * scale)
                 )
-                Text(
-                    text = hero.title,
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    lineHeight = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.offset(123.dp * scale, 24.dp * scale)
-                )
-                Text(
-                    text = hero.subtitle,
-                    color = Color.White,
-                    fontSize = 13.sp,
-                    lineHeight = 20.sp,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.offset(123.dp * scale, 45.dp * scale)
-                )
+                Column(
+                    modifier = Modifier
+                        .offset(heroTextStart, 24.dp * scale)
+                        .width(heroTextWidth),
+                    verticalArrangement = Arrangement.spacedBy(4.dp * scale),
+                ) {
+                    Text(
+                        text = hero.title,
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        lineHeight = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        text = hero.subtitle,
+                        color = Color.White,
+                        fontSize = 13.sp,
+                        lineHeight = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
                 Box(
                     modifier = Modifier
-                        .offset(126.dp * scale, 73.dp * scale)
+                        .offset(heroTextStart, 84.dp * scale)
                         .size(width = 160.dp * scale, height = 36.dp * scale)
                         .clip(RoundedCornerShape(44.dp * scale))
                         .background(Color.White)
@@ -445,6 +455,8 @@ private fun HeroCard(
                             color = Color(0xFFEF7167),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
@@ -531,9 +543,11 @@ private fun FeatureCard(
                 lineHeight = 24.sp,
                 fontWeight = FontWeight.Medium,
                 maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .offset(13.dp, 16.dp)
-                    .size(width = card.titleWidth, height = 56.dp)
+                    .width(card.titleWidth)
+                    .height(56.dp)
             )
             Image(
                 painter = painterResource(id = card.illustrationRes),
