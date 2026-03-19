@@ -37,7 +37,7 @@ ext.setupSigningConfigs = { android ->
             signingConfig = android.signingConfigs.internal
         }
         debug {
-            signingConfig = android.signingConfigs.internal
+//            signingConfig = android.signingConfigs.internal
         }
     }
 }
