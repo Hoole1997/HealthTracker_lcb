@@ -57,7 +57,7 @@ import org.koin.core.context.startKoin
 import java.lang.ref.WeakReference
 import java.util.Locale
 
-class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
+class App : com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp() {
 
     private val appInitializer: AppInitializer by inject()
 
@@ -95,11 +95,11 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 
-    override fun lpu(): Class<in Any>? {
+    override fun pqv(): Class<in Any>? {
         return SplashScreen::class.java as Class<in Any>?
     }
 
-    override fun tep(): List<Class<in Any>?>? {
+    override fun hlq(): List<Class<in Any>?>? {
         return listOf(
             SplashScreen::class.java,
             GuideAct::class.java,
@@ -161,14 +161,15 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
 
             // adjust
             AdjustTracker.init(this)
-            iiy { attribution ->
+
+            ofb { attribution ->
                 AdjustTracker.handleAttributionChanged(
-                    network = attribution.dzo(),
-                    campaign = attribution.gwe(),
-                    adgroup = attribution.bbs(),
-                    creative = attribution.qsu(),
-                    jsonResponse = attribution.kpm(),
-                    isOrganic = attribution.cgo(),
+                    network = attribution.mjj(),
+                    campaign = attribution.ujr(),
+                    adgroup = attribution.tfm(),
+                    creative = attribution.jfb(),
+                    jsonResponse = attribution.ilp(),
+                    isOrganic = attribution.zje(),
                 )
             }
 
