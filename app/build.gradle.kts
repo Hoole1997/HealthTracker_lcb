@@ -1,6 +1,8 @@
 import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import com.android.build.api.dsl.DefaultConfig
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.collections.get
 import kotlin.collections.plusAssign
 
@@ -52,6 +54,7 @@ val analytics = extensions.extraProperties["analytics"] as Map<*, *>
 
 val showLog = appConfig["show_log"] as Boolean
 val shifterMode = appConfig["shifter_mode"] ?: "internal"
+val buildTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
 println("📦 [Shifter] Build Mode: $shifterMode | Package: ${appConfig["applicationId"]}")
 
 android {
@@ -68,6 +71,8 @@ android {
             println("🏷️ [Shifter] Override VersionName: $semanticVersion")
             versionName = semanticVersion.removePrefix("v")
         }
+
+        setProperty("archivesBaseName", "${shifterMode}_${applicationId}-v${versionName}(${versionCode})_${buildTime}")
 
         buildConfig {
             boolean("showLog", showLog)
