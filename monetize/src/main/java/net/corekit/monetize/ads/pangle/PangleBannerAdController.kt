@@ -246,7 +246,7 @@ class PangleBannerAdController private constructor() {
                         currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: "Pangle"
                         
                         totalShowCount++
-                        AdConfigManager.getNativeConfig().recordShow()
+                        AdConfigManager.getBannerConfig().recordShow()
                         
                         val ecpmMicros = (currentEcpmValue * 1_000_000).toLong()
                         
@@ -282,7 +282,7 @@ class PangleBannerAdController private constructor() {
                         totalClickCount++
                         AdLogger.logD(TAG, "用户点击 | 位置: %s | 累计点击: %d", currentPosition, totalClickCount)
                         
-                        AdConfigManager.getNativeConfig().recordClick()
+                        AdConfigManager.getBannerConfig().recordClick()
                         PlatformFrequencyManager.recordClick(
                             BiddingPlatform.PANGLE, 
                             BiddingAdType.BANNER

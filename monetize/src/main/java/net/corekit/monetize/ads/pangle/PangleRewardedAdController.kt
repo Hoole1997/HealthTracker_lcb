@@ -2,8 +2,6 @@ package net.corekit.monetize.ads.pangle
 
 import android.app.Activity
 import android.content.Context
-import com.bytedance.sdk.openadsdk.api.model.PAGAdEcpmInfo
-import com.bytedance.sdk.openadsdk.api.model.PAGRevenueInfo
 import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAd
 import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAdInteractionListener
 import com.bytedance.sdk.openadsdk.api.reward.PAGRewardedAdLoadListener
@@ -62,6 +60,7 @@ class PangleRewardedAdController private constructor() {
     }
 
     private var cachedAd: PAGRewardedAd? = null
+    private var cachedEcpm: Double = 0.0
     private val isLoading = AtomicBoolean(false)
     private var loadTimestamp: Long = 0
     private val cacheExpireTime = 60 * 60 * 1000L
@@ -128,10 +127,18 @@ class PangleRewardedAdController private constructor() {
                         val loadTime = System.currentTimeMillis() - startTime
                         cachedAd = ad
                         loadTimestamp = System.currentTimeMillis()
+                        cachedEcpm = try {
+                            (ad.pagRevenueInfo?.winEcpm?.revenue as? Number)?.toDouble()
+                                ?: ad.mediaExtraInfo?.get("price")?.toString()?.toDoubleOrNull()
+                                ?: 0.0
+                        } catch (e: Exception) {
+                            0.0
+                        }
 
                         AdLogger.d(
-                            "[$TAG] ✅ 激励广告加载成功, 耗时: %d ms",
-                            loadTime
+                            "[$TAG] ✅ 激励广告加载成功, 耗时: %d ms, eCPM: %.6f USD",
+                            loadTime,
+                            cachedEcpm
                         )
                         totalLoadSucCount++
                         reportAdData(
@@ -187,11 +194,6 @@ class PangleRewardedAdController private constructor() {
     ): AdResult<Unit> = suspendCancellableCoroutine { continuation ->
         val ad = cachedAd
         val adUnitId = BuildConfig.PANGLE_REWARDED_ID
-
-        val pagRevenueInfo: PAGRevenueInfo? = ad?.pagRevenueInfo
-        val ecpmInfo: PAGAdEcpmInfo? = pagRevenueInfo?.showEcpm
-        val currentCurrency = ecpmInfo?.currency ?: "USD"
-        val ecpmMicros = ecpmInfo?.revenue?.toDoubleOrNull() ?: 0.0
         val adnName = ad?.pagRevenueInfo?.winEcpm?.adnName
         var currentAdSource = if (adnName.isNullOrEmpty()) "Pangle" else adnName
 
@@ -254,7 +256,10 @@ class PangleRewardedAdController private constructor() {
             override fun onAdShowed() {
                 AdLogger.d("[$TAG] 激励广告已展示")
 
-                // Pangle 的 revenue 本身就是美元，直接使用
+                val showEcpm = ad.pagRevenueInfo?.showEcpm
+                val impressionValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                val impressionCurrency = showEcpm?.currency ?: "USD"
+                currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: currentAdSource
 
                 totalShowCount++
                 PlatformFrequencyManager.recordShow(BiddingWinner.PANGLE, BiddingAdType.REWARDED)
@@ -266,15 +271,15 @@ class PangleRewardedAdController private constructor() {
                         "position" to adUnitId,
                         "number" to totalShowCount,
                         "ad_source" to currentAdSource,
-                        "value" to ecpmMicros,
-                        "currency" to currentCurrency
+                        "value" to impressionValue,
+                        "currency" to impressionCurrency
                     )
                 )
                 RevenueAdManager.reportAdRevenue(
                     RevenueAdData(
                         revenue = RevenueInfo(
-                            value = ecpmMicros,
-                            currencyCode = currentCurrency
+                            value = impressionValue,
+                            currencyCode = impressionCurrency
                         ),
                         adRevenueNetwork = currentAdSource,
                         adRevenueUnit = adUnitId,
@@ -282,7 +287,7 @@ class PangleRewardedAdController private constructor() {
                         adFormat = "Rewarded"
                     )
                 )
-                val revenueMicros = (ecpmMicros * 1_000_000).toLong()
+                val revenueMicros = (impressionValue * 1_000_000).toLong()
                 IpuController.onAdImpression("RV", revenueMicros)
                 RpuController.onAdRevenue("RV", revenueMicros)
             }
@@ -292,6 +297,10 @@ class PangleRewardedAdController private constructor() {
                 totalClickCount++
                 AdConfigManager.getRewardedConfig().recordClick()
                 PlatformFrequencyManager.recordClick(BiddingPlatform.PANGLE, BiddingAdType.REWARDED)
+                val showEcpm = ad.pagRevenueInfo?.showEcpm
+                val clickValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                val clickCurrency = showEcpm?.currency ?: "USD"
+                currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: currentAdSource
                 reportAdData(
                     eventName = "ad_click",
                     params = mapOf(
@@ -299,8 +308,8 @@ class PangleRewardedAdController private constructor() {
                         "position" to position,
                         "number" to totalClickCount,
                         "ad_source" to currentAdSource,
-                        "value" to ecpmMicros,
-                        "currency" to currentCurrency
+                        "value" to clickValue,
+                        "currency" to clickCurrency
                     )
                 )
             }
@@ -308,6 +317,10 @@ class PangleRewardedAdController private constructor() {
             override fun onAdDismissed() {
                 AdLogger.d("[$TAG] 激励广告已关闭, 是否获得奖励: %s", hasEarnedReward)
                 totalCloseCount++
+                val showEcpm = ad.pagRevenueInfo?.showEcpm
+                val dismissValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                val dismissCurrency = showEcpm?.currency ?: "USD"
+                currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: currentAdSource
                 reportAdData(
                     "ad_dismiss",
                     mapOf(
@@ -315,8 +328,8 @@ class PangleRewardedAdController private constructor() {
                         "position" to position,
                         "number" to totalCloseCount,
                         "ad_source" to currentAdSource,
-                        "value" to ecpmMicros,
-                        "currency" to currentCurrency
+                        "value" to dismissValue,
+                        "currency" to dismissCurrency
                     )
                 )
                 clearCache()
@@ -354,7 +367,7 @@ class PangleRewardedAdController private constructor() {
         ad.show(activity)
     }
 
-    fun getEcpm(): Double = if (hasValidCache()) cachedAd?.pagRevenueInfo?.showEcpm?.revenue?.toDoubleOrNull() ?: 0.0 else 0.0
+    fun getEcpm(): Double = if (hasValidCache()) cachedEcpm else 0.0
 
     fun hasValidCache(): Boolean {
         if (cachedAd == null) return false
@@ -363,6 +376,7 @@ class PangleRewardedAdController private constructor() {
 
     fun clearCache() {
         cachedAd = null
+        cachedEcpm = 0.0
         loadTimestamp = 0
     }
 

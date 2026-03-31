@@ -380,8 +380,9 @@ class TopOnRewardedAdController private constructor() {
 
         override fun onAdRevenuePaid(adInfo: TUAdInfo?) {
             val revenueValue = adInfo?.publisherRevenue ?: 0.0
-            val ecpmUsd =  revenueValue.toLong()
-            "Topon 激励上报 ecpm = $ecpmUsd".logd("###############")
+            val revenueMicros = (revenueValue * 1_000_000).toLong()
+            currentAdSource = adInfo?.networkName ?: currentAdSource
+            "Topon 激励上报 revenueMicros = $revenueMicros".logd("###############")
             RevenueAdManager.reportAdRevenue(
                 RevenueAdData(
                     revenue = RevenueInfo(
@@ -394,9 +395,8 @@ class TopOnRewardedAdController private constructor() {
                     adFormat = "Rewarded"
                 )
             )
-            //Topon返回的是美元，转成long类型后永远都是 0
-            IpuController.onAdImpression("RW", ecpmUsd)
-            RpuController.onAdRevenue("RW", ecpmUsd)
+            IpuController.onAdImpression("RW", revenueMicros)
+            RpuController.onAdRevenue("RW", revenueMicros)
         }
     }
 }
