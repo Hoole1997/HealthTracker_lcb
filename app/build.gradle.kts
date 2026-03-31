@@ -62,8 +62,8 @@ android {
 
     defaultConfig {
         applicationId = appConfig["applicationId"] as String
-        versionCode = 7
-        versionName = "1.0.7"
+        versionCode = 10
+        versionName = "1.0.10"
         
         // 🚀 动态支持从属性注入 versionName (用于 CI Tag 构建)
         val semanticVersion = project.findProperty("internalVersionName")?.toString()
