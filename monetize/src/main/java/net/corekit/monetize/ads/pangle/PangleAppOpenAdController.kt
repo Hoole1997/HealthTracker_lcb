@@ -354,7 +354,11 @@ class PangleAppOpenAdController private constructor() {
                 totalShowCount++
                 onShow?.invoke()
 
-                val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
+                val showEcpm = ad.pagRevenueInfo?.showEcpm
+                val impressionValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                val impressionCurrency = showEcpm?.currency ?: "USD"
+                currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: currentAdSource
+                val ecpmMicros = (impressionValue * 1_000_000).toLong()
 
                 reportAdData(
                     eventName = "ad_impression",
@@ -363,17 +367,17 @@ class PangleAppOpenAdController private constructor() {
                         "position" to currentPosition,
                         "number" to totalShowCount,
                         "ad_source" to currentAdSource,
-                        "value" to cachedEcpm,
-                        "currency" to "USD"
+                        "value" to impressionValue,
+                        "currency" to impressionCurrency
                     )
                 )
 
                 val adRevenueData = RevenueAdData(
                     revenue = RevenueInfo(
-                        value = cachedEcpm,
-                        currencyCode = "USD"
+                        value = impressionValue,
+                        currencyCode = impressionCurrency
                     ),
-                    adRevenueNetwork = "Pangle",
+                    adRevenueNetwork = currentAdSource,
                     adRevenueUnit = adUnitId,
                     adRevenuePlacement = currentPosition,
                     adFormat = "Splash"
@@ -389,6 +393,10 @@ class PangleAppOpenAdController private constructor() {
                 totalClickCount++
                 AdConfigManager.getAppOpenConfig().recordClick()
                 PlatformFrequencyManager.recordClick(BiddingPlatform.PANGLE, BiddingAdType.SPLASH)
+                val showEcpm = ad.pagRevenueInfo?.showEcpm
+                val clickValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                val clickCurrency = showEcpm?.currency ?: "USD"
+                currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: currentAdSource
                 reportAdData(
                     eventName = "ad_click",
                     params = mapOf(
@@ -396,8 +404,8 @@ class PangleAppOpenAdController private constructor() {
                         "position" to currentPosition,
                         "number" to totalClickCount,
                         "ad_source" to currentAdSource,
-                        "value" to cachedEcpm,
-                        "currency" to "USD"
+                        "value" to clickValue,
+                        "currency" to clickCurrency
                     )
                 )
             }
@@ -405,15 +413,19 @@ class PangleAppOpenAdController private constructor() {
             override fun onAdDismissed() {
                 AdLogger.d("[$TAG] 开屏广告已关闭")
                 totalCloseCount++
+                val showEcpm = ad.pagRevenueInfo?.showEcpm
+                val dismissValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                val dismissCurrency = showEcpm?.currency ?: "USD"
+                currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: currentAdSource
                 reportAdData(
                     eventName = "ad_dismiss",
                     params = mapOf(
                         "ad_unit_name" to adUnitId,
                         "position" to currentPosition,
                         "number" to totalCloseCount,
-                        "ad_source" to "Pangle",
-                        "value" to cachedEcpm,
-                        "currency" to "USD"
+                        "ad_source" to currentAdSource,
+                        "value" to dismissValue,
+                        "currency" to dismissCurrency
                     )
                 )
                 clearCache()

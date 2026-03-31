@@ -363,15 +363,18 @@ class PangleInterstitialAdController private constructor() {
         ad.setAdInteractionListener(object : PAGInterstitialAdInteractionListener {
             override fun onAdShowed() {
                 AdLogger.d("[$TAG] 插页广告已展示")
+
+                val showEcpm = ad.pagRevenueInfo?.showEcpm
+                val impressionValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                val impressionCurrency = showEcpm?.currency ?: "USD"
+                currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: currentAdSource
                 
                 // 应用级展示记录（用于全屏原生触发判断等）
                 AdConfigManager.getInterstitialConfig().recordShow()
                 PlatformFrequencyManager.recordShow(BiddingPlatform.PANGLE, BiddingAdType.INTERSTITIAL)
                 
                 totalShowCount++
-
-                // 在 paid 回调才上报 ad_impression，这里先上报收益
-                val ecpmMicros = (cachedEcpm * 1_000_000).toLong()
+                val ecpmMicros = (impressionValue * 1_000_000).toLong()
 
                 reportAdData(
                     eventName = "ad_impression",
@@ -380,18 +383,18 @@ class PangleInterstitialAdController private constructor() {
                         "position" to currentPosition,
                         "number" to totalShowCount,
                         "ad_source" to currentAdSource,
-                        "value" to cachedEcpm,
-                        "currency" to "USD"
+                        "value" to impressionValue,
+                        "currency" to impressionCurrency
                     )
                 )
 
                 // 上报收益数据
                 val adRevenueData = RevenueAdData(
                     revenue = RevenueInfo(
-                        value = cachedEcpm,
-                        currencyCode = "USD"
+                        value = impressionValue,
+                        currencyCode = impressionCurrency
                     ),
-                    adRevenueNetwork = "Pangle",
+                    adRevenueNetwork = currentAdSource,
                     adRevenueUnit = adUnitId,
                     adRevenuePlacement = currentPosition,
                     adFormat = "Interstitial"
@@ -407,6 +410,10 @@ class PangleInterstitialAdController private constructor() {
                 totalClickCount++
                 AdConfigManager.getInterstitialConfig().recordClick()
                 PlatformFrequencyManager.recordClick(BiddingPlatform.PANGLE, BiddingAdType.INTERSTITIAL)
+                val showEcpm = ad.pagRevenueInfo?.showEcpm
+                val clickValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                val clickCurrency = showEcpm?.currency ?: "USD"
+                currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: currentAdSource
                 reportAdData(
                     eventName = "ad_click",
                     params = mapOf(
@@ -414,8 +421,8 @@ class PangleInterstitialAdController private constructor() {
                         "position" to currentPosition,
                         "number" to totalClickCount,
                         "ad_source" to currentAdSource,
-                        "value" to cachedEcpm,
-                        "currency" to "USD"
+                        "value" to clickValue,
+                        "currency" to clickCurrency
                     )
                 )
             }
@@ -423,15 +430,19 @@ class PangleInterstitialAdController private constructor() {
             override fun onAdDismissed() {
                 AdLogger.d("[$TAG] 插页广告已关闭")
                 totalCloseCount++
+                val showEcpm = ad.pagRevenueInfo?.showEcpm
+                val dismissValue = showEcpm?.revenue?.toDoubleOrNull() ?: cachedEcpm
+                val dismissCurrency = showEcpm?.currency ?: "USD"
+                currentAdSource = showEcpm?.adnName?.takeIf { it.isNotEmpty() } ?: currentAdSource
                 reportAdData(
                     eventName = "ad_dismiss",
                     params = mapOf(
                         "ad_unit_name" to adUnitId,
                         "position" to currentPosition,
                         "number" to totalCloseCount,
-                        "ad_source" to "Pangle",
-                        "value" to cachedEcpm,
-                        "currency" to "USD"
+                        "ad_source" to currentAdSource,
+                        "value" to dismissValue,
+                        "currency" to dismissCurrency
                     )
                 )
                 clearCache()
