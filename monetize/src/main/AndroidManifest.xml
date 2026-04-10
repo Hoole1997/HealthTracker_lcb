@@ -10,9 +10,9 @@
             android:value="false" />
 
         <!-- AdMob APPLICATION_ID 配置（UMP SDK 必需） -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="${ADMOB_APPLICATION_ID}" />
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--            android:value="${ADMOB_APPLICATION_ID}" />-->
 
         <!-- 广告模块内容提供者 -->
         <provider

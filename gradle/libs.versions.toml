@@ -53,7 +53,7 @@ aabresguard = "0.1.7"
 andresguard = "1.2.21"
 mmkv = "1.3.14"
 firebase_crashlytics_version = "3.0.4"
-firebase_bom_verison = "33.10.0"
+firebase_bom_verison = "34.6.0"
 firebase_mock_version = "2.0.5"
 
 multidex = "2.0.1"
@@ -64,6 +64,7 @@ xxpermissions = "26.0"
 inapp_review ="2.0.2"
 koin_bom = "4.1.1"
 camerax = "1.5.3"
+javax_inject = "1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -120,9 +121,9 @@ xxpermissions = { module = "com.github.getActivity:XXPermissions", version.ref =
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase_bom_verison" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config" }
-firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
-firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
-firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-perf = { module = "com.google.firebase:firebase-perf" }
 firebase-appdistribution-gradle = { module = "com.google.firebase:firebase-appdistribution-gradle", version.ref = "firebaseAppDist" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 firebase-analytics-mock = { module = "com.google.firebase:firebase-analytics-mock", version.ref = "firebase_mock_version" }
@@ -167,6 +168,7 @@ multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin_bom" }
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-android-compat = { module = "io.insert-koin:koin-android-compat" }
+javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax_inject" }
 
  # Gradle Plugins (for build-common)
  android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

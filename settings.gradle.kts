@@ -41,6 +41,7 @@ dependencyResolutionManagement {
             maven("https://maven.aliyun.com/nexus/content/repositories/gradle-plugin")
             isAllowInsecureProtocol = false
         }
+        maven("https://repo.dgtverse.cn/repository/maven-public")
     }
 }
 

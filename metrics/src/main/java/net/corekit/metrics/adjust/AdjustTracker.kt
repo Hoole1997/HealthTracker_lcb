@@ -17,7 +17,6 @@ import com.adjust.sdk.AdjustSessionSuccess
 import com.adjust.sdk.LogLevel
 import com.adjust.sdk.OnAdidReadListener
 import net.corekit.core.controller.ChannelUserController
-import net.corekit.metrics.BuildConfig
 import net.corekit.metrics.log.MetricsLogger
 import net.corekit.metrics.report.SharedParamsManager
 import net.corekit.core.report.ReportDataManager
@@ -37,7 +36,12 @@ object AdjustTracker {
      * 初始化Adjust SDK
      * @param context 应用上下文
      */
-    fun init(context: Context) {
+    fun init(context: Context,network: String?,
+             campaign: String?,
+             adgroup: String?,
+             creative: String?,
+             jsonResponse: String?,
+             isOrganic: Boolean?) {
         if (isInitialized) {
             MetricsLogger.w("Adjust SDK 已经初始化过了")
             return
@@ -52,73 +56,74 @@ object AdjustTracker {
         // 初始化埋点
         ReportDataManager.reportData("adjustInit", mapOf())
         try {
-            val appToken = BuildConfig.ADJUST_APP_TOKEN
-            if (appToken.isBlank()) {
-                MetricsLogger.e("Adjust App Token 未配置或使用默认值")
-                return
-            }
+            handleAttributionChanged(network = network, campaign = campaign, adgroup = adgroup, creative = creative, jsonResponse = jsonResponse, isOrganic = isOrganic)
+//            val appToken = BuildConfig.ADJUST_APP_TOKEN
+//            if (appToken.isBlank()) {
+//                MetricsLogger.e("Adjust App Token 未配置或使用默认值")
+//                return
+//            }
 
             // 创建Adjust配置
-            val adjustConfig = AdjustConfig(
-                context,
-                appToken,
-                if (MetricsLogger.checkLogEnabled()) AdjustConfig.ENVIRONMENT_SANDBOX else AdjustConfig.ENVIRONMENT_PRODUCTION
-            )
-            adjustConfig.setLogLevel(LogLevel.VERBOSE)
+//            val adjustConfig = AdjustConfig(
+//                context,
+//                appToken,
+//                if (MetricsLogger.checkLogEnabled()) AdjustConfig.ENVIRONMENT_SANDBOX else AdjustConfig.ENVIRONMENT_PRODUCTION
+//            )
+//            adjustConfig.setLogLevel(LogLevel.VERBOSE)
 
             // 启用成本数据在归因信息中
-            adjustConfig.enableCostDataInAttribution()
-
-            // 设置归因回调
-            adjustConfig.setOnAttributionChangedListener(createAttributionChangedListener())
-
-            // 设置事件跟踪成功回调
-            adjustConfig.setOnEventTrackingSucceededListener { eventSuccessResponseData ->
-                MetricsLogger.d(
-                    "Adjust事件跟踪成功: ${eventSuccessResponseData?.message}"
-                )
-            }
-
-            // 设置事件跟踪失败回调
-            adjustConfig.setOnEventTrackingFailedListener { eventFailureResponseData ->
-                MetricsLogger.e(
-                    "Adjust事件跟踪失败: ${eventFailureResponseData?.message}"
-                )
-            }
-
-            // 设置会话跟踪成功回调
-            adjustConfig.setOnSessionTrackingSucceededListener { sessionSuccessResponseData ->
-                MetricsLogger.d(
-                    "Adjust会话跟踪成功: ${sessionSuccessResponseData?.message}"
-                )
-            }
-
-            // 设置会话跟踪失败回调
-            adjustConfig.setOnSessionTrackingFailedListener { sessionFailureResponseData ->
-                MetricsLogger.e(
-                    "Adjust会话跟踪失败: ${sessionFailureResponseData?.message}"
-                )
-            }
+//            adjustConfig.enableCostDataInAttribution()
+//
+//            // 设置归因回调
+//            adjustConfig.setOnAttributionChangedListener(createAttributionChangedListener())
+//
+//            // 设置事件跟踪成功回调
+//            adjustConfig.setOnEventTrackingSucceededListener { eventSuccessResponseData ->
+//                MetricsLogger.d(
+//                    "Adjust事件跟踪成功: ${eventSuccessResponseData?.message}"
+//                )
+//            }
+//
+//            // 设置事件跟踪失败回调
+//            adjustConfig.setOnEventTrackingFailedListener { eventFailureResponseData ->
+//                MetricsLogger.e(
+//                    "Adjust事件跟踪失败: ${eventFailureResponseData?.message}"
+//                )
+//            }
+//
+//            // 设置会话跟踪成功回调
+//            adjustConfig.setOnSessionTrackingSucceededListener { sessionSuccessResponseData ->
+//                MetricsLogger.d(
+//                    "Adjust会话跟踪成功: ${sessionSuccessResponseData?.message}"
+//                )
+//            }
+//
+//            // 设置会话跟踪失败回调
+//            adjustConfig.setOnSessionTrackingFailedListener { sessionFailureResponseData ->
+//                MetricsLogger.e(
+//                    "Adjust会话跟踪失败: ${sessionFailureResponseData?.message}"
+//                )
+//            }
 
             // 启动Adjust SDK
 //            Adjust.initSdk(adjustConfig)
 
             isInitialized = true
-            MetricsLogger.i("Adjust SDK 初始化成功，App Token: $appToken")
+            MetricsLogger.i("Adjust SDK 初始化成功")
 
         } catch (e: Exception) {
             MetricsLogger.e("Adjust SDK 初始化失败", e)
         }
     }
 
-    /**
-     * 创建Adjust归因变化监听器，供SDK初始化时复用。
-     */
-    fun createAttributionChangedListener(): OnAttributionChangedListener {
-        return OnAttributionChangedListener { attribution ->
-            handleAttributionChanged(attribution)
-        }
-    }
+//    /**
+//     * 创建Adjust归因变化监听器，供SDK初始化时复用。
+//     */
+//    fun createAttributionChangedListener(): OnAttributionChangedListener {
+//        return OnAttributionChangedListener { attribution ->
+//            handleAttributionChanged(attribution)
+//        }
+//    }
 
     /**
      * 处理Adjust SDK原生归因回调。

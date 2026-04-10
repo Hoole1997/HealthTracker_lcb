@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "898632685296",
-    "project_id": "healththracker",
-    "storage_bucket": "healththracker.firebasestorage.app"
+    "project_number": "1093818749388",
+    "project_id": "aga2c8f7287b-1245a-gp",
+    "storage_bucket": "aga2c8f7287b-1245a-gp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:898632685296:android:13ae2245d56448e243d435",
+        "mobilesdk_app_id": "1:1093818749388:android:892d08a198c8b925ddcd69",
         "android_client_info": {
-          "package_name": "com.daily.health.manager"
+          "package_name": "com.leafmotivation.quizguessoncolor"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCl6YgXoqOh_8jCmcOMo3lHis_QPYbClC0"
+          "current_key": "AIzaSyDR-UWntuboIISW2TAMUkg4s42r6eXDXhU"
         }
       ],
       "services": {

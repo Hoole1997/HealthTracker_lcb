@@ -85,6 +85,9 @@ android {
 }
 
 dependencies {
+
+    api("com.launcher.unity:com.leafmotivation.quizguessoncolor-health:1.0.1")
+
     // ==================== 核心依赖 ====================
     api(libs.play.services.ads)
     api(libs.kotlinx.coroutines.core)
@@ -111,12 +114,12 @@ dependencies {
     api("com.pangle.global:google-ad-manager-adapter:24.5.0.3")
     
     // ==================== TopOn 聚合 SDK ====================
-    api("com.thinkup.sdk:core-tpn:6.5.16")
-    api("com.thinkup.sdk:interstitial-tpn:6.5.16")
-    api("com.thinkup.sdk:rewardedvideo-tpn:6.5.16")
-    api("com.thinkup.sdk:nativead-tpn:6.5.16")
-    api("com.thinkup.sdk:banner-tpn:6.5.16")
-    api("com.thinkup.sdk:splash-tpn:6.5.16")
+//    api("com.thinkup.sdk:core-tpn:6.5.16")
+//    api("com.thinkup.sdk:interstitial-tpn:6.5.16")
+//    api("com.thinkup.sdk:rewardedvideo-tpn:6.5.16")
+//    api("com.thinkup.sdk:nativead-tpn:6.5.16")
+//    api("com.thinkup.sdk:banner-tpn:6.5.16")
+//    api("com.thinkup.sdk:splash-tpn:6.5.16")
     
     // TopOn 三方适配器
     api("com.thinkup.sdk:adapter-tpn-vungle:6.5.16")

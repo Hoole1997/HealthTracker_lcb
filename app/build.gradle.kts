@@ -94,7 +94,7 @@ android {
                 arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
             }
         }
-        resConfigs("en", "es", "pt-rBR", "ja", "ko", "hi", "tr", "de", "fr", "it")
+//        resConfigs("en", "es", "pt-rBR", "ja", "ko", "hi", "tr", "de", "fr", "it")
     }
 
     sourceSets {
@@ -116,7 +116,7 @@ android {
 
     buildTypes {
         release {
-            isShrinkResources = true
+            isShrinkResources = false
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

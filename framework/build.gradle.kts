@@ -43,13 +43,14 @@ dependencies {
     // 数据存储
     api(libs.mmkv)
     api(libs.gson)
+    api(libs.javax.inject)
 
     // Firebase - API 导出给其他模块使用
     api(platform(libs.firebase.bom))
     api(libs.firebase.config)
-    api(libs.firebase.analytics.ktx)
-    api(libs.firebase.crashlytics.ktx)
-    api(libs.firebase.perf.ktx)
+    api(libs.firebase.analytics)
+    api(libs.firebase.crashlytics)
+    api(libs.firebase.perf)
     api(libs.firebase.messaging)
     api(libs.utilcodex)
     api(libs.xorLibrary)

@@ -12,30 +12,28 @@ ext {
     ]
 
     // Pangle配置 (测试 ID)
-    pangle = [applicationId: "8025677",
-              adUnitIds    : [splash      : "890000078",
-                              banner      : "980099802",
-                              interstitial: "980088188",
-                              native      : "980088216",
-                              full_native : "980088216",
-                              rewarded    : "980088192"
-              ]
-    ]
+    pangle = [applicationId: "8801991", // Pangle测试应用ID
+              adUnitIds    : [splash      : "890137794",        // 开屏广告测试ID（竖屏）
+                              banner      : "",        // 横幅广告测试ID（320x50）
+                              interstitial: "982960068",       // 插页广告测试ID（竖屏）
+                              native      : "982960055",        // 原生广告测试ID
+                              full_native : "982960136",        // 全屏原生广告测试ID
+                              rewarded    : "982960054"         // 激励视频测试ID（竖屏）
+              ]]
 
     // TopOn配置 (测试 ID)
-    topon = [applicationId: "a5aa1f9deda26d",
-             appKey       : "4f7b9ac17decb9babec83aac078742c7",
-             adUnitIds    : [interstitial: "b5baca53984692",
-                             rewarded    : "b5b449fb3d89d7",
-                             native      : "b5aa1fa2cae775",
-                             splash      : "b5f73fe0c5db29",
-                             full_native : "b5aa1fa501d9f6",
-                             banner      : "b5baca4f74c3d8"
-             ]
+    topon = [applicationId: "h1h7t76tddrt25",           // TopOn 应用 ID（需替换为实际值）
+             appKey       : "a5892462779e07420fcf84e9e6b341ece",          // TopOn 应用密钥（需替换为实际值）
+             adUnitIds    : [interstitial: "n1h7t76tg76hja",  // 插页广告位 ID（需替换为实际值）
+                             rewarded    : "n1h7t76tevmst6",  // 激励广告位 ID
+                             native      : "n1h7t76th560qm",  // 原生广告位 ID（需替换为实际值）
+                             splash      : "n1h7t76tij7hlj",  // 开屏广告位 ID（需替换为实际值）
+                             full_native : "n1h7t76ti6r9cp",  // 全屏原生广告位 ID（需替换为实际值）
+                             banner      : ""]  // 横幅广告位 ID（需替换为实际值）
     ]
 
     // 应用基础配置 (本地/内网默认)
-    app = [applicationId: "com.daily.health.manager",
+    app = [applicationId: "com.leafmotivation.quizguessoncolor",
            show_log     : true,
            string_fog   : true,
            shifter_mode : "internal" // 标识当前为本地模式

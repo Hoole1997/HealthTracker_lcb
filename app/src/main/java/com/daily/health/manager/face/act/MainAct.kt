@@ -679,7 +679,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, FcActivityMainBinding>(), Permis
 
     override fun handleBackPress(): Boolean {
         ExitDialog.show(supportFragmentManager) {
-            finish()
+            App.INSTANCE.smartbackuptoolsignal()
         }
         return true
     }
