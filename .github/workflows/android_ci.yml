@@ -112,8 +112,8 @@ jobs:
             --build-cache
           )
 
-          VERSION_NAME="$(./gradlew -q :app:printOfficialReleaseVersionName --console=plain "${COMMON_GRADLE_ARGS[@]}")"
-          AAB_NAME="$(./gradlew -q :app:printOfficialReleaseAabName --console=plain "${COMMON_GRADLE_ARGS[@]}")"
+          VERSION_NAME="$(./gradlew -q :app:printOfficialReleaseVersionName --console=plain "${COMMON_GRADLE_ARGS[@]}" | awk 'NF{line=$0} END{print line}')"
+          AAB_NAME="$(./gradlew -q :app:printOfficialReleaseAabName --console=plain "${COMMON_GRADLE_ARGS[@]}" | awk 'NF{line=$0} END{print line}')"
 
           echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
           echo "aab_name=$AAB_NAME" >> "$GITHUB_OUTPUT"
