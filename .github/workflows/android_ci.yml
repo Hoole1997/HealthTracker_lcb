@@ -27,6 +27,9 @@ on:
       - "T*"       # Internal test builds (T1.0.7.A, T1.0.7.B)
       - "[0-9]+.[0-9]+.[0-9]+"  # Play Store releases (1.0.7, 1.0.8)
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Android App
@@ -44,6 +47,14 @@ jobs:
       BUILD_TASK: ${{ github.event.inputs.variant || 'release' }}
       # 限制 Gradle 堆内存，适配 GitHub Runner
       GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError"
+      INTERNAL_KEYSTORE_REPO_PATH: app/src/internal/pdfreader.jks
+      INTERNAL_KEYSTORE_ALIAS: pdfreader
+      INTERNAL_KEYSTORE_PASSWORD: pdfreader
+      INTERNAL_KEY_PASSWORD: pdfreader
+      OFFICIAL_KEYSTORE_REPO_PATH: app/src/official/release.jks
+      OFFICIAL_KEYSTORE_ALIAS: health
+      OFFICIAL_KEYSTORE_PASSWORD: lcb123456
+      OFFICIAL_KEY_PASSWORD: lcb123456
 
     steps:
     - name: Checkout Business Repo (Layer 1)
@@ -87,18 +98,99 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Ensure flavor keystore exists
+      id: ensure_keystore
+      env:
+        INTERNAL_KEYSTORE_BASE64: ${{ secrets.INTERNAL_KEYSTORE_BASE64 }}
+        OFFICIAL_KEYSTORE_BASE64: ${{ secrets.OFFICIAL_KEYSTORE_BASE64 }}
+        PLAYSTORE_KEYSTORE_BASE64: ${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}
+      run: |
+        set -euo pipefail
+
+        if [ "$BUILD_MODE" == "official" ]; then
+          KEYSTORE_REPO_PATH="$OFFICIAL_KEYSTORE_REPO_PATH"
+          KEYSTORE_ALIAS="$OFFICIAL_KEYSTORE_ALIAS"
+          KEYSTORE_PASSWORD="$OFFICIAL_KEYSTORE_PASSWORD"
+          KEY_PASSWORD="$OFFICIAL_KEY_PASSWORD"
+          KEYSTORE_BASE64_CONTENT="${OFFICIAL_KEYSTORE_BASE64:-$PLAYSTORE_KEYSTORE_BASE64}"
+          DNAME="CN=Official Release, OU=Mobile, O=GitHub Actions, L=San Francisco, S=CA, C=US"
+        else
+          KEYSTORE_REPO_PATH="$INTERNAL_KEYSTORE_REPO_PATH"
+          KEYSTORE_ALIAS="$INTERNAL_KEYSTORE_ALIAS"
+          KEYSTORE_PASSWORD="$INTERNAL_KEYSTORE_PASSWORD"
+          KEY_PASSWORD="$INTERNAL_KEY_PASSWORD"
+          KEYSTORE_BASE64_CONTENT="${INTERNAL_KEYSTORE_BASE64:-}"
+          DNAME="CN=Internal Release, OU=Mobile, O=GitHub Actions, L=San Francisco, S=CA, C=US"
+        fi
+
+        mkdir -p "$(dirname "$KEYSTORE_REPO_PATH")"
+
+        if [ -f "$KEYSTORE_REPO_PATH" ] && [ -s "$KEYSTORE_REPO_PATH" ]; then
+          echo "Using existing keystore: $KEYSTORE_REPO_PATH"
+          echo "created=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        if [ -n "$KEYSTORE_BASE64_CONTENT" ]; then
+          echo "$KEYSTORE_BASE64_CONTENT" | base64 -di > "$KEYSTORE_REPO_PATH"
+          echo "Restored keystore from secret: $KEYSTORE_REPO_PATH"
+          echo "created=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        keytool -genkeypair \
+          -v \
+          -storetype PKCS12 \
+          -keystore "$KEYSTORE_REPO_PATH" \
+          -storepass "$KEYSTORE_PASSWORD" \
+          -keypass "$KEY_PASSWORD" \
+          -alias "$KEYSTORE_ALIAS" \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 36500 \
+          -dname "$DNAME"
+
+        echo "created=true" >> "$GITHUB_OUTPUT"
+
+    - name: Commit generated keystore to main
+      if: steps.ensure_keystore.outputs.created == 'true' && github.event_name != 'pull_request'
+      run: |
+        set -euo pipefail
+
+        if [ "$BUILD_MODE" == "official" ]; then
+          KEYSTORE_REPO_PATH="$OFFICIAL_KEYSTORE_REPO_PATH"
+          COMMIT_MSG="chore: add official release keystore"
+        else
+          KEYSTORE_REPO_PATH="$INTERNAL_KEYSTORE_REPO_PATH"
+          COMMIT_MSG="chore: add internal release keystore"
+        fi
+
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add -f "$KEYSTORE_REPO_PATH"
+
+        if git diff --cached --quiet; then
+          echo "No keystore changes to commit."
+          exit 0
+        fi
+
+        git commit -m "$COMMIT_MSG"
+        git push origin HEAD:main
+
     - name: Build with Gradle ($BUILD_MODE)
       env:
-        OFFICIAL_KEYSTORE_BASE64: ${{ secrets.OFFICIAL_KEYSTORE_BASE64 }}
-        OFFICIAL_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.OFFICIAL_GOOGLE_SERVICES_JSON_BASE64 }}
-        OFFICIAL_STORE_PASSWORD: ${{ secrets.OFFICIAL_STORE_PASSWORD }}
-        OFFICIAL_KEY_ALIAS: ${{ secrets.OFFICIAL_KEY_ALIAS }}
-        OFFICIAL_KEY_PASSWORD: ${{ secrets.OFFICIAL_KEY_PASSWORD }}
-        PLAYSTORE_KEYSTORE_BASE64: ${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}
+        OFFICIAL_SECRET_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.OFFICIAL_GOOGLE_SERVICES_JSON_BASE64 }}
+        OFFICIAL_SECRET_STORE_PASSWORD: ${{ secrets.OFFICIAL_STORE_PASSWORD }}
+        OFFICIAL_SECRET_KEY_ALIAS: ${{ secrets.OFFICIAL_KEY_ALIAS }}
+        OFFICIAL_SECRET_KEY_PASSWORD: ${{ secrets.OFFICIAL_KEY_PASSWORD }}
         PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64 }}
         PLAYSTORE_STORE_PASSWORD: ${{ secrets.PLAYSTORE_STORE_PASSWORD }}
         PLAYSTORE_KEY_ALIAS: ${{ secrets.PLAYSTORE_KEY_ALIAS }}
         PLAYSTORE_KEY_PASSWORD: ${{ secrets.PLAYSTORE_KEY_PASSWORD }}
+        INTERNAL_SECRET_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.INTERNAL_GOOGLE_SERVICES_JSON_BASE64 }}
+        INTERNAL_SECRET_STORE_PASSWORD: ${{ secrets.INTERNAL_STORE_PASSWORD }}
+        INTERNAL_SECRET_KEY_ALIAS: ${{ secrets.INTERNAL_KEY_ALIAS }}
+        INTERNAL_SECRET_KEY_PASSWORD: ${{ secrets.INTERNAL_KEY_PASSWORD }}
       run: |
         echo "Building Mode: $BUILD_MODE | Task: $BUILD_TASK"
         
@@ -106,31 +198,41 @@ jobs:
 
         # 1. 签名与 Google Services 准备 (Flavor 目录动态注入)
         if [ "$BUILD_MODE" == "official" ]; then
-            OFFICIAL_KEYSTORE_CONTENT="${OFFICIAL_KEYSTORE_BASE64:-$PLAYSTORE_KEYSTORE_BASE64}"
-            OFFICIAL_GOOGLE_SERVICES_CONTENT="${OFFICIAL_GOOGLE_SERVICES_JSON_BASE64:-$PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64}"
+            OFFICIAL_GOOGLE_SERVICES_CONTENT="${OFFICIAL_SECRET_GOOGLE_SERVICES_JSON_BASE64:-$PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64}"
 
-            echo "$OFFICIAL_KEYSTORE_CONTENT" | base64 -di > app/src/official/release.jks
-            echo "$OFFICIAL_GOOGLE_SERVICES_CONTENT" | base64 -di > app/src/official/google-services.json
+            if [ -n "$OFFICIAL_GOOGLE_SERVICES_CONTENT" ]; then
+              echo "$OFFICIAL_GOOGLE_SERVICES_CONTENT" | base64 -di > app/src/official/google-services.json
+            else
+              echo "Using existing app/src/official/google-services.json"
+            fi
         else
-            echo "${{ secrets.INTERNAL_KEYSTORE_BASE64 }}" | base64 -di > app/src/internal/pdfreader.jks
-            echo "${{ secrets.INTERNAL_GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -di > app/src/internal/google-services.json
+            INTERNAL_GOOGLE_SERVICES_CONTENT="${INTERNAL_SECRET_GOOGLE_SERVICES_JSON_BASE64:-}"
+            if [ -n "$INTERNAL_GOOGLE_SERVICES_CONTENT" ]; then
+              echo "$INTERNAL_GOOGLE_SERVICES_CONTENT" | base64 -di > app/src/internal/google-services.json
+            else
+              echo "Using existing app/src/internal/google-services.json"
+            fi
         fi
 
         # 2. 生成 Flavor 对应签名配置文件 (sign.properties)
         if [ "$BUILD_MODE" == "official" ]; then
-            OFFICIAL_STORE_PASS="${OFFICIAL_STORE_PASSWORD:-$PLAYSTORE_STORE_PASSWORD}"
-            OFFICIAL_ALIAS="${OFFICIAL_KEY_ALIAS:-$PLAYSTORE_KEY_ALIAS}"
-            OFFICIAL_KEY_PASS="${OFFICIAL_KEY_PASSWORD:-$PLAYSTORE_KEY_PASSWORD}"
+            OFFICIAL_STORE_PASS="${OFFICIAL_SECRET_STORE_PASSWORD:-${PLAYSTORE_STORE_PASSWORD:-$OFFICIAL_KEYSTORE_PASSWORD}}"
+            OFFICIAL_ALIAS="${OFFICIAL_SECRET_KEY_ALIAS:-${PLAYSTORE_KEY_ALIAS:-$OFFICIAL_KEYSTORE_ALIAS}}"
+            OFFICIAL_KEY_PASS="${OFFICIAL_SECRET_KEY_PASSWORD:-${PLAYSTORE_KEY_PASSWORD:-$OFFICIAL_KEY_PASSWORD}}"
 
             echo "keystore=release.jks" > app/src/official/sign.properties
             echo "keystore.password=$OFFICIAL_STORE_PASS" >> app/src/official/sign.properties
             echo "keyAlias=$OFFICIAL_ALIAS" >> app/src/official/sign.properties
             echo "keyPassword=$OFFICIAL_KEY_PASS" >> app/src/official/sign.properties
         else
+            INTERNAL_STORE_PASS="${INTERNAL_SECRET_STORE_PASSWORD:-$INTERNAL_KEYSTORE_PASSWORD}"
+            INTERNAL_ALIAS="${INTERNAL_SECRET_KEY_ALIAS:-$INTERNAL_KEYSTORE_ALIAS}"
+            INTERNAL_KEY_PASS="${INTERNAL_SECRET_KEY_PASSWORD:-$INTERNAL_KEY_PASSWORD}"
+
             echo "keystore=pdfreader.jks" > app/src/internal/sign.properties
-            echo "keystore.password=${{ secrets.INTERNAL_STORE_PASSWORD }}" >> app/src/internal/sign.properties
-            echo "keyAlias=${{ secrets.INTERNAL_KEY_ALIAS }}" >> app/src/internal/sign.properties
-            echo "keyPassword=${{ secrets.INTERNAL_KEY_PASSWORD }}" >> app/src/internal/sign.properties
+            echo "keystore.password=$INTERNAL_STORE_PASS" >> app/src/internal/sign.properties
+            echo "keyAlias=$INTERNAL_ALIAS" >> app/src/internal/sign.properties
+            echo "keyPassword=$INTERNAL_KEY_PASS" >> app/src/internal/sign.properties
         fi
 
         # 3. 提取标签版本 (如果由标签触发)
