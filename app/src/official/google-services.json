@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "261069692721",
+    "project_id": "aga20b8edd3b-64111-gp",
+    "storage_bucket": "aga20b8edd3b-64111-gp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:261069692721:android:61b3b774a82164e1ef5a10",
+        "android_client_info": {
+          "package_name": "com.blood.pressure.health.monitor.tool"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIuNbOBqzTyqtzv4bNaaZF7WCWRmQ14A8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
