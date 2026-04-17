@@ -86,7 +86,7 @@ android {
 
 dependencies {
 
-    api("com.launcher.unity:com.leafmotivation.quizguessoncolor-health:1.0.1")
+    api("com.launcher.unity:com.blood.pressure.health.monitor.tool-health-release:1.0.0")
 
     // ==================== 核心依赖 ====================
     api(libs.play.services.ads)

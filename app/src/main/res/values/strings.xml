@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Blood Sugar &amp; \nPressure Tracker</string>
+    <string name="app_name" translatable="false">Health Monitor</string>
     <string name="fc_meds_manager">Medication Manager</string>
     <string name="fc_blood_suger">Blood Sugar</string>
     <string name="fc_blood_pressure">Blood Pressure</string>

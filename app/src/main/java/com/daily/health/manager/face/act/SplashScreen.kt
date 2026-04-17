@@ -2,6 +2,7 @@ package com.daily.health.manager.face.act
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -128,13 +129,15 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, FcActivitySplashBinding>(
                     trackUninstallClick()
                     startActivity(Intent(this@SplashScreen, UninstallResenActivity::class.java))
                     finish()
+                    Log.d(TAG,"跳转到卸载挽留界面关闭")
                     return@SplashStateMachine
                 }
                 reportGroup()
-                if (ActivityUtils.isActivityExistsInStack(MainAct::class.java)) {
-                    finish()
-                    return@SplashStateMachine
-                }
+//                if (ActivityUtils.isActivityExistsInStack(MainAct::class.java)) {
+//                    Log.d(TAG,"APP主页在栈内存活关闭")
+//                    finish()
+//                    return@SplashStateMachine
+//                }
                 // 判断应该跳转到哪个页面
                 val targetActivity = if (hasNewGuide()) {
                     MainAct::class.java
@@ -147,6 +150,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, FcActivitySplashBinding>(
                 }
 
                 startActivity(targetIntent)
+                Log.d(TAG,"自然流程关闭")
                 finish()
             }
         )
@@ -170,13 +174,13 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, FcActivitySplashBinding>(
             }
         }
         lifecycleScope.launch {
-            try {
-                if (!isTaskRoot) {
-                   finish()
-                }
-            } catch (e: Throwable) {
-                e.printStackTrace()
-            }
+//            try {
+//                if (!isTaskRoot) {
+//                   finish()
+//                }
+//            } catch (e: Throwable) {
+//                e.printStackTrace()
+//            }
 
             launchTime = System.currentTimeMillis()
             logEvent("loading_page_show")

@@ -28,44 +28,38 @@ apply(from = "../scripts/sign.gradle")
 // 引入动态混淆字典生成脚本
 apply(from = "generate-dictionary.gradle.kts")
 
-// ==========================================
-// 🚀 三层解耦配置加载器 (The Shifter)
-// ==========================================
-val remoteOverride = project.hasProperty("remoteOverride")
-val shifterFile = if (remoteOverride) "../scripts/official.gradle" else "../scripts/internal.gradle"
+@Suppress("UNCHECKED_CAST")
+fun configMap(name: String): Map<String, Any?> =
+    rootProject.extra[name] as? Map<String, Any?>
+        ?: error("Missing '$name' config. Expected root build script to load app/src/<channel>/config.gradle.kts")
 
-// 1. 加载本地默认配置 (Internal 第一副本)
-apply(from = "../scripts/internal.gradle")
+@Suppress("UNCHECKED_CAST")
+fun Map<String, Any?>.nestedMap(name: String): Map<String, Any?> = this[name] as? Map<String, Any?> ?: emptyMap()
 
-// 2. 尝试加载远程补丁 (外网/官方) - 本地路径作为演示，实际 CI 会动态下载
-if (remoteOverride) {
-    println("📡 [Shifter] Detected Remote Override Mode. Applying official config...")
-    apply(from = shifterFile)
-}
+fun Map<String, Any?>.stringValue(name: String): String = this[name] as? String ?: ""
 
-// 提取 ext 变量以供后续引用
-val admob = extensions.extraProperties["admob"] as Map<*, *>
-val admobUnit = admob["adUnitIds"] as Map<*, *>
-val appConfig = extensions.extraProperties["app"] as Map<*, *>
-val urls = extensions.extraProperties["url"] as Map<*, *>
-val analytics = extensions.extraProperties["analytics"] as Map<*, *>
+val admob = configMap("admob")
+val admobUnit = admob.nestedMap("adUnitIds")
+val appConfig = configMap("app")
+val urls = configMap("url")
+val analytics = configMap("analytics")
 
-val showLog = appConfig["show_log"] as Boolean
-val shifterMode = appConfig["shifter_mode"] ?: "internal"
-println("📦 [Shifter] Build Mode: $shifterMode | Package: ${appConfig["applicationId"]}")
+val showLog = appConfig["show_log"] as? Boolean ?: false
+val selectedChannel = rootProject.extra["selectedChannel"]?.toString() ?: "internal"
+val semanticVersion = project.findProperty("internalVersionName")?.toString()?.takeIf { it.isNotBlank() }
+
+println("📦 [Channel] Building '$selectedChannel' | Package: ${appConfig["applicationId"]}")
 
 android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        applicationId = appConfig["applicationId"] as String
-        versionCode = 7
-        versionName = "1.0.7"
-        
-        // 🚀 动态支持从属性注入 versionName (用于 CI Tag 构建)
-        val semanticVersion = project.findProperty("internalVersionName")?.toString()
-        if (semanticVersion != null && semanticVersion.isNotEmpty()) {
-            println("🏷️ [Shifter] Override VersionName: $semanticVersion")
+        applicationId = appConfig.stringValue("applicationId")
+        versionCode = 1
+        versionName = "1.0.0"
+
+        if (semanticVersion != null) {
+            println("🏷️ [Version] Override VersionName: $semanticVersion")
             versionName = semanticVersion.removePrefix("v")
         }
 
@@ -79,11 +73,6 @@ android {
         buildConfigField("String", "FEEDBACK_EMAIL", "\"${urls["email"]}\"")
         buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${admob["applicationId"]}\"")
         buildConfigField("String", "ADMOB_SPLASH_ID", "\"${admobUnit["splash"]}\"")
-        
-        // 动态设置版本名后缀 (仅内网模式且没有注入 semanticVersion 时)
-        if (shifterMode == "internal" && semanticVersion == null) {
-            versionNameSuffix = "-internal"
-        }
 
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
@@ -101,18 +90,19 @@ android {
         getByName("main").java.srcDirs("build/generated/source/junk/kotlin")
     }
 
-    // Ensure junk code is generated before compilation
-    // Using afterEvaluate to ensure tasks are registered
-    // Note: The script registers "generateJunkCode".
-    // We hook it to preBuild
+    flavorDimensions += "channel"
 
-    
-
-
-
-    // 🚀 已移除旧有的 productFlavors，实现零变种构建
-
-
+    productFlavors {
+        create("internal") {
+            dimension = "channel"
+            if (semanticVersion == null) {
+                versionNameSuffix = "-internal"
+            }
+        }
+        create("official") {
+            dimension = "channel"
+        }
+    }
 
     buildTypes {
         release {

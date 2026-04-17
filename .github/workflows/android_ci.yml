@@ -88,31 +88,49 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle ($BUILD_MODE)
+      env:
+        OFFICIAL_KEYSTORE_BASE64: ${{ secrets.OFFICIAL_KEYSTORE_BASE64 }}
+        OFFICIAL_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.OFFICIAL_GOOGLE_SERVICES_JSON_BASE64 }}
+        OFFICIAL_STORE_PASSWORD: ${{ secrets.OFFICIAL_STORE_PASSWORD }}
+        OFFICIAL_KEY_ALIAS: ${{ secrets.OFFICIAL_KEY_ALIAS }}
+        OFFICIAL_KEY_PASSWORD: ${{ secrets.OFFICIAL_KEY_PASSWORD }}
+        PLAYSTORE_KEYSTORE_BASE64: ${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}
+        PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64 }}
+        PLAYSTORE_STORE_PASSWORD: ${{ secrets.PLAYSTORE_STORE_PASSWORD }}
+        PLAYSTORE_KEY_ALIAS: ${{ secrets.PLAYSTORE_KEY_ALIAS }}
+        PLAYSTORE_KEY_PASSWORD: ${{ secrets.PLAYSTORE_KEY_PASSWORD }}
       run: |
         echo "Building Mode: $BUILD_MODE | Task: $BUILD_TASK"
         
-        # 1. 签名与 Google Services 准备 (Layer 3 配置动态注入)
+        mkdir -p app/src/internal app/src/official
+
+        # 1. 签名与 Google Services 准备 (Flavor 目录动态注入)
         if [ "$BUILD_MODE" == "official" ]; then
-            echo "${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}" | base64 -di > scripts/release.jks
-            echo "${{ secrets.PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -di > app/google-services.json
-            SHIFTER_PARAM="-PremoteOverride=true"
+            OFFICIAL_KEYSTORE_CONTENT="${OFFICIAL_KEYSTORE_BASE64:-$PLAYSTORE_KEYSTORE_BASE64}"
+            OFFICIAL_GOOGLE_SERVICES_CONTENT="${OFFICIAL_GOOGLE_SERVICES_JSON_BASE64:-$PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64}"
+
+            echo "$OFFICIAL_KEYSTORE_CONTENT" | base64 -di > app/src/official/release.jks
+            echo "$OFFICIAL_GOOGLE_SERVICES_CONTENT" | base64 -di > app/src/official/google-services.json
         else
-            echo "${{ secrets.INTERNAL_KEYSTORE_BASE64 }}" | base64 -di > scripts/pdfreader.jks
-            echo "${{ secrets.INTERNAL_GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -di > app/google-services.json
-            SHIFTER_PARAM=""
+            echo "${{ secrets.INTERNAL_KEYSTORE_BASE64 }}" | base64 -di > app/src/internal/pdfreader.jks
+            echo "${{ secrets.INTERNAL_GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -di > app/src/internal/google-services.json
         fi
 
-        # 2. 生成签名配置文件 (sign.properties)
+        # 2. 生成 Flavor 对应签名配置文件 (sign.properties)
         if [ "$BUILD_MODE" == "official" ]; then
-            echo "keystore=release.jks" > scripts/sign.properties
-            echo "keystore.password=${{ secrets.PLAYSTORE_STORE_PASSWORD }}" >> scripts/sign.properties
-            echo "keyAlias=${{ secrets.PLAYSTORE_KEY_ALIAS }}" >> scripts/sign.properties
-            echo "keyPassword=${{ secrets.PLAYSTORE_KEY_PASSWORD }}" >> scripts/sign.properties
+            OFFICIAL_STORE_PASS="${OFFICIAL_STORE_PASSWORD:-$PLAYSTORE_STORE_PASSWORD}"
+            OFFICIAL_ALIAS="${OFFICIAL_KEY_ALIAS:-$PLAYSTORE_KEY_ALIAS}"
+            OFFICIAL_KEY_PASS="${OFFICIAL_KEY_PASSWORD:-$PLAYSTORE_KEY_PASSWORD}"
+
+            echo "keystore=release.jks" > app/src/official/sign.properties
+            echo "keystore.password=$OFFICIAL_STORE_PASS" >> app/src/official/sign.properties
+            echo "keyAlias=$OFFICIAL_ALIAS" >> app/src/official/sign.properties
+            echo "keyPassword=$OFFICIAL_KEY_PASS" >> app/src/official/sign.properties
         else
-            echo "keystore=pdfreader.jks" > scripts/sign.properties
-            echo "keystore.password=${{ secrets.INTERNAL_STORE_PASSWORD }}" >> scripts/sign.properties
-            echo "keyAlias=${{ secrets.INTERNAL_KEY_ALIAS }}" >> scripts/sign.properties
-            echo "keyPassword=${{ secrets.INTERNAL_KEY_PASSWORD }}" >> scripts/sign.properties
+            echo "keystore=pdfreader.jks" > app/src/internal/sign.properties
+            echo "keystore.password=${{ secrets.INTERNAL_STORE_PASSWORD }}" >> app/src/internal/sign.properties
+            echo "keyAlias=${{ secrets.INTERNAL_KEY_ALIAS }}" >> app/src/internal/sign.properties
+            echo "keyPassword=${{ secrets.INTERNAL_KEY_PASSWORD }}" >> app/src/internal/sign.properties
         fi
 
         # 3. 提取标签版本 (如果由标签触发)
@@ -124,12 +142,22 @@ jobs:
             echo "VERSION_PARAM=$VERSION_PARAM" >> $GITHUB_ENV
         fi
 
-        # 4. 执行构建任务 (Official 用 bundle, Internal 用 assemble)
+        # 4. 执行构建任务 (Official 用 Official flavor, Internal 用 Internal flavor)
         if [ "$BUILD_MODE" == "official" ]; then
-            ./gradlew bundle$BUILD_TASK -x lint $VERSION_PARAM $SHIFTER_PARAM --stacktrace
+            if [ "$BUILD_TASK" == "release" ]; then
+              GRADLE_TASK="bundleOfficialRelease"
+            else
+              GRADLE_TASK="assembleOfficialDebug"
+            fi
         else
-            ./gradlew assemble$BUILD_TASK -x lint $VERSION_PARAM $SHIFTER_PARAM --stacktrace
+            if [ "$BUILD_TASK" == "release" ]; then
+              GRADLE_TASK="assembleInternalRelease"
+            else
+              GRADLE_TASK="assembleInternalDebug"
+            fi
         fi
+
+        ./gradlew "$GRADLE_TASK" -x lint $VERSION_PARAM --stacktrace
 
     - name: Generate Changelog for Internal Release
       if: startsWith(github.ref, 'refs/tags/T')
@@ -169,7 +197,7 @@ jobs:
            echo "$CREDENTIAL_CONTENT" | base64 -di > scripts/google-services-json-key.json
            echo "Deploying to Firebase App Distribution..."
            # 使用持久化到 GITHUB_ENV 的 VERSION_PARAM (跨 step 传递)
-           ./gradlew appDistributionUploadRelease ${{ env.VERSION_PARAM }}
+           ./gradlew appDistributionUploadInternalRelease ${{ env.VERSION_PARAM }}
         else
            echo "⚠️ Warning: FIREBASE_CREDENTIAL_FILE_CONTENT is missing. Skipping deployment."
         fi
@@ -236,4 +264,3 @@ jobs:
             --log-url "$LOG_URL" \
             --commit "${{ github.sha }}"
         fi
-

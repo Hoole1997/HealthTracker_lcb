@@ -90,7 +90,7 @@ generate_secrets() {
 }
 
 generate_secrets "internal"
-generate_secrets "playstore"
+generate_secrets "official"
 
 echo ""
 echo "=================================================="

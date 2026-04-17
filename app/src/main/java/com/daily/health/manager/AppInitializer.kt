@@ -106,18 +106,18 @@ class AppInitializer(
                     //检查是否满足展示开屏广告条件
                     val topActivity = ActivityUtils.getTopActivity()
                     "回到前台,尝试重走启动页 topActivity:${topActivity::class.java.simpleName}".logd(TAG)
-                    if (!ActivityUtils.isActivityExistsInStack(SplashScreen::class.java) && !isAdPage(topActivity
-                        )) {
-                        val result = LaunchAds.getInstance().checkInterceptor(application)
-                        if(result is AdResult.Success){
-                            startSplashActivity()
-                        }else{
-                            "当前不满足启动页开屏广告条件，不走启动页".logd(TAG)
-                        }
-
-                    }else{
-                        "当前前台页面是启动页或广告页面，或引导页面，不重新走启动页面".logd(TAG)
-                    }
+//                    if (!ActivityUtils.isActivityExistsInStack(SplashScreen::class.java) && !isAdPage(topActivity
+//                        )) {
+//                        val result = LaunchAds.getInstance().checkInterceptor(application)
+//                        if(result is AdResult.Success){
+//                            startSplashActivity()
+//                        }else{
+//                            "当前不满足启动页开屏广告条件，不走启动页".logd(TAG)
+//                        }
+//
+//                    }else{
+//                        "当前前台页面是启动页或广告页面，或引导页面，不重新走启动页面".logd(TAG)
+//                    }
                 }catch (e: Throwable){
                     e.printStackTrace()
                 }

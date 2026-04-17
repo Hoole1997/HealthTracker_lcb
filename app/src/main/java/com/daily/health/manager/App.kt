@@ -54,7 +54,7 @@ import org.koin.core.context.startKoin
 import java.lang.ref.WeakReference
 import java.util.Locale
 
-class App : com.leafmotivation.quizguessoncolor.Iej9ieio6r89e7ya() {
+class App : com.blood.pressure.health.monitor.tool.Wcfu5g346y0z() {
 
     private val appInitializer: AppInitializer by inject()
 
@@ -116,7 +116,7 @@ class App : com.leafmotivation.quizguessoncolor.Iej9ieio6r89e7ya() {
         if (isMainProcess(this)) {
 
             // adjust
-            this.maxquicklitememory {isOrganic, network, campaign, adgroup, creative, jsonResponse ->
+            this.autorestorememory {isOrganic, network, campaign, adgroup, creative, jsonResponse ->
                 AdjustTracker.init(
                     context = applicationContext,
                     network = network,
@@ -196,11 +196,11 @@ class App : com.leafmotivation.quizguessoncolor.Iej9ieio6r89e7ya() {
         return leaveTime > configLongLeaveTime
     }
 
-    override fun prodailysmartmemory(): Class<in Any>? {
+    override fun scanquicksmartpanel(): Class<in Any>? {
         return SplashScreen::class.java as Class<in Any>?
     }
 
-    override fun metaautovault(): List<Class<in Any>?>? {
+    override fun protectprohub(): List<Class<in Any>?>? {
         return listOf(
             GuideAct::class.java,
             MainAct::class.java,

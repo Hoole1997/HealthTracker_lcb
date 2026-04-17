@@ -45,7 +45,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "HealthTracker"
+rootProject.name = "HealthTracker_lcb"
 include(":app")
 include(":framework")
 include(":monetize")

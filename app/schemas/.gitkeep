@@ -1,0 +1,2 @@
+# Keep the Room schema directory in version control so Room copy tasks
+# have a concrete input directory even before the first schema export.

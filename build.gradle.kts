@@ -27,19 +27,28 @@ buildscript {
     }
 }
 
-
-// ==========================================
-// 🚀 全局三层架构配置加载器 (Global Shifter)
-// ==========================================
-val remoteOverride = project.hasProperty("remoteOverride")
-val shifterFile = if (remoteOverride) "scripts/official.gradle" else "scripts/internal.gradle"
-
-// 加载配置到根项目 ext 中，使所有子模块可见
-apply(from = "scripts/internal.gradle")
-if (remoteOverride) {
-    logger.lifecycle("📡 [Global Shifter] Applying official config patch...")
-    apply(from = shifterFile)
+val taskNames = gradle.startParameter.taskNames
+val hasInternalTask = taskNames.any { it.contains("Internal", ignoreCase = true) }
+val hasOfficialTask = taskNames.any { it.contains("Official", ignoreCase = true) }
+val hasAmbiguousReleaseTask = taskNames.any {
+    val normalized = it.lowercase()
+    normalized == "assemblerelease" ||
+        normalized == "bundlerelease" ||
+        normalized == "appdistributionuploadrelease"
 }
+
+check(!(hasAmbiguousReleaseTask && !hasInternalTask && !hasOfficialTask)) {
+    "Ambiguous release task detected. Use channel-specific tasks such as assembleInternalRelease, assembleOfficialRelease, bundleOfficialRelease, or appDistributionUploadInternalRelease."
+}
+
+val selectedChannel = when {
+    hasOfficialTask && !hasInternalTask -> "official"
+    else -> "internal"
+}
+
+apply(from = file("app/src/$selectedChannel/config.gradle.kts"))
+extra["selectedChannel"] = selectedChannel
+logger.lifecycle("📦 [Channel] Selected channel config: $selectedChannel")
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
