@@ -1,369 +1,173 @@
-name: Android Release Build
+name: Build official signed AAB
 
 on:
   workflow_dispatch:
-    inputs:
-      variant:
-        description: 'Build Task (release/debug)'
-        required: true
-        default: 'release'
-        type: choice
-        options:
-        - release
-        - debug
-      mode:
-        description: 'Build Mode (internal/official)'
-        required: true
-        default: 'internal'
-        type: choice
-        options:
-        - internal
-        - official
-  pull_request:
-    branches: [ "master", "main", "develop" ]
   push:
-    tags: 
-      - "v*"       # Legacy version tags
-      - "T*"       # Internal test builds (T1.0.7.A, T1.0.7.B)
-      - "[0-9]+.[0-9]+.[0-9]+"  # Play Store releases (1.0.7, 1.0.8)
+    branches:
+      - lcb
+    paths-ignore:
+      - app/src/official/release.jks
 
 permissions:
   contents: write
 
+concurrency:
+  group: official-aab-lcb
+  cancel-in-progress: false
+
 jobs:
-  build:
-    name: Build Android App
+  build-official-aab:
     runs-on: ubuntu-latest
-    
-    # 设置全局工作目录为 Layer 1 (业务库)
-    defaults:
-      run:
-        working-directory: main-repo
 
     env:
-      # 推断构建模式：标签名为纯数字版本(1.0.7) -> official, T开头 -> internal
-      BUILD_MODE: ${{ (startsWith(github.ref, 'refs/tags/') && !startsWith(github.ref, 'refs/tags/T') && !startsWith(github.ref, 'refs/tags/v')) && 'official' || github.event.inputs.mode || 'internal' }}
-      # 任务：release, debug 等
-      BUILD_TASK: ${{ github.event.inputs.variant || 'release' }}
-      # 限制 Gradle 堆内存，适配 GitHub Runner
-      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError"
-      INTERNAL_KEYSTORE_REPO_PATH: app/src/internal/pdfreader.jks
-      INTERNAL_KEYSTORE_ALIAS: pdfreader
-      INTERNAL_KEYSTORE_PASSWORD: pdfreader
-      INTERNAL_KEY_PASSWORD: pdfreader
-      OFFICIAL_KEYSTORE_REPO_PATH: app/src/official/release.jks
-      OFFICIAL_KEYSTORE_ALIAS: health
-      OFFICIAL_KEYSTORE_PASSWORD: lcb123456
-      OFFICIAL_KEY_PASSWORD: lcb123456
+      KEYSTORE_REPO_PATH: app/src/official/release.jks
+      KEYSTORE_ALIAS: health
+      KEYSTORE_PASSWORD: lcb123456
+      KEY_PASSWORD: lcb123456
       PERSIST_KEYSTORE_BRANCH: lcb
+      GRADLE_JVM_ARGS: -Xmx6144m -XX:MaxMetaspaceSize=1024m -XX:+UseParallelGC -Dfile.encoding=UTF-8
+      KOTLIN_DAEMON_JVM_ARGS: -Xmx1024m
 
     steps:
-    - name: Checkout Business Repo (Layer 1)
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        path: main-repo
+      - name: Checkout lcb
+        uses: actions/checkout@v4
+        with:
+          ref: lcb
+          fetch-depth: 0
 
-    - name: Checkout Common Tools (Layer 2)
-      uses: actions/checkout@v4
-      with:
-        repository: ReMax-ci/android-ci
-        token: ${{ secrets.GH_PAT_FOR_SCRIPTS }} # 假设已配置机器人权限
-        path: common-tools
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
 
-    - name: Record Start Time
-      run: echo "BUILD_START_TIME=$(date +%s)" >> $GITHUB_ENV
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    - name: Set up project version fallback
-      run: |
-        # 从 build.gradle.kts 提取版本号
-        V_NAME=$(grep "versionName =" app/build.gradle.kts | head -n 1 | awk -F'"' '{print $2}')
-        if [ "$BUILD_MODE" == "internal" ]; then
-           V_NAME="${V_NAME}-internal"
-        fi
-        echo "PROJECT_VERSION=$V_NAME" >> $GITHUB_ENV
-        echo "Extracted project version: $V_NAME"
+      - name: Ensure official release keystore exists
+        id: ensure_keystore
+        run: |
+          set -euo pipefail
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        # cache: gradle # Remove basic cache, use setup-gradle below
+          mkdir -p "$(dirname "$KEYSTORE_REPO_PATH")"
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        cache-read-only: false # Allow writing to cache for all branches
+          if [ -f "$KEYSTORE_REPO_PATH" ] && [ -s "$KEYSTORE_REPO_PATH" ]; then
+            echo "Using existing keystore: $KEYSTORE_REPO_PATH"
+            echo "created=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+          keytool -genkeypair \
+            -v \
+            -storetype PKCS12 \
+            -keystore "$KEYSTORE_REPO_PATH" \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEY_PASSWORD" \
+            -alias "$KEYSTORE_ALIAS" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 36500 \
+            -dname "CN=Official Release, OU=Mobile, O=GitHub Actions, L=San Francisco, S=CA, C=US"
 
-    - name: Ensure flavor keystore exists
-      id: ensure_keystore
-      env:
-        INTERNAL_KEYSTORE_BASE64: ${{ secrets.INTERNAL_KEYSTORE_BASE64 }}
-        OFFICIAL_KEYSTORE_BASE64: ${{ secrets.OFFICIAL_KEYSTORE_BASE64 }}
-        PLAYSTORE_KEYSTORE_BASE64: ${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}
-      run: |
-        set -euo pipefail
+          echo "created=true" >> "$GITHUB_OUTPUT"
 
-        if [ "$BUILD_MODE" == "official" ]; then
-          KEYSTORE_REPO_PATH="$OFFICIAL_KEYSTORE_REPO_PATH"
-          KEYSTORE_ALIAS="$OFFICIAL_KEYSTORE_ALIAS"
-          KEYSTORE_PASSWORD="$OFFICIAL_KEYSTORE_PASSWORD"
-          KEY_PASSWORD="$OFFICIAL_KEY_PASSWORD"
-          KEYSTORE_BASE64_CONTENT="${OFFICIAL_KEYSTORE_BASE64:-$PLAYSTORE_KEYSTORE_BASE64}"
-          DNAME="CN=Official Release, OU=Mobile, O=GitHub Actions, L=San Francisco, S=CA, C=US"
-        else
-          KEYSTORE_REPO_PATH="$INTERNAL_KEYSTORE_REPO_PATH"
-          KEYSTORE_ALIAS="$INTERNAL_KEYSTORE_ALIAS"
-          KEYSTORE_PASSWORD="$INTERNAL_KEYSTORE_PASSWORD"
-          KEY_PASSWORD="$INTERNAL_KEY_PASSWORD"
-          KEYSTORE_BASE64_CONTENT="${INTERNAL_KEYSTORE_BASE64:-}"
-          DNAME="CN=Internal Release, OU=Mobile, O=GitHub Actions, L=San Francisco, S=CA, C=US"
-        fi
+      - name: Commit generated keystore to lcb
+        if: steps.ensure_keystore.outputs.created == 'true'
+        run: |
+          set -euo pipefail
 
-        mkdir -p "$(dirname "$KEYSTORE_REPO_PATH")"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f "$KEYSTORE_REPO_PATH"
 
-        if [ -f "$KEYSTORE_REPO_PATH" ] && [ -s "$KEYSTORE_REPO_PATH" ]; then
-          echo "Using existing keystore: $KEYSTORE_REPO_PATH"
-          echo "created=false" >> "$GITHUB_OUTPUT"
-          exit 0
-        fi
+          if git diff --cached --quiet; then
+            echo "No keystore changes to commit."
+            exit 0
+          fi
 
-        if [ -n "$KEYSTORE_BASE64_CONTENT" ]; then
-          echo "$KEYSTORE_BASE64_CONTENT" | base64 -di > "$KEYSTORE_REPO_PATH"
-          echo "Restored keystore from secret: $KEYSTORE_REPO_PATH"
-          echo "created=false" >> "$GITHUB_OUTPUT"
-          exit 0
-        fi
+          git commit -m "chore: add official release keystore"
+          git push origin HEAD:$PERSIST_KEYSTORE_BRANCH
 
-        keytool -genkeypair \
-          -v \
-          -storetype PKCS12 \
-          -keystore "$KEYSTORE_REPO_PATH" \
-          -storepass "$KEYSTORE_PASSWORD" \
-          -keypass "$KEY_PASSWORD" \
-          -alias "$KEYSTORE_ALIAS" \
-          -keyalg RSA \
-          -keysize 2048 \
-          -validity 36500 \
-          -dname "$DNAME"
+      - name: Grant Gradle wrapper permission
+        run: chmod +x ./gradlew
 
-        echo "created=true" >> "$GITHUB_OUTPUT"
+      - name: Configure CI Gradle properties
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.gradle"
+          {
+            echo "android.enableR8.fullMode=false"
+            echo "org.gradle.daemon.performance.disable-logging=true"
+          } >> "$HOME/.gradle/gradle.properties"
 
-    - name: Commit generated keystore to lcb
-      if: steps.ensure_keystore.outputs.created == 'true' && github.event_name != 'pull_request'
-      run: |
-        set -euo pipefail
+      - name: Resolve version info
+        id: version_info
+        run: |
+          set -euo pipefail
+          COMMON_GRADLE_ARGS=(
+            "-Dorg.gradle.jvmargs=${GRADLE_JVM_ARGS}"
+            "-Dkotlin.daemon.jvmargs=${KOTLIN_DAEMON_JVM_ARGS}"
+            --max-workers=1
+            --no-parallel
+            --build-cache
+          )
 
-        if [ "$BUILD_MODE" == "official" ]; then
-          KEYSTORE_REPO_PATH="$OFFICIAL_KEYSTORE_REPO_PATH"
-          COMMIT_MSG="chore: add official release keystore"
-        else
-          KEYSTORE_REPO_PATH="$INTERNAL_KEYSTORE_REPO_PATH"
-          COMMIT_MSG="chore: add internal release keystore"
-        fi
+          VERSION_NAME="$(./gradlew -q :app:printOfficialReleaseVersionName --console=plain "${COMMON_GRADLE_ARGS[@]}")"
+          AAB_NAME="$(./gradlew -q :app:printOfficialReleaseAabName --console=plain "${COMMON_GRADLE_ARGS[@]}")"
 
-        git config user.name "github-actions[bot]"
-        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git add -f "$KEYSTORE_REPO_PATH"
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "aab_name=$AAB_NAME" >> "$GITHUB_OUTPUT"
 
-        if git diff --cached --quiet; then
-          echo "No keystore changes to commit."
-          exit 0
-        fi
+      - name: Build officialRelease AAB
+        run: |
+          set -euo pipefail
+          COMMON_GRADLE_ARGS=(
+            "-Dorg.gradle.jvmargs=${GRADLE_JVM_ARGS}"
+            "-Dkotlin.daemon.jvmargs=${KOTLIN_DAEMON_JVM_ARGS}"
+            --max-workers=1
+            --no-parallel
+            --build-cache
+          )
+          BUILD_ARGS=(
+            -Pandroid.release.optimizeEnabled=false
+          )
 
-        git commit -m "$COMMIT_MSG"
-        git push origin HEAD:$PERSIST_KEYSTORE_BRANCH
+          ./gradlew :app:bundleOfficialRelease \
+            -x lint \
+            -x :app:lintOfficialRelease \
+            -x :app:lintVitalOfficialRelease \
+            -x :app:lintVitalAnalyzeOfficialRelease \
+            -x :app:lintVitalReportOfficialRelease \
+            "${BUILD_ARGS[@]}" \
+            "${COMMON_GRADLE_ARGS[@]}" \
+            --no-daemon \
+            --stacktrace
 
-    - name: Build with Gradle ($BUILD_MODE)
-      env:
-        OFFICIAL_SECRET_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.OFFICIAL_GOOGLE_SERVICES_JSON_BASE64 }}
-        OFFICIAL_SECRET_STORE_PASSWORD: ${{ secrets.OFFICIAL_STORE_PASSWORD }}
-        OFFICIAL_SECRET_KEY_ALIAS: ${{ secrets.OFFICIAL_KEY_ALIAS }}
-        OFFICIAL_SECRET_KEY_PASSWORD: ${{ secrets.OFFICIAL_KEY_PASSWORD }}
-        PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64 }}
-        PLAYSTORE_STORE_PASSWORD: ${{ secrets.PLAYSTORE_STORE_PASSWORD }}
-        PLAYSTORE_KEY_ALIAS: ${{ secrets.PLAYSTORE_KEY_ALIAS }}
-        PLAYSTORE_KEY_PASSWORD: ${{ secrets.PLAYSTORE_KEY_PASSWORD }}
-        INTERNAL_SECRET_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.INTERNAL_GOOGLE_SERVICES_JSON_BASE64 }}
-        INTERNAL_SECRET_STORE_PASSWORD: ${{ secrets.INTERNAL_STORE_PASSWORD }}
-        INTERNAL_SECRET_KEY_ALIAS: ${{ secrets.INTERNAL_KEY_ALIAS }}
-        INTERNAL_SECRET_KEY_PASSWORD: ${{ secrets.INTERNAL_KEY_PASSWORD }}
-      run: |
-        echo "Building Mode: $BUILD_MODE | Task: $BUILD_TASK"
-        
-        mkdir -p app/src/internal app/src/official
+      - name: Rename AAB output
+        id: rename_aab
+        run: |
+          set -euo pipefail
 
-        # 1. 签名与 Google Services 准备 (Flavor 目录动态注入)
-        if [ "$BUILD_MODE" == "official" ]; then
-            OFFICIAL_GOOGLE_SERVICES_CONTENT="${OFFICIAL_SECRET_GOOGLE_SERVICES_JSON_BASE64:-$PLAYSTORE_GOOGLE_SERVICES_JSON_BASE64}"
+          AAB_DIR="app/build/outputs/bundle/officialRelease"
+          TARGET_AAB="$AAB_DIR/${{ steps.version_info.outputs.aab_name }}"
+          SOURCE_AAB="$(find "$AAB_DIR" -maxdepth 1 -type f -name '*.aab' | head -n 1)"
 
-            if [ -n "$OFFICIAL_GOOGLE_SERVICES_CONTENT" ]; then
-              echo "$OFFICIAL_GOOGLE_SERVICES_CONTENT" | base64 -di > app/src/official/google-services.json
-            else
-              echo "Using existing app/src/official/google-services.json"
-            fi
-        else
-            INTERNAL_GOOGLE_SERVICES_CONTENT="${INTERNAL_SECRET_GOOGLE_SERVICES_JSON_BASE64:-}"
-            if [ -n "$INTERNAL_GOOGLE_SERVICES_CONTENT" ]; then
-              echo "$INTERNAL_GOOGLE_SERVICES_CONTENT" | base64 -di > app/src/internal/google-services.json
-            else
-              echo "Using existing app/src/internal/google-services.json"
-            fi
-        fi
+          if [ -z "$SOURCE_AAB" ]; then
+            echo "No AAB file found in $AAB_DIR" >&2
+            exit 1
+          fi
 
-        # 2. 生成 Flavor 对应签名配置文件 (sign.properties)
-        if [ "$BUILD_MODE" == "official" ]; then
-            OFFICIAL_STORE_PASS="${OFFICIAL_SECRET_STORE_PASSWORD:-${PLAYSTORE_STORE_PASSWORD:-$OFFICIAL_KEYSTORE_PASSWORD}}"
-            OFFICIAL_ALIAS="${OFFICIAL_SECRET_KEY_ALIAS:-${PLAYSTORE_KEY_ALIAS:-$OFFICIAL_KEYSTORE_ALIAS}}"
-            OFFICIAL_KEY_PASS="${OFFICIAL_SECRET_KEY_PASSWORD:-${PLAYSTORE_KEY_PASSWORD:-$OFFICIAL_KEY_PASSWORD}}"
+          if [ "$SOURCE_AAB" != "$TARGET_AAB" ]; then
+            rm -f "$TARGET_AAB"
+            mv "$SOURCE_AAB" "$TARGET_AAB"
+          fi
 
-            echo "keystore=release.jks" > app/src/official/sign.properties
-            echo "keystore.password=$OFFICIAL_STORE_PASS" >> app/src/official/sign.properties
-            echo "keyAlias=$OFFICIAL_ALIAS" >> app/src/official/sign.properties
-            echo "keyPassword=$OFFICIAL_KEY_PASS" >> app/src/official/sign.properties
-        else
-            INTERNAL_STORE_PASS="${INTERNAL_SECRET_STORE_PASSWORD:-$INTERNAL_KEYSTORE_PASSWORD}"
-            INTERNAL_ALIAS="${INTERNAL_SECRET_KEY_ALIAS:-$INTERNAL_KEYSTORE_ALIAS}"
-            INTERNAL_KEY_PASS="${INTERNAL_SECRET_KEY_PASSWORD:-$INTERNAL_KEY_PASSWORD}"
+          echo "target_aab=$TARGET_AAB" >> "$GITHUB_OUTPUT"
 
-            echo "keystore=pdfreader.jks" > app/src/internal/sign.properties
-            echo "keystore.password=$INTERNAL_STORE_PASS" >> app/src/internal/sign.properties
-            echo "keyAlias=$INTERNAL_ALIAS" >> app/src/internal/sign.properties
-            echo "keyPassword=$INTERNAL_KEY_PASS" >> app/src/internal/sign.properties
-        fi
-
-        # 3. 提取标签版本 (如果由标签触发)
-        if [[ $GITHUB_REF == refs/tags/* ]]; then
-            TAG_NAME=${GITHUB_REF#refs/tags/}
-            echo "Triggered by Tag: $TAG_NAME"
-            echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-            VERSION_PARAM="-PinternalVersionName=$TAG_NAME"
-            echo "VERSION_PARAM=$VERSION_PARAM" >> $GITHUB_ENV
-        fi
-
-        # 4. 执行构建任务 (Official 用 Official flavor, Internal 用 Internal flavor)
-        if [ "$BUILD_MODE" == "official" ]; then
-            if [ "$BUILD_TASK" == "release" ]; then
-              GRADLE_TASK="bundleOfficialRelease"
-            else
-              GRADLE_TASK="assembleOfficialDebug"
-            fi
-        else
-            if [ "$BUILD_TASK" == "release" ]; then
-              GRADLE_TASK="assembleInternalRelease"
-            else
-              GRADLE_TASK="assembleInternalDebug"
-            fi
-        fi
-
-        ./gradlew "$GRADLE_TASK" -x lint $VERSION_PARAM --stacktrace
-
-    - name: Generate Changelog for Internal Release
-      if: startsWith(github.ref, 'refs/tags/T')
-      run: |
-        echo "Generating Changelog..."
-        # Fetch tags to find previous one (already fetched depth 0)
-        git fetch --prune --tags
-        
-        CURRENT_TAG=${GITHUB_REF#refs/tags/}
-        # Find previous tag (sort by creator date desc, skip current, take first)
-        # 修复逻辑: 不再只 grep "T"，而是查找任何版本 Tag (T* 或 v*)。
-        # 这样如果上一个是 v1.0.1，也能正确计算增量
-        PREV_TAG=$(git tag --sort=-creatordate | grep -E "^(T|v)" | grep -v "^${CURRENT_TAG}$" | head -n 1)
-        
-        if [ -z "$PREV_TAG" ]; then
-           echo "No previous tag found. Using initial commit logic or empty."
-           # Fallback: just list commits from the beginning if needed, or specific base
-           # For now, let's just use HEAD~10 for safety if no tag, or handle error
-           PREV_TAG=$(git rev-list --max-parents=0 HEAD) 
-        fi
-        
-        echo "Diff: $PREV_TAG..$CURRENT_TAG"
-        
-        python3 ../common-tools/generate_changelog.py "$PREV_TAG" "$CURRENT_TAG"
-        
-        cat release_notes.txt
-
-
-    - name: Deploy Internal to Firebase
-      if: env.BUILD_MODE == 'internal' && github.event_name != 'pull_request'
-      env:
-        FIREBASE_APP_ID: ${{ secrets.INTERNAL_FIREBASE_APP_ID }}
-        CREDENTIAL_CONTENT: ${{ secrets.INTERNAL_FIREBASE_CREDENTIAL_FILE_CONTENT }}
-      run: |
-        echo "Checking Firebase Credentials..."
-        if [ -n "$CREDENTIAL_CONTENT" ]; then
-           echo "$CREDENTIAL_CONTENT" | base64 -di > scripts/google-services-json-key.json
-           echo "Deploying to Firebase App Distribution..."
-           # 使用持久化到 GITHUB_ENV 的 VERSION_PARAM (跨 step 传递)
-           ./gradlew appDistributionUploadInternalRelease ${{ env.VERSION_PARAM }}
-        else
-           echo "⚠️ Warning: FIREBASE_CREDENTIAL_FILE_CONTENT is missing. Skipping deployment."
-        fi
-
-    - name: Upload Artifact
-      if: success()
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-${{ env.BUILD_MODE }}${{ env.TAG_NAME && format('-{0}', env.TAG_NAME) || '' }}
-        path: |
-          main-repo/app/build/outputs/apk/**/*.apk
-          main-repo/app/build/outputs/bundle/**/*.aab
-          main-repo/release_notes.txt
-
-    # ========================================
-    # 构建通知 (飞书卡片消息 + 文件上传)
-    # ========================================
-    - name: Notify Lark (Build Result)
-      if: (success() || failure())
-      env:
-        LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
-        LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
-        LARK_CHAT_ID: ${{ secrets.LARK_CHAT_ID }}
-        LARK_FOLDER_TOKEN: ${{ secrets.LARK_FOLDER_TOKEN }}
-      run: |
-        if [ -z "$LARK_APP_ID" ] || [ -z "$LARK_APP_SECRET" ] || [ -z "$LARK_CHAT_ID" ]; then
-          echo "⚠️ Lark credentials not configured, skipping notification"
-          exit 0
-        fi
-        
-        # 确定版本显示逻辑 (优先使用 Tag 名)
-        if [ -n "${{ env.TAG_NAME }}" ]; then
-            VERSION="${{ env.TAG_NAME }}"
-        else
-            VERSION="${{ env.PROJECT_VERSION }}"
-        fi
-        
-        DURATION_SEC=$(( $(date +%s) - ${{ env.BUILD_START_TIME }} ))
-        DURATION="$((DURATION_SEC / 60))m $((DURATION_SEC % 60))s"
-        LOG_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        
-        # 仅在 Official(外网) 模式且构建成功时上传产物
-        if [ "$BUILD_MODE" == "official" ] && [ "${{ job.status }}" == "success" ]; then
-            FILE_PATH=$(find app/build/outputs/bundle -name "*.aab" 2>/dev/null | head -1)
-        else
-            FILE_PATH=""
-        fi
-        
-        if [ -n "$FILE_PATH" ]; then
-          python3 ../common-tools/lark_notifier.py \
-            --version "$VERSION" \
-            --status "${{ job.status }}" \
-            --duration "$DURATION" \
-            --file "$FILE_PATH" \
-            --project "${{ github.event.repository.name }}" \
-            --log-url "$LOG_URL" \
-            --commit "${{ github.sha }}"
-        else
-          python3 ../common-tools/lark_notifier.py \
-            --version "$VERSION" \
-            --status "${{ job.status }}" \
-            --duration "$DURATION" \
-            --project "${{ github.event.repository.name }}" \
-            --log-url "$LOG_URL" \
-            --commit "${{ github.sha }}"
-        fi
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.version_info.outputs.aab_name }}
+          path: ${{ steps.rename_aab.outputs.target_aab }}
+          if-no-files-found: error
+          retention-days: 30

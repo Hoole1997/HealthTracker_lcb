@@ -47,6 +47,8 @@ val analytics = configMap("analytics")
 val showLog = appConfig["show_log"] as? Boolean ?: false
 val selectedChannel = rootProject.extra["selectedChannel"]?.toString() ?: "internal"
 val semanticVersion = project.findProperty("internalVersionName")?.toString()?.takeIf { it.isNotBlank() }
+val resolvedVersionName = semanticVersion?.removePrefix("v") ?: "1.0.0"
+val officialReleaseAabName = "${rootProject.name}_official_release_${resolvedVersionName}.aab"
 
 println("📦 [Channel] Building '$selectedChannel' | Package: ${appConfig["applicationId"]}")
 
@@ -167,6 +169,24 @@ apply<Any> {
 tasks.withType<AbstractArchiveTask>().configureEach {
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
+}
+
+tasks.register("printOfficialReleaseVersionName") {
+    group = "help"
+    description = "Prints the versionName used for official release builds."
+    inputs.property("resolvedVersionName", resolvedVersionName)
+    doLast {
+        println(inputs.properties["resolvedVersionName"])
+    }
+}
+
+tasks.register("printOfficialReleaseAabName") {
+    group = "help"
+    description = "Prints the expected output file name for official release AAB builds."
+    inputs.property("officialReleaseAabName", officialReleaseAabName)
+    doLast {
+        println(inputs.properties["officialReleaseAabName"])
+    }
 }
 
 
