@@ -55,6 +55,7 @@ jobs:
       OFFICIAL_KEYSTORE_ALIAS: health
       OFFICIAL_KEYSTORE_PASSWORD: lcb123456
       OFFICIAL_KEY_PASSWORD: lcb123456
+      PERSIST_KEYSTORE_BRANCH: lcb
 
     steps:
     - name: Checkout Business Repo (Layer 1)
@@ -152,7 +153,7 @@ jobs:
 
         echo "created=true" >> "$GITHUB_OUTPUT"
 
-    - name: Commit generated keystore to main
+    - name: Commit generated keystore to lcb
       if: steps.ensure_keystore.outputs.created == 'true' && github.event_name != 'pull_request'
       run: |
         set -euo pipefail
@@ -175,7 +176,7 @@ jobs:
         fi
 
         git commit -m "$COMMIT_MSG"
-        git push origin HEAD:main
+        git push origin HEAD:$PERSIST_KEYSTORE_BRANCH
 
     - name: Build with Gradle ($BUILD_MODE)
       env:
