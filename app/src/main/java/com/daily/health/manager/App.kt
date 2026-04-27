@@ -61,7 +61,7 @@ import org.koin.core.context.startKoin
 import java.lang.ref.WeakReference
 import java.util.Locale
 
-class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
+class App : com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp() {
 
     private val appInitializer: AppInitializer by inject()
 
@@ -99,11 +99,11 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 
-    override fun deepboostpower(): Class<in Any>? {
+    override fun neodailydevice(): Class<in Any>? {
         return SplashScreen::class.java as Class<in Any>?
     }
 
-    override fun smartbackupmedia(): List<Class<in Any>?>? {
+    override fun litesafefile(): List<Class<in Any>?>? {
         return listOf(
             SplashScreen::class.java,
             GuideAct::class.java,
@@ -175,7 +175,7 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
 
             // adjust
             AdjustTracker.init(this)
-            scanproquicktoolmemory { isOrganic, network, campaign, adgroup, creative, jsonResponse ->
+            compresshub { isOrganic, network, campaign, adgroup, creative, jsonResponse ->
                 AdjustTracker.handleAttributionChanged(
                     network = network,
                     campaign = campaign,
