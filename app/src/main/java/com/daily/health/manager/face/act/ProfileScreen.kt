@@ -13,13 +13,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -215,99 +216,104 @@ private fun ProfileScreen(
     ) {
         ProfileTopBar(onBack = onBack)
 
-        Text(
-            text = stringResource(R.string.tr_choose_your_gender),
-            color = colorResource(R.color.t1),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 16.dp, top = 20.dp)
-        )
-
-        Text(
-            text = stringResource(R.string.tr_txt_profile_des),
-            color = colorResource(R.color.color_666),
-            fontSize = 16.sp,
-            modifier = Modifier.padding(start = 14.dp, end = 16.dp, top = 12.dp)
-        )
-
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
         ) {
-            GenderCard(
-                modifier = Modifier.weight(1f),
-                selected = gender == 0,
-                iconRes = R.mipmap.tr_ic_male,
-                labelRes = R.string.tr_male,
-                onClick = { onGenderChanged(0) }
+            Text(
+                text = stringResource(R.string.tr_choose_your_gender),
+                color = colorResource(R.color.t1),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 16.dp, top = 20.dp)
             )
-            GenderCard(
-                modifier = Modifier.weight(1f),
-                selected = gender == 1,
-                iconRes = R.mipmap.tr_ic_female,
-                labelRes = R.string.tr_female,
-                onClick = { onGenderChanged(1) }
+
+            Text(
+                text = stringResource(R.string.tr_txt_profile_des),
+                color = colorResource(R.color.color_666),
+                fontSize = 16.sp,
+                modifier = Modifier.padding(start = 14.dp, end = 16.dp, top = 12.dp)
             )
-        }
 
-        Text(
-            text = stringResource(R.string.tr_choose_your_age),
-            color = colorResource(R.color.t1),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 16.dp, top = 10.dp)
-        )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                GenderCard(
+                    modifier = Modifier.weight(1f),
+                    selected = gender == 0,
+                    iconRes = R.mipmap.tr_ic_male,
+                    labelRes = R.string.tr_male,
+                    onClick = { onGenderChanged(0) }
+                )
+                GenderCard(
+                    modifier = Modifier.weight(1f),
+                    selected = gender == 1,
+                    iconRes = R.mipmap.tr_ic_female,
+                    labelRes = R.string.tr_female,
+                    onClick = { onGenderChanged(1) }
+                )
+            }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 20.dp)
-        ) {
-            AndroidView(
-                modifier = Modifier.fillMaxWidth(),
-                factory = { ctx ->
-                    val root = LayoutInflater.from(ctx)
-                        .inflate(R.layout.tr_layout_profile_age_picker, null, false)
-                    val picker = root.findViewById<NumberPickerView>(R.id.numberPicker)
+            Text(
+                text = stringResource(R.string.tr_choose_your_age),
+                color = colorResource(R.color.t1),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 16.dp, top = 10.dp)
+            )
 
-                    picker.apply {
-                        val selectFont = getRobotoBold(ctx)
-                        val normalFont = getRobotoRegular(ctx)
-                        setContentSelectedTextTypeface(selectFont)
-                        setContentNormalTextTypeface(normalFont)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
+            ) {
+                AndroidView(
+                    modifier = Modifier.fillMaxWidth(),
+                    factory = { ctx ->
+                        val root = LayoutInflater.from(ctx)
+                            .inflate(R.layout.tr_layout_profile_age_picker, null, false)
+                        val picker = root.findViewById<NumberPickerView>(R.id.numberPicker)
 
+                        picker.apply {
+                            val selectFont = getRobotoBold(ctx)
+                            val normalFont = getRobotoRegular(ctx)
+                            setContentSelectedTextTypeface(selectFont)
+                            setContentNormalTextTypeface(normalFont)
+
+                            val ages = (1..110).map { it.toString() }.toTypedArray()
+                            displayedValues = ages
+                            minValue = 0
+                            maxValue = ages.lastIndex
+
+                            val normalizedAge = age.coerceIn(1, 110)
+                            val currentIndex = ages.indexOf(normalizedAge.toString()).takeIf { it >= 0 } ?: 0
+                            value = currentIndex
+
+                            setOnValueChangedListener { _, _, newVal ->
+                                val newAge = ages[newVal].toInt()
+                                onAgeChanged(newAge)
+                            }
+                        }
+
+                        root
+                    },
+                    update = { rootView: View ->
+                        val picker = rootView.findViewById<NumberPickerView>(R.id.numberPicker)
                         val ages = (1..110).map { it.toString() }.toTypedArray()
-                        displayedValues = ages
-                        minValue = 0
-                        maxValue = ages.lastIndex
-
                         val normalizedAge = age.coerceIn(1, 110)
-                        val currentIndex = ages.indexOf(normalizedAge.toString()).takeIf { it >= 0 } ?: 0
-                        value = currentIndex
-
-                        setOnValueChangedListener { _, _, newVal ->
-                            val newAge = ages[newVal].toInt()
-                            onAgeChanged(newAge)
+                        val targetIndex = ages.indexOf(normalizedAge.toString()).takeIf { it >= 0 } ?: 0
+                        if (picker.value != targetIndex) {
+                            picker.value = targetIndex
                         }
                     }
-
-                    root
-                },
-                update = { rootView: View ->
-                    val picker = rootView.findViewById<NumberPickerView>(R.id.numberPicker)
-                    val ages = (1..110).map { it.toString() }.toTypedArray()
-                    val normalizedAge = age.coerceIn(1, 110)
-                    val targetIndex = ages.indexOf(normalizedAge.toString()).takeIf { it >= 0 } ?: 0
-                    if (picker.value != targetIndex) {
-                        picker.value = targetIndex
-                    }
-                }
-            )
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.weight(1f))
 
         if (isGuideMode) {
             PrimaryActionButton(

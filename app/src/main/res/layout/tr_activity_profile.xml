@@ -16,11 +16,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <FrameLayout
+    <com.daily.health.manager.face.weight.MaxHeightFrameLayout
         android:id="@+id/ad_Container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:maxHeight="350dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
