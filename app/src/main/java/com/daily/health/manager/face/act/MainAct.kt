@@ -676,7 +676,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         ExitDialog.show(supportFragmentManager) {
             finish()
             // 回到launcher桌面
-            com.blood.sugar.health.diabetes.tool.ndi57h2.pcx.mjj(this)
+            com.rocket.candy.line.bdavu3y.autosecurecorepower.smartsyncnet(this)
         }
         return true
     }
