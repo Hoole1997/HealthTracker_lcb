@@ -48,11 +48,18 @@ if (remoteOverride) {
 // 提取 ext 变量以供后续引用
 val admob = extensions.extraProperties["admob"] as Map<*, *>
 val admobUnit = admob["adUnitIds"] as Map<*, *>
+val gam = extensions.extraProperties["gam"] as Map<*, *>
+val gamUnit = gam["adUnitIds"] as Map<*, *>
+val pangle = extensions.extraProperties["pangle"] as Map<*, *>
+val pangleUnit = pangle["adUnitIds"] as Map<*, *>
+val topon = extensions.extraProperties["topon"] as Map<*, *>
+val toponUnit = topon["adUnitIds"] as Map<*, *>
 val appConfig = extensions.extraProperties["app"] as Map<*, *>
 val urls = extensions.extraProperties["url"] as Map<*, *>
 val analytics = extensions.extraProperties["analytics"] as Map<*, *>
 
 val showLog = appConfig["show_log"] as Boolean
+val defaultUserChannel = analytics["defaultUserChannel"] ?: "default"
 val shifterMode = appConfig["shifter_mode"] ?: "internal"
 val buildTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
 println("📦 [Shifter] Build Mode: $shifterMode | Package: ${appConfig["applicationId"]}")
@@ -82,8 +89,35 @@ android {
         buildConfigField("String", "FCM_URL", "\"${urls["fcmUrl"]}\"")
         buildConfigField("String", "FCM_PKG", "\"${urls["fcmPkg"]}\"")
         buildConfigField("String", "FEEDBACK_EMAIL", "\"${urls["email"]}\"")
+        buildConfigField("String", "DEFAULT_USER_CHANNEL", "\"$defaultUserChannel\"")
         buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${admob["applicationId"]}\"")
         buildConfigField("String", "ADMOB_SPLASH_ID", "\"${admobUnit["splash"]}\"")
+        buildConfigField("String", "ADMOB_BANNER_ID", "\"${admobUnit["banner"]}\"")
+        buildConfigField("String", "ADMOB_INTERSTITIAL_ID", "\"${admobUnit["interstitial"]}\"")
+        buildConfigField("String", "ADMOB_NATIVE_ID", "\"${admobUnit["native"]}\"")
+        buildConfigField("String", "ADMOB_FULL_NATIVE_ID", "\"${admobUnit["full_native"]}\"")
+        buildConfigField("String", "ADMOB_REWARDED_ID", "\"${admobUnit["rewarded"]}\"")
+        buildConfigField("String", "GAM_SPLASH_ID", "\"${gamUnit["splash"]}\"")
+        buildConfigField("String", "GAM_BANNER_ID", "\"${gamUnit["banner"]}\"")
+        buildConfigField("String", "GAM_INTERSTITIAL_ID", "\"${gamUnit["interstitial"]}\"")
+        buildConfigField("String", "GAM_NATIVE_ID", "\"${gamUnit["native"]}\"")
+        buildConfigField("String", "GAM_FULL_NATIVE_ID", "\"${gamUnit["full_native"]}\"")
+        buildConfigField("String", "GAM_REWARDED_ID", "\"${gamUnit["rewarded"]}\"")
+        buildConfigField("String", "PANGLE_APPLICATION_ID", "\"${pangle["applicationId"]}\"")
+        buildConfigField("String", "PANGLE_SPLASH_ID", "\"${pangleUnit["splash"]}\"")
+        buildConfigField("String", "PANGLE_BANNER_ID", "\"${pangleUnit["banner"]}\"")
+        buildConfigField("String", "PANGLE_INTERSTITIAL_ID", "\"${pangleUnit["interstitial"]}\"")
+        buildConfigField("String", "PANGLE_NATIVE_ID", "\"${pangleUnit["native"]}\"")
+        buildConfigField("String", "PANGLE_FULL_NATIVE_ID", "\"${pangleUnit["full_native"]}\"")
+        buildConfigField("String", "PANGLE_REWARDED_ID", "\"${pangleUnit["rewarded"]}\"")
+        buildConfigField("String", "TOPON_APPLICATION_ID", "\"${topon["applicationId"]}\"")
+        buildConfigField("String", "TOPON_APP_KEY", "\"${topon["appKey"]}\"")
+        buildConfigField("String", "TOPON_SPLASH_ID", "\"${toponUnit["splash"]}\"")
+        buildConfigField("String", "TOPON_BANNER_ID", "\"${toponUnit["banner"]}\"")
+        buildConfigField("String", "TOPON_INTERSTITIAL_ID", "\"${toponUnit["interstitial"]}\"")
+        buildConfigField("String", "TOPON_NATIVE_ID", "\"${toponUnit["native"]}\"")
+        buildConfigField("String", "TOPON_FULL_NATIVE_ID", "\"${toponUnit["full_native"]}\"")
+        buildConfigField("String", "TOPON_REWARDED_ID", "\"${toponUnit["rewarded"]}\"")
         
         // 动态设置版本名后缀 (仅内网模式且没有注入 semanticVersion 时)
         if (shifterMode == "internal" && semanticVersion == null) {
@@ -168,8 +202,6 @@ android {
     }
 }
 
-
-
 // 调用统一签名配置脚本设置签名
 apply<Any> {
     extensions.extraProperties["setupSigningConfigs"]?.let { setupFn ->
@@ -188,8 +220,11 @@ tasks.withType<AbstractArchiveTask>().configureEach {
 dependencies {
     implementation(fileTree(mapOf("include" to listOf("*.jar", "*.aar"), "dir" to "libs")))
     api(project(":framework"))
-    api(project(":monetize"))
-    api(project(":core"))
+    implementation(libs.remax.core)
+    implementation(libs.remax.bill)
+    implementation("com.launcher.unity:com.rocket.candy.line-BloodSugar:1.0.6") {
+        exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
+    }
     api(project(":metrics"))
     api(project(":earthquake"))
     api(project(":weather"))

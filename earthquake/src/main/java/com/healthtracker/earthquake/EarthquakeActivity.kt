@@ -14,9 +14,6 @@ import com.healthtracker.framework.ext.visible
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import net.corekit.monetize.ads.NativeAds
-import net.corekit.monetize.ads.AdPosition
-import net.corekit.monetize.ui.NativeAdStyle
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -54,12 +51,7 @@ class EarthquakeActivity : BaseMVVMActivity<BaseViewModel, ActivityEarthquakeBin
                 tvOriginTime.text = sdf.format(Date(time))
             }
             lifecycleScope.launch {
-                val success = NativeAds.getInstance().displayAdInView(
-                    context = this@EarthquakeActivity,
-                    container = adContainer,
-                    position = AdPosition.NA_EARTHQUAKE_BOTTOM,
-                    style = NativeAdStyle.CARD_3
-                )
+                val success = EarthquakeAdBridge.showNativeAd(this@EarthquakeActivity, adContainer)
                 if(success){
                     adContainer.visible()
                 }else{

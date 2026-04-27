@@ -21,10 +21,10 @@ android {
 
 dependencies {
     // 基础依赖，保持模块独立且可编译
+    api(project(":framework"))
     implementation(libs.androidx.core.ktx)
     // WorkManager 用于在广播触发时执行后台任务
     implementation(libs.work.runtime)
     // 协程支持（CoroutineWorker 以及 IO 切换）
     implementation(libs.kotlinx.coroutines.android)
-    api(project(":monetize"))
 }

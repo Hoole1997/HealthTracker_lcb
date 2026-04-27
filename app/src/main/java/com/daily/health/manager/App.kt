@@ -4,8 +4,12 @@ import android.content.Context
 import android.content.res.Configuration
 import android.text.TextUtils
 import androidx.multidex.MultiDex
+import com.android.common.bill.ads.log.AdLogger
+import com.android.common.bill.ui.admob.AdmobFullScreenNativeAdActivity
+import com.android.common.bill.ui.gam.GamFullScreenNativeAdActivity
+import com.android.common.bill.ui.pangle.PangleFullScreenNativeAdActivity
+import com.android.common.bill.ui.topon.ToponFullScreenNativeAdActivity
 import com.android.common.weather.WeatherActivity
-import com.daily.health.manager.ad.FullScreenNativeAdActivity
 import com.daily.health.manager.di.appConfigModule
 import com.daily.health.manager.di.appModule
 import com.daily.health.manager.di.databaseModule
@@ -37,8 +41,8 @@ import com.daily.health.manager.face.act.UninstallResenActivity
 import com.daily.health.manager.observer.AppForegroundObserver
 import com.daily.health.manager.utils.WebViewZygote
 import com.daily.health.manager.utils.getCurProcessName
-import com.healthtracker.framework.BuildState
 import com.healthtracker.earthquake.EarthquakeActivity
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
@@ -46,11 +50,11 @@ import com.healthtracker.framework.util.isLeast8
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import net.corekit.core.controller.ChannelUserController
+import net.corekit.core.log.CoreLogger
 import net.corekit.metrics.adjust.AdjustTracker
+import net.corekit.metrics.log.MetricsLogger
 import net.corekit.monetize.ads.config.AdConfigManager
-import net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdActivity
-import net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdActivity
-import net.corekit.monetize.ui.AdmobFullScreenNativeAdActivity
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -124,13 +128,13 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
             HeartRateMeasureScreen::class.java,
             UninstallResenActivity::class.java,
             UninstallConfirmActivity::class.java,
-            FullScreenNativeAdActivity::class.java,
             AiAssistantActivity::class.java,
             EarthquakeActivity::class.java,
             WeatherActivity::class.java,
             AdmobFullScreenNativeAdActivity::class.java,
+            GamFullScreenNativeAdActivity::class.java,
             PangleFullScreenNativeAdActivity::class.java,
-            TopOnFullScreenNativeAdActivity::class.java,
+            ToponFullScreenNativeAdActivity::class.java,
         ) as List<Class<in Any>?>?
     }
 
@@ -146,11 +150,21 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
             } ?: kotlin.run {
                 super.attachBaseContext(null)
             }
+            initializeAttachBaseContextConfig()
             // 3. WebView兼容性处理
             WebViewZygote.webViewCompact(this,applicationScope )
         } catch (_: Throwable) {
 
         }
+    }
+
+    private fun initializeAttachBaseContextConfig() {
+        val appLogEnable = BuildConfig.showLog
+        BuildState.debug = appLogEnable
+        AdLogger.setLogEnabled(appLogEnable)
+        MetricsLogger.enableLog(appLogEnable)
+        CoreLogger.setLogEnabled(appLogEnable)
+        ChannelUserController.setDefaultChannel(BuildConfig.DEFAULT_USER_CHANNEL)
     }
 
     override fun onCreate() {
@@ -162,7 +176,6 @@ class App : com.rocket.candy.line.Hdm6xfn0f7mv6dem7e() {
             // adjust
             AdjustTracker.init(this)
             scanproquicktoolmemory { isOrganic, network, campaign, adgroup, creative, jsonResponse ->
-
                 AdjustTracker.handleAttributionChanged(
                     network = network,
                     campaign = campaign,

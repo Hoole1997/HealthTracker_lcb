@@ -122,7 +122,7 @@ class MedsReminderAdapter(
                     .shimmer(true)
                     .angle(30)
                     .duration(1200)
-                    .color(net.corekit.monetize.R.color.white)
+                    .color(android.R.color.white)
                     .show()
                 binding.adContainer.removeAllViews()
                 activity.loadNative(binding.adContainer, AdPosition.NA_MEDS_REMINDER_LIST, style = NativeAdStyle.CARD_8){

@@ -11,6 +11,15 @@ ext {
              ]
     ]
 
+    // Google Ad Manager 配置 (官方测试 ID)
+    gam = [adUnitIds: [banner      : "/21775744923/example/adaptive-banner",
+                       interstitial: "/21775744923/example/interstitial",
+                       splash      : "/21775744923/example/app-open",
+                       native      : "/21775744923/example/native",
+                       full_native : "/21775744923/example/native",
+                       rewarded    : "/21775744923/example/rewarded"
+    ]]
+
     // Pangle配置 (测试 ID)
     pangle = [applicationId: "8025677",
               adUnitIds    : [splash      : "890000078",

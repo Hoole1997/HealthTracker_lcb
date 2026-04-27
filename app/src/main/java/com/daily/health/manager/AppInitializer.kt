@@ -4,10 +4,40 @@ import android.app.Application
 import android.content.Intent
 import android.os.Looper
 import android.view.Gravity
+import com.android.common.bill.BillConfig
+import com.android.common.bill.BillConfig.admob
+import com.android.common.bill.BillConfig.admobFullScreenNativeRenderer
+import com.android.common.bill.BillConfig.adLoadingDialogRenderer
+import com.android.common.bill.BillConfig.admobNativeRenderer
+import com.android.common.bill.BillConfig.gam
+import com.android.common.bill.BillConfig.gamFullScreenNativeRenderer
+import com.android.common.bill.BillConfig.gamNativeRenderer
+import com.android.common.bill.BillConfig.pangle
+import com.android.common.bill.BillConfig.pangleFullScreenNativeRenderer
+import com.android.common.bill.BillConfig.pangleNativeRenderer
+import com.android.common.bill.BillConfig.topon
+import com.android.common.bill.BillConfig.toponFullScreenNativeRenderer
+import com.android.common.bill.BillConfig.toponNativeRenderer
+import com.android.common.bill.ads.PreloadController
+import com.android.common.bill.ads.bidding.AppOpenBiddingInitializer
+import com.android.common.bill.ads.ext.AdShowExt
+import com.android.common.bill.ui.NativeAdStyle
+import com.android.common.bill.ui.NativeAdStyleType
+import com.android.common.bill.ui.pangle.PangleNativeAdStyle
+import com.android.common.bill.ui.topon.ToponNativeAdStyle
 import com.blankj.utilcode.util.ActivityUtils
 import com.daily.health.manager.config.registry.AppConfigRegistry
 import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
 import com.daily.health.manager.feature.NotificationFeatureSwitch
+import com.daily.health.manager.ad.renderer.DefaultAdmobFullScreenNativeAdRenderer
+import com.daily.health.manager.ad.renderer.DefaultAdLoadingDialogRenderer
+import com.daily.health.manager.ad.renderer.DefaultAdmobNativeAdRenderer
+import com.daily.health.manager.ad.renderer.DefaultGamFullScreenNativeAdRenderer
+import com.daily.health.manager.ad.renderer.DefaultGamNativeAdRenderer
+import com.daily.health.manager.ad.renderer.DefaultPangleFullScreenNativeAdRenderer
+import com.daily.health.manager.ad.renderer.DefaultPangleNativeAdRenderer
+import com.daily.health.manager.ad.renderer.DefaultToponFullScreenNativeAdRenderer
+import com.daily.health.manager.ad.renderer.DefaultToponNativeAdRenderer
 import com.daily.health.manager.helper.NotificationHelper
 import com.daily.health.manager.strategy.PushScenario
 import com.daily.health.manager.toast.CustomToastStyle
@@ -15,6 +45,7 @@ import com.daily.health.manager.face.act.SplashScreen
 import com.daily.health.manager.utils.InsightAssetPreparer
 import com.daily.health.manager.utils.isAdPage
 import com.daily.health.manager.work.HealthWorkTask
+import com.healthtracker.earthquake.EarthquakeAdBridge
 import com.healthtracker.earthquake.push.EarthquakePushInitializer
 import com.android.common.weather.WeatherInitializer
 import com.healthtracker.framework.BuildState
@@ -34,11 +65,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.corekit.monetize.ads.AdResult
-import net.corekit.monetize.ads.AdsManager
-import net.corekit.monetize.ads.LaunchAds
-import net.corekit.monetize.ads.bidding.BiddingInitializer
-import net.corekit.monetize.ads.lifecycle.AdCacheForegroundObserver
+import net.corekit.monetize.ads.AdPosition
 
 /**
  * 应用初始化器
@@ -54,6 +81,7 @@ class AppInitializer(
 ) {
     
     private val initScope = CoroutineScope(SupervisorJob() + ioDispatcher)
+    private val adInitScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var isFirstLaunch = true
     companion object{
         private const val TAG = "App"
@@ -108,12 +136,7 @@ class AppInitializer(
                     "回到前台,尝试重走启动页 topActivity:${topActivity::class.java.simpleName}".logd(TAG)
                     if (!ActivityUtils.isActivityExistsInStack(SplashScreen::class.java) && !isAdPage(topActivity
                         )) {
-                        val result = LaunchAds.getInstance().checkInterceptor(application)
-                        if(result is AdResult.Success){
-                            startSplashActivity()
-                        }else{
-                            "当前不满足启动页开屏广告条件，不走启动页".logd(TAG)
-                        }
+                        startSplashActivity()
 
                     }else{
                         "当前前台页面是启动页或广告页面，或引导页面，不重新走启动页面".logd(TAG)
@@ -191,6 +214,14 @@ class AppInitializer(
     }
 
     private fun initEarthquakeModule() {
+        EarthquakeAdBridge.nativeAdLoader = { context, container ->
+            AdShowExt.showNativeAdInContainer(
+                context = context,
+                container = container,
+                styleType = NativeAdStyleType.LARGE,
+                position = AdPosition.NA_EARTHQUAKE_BOTTOM
+            )
+        }
         // 第二个参数可以传入RemoteConfig获取的intervalHours,不传默认32H
         EarthquakePushInitializer.init(application)
     }
@@ -206,10 +237,8 @@ class AppInitializer(
                 setBackgroundExceptionHandler()
             }
 
-            initScope.launch {
-                AdsManager.init(application)
-                // 启动广告预加载（包含多平台初始化）
-                AdsManager.startAdPreloading(application)
+            adInitScope.launch {
+                initializeRemaxAds()
             }
 
             initScope.launch {
@@ -231,6 +260,65 @@ class AppInitializer(
             e.printStackTrace()
             // 即使某个服务初始化失败，也要继续其他服务的初始化
         }
+    }
+
+    private suspend fun initializeRemaxAds() {
+        AppOpenBiddingInitializer.initialize(application, R.mipmap.ic_launcher) {
+            googleMobileAds = BillConfig.GoogleMobileAdsConfig(BuildConfig.ADMOB_APPLICATION_ID)
+            admob = BillConfig.AdmobConfig(
+                splashId = BuildConfig.ADMOB_SPLASH_ID,
+                bannerId = BuildConfig.ADMOB_BANNER_ID,
+                interstitialId = BuildConfig.ADMOB_INTERSTITIAL_ID,
+                nativeId = BuildConfig.ADMOB_NATIVE_ID,
+                fullNativeId = BuildConfig.ADMOB_FULL_NATIVE_ID,
+                rewardedId = BuildConfig.ADMOB_REWARDED_ID,
+                nativeStyleStandard = NativeAdStyle(R.layout.layout_native_ads, "normal"),
+                nativeStyleLarge = NativeAdStyle(R.layout.layout_native_ad_card, "card")
+            )
+            gam = BillConfig.GamConfig(
+                splashId = BuildConfig.GAM_SPLASH_ID,
+                bannerId = BuildConfig.GAM_BANNER_ID,
+                interstitialId = BuildConfig.GAM_INTERSTITIAL_ID,
+                nativeId = BuildConfig.GAM_NATIVE_ID,
+                fullNativeId = BuildConfig.GAM_FULL_NATIVE_ID,
+                rewardedId = BuildConfig.GAM_REWARDED_ID,
+                nativeStyleStandard = NativeAdStyle(R.layout.layout_native_ads, "normal"),
+                nativeStyleLarge = NativeAdStyle(R.layout.layout_native_ad_card, "card")
+            )
+            pangle = BillConfig.PangleConfig(
+                applicationId = BuildConfig.PANGLE_APPLICATION_ID,
+                splashId = BuildConfig.PANGLE_SPLASH_ID,
+                bannerId = BuildConfig.PANGLE_BANNER_ID,
+                interstitialId = BuildConfig.PANGLE_INTERSTITIAL_ID,
+                nativeId = BuildConfig.PANGLE_NATIVE_ID,
+                fullNativeId = BuildConfig.PANGLE_FULL_NATIVE_ID,
+                rewardedId = BuildConfig.PANGLE_REWARDED_ID,
+                nativeStyleStandard = PangleNativeAdStyle(R.layout.layout_pangle_native_ads),
+                nativeStyleLarge = PangleNativeAdStyle(R.layout.layout_pangle_native_ads_large)
+            )
+            topon = BillConfig.ToponConfig(
+                applicationId = BuildConfig.TOPON_APPLICATION_ID,
+                appKey = BuildConfig.TOPON_APP_KEY,
+                splashId = BuildConfig.TOPON_SPLASH_ID,
+                bannerId = BuildConfig.TOPON_BANNER_ID,
+                interstitialId = BuildConfig.TOPON_INTERSTITIAL_ID,
+                nativeId = BuildConfig.TOPON_NATIVE_ID,
+                fullNativeId = BuildConfig.TOPON_FULL_NATIVE_ID,
+                rewardedId = BuildConfig.TOPON_REWARDED_ID,
+                nativeStyleStandard = ToponNativeAdStyle(R.layout.layout_topon_native_ads, "normal", 72),
+                nativeStyleLarge = ToponNativeAdStyle(R.layout.layout_topon_native_ads_large, "large", 146)
+            )
+            admobNativeRenderer = DefaultAdmobNativeAdRenderer()
+            admobFullScreenNativeRenderer = DefaultAdmobFullScreenNativeAdRenderer()
+            gamNativeRenderer = DefaultGamNativeAdRenderer()
+            gamFullScreenNativeRenderer = DefaultGamFullScreenNativeAdRenderer()
+            pangleNativeRenderer = DefaultPangleNativeAdRenderer()
+            pangleFullScreenNativeRenderer = DefaultPangleFullScreenNativeAdRenderer()
+            toponNativeRenderer = DefaultToponNativeAdRenderer()
+            toponFullScreenNativeRenderer = DefaultToponFullScreenNativeAdRenderer()
+            adLoadingDialogRenderer = DefaultAdLoadingDialogRenderer()
+        }
+        PreloadController.preloadAll(application)
     }
     
     /**
@@ -375,11 +463,6 @@ class AppInitializer(
             } else if (BuildState.debug) {
                 "HealthServiceForegroundObserver registration skipped".logd(TAG)
             }
-
-            // ✅ 注册广告缓存前台观察器（方案2）
-            // 监听应用前后台切换，前台返回时自动补充激励广告缓存
-            AppLifecycleManager.addObserver(AdCacheForegroundObserver(application))
-            if(BuildState.debug) "AdCacheForegroundObserver registered".logd(TAG)
 
         } catch (e: Exception) {
             if(BuildState.debug) "Failed to register lifecycle observers: ${e.message}".loge(TAG)

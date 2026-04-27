@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    compileOnly(project(":core"))
+    compileOnly(libs.remax.core)
     api(project(":framework"))
     // Adjust SDK
     api("com.adjust.sdk:adjust-android:5.4.3")

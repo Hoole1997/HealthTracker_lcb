@@ -43,6 +43,7 @@
     <string name="tr_mmol_l" translatable="false">mmol/L</string>
     <string name="tr_mmHg" translatable="false">mmHg</string>
     <string name="tr_loading_pure">Loading</string>
+    <string name="tr_bill_ad_loading">AD loading…</string>
     <string name="tr_history">History</string>
     <string name="tr_click_to_record">Click to record</string>
     <string name="tr_new_record">New Record</string>

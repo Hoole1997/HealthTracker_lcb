@@ -11,6 +11,15 @@ ext {
              ]
     ]
 
+    // Google Ad Manager 配置 (正式环境暂未配置，保持为空)
+    gam = [adUnitIds: [banner      : "",
+                       interstitial: "",
+                       splash      : "",
+                       native      : "",
+                       full_native : "",
+                       rewarded    : ""
+    ]]
+
     // Pangle配置（穿山甲）- 来自原 playstore 变体配置
     pangle = [applicationId: "8799655",
               adUnitIds    : [banner      : "982926151",

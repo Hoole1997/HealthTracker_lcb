@@ -7,7 +7,7 @@ flexbox = "3.0.0"
 highlightpro = "1.4.0"
 imagepicker = "2.1"
 magicindicator = "1.7.0"
-minSdk = "24"
+minSdk = "26"
 # @keep
 
 okhttp = "4.12.0"
@@ -176,6 +176,8 @@ ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devto
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room_version" }
 blur-veiw = { module = "com.github.Dimezis:BlurView", version.ref = "blur_view_version" }
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
+remax-core = { group = "com.github.toukaremax", name = "core", version = "1.0.11" }
+remax-bill = { group = "com.github.toukaremax", name = "bill", version = "1.0.27" }
 
 # CameraX
 camerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
