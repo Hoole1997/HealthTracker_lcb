@@ -32,13 +32,13 @@ ext {
     ]
 
     // TopOn配置 (测试 ID)
-    topon = [applicationId: "a5aa1f9deda26d",
-             appKey       : "4f7b9ac17decb9babec83aac078742c7",
-             adUnitIds    : [interstitial: "b5baca53984692",
-                             rewarded    : "b5b449fb3d89d7",
-                             native      : "b5aa1fa2cae775",
+    topon = [applicationId: "h1h1s09649svsj",
+             appKey       : "7d3af77b0803cbc641888cb393e8652e",
+             adUnitIds    : [interstitial: "n1h1s096bhhgbu",
+                             rewarded    : "n1h1s096ckp1sq",
+                             native      : "n69ca553c32abb",
                              splash      : "b5f73fe0c5db29",
-                             full_native : "b5aa1fa501d9f6",
+                             full_native : "n69ca553c32abb",
                              banner      : "b5baca4f74c3d8"
              ]
     ]
