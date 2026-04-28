@@ -264,6 +264,7 @@ class AppInitializer(
 
     private suspend fun initializeRemaxAds() {
         AppOpenBiddingInitializer.initialize(application, R.mipmap.ic_launcher) {
+            externallyInitialized = true
             googleMobileAds = BillConfig.GoogleMobileAdsConfig(BuildConfig.ADMOB_APPLICATION_ID)
             admob = BillConfig.AdmobConfig(
                 splashId = BuildConfig.ADMOB_SPLASH_ID,
