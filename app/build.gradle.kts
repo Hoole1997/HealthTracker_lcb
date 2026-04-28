@@ -69,7 +69,7 @@ android {
 
     defaultConfig {
         applicationId = appConfig["applicationId"] as String
-        versionCode = 10
+        versionCode = 11
         versionName = "1.0.10"
         
         // 🚀 动态支持从属性注入 versionName (用于 CI Tag 构建)
