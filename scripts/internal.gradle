@@ -46,7 +46,7 @@ ext {
     // 应用基础配置 (本地/内网默认)
     app = [applicationId: "com.rocket.candy.line",
            show_log     : true,
-           string_fog   : true,
+           string_fog   : false,
            shifter_mode : "internal" // 标识当前为本地模式
     ]
 

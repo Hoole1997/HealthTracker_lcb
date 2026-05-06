@@ -46,7 +46,7 @@ ext {
     // 应用参数覆盖 (正式版关闭 Log)
     app = [applicationId: "com.blood.sugar.health.diabetes.tool",
            show_log     : false,
-           string_fog   : true,
+           string_fog   : false,
            shifter_mode : "official"
     ]
 
