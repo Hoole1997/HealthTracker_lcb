@@ -64,6 +64,6 @@ ext {
     analytics = [adjustAppToken        : "",
                  thinkingDataAppId     : "7ae758c02c0b4fc2bcd5cda2d4c79607",
                  thinkingDataServerUrl : "https://data.daisytalestudios.com",
-                 defaultUserChannel    : "paid"
+                 defaultUserChannel    : "natural"
     ]
 }
