@@ -13,11 +13,11 @@ ext {
 
     // Google Ad Manager 配置 (正式环境暂未配置，保持为空)
     gam = [adUnitIds: [banner      : "",
-                       interstitial: "/23312177113/Diabetes_IV",
-                       splash      : "/23312177113/Diabetes_SP",
+                       interstitial: "/23312177113/Diabetes_IVTEST",
+                       splash      : "/23312177113/Diabetes_SPTEST",
                        native      : "",
                        full_native : "",
-                       rewarded    : "/23312177113/Diabetes_RV"
+                       rewarded    : "/23312177113/Diabetes_RVTEST"
     ]]
 
     // Pangle配置（穿山甲）- 来自原 playstore 变体配置
