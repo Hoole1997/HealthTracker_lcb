@@ -20,7 +20,7 @@ object HealthWorkTask {
             cancelAllWorkByTag(tag)
             enqueue(PeriodicWorkRequest.Builder(HealthWorker::class.java, repeatInterval, repeatIntervalTimeUnit).addTag(tag).build())
         }
-        initUser()
+//        initUser()
     }
 
     private fun initUser() {
