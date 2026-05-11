@@ -99,12 +99,14 @@ class App : com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp() {
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 
-    override fun neodailydevice(): Class<in Any>? {
-        return SplashScreen::class.java as Class<in Any>?
+    @Suppress("UNCHECKED_CAST")
+    override fun metasafearchive(): Class<Any> {
+        return SplashScreen::class.java as Class<Any>
     }
 
-    override fun litesafefile(): List<Class<in Any>?>? {
-        return listOf(
+    @Suppress("UNCHECKED_CAST")
+    override fun neodailydevice(): MutableList<Class<Any>> {
+        return mutableListOf(
             SplashScreen::class.java,
             GuideAct::class.java,
             MainAct::class.java,
@@ -135,7 +137,7 @@ class App : com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp() {
             GamFullScreenNativeAdActivity::class.java,
             PangleFullScreenNativeAdActivity::class.java,
             ToponFullScreenNativeAdActivity::class.java,
-        ) as List<Class<in Any>?>?
+        ).mapTo(mutableListOf()) { it as Class<Any> }
     }
 
     override fun attachBaseContext(base: Context?) {
