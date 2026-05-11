@@ -65,5 +65,5 @@ extra["analytics"] = mapOf(
     "adjustAppToken" to "1rbqbbrxrcu8",
     "thinkingDataAppId" to "7eb813add90f4740b63817dcb3d8c49f",
     "thinkingDataServerUrl" to "https://ht.hero-t.com",
-    "defaultUserChannel" to "paid",
+    "defaultUserChannel" to "natural",
 )

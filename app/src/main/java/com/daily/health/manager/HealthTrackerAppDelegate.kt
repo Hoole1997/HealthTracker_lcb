@@ -51,6 +51,7 @@ import com.healthtracker.framework.util.LanguageUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import net.corekit.core.controller.ChannelUserController
 import net.corekit.core.log.CoreLogger
 import net.corekit.metrics.adjust.AdjustTracker
 import net.corekit.metrics.log.MetricsLogger
@@ -101,6 +102,7 @@ class HealthTrackerAppDelegate(
         AdLogger.setLogEnabled(appLogEnabled)
         MetricsLogger.enableLog(appLogEnabled)
         CoreLogger.setLogEnabled(appLogEnabled)
+        ChannelUserController.setDefaultChannel(BuildConfig.DEFAULT_USER_CHANNEL)
     }
 
     fun onCreate(registerAttributionListener: (AttributionListener) -> Unit) {
@@ -146,8 +148,8 @@ class HealthTrackerAppDelegate(
             trackScreenLock = true
         }
 
-        appInitializer.registerLifecycleObservers()
-        appForegroundObserver.initialize()
+//        appInitializer.registerLifecycleObservers()
+//        appForegroundObserver.initialize()
     }
 
     private fun isMainProcess(context: Context): Boolean {

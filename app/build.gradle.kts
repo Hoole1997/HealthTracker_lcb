@@ -51,6 +51,7 @@ val urls = configMap("url")
 val analytics = configMap("analytics")
 
 val showLog = appConfig["show_log"] as? Boolean ?: false
+val defaultUserChannel = analytics["defaultUserChannel"] ?: "default"
 val selectedChannel = rootProject.extra["selectedChannel"]?.toString() ?: "internal"
 val semanticVersion = project.findProperty("internalVersionName")?.toString()?.takeIf { it.isNotBlank() }
 val resolvedVersionName = semanticVersion?.removePrefix("v") ?: "1.0.0"
@@ -79,6 +80,7 @@ android {
         buildConfigField("String", "FCM_URL", "\"${urls["fcmUrl"]}\"")
         buildConfigField("String", "FCM_PKG", "\"${urls["fcmPkg"]}\"")
         buildConfigField("String", "FEEDBACK_EMAIL", "\"${urls["email"]}\"")
+        buildConfigField("String", "DEFAULT_USER_CHANNEL", "\"$defaultUserChannel\"")
         buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${admob["applicationId"]}\"")
         buildConfigField("String", "ADMOB_SPLASH_ID", "\"${admobUnit["splash"]}\"")
         buildConfigField("String", "ADMOB_BANNER_ID", "\"${admobUnit["banner"]}\"")
