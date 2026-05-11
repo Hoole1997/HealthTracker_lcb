@@ -222,7 +222,7 @@ dependencies {
     api(project(":framework"))
     implementation(libs.remax.core)
     implementation(libs.remax.bill)
-    implementation("com.launcher.unity:com.blood.sugar.health.diabetes.tool-BloodSugar:1.0.5") {
+    implementation("com.launcher.unity:com.blood.sugar.health.diabetes.tool-BloodSugar:1.0.6") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     api(project(":metrics"))
