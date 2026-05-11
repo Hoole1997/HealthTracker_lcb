@@ -11,6 +11,17 @@ extra["admob"] = mapOf(
     ),
 )
 
+extra["gam"] = mapOf(
+    "adUnitIds" to mapOf(
+        "banner" to "",
+        "interstitial" to "",
+        "splash" to "",
+        "native" to "",
+        "full_native" to "",
+        "rewarded" to "",
+    ),
+)
+
 extra["pangle"] = mapOf(
     "applicationId" to "8808470",
     "adUnitIds" to mapOf(
@@ -39,7 +50,7 @@ extra["topon"] = mapOf(
 extra["app"] = mapOf(
     "applicationId" to "com.blood.pressure.health.monitor.tool",
     "show_log" to false,
-    "string_fog" to true,
+    "string_fog" to false,
 )
 
 extra["url"] = mapOf(

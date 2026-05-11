@@ -83,6 +83,7 @@ import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.viewmodel.SplashViewModel
 import com.daily.health.manager.face.tracker.trackUninstallClick
 import com.daily.health.manager.util.logEvent
+import com.android.common.bill.ads.util.GoogleMobileAdsConsentManager
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.SysBarUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -102,7 +103,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import net.corekit.core.report.ReportDataManager
 import net.corekit.core.utils.ConfigRemoteManager
-import net.corekit.monetize.ump.UmpConsentController
 import com.daily.health.manager.alarm.PermissionManager
 import kotlin.math.ceil
 import com.healthtracker.framework.R as FrameworkR
@@ -187,15 +187,6 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, FcActivitySplashBinding>(
             playAnimations()
             checkNotificationOpen()
 
-            // 并行执行初始化准备，但不再展示开屏广告
-            val ipJob = async {
-                try {
-                    UmpConsentController.prefetchCountryCode()
-                } catch (e: Exception) {
-                    if (BuildState.debug) "IP 预取异常: ${e.message}".loge(TAG)
-                }
-            }
-
             val permissionJob = async {
                 if (NotificationFeatureSwitch.notificationPermissionPromptEnabled) {
                     checkNotificationPermissionFlow()
@@ -204,10 +195,10 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, FcActivitySplashBinding>(
 
             try {
                 permissionJob.await()
-                ipJob.await()
 
                 try {
-                    UmpConsentController.checkAndShowConsentIfNeeded(this@SplashScreen)
+                    GoogleMobileAdsConsentManager.getInstance(this@SplashScreen)
+                        .gatherConsent(this@SplashScreen)
                 } catch (e: Exception) {
                     if (BuildState.debug) "UMP 同意检查异常: ${e.message}".loge(TAG)
                 }
@@ -470,7 +461,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, FcActivitySplashBinding>(
             }
             SpUtils.putBoolean("has_report_group_$group",true)
             if(BuildState.debug) "上报Group,value:$group".logd(TAG)
-            ReportDataManager.reportData("Grouping_$group")
+            ReportDataManager.reportData("Grouping_$group", mapOf())
         }
     }
 }

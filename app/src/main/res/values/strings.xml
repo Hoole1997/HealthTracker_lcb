@@ -43,6 +43,7 @@
     <string name="fc_mmol_l" translatable="false">mmol/L</string>
     <string name="fc_mmHg" translatable="false">mmHg</string>
     <string name="fc_loading_pure">Loading</string>
+    <string name="tr_bill_ad_loading">AD loading…</string>
     <string name="fc_history">History</string>
     <string name="fc_click_to_record">Click to record</string>
     <string name="fc_new_record">New Record</string>

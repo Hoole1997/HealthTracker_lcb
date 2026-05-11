@@ -2,11 +2,6 @@ name: Build official signed AAB
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - lcb
-    paths-ignore:
-      - app/src/official/release.jks
 
 permissions:
   contents: write

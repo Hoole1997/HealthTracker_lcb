@@ -87,7 +87,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "📤 推送到远程..."
     git push origin "$NEW_TAG"
     
-    echo "✅ 完成！Release 构建已触发。"
+    echo "✅ 完成！Tag 已推送。请在 GitHub Actions 手动运行构建。"
 else
     echo "🚫 操作已取消"
     exit 0

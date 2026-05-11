@@ -6,25 +6,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import com.android.common.bill.ads.AdResult
+import com.android.common.bill.ads.ext.AdShowExt
 import com.daily.health.manager.App
 import com.daily.health.manager.alarm.PermissionManager
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
 import kotlinx.coroutines.launch
-import net.corekit.monetize.ads.AdResult
-import net.corekit.monetize.ads.BannerAds
-import net.corekit.monetize.ads.FullNativeAds
-import net.corekit.monetize.ads.InterstitialAds
 import net.corekit.monetize.ads.NativeAdAutoRefreshManager
-import net.corekit.monetize.ads.NativeAds
-import net.corekit.monetize.ads.RewardBiddingManager
-import net.corekit.monetize.ads.RewardedAds
-import net.corekit.monetize.ads.bidding.BannerSmartBiddingManager
-import net.corekit.monetize.ads.bidding.InterstitialSmartBiddingManager
-import net.corekit.monetize.ads.bidding.NativeSmartBiddingManager
-import net.corekit.monetize.ads.config.AdConfigManager
 import net.corekit.monetize.ui.NativeAdStyle
-import okio.AsyncTimeout.Companion.condition
 
 
 fun FragmentActivity.safeLaunch(afterInvoke: () -> Unit) {
@@ -43,21 +33,12 @@ fun FragmentActivity.loadBanner(
 ) {
     lifecycleScope.launch {
         try {
-            // 检查条件是否满足
             if (!condition.invoke()) {
                 call.invoke(false)
                 return@launch
             }
 
-            // 使用智能竞价管理器
-            when (val result =
-                BannerSmartBiddingManager.smartBidAndShow(
-                    activity = this@loadBanner,
-                    container = container,
-                    position = position,
-                    onClick = { App.INSTANCE.isClickAdLeave = true },
-                    onClose = onClose
-                )) {
+            when (AdShowExt.showBannerAd(this@loadBanner, container, position)) {
                 is AdResult.Success -> {
                     val canShow = condition.invoke()
                     container.isVisible = canShow
@@ -65,22 +46,14 @@ fun FragmentActivity.loadBanner(
                         call.invoke(false)
                         return@launch
                     }
-                    if(result.data){
-                        if(BuildState.debug) "折叠式广告，先不回调成功".logd(PermissionManager.TAG)
-                    }else{
-                        if(BuildState.debug) "非折叠式广告，回调成功".logd(PermissionManager.TAG)
-                        call.invoke(true)
-                    }
+                    if(BuildState.debug) "Banner 展示成功".logd(PermissionManager.TAG)
+                    call.invoke(true)
 
                 }
 
                 is AdResult.Failure -> {
                     container.isVisible = false
                     call.invoke(false)
-                }
-
-                AdResult.Loading -> {
-
                 }
             }
 
@@ -141,42 +114,16 @@ fun FragmentActivity.loadNativeWithManager(
                 return@launch
             }
 
-            // 使用智能竞价管理器
-            val success = NativeSmartBiddingManager.smartBidAndShow(
+            val success = AdShowExt.showNativeAdInContainer(
                 context = container.context,
                 container = container,
-                position = position,
-                style = style,
-                onClick = onClick
+                styleType = style.toRemaxStyleType(),
+                position = position
             )
 
             if (success) {
                 container.visibility = View.VISIBLE
-                
-                // 如果启用自动刷新，创建并启动刷新管理器
-                val refreshManager = if (enableAutoRefresh) {
-                    NativeAdAutoRefreshManager(
-                        container = container,
-                        style = style,
-                        lifecycleOwner = this@loadNativeWithManager,
-                        onRefresh = {
-                            // 刷新时重新加载广告
-                            NativeAds.getInstance().displayAdInView(
-                                context = container.context,
-                                container = container,
-                                position = position,
-                                style = style,
-                                onClick = onClick
-                            )
-                        },
-                        onClick = onClick
-                    ).also { it.startRefreshTimer() }
-                } else {
-                    null
-                }
-                
-                // 通过回调传递 refreshManager，解决返回值无效问题
-                call.invoke(true, refreshManager)
+                call.invoke(true, null)
             } else {
                 container.visibility = View.GONE
                 call.invoke(false, null)
@@ -206,14 +153,7 @@ fun FragmentActivity.loadFullNative(
                 return@launch
             }
 
-            val success = FullNativeAds.getInstance().displayAdInView(
-                context = container.context,
-                container = container,
-                this@loadFullNative,
-                position = position,
-            )
-
-            when(success){
+            when(AdShowExt.showFullScreenNativeAdInContainer(this@loadFullNative, showInterstitial = false, position = position)){
                 is AdResult.Success -> {
                     container.visibility = View.VISIBLE
                     call.invoke(true)
@@ -222,10 +162,6 @@ fun FragmentActivity.loadFullNative(
                     container.visibility = View.GONE
                     call.invoke(false)
                 }
-                AdResult.Loading -> {
-
-                }
-
             }
         } catch (e: Exception) {
             container.visibility = View.GONE
@@ -248,8 +184,7 @@ fun FragmentActivity.loadInterstitial(
                 return@launch
             }
 
-            // 使用智能竞价管理器
-            when (val result = InterstitialSmartBiddingManager.smartBidAndShow(this@loadInterstitial, position)) {
+            when (AdShowExt.showInterstitialAd(this@loadInterstitial, position = position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
                 }
@@ -258,9 +193,6 @@ fun FragmentActivity.loadInterstitial(
                     call.invoke(false)
                 }
 
-                AdResult.Loading -> {
-
-                }
             }
 
         } catch (e: Exception) {
@@ -272,17 +204,7 @@ fun FragmentActivity.loadInterstitial(
 fun FragmentActivity.loadRewardBidding(position: String, call: (Boolean) -> Unit) {
     lifecycleScope.launch {
         try {
-            // 检查竞价开关，关闭时回退到普通激励广告
-            if (!AdConfigManager.isRewardBiddingEnabled()) {
-                when (RewardedAds.getInstance().show(this@loadRewardBidding, position)) {
-                    is AdResult.Success -> call.invoke(true)
-                    is AdResult.Failure -> call.invoke(false)
-                    AdResult.Loading -> {}
-                }
-                return@launch
-            }
-
-            when (val result = RewardBiddingManager.smartShowWithBidding(this@loadRewardBidding, position)) {
+            when (AdShowExt.showRewardedAd(this@loadRewardBidding, position = position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
                 }
@@ -291,9 +213,6 @@ fun FragmentActivity.loadRewardBidding(position: String, call: (Boolean) -> Unit
                     call.invoke(false)
                 }
 
-                AdResult.Loading -> {
-
-                }
             }
         } catch (e: Exception) {
             call.invoke(false)
@@ -310,7 +229,7 @@ fun FragmentActivity.loadReword(position: String, condition: () -> Boolean = { t
                 return@launch
             }
 
-            when (RewardedAds.getInstance().show(this@loadReword, position)) {
+            when (AdShowExt.showRewardedAd(this@loadReword, position = position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
                 }
@@ -320,9 +239,6 @@ fun FragmentActivity.loadReword(position: String, condition: () -> Boolean = { t
                     call.invoke(false)
                 }
 
-                AdResult.Loading -> {
-
-                }
             }
 
         } catch (e: Exception) {

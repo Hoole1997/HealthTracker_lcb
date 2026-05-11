@@ -11,6 +11,17 @@ extra["admob"] = mapOf(
     ),
 )
 
+extra["gam"] = mapOf(
+    "adUnitIds" to mapOf(
+        "banner" to "/21775744923/example/adaptive-banner",
+        "interstitial" to "/21775744923/example/interstitial",
+        "splash" to "/21775744923/example/app-open",
+        "native" to "/21775744923/example/native",
+        "full_native" to "/21775744923/example/native",
+        "rewarded" to "/21775744923/example/rewarded",
+    ),
+)
+
 extra["pangle"] = mapOf(
     "applicationId" to "8801991",
     "adUnitIds" to mapOf(
@@ -39,7 +50,7 @@ extra["topon"] = mapOf(
 extra["app"] = mapOf(
     "applicationId" to "com.leafmotivation.quizguessoncolor",
     "show_log" to true,
-    "string_fog" to true,
+    "string_fog" to false,
 )
 
 extra["url"] = mapOf(

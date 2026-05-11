@@ -52,7 +52,6 @@ import com.daily.health.manager.helper.HealthTrackerEvaluateListener
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.app.raise.AppraiseManager
 import com.app.raise.config.EvaluateConfig
-import com.google.android.gms.ads.MobileAds
 import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.report.ReportDataManager
 import com.healthtracker.framework.base.BaseViewModel
@@ -135,7 +134,7 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, FcFragmentSettingsBinding>()
             }
 
             SettingsAction.TermsOfService -> {
-                MobileAds.openAdInspector(requireContext()) { }
+                activity?.let { ComingSoonDialog.show(it.supportFragmentManager) }
             }
 
             SettingsAction.AdDebugPanel -> {

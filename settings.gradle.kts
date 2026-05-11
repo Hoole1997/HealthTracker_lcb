@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.maven
+
 pluginManagement {
     includeBuild("build-common")
     repositories {
@@ -42,14 +44,20 @@ dependencyResolutionManagement {
             isAllowInsecureProtocol = false
         }
         maven("https://repo.dgtverse.cn/repository/maven-public")
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/toukaRemax/remax_sdk")
+            credentials {
+                username = "toukaRemax"
+                password = "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"
+            }
+        }
     }
 }
 
 rootProject.name = "HealthTracker_lcb"
 include(":app")
 include(":framework")
-include(":monetize")
-include(":core")
 include(":metrics")
 include(":earthquake")
 include(":weather")

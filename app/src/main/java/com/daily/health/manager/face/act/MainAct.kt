@@ -679,7 +679,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, FcActivityMainBinding>(), Permis
 
     override fun handleBackPress(): Boolean {
         ExitDialog.show(supportFragmentManager) {
-            App.INSTANCE.litelitetoolhub()
+            App.INSTANCE.goHome()
         }
         return true
     }

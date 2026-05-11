@@ -2,7 +2,7 @@
 
 > **本文档已废弃，请使用新版：[CI_WORKFLOW_GUIDE_V2.md](./CI_WORKFLOW_GUIDE_V2.md)**
 >
-> 新版文档覆盖了零变体三层 Shifter 架构，包含详细的分步改造操作指南。
+> 新版文档说明当前 `app/src/internal|official/config.gradle.kts` 变体配置入口。
 
 ---
 

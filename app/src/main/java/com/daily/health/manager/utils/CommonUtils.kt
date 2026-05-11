@@ -10,19 +10,17 @@ import android.os.PowerManager
 import android.os.Process
 import com.bytedance.sdk.openadsdk.activity.TTAdActivity
 import com.bytedance.sdk.openadsdk.activity.TTAppOpenAdActivity
+import com.android.common.bill.ui.pangle.PangleFullScreenNativeAdActivity
+import com.android.common.bill.ui.topon.ToponFullScreenNativeAdActivity
 import com.facebook.ads.AudienceNetworkActivity
 import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
 import com.daily.health.manager.constants.KEY_APP_OPEN_TIMES
 import com.daily.health.manager.constants.KEY_APP_START_TIME
 import com.daily.health.manager.face.act.GuideAct
 import com.daily.health.manager.face.act.SplashScreen
-import com.google.android.gms.ads.AdActivity
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils
-import net.corekit.monetize.ads.pangle.PangleFullScreenNativeAdActivity
-import net.corekit.monetize.ads.topon.TopOnFullScreenNativeAdActivity
-import net.corekit.monetize.ui.AdmobFullScreenNativeAdActivity
 import java.util.Calendar
 import java.util.Date
 
@@ -104,15 +102,15 @@ fun isAdPage(activity: Activity?) = activity?.run {
 }
 
 val adClasses = arrayOf(
-    AdActivity::class.java,
-    AdmobFullScreenNativeAdActivity::class.java,
     AudienceNetworkActivity::class.java,
     TTAppOpenAdActivity::class.java,
     TTAdActivity::class.java,
     GuideAct::class.java,
     sg.bigo.ads.api.AdActivity::class.java,
+    com.android.common.bill.ui.admob.AdmobFullScreenNativeAdActivity::class.java,
+    com.android.common.bill.ui.gam.GamFullScreenNativeAdActivity::class.java,
     PangleFullScreenNativeAdActivity::class.java,
-    TopOnFullScreenNativeAdActivity::class.java
+    ToponFullScreenNativeAdActivity::class.java
 )
 
 fun getTodayStart(): Date {

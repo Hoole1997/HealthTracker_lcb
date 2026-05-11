@@ -193,16 +193,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
-        <!-- 全屏原生广告展示页面 -->
-        <activity
-            android:name=".ad.FullScreenNativeAdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
-
-
-
         <!--适配Android 7.0 及以上兼容文件管理-->
         <provider
             android:name="androidx.core.content.FileProvider"

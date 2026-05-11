@@ -6,7 +6,7 @@
 # 功能:
 #   1. 从 build.gradle.kts 读取当前版本号
 #   2. 检查是否已存在同版本 Tag
-#   3. 创建并推送 Tag，触发 GitHub Actions 构建
+#   3. 创建并推送 Tag，之后到 GitHub Actions 手动运行构建
 # =============================================================================
 
 set -e
@@ -71,7 +71,7 @@ echo -e "   ${GREEN}✅ Tag '$VERSION' 可用${NC}"
 # 3. 确认发布
 echo -e "\n${YELLOW}[3/4]${NC} 确认发布..."
 echo -e "   即将创建 Tag: ${GREEN}$VERSION${NC}"
-echo -e "   这将触发 GitHub Actions 构建 Play Store AAB"
+echo -e "   推送 Tag 后，请到 GitHub Actions 手动运行 Play Store AAB 构建"
 echo ""
 read -p "确认发布? (y/N): " CONFIRM
 
@@ -89,6 +89,6 @@ echo -e "\n${GREEN}🎉 发布成功!${NC}"
 echo "=================================="
 echo -e "Tag:    ${GREEN}$VERSION${NC}"
 echo -e "状态:   ${GREEN}已推送到远程仓库${NC}"
-echo -e "下一步: GitHub Actions 将自动开始构建"
+echo -e "下一步: 到 GitHub Actions 手动运行构建"
 echo ""
 echo -e "查看构建进度: https://github.com/$(git remote get-url origin | sed -E 's/.*github.com[:/](.+)(\.git)?/\1/' | sed 's/\.git$//')/actions"

@@ -15,11 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import net.corekit.monetize.ads.NativeAds
-import net.corekit.monetize.ads.bidding.BiddingPlatformController
-import net.corekit.monetize.ads.bidding.NativeSmartBiddingManager
-import net.corekit.monetize.ads.config.BiddingConfigManager
-import net.corekit.monetize.ads.log.AdLogger
+import com.android.common.bill.ads.ext.AdShowExt
+import com.android.common.bill.ads.log.AdLogger
 import net.corekit.monetize.ui.NativeAdStyle
 
 /**
@@ -48,32 +45,13 @@ fun NativeAdContainer(
         AdLogger.d("[NativeAdContainer] 开始加载流程 | Position: $position")
         
         try {
-            // 1. 强制初始化配置
-            BiddingConfigManager.ensureInitialized(context)
-            
-            // 打印竞价状态便于调试
-            val isBiddingEnabled = BiddingPlatformController.isMultiPlatformBiddingEnabled()
-            AdLogger.d("[NativeAdContainer] 判定流程 | 竞价启用: $isBiddingEnabled")
-
-            // 2. 尝试竞价加载
-            var success = NativeSmartBiddingManager.smartBidAndShow(
+            val success = AdShowExt.showNativeAdInContainer(
                 context = context,
                 container = container,
-                position = position,
-                style = style
+                styleType = style.toRemaxStyleType(),
+                position = position
             )
-            
-            // 3. 竞价失败/未启用时的 AdMob 兜底逻辑
-            if (!success) {
-                AdLogger.d("[NativeAdContainer] 竞价未成功/未命中，尝试执行原生兜底展示")
-                success = NativeAds.getInstance().displayAdInView(
-                    context = context,
-                    container = container,
-                    position = position,
-                    style = style
-                )
-            }
-            
+
             isLoaded = success
             AdLogger.d("[NativeAdContainer] 最终结果 | 是否展示: $isLoaded")
         } catch (e: Exception) {
