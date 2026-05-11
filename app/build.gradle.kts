@@ -63,8 +63,8 @@ android {
 
     defaultConfig {
         applicationId = appConfig.stringValue("applicationId")
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.0.1"
 
         if (semanticVersion != null) {
             println("🏷️ [Version] Override VersionName: $semanticVersion")
