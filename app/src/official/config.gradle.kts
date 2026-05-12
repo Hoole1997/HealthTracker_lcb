@@ -14,11 +14,11 @@ extra["admob"] = mapOf(
 extra["gam"] = mapOf(
     "adUnitIds" to mapOf(
         "banner" to "",
-        "interstitial" to "",
-        "splash" to "",
+        "interstitial" to "/23312177113/Health_Monitor-Blood_Pressure_GP_IV",
+        "splash" to "/23312177113/Health_Monitor-Blood_Pressure_GP_SP",
         "native" to "",
         "full_native" to "",
-        "rewarded" to "",
+        "rewarded" to "/23312177113/Health_Monitor-Blood_Pressure_GP_RV",
     ),
 )
 
