@@ -1,7 +1,7 @@
 
 /**
  * 统一的签名配置脚本
- * 适配 internal/official flavor 目录结构，从 app/src/<flavor>/sign.properties 读取签名。
+ * internal 使用 Android 默认 debug 签名；official 从 app/src/official/sign.properties 读取签名。
  */
 
 def applyFlavorSigning = { signingConfig, String flavorName, String fallbackKeystore, String fallbackPassword, String fallbackAlias ->
@@ -27,9 +27,6 @@ def applyFlavorSigning = { signingConfig, String flavorName, String fallbackKeys
 
 ext.setupSigningConfigs = { android ->
     android.signingConfigs {
-        internal {
-            applyFlavorSigning(delegate, "internal", "pdfreader.jks", "pdfreader", "pdfreader")
-        }
         official {
             applyFlavorSigning(delegate, "official", "release.jks", "release", "release")
         }
@@ -37,7 +34,8 @@ ext.setupSigningConfigs = { android ->
 
     android.productFlavors {
         internal {
-            signingConfig = android.signingConfigs.internal
+            signingConfig = android.signingConfigs.debug
+            println("🔑 [Sign] Applied Android default debug signing config for internal")
         }
         official {
             signingConfig = android.signingConfigs.official
