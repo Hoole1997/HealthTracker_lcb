@@ -1,5 +1,6 @@
 import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
-import com.android.build.api.dsl.DefaultConfig
+import com.android.build.api.dsl.ApplicationProductFlavor
+import com.android.build.api.dsl.VariantDimension
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -30,99 +31,82 @@ apply(from = "../scripts/sign.gradle")
 // 引入动态混淆字典生成脚本
 apply(from = "generate-dictionary.gradle.kts")
 
-// ==========================================
-// 🚀 三层解耦配置加载器 (The Shifter)
-// ==========================================
-val remoteOverride = project.hasProperty("remoteOverride")
-val shifterFile = if (remoteOverride) "../scripts/official.gradle" else "../scripts/internal.gradle"
+data class ChannelConfig(
+    val name: String,
+    val launcherUnityDependency: String,
+    val admob: Map<*, *>,
+    val admobUnit: Map<*, *>,
+    val gam: Map<*, *>,
+    val gamUnit: Map<*, *>,
+    val pangle: Map<*, *>,
+    val pangleUnit: Map<*, *>,
+    val topon: Map<*, *>,
+    val toponUnit: Map<*, *>,
+    val app: Map<*, *>,
+    val urls: Map<*, *>,
+    val analytics: Map<*, *>,
+)
 
-// 1. 加载本地默认配置 (Internal 第一副本)
-apply(from = "../scripts/internal.gradle")
+fun loadChannelConfig(
+    name: String,
+    scriptPath: String,
+    launcherUnityDependency: String,
+): ChannelConfig {
+    project.apply(from = scriptPath)
 
-// 2. 尝试加载远程补丁 (外网/官方) - 本地路径作为演示，实际 CI 会动态下载
-if (remoteOverride) {
-    println("📡 [Shifter] Detected Remote Override Mode. Applying official config...")
-    apply(from = shifterFile)
+    val admob = extensions.extraProperties["admob"] as Map<*, *>
+    val gam = extensions.extraProperties["gam"] as Map<*, *>
+    val pangle = extensions.extraProperties["pangle"] as Map<*, *>
+    val topon = extensions.extraProperties["topon"] as Map<*, *>
+
+    return ChannelConfig(
+        name = name,
+        launcherUnityDependency = launcherUnityDependency,
+        admob = admob,
+        admobUnit = admob["adUnitIds"] as Map<*, *>,
+        gam = gam,
+        gamUnit = gam["adUnitIds"] as Map<*, *>,
+        pangle = pangle,
+        pangleUnit = pangle["adUnitIds"] as Map<*, *>,
+        topon = topon,
+        toponUnit = topon["adUnitIds"] as Map<*, *>,
+        app = extensions.extraProperties["app"] as Map<*, *>,
+        urls = extensions.extraProperties["url"] as Map<*, *>,
+        analytics = extensions.extraProperties["analytics"] as Map<*, *>,
+    )
 }
 
-// 提取 ext 变量以供后续引用
-val admob = extensions.extraProperties["admob"] as Map<*, *>
-val admobUnit = admob["adUnitIds"] as Map<*, *>
-val gam = extensions.extraProperties["gam"] as Map<*, *>
-val gamUnit = gam["adUnitIds"] as Map<*, *>
-val pangle = extensions.extraProperties["pangle"] as Map<*, *>
-val pangleUnit = pangle["adUnitIds"] as Map<*, *>
-val topon = extensions.extraProperties["topon"] as Map<*, *>
-val toponUnit = topon["adUnitIds"] as Map<*, *>
-val appConfig = extensions.extraProperties["app"] as Map<*, *>
-val urls = extensions.extraProperties["url"] as Map<*, *>
-val analytics = extensions.extraProperties["analytics"] as Map<*, *>
+val internalChannel = loadChannelConfig(
+    name = "internal",
+    scriptPath = "../scripts/internal.gradle",
+    launcherUnityDependency = "com.launcher.unity:com.leafmotivation.quizguessoncolor-health:1.0.6",
+)
+val officialChannel = loadChannelConfig(
+    name = "official",
+    scriptPath = "../scripts/official.gradle",
+    launcherUnityDependency = "com.launcher.unity:com.blood.sugar.health.diabetes.tool-BloodSugar:1.0.7",
+)
 
-val showLog = appConfig["show_log"] as Boolean
-val defaultUserChannel = analytics["defaultUserChannel"] ?: "default"
-val shifterMode = appConfig["shifter_mode"] ?: "internal"
+val semanticVersion = project.findProperty("internalVersionName")
+    ?.toString()
+    ?.takeIf { it.isNotEmpty() }
+val defaultVersionName = "1.0.12"
+val resolvedVersionName = semanticVersion?.removePrefix("v") ?: defaultVersionName
 val buildTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
-println("📦 [Shifter] Build Mode: $shifterMode | Package: ${appConfig["applicationId"]}")
+println("📦 [Flavor] Internal Package: ${internalChannel.app["applicationId"]}")
+println("📦 [Flavor] Official Package: ${officialChannel.app["applicationId"]}")
 
 android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        applicationId = appConfig["applicationId"] as String
         versionCode = 12
-        versionName = "1.0.12"
-        
-        // 🚀 动态支持从属性注入 versionName (用于 CI Tag 构建)
-        val semanticVersion = project.findProperty("internalVersionName")?.toString()
-        if (semanticVersion != null && semanticVersion.isNotEmpty()) {
-            println("🏷️ [Shifter] Override VersionName: $semanticVersion")
-            versionName = semanticVersion.removePrefix("v")
+        versionName = resolvedVersionName
+        if (semanticVersion != null) {
+            println("🏷️ [Flavor] Override VersionName: $resolvedVersionName")
         }
 
-        setProperty("archivesBaseName", "${shifterMode}_${applicationId}-v${versionName}(${versionCode})_${buildTime}")
-
-        buildConfig {
-            boolean("showLog", showLog)
-        }
-
-        buildConfigField("String", "PRIVACY_POLICY", "\"${urls["privacyUrl"]}\"")
-        buildConfigField("String", "FCM_URL", "\"${urls["fcmUrl"]}\"")
-        buildConfigField("String", "FCM_PKG", "\"${urls["fcmPkg"]}\"")
-        buildConfigField("String", "FEEDBACK_EMAIL", "\"${urls["email"]}\"")
-        buildConfigField("String", "DEFAULT_USER_CHANNEL", "\"$defaultUserChannel\"")
-        buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${admob["applicationId"]}\"")
-        buildConfigField("String", "ADMOB_SPLASH_ID", "\"${admobUnit["splash"]}\"")
-        buildConfigField("String", "ADMOB_BANNER_ID", "\"${admobUnit["banner"]}\"")
-        buildConfigField("String", "ADMOB_INTERSTITIAL_ID", "\"${admobUnit["interstitial"]}\"")
-        buildConfigField("String", "ADMOB_NATIVE_ID", "\"${admobUnit["native"]}\"")
-        buildConfigField("String", "ADMOB_FULL_NATIVE_ID", "\"${admobUnit["full_native"]}\"")
-        buildConfigField("String", "ADMOB_REWARDED_ID", "\"${admobUnit["rewarded"]}\"")
-        buildConfigField("String", "GAM_SPLASH_ID", "\"${gamUnit["splash"]}\"")
-        buildConfigField("String", "GAM_BANNER_ID", "\"${gamUnit["banner"]}\"")
-        buildConfigField("String", "GAM_INTERSTITIAL_ID", "\"${gamUnit["interstitial"]}\"")
-        buildConfigField("String", "GAM_NATIVE_ID", "\"${gamUnit["native"]}\"")
-        buildConfigField("String", "GAM_FULL_NATIVE_ID", "\"${gamUnit["full_native"]}\"")
-        buildConfigField("String", "GAM_REWARDED_ID", "\"${gamUnit["rewarded"]}\"")
-        buildConfigField("String", "PANGLE_APPLICATION_ID", "\"${pangle["applicationId"]}\"")
-        buildConfigField("String", "PANGLE_SPLASH_ID", "\"${pangleUnit["splash"]}\"")
-        buildConfigField("String", "PANGLE_BANNER_ID", "\"${pangleUnit["banner"]}\"")
-        buildConfigField("String", "PANGLE_INTERSTITIAL_ID", "\"${pangleUnit["interstitial"]}\"")
-        buildConfigField("String", "PANGLE_NATIVE_ID", "\"${pangleUnit["native"]}\"")
-        buildConfigField("String", "PANGLE_FULL_NATIVE_ID", "\"${pangleUnit["full_native"]}\"")
-        buildConfigField("String", "PANGLE_REWARDED_ID", "\"${pangleUnit["rewarded"]}\"")
-        buildConfigField("String", "TOPON_APPLICATION_ID", "\"${topon["applicationId"]}\"")
-        buildConfigField("String", "TOPON_APP_KEY", "\"${topon["appKey"]}\"")
-        buildConfigField("String", "TOPON_SPLASH_ID", "\"${toponUnit["splash"]}\"")
-        buildConfigField("String", "TOPON_BANNER_ID", "\"${toponUnit["banner"]}\"")
-        buildConfigField("String", "TOPON_INTERSTITIAL_ID", "\"${toponUnit["interstitial"]}\"")
-        buildConfigField("String", "TOPON_NATIVE_ID", "\"${toponUnit["native"]}\"")
-        buildConfigField("String", "TOPON_FULL_NATIVE_ID", "\"${toponUnit["full_native"]}\"")
-        buildConfigField("String", "TOPON_REWARDED_ID", "\"${toponUnit["rewarded"]}\"")
-        
-        // 动态设置版本名后缀 (仅内网模式且没有注入 semanticVersion 时)
-        if (shifterMode == "internal" && semanticVersion == null) {
-            versionNameSuffix = "-internal"
-        }
+        setProperty("archivesBaseName", "${rootProject.name}-v${versionName}(${versionCode})_${buildTime}")
 
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
@@ -137,7 +121,7 @@ android {
     }
 
     sourceSets {
-        getByName("main").java.srcDirs("build/generated/source/junk/kotlin")
+        getByName("main").java.srcDir("build/generated/source/junk/kotlin")
     }
 
     // Ensure junk code is generated before compilation
@@ -149,9 +133,20 @@ android {
 
 
 
-    // 🚀 已移除旧有的 productFlavors，实现零变种构建
-
-
+    flavorDimensions += "channel"
+    productFlavors {
+        create("internal") {
+            dimension = "channel"
+            configureChannel(internalChannel)
+            if (semanticVersion == null) {
+                versionNameSuffix = "-internal"
+            }
+        }
+        create("official") {
+            dimension = "channel"
+            configureChannel(officialChannel)
+        }
+    }
 
     buildTypes {
         release {
@@ -222,7 +217,10 @@ dependencies {
     api(project(":framework"))
     implementation(libs.remax.core)
     implementation(libs.remax.bill)
-    implementation("com.launcher.unity:com.blood.sugar.health.diabetes.tool-BloodSugar:1.0.7") {
+    add("internalImplementation", internalChannel.launcherUnityDependency) {
+        exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
+    }
+    add("officialImplementation", officialChannel.launcherUnityDependency) {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     api(project(":metrics"))
@@ -282,35 +280,48 @@ dependencies {
     implementation(libs.lottie.compose)
 }
 
-// BuildConfig 扩展函数
-fun DefaultConfig.buildConfig(configure: BuildConfigFieldsBuilder.() -> Unit) {
-    BuildConfigFieldsBuilder().apply(configure).create(this)
+fun ApplicationProductFlavor.configureChannel(config: ChannelConfig) {
+    applicationId = config.app["applicationId"] as String
+    addChannelBuildConfig(config)
 }
 
-class BuildConfigFieldsBuilder {
-    private val fields = mutableListOf<Triple<String, String, String>>()
+fun VariantDimension.addChannelBuildConfig(config: ChannelConfig) {
+    val defaultUserChannel = config.analytics["defaultUserChannel"] ?: "default"
 
-    fun boolean(name: String, value: Boolean) {
-        fields.add(Triple("boolean", name, value.toString()))
-    }
-
-    fun string(name: String, value: String) {
-        fields.add(Triple("String", name, "\"$value\""))
-    }
-
-    fun int(name: String, value: Int) {
-        fields.add(Triple("int", name, value.toString()))
-    }
-
-    fun long(name: String, value: Long) {
-        fields.add(Triple("long", name, value.toString()))
-    }
-
-    fun create(config: DefaultConfig) {
-        fields.forEach { (type, name, value) ->
-            config.buildConfigField(type, name, value)
-        }
-    }
+    buildConfigField("boolean", "showLog", (config.app["show_log"] as Boolean).toString())
+    buildConfigField("String", "PRIVACY_POLICY", "\"${config.urls["privacyUrl"]}\"")
+    buildConfigField("String", "FCM_URL", "\"${config.urls["fcmUrl"]}\"")
+    buildConfigField("String", "FCM_PKG", "\"${config.urls["fcmPkg"]}\"")
+    buildConfigField("String", "FEEDBACK_EMAIL", "\"${config.urls["email"]}\"")
+    buildConfigField("String", "DEFAULT_USER_CHANNEL", "\"$defaultUserChannel\"")
+    buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${config.admob["applicationId"]}\"")
+    buildConfigField("String", "ADMOB_SPLASH_ID", "\"${config.admobUnit["splash"]}\"")
+    buildConfigField("String", "ADMOB_BANNER_ID", "\"${config.admobUnit["banner"]}\"")
+    buildConfigField("String", "ADMOB_INTERSTITIAL_ID", "\"${config.admobUnit["interstitial"]}\"")
+    buildConfigField("String", "ADMOB_NATIVE_ID", "\"${config.admobUnit["native"]}\"")
+    buildConfigField("String", "ADMOB_FULL_NATIVE_ID", "\"${config.admobUnit["full_native"]}\"")
+    buildConfigField("String", "ADMOB_REWARDED_ID", "\"${config.admobUnit["rewarded"]}\"")
+    buildConfigField("String", "GAM_SPLASH_ID", "\"${config.gamUnit["splash"]}\"")
+    buildConfigField("String", "GAM_BANNER_ID", "\"${config.gamUnit["banner"]}\"")
+    buildConfigField("String", "GAM_INTERSTITIAL_ID", "\"${config.gamUnit["interstitial"]}\"")
+    buildConfigField("String", "GAM_NATIVE_ID", "\"${config.gamUnit["native"]}\"")
+    buildConfigField("String", "GAM_FULL_NATIVE_ID", "\"${config.gamUnit["full_native"]}\"")
+    buildConfigField("String", "GAM_REWARDED_ID", "\"${config.gamUnit["rewarded"]}\"")
+    buildConfigField("String", "PANGLE_APPLICATION_ID", "\"${config.pangle["applicationId"]}\"")
+    buildConfigField("String", "PANGLE_SPLASH_ID", "\"${config.pangleUnit["splash"]}\"")
+    buildConfigField("String", "PANGLE_BANNER_ID", "\"${config.pangleUnit["banner"]}\"")
+    buildConfigField("String", "PANGLE_INTERSTITIAL_ID", "\"${config.pangleUnit["interstitial"]}\"")
+    buildConfigField("String", "PANGLE_NATIVE_ID", "\"${config.pangleUnit["native"]}\"")
+    buildConfigField("String", "PANGLE_FULL_NATIVE_ID", "\"${config.pangleUnit["full_native"]}\"")
+    buildConfigField("String", "PANGLE_REWARDED_ID", "\"${config.pangleUnit["rewarded"]}\"")
+    buildConfigField("String", "TOPON_APPLICATION_ID", "\"${config.topon["applicationId"]}\"")
+    buildConfigField("String", "TOPON_APP_KEY", "\"${config.topon["appKey"]}\"")
+    buildConfigField("String", "TOPON_SPLASH_ID", "\"${config.toponUnit["splash"]}\"")
+    buildConfigField("String", "TOPON_BANNER_ID", "\"${config.toponUnit["banner"]}\"")
+    buildConfigField("String", "TOPON_INTERSTITIAL_ID", "\"${config.toponUnit["interstitial"]}\"")
+    buildConfigField("String", "TOPON_NATIVE_ID", "\"${config.toponUnit["native"]}\"")
+    buildConfigField("String", "TOPON_FULL_NATIVE_ID", "\"${config.toponUnit["full_native"]}\"")
+    buildConfigField("String", "TOPON_REWARDED_ID", "\"${config.toponUnit["rewarded"]}\"")
 }
 
 // ==================== activityGuard 四大组件混淆配置 ====================

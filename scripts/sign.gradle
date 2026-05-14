@@ -1,7 +1,7 @@
 
 /**
  * 统一的签名配置脚本 (Layer 2)
- * 适配零变体架构，根据动态属性应用签名。
+ * CI 会在 scripts/sign.properties 写入当前构建渠道使用的签名。
  */
 
 ext.setupSigningConfigs = { android ->
@@ -29,11 +29,8 @@ ext.setupSigningConfigs = { android ->
         }
     }
 
-    // 2. 根据构建模式动态应用签名
     android.buildTypes {
         release {
-            // 在零变体架构下，Release 默认使用 internal 签名，
-            // 除非 CI 注入了 official 的 sign.properties 覆盖了 scripts/ 下的文件
             signingConfig = android.signingConfigs.internal
         }
         debug {

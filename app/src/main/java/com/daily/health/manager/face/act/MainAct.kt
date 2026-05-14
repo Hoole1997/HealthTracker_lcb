@@ -21,7 +21,6 @@ import com.android.common.weather.WeatherActivity
 import com.android.common.weather.util.TemperaturePreferences
 import com.android.common.weather.util.WeatherIconMapper
 import com.app.raise.AppraiseManager
-import com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp.autosecureloc
 import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.alarm.PermissionManager
@@ -677,7 +676,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         ExitDialog.show(supportFragmentManager) {
             finish()
             // 回到launcher桌面
-            (application as? App)?.autosecureloc()
+            (application as? App)?.backToLauncher()
         }
         return true
     }

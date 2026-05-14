@@ -132,7 +132,7 @@ run_gradle_task() {
     mkdir -p "$LOCAL_ENV_DIR"
 
     set +e
-    "$GRADLEW_CMD" "$gradle_task" "${extra_args[@]}" "-PremoteOverride" 2>&1 | tee "$log_file"
+    "$GRADLEW_CMD" "$gradle_task" "${extra_args[@]}" 2>&1 | tee "$log_file"
     local gradle_exit=${PIPESTATUS[0]}
     set -e
 
@@ -376,7 +376,7 @@ show_help() {
     echo ""
     echo "选项:"
     echo "  -h, --help                显示帮助信息"
-    echo "  -c, --channel CHANNEL     指定渠道 (playstore|internal|all|none)，默认: none"
+    echo "  -c, --channel CHANNEL     指定渠道 (official|internal|all|none)，默认: none"
     echo "  -b, --build-type TYPE     指定构建类型 (debug|release|all)，默认: release"
     echo "  -o, --output DIR          指定输出目录，默认: ./outputs"
     echo "  --clean                   构建前清理项目"
@@ -385,18 +385,19 @@ show_help() {
     echo "  --no-lint                 跳过 Lint 检查"
     echo ""
     echo "渠道说明:"
-    echo "  playstore  - Google Play 市场版本"
+    echo "  official   - 正式版本"
+    echo "  playstore  - official 的兼容别名"
     echo "  internal   - 内部测试版本"
     echo "  all        - 所有渠道"
-    echo "  none       - 不带渠道变体（构建 assembleRelease / assembleDebug）"
+    echo "  none       - Gradle 聚合任务（构建 assembleRelease / assembleDebug）"
     echo ""
     echo "示例:"
     echo "  $0                        # 构建不带渠道变体的 release 版本"
     echo "  $0 -c none -b debug       # 构建不带渠道变体的 debug 版本"
-    echo "  $0 -c playstore -b release   # 只构建 Play 市场渠道的 release 版本"
+    echo "  $0 -c official -b release    # 只构建正式渠道的 release 版本"
     echo "  $0 -c internal -b debug      # 只构建内部测试渠道的 debug 版本"
     echo "  $0 --clean --bundle       # 清理后构建，并生成 AAB 包"
-    echo "  $0 -c playstore --aab-only   # 只构建 Play 市场渠道的 AAB 包"
+    echo "  $0 -c official --aab-only    # 只构建正式渠道的 AAB 包"
     echo "  $0 -b release --aab-only  # 构建所有渠道的 release AAB 包"
 }
 
@@ -603,23 +604,12 @@ check_environment_simple() {
     # 检查签名文件
     log_info "检查签名文件..."
     
-    # 检查 Play 市场渠道签名文件
-    if [ ! -f "./app/src/playstore/videorecovery.keystore" ]; then
-        log_error "未找到 Play 市场渠道签名文件: ./app/src/playstore/videorecovery.keystore"
+    # 检查正式渠道配置文件
+    if [ ! -f "./app/src/official/google-services.json" ]; then
+        log_error "未找到正式渠道配置文件: ./app/src/official/google-services.json"
         exit 1
     fi
-    
-    if [ ! -f "./app/src/playstore/google-services.json" ]; then
-        log_error "未找到 Play 市场渠道配置文件: ./app/src/playstore/google-services.json"
-        exit 1
-    fi
-    
-    # 检查内部测试渠道签名文件
-    if [ ! -f "./app/src/internal/internal-release-key.jks" ]; then
-        log_error "未找到内部测试渠道签名文件: ./app/src/internal/internal-release-key.jks"
-        exit 1
-    fi
-    
+
     if [ ! -f "./app/src/internal/google-services.json" ]; then
         log_error "未找到内部测试渠道配置文件: ./app/src/internal/google-services.json"
         exit 1
@@ -662,7 +652,7 @@ build_apk() {
         output_variant_filter="$build_type"
         log_info "构建 $build_type APK（不带渠道变体）..."
     else
-        # 带渠道变体：assemblePlaystoreRelease / assembleInternalDebug
+        # 带渠道变体：assembleOfficialRelease / assembleInternalDebug
         local channel_first_char=$(echo "${channel:0:1}" | tr '[:lower:]' '[:upper:]')
         local channel_rest_chars="${channel:1}"
         local channel_cap="${channel_first_char}${channel_rest_chars}"
@@ -745,7 +735,7 @@ build_bundle() {
         output_variant_filter="$build_type"
         log_info "构建 $build_type AAB（不带渠道变体）..."
     else
-        # 带渠道变体：bundlePlaystoreRelease / bundleInternalDebug
+        # 带渠道变体：bundleOfficialRelease / bundleInternalDebug
         local channel_first_char=$(echo "${channel:0:1}" | tr '[:lower:]' '[:upper:]')
         local channel_rest_chars="${channel:1}"
         local channel_cap="${channel_first_char}${channel_rest_chars}"
@@ -819,7 +809,7 @@ main_build() {
 
     # 确定要构建的渠道
     if [ "$CHANNEL" = "all" ]; then
-        channels=("playstore" "internal")
+        channels=("official" "internal")
     elif [ "$CHANNEL" = "none" ]; then
         channels=("none")
     else
@@ -878,9 +868,13 @@ while [[ $# -gt 0 ]]; do
             ;;
         -c|--channel)
             CHANNEL="$2"
-            if [[ ! "$CHANNEL" =~ ^(playstore|internal|all|none)$ ]]; then
+            if [ "$CHANNEL" = "playstore" ]; then
+                CHANNEL="official"
+                log_warning "channel=playstore 已映射为 official"
+            fi
+            if [[ ! "$CHANNEL" =~ ^(official|internal|all|none)$ ]]; then
                 log_error "无效的渠道: $CHANNEL"
-                log_error "支持的渠道: playstore, internal, all, none"
+                log_error "支持的渠道: official, internal, all, none"
                 exit 1
             fi
             shift 2

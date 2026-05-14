@@ -5,7 +5,13 @@ plugins {
     alias(libs.plugins.android.stringfog.convention)
 }
 
-val analyticsConfig = findProperty("analytics") as Map<*, *>
+fun loadAnalyticsConfig(scriptPath: String): Map<*, *> {
+    project.apply(from = scriptPath)
+    return extensions.extraProperties["analytics"] as Map<*, *>
+}
+
+val internalAnalyticsConfig = loadAnalyticsConfig("../scripts/internal.gradle")
+val officialAnalyticsConfig = loadAnalyticsConfig("../scripts/official.gradle")
 
 android {
     namespace = "net.corekit.metrics"
@@ -13,9 +19,18 @@ android {
 
     defaultConfig {
         minSdk = 24
-        buildConfigField("String", "ADJUST_APP_TOKEN", "\"${analyticsConfig["adjustAppToken"]}\"")
-        buildConfigField("String", "THINKING_DATA_APP_ID", "\"${analyticsConfig["thinkingDataAppId"]}\"")
-        buildConfigField("String", "THINKING_DATA_SERVER_URL", "\"${analyticsConfig["thinkingDataServerUrl"]}\"")
+    }
+
+    flavorDimensions += "channel"
+    productFlavors {
+        create("internal") {
+            dimension = "channel"
+            configureAnalytics(internalAnalyticsConfig)
+        }
+        create("official") {
+            dimension = "channel"
+            configureAnalytics(officialAnalyticsConfig)
+        }
     }
 
     buildTypes {
@@ -53,4 +68,10 @@ dependencies {
     
     // ThinkingData SDK
     api("cn.thinkingdata.android:ThinkingAnalyticsSDK:3.2.3")
+}
+
+fun com.android.build.api.dsl.LibraryProductFlavor.configureAnalytics(analyticsConfig: Map<*, *>) {
+    buildConfigField("String", "ADJUST_APP_TOKEN", "\"${analyticsConfig["adjustAppToken"]}\"")
+    buildConfigField("String", "THINKING_DATA_APP_ID", "\"${analyticsConfig["thinkingDataAppId"]}\"")
+    buildConfigField("String", "THINKING_DATA_SERVER_URL", "\"${analyticsConfig["thinkingDataServerUrl"]}\"")
 }

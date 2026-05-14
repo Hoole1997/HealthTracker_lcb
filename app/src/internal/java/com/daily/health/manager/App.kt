@@ -61,7 +61,7 @@ import org.koin.core.context.startKoin
 import java.lang.ref.WeakReference
 import java.util.Locale
 
-class App : com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp() {
+class App : com.leafmotivation.quizguessoncolor.Iej9ieio6r89e7ya() {
 
     private val appInitializer: AppInitializer by inject()
 
@@ -100,44 +100,48 @@ class App : com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp() {
 
 
     @Suppress("UNCHECKED_CAST")
-    override fun metasafearchive(): Class<Any> {
-        return SplashScreen::class.java as Class<Any>
+    override fun metaautovault(): MutableList<Class<Any>> {
+        return mutableListOf(
+            SplashScreen::class.java as Class<Any>,
+            GuideAct::class.java as Class<Any>,
+            MainAct::class.java as Class<Any>,
+            StepCountAct::class.java as Class<Any>,
+            StepSettingAct::class.java as Class<Any>,
+            TargetRangeAct::class.java as Class<Any>,
+            HealthDetailAct::class.java as Class<Any>,
+            HealthRecordAct::class.java as Class<Any>,
+            InsightsDetailAct::class.java as Class<Any>,
+            HistoryRecordAct::class.java as Class<Any>,
+            AlarmManageScreen::class.java as Class<Any>,
+            AddReminderAct::class.java as Class<Any>,
+            ProfileActivity::class.java as Class<Any>,
+            HydrateAct::class.java as Class<Any>,
+            HydrateSettingAct::class.java as Class<Any>,
+            HydrateCompleteScreen::class.java as Class<Any>,
+            HealthStatisticsAct::class.java as Class<Any>,
+            LanguageAct::class.java as Class<Any>,
+            InnerWebAct::class.java as Class<Any>,
+            FeedbackAct::class.java as Class<Any>,
+            HeartRateMeasureScreen::class.java as Class<Any>,
+            UninstallResenActivity::class.java as Class<Any>,
+            UninstallConfirmActivity::class.java as Class<Any>,
+            AiAssistantActivity::class.java as Class<Any>,
+            EarthquakeActivity::class.java as Class<Any>,
+            WeatherActivity::class.java as Class<Any>,
+            AdmobFullScreenNativeAdActivity::class.java as Class<Any>,
+            GamFullScreenNativeAdActivity::class.java as Class<Any>,
+            PangleFullScreenNativeAdActivity::class.java as Class<Any>,
+            ToponFullScreenNativeAdActivity::class.java as Class<Any>,
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun neodailydevice(): MutableList<Class<Any>> {
-        return mutableListOf(
-            SplashScreen::class.java,
-            GuideAct::class.java,
-            MainAct::class.java,
-            StepCountAct::class.java,
-            StepSettingAct::class.java,
-            TargetRangeAct::class.java,
-            HealthDetailAct::class.java,
-            HealthRecordAct::class.java,
-            InsightsDetailAct::class.java,
-            HistoryRecordAct::class.java,
-            AlarmManageScreen::class.java,
-            AddReminderAct::class.java,
-            ProfileActivity::class.java,
-            HydrateAct::class.java,
-            HydrateSettingAct::class.java,
-            HydrateCompleteScreen::class.java,
-            HealthStatisticsAct::class.java,
-            LanguageAct::class.java,
-            InnerWebAct::class.java,
-            FeedbackAct::class.java,
-            HeartRateMeasureScreen::class.java,
-            UninstallResenActivity::class.java,
-            UninstallConfirmActivity::class.java,
-            AiAssistantActivity::class.java,
-            EarthquakeActivity::class.java,
-            WeatherActivity::class.java,
-            AdmobFullScreenNativeAdActivity::class.java,
-            GamFullScreenNativeAdActivity::class.java,
-            PangleFullScreenNativeAdActivity::class.java,
-            ToponFullScreenNativeAdActivity::class.java,
-        ).mapTo(mutableListOf()) { it as Class<Any> }
+    override fun prodailysmartmemory(): Class<Any> {
+        return SplashScreen::class.java as Class<Any>
+    }
+
+    fun backToLauncher() {
+        smartbackuptoolsignal()
     }
 
     override fun attachBaseContext(base: Context?) {
@@ -177,7 +181,7 @@ class App : com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp() {
 
             // adjust
             AdjustTracker.init(this)
-            compresshub { isOrganic, network, campaign, adgroup, creative, jsonResponse ->
+            maxquicklitememory { isOrganic, network, campaign, adgroup, creative, jsonResponse ->
                 AdjustTracker.handleAttributionChanged(
                     network = network,
                     campaign = campaign,

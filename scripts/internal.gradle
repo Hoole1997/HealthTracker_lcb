@@ -32,19 +32,19 @@ ext {
     ]
 
     // TopOn配置 (测试 ID)
-    topon = [applicationId: "h1h1s09649svsj",
-             appKey       : "7d3af77b0803cbc641888cb393e8652e",
-             adUnitIds    : [interstitial: "n1h1s096bhhgbu",
-                             rewarded    : "n1h1s096ckp1sq",
-                             native      : "n69ca553c32abb",
-                             splash      : "b5f73fe0c5db29",
-                             full_native : "n69ca553c32abb",
-                             banner      : "b5baca4f74c3d8"
+    topon = [applicationId: "h1h7t76tddrt25",
+             appKey       : "a5892462779e07420fcf84e9e6b341ece",
+             adUnitIds    : [banner      : "n1h7eoo4ijcp8h",
+                             interstitial: "n1h7t76tg76hja",
+                             splash      : "n1h7t76tij7hlj",
+                             native      : "n1h7t76th560qm",
+                             full_native : "n1h7t76ti6r9cp",
+                             rewarded    : "n1h7t76tevmst6"
              ]
     ]
 
     // 应用基础配置 (本地/内网默认)
-    app = [applicationId: "com.rocket.candy.line",
+    app = [applicationId: "com.leafmotivation.quizguessoncolor",
            show_log     : true,
            string_fog   : false,
            shifter_mode : "internal" // 标识当前为本地模式

@@ -68,8 +68,7 @@ cat release_notes.txt
 echo "--------------------------------------------------"
 
 echo "🚀 开始构建并分发 (Version: ${NEXT_TAG})..."
-# 🚀 适配零变体架构：assembleInternalRelease -> assembleRelease
-./gradlew clean assembleRelease appDistributionUploadRelease \
+./gradlew clean assembleInternalRelease appDistributionUploadInternalRelease \
   -PinternalVersionName="${NEXT_TAG}"
 
 echo "✅ 本地分发完成！"
