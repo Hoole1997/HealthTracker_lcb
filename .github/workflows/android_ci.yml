@@ -3,62 +3,35 @@ name: Android Release Build
 on:
   workflow_dispatch:
     inputs:
-      mode:
-        description: 'Build variant (internal/official release)'
-        required: true
-        default: 'internal'
-        type: choice
-        options:
-        - internal
-        - official
-  pull_request:
-    branches: [ "master", "main", "develop" ]
-  push:
-    tags: 
-      - "v*"       # Legacy version tags
-      - "T*"       # Internal test builds (T1.0.7.A, T1.0.7.B)
-      - "[0-9]+.[0-9]+.[0-9]+"  # Play Store releases (1.0.7, 1.0.8)
+      version_name:
+        description: 'Optional versionName override'
+        required: false
+        type: string
 
 jobs:
   build:
     name: Build Android App
     runs-on: ubuntu-latest
     
-    # 设置全局工作目录为 Layer 1 (业务库)
     defaults:
       run:
         working-directory: main-repo
 
     env:
-      # 推断构建模式：标签名为纯数字版本(1.0.7) -> official, T开头 -> internal
-      BUILD_MODE: ${{ (startsWith(github.ref, 'refs/tags/') && !startsWith(github.ref, 'refs/tags/T') && !startsWith(github.ref, 'refs/tags/v')) && 'official' || github.event.inputs.mode || 'internal' }}
       # 限制 Gradle 堆内存，适配 GitHub Runner
       GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError"
 
     steps:
-    - name: Checkout Business Repo (Layer 1)
+    - name: Checkout Repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
         path: main-repo
 
-    - name: Checkout Common Tools (Layer 2)
-      uses: actions/checkout@v4
-      with:
-        repository: ReMax-ci/android-ci
-        token: ${{ secrets.GH_PAT_FOR_SCRIPTS }} # 假设已配置机器人权限
-        path: common-tools
-
-    - name: Record Start Time
-      run: echo "BUILD_START_TIME=$(date +%s)" >> $GITHUB_ENV
-
     - name: Set up project version fallback
       run: |
         # 从 build.gradle.kts 提取版本号
         V_NAME=$(grep "defaultVersionName =" app/build.gradle.kts | head -n 1 | awk -F'"' '{print $2}')
-        if [ "$BUILD_MODE" == "internal" ]; then
-           V_NAME="${V_NAME}-internal"
-        fi
         echo "PROJECT_VERSION=$V_NAME" >> $GITHUB_ENV
         echo "Extracted project version: $V_NAME"
 
@@ -77,18 +50,13 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Build Release with Gradle ($BUILD_MODE)
+    - name: Build Official AAB
       run: |
-        echo "Building Mode: $BUILD_MODE | Task: release"
+        echo "Building official release AAB"
         
-        # 1. 签名准备。Google Services JSON 已提交在 app/src/{internal,official}/ 变体目录。
-        if [ "$BUILD_MODE" == "official" ]; then
-            echo "${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}" | base64 -di > scripts/release.jks
-            GOOGLE_JSON_PATH="app/src/official/google-services.json"
-        else
-            echo "${{ secrets.INTERNAL_KEYSTORE_BASE64 }}" | base64 -di > scripts/pdfreader.jks
-            GOOGLE_JSON_PATH="app/src/internal/google-services.json"
-        fi
+        # 1. 签名准备。Google Services JSON 已提交在 app/src/official/ 变体目录。
+        echo "${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}" | base64 -di > scripts/release.jks
+        GOOGLE_JSON_PATH="app/src/official/google-services.json"
 
         if [ ! -f "$GOOGLE_JSON_PATH" ]; then
             echo "Missing Google Services JSON: $GOOGLE_JSON_PATH"
@@ -96,17 +64,10 @@ jobs:
         fi
 
         # 2. 生成签名配置文件 (sign.properties)
-        if [ "$BUILD_MODE" == "official" ]; then
-            echo "keystore=release.jks" > scripts/sign.properties
-            echo "keystore.password=${{ secrets.PLAYSTORE_STORE_PASSWORD }}" >> scripts/sign.properties
-            echo "keyAlias=${{ secrets.PLAYSTORE_KEY_ALIAS }}" >> scripts/sign.properties
-            echo "keyPassword=${{ secrets.PLAYSTORE_KEY_PASSWORD }}" >> scripts/sign.properties
-        else
-            echo "keystore=pdfreader.jks" > scripts/sign.properties
-            echo "keystore.password=${{ secrets.INTERNAL_STORE_PASSWORD }}" >> scripts/sign.properties
-            echo "keyAlias=${{ secrets.INTERNAL_KEY_ALIAS }}" >> scripts/sign.properties
-            echo "keyPassword=${{ secrets.INTERNAL_KEY_PASSWORD }}" >> scripts/sign.properties
-        fi
+        echo "keystore=release.jks" > scripts/sign.properties
+        echo "keystore.password=${{ secrets.PLAYSTORE_STORE_PASSWORD }}" >> scripts/sign.properties
+        echo "keyAlias=${{ secrets.PLAYSTORE_KEY_ALIAS }}" >> scripts/sign.properties
+        echo "keyPassword=${{ secrets.PLAYSTORE_KEY_PASSWORD }}" >> scripts/sign.properties
 
         # 3. 提取标签版本 (如果由标签触发)
         if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -115,121 +76,18 @@ jobs:
             echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
             VERSION_PARAM="-PinternalVersionName=$TAG_NAME"
             echo "VERSION_PARAM=$VERSION_PARAM" >> $GITHUB_ENV
+        elif [ -n "${{ github.event.inputs.version_name }}" ]; then
+            VERSION_PARAM="-PinternalVersionName=${{ github.event.inputs.version_name }}"
+            echo "VERSION_PARAM=$VERSION_PARAM" >> $GITHUB_ENV
         fi
 
-        # 4. 执行 Release 构建任务 (Official 用 bundle, Internal 用 assemble)
-        MODE_CAP="$(tr '[:lower:]' '[:upper:]' <<< "${BUILD_MODE:0:1}")${BUILD_MODE:1}"
-        GRADLE_VARIANT="${MODE_CAP}Release"
-        echo "Gradle variant: $GRADLE_VARIANT"
-
-        if [ "$BUILD_MODE" == "official" ]; then
-            ./gradlew bundle${GRADLE_VARIANT} -x lint $VERSION_PARAM --stacktrace
-        else
-            ./gradlew assemble${GRADLE_VARIANT} -x lint $VERSION_PARAM --stacktrace
-        fi
-
-    - name: Generate Changelog for Internal Release
-      if: startsWith(github.ref, 'refs/tags/T')
-      run: |
-        echo "Generating Changelog..."
-        # Fetch tags to find previous one (already fetched depth 0)
-        git fetch --prune --tags
-        
-        CURRENT_TAG=${GITHUB_REF#refs/tags/}
-        # Find previous tag (sort by creator date desc, skip current, take first)
-        # 修复逻辑: 不再只 grep "T"，而是查找任何版本 Tag (T* 或 v*)。
-        # 这样如果上一个是 v1.0.1，也能正确计算增量
-        PREV_TAG=$(git tag --sort=-creatordate | grep -E "^(T|v)" | grep -v "^${CURRENT_TAG}$" | head -n 1)
-        
-        if [ -z "$PREV_TAG" ]; then
-           echo "No previous tag found. Using initial commit logic or empty."
-           # Fallback: just list commits from the beginning if needed, or specific base
-           # For now, let's just use HEAD~10 for safety if no tag, or handle error
-           PREV_TAG=$(git rev-list --max-parents=0 HEAD) 
-        fi
-        
-        echo "Diff: $PREV_TAG..$CURRENT_TAG"
-        
-        python3 ../common-tools/generate_changelog.py "$PREV_TAG" "$CURRENT_TAG"
-        
-        cat release_notes.txt
-
-
-    - name: Deploy Internal to Firebase
-      if: env.BUILD_MODE == 'internal' && github.event_name != 'pull_request'
-      env:
-        FIREBASE_APP_ID: ${{ secrets.INTERNAL_FIREBASE_APP_ID }}
-        CREDENTIAL_CONTENT: ${{ secrets.INTERNAL_FIREBASE_CREDENTIAL_FILE_CONTENT }}
-      run: |
-        echo "Checking Firebase Credentials..."
-        if [ -n "$CREDENTIAL_CONTENT" ]; then
-           echo "$CREDENTIAL_CONTENT" | base64 -di > scripts/google-services-json-key.json
-           echo "Deploying to Firebase App Distribution..."
-           # 使用持久化到 GITHUB_ENV 的 VERSION_PARAM (跨 step 传递)
-           ./gradlew appDistributionUploadInternalRelease ${{ env.VERSION_PARAM }}
-        else
-           echo "⚠️ Warning: FIREBASE_CREDENTIAL_FILE_CONTENT is missing. Skipping deployment."
-        fi
+        # 4. 执行 official AAB 构建任务
+        ./gradlew bundleOfficialRelease -x lint $VERSION_PARAM --stacktrace
 
     - name: Upload Artifact
       if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: app-${{ env.BUILD_MODE }}${{ env.TAG_NAME && format('-{0}', env.TAG_NAME) || '' }}
+        name: app-official${{ env.TAG_NAME && format('-{0}', env.TAG_NAME) || '' }}
         path: |
-          main-repo/app/build/outputs/apk/**/*.apk
           main-repo/app/build/outputs/bundle/**/*.aab
-          main-repo/release_notes.txt
-
-    # ========================================
-    # 构建通知 (飞书卡片消息 + 文件上传)
-    # ========================================
-    - name: Notify Lark (Build Result)
-      if: (success() || failure())
-      env:
-        LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
-        LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
-        LARK_CHAT_ID: ${{ secrets.LARK_CHAT_ID }}
-        LARK_FOLDER_TOKEN: ${{ secrets.LARK_FOLDER_TOKEN }}
-      run: |
-        if [ -z "$LARK_APP_ID" ] || [ -z "$LARK_APP_SECRET" ] || [ -z "$LARK_CHAT_ID" ]; then
-          echo "⚠️ Lark credentials not configured, skipping notification"
-          exit 0
-        fi
-        
-        # 确定版本显示逻辑 (优先使用 Tag 名)
-        if [ -n "${{ env.TAG_NAME }}" ]; then
-            VERSION="${{ env.TAG_NAME }}"
-        else
-            VERSION="${{ env.PROJECT_VERSION }}"
-        fi
-        
-        DURATION_SEC=$(( $(date +%s) - ${{ env.BUILD_START_TIME }} ))
-        DURATION="$((DURATION_SEC / 60))m $((DURATION_SEC % 60))s"
-        LOG_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        
-        # 仅在 Official(外网) 模式且构建成功时上传产物
-        if [ "$BUILD_MODE" == "official" ] && [ "${{ job.status }}" == "success" ]; then
-            FILE_PATH=$(find app/build/outputs/bundle -name "*.aab" 2>/dev/null | head -1)
-        else
-            FILE_PATH=""
-        fi
-        
-        if [ -n "$FILE_PATH" ]; then
-          python3 ../common-tools/lark_notifier.py \
-            --version "$VERSION" \
-            --status "${{ job.status }}" \
-            --duration "$DURATION" \
-            --file "$FILE_PATH" \
-            --project "${{ github.event.repository.name }}" \
-            --log-url "$LOG_URL" \
-            --commit "${{ github.sha }}"
-        else
-          python3 ../common-tools/lark_notifier.py \
-            --version "$VERSION" \
-            --status "${{ job.status }}" \
-            --duration "$DURATION" \
-            --project "${{ github.event.repository.name }}" \
-            --log-url "$LOG_URL" \
-            --commit "${{ github.sha }}"
-        fi
