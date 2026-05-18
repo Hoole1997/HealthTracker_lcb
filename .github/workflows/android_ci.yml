@@ -18,8 +18,8 @@ jobs:
         working-directory: main-repo
 
     env:
-      # 限制 Gradle 堆内存，适配 GitHub Runner
-      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError"
+      # 给 release/R8 阶段更多堆内存，避免 GitHub Runner 上 4G OOM
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx7g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError"
 
     steps:
     - name: Checkout Repository
