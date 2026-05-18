@@ -79,18 +79,18 @@ fun loadChannelConfig(
 val internalChannel = loadChannelConfig(
     name = "internal",
     scriptPath = "../scripts/internal.gradle",
-    launcherUnityDependency = "com.launcher.unity:com.leafmotivation.quizguessoncolor-health:1.0.6",
+    launcherUnityDependency = "com.launcher.unity:com.leafmotivation.quizguessoncolor-health-main-dev:1.0.0",
 )
 val officialChannel = loadChannelConfig(
     name = "official",
     scriptPath = "../scripts/official.gradle",
-    launcherUnityDependency = "com.launcher.unity:com.blood.sugar.health.diabetes.tool-BloodSugar:1.0.7",
+    launcherUnityDependency = "com.launcher.unity:com.blood.sugar.health.diabetes.tool-BloodSugar:1.0.8",
 )
 
 val semanticVersion = project.findProperty("internalVersionName")
     ?.toString()
     ?.takeIf { it.isNotEmpty() }
-val defaultVersionName = "1.0.12"
+val defaultVersionName = "1.0.13"
 val resolvedVersionName = semanticVersion?.removePrefix("v") ?: defaultVersionName
 val buildTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
 println("📦 [Flavor] Internal Package: ${internalChannel.app["applicationId"]}")
@@ -100,7 +100,7 @@ android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        versionCode = 12
+        versionCode = 13
         versionName = resolvedVersionName
         if (semanticVersion != null) {
             println("🏷️ [Flavor] Override VersionName: $resolvedVersionName")
