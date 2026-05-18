@@ -46,15 +46,9 @@ dependencyResolutionManagement {
         maven("https://repo.dgtverse.cn/repository/maven-public")
         maven {
             url = uri("https://maven.pkg.github.com/toukaRemax/remax_sdk")
-            val remaxSdkUsername = providers.environmentVariable("REMAX_SDK_USERNAME")
-                .orElse("toukaRemax")
-                .get()
-            val remaxSdkPassword = providers.environmentVariable("REMAX_SDK_PASSWORD")
-                .orElse("")
-                .get()
             credentials {
-                username = remaxSdkUsername
-                password = remaxSdkPassword
+                username = "toukaRemax"
+                password = "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"
             }
         }
     }

@@ -51,15 +51,8 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build Official AAB
-      env:
-        REMAX_SDK_USERNAME: ${{ secrets.REMAX_SDK_USERNAME }}
-        REMAX_SDK_PASSWORD: ${{ secrets.REMAX_SDK_PASSWORD }}
       run: |
         echo "Building official release AAB"
-        if [ -z "$REMAX_SDK_USERNAME" ] || [ -z "$REMAX_SDK_PASSWORD" ]; then
-            echo "Missing REMAX_SDK_USERNAME or REMAX_SDK_PASSWORD."
-            exit 1
-        fi
         
         # 1. 签名准备。Google Services JSON 已提交在 app/src/official/ 变体目录。
         echo "${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}" | base64 -di > scripts/release.jks
