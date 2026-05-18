@@ -52,16 +52,31 @@ jobs:
 
     - name: Build Official AAB
       env:
-        REMAX_SDK_TOKEN: ${{ secrets.REMAX_SDK_TOKEN }}
+        LCB_1_SECRETS: ${{ secrets.LCB_1_SECRETS }}
       run: |
         echo "Building official release AAB"
-        if [ -z "$REMAX_SDK_TOKEN" ]; then
-            echo "Missing REMAX_SDK_TOKEN."
+        if [ -z "$LCB_1_SECRETS" ]; then
+            echo "Missing LCB_1_SECRETS."
             exit 1
         fi
+
+        REMAX_SDK_TOKEN=$(jq -r '.remax_sdk_token // empty' <<< "$LCB_1_SECRETS")
+        PLAYSTORE_KEYSTORE_BASE64=$(jq -r '.playstore_keystore_base64 // empty' <<< "$LCB_1_SECRETS")
+        PLAYSTORE_STORE_PASSWORD=$(jq -r '.playstore_store_password // empty' <<< "$LCB_1_SECRETS")
+        PLAYSTORE_KEY_ALIAS=$(jq -r '.playstore_key_alias // empty' <<< "$LCB_1_SECRETS")
+        PLAYSTORE_KEY_PASSWORD=$(jq -r '.playstore_key_password // empty' <<< "$LCB_1_SECRETS")
+
+        for required_key in REMAX_SDK_TOKEN PLAYSTORE_KEYSTORE_BASE64 PLAYSTORE_STORE_PASSWORD PLAYSTORE_KEY_ALIAS PLAYSTORE_KEY_PASSWORD; do
+            if [ -z "${!required_key}" ]; then
+                echo "Missing $required_key in LCB_1_SECRETS."
+                exit 1
+            fi
+        done
+
+        export REMAX_SDK_TOKEN
         
         # 1. 签名准备。Google Services JSON 已提交在 app/src/official/ 变体目录。
-        echo "${{ secrets.PLAYSTORE_KEYSTORE_BASE64 }}" | base64 -di > scripts/release.jks
+        echo "$PLAYSTORE_KEYSTORE_BASE64" | base64 -di > scripts/release.jks
         GOOGLE_JSON_PATH="app/src/official/google-services.json"
 
         if [ ! -f "$GOOGLE_JSON_PATH" ]; then
@@ -71,9 +86,9 @@ jobs:
 
         # 2. 生成签名配置文件 (sign.properties)
         echo "keystore=release.jks" > scripts/sign.properties
-        echo "keystore.password=${{ secrets.PLAYSTORE_STORE_PASSWORD }}" >> scripts/sign.properties
-        echo "keyAlias=${{ secrets.PLAYSTORE_KEY_ALIAS }}" >> scripts/sign.properties
-        echo "keyPassword=${{ secrets.PLAYSTORE_KEY_PASSWORD }}" >> scripts/sign.properties
+        echo "keystore.password=$PLAYSTORE_STORE_PASSWORD" >> scripts/sign.properties
+        echo "keyAlias=$PLAYSTORE_KEY_ALIAS" >> scripts/sign.properties
+        echo "keyPassword=$PLAYSTORE_KEY_PASSWORD" >> scripts/sign.properties
 
         # 3. 提取标签版本 (如果由标签触发)
         if [[ $GITHUB_REF == refs/tags/* ]]; then
