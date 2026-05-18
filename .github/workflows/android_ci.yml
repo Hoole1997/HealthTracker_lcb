@@ -3,31 +3,20 @@ name: Build official signed AAB
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-
-concurrency:
-  group: official-aab-lcb
-  cancel-in-progress: false
-
 jobs:
   build-official-aab:
     runs-on: ubuntu-latest
 
     env:
-      KEYSTORE_REPO_PATH: app/src/official/release.jks
-      KEYSTORE_ALIAS: health
-      KEYSTORE_PASSWORD: lcb123456
-      KEY_PASSWORD: lcb123456
-      PERSIST_KEYSTORE_BRANCH: lcb
-      GRADLE_JVM_ARGS: -Xmx6144m -XX:MaxMetaspaceSize=1024m -XX:+UseParallelGC -Dfile.encoding=UTF-8
-      KOTLIN_DAEMON_JVM_ARGS: -Xmx1024m
+      # 给 release/R8 阶段更多堆内存，避免 GitHub Runner 上 4G OOM
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx7g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError"
+      GRADLE_JVM_ARGS: "-Xmx7g -XX:MaxMetaspaceSize=1g -XX:+UseParallelGC -Dfile.encoding=UTF-8"
+      KOTLIN_DAEMON_JVM_ARGS: "-Xmx1024m"
 
     steps:
-      - name: Checkout lcb
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: lcb
           fetch-depth: 0
 
       - name: Set up JDK 17
@@ -38,53 +27,53 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-
-      - name: Ensure official release keystore exists
-        id: ensure_keystore
-        run: |
-          set -euo pipefail
-
-          mkdir -p "$(dirname "$KEYSTORE_REPO_PATH")"
-
-          if [ -f "$KEYSTORE_REPO_PATH" ] && [ -s "$KEYSTORE_REPO_PATH" ]; then
-            echo "Using existing keystore: $KEYSTORE_REPO_PATH"
-            echo "created=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          keytool -genkeypair \
-            -v \
-            -storetype PKCS12 \
-            -keystore "$KEYSTORE_REPO_PATH" \
-            -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" \
-            -alias "$KEYSTORE_ALIAS" \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 36500 \
-            -dname "CN=Official Release, OU=Mobile, O=GitHub Actions, L=San Francisco, S=CA, C=US"
-
-          echo "created=true" >> "$GITHUB_OUTPUT"
-
-      - name: Commit generated keystore to lcb
-        if: steps.ensure_keystore.outputs.created == 'true'
-        run: |
-          set -euo pipefail
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f "$KEYSTORE_REPO_PATH"
-
-          if git diff --cached --quiet; then
-            echo "No keystore changes to commit."
-            exit 0
-          fi
-
-          git commit -m "chore: add official release keystore"
-          git push origin HEAD:$PERSIST_KEYSTORE_BRANCH
+        with:
+          cache-read-only: false
 
       - name: Grant Gradle wrapper permission
         run: chmod +x ./gradlew
+
+      - name: Configure release secrets
+        env:
+          LCB_2_SECRETS: ${{ secrets.LCB_2_SECRETS }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$LCB_2_SECRETS" ]; then
+            echo "Missing LCB_2_SECRETS."
+            exit 1
+          fi
+
+          REMAX_SDK_TOKEN=$(jq -r '.remax_sdk_token // empty' <<< "$LCB_2_SECRETS")
+          PLAYSTORE_KEYSTORE_BASE64=$(jq -r '.playstore_keystore_base64 // empty' <<< "$LCB_2_SECRETS")
+          PLAYSTORE_STORE_PASSWORD=$(jq -r '.playstore_store_password // empty' <<< "$LCB_2_SECRETS")
+          PLAYSTORE_KEY_ALIAS=$(jq -r '.playstore_key_alias // empty' <<< "$LCB_2_SECRETS")
+          PLAYSTORE_KEY_PASSWORD=$(jq -r '.playstore_key_password // empty' <<< "$LCB_2_SECRETS")
+
+          for required_key in REMAX_SDK_TOKEN PLAYSTORE_KEYSTORE_BASE64 PLAYSTORE_STORE_PASSWORD PLAYSTORE_KEY_ALIAS PLAYSTORE_KEY_PASSWORD; do
+            if [ -z "${!required_key}" ]; then
+              echo "Missing $required_key in LCB_2_SECRETS."
+              exit 1
+            fi
+          done
+
+          echo "REMAX_SDK_TOKEN=$REMAX_SDK_TOKEN" >> "$GITHUB_ENV"
+
+          mkdir -p app/src/official
+          echo "$PLAYSTORE_KEYSTORE_BASE64" | base64 -di > app/src/official/release.jks
+
+          {
+            echo "keystore=release.jks"
+            echo "keystore.password=$PLAYSTORE_STORE_PASSWORD"
+            echo "keyAlias=$PLAYSTORE_KEY_ALIAS"
+            echo "keyPassword=$PLAYSTORE_KEY_PASSWORD"
+          } > app/src/official/sign.properties
+
+          GOOGLE_JSON_PATH="app/src/official/google-services.json"
+          if [ ! -f "$GOOGLE_JSON_PATH" ]; then
+            echo "Missing Google Services JSON: $GOOGLE_JSON_PATH"
+            exit 1
+          fi
 
       - name: Configure CI Gradle properties
         run: |

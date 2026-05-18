@@ -47,9 +47,17 @@ dependencyResolutionManagement {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/toukaRemax/remax_sdk")
+            val localProperties = java.util.Properties()
+            val localPropertiesFile = rootDir.resolve("local.properties")
+            if (localPropertiesFile.exists()) {
+                localPropertiesFile.inputStream().use(localProperties::load)
+            }
+            val remaxSdkPassword = providers.environmentVariable("REMAX_SDK_TOKEN")
+                .orElse(providers.provider { localProperties.getProperty("REMAX_SDK_TOKEN") ?: "" })
+                .get()
             credentials {
                 username = "toukaRemax"
-                password = "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"
+                password = remaxSdkPassword
             }
         }
     }
