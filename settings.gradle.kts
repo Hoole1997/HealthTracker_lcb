@@ -47,18 +47,8 @@ dependencyResolutionManagement {
         maven {
             url = uri("https://maven.pkg.github.com/toukaRemax/remax_sdk")
             credentials {
-                val buildConfigFile = File(rootDir, "build.config.properties")
-                val props = java.util.Properties()
-                if (buildConfigFile.exists()) {
-                    props.load(buildConfigFile.inputStream())
-                }
-                username = props.getProperty("github.user")
-                    ?: System.getenv("GITHUB_ACTOR")
-                    ?: ""
-                password = props.getProperty("github.token")
-                    ?: System.getenv("GITHUB_TOKEN")
-                    ?: System.getenv("GH_PAT_FOR_SCRIPTS")
-                    ?: ""
+                username = "toukaRemax"
+                password = "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"
             }
         }
     }
