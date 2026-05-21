@@ -76,7 +76,7 @@
                                 "novi_feedback_pop_1":  "Share a reason so we can improve.",
                                 "novi_feedback_pop_2":  "The \\\"Other\\\" field cannot be empty.",
                                 "novi_uninstall_introduce_title":  "Uninstall App",
-                                "novi_uninstall_introduce_message":  "To uninstall this app, please complete the process on the \u003cb\u003eApp Info page.\u003c/b\u003e",
+                                "novi_uninstall_introduce_message":  "To uninstall this app, please complete the process on the App Info page.",
                                 "novi_uninstall_introduce_confirm":  "App Info",
                                 "novi_uninstall_introduce_cancel":  "Cancel",
                                 "novi_uninstall_guide_1":  "If you leave, we understand.\\nYou can install the app again any time.",
@@ -268,7 +268,7 @@
                               "novi_guid_1_tips_3":  "SCHNELLZUGRIFF",
                               "novi_guid_2_tips_title":  "Standard-Home-App",
                               "novi_uninstall_introduce_title":  "App deinstallieren",
-                              "novi_uninstall_introduce_message":  "Um diese App zu deinstallieren, schlie\u00dfe den Vorgang bitte auf der \u003cb\u003eApp-Info-Seite\u003c/b\u003e ab.",
+                              "novi_uninstall_introduce_message":  "Um diese App zu deinstallieren, schlie\u00dfe den Vorgang bitte auf der App-Info-Seite ab.",
                               "novi_uninstall_introduce_confirm":  "App-Info",
                               "novi_uninstall_introduce_cancel":  "Abbrechen"
                           },
@@ -405,7 +405,7 @@
                               "novi_guid_1_tips_3":  "ACCESO RAPIDO",
                               "novi_guid_2_tips_title":  "Aplicaci\u00f3n de inicio predeterminada",
                               "novi_uninstall_introduce_title":  "Desinstalar aplicaci\u00f3n",
-                              "novi_uninstall_introduce_message":  "Para desinstalar esta aplicaci\u00f3n, completa el proceso en la \u003cb\u003ep\u00e1gina de informaci\u00f3n de la aplicaci\u00f3n.\u003c/b\u003e",
+                              "novi_uninstall_introduce_message":  "Para desinstalar esta aplicaci\u00f3n, completa el proceso en la p\u00e1gina de informaci\u00f3n de la aplicaci\u00f3n.",
                               "novi_uninstall_introduce_confirm":  "Info de la aplicaci\u00f3n",
                               "novi_uninstall_introduce_cancel":  "Cancelar"
                           },
@@ -542,7 +542,7 @@
                               "novi_guid_1_tips_3":  "ACCES RAPIDE",
                               "novi_guid_2_tips_title":  "Application d\u0027accueil par d\u00e9faut",
                               "novi_uninstall_introduce_title":  "D\u00e9sinstaller l\u0027application",
-                              "novi_uninstall_introduce_message":  "Pour d\u00e9sinstaller cette application, termine le processus sur la \u003cb\u003epage Infos sur l\u0027application.\u003c/b\u003e",
+                              "novi_uninstall_introduce_message":  "Pour d\u00e9sinstaller cette application, termine le processus sur la page Infos sur l\u0027application.",
                               "novi_uninstall_introduce_confirm":  "Infos sur l\u0027application",
                               "novi_uninstall_introduce_cancel":  "Annuler"
                           },
@@ -679,7 +679,7 @@
                               "novi_guid_1_tips_3":  "AKSES CEPAT",
                               "novi_guid_2_tips_title":  "Aplikasi Beranda Default",
                               "novi_uninstall_introduce_title":  "Copot Aplikasi",
-                              "novi_uninstall_introduce_message":  "Untuk mencopot aplikasi ini, silakan selesaikan prosesnya di \u003cb\u003ehalaman Info Aplikasi.\u003c/b\u003e",
+                              "novi_uninstall_introduce_message":  "Untuk mencopot aplikasi ini, silakan selesaikan prosesnya di halaman Info Aplikasi.",
                               "novi_uninstall_introduce_confirm":  "Info Aplikasi",
                               "novi_uninstall_introduce_cancel":  "Batal"
                           },
@@ -816,7 +816,7 @@
                               "novi_guid_1_tips_3":  "AKSES CEPAT",
                               "novi_guid_2_tips_title":  "Aplikasi Beranda Default",
                               "novi_uninstall_introduce_title":  "Copot Aplikasi",
-                              "novi_uninstall_introduce_message":  "Untuk mencopot aplikasi ini, silakan selesaikan prosesnya di \u003cb\u003ehalaman Info Aplikasi.\u003c/b\u003e",
+                              "novi_uninstall_introduce_message":  "Untuk mencopot aplikasi ini, silakan selesaikan prosesnya di halaman Info Aplikasi.",
                               "novi_uninstall_introduce_confirm":  "Info Aplikasi",
                               "novi_uninstall_introduce_cancel":  "Batal"
                           },
@@ -953,7 +953,7 @@
                               "novi_guid_1_tips_3":  "\ube60\ub978 \uc2e4\ud589",
                               "novi_guid_2_tips_title":  "\uae30\ubcf8 \ud648 \uc571",
                               "novi_uninstall_introduce_title":  "\uc571 \uc81c\uac70",
-                              "novi_uninstall_introduce_message":  "\uc774 \uc571\uc744 \uc81c\uac70\ud558\ub824\uba74 \u003cb\u003e\uc571 \uc815\ubcf4 \ud398\uc774\uc9c0\u003c/b\u003e\uc5d0\uc11c \uc808\ucc28\ub97c \uc644\ub8cc\ud574 \uc8fc\uc138\uc694.",
+                              "novi_uninstall_introduce_message":  "\uc774 \uc571\uc744 \uc81c\uac70\ud558\ub824\uba74 \uc571 \uc815\ubcf4 \ud398\uc774\uc9c0\uc5d0\uc11c \uc808\ucc28\ub97c \uc644\ub8cc\ud574 \uc8fc\uc138\uc694.",
                               "novi_uninstall_introduce_confirm":  "\uc571 \uc815\ubcf4",
                               "novi_uninstall_introduce_cancel":  "\ucde8\uc18c"
                           },
@@ -1090,7 +1090,7 @@
                               "novi_guid_1_tips_3":  "ACESSO RAPIDO",
                               "novi_guid_2_tips_title":  "Aplicativo de in\u00edcio padr\u00e3o",
                               "novi_uninstall_introduce_title":  "Desinstalar aplicativo",
-                              "novi_uninstall_introduce_message":  "Para desinstalar este aplicativo, conclua o processo na \u003cb\u003ep\u00e1gina de Informa\u00e7\u00f5es do app.\u003c/b\u003e",
+                              "novi_uninstall_introduce_message":  "Para desinstalar este aplicativo, conclua o processo na p\u00e1gina de Informa\u00e7\u00f5es do app.",
                               "novi_uninstall_introduce_confirm":  "Informa\u00e7\u00f5es do app",
                               "novi_uninstall_introduce_cancel":  "Cancelar"
                           },
@@ -1227,7 +1227,7 @@
                               "novi_guid_1_tips_3":  "\u0411\u042b\u0421\u0422\u0420\u042b\u0419 \u0414\u041e\u0421\u0422\u0423\u041f",
                               "novi_guid_2_tips_title":  "\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0433\u043b\u0430\u0432\u043d\u043e\u0433\u043e \u044d\u043a\u0440\u0430\u043d\u0430 \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e",
                               "novi_uninstall_introduce_title":  "\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435",
-                              "novi_uninstall_introduce_message":  "\u0427\u0442\u043e\u0431\u044b \u0443\u0434\u0430\u043b\u0438\u0442\u044c \u044d\u0442\u043e \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435, \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u0435 \u043f\u0440\u043e\u0446\u0435\u0441\u0441 \u043d\u0430 \u003cb\u003e\u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435 \u00ab\u041e \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0438\u00bb.\u003c/b\u003e",
+                              "novi_uninstall_introduce_message":  "\u0427\u0442\u043e\u0431\u044b \u0443\u0434\u0430\u043b\u0438\u0442\u044c \u044d\u0442\u043e \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435, \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u0435 \u043f\u0440\u043e\u0446\u0435\u0441\u0441 \u043d\u0430 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435 \u00ab\u041e \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0438\u00bb.",
                               "novi_uninstall_introduce_confirm":  "\u041e \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0438",
                               "novi_uninstall_introduce_cancel":  "\u041e\u0442\u043c\u0435\u043d\u0430"
                           },
@@ -1364,7 +1364,7 @@
                               "novi_guid_1_tips_3":  "TRUY CAP NHANH",
                               "novi_guid_2_tips_title":  "\u1ee8ng d\u1ee5ng m\u00e0n h\u00ecnh ch\u00ednh m\u1eb7c \u0111\u1ecbnh",
                               "novi_uninstall_introduce_title":  "G\u1ee1 c\u00e0i \u0111\u1eb7t \u1ee9ng d\u1ee5ng",
-                              "novi_uninstall_introduce_message":  "\u0110\u1ec3 g\u1ee1 c\u00e0i \u0111\u1eb7t \u1ee9ng d\u1ee5ng n\u00e0y, vui l\u00f2ng ho\u00e0n t\u1ea5t quy tr\u00ecnh t\u1ea1i \u003cb\u003etrang Th\u00f4ng tin \u1ee9ng d\u1ee5ng.\u003c/b\u003e",
+                              "novi_uninstall_introduce_message":  "\u0110\u1ec3 g\u1ee1 c\u00e0i \u0111\u1eb7t \u1ee9ng d\u1ee5ng n\u00e0y, vui l\u00f2ng ho\u00e0n t\u1ea5t quy tr\u00ecnh t\u1ea1i trang Th\u00f4ng tin \u1ee9ng d\u1ee5ng.",
                               "novi_uninstall_introduce_confirm":  "Th\u00f4ng tin \u1ee9ng d\u1ee5ng",
                               "novi_uninstall_introduce_cancel":  "H\u1ee7y"
                           }

@@ -229,10 +229,10 @@ dependencies {
     api(project(":framework"))
     implementation(libs.remax.core)
     implementation(libs.remax.bill)
-    add("internalImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-health-variants-1:1.0.0") {
+    add("internalImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-health-variants-1:1.0.4") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
-    add("officialImplementation", "com.launcher.unity:com.blood.pressure.health.monitor.tool-health-release:1.0.3") {
+    add("officialImplementation", "com.launcher.unity:com.blood.pressure.health.monitor.tool-health-release:1.0.4") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     api(project(":metrics"))
