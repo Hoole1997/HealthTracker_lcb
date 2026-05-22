@@ -53,8 +53,9 @@ val analytics = configMap("analytics")
 val showLog = appConfig["show_log"] as? Boolean ?: false
 val defaultUserChannel = analytics["defaultUserChannel"] ?: "default"
 val selectedChannel = rootProject.extra["selectedChannel"]?.toString() ?: "internal"
+val defaultVersionName = "1.0.1"
 val semanticVersion = project.findProperty("internalVersionName")?.toString()?.takeIf { it.isNotBlank() }
-val resolvedVersionName = semanticVersion?.removePrefix("v") ?: "1.0.0"
+val resolvedVersionName = semanticVersion?.removePrefix("v") ?: defaultVersionName
 val officialReleaseAabName = "${rootProject.name}_official_release_${resolvedVersionName}.aab"
 
 println("📦 [Channel] Building '$selectedChannel' | Package: ${appConfig["applicationId"]}")
@@ -65,11 +66,10 @@ android {
     defaultConfig {
         applicationId = appConfig.stringValue("applicationId")
         versionCode = 2
-        versionName = "1.0.1"
+        versionName = resolvedVersionName
 
         if (semanticVersion != null) {
             println("🏷️ [Version] Override VersionName: $semanticVersion")
-            versionName = semanticVersion.removePrefix("v")
         }
 
         buildConfig {
