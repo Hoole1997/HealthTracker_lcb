@@ -90,7 +90,7 @@ val officialChannel = loadChannelConfig(
 val semanticVersion = project.findProperty("internalVersionName")
     ?.toString()
     ?.takeIf { it.isNotEmpty() }
-val defaultVersionName = "1.0.13"
+val defaultVersionName = "1.0.0"
 val resolvedVersionName = semanticVersion?.removePrefix("v") ?: defaultVersionName
 val buildTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
 println("📦 [Flavor] Internal Package: ${internalChannel.app["applicationId"]}")
@@ -100,7 +100,7 @@ android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        versionCode = 13
+        versionCode = 1
         versionName = resolvedVersionName
         if (semanticVersion != null) {
             println("🏷️ [Flavor] Override VersionName: $resolvedVersionName")
@@ -379,8 +379,8 @@ actGuard {
         "com.daily.health.manager.App",
         "com.daily.health.manager.service.**",
         "com.daily.health.manager.provider.**",
-        "com.daily.health.manager.ui.weight.*",
-        "com.daily.health.manager.ui.widget.*",
+        "com.daily.health.manager.face.weight.*",
+        "com.daily.health.manager.face.widget.*",
         "com.daily.health.manager.receiver.*",
     )
     changePackageList = hashSetOf(
@@ -388,8 +388,8 @@ actGuard {
 
         "com.daily.health.manager.service.*",
         "com.daily.health.manager.provider.*",
-        "com.daily.health.manager.ui.weight.*",
-        "com.daily.health.manager.ui.widget.*",
+        "com.daily.health.manager.face.weight.*",
+        "com.daily.health.manager.face.widget.*",
         "com.daily.health.manager.receiver.*",
     )
     classNameCharPool = "abcdefghijklmnopqrstuvwxyz"
