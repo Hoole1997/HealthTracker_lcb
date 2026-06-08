@@ -84,6 +84,7 @@
         app:autoSizeMinTextSize="@dimen/sp_12"
         app:autoSizeStepGranularity="1sp"
         app:autoSizeTextType="uniform"
+        app:backgroundTint="@color/tr_home_tab_selected"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_empty" />

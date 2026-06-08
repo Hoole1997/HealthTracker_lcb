@@ -39,7 +39,6 @@ import com.daily.health.manager.face.fragment.HomeFrg
 import com.daily.health.manager.face.fragment.InsightsFrg
 import com.daily.health.manager.face.fragment.MedsFrg
 import com.daily.health.manager.face.fragment.RecordFrg
-import com.daily.health.manager.face.fragment.SettingsFrg
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
 import com.daily.health.manager.face.viewmodel.MainViewModel
@@ -51,7 +50,6 @@ import com.daily.health.manager.service.HealthServiceConstants
 import com.daily.health.manager.strategy.PushScenario
 import com.daily.health.manager.utils.loadBanner
 import com.google.android.material.tabs.TabLayout
-import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
@@ -74,13 +72,13 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
 
     companion object {
         private const val TAG = "MainActivity"
+        private const val HOME_BACKGROUND_COLOR = "#F0F3FC"
     }
 
     private var homeFrg: HomeFrg? = null
     private var medFrg: MedsFrg? = null
     private var recordFrg: RecordFrg? = null
     private var insightsFrg: InsightsFrg? = null
-    private var settingsFrg: SettingsFrg? = null
 
     private val customNotificationHelper: CustomNotificationHelper by inject()
     private val permissionManager: PermissionManager by inject()
@@ -92,13 +90,6 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
     private val homeFrgReady = CompletableDeferred<HomeFrg>()
     private val hostHomeGuideOverlayUi = MutableStateFlow<HomeGuideOverlayUi?>(null)
     private val hostCurrentTab = MutableStateFlow(0)
-
-    private val settingLauncher =
-        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                recreate()
-            }
-        }
 
     private var permissionRequest: PermissionRequest? = null
     
@@ -162,13 +153,12 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
     }
 
     internal val homeFrgAdapter =
-        FragmentsAdapter(supportFragmentManager, 5, object : FragmentsAdapter.Callback {
+        FragmentsAdapter(supportFragmentManager, 4, object : FragmentsAdapter.Callback {
             override fun createInstance(position: Int) = when (position) {
                 0 -> HomeFrg()
                 1 -> MedsFrg()
                 2 -> InsightsFrg()
                 3 -> RecordFrg()
-                4 -> SettingsFrg()
                 else -> throw IllegalArgumentException("Invalid position: $position")
             }
 
@@ -183,7 +173,6 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
                     is RecordFrg -> recordFrg = fragment
                     is MedsFrg -> medFrg = fragment
                     is InsightsFrg -> insightsFrg = fragment
-                    is SettingsFrg -> settingsFrg = fragment
                 }
             }
         })
@@ -204,17 +193,19 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
             applyHostBackgroundForTab(position)
             llWeather.gone()
             tvTitle.visible()
-            if (NotificationFeatureSwitch.reminderEntryEnabled) {
-                ivRemind.visible()
-            } else {
-                ivRemind.gone()
-            }
+            ivRemind.gone()
             tvMonth.gone()
 
             // 根据不同位置设置特定的UI状态和标题
             val titleRes = when (position) {
                 0 -> {
-                    // Home页面：显示默认状态
+                    // Home页面：右上角设置入口
+                    ivRemind.visible()
+                    ivRemind.setImageResource(R.drawable.ic_home_settings)
+                    ivRemind.contentDescription = getString(R.string.tr_settings)
+                    ivRemind.clickWithDuration {
+                        startActivity<SettingsAct>()
+                    }
                     R.string.tr_home
                 }
 
@@ -241,12 +232,6 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
                     R.string.tr_tracker
                 }
 
-                4 -> {
-                    ReportDataManager.reportData("Settings_tab_enter",mapOf())
-                    ivRemind.gone()
-                    R.string.tr_settings
-                }
-
                 else -> R.string.tr_home
             }
             tvTitle.text = getString(titleRes)
@@ -269,20 +254,20 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
 
     private fun applyHostBackgroundForTab(position: Int) {
         val isHomeTab = position == 0
-        val homeColor = ContextCompat.getColor(this, R.color.tr_home_host_bg)
+        val homeColor = Color.parseColor(HOME_BACKGROUND_COLOR)
         val defaultColor = ContextCompat.getColor(this, R.color.c1)
         val subpageColor = ContextCompat.getColor(this, R.color.tr_subpage_bg)
 
         if (isHomeTab) {
-            mViewBind.root.setBackgroundResource(R.drawable.tr_bg_home_host_gradient)
-            mViewBind.areaBar.setBackgroundColor(Color.TRANSPARENT)
-            mViewBind.viewPagerHome.setBackgroundColor(Color.TRANSPARENT)
+            mViewBind.root.setBackgroundColor(homeColor)
+            mViewBind.areaBar.setBackgroundColor(homeColor)
+            mViewBind.viewPagerHome.setBackgroundColor(homeColor)
             mViewBind.adViewContainer.setBackgroundColor(homeColor)
         } else {
             mViewBind.root.setBackgroundColor(defaultColor)
             mViewBind.areaBar.setBackgroundColor(defaultColor)
             mViewBind.viewPagerHome.setBackgroundColor(
-                if (position in 2..4) subpageColor else defaultColor
+                if (position in 2..3) subpageColor else defaultColor
             )
             mViewBind.adViewContainer.setBackgroundResource(R.drawable.tr_bg_bottom_banner)
         }
@@ -324,22 +309,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         with(mViewBind) {
             viewPagerHome.offscreenPageLimit = 0
 
-            if (NotificationFeatureSwitch.reminderEntryEnabled) {
-                // Debug 专用：长按发送测试通知
-                if (BuildState.debug) {
-                    ivRemind.setOnLongClickListener {
-                        sendTestNotifications()
-                        true
-                    }
-                }
-
-                ivRemind.clickWithDuration {
-                    startActivity<AlarmManageScreen>()
-                }
-            } else {
-                ivRemind.gone()
-            }
-
+            currentTabIndex = currentTabIndex.coerceIn(0, homeFrgAdapter.count - 1)
             setupBottomNavBar()
             setupViewPager()
             viewPagerHome.currentItem = currentTabIndex
@@ -481,10 +451,8 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
                 Pair(R.drawable.tr_selector_nav_home, R.string.tr_home),
                 Pair(R.drawable.tr_selector_nav_meds, R.string.tr_meds),
                 Pair(R.drawable.tr_selector_nav_insights, R.string.tr_insights),
-                Pair(R.drawable.tr_selector_nav_record, R.string.tr_tracker),
-                Pair(R.drawable.tr_selector_nav_settings, R.string.tr_settings),
-
-                )
+                Pair(R.drawable.tr_selector_nav_record, R.string.tr_tracker)
+            )
 
             for (tab in tabs) {
                 addBottomNavTab(this, tab.first, getString(tab.second))

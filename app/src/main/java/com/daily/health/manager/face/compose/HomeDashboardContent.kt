@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -26,12 +28,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.boundsInWindow
@@ -199,11 +200,14 @@ fun HomeDashboardScreen(
     onStepCountClick: () -> Unit,
     onGuideAnchorBoundsChanged: (HomeGuideTarget, Rect) -> Unit,
 ) {
+    val orderedCards = remember(cards) { cards.inHomeDisplayOrder() }
+
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize(),
-        contentPadding = PaddingValues(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+            .fillMaxSize()
+            .background(Color(0xFFF0F3FC)),
+        contentPadding = PaddingValues(start = 16.dp, top = 18.dp, end = 16.dp, bottom = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
             HeroCard(
@@ -217,38 +221,44 @@ fun HomeDashboardScreen(
                 },
             )
         }
-        items(cards.size / 2) { rowIndex ->
-            Row(
+        items(
+            items = orderedCards,
+            key = { it.homeCardKey() },
+        ) { card ->
+            FeatureCard(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                val left = cards[rowIndex * 2]
-                val right = cards[rowIndex * 2 + 1]
-                FeatureCard(
-                    modifier = Modifier.weight(1f),
-                    card = left,
-                    onCardClick = actionForCard(left, onBloodSugarCardClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
-                    onRecordClick = recordActionForCard(left, onBloodSugarRecordClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
-                    onCardBoundsChanged = guideCardTargetForCard(left)?.let { target ->
-                        { rect -> onGuideAnchorBoundsChanged(target, rect) }
-                    },
-                    onRecordBoundsChanged = guideRecordTargetForCard(left)?.let { target ->
-                        { rect -> onGuideAnchorBoundsChanged(target, rect) }
-                    },
-                )
-                FeatureCard(
-                    modifier = Modifier.weight(1f),
-                    card = right,
-                    onCardClick = actionForCard(right, onBloodSugarCardClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
-                    onRecordClick = recordActionForCard(right, onBloodSugarRecordClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
-                    onCardBoundsChanged = guideCardTargetForCard(right)?.let { target ->
-                        { rect -> onGuideAnchorBoundsChanged(target, rect) }
-                    },
-                    onRecordBoundsChanged = guideRecordTargetForCard(right)?.let { target ->
-                        { rect -> onGuideAnchorBoundsChanged(target, rect) }
-                    },
-                )
-            }
+                card = card,
+                onCardClick = actionForCard(card, onBloodSugarCardClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
+                onRecordClick = recordActionForCard(card, onBloodSugarRecordClick, onBloodPressureClick, onCholesterolClick, onBmiClick, onHydrateClick, onStepCountClick),
+                onCardBoundsChanged = guideCardTargetForCard(card)?.let { target ->
+                    { rect -> onGuideAnchorBoundsChanged(target, rect) }
+                },
+                onRecordBoundsChanged = guideRecordTargetForCard(card)?.let { target ->
+                    { rect -> onGuideAnchorBoundsChanged(target, rect) }
+                },
+            )
+        }
+    }
+}
+
+private fun HomeFeatureCardUi.homeCardKey(): String = when (this) {
+    is HomeFeatureCardUi.BloodPressure -> "blood_pressure"
+    is HomeFeatureCardUi.BloodSugar -> "blood_sugar"
+    is HomeFeatureCardUi.Bmi -> "bmi"
+    is HomeFeatureCardUi.Cholesterol -> "cholesterol"
+    is HomeFeatureCardUi.StepCount -> "step_count"
+    is HomeFeatureCardUi.Hydrate -> "hydrate"
+}
+
+private fun List<HomeFeatureCardUi>.inHomeDisplayOrder(): List<HomeFeatureCardUi> {
+    return sortedBy { card ->
+        when (card) {
+            is HomeFeatureCardUi.BloodPressure -> 0
+            is HomeFeatureCardUi.BloodSugar -> 1
+            is HomeFeatureCardUi.Bmi -> 2
+            is HomeFeatureCardUi.Cholesterol -> 3
+            is HomeFeatureCardUi.StepCount -> 4
+            is HomeFeatureCardUi.Hydrate -> 5
         }
     }
 }
@@ -346,93 +356,58 @@ private fun HeroCard(
     onButtonBoundsChanged: ((Rect) -> Unit)? = null,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-        val scale = maxWidth / 343.dp
-        val heroTextStart = 123.dp * scale
-        val heroTextWidth = (maxWidth - heroTextStart - (18.dp * scale)).coerceAtLeast(0.dp)
+        val cardWidth = maxWidth
+        val scale = cardWidth / 342.dp
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp * scale),
-            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+            shape = RoundedCornerShape(20.dp * scale),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFFBFBFD)),
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(176.dp * scale)
-                    .clip(RoundedCornerShape(12.dp * scale))
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(Color(0xFFFF6868), Color(0xFFFFA08A))
-                        )
-                    )
+                    .height(190.dp * scale)
                     .clickable(onClick = onClick)
                     .onGloballyPositioned { coordinates ->
                         onCardBoundsChanged?.invoke(coordinates.toAndroidWindowRect())
                     }
             ) {
                 Image(
-                    painter = painterResource(id = R.mipmap.tr_home_hero_ecg),
+                    painter = painterResource(id = R.drawable.img_home_heart_rate),
                     contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
-                        .offset(170.dp * scale, 18.dp * scale)
-                        .size(width = 173.dp * scale, height = 119.dp * scale)
-                )
-                HeroConcentricCircles(
-                    modifier = Modifier.offset((-70).dp * scale, (-14).dp * scale),
-                    scale = scale,
-                )
-                Image(
-                    painter = painterResource(id = R.mipmap.tr_home_hero_heart),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .offset((-10).dp * scale, 24.dp * scale)
-                        .size(width = 130.dp * scale, height = 110.dp * scale)
-                )
-                Box(
-                    modifier = Modifier
-                        .offset(56.dp * scale, 82.dp * scale)
-                        .size(width = 42.dp * scale, height = 43.dp * scale)
-                        .clip(CircleShape)
-                        .background(Color.White)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.hr_measure_ic_fingerprint),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .offset(59.dp * scale, 86.dp * scale)
-                        .size(35.dp * scale)
+                        .offset(23.dp * scale, 27.dp * scale)
+                        .size(width = 99.dp * scale, height = 84.dp * scale)
                 )
                 Column(
                     modifier = Modifier
-                        .offset(heroTextStart, 24.dp * scale)
-                        .width(heroTextWidth),
-                    verticalArrangement = Arrangement.spacedBy(4.dp * scale),
+                        .offset(140.dp * scale, 15.dp * scale)
+                        .width((cardWidth - 156.dp * scale).coerceAtLeast(120.dp)),
+                    verticalArrangement = Arrangement.spacedBy(5.dp * scale),
                 ) {
                     Text(
                         text = hero.title,
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        lineHeight = 22.sp,
+                        color = Color(0xFF333333),
+                        fontSize = 20.sp,
+                        lineHeight = 24.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    Text(
-                        text = hero.subtitle,
-                        color = Color.White,
-                        fontSize = 13.sp,
-                        lineHeight = 16.sp,
-                        fontWeight = FontWeight.Normal,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
+                    MetricValue(
+                        modifier = Modifier,
+                        value = hero.value,
+                        valueColor = Color(0xFF333333),
+                        unit = hero.valueUnit,
                     )
                 }
                 Box(
                     modifier = Modifier
-                        .offset(heroTextStart, 84.dp * scale)
-                        .size(width = 160.dp * scale, height = 36.dp * scale)
-                        .clip(RoundedCornerShape(44.dp * scale))
-                        .background(Color.White)
+                        .offset(126.dp * scale, 75.dp * scale)
+                        .size(width = 194.dp * scale, height = 50.dp * scale)
+                        .clip(RoundedCornerShape(43.dp * scale))
+                        .background(Color(0xFF1B1D2C))
                         .clickable(onClick = onClick)
                         .onGloballyPositioned { coordinates ->
                             onButtonBoundsChanged?.invoke(coordinates.toAndroidWindowRect())
@@ -446,15 +421,15 @@ private fun HeroCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.hr_measure_ic_fingerprint),
+                            painter = painterResource(id = R.drawable.ic_home_fingerprint),
                             contentDescription = null,
-                            modifier = Modifier.size(20.dp * scale)
+                            modifier = Modifier.size(24.dp * scale)
                         )
                         Text(
-                            text = hero.cta,
-                            color = Color(0xFFEF7167),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
+                            text = stringResource(id = R.string.tr_measure_title),
+                            color = Color.White,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -462,52 +437,52 @@ private fun HeroCard(
                 }
                 Box(
                     modifier = Modifier
-                        .offset(12.dp * scale, 137.dp * scale)
-                        .size(width = 320.dp * scale, height = 30.dp * scale)
+                        .offset(12.dp * scale, 142.dp * scale)
+                        .size(width = 318.dp * scale, height = 33.dp * scale)
                         .clip(RoundedCornerShape(8.dp * scale))
-                        .background(Color.White.copy(alpha = 0.3f))
+                        .background(Color(0xFFEBF0FF))
+                        .clickable(onClick = onClick)
                 ) {
                     Text(
                         text = hero.footerText,
-                        color = Color.White,
+                        color = Color(0xFF333333),
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .align(Alignment.CenterStart)
-                            .padding(start = 11.dp * scale, end = 116.dp * scale)
+                            .padding(start = 9.dp * scale, end = 112.dp * scale)
                     )
                     Row(
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
-                            .padding(end = 11.dp * scale),
+                            .padding(end = 24.dp * scale),
                         horizontalArrangement = Arrangement.spacedBy(4.dp * scale),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
                             text = hero.value,
-                            color = Color.White,
+                            color = Color(0xFF333333),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
                             text = hero.valueUnit,
-                            color = Color.White,
+                            color = Color(0xFF333333),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier.offset(y = 2.dp * scale)
                         )
-                        Image(
-                            painter = painterResource(id = R.drawable.tr_ic_blood_suger_status_arrow),
-                            colorFilter = ColorFilter.tint(Color.White),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .offset(y = 2.dp * scale)
-                                .size(width = 4.dp * scale, height = 8.dp * scale)
-                        )
                     }
                 }
+                Image(
+                    painter = painterResource(id = R.drawable.ic_home_chevron_right),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .offset(316.dp * scale, 154.dp * scale)
+                        .size(width = 4.dp * scale, height = 8.dp * scale)
+                )
             }
         }
     }
@@ -524,112 +499,104 @@ private fun FeatureCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = card.backgroundColor),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(162.dp)
+                .height(130.dp)
                 .clickable(onClick = onCardClick)
                 .onGloballyPositioned { coordinates ->
                     onCardBoundsChanged?.invoke(coordinates.toAndroidWindowRect())
                 }
         ) {
+            Image(
+                painter = painterResource(id = card.iconRes()),
+                contentDescription = null,
+                modifier = Modifier
+                    .offset(16.dp, 16.dp)
+                    .size(24.dp)
+            )
             Text(
                 text = card.title,
                 color = Color(0xFF333333),
                 fontSize = 18.sp,
-                lineHeight = 24.sp,
-                fontWeight = FontWeight.Medium,
-                maxLines = 2,
+                lineHeight = 22.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .offset(13.dp, 16.dp)
-                    .width(card.titleWidth)
-                    .height(56.dp)
+                    .offset(46.dp, 17.dp)
+                    .width(160.dp)
             )
-            Image(
-                painter = painterResource(id = card.illustrationRes),
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .offset(card.illustrationOffsetX, card.illustrationOffsetY)
-                    .size(width = card.illustrationWidth, height = card.illustrationHeight)
-            )
+            MetricIllustration(card = card)
 
             when (card) {
                 is HomeFeatureCardUi.BloodPressure -> {
                     MetricValue(
-                        modifier = Modifier.offset(11.dp, 88.dp),
+                        modifier = Modifier.offset(16.dp, 58.dp),
                         value = card.value,
-                        valueColor = Color(0xFF20B9BF),
+                        valueColor = Color(0xFF333333),
                         unit = card.unit,
                     )
                 }
                 is HomeFeatureCardUi.BloodSugar -> {
                     MetricValue(
-                        modifier = Modifier.offset(11.dp, 88.dp),
+                        modifier = Modifier.offset(16.dp, 58.dp),
                         value = card.value,
-                        valueColor = Color(0xFFFE5D5E),
+                        valueColor = Color(0xFF333333),
                         unit = card.unit,
                     )
                 }
                 is HomeFeatureCardUi.Cholesterol -> {
                     MetricValue(
-                        modifier = Modifier.offset(11.dp, 88.dp),
+                        modifier = Modifier.offset(16.dp, 58.dp),
                         value = card.value,
-                        valueColor = Color(0xFFFFAA22),
+                        valueColor = Color(0xFF333333),
                         unit = card.unit,
                     )
                 }
                 is HomeFeatureCardUi.Bmi -> {
                     MetricValue(
-                        modifier = Modifier.offset(11.dp, 88.dp),
+                        modifier = Modifier.offset(16.dp, 58.dp),
                         value = card.value,
-                        valueColor = Color(0xFF7790FF),
+                        valueColor = Color(0xFF333333),
                         unit = card.unit,
                     )
                 }
                 is HomeFeatureCardUi.Hydrate -> {
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(SpanStyle(color = Color(0xFF3CBAF0), fontSize = 20.sp, fontWeight = FontWeight.SemiBold)) {
+                            withStyle(SpanStyle(color = Color(0xFF333333), fontSize = 18.sp, fontWeight = FontWeight.Bold)) {
                                 append(card.currentValue)
                             }
-                            withStyle(SpanStyle(color = Color(0xFFAAB0B2), fontSize = 15.sp, fontWeight = FontWeight.Normal)) {
+                            withStyle(SpanStyle(color = Color(0xFF333333), fontSize = 18.sp, fontWeight = FontWeight.Bold)) {
                                 append("/")
                             }
-                            withStyle(SpanStyle(color = Color(0xFFAAB0B2), fontSize = 15.sp, fontWeight = FontWeight.SemiBold)) {
+                            withStyle(SpanStyle(color = Color(0xFF333333), fontSize = 18.sp, fontWeight = FontWeight.Bold)) {
                                 append(card.targetValue)
                             }
                             append(" ")
-                            withStyle(SpanStyle(color = Color(0xFF999999), fontSize = 12.sp, fontWeight = FontWeight.Normal)) {
+                            withStyle(SpanStyle(color = Color(0xFF999999), fontSize = 13.sp, fontWeight = FontWeight.Normal)) {
                                 append(card.unit)
                             }
                         },
-                        modifier = Modifier.offset(11.dp, 88.dp)
+                        modifier = Modifier.offset(16.dp, 58.dp)
                     )
                 }
                 is HomeFeatureCardUi.StepCount -> {
                     MetricValue(
-                        modifier = Modifier.offset(11.dp, 88.dp),
+                        modifier = Modifier.offset(16.dp, 58.dp),
                         value = card.stepsValue,
-                        valueColor = Color(0xFFFF6E20),
+                        valueColor = Color(0xFF333333),
                         unit = card.stepsUnit,
-                    )
-                    MetricValue(
-                        modifier = Modifier.offset(99.dp, 88.dp),
-                        value = card.kcalValue,
-                        valueColor = Color(0xFFFF6E20),
-                        unit = card.kcalUnit,
                     )
                 }
             }
 
             RecordPill(
-                modifier = Modifier.offset(12.dp, 120.dp),
-                textColor = card.buttonColor,
+                modifier = Modifier.offset(16.dp, 90.dp),
                 onClick = onRecordClick,
                 onBoundsChanged = onRecordBoundsChanged,
             )
@@ -646,11 +613,11 @@ private fun MetricValue(
 ) {
     Text(
         text = buildAnnotatedString {
-            withStyle(SpanStyle(color = valueColor, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)) {
+            withStyle(SpanStyle(color = valueColor, fontSize = 18.sp, fontWeight = FontWeight.Bold)) {
                 append(value)
             }
             append(" ")
-            withStyle(SpanStyle(color = Color(0xFF999999), fontSize = 12.sp, fontWeight = FontWeight.Normal)) {
+            withStyle(SpanStyle(color = Color(0xFF999999), fontSize = 13.sp, fontWeight = FontWeight.Normal)) {
                 append(unit)
             }
         },
@@ -661,39 +628,80 @@ private fun MetricValue(
 @Composable
 private fun RecordPill(
     modifier: Modifier,
-    textColor: Color,
     onClick: () -> Unit,
     onBoundsChanged: ((Rect) -> Unit)? = null,
 ) {
     Box(
         modifier = modifier
-            .size(width = 140.dp, height = 32.dp)
-            .clip(RoundedCornerShape(35.dp))
-            .background(Color.White)
+            .size(width = 86.dp, height = 30.dp)
+            .clip(RoundedCornerShape(15.dp))
+            .background(Color(0xFF1B1D2C))
             .clickable(onClick = onClick)
             .onGloballyPositioned { coordinates ->
                 onBoundsChanged?.invoke(coordinates.toAndroidWindowRect())
             }
     ) {
-        Row(
-            modifier = Modifier.align(Alignment.Center),
-            horizontalArrangement = Arrangement.spacedBy(3.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(id = R.string.tr_record),
-                color = textColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-            )
-            Image(
-                painter = painterResource(id = R.drawable.tr_ic_feature_arrow),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(textColor),
-                modifier = Modifier.size(18.dp)
-            )
-        }
+        Text(
+            text = stringResource(id = R.string.tr_record),
+            color = Color.White,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Normal,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
+}
+
+@DrawableRes
+private fun HomeFeatureCardUi.iconRes(): Int = when (this) {
+    is HomeFeatureCardUi.BloodPressure -> R.drawable.ic_home_blood_pressure
+    is HomeFeatureCardUi.BloodSugar -> R.drawable.ic_home_blood_sugar
+    is HomeFeatureCardUi.Cholesterol -> R.drawable.ic_home_cholesterol
+    is HomeFeatureCardUi.Bmi -> R.drawable.ic_home_weight
+    is HomeFeatureCardUi.Hydrate -> R.drawable.ic_home_water
+    is HomeFeatureCardUi.StepCount -> R.drawable.ic_home_steps
+}
+
+@Composable
+private fun BoxScope.MetricIllustration(card: HomeFeatureCardUi) {
+    val spec = card.illustrationSpec()
+    if (card is HomeFeatureCardUi.StepCount) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_home_step_curve),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .offset(x = (-12).dp, y = 34.dp)
+                .size(width = 120.dp, height = 81.dp)
+        )
+    }
+    Image(
+        painter = painterResource(id = spec.resId),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
+        modifier = Modifier
+            .align(Alignment.TopEnd)
+            .offset(x = (-12).dp, y = spec.top)
+            .size(width = spec.width, height = spec.height)
+    )
+}
+
+private data class MetricIllustrationSpec(
+    @DrawableRes val resId: Int,
+    val width: Dp,
+    val height: Dp,
+    val top: Dp,
+)
+
+private fun HomeFeatureCardUi.illustrationSpec(): MetricIllustrationSpec = when (this) {
+    is HomeFeatureCardUi.BloodPressure -> MetricIllustrationSpec(R.drawable.img_home_blood_pressure, 135.dp, 104.dp, 14.dp)
+    is HomeFeatureCardUi.BloodSugar -> MetricIllustrationSpec(R.drawable.img_home_blood_sugar, 118.dp, 101.dp, 16.dp)
+    is HomeFeatureCardUi.Cholesterol -> MetricIllustrationSpec(R.drawable.img_home_cholesterol, 119.dp, 116.dp, 7.dp)
+    is HomeFeatureCardUi.Bmi -> MetricIllustrationSpec(R.drawable.img_home_weight_bmi, 133.dp, 112.dp, 9.dp)
+    is HomeFeatureCardUi.Hydrate -> MetricIllustrationSpec(R.drawable.img_home_drink_water, 124.dp, 104.dp, 15.dp)
+    is HomeFeatureCardUi.StepCount -> MetricIllustrationSpec(R.drawable.img_home_step_count, 116.dp, 121.dp, 0.dp)
 }
 
 @Preview(

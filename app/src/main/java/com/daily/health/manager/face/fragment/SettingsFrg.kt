@@ -165,7 +165,7 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>()
     }
 }
 
-private enum class SettingsAction {
+internal enum class SettingsAction {
     AlarmManagement,
     UnitSettings,
     TargetRangeSettings,
@@ -188,7 +188,7 @@ private data class SettingsItemUi(
 )
 
 @Composable
-private fun SettingsScreen(
+internal fun SettingsScreen(
     hasRated: Boolean,
     onAction: (SettingsAction) -> Unit
 ) {

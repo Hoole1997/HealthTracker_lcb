@@ -106,8 +106,8 @@ class InsightsFrg: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() 
                         context: Context?,
                         index: Int
                     ) = ColorTransitionPagerTitleView(requireContext()).apply {
-                        normalColor = ContextCompat.getColor(requireContext(),R.color.t1)
-                        selectedColor = ContextCompat.getColor(requireContext(),R.color.c5)
+                        normalColor = ContextCompat.getColor(requireContext(), R.color.color_999)
+                        selectedColor = ContextCompat.getColor(requireContext(), R.color.tr_home_tab_selected)
                         setTextSize(TypedValue.COMPLEX_UNIT_SP,16f)
                         text = getString(insightCategories[index].titleRes)
                         typeface = getRobotoBold(requireContext())
@@ -123,7 +123,7 @@ class InsightsFrg: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() 
                     }
 
                     override fun getIndicator(context: Context?) = LinePagerIndicator(requireContext()).apply {
-                        setColors(ContextCompat.getColor(requireContext(),R.color.c5))
+                        setColors(ContextCompat.getColor(requireContext(), R.color.tr_home_tab_selected))
                         val displayMetrics = resources.displayMetrics
                         val width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40f, displayMetrics)
                         val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, displayMetrics)

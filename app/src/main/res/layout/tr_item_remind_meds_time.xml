@@ -7,7 +7,7 @@
     android:layout_marginEnd="@dimen/dp_10"
     android:layout_marginBottom="@dimen/dp_10"
     android:background="@drawable/tr_bg_rect_white_8"
-    android:backgroundTint="@color/color_EFFBF7"
+    android:backgroundTint="@color/tr_meds_chip_bg"
     android:paddingHorizontal="@dimen/dp_24"
     android:paddingVertical="@dimen/dp_12">
 
@@ -15,7 +15,7 @@
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/c5"
+        android:textColor="@color/color_999"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

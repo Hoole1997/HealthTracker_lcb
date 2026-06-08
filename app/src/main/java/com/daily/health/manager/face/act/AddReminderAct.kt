@@ -208,7 +208,7 @@ class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddRemi
                 if (state.isEditMode) getString(R.string.tr_save_changes) else getString(R.string.tr_save)
 
             Glide.with(this@AddReminderAct)
-                .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.tr_ic_camera))
+                .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.tr_ic_meds_camera))
                 .load(state.coverUri)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(ivImg)

@@ -11,7 +11,12 @@
     <color name="tr_home_host_bg_top">#CCE6FB</color>
     <color name="tr_home_host_bg">#F5F8FD</color>
     <color name="tr_subpage_bg">#F5F7FB</color>
-    <color name="tr_home_tab_unselected">#AAB5C7</color>
+    <color name="tr_home_tab_selected">#1B1D2C</color>
+    <color name="tr_home_tab_unselected">#999999</color>
+    <color name="tr_meds_primary">#1B1D2C</color>
+    <color name="tr_meds_chip_bg">#F0F0F0</color>
+    <color name="tr_meds_media_bg">#F9F9FA</color>
+    <color name="tr_meds_media_icon">#B0B0B0</color>
     <color name="c5_8">#D2E2FF</color>
     <color name="t1">#333333</color>
     <color name="color_444">#444444</color>

@@ -35,11 +35,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -50,9 +51,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.lifecycleScope
@@ -106,6 +104,12 @@ import net.corekit.monetize.ads.config.AdConfigManager
 import com.daily.health.manager.alarm.PermissionManager
 import kotlin.math.ceil
 import com.healthtracker.framework.R as FrameworkR
+
+private val SplashDark = Color(0xFF1B1D2C)
+private val SplashTitle = Color(0xFF333333)
+private val SplashMuted = Color(0xFF999999)
+private val SplashProgressTrack = Color(0xFFEDEFF4)
+private val SplashRecordCard = Color(0xFFEBEBFF)
 
 class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>() {
 
@@ -637,76 +641,25 @@ private fun SplashScreen(
         }
     }
 
-    // 一次性读取当前日期时间（启动页期间无需刷新）
-    val now = remember { Date() }
-    val dateText = remember { SimpleDateFormat("MMMM d", Locale.ENGLISH).format(now) }
-    val timeWeekText = remember { SimpleDateFormat("h:mm a, EEEE", Locale.ENGLISH).format(now) }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.c1))
+            .splashFigmaBackground()
     ) {
 
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (logoBackground, logo, appName, loadingBar, loadingText, recentCard, dateTimeBlock) = createRefs()
-            val centerGuideline = createGuidelineFromTop(0.22f)
+            val (logo, appName, loadingBar, loadingText, recentCard) = createRefs()
+            val logoTopGuideline = createGuidelineFromTop(0.198f)
             val bottomGuideline = createGuidelineFromBottom(0.12f)
-
-            // 右上角日期时间
-            Column(
-                modifier = Modifier
-                    .constrainAs(dateTimeBlock) {
-                        top.linkTo(parent.top, margin = 48.dp)
-                        end.linkTo(parent.end, margin = 20.dp)
-                    },
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = dateText,
-                    color = colorResource(id = R.color.t1),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.alpha(contentAlpha.value)
-                )
-                Box(Modifier.size(
-                    height = 4.dp,
-                    width = 0.dp
-                ))
-                Text(
-                    text = timeWeekText,
-                    color = colorResource(id = R.color.color_464545),
-                    lineHeight = 16.sp,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Light,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.alpha(contentAlpha.value)
-                )
-            }
-
-            // 图标圆形模糊背景光晕（替换为设计图资源 tr_bg_splash_logo）
-            Image(
-                painter = painterResource(id = R.mipmap.tr_bg_splash_logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(logoBackground) {
-                        top.linkTo(logo.top)
-                        bottom.linkTo(logo.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                contentScale = ContentScale.FillWidth
-            )
 
             Image(
                 painter = painterResource(id = R.mipmap.tr_ic_logo_sq),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(96.dp)
+                    .size(110.dp)
+                    .clip(RoundedCornerShape(23.dp))
                     .constrainAs(logo) {
-                        top.linkTo(centerGuideline)
+                        top.linkTo(logoTopGuideline)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
@@ -715,17 +668,19 @@ private fun SplashScreen(
 
             Text(
                 text = stringResource(id = R.string.app_name),
-                color = colorResource(id = R.color.t1),
+                color = SplashTitle,
                 fontSize = 24.sp,
                 fontFamily = FontFamily(Font(FrameworkR.font.inter_bold)),
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 lineHeight = 32.sp,
                 modifier = Modifier.constrainAs(appName) {
-                    top.linkTo(logo.bottom, margin = 20.dp)
+                    top.linkTo(logo.bottom, margin = 18.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
+                    width = Dimension.percent(0.78f)
                 }.alpha(contentAlpha.value),
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
 
@@ -743,21 +698,21 @@ private fun SplashScreen(
 
             LinearProgressIndicator(
                 modifier = Modifier
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(2.dp))
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(12.dp))
                     .constrainAs(loadingBar) {
-                        bottom.linkTo(loadingText.top, margin = 12.dp)
+                        bottom.linkTo(loadingText.top, margin = 14.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                        width = Dimension.percent(0.8f)
+                        width = Dimension.percent(0.81f)
                     },
-                color = colorResource(id = R.color.c5),
-                trackColor = Color(0xFFD2E2FF)
+                color = SplashDark,
+                trackColor = SplashProgressTrack
             )
 
             Text(
                 text = stringResource(id = R.string.tr_loading_pure),
-                color = colorResource(id = R.color.c5),
+                color = SplashDark,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(FrameworkR.font.inter_medium)),
                 modifier = Modifier.constrainAs(loadingText) {
@@ -770,6 +725,38 @@ private fun SplashScreen(
             )
         }
     }
+}
+
+private fun Modifier.splashFigmaBackground(): Modifier = drawBehind {
+    drawRect(Color.White)
+    drawRect(
+        brush = Brush.radialGradient(
+            colors = listOf(Color(0xFFFFEEF3).copy(alpha = 0.78f), Color.Transparent),
+            center = Offset(size.width * 1.02f, size.height * 0.12f),
+            radius = size.width * 0.55f
+        )
+    )
+    drawRect(
+        brush = Brush.radialGradient(
+            colors = listOf(Color(0xFFFFEEF3).copy(alpha = 0.82f), Color.Transparent),
+            center = Offset(size.width * 0.98f, size.height * 0.96f),
+            radius = size.width * 0.48f
+        )
+    )
+    drawRect(
+        brush = Brush.radialGradient(
+            colors = listOf(Color(0xFFEBEBFF).copy(alpha = 0.82f), Color.Transparent),
+            center = Offset(-size.width * 0.08f, size.height * 0.47f),
+            radius = size.width * 0.42f
+        )
+    )
+    drawRect(
+        brush = Brush.radialGradient(
+            colors = listOf(Color(0xFFF2F2FF).copy(alpha = 0.72f), Color.Transparent),
+            center = Offset(size.width * 0.08f, -size.height * 0.03f),
+            radius = size.width * 0.62f
+        )
+    )
 }
 
 @Composable
@@ -806,12 +793,12 @@ private fun RecentRecordCard(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.color_F1F8F6))
+        colors = CardDefaults.cardColors(containerColor = SplashRecordCard)
     ) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Column(modifier = Modifier.padding(start = 18.dp, top = 10.dp, end = 16.dp, bottom = 12.dp)) {
             Text(
                 text = title,
-                color = colorResource(id = R.color.t1),
+                color = SplashTitle,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(FrameworkR.font.inter_black)),
                 fontWeight = FontWeight.Black,
@@ -825,12 +812,13 @@ private fun RecentRecordCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.width(45.dp),
+                    horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = item.getPrimaryValue(),
-                        color = colorResource(id = R.color.t1),
+                        color = SplashTitle,
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(FrameworkR.font.inter_black)),
                         fontWeight = FontWeight.Black
@@ -840,7 +828,7 @@ private fun RecentRecordCard(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = secondary,
-                            color = colorResource(id = R.color.t1),
+                            color = SplashTitle,
                             fontSize = 18.sp,
                             fontFamily = FontFamily(Font(FrameworkR.font.inter_black)),
                             fontWeight = FontWeight.Black
@@ -849,26 +837,26 @@ private fun RecentRecordCard(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = item.getUnit(),
-                        color = colorResource(id = R.color.color_999),
-                        fontSize = 14.sp,
+                        color = SplashMuted,
+                        fontSize = 12.sp,
                         fontFamily = FontFamily(Font(FrameworkR.font.inter_regular))
                     )
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Box(
                     modifier = Modifier
                         .width(4.dp)
                         .height(74.dp)
-                        .clip(RoundedCornerShape(2.dp))
-                        .background(colorResource(id = item.getLeveColorRes()))
+                        .clip(RoundedCornerShape(19.dp))
+                        .background(SplashDark)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = levelText,
-                        color = colorResource(id = R.color.t1),
+                        color = SplashTitle,
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(FrameworkR.font.inter_bold)),
                         fontWeight = FontWeight.Bold,
@@ -880,7 +868,7 @@ private fun RecentRecordCard(
                         AutoSizeSingleLineText(
                             text = statusText,
                             modifier = Modifier.fillMaxWidth(),
-                            color = colorResource(id = R.color.t1),
+                            color = SplashTitle,
                             maxFontSize = 14.sp,
                             minFontSize = 6.sp,
                             fontFamily = FontFamily(Font(FrameworkR.font.inter_regular))
@@ -889,7 +877,7 @@ private fun RecentRecordCard(
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = timeText,
-                        color = colorResource(id = R.color.color_999),
+                        color = SplashMuted,
                         fontSize = 12.sp,
                         fontFamily = FontFamily(Font(FrameworkR.font.inter_regular)),
                         maxLines = 1,

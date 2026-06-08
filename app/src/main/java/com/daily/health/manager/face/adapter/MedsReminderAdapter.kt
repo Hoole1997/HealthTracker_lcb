@@ -87,7 +87,7 @@ class MedsReminderAdapter(
 
                 if (!item.medicineCover.isEmpty()) {
                     Glide.with(ivStatu)
-                        .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.tr_ic_camera))
+                        .applyDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.tr_ic_meds_camera))
                         .load(item.medicineCover.toUri())
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .into(ivStatu)
