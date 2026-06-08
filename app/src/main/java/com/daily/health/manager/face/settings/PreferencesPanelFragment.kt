@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.fragment
+package com.daily.health.manager.face.settings
 
 import android.content.Intent
 import android.os.Bundle
@@ -59,7 +59,7 @@ import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import net.corekit.monetize.ui.debug.AdDebugPanel
 
 
-class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>() {
+class PreferencesPanelFragment : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>() {
 
     private var hasRatedState = androidx.compose.runtime.mutableStateOf(false)
 
@@ -84,7 +84,7 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>()
         )
         mViewBind?.composeView?.setContent {
             HealthTrackerTheme {
-                SettingsScreen(
+                PreferenceMenuSurface(
                     hasRated = hasRatedState.value,
                     onAction = ::handleAction
                 )
@@ -97,51 +97,51 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>()
         hasRatedState.value = SpUtils.getBoolean(HealthTrackerEvaluateListener.KEY_HAS_RATED, false)
     }
 
-    private fun handleAction(action: SettingsAction) {
+    private fun handleAction(action: PreferenceAction) {
         when (action) {
-            SettingsAction.AlarmManagement -> {
+            PreferenceAction.AlarmManagement -> {
                 startActivity(Intent(requireContext(), AlarmManageScreen::class.java))
             }
 
-            SettingsAction.UnitSettings -> {
+            PreferenceAction.UnitSettings -> {
                 activity?.let { ComingSoonDialog.show(it.supportFragmentManager) }
             }
 
-            SettingsAction.TargetRangeSettings -> {
+            PreferenceAction.TargetRangeSettings -> {
                 startActivity(Intent(requireContext(), TargetRangeAct::class.java))
             }
 
-            SettingsAction.PersonalInfo -> {
+            PreferenceAction.PersonalInfo -> {
                 startActivity(ProfileActivity.creteEditIntent(requireContext()))
             }
 
-            SettingsAction.Language -> {
+            PreferenceAction.Language -> {
                 languageSelectLauncher.launch(Intent(requireContext(), LanguageAct::class.java).apply {
                     putExtra(LanguageAct.KEY_APPLY_CHANGE, true)
                 })
             }
 
-            SettingsAction.Feedback -> {
+            PreferenceAction.Feedback -> {
                 startActivity(Intent(requireContext(), FeedbackAct::class.java))
             }
 
-            SettingsAction.Disclaimers -> {
+            PreferenceAction.Disclaimers -> {
                 activity?.let { ComingSoonDialog.show(it.supportFragmentManager) }
             }
 
-            SettingsAction.PrivacyPolicy -> {
+            PreferenceAction.PrivacyPolicy -> {
                 InnerWebAct.start(requireContext(), BuildConfig.PRIVACY_POLICY)
             }
 
-            SettingsAction.TermsOfService -> {
+            PreferenceAction.TermsOfService -> {
                 activity?.let { ComingSoonDialog.show(it.supportFragmentManager) }
             }
 
-            SettingsAction.AdDebugPanel -> {
+            PreferenceAction.AdDebugPanel -> {
                 AdDebugPanel.showDebugDialog(requireActivity())
             }
 
-            SettingsAction.RateUs -> {
+            PreferenceAction.RateUs -> {
                 ReportDataManager.reportData("rate_us_show", mapOf("source" to "settings"))
                 val hasRated = SpUtils.getBoolean(HealthTrackerEvaluateListener.KEY_HAS_RATED, false)
                 if (!hasRated) {
@@ -165,7 +165,7 @@ class SettingsFrg : BaseMVVMFragment<BaseViewModel, TrFragmentSettingsBinding>()
     }
 }
 
-internal enum class SettingsAction {
+internal enum class PreferenceAction {
     AlarmManagement,
     UnitSettings,
     TargetRangeSettings,
@@ -181,16 +181,16 @@ internal enum class SettingsAction {
 
 @Immutable
 private data class SettingsItemUi(
-    val action: SettingsAction,
+    val action: PreferenceAction,
     val titleRes: Int,
     val iconRes: Int,
     val isLegal: Boolean = false
 )
 
 @Composable
-internal fun SettingsScreen(
+internal fun PreferenceMenuSurface(
     hasRated: Boolean,
-    onAction: (SettingsAction) -> Unit
+    onAction: (PreferenceAction) -> Unit
 ) {
 
     val iconTintCore = colorResource(R.color.c5)
@@ -199,34 +199,34 @@ internal fun SettingsScreen(
 
     val remindersAndGoalsItems = buildList {
         if (NotificationFeatureSwitch.reminderEntryEnabled) {
-            add(SettingsItemUi(SettingsAction.AlarmManagement, R.string.tr_alarm_management, R.drawable.tr_ic_setting_alarm))
+            add(SettingsItemUi(PreferenceAction.AlarmManagement, R.string.tr_alarm_management, R.drawable.tr_ic_setting_alarm))
         }
-//        add(SettingsItemUi(SettingsAction.UnitSettings, R.string.tr_unit_settings, R.drawable.tr_ic_setting_unit))
-        add(SettingsItemUi(SettingsAction.TargetRangeSettings, R.string.tr_target_range_settings, R.drawable.tr_ic_setting_target))
+//        add(SettingsItemUi(PreferenceAction.UnitSettings, R.string.tr_unit_settings, R.drawable.tr_ic_setting_unit))
+        add(SettingsItemUi(PreferenceAction.TargetRangeSettings, R.string.tr_target_range_settings, R.drawable.tr_ic_setting_target))
     }
     val generalItems = listOf(
-        SettingsItemUi(SettingsAction.PersonalInfo, R.string.tr_personal_info, R.drawable.tr_ic_setting_profile),
-        SettingsItemUi(SettingsAction.Language, R.string.tr_language, R.drawable.tr_ic_setting_language)
+        SettingsItemUi(PreferenceAction.PersonalInfo, R.string.tr_personal_info, R.drawable.tr_ic_setting_profile),
+        SettingsItemUi(PreferenceAction.Language, R.string.tr_language, R.drawable.tr_ic_setting_language)
     )
     val helpAndFeedbackItems = mutableListOf<SettingsItemUi>()
     if (!hasRated) {
         helpAndFeedbackItems.add(
-            SettingsItemUi(SettingsAction.RateUs, R.string.tr_rate_us, R.drawable.tr_ic_setting_rate)
+            SettingsItemUi(PreferenceAction.RateUs, R.string.tr_rate_us, R.drawable.tr_ic_setting_rate)
         )
     }
     helpAndFeedbackItems.add(
-        SettingsItemUi(SettingsAction.Feedback, R.string.tr_feedback, R.drawable.tr_ic_setting_feedback)
+        SettingsItemUi(PreferenceAction.Feedback, R.string.tr_feedback, R.drawable.tr_ic_setting_feedback)
     )
     val legalItems = listOf(
-//        SettingsItemUi(SettingsAction.Disclaimers, R.string.tr_disclaimers, R.drawable.tr_ic_setting_disclaimers, isLegal = true),
-        SettingsItemUi(SettingsAction.PrivacyPolicy, R.string.tr_privacy_policy, R.drawable.tr_ic_setting_privacy, isLegal = true),
-//        SettingsItemUi(SettingsAction.TermsOfService, R.string.tr_terms_of_service, R.drawable.tr_ic_setting_terms, isLegal = true)
+//        SettingsItemUi(PreferenceAction.Disclaimers, R.string.tr_disclaimers, R.drawable.tr_ic_setting_disclaimers, isLegal = true),
+        SettingsItemUi(PreferenceAction.PrivacyPolicy, R.string.tr_privacy_policy, R.drawable.tr_ic_setting_privacy, isLegal = true),
+//        SettingsItemUi(PreferenceAction.TermsOfService, R.string.tr_terms_of_service, R.drawable.tr_ic_setting_terms, isLegal = true)
     )
 
     // 开发者工具（仅 DEBUG 版本显示）
     val developerItems = if (BuildConfig.DEBUG) {
         listOf(
-            SettingsItemUi(SettingsAction.AdDebugPanel, R.string.tr_ad_debug_panel, R.drawable.tr_ic_setting)
+            SettingsItemUi(PreferenceAction.AdDebugPanel, R.string.tr_ad_debug_panel, R.drawable.tr_ic_setting)
         )
     } else {
         emptyList()
@@ -319,7 +319,7 @@ private fun SettingsSection(
     iconTintCore: Color,
     iconTintLegal: Color,
     chevronTint: Color,
-    onAction: (SettingsAction) -> Unit
+    onAction: (PreferenceAction) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(

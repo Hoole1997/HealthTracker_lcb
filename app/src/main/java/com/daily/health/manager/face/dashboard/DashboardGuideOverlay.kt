@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.compose
+package com.daily.health.manager.face.dashboard
 
 import android.graphics.Rect
 import androidx.annotation.DrawableRes

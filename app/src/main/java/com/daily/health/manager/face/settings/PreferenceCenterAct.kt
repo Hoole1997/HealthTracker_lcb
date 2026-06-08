@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.act
+package com.daily.health.manager.face.settings
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,9 +11,13 @@ import com.app.raise.config.EvaluateConfig
 import com.daily.health.manager.BuildConfig
 import com.daily.health.manager.R
 import com.daily.health.manager.databinding.TrActivitySettingsBinding
+import com.daily.health.manager.face.act.AlarmManageScreen
+import com.daily.health.manager.face.act.FeedbackAct
+import com.daily.health.manager.face.act.InnerWebAct
+import com.daily.health.manager.face.act.LanguageAct
+import com.daily.health.manager.face.act.ProfileActivity
+import com.daily.health.manager.face.act.TargetRangeAct
 import com.daily.health.manager.face.dialog.ComingSoonDialog
-import com.daily.health.manager.face.fragment.SettingsAction
-import com.daily.health.manager.face.fragment.SettingsScreen
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.helper.HealthTrackerEvaluateListener
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -23,7 +27,7 @@ import com.healthtracker.framework.util.SpUtils
 import net.corekit.core.report.ReportDataManager
 import net.corekit.monetize.ui.debug.AdDebugPanel
 
-class SettingsAct : BaseMVVMActivity<BaseViewModel, TrActivitySettingsBinding>() {
+class PreferenceCenterAct : BaseMVVMActivity<BaseViewModel, TrActivitySettingsBinding>() {
 
     private var hasRatedState = mutableStateOf(false)
 
@@ -34,9 +38,10 @@ class SettingsAct : BaseMVVMActivity<BaseViewModel, TrActivitySettingsBinding>()
             }
         }
 
-    override fun createViewBinding() = TrActivitySettingsBinding.inflate(layoutInflater)
-
-    override fun getVMModelClass() = BaseViewModel::class.java
+    override fun onResume() {
+        super.onResume()
+        hasRatedState.value = SpUtils.getBoolean(HealthTrackerEvaluateListener.KEY_HAS_RATED, false)
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mViewBind) {
@@ -49,7 +54,7 @@ class SettingsAct : BaseMVVMActivity<BaseViewModel, TrActivitySettingsBinding>()
             )
             composeView.setContent {
                 HealthTrackerTheme {
-                    SettingsScreen(
+                    PreferenceMenuSurface(
                         hasRated = hasRatedState.value,
                         onAction = ::handleAction
                     )
@@ -58,56 +63,55 @@ class SettingsAct : BaseMVVMActivity<BaseViewModel, TrActivitySettingsBinding>()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        hasRatedState.value = SpUtils.getBoolean(HealthTrackerEvaluateListener.KEY_HAS_RATED, false)
-    }
+    override fun getVMModelClass() = BaseViewModel::class.java
 
-    private fun handleAction(action: SettingsAction) {
+    override fun createViewBinding() = TrActivitySettingsBinding.inflate(layoutInflater)
+
+    private fun handleAction(action: PreferenceAction) {
         when (action) {
-            SettingsAction.AlarmManagement -> {
+            PreferenceAction.AlarmManagement -> {
                 startActivity(Intent(this, AlarmManageScreen::class.java))
             }
 
-            SettingsAction.UnitSettings -> {
+            PreferenceAction.UnitSettings -> {
                 ComingSoonDialog.show(supportFragmentManager)
             }
 
-            SettingsAction.TargetRangeSettings -> {
+            PreferenceAction.TargetRangeSettings -> {
                 startActivity(Intent(this, TargetRangeAct::class.java))
             }
 
-            SettingsAction.PersonalInfo -> {
+            PreferenceAction.PersonalInfo -> {
                 startActivity(ProfileActivity.creteEditIntent(this))
             }
 
-            SettingsAction.Language -> {
+            PreferenceAction.Language -> {
                 languageSelectLauncher.launch(Intent(this, LanguageAct::class.java).apply {
                     putExtra(LanguageAct.KEY_APPLY_CHANGE, true)
                 })
             }
 
-            SettingsAction.Feedback -> {
+            PreferenceAction.Feedback -> {
                 startActivity(Intent(this, FeedbackAct::class.java))
             }
 
-            SettingsAction.Disclaimers -> {
+            PreferenceAction.Disclaimers -> {
                 ComingSoonDialog.show(supportFragmentManager)
             }
 
-            SettingsAction.PrivacyPolicy -> {
+            PreferenceAction.PrivacyPolicy -> {
                 InnerWebAct.start(this, BuildConfig.PRIVACY_POLICY)
             }
 
-            SettingsAction.TermsOfService -> {
+            PreferenceAction.TermsOfService -> {
                 ComingSoonDialog.show(supportFragmentManager)
             }
 
-            SettingsAction.AdDebugPanel -> {
+            PreferenceAction.AdDebugPanel -> {
                 AdDebugPanel.showDebugDialog(this)
             }
 
-            SettingsAction.RateUs -> {
+            PreferenceAction.RateUs -> {
                 ReportDataManager.reportData("rate_us_show", mapOf("source" to "settings"))
                 val hasRated = SpUtils.getBoolean(HealthTrackerEvaluateListener.KEY_HAS_RATED, false)
                 if (!hasRated) {

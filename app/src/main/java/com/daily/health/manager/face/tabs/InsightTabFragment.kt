@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.fragment
+package com.daily.health.manager.face.tabs
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -30,7 +30,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 
-class InsightsFrg: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() {
+class InsightTabFragment: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() {
 
     private data class InsightCategory(
         val titleRes: Int,

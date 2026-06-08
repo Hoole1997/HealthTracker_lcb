@@ -15,7 +15,7 @@ import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
 import com.daily.health.manager.constants.KEY_APP_OPEN_TIMES
 import com.daily.health.manager.constants.KEY_APP_START_TIME
 import com.daily.health.manager.face.act.GuideAct
-import com.daily.health.manager.face.act.SplashScreen
+import com.daily.health.manager.face.launch.LaunchGateActivity
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logi
 import com.healthtracker.framework.util.SpUtils
@@ -89,7 +89,7 @@ private fun getDateInt(calendar: Calendar, time: Long): Int {
 }
 
 fun isExcludePage(lastVisibleActivity: Activity?) =
-    lastVisibleActivity is SplashScreen ||
+    lastVisibleActivity is LaunchGateActivity ||
             lastVisibleActivity is GuideAct
 
 

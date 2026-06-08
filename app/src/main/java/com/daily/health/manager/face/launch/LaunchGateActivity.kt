@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.act
+package com.daily.health.manager.face.launch
 
 import android.content.Intent
 import android.os.Bundle
@@ -64,6 +64,9 @@ import com.daily.health.manager.constants.LANDING_NOTIFICATION_TITLE
 import com.daily.health.manager.constants.UNINSTALL
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.TrActivitySplashBinding
+import com.daily.health.manager.face.act.GuideAct
+import com.daily.health.manager.face.act.MainAct
+import com.daily.health.manager.face.act.UninstallResenActivity
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.hasNewGuide
 import com.daily.health.manager.receiver.NotificationActionReceiver
@@ -111,10 +114,10 @@ private val SplashMuted = Color(0xFF999999)
 private val SplashProgressTrack = Color(0xFFEDEFF4)
 private val SplashRecordCard = Color(0xFFEBEBFF)
 
-class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>() {
+class LaunchGateActivity : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>() {
 
     companion object {
-        private const val TAG = "SplashScreen"
+        private const val TAG = "LaunchGateActivity"
 
     }
 
@@ -138,7 +141,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
                 if(intent.hasExtra(KEY_FROM_SHORTCUT) && intent.getStringExtra(KEY_FROM_SHORTCUT) == UNINSTALL){
                     // 跳转到卸载挽留页面
                     trackUninstallClick()
-                    startActivity(Intent(this@SplashScreen, UninstallResenActivity::class.java))
+                    startActivity(Intent(this@LaunchGateActivity, UninstallResenActivity::class.java))
                     finish()
                     return@SplashStateMachine
                 }
@@ -174,7 +177,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
         )
         mViewBind.composeView.setContent {
             HealthTrackerTheme {
-                SplashScreen(
+                LaunchContent(
                     startAnimationFlow = startAnimationFlow,
                     recentRecordFlow = mViewModel.recentRecord,
                     onAnimationCompleted = ::onAnimationCompleted
@@ -218,8 +221,8 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
                 // 4. UMP 同意检查
                 try {
                     AdLogger.d("[$TAG] 开始 UMP 同意检查")
-                    GoogleMobileAdsConsentManager.getInstance(this@SplashScreen)
-                        .gatherConsent(this@SplashScreen)
+                    GoogleMobileAdsConsentManager.getInstance(this@LaunchGateActivity)
+                        .gatherConsent(this@LaunchGateActivity)
                     AdLogger.d("[$TAG] UMP 同意检查完成")
                 } catch (e: Exception) {
                     AdLogger.e("[$TAG] UMP 同意检查异常: ${e.message}")
@@ -429,7 +432,7 @@ class SplashScreen : BaseMVVMActivity<SplashViewModel, TrActivitySplashBinding>(
         try {
             suspendCancellableCoroutine<Boolean> { cont ->
                 permissionManager.checkNotificationPermission(
-                    activity = this@SplashScreen,
+                    activity = this@LaunchGateActivity,
                     onGoSetting = {
                         // 启动页不处理跳转设置的情况，直接完成
                     }
@@ -613,7 +616,7 @@ private fun AutoSizeSingleLineText(
 }
 
 @Composable
-private fun SplashScreen(
+private fun LaunchContent(
     startAnimationFlow: StateFlow<Boolean>,
     recentRecordFlow: StateFlow<HistoryRecordItem?>,
     onAnimationCompleted: () -> Unit

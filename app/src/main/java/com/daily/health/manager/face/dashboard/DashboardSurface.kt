@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.compose
+package com.daily.health.manager.face.dashboard
 
 import android.graphics.Rect
 import androidx.annotation.DrawableRes
@@ -187,7 +187,7 @@ sealed class HomeFeatureCardUi(
 }
 
 @Composable
-fun HomeDashboardScreen(
+fun DashboardSurface(
     hero: HomeHeroUi,
     cards: List<HomeFeatureCardUi>,
     onHeartRateClick: () -> Unit,
@@ -714,7 +714,7 @@ private fun HomeFeatureCardUi.illustrationSpec(): MetricIllustrationSpec = when 
 @Composable
 private fun HomeDashboardScreenPreview() {
     com.daily.health.manager.face.theme.HealthTrackerTheme {
-        HomeDashboardScreen(
+        DashboardSurface(
             hero = HomeHeroUi(
                 title = "Heart Rate",
                 subtitle = "Take the first measurement today!",

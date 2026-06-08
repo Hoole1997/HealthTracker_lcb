@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.fragment
+package com.daily.health.manager.face.tabs
 
 import android.Manifest
 import android.os.Bundle
@@ -33,7 +33,7 @@ import net.corekit.monetize.ads.AdPosition
 import net.corekit.monetize.ui.NativeAdStyle
 import org.koin.android.ext.android.inject
 
-class RecordFrg: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBinding>() {
+class TrackerTabFragment: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBinding>() {
 
     companion object{
         private const val TAG = "RecordFragment"

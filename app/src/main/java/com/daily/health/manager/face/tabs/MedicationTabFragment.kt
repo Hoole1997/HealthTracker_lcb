@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.fragment
+package com.daily.health.manager.face.tabs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
 import net.corekit.core.report.ReportDataManager
 import java.util.Date
 
-class MedsFrg: BaseMVVMFragment<MedsViewModel, TrFragmentMedsBinding>() {
+class MedicationTabFragment: BaseMVVMFragment<MedsViewModel, TrFragmentMedsBinding>() {
 
 
     private lateinit var reminderAdapter: MedsReminderAdapter

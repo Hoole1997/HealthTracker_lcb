@@ -41,7 +41,7 @@ import com.daily.health.manager.ad.renderer.DefaultToponNativeAdRenderer
 import com.daily.health.manager.helper.NotificationHelper
 import com.daily.health.manager.strategy.PushScenario
 import com.daily.health.manager.toast.CustomToastStyle
-import com.daily.health.manager.face.act.SplashScreen
+import com.daily.health.manager.face.launch.LaunchGateActivity
 import com.daily.health.manager.utils.InsightAssetPreparer
 import com.daily.health.manager.utils.isAdPage
 import com.daily.health.manager.work.HealthWorkTask
@@ -134,7 +134,7 @@ class AppInitializer(
                     //检查是否满足展示开屏广告条件
                     val topActivity = ActivityUtils.getTopActivity()
                     "回到前台,尝试重走启动页 topActivity:${topActivity::class.java.simpleName}".logd(TAG)
-                    if (!ActivityUtils.isActivityExistsInStack(SplashScreen::class.java) && !isAdPage(topActivity
+                    if (!ActivityUtils.isActivityExistsInStack(LaunchGateActivity::class.java) && !isAdPage(topActivity
                         )) {
                         startSplashActivity()
 
@@ -171,7 +171,7 @@ class AppInitializer(
             return
         }
         try {
-            val intent = Intent(application, SplashScreen::class.java)
+            val intent = Intent(application, LaunchGateActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             application.startActivity(intent)
 

@@ -29,16 +29,17 @@ import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.TrActivityMainBinding
 import com.daily.health.manager.databinding.TrLayoutHomeTabItemBinding
 import com.daily.health.manager.face.adapter.FragmentsAdapter
-import com.daily.health.manager.face.compose.HomeFeatureGuideOverlay
-import com.daily.health.manager.face.compose.HomeGuideOverlayUi
+import com.daily.health.manager.face.dashboard.HomeFeatureGuideOverlay
+import com.daily.health.manager.face.dashboard.HomeGuideOverlayUi
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.dialog.ActivityPerRequestDialog
 import com.daily.health.manager.face.dialog.ExitDialog
-import com.daily.health.manager.face.fragment.HomeFrg
-import com.daily.health.manager.face.fragment.InsightsFrg
-import com.daily.health.manager.face.fragment.MedsFrg
-import com.daily.health.manager.face.fragment.RecordFrg
+import com.daily.health.manager.face.settings.PreferenceCenterAct
+import com.daily.health.manager.face.tabs.DashboardTabFragment
+import com.daily.health.manager.face.tabs.InsightTabFragment
+import com.daily.health.manager.face.tabs.MedicationTabFragment
+import com.daily.health.manager.face.tabs.TrackerTabFragment
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
 import com.daily.health.manager.face.viewmodel.MainViewModel
@@ -75,10 +76,10 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         private const val HOME_BACKGROUND_COLOR = "#F0F3FC"
     }
 
-    private var homeFrg: HomeFrg? = null
-    private var medFrg: MedsFrg? = null
-    private var recordFrg: RecordFrg? = null
-    private var insightsFrg: InsightsFrg? = null
+    private var homeFrg: DashboardTabFragment? = null
+    private var medFrg: MedicationTabFragment? = null
+    private var recordFrg: TrackerTabFragment? = null
+    private var insightsFrg: InsightTabFragment? = null
 
     private val customNotificationHelper: CustomNotificationHelper by inject()
     private val permissionManager: PermissionManager by inject()
@@ -87,7 +88,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
 
     private val bannerShowComplete = CompletableDeferred<Boolean>()
 
-    private val homeFrgReady = CompletableDeferred<HomeFrg>()
+    private val homeFrgReady = CompletableDeferred<DashboardTabFragment>()
     private val hostHomeGuideOverlayUi = MutableStateFlow<HomeGuideOverlayUi?>(null)
     private val hostCurrentTab = MutableStateFlow(0)
 
@@ -155,24 +156,24 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
     internal val homeFrgAdapter =
         FragmentsAdapter(supportFragmentManager, 4, object : FragmentsAdapter.Callback {
             override fun createInstance(position: Int) = when (position) {
-                0 -> HomeFrg()
-                1 -> MedsFrg()
-                2 -> InsightsFrg()
-                3 -> RecordFrg()
+                0 -> DashboardTabFragment()
+                1 -> MedicationTabFragment()
+                2 -> InsightTabFragment()
+                3 -> TrackerTabFragment()
                 else -> throw IllegalArgumentException("Invalid position: $position")
             }
 
             override fun onInstance(position: Int, fragment: Fragment) {
                 when (fragment) {
-                    is HomeFrg -> {
+                    is DashboardTabFragment -> {
                         homeFrg = fragment
                         if (!homeFrgReady.isCompleted) {
                             homeFrgReady.complete(fragment)
                         }
                     }
-                    is RecordFrg -> recordFrg = fragment
-                    is MedsFrg -> medFrg = fragment
-                    is InsightsFrg -> insightsFrg = fragment
+                    is TrackerTabFragment -> recordFrg = fragment
+                    is MedicationTabFragment -> medFrg = fragment
+                    is InsightTabFragment -> insightsFrg = fragment
                 }
             }
         })
@@ -204,7 +205,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
                     ivRemind.setImageResource(R.drawable.ic_home_settings)
                     ivRemind.contentDescription = getString(R.string.tr_settings)
                     ivRemind.clickWithDuration {
-                        startActivity<SettingsAct>()
+                        startActivity<PreferenceCenterAct>()
                     }
                     R.string.tr_home
                 }

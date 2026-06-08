@@ -33,7 +33,7 @@ import com.daily.health.manager.face.act.InsightsDetailAct
 import com.daily.health.manager.face.act.LanguageAct
 import com.daily.health.manager.face.act.MainAct
 import com.daily.health.manager.face.act.ProfileActivity
-import com.daily.health.manager.face.act.SplashScreen
+import com.daily.health.manager.face.launch.LaunchGateActivity
 import com.daily.health.manager.face.act.StepCountAct
 import com.daily.health.manager.face.act.StepSettingAct
 import com.daily.health.manager.face.act.TargetRangeAct
@@ -182,7 +182,7 @@ internal class AppDelegate(
         @Suppress("UNCHECKED_CAST")
         fun launcherClasses(): MutableList<Class<Any>> {
             return mutableListOf<Class<*>>(
-                SplashScreen::class.java,
+                LaunchGateActivity::class.java,
                 GuideAct::class.java,
                 MainAct::class.java,
                 StepCountAct::class.java,
@@ -217,7 +217,7 @@ internal class AppDelegate(
 
         @Suppress("UNCHECKED_CAST")
         fun splashClass(): Class<Any> {
-            return SplashScreen::class.java as Class<Any>
+            return LaunchGateActivity::class.java as Class<Any>
         }
     }
 }

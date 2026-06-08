@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.fragment
+package com.daily.health.manager.face.tabs
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -25,12 +25,12 @@ import com.daily.health.manager.face.act.HistoryRecordAct
 import com.daily.health.manager.face.act.HydrateAct
 import com.daily.health.manager.face.act.MainAct
 import com.daily.health.manager.face.act.ProfileActivity
-import com.daily.health.manager.face.compose.HomeDashboardScreen
-import com.daily.health.manager.face.compose.HomeGuideOverlayUi
-import com.daily.health.manager.face.compose.HomeGuideStep
-import com.daily.health.manager.face.compose.HomeGuideTarget
-import com.daily.health.manager.face.compose.HomeFeatureCardUi
-import com.daily.health.manager.face.compose.HomeHeroUi
+import com.daily.health.manager.face.dashboard.DashboardSurface
+import com.daily.health.manager.face.dashboard.HomeGuideOverlayUi
+import com.daily.health.manager.face.dashboard.HomeGuideStep
+import com.daily.health.manager.face.dashboard.HomeGuideTarget
+import com.daily.health.manager.face.dashboard.HomeFeatureCardUi
+import com.daily.health.manager.face.dashboard.HomeHeroUi
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
@@ -49,7 +49,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
+class DashboardTabFragment : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
 
     private val profileLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -97,7 +97,7 @@ class HomeFrg : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBinding>() {
             val todayStepStat by mViewModel.todayStepStat.collectAsStateWithLifecycle()
 
             HealthTrackerTheme {
-                HomeDashboardScreen(
+                DashboardSurface(
                     hero = buildHeroUi(heartRateRecord),
                     cards = buildCardUiList(
                         bloodSugarRecord = bloodSugarRecord,

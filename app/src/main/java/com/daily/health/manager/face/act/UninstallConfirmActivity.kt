@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
+import com.daily.health.manager.face.launch.LaunchGateActivity
 import com.daily.health.manager.databinding.TrActivityUninstallConfirmBinding
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.utils.loadInterstitial
@@ -104,7 +105,7 @@ class UninstallConfirmActivity : BaseMVVMActivity<BaseViewModel, TrActivityUnins
     private fun navigateToMain() {
         // 返回主界面并重启应用以展示开屏广告
         // 不传递任何extras，避免再次触发卸载拦截
-        val intent = Intent(this, SplashScreen::class.java).apply {
+        val intent = Intent(this, LaunchGateActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         startActivity(intent)

@@ -25,7 +25,7 @@ import com.daily.health.manager.service.HealthServiceConstants
 import com.daily.health.manager.service.HealthServiceConstants.EXTRA_NOTIFICATION_ACTION
 import com.daily.health.manager.strategy.PushOrchestrator
 import com.daily.health.manager.strategy.PushScenario
-import com.daily.health.manager.face.act.SplashScreen
+import com.daily.health.manager.face.launch.LaunchGateActivity
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.config.core.RemoteConfigManager
 import com.healthtracker.framework.ext.logd
@@ -296,7 +296,7 @@ class CustomNotificationHelper(
         val actionType = pushMessage.actionType
         if(BuildState.debug) "createClickPendingIntent actionType = $actionType,notificationId = $notificationId".logd(PushOrchestrator.TAG)
         // 直接创建启动 SplashActivity 的 Intent
-        val intent = Intent(context, SplashScreen::class.java).apply {
+        val intent = Intent(context, LaunchGateActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
             putExtra(EXTRA_NOTIFICATION_ACTION,mapActionType(actionType))

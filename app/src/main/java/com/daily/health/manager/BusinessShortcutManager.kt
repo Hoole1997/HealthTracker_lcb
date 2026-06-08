@@ -9,7 +9,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.daily.health.manager.constants.KEY_FROM_SHORTCUT
 import com.daily.health.manager.constants.UNINSTALL
-import com.daily.health.manager.face.act.SplashScreen
+import com.daily.health.manager.face.launch.LaunchGateActivity
 import kotlin.apply
 import kotlin.jvm.java
 
@@ -23,7 +23,7 @@ object BusinessShortcutManager {
      */
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     fun createUninstallShortcut(context: Context): ShortcutInfo {
-        val intent = Intent(context, SplashScreen::class.java).apply {
+        val intent = Intent(context, LaunchGateActivity::class.java).apply {
             action = Intent.ACTION_MAIN
             addCategory(Intent.CATEGORY_LAUNCHER)
             putExtra(KEY_FROM_SHORTCUT, UNINSTALL)

@@ -6,7 +6,7 @@ import com.daily.health.manager.constants.HAS_NOTIFICATION_PERMISSION
 import com.daily.health.manager.constants.HAS_REPORT_NOTIFICATION_REVOKED
 import com.daily.health.manager.face.act.AlarmManageScreen
 import com.daily.health.manager.face.act.MainAct
-import com.daily.health.manager.face.act.SplashScreen
+import com.daily.health.manager.face.launch.LaunchGateActivity
 import com.daily.health.manager.face.dialog.NotificationPermissionDialog
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.util.pushRequest
@@ -76,7 +76,7 @@ class PermissionManager {
         }
 
         val position = when (activity) {
-            is SplashScreen -> "AppStart"
+            is LaunchGateActivity -> "AppStart"
             is MainAct -> "Home"
             is AlarmManageScreen -> "alarm"
             else -> "other"
@@ -100,7 +100,7 @@ class PermissionManager {
                             TAG
                         )
                         pushResult(if (isDoNotAsk) "denied_forever" else "denied", position)
-                        if (isDoNotAsk && activity !is SplashScreen) {
+                        if (isDoNotAsk && activity !is LaunchGateActivity) {
                             if(BuildState.debug) "非启动页，永久拒绝，尝试自定义弹窗请求通知权限".logd(TAG)
                             showCustomNotificationRequest(activity,onGoSetting,onComplete)
                         } else {
