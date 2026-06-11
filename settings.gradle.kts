@@ -15,6 +15,17 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
     repositories {
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = "MavenCentralUnityAdsMediation"
+                    url = uri("https://repo1.maven.org/maven2")
+                }
+            }
+            filter {
+                includeGroup("com.unity3d.ads-mediation")
+            }
+        }
         google()
         mavenCentral()
         maven {
