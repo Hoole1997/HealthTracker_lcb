@@ -62,7 +62,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "HealthTracker"
+rootProject.name = "BloodPressureLog"
 include(":app")
 include(":framework")
 include(":metrics")

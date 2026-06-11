@@ -32,10 +32,8 @@ class PreferenceCenterAct : BaseMVVMActivity<BaseViewModel, TrActivitySettingsBi
     private var hasRatedState = mutableStateOf(false)
 
     private val languageSelectLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                recreate()
-            }
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // AppCompatDelegate.setApplicationLocales handles activity recreation.
         }
 
     override fun onResume() {

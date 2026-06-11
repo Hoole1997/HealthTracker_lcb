@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Blutzucker &amp; Blutdruck-Tracker</string>
+
     <string name="tr_meds_manager">Medikamenten-Manager</string>
     <string name="tr_blood_suger">Blutzucker</string>
     <string name="tr_blood_pressure">Blutdruck</string>

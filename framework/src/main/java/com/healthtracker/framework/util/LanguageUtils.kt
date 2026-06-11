@@ -3,6 +3,8 @@ package com.healthtracker.framework.util
 import android.content.Context
 import android.content.res.Configuration
 import android.os.LocaleList
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import java.util.Locale
 
 object LanguageUtils {
@@ -100,6 +102,13 @@ object LanguageUtils {
         SpUtils.putString(KEY_APP_LANGUAGE, lang)
     }
 
+    fun applyAppLanguage(lang: String = getSavedLanguage()) {
+        val languageTag = mapAppLocale(lang)?.toLanguageTag().orEmpty()
+        AppCompatDelegate.setApplicationLocales(
+            LocaleListCompat.forLanguageTags(languageTag)
+        )
+    }
+
     /**
      * 为 Context 应用语言设置
      * 在 Activity/Application 的 attachBaseContext() 中调用
@@ -130,8 +139,10 @@ object LanguageUtils {
      * 将保存的语言 ID 映射为 Locale 对象
      * @return Locale 对象，如果未设置语言则返回 null
      */
-    fun mapAppLocale(): Locale? {
-        return when (getSavedLanguage()) {
+    fun mapAppLocale(): Locale? = mapAppLocale(getSavedLanguage())
+
+    fun mapAppLocale(lang: String): Locale? {
+        return when (lang) {
             "ar" -> Locale.Builder().setLanguage("ar").build()  // 阿拉伯语
             "de" -> Locale.GERMANY  // 德语
             "en" -> Locale.ENGLISH  // 英语

@@ -1,50 +1,50 @@
 ext {
     // AdMob配置 (正式 ID)
-    admob = [applicationId: "ca-app-pub-7869168547621070~1403868234",
-             adUnitIds    : [banner      : "ca-app-pub-7869168547621070/5132362276",
-                             interstitial: "ca-app-pub-7869168547621070/1440529271",
-                             splash      : "ca-app-pub-7869168547621070/4337987486",
-                             native      : "ca-app-pub-7869168547621070/1011619015",
-                             full_native : "ca-app-pub-7869168547621070/9530737864",
-                             rewarded    : "ca-app-pub-7869168547621070/7579095041",
-                             rewarded_interstitial: "ca-app-pub-7869168547621070/9187528488"
+    admob = [applicationId: "ca-app-pub-7869168547621070~3931379449",
+             adUnitIds    : [banner      : "ca-app-pub-7869168547621070/7898544611",
+                             interstitial: "ca-app-pub-7869168547621070/5453030431",
+                             splash      : "ca-app-pub-7869168547621070/1580548274",
+                             native      : "ca-app-pub-7869168547621070/6585462943",
+                             full_native : "ca-app-pub-7869168547621070/2702058258",
+                             rewarded    : "ca-app-pub-7869168547621070/7807731039",
+                             rewarded_interstitial: ""
              ]
     ]
 
     // Google Ad Manager 配置 (正式环境暂未配置，保持为空)
-    gam = [adUnitIds: [banner      : "",
-                       interstitial: "/23312177113/Diabetes_IVTEST",
-                       splash      : "/23312177113/Diabetes_SPTEST",
-                       native      : "",
-                       full_native : "",
-                       rewarded    : "/23312177113/Diabetes_RVTEST"
+    gam = [adUnitIds: [banner      : "/23312177113/BloodPressureLog_BV1",
+                       interstitial: "/23312177113/BloodPressureLog_IV1",
+                       splash      : "/23312177113/BloodPressureLog_SP1",
+                       native      : "/23312177113/BloodPressureLog_NV1",
+                       full_native : "/23312177113/BloodPressureLog_FULLNV1",
+                       rewarded    : "/23312177113/BloodPressureLog_RV1"
     ]]
 
     // Pangle配置（穿山甲）- 来自原 playstore 变体配置
-    pangle = [applicationId: "8799655",
-              adUnitIds    : [banner      : "982926151",
-                              interstitial: "982926161",
-                              splash      : "890136209",
-                              native      : "982926144",
-                              full_native : "982926153",
-                              rewarded    : "982926165"
+    pangle = [applicationId: "8840199",
+              adUnitIds    : [banner      : "",
+                              interstitial: "983261027",
+                              splash      : "890160952",
+                              native      : "983261029",
+                              full_native : "983261024",
+                              rewarded    : "983261022"
               ]
     ]
 
     // TopOn配置 - 来自原 playstore 变体配置
-    topon = [applicationId: "h1h7eoo4dm1akd",
-             appKey       : "a9c30ee3dacae2e4f7864b3993965ceeb",
-             adUnitIds    : [banner      : "n1h7eoo4ijcp8h",
-                             interstitial: "n1h7eoo4ftegaf",
-                             splash      : "n1h7eoo4he4dca",
-                             native      : "n1h7eoo4h2bbja",
-                             full_native : "n1h7eoo4hp39qv",
-                             rewarded    : "n1h7eoo4fgd1p7"
+    topon = [applicationId: "h1hdoek0kpuct1",
+             appKey       : "aa44de99f9e76c9d7d880dfba5e3dc77a",
+             adUnitIds    : [banner      : "",
+                             interstitial: "n1hdoek0pts329",
+                             splash      : "n1hdoek0skf4qf",
+                             native      : "n1hdoek0qeh20k",
+                             full_native : "n1hdoek0s6iihp",
+                             rewarded    : "n1hdoek0mi3mr2"
              ]
     ]
 
     // 应用参数覆盖 (正式版关闭 Log)
-    app = [applicationId: "com.blood.sugar.health.diabetes.tool",
+    app = [applicationId: "com.healthlab.heartrate.bloodpressuretracker",
            show_log     : false,
            string_fog   : false,
            shifter_mode : "official"
@@ -52,18 +52,18 @@ ext {
 
     // 业务 URL (正式官网)
     // ⚠️ 必须包含所有字段，Groovy ext 是整体覆盖而非合并
-    url = [privacyUrl: "https://daisytalestudios.com/privacy.html",
-           teamUrl   : "https://daisytalestudios.com/privacy.html",
-           fcmUrl    : "https://htc.hero-t.com",
-           fcmPkg    : "com.health.sugar.log.medication.pressure.manage.track.blood.tool",
-           email     : "bluepsme000@gmail.com"
+    url = [privacyUrl: "https://quantumorphlyr.com/privacy.html",
+           teamUrl   : "https://quantumorphlyr.com/TermsOfUse.html",
+           fcmUrl    : "",
+           fcmPkg    : "",
+           email     : "quantumorphlyr@gmail.com"
     ]
 
     // 统计归因 (正式 Token)
     // TODO: 如果正式环境有独立的 Adjust/ThinkingData Token，请在此替换
     analytics = [adjustAppToken        : "",
-                 thinkingDataAppId     : "7ae758c02c0b4fc2bcd5cda2d4c79607",
-                 thinkingDataServerUrl : "https://data.daisytalestudios.com",
+                 thinkingDataAppId     : "",
+                 thinkingDataServerUrl : "",
                  defaultUserChannel    : "natural"
     ]
 }

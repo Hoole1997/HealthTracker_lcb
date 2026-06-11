@@ -52,23 +52,23 @@ jobs:
 
     - name: Build Official AAB
       env:
-        LCB_1_SECRETS: ${{ secrets.LCB_1_SECRETS }}
+        LCB_3_SECRETS: ${{ secrets.LCB_3_SECRETS }}
       run: |
         echo "Building official release AAB"
-        if [ -z "$LCB_1_SECRETS" ]; then
-            echo "Missing LCB_1_SECRETS."
+        if [ -z "$LCB_3_SECRETS" ]; then
+            echo "Missing LCB_3_SECRETS."
             exit 1
         fi
 
-        REMAX_SDK_TOKEN=$(jq -r '.remax_sdk_token // empty' <<< "$LCB_1_SECRETS")
-        PLAYSTORE_KEYSTORE_BASE64=$(jq -r '.playstore_keystore_base64 // empty' <<< "$LCB_1_SECRETS")
-        PLAYSTORE_STORE_PASSWORD=$(jq -r '.playstore_store_password // empty' <<< "$LCB_1_SECRETS")
-        PLAYSTORE_KEY_ALIAS=$(jq -r '.playstore_key_alias // empty' <<< "$LCB_1_SECRETS")
-        PLAYSTORE_KEY_PASSWORD=$(jq -r '.playstore_key_password // empty' <<< "$LCB_1_SECRETS")
+        REMAX_SDK_TOKEN=$(jq -r '.remax_sdk_token // empty' <<< "$LCB_3_SECRETS")
+        PLAYSTORE_KEYSTORE_BASE64=$(jq -r '.playstore_keystore_base64 // empty' <<< "$LCB_3_SECRETS")
+        PLAYSTORE_STORE_PASSWORD=$(jq -r '.playstore_store_password // empty' <<< "$LCB_3_SECRETS")
+        PLAYSTORE_KEY_ALIAS=$(jq -r '.playstore_key_alias // empty' <<< "$LCB_3_SECRETS")
+        PLAYSTORE_KEY_PASSWORD=$(jq -r '.playstore_key_password // empty' <<< "$LCB_3_SECRETS")
 
-        for required_key in REMAX_SDK_TOKEN PLAYSTORE_KEYSTORE_BASE64 PLAYSTORE_STORE_PASSWORD PLAYSTORE_KEY_ALIAS PLAYSTORE_KEY_PASSWORD; do
+        for required_key in REMAX_SDK_TOKEN PLAYSTORE_STORE_PASSWORD PLAYSTORE_KEY_ALIAS PLAYSTORE_KEY_PASSWORD; do
             if [ -z "${!required_key}" ]; then
-                echo "Missing $required_key in LCB_1_SECRETS."
+                echo "Missing $required_key in LCB_3_SECRETS."
                 exit 1
             fi
         done
@@ -76,7 +76,26 @@ jobs:
         export REMAX_SDK_TOKEN
         
         # 1. 签名准备。Google Services JSON 已提交在 app/src/official/ 变体目录。
-        echo "$PLAYSTORE_KEYSTORE_BASE64" | base64 -di > scripts/release.jks
+        KEYSTORE_FILE="lcb3-release.jks"
+        if [ -n "$PLAYSTORE_KEYSTORE_BASE64" ]; then
+            echo "$PLAYSTORE_KEYSTORE_BASE64" | base64 -di > "scripts/$KEYSTORE_FILE"
+            echo "KEYSTORE_GENERATED=false" >> "$GITHUB_ENV"
+        else
+            echo "playstore_keystore_base64 is empty. Generating scripts/$KEYSTORE_FILE for this CI run."
+            keytool -genkeypair \
+                -v \
+                -keystore "scripts/$KEYSTORE_FILE" \
+                -storepass "$PLAYSTORE_STORE_PASSWORD" \
+                -alias "$PLAYSTORE_KEY_ALIAS" \
+                -keypass "$PLAYSTORE_KEY_PASSWORD" \
+                -keyalg RSA \
+                -keysize 2048 \
+                -validity 10000 \
+                -dname "CN=HealthTracker LCB3, OU=CI, O=HealthTracker, L=Unknown, ST=Unknown, C=US"
+            echo "KEYSTORE_GENERATED=true" >> "$GITHUB_ENV"
+            echo "GENERATED_KEYSTORE_PATH=main-repo/scripts/$KEYSTORE_FILE" >> "$GITHUB_ENV"
+        fi
+
         GOOGLE_JSON_PATH="app/src/official/google-services.json"
 
         if [ ! -f "$GOOGLE_JSON_PATH" ]; then
@@ -85,7 +104,7 @@ jobs:
         fi
 
         # 2. 生成签名配置文件 (sign.properties)
-        echo "keystore=release.jks" > scripts/sign.properties
+        echo "keystore=$KEYSTORE_FILE" > scripts/sign.properties
         echo "keystore.password=$PLAYSTORE_STORE_PASSWORD" >> scripts/sign.properties
         echo "keyAlias=$PLAYSTORE_KEY_ALIAS" >> scripts/sign.properties
         echo "keyPassword=$PLAYSTORE_KEY_PASSWORD" >> scripts/sign.properties
@@ -104,6 +123,14 @@ jobs:
 
         # 4. 执行 official AAB 构建任务
         ./gradlew bundleOfficialRelease -x lint $VERSION_PARAM --stacktrace
+
+    - name: Upload Generated Keystore
+      if: always() && env.KEYSTORE_GENERATED == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: lcb3-generated-release-keystore
+        path: ${{ env.GENERATED_KEYSTORE_PATH }}
+        retention-days: 1
 
     - name: Upload Artifact
       if: success()

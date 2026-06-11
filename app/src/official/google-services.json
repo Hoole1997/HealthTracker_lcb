@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "930242226713",
-    "project_id": "aga655e73b20-308f5-gp",
-    "storage_bucket": "aga655e73b20-308f5-gp.firebasestorage.app"
+    "project_number": "509564564991",
+    "project_id": "ag777e483e21-2b90f-gp",
+    "storage_bucket": "ag777e483e21-2b90f-gp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:930242226713:android:56df5bbc4e22ebeb495888",
+        "mobilesdk_app_id": "1:509564564991:android:08b33133a646edf7b463ca",
         "android_client_info": {
-          "package_name": "com.blood.sugar.health.diabetes.tool"
+          "package_name": "com.healthlab.heartrate.bloodpressuretracker"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCJeAo8B-wozFzQaZfjZzTxpYMnz25Ycxk"
+          "current_key": "AIzaSyC3Ld2s45AUEhZoIr8Qq4tZEZRp0ZpCIYs"
         }
       ],
       "services": {

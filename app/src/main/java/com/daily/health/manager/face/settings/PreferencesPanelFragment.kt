@@ -64,10 +64,8 @@ class PreferencesPanelFragment : BaseMVVMFragment<BaseViewModel, TrFragmentSetti
     private var hasRatedState = androidx.compose.runtime.mutableStateOf(false)
 
     private val languageSelectLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == android.app.Activity.RESULT_OK) {
-                activity?.recreate()
-            }
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // AppCompatDelegate.setApplicationLocales handles activity recreation.
         }
 
     override fun createViewBinding(

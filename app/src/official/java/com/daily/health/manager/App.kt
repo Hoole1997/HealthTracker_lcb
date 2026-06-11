@@ -2,14 +2,12 @@ package com.daily.health.manager
 
 import android.content.Context
 import android.content.res.Configuration
-import com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp
-import com.blood.sugar.health.diabetes.tool.Gcewq1vv7xsiqcsp.autosecureloc
 import com.daily.health.manager.observer.AppForegroundObserver
 import org.koin.android.ext.android.inject
 import java.lang.ref.WeakReference
 import java.util.Locale
 
-class App : Gcewq1vv7xsiqcsp() {
+class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
 
     private val appInitializer: AppInitializer by inject()
     private val appForegroundObserver: AppForegroundObserver by inject()
@@ -39,16 +37,16 @@ class App : Gcewq1vv7xsiqcsp() {
     var isFeatureLeave = false
     var isClickAdLeave = false
 
-    override fun metasafearchive(): Class<Any> {
+    override fun quickboostnet(): Class<Any> {
         return AppDelegate.splashClass()
     }
 
-    override fun neodailydevice(): MutableList<Class<Any>> {
+    override fun quickbackupunit(): MutableList<Class<Any>> {
         return AppDelegate.launcherClasses()
     }
 
     fun backToLauncher() {
-        autosecureloc()
+        ultrasmarttool()
     }
 
     override fun attachBaseContext(base: Context?) {
@@ -66,7 +64,7 @@ class App : Gcewq1vv7xsiqcsp() {
             appInitializerProvider = { appInitializer },
             appForegroundObserverProvider = { appForegroundObserver },
             registerAttributionCallback = {
-                compresshub { _, network, campaign, adgroup, creative, jsonResponse ->
+                cleansmartmemory { _, network, campaign, adgroup, creative, jsonResponse ->
                     delegate.handleAttributionChanged(
                         network = network,
                         campaign = campaign,

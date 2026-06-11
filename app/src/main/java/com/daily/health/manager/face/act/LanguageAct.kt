@@ -125,6 +125,7 @@ class LanguageAct: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBindi
             })
 
         }
+        LanguageUtils.applyAppLanguage(selectedLangId)
         finish()
     }
 

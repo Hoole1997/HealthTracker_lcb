@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Glucosa &amp; Presión Tracker</string>
     <string name="tr_meds_manager">Gestor de Medicamentos</string>
     <string name="tr_blood_suger">Glucosa</string>
     <string name="tr_blood_pressure">Presión Arterial</string>

@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Glycémie &amp; Suivi Tension</string>
     <string name="tr_meds_manager">Gestionnaire de Médicaments</string>
     <string name="tr_blood_suger">Glycémie</string>
     <string name="tr_blood_pressure">Tension Artérielle</string>

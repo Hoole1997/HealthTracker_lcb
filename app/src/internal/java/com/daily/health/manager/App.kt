@@ -38,11 +38,11 @@ class App : Iej9ieio6r89e7ya() {
     var isFeatureLeave = false
     var isClickAdLeave = false
 
-    override fun metaautovault(): MutableList<Class<Any>> {
+    override fun convertsafepower(): MutableList<Class<Any>> {
         return AppDelegate.launcherClasses()
     }
 
-    override fun prodailysmartmemory(): Class<Any> {
+    override fun metaautovault(): Class<Any> {
         return AppDelegate.splashClass()
     }
 
