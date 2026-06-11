@@ -61,9 +61,9 @@ ext {
 
     // 统计归因 (正式 Token)
     // TODO: 如果正式环境有独立的 Adjust/ThinkingData Token，请在此替换
-    analytics = [adjustAppToken        : "",
-                 thinkingDataAppId     : "",
-                 thinkingDataServerUrl : "",
+    analytics = [adjustAppToken        : "rmar8rz965ts",
+                 thinkingDataAppId     : "fc996b212a7d4bc2b70946a6940931f3",
+                 thinkingDataServerUrl : "https://limset.quantumorphlyr.com",
                  defaultUserChannel    : "natural"
     ]
 }
