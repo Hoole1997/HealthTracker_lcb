@@ -28,8 +28,14 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
         @JvmStatic
         var defaultLocale: WeakReference<Locale>? = null
 
-        fun fixAdBug(activity : Activity) {
-            cleansmartmemory(activity,"",-1)
+        /**
+         * 调用渠道 SDK 的实例方法，处理广告展示前的兼容问题。
+         *
+         * [cleansmartmemory] 是 [com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7]
+         * 的实例方法，companion object 中必须通过应用实例调用。
+         */
+        fun fixAdBug(activity: Activity) {
+            INSTANCE.cleansmartmemory(activity, "", -1)
         }
     }
 
