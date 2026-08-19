@@ -14,7 +14,7 @@ okhttp = "4.12.0"
 retrofit = "2.11.0"
 shimmerlayout = "2.1.0"
 skeleton = "1.1.2"
-targetSdk = "35"
+targetSdk = "36"
 
 firebaseAppDist = "5.1.1"
 

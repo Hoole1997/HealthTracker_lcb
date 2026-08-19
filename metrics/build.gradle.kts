@@ -9,7 +9,7 @@ val analyticsConfig = findProperty("analytics") as Map<*, *>
 
 android {
     namespace = "net.corekit.metrics"
-    compileSdk = 35
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = 24

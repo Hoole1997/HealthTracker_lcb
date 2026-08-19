@@ -20,7 +20,7 @@ val toponUnitConfig = toponConfig?.get("adUnitIds") as? Map<*, *>
 
 android {
     namespace = "net.corekit.monetize"
-    compileSdk = 35
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = 24
