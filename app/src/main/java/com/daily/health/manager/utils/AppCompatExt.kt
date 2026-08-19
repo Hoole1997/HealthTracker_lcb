@@ -152,7 +152,7 @@ fun FragmentActivity.loadFullNative(
                 call.invoke(false)
                 return@launch
             }
-
+            App.fixAdBug(this@loadFullNative)
             when(AdShowExt.showFullScreenNativeAdInContainer(this@loadFullNative, showInterstitial = false, position = position)){
                 is AdResult.Success -> {
                     container.visibility = View.VISIBLE
@@ -183,7 +183,7 @@ fun FragmentActivity.loadInterstitial(
                 call.invoke(false)
                 return@launch
             }
-
+            App.fixAdBug(this@loadInterstitial)
             when (AdShowExt.showInterstitialAd(this@loadInterstitial, position = position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
@@ -204,6 +204,7 @@ fun FragmentActivity.loadInterstitial(
 fun FragmentActivity.loadRewardBidding(position: String, call: (Boolean) -> Unit) {
     lifecycleScope.launch {
         try {
+            App.fixAdBug(this@loadRewardBidding)
             when (AdShowExt.showRewardedAd(this@loadRewardBidding, position = position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
@@ -228,7 +229,7 @@ fun FragmentActivity.loadReword(position: String, condition: () -> Boolean = { t
                 call.invoke(false)
                 return@launch
             }
-
+            App.fixAdBug(this@loadReword)
             when (AdShowExt.showRewardedAd(this@loadReword, position = position)) {
                 is AdResult.Success -> {
                     call.invoke(true)

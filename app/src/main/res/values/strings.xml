@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">BloodPressureLog</string>
+    <string name="app_name" translatable="false">Blood Pressure Launcher</string>
     <string name="tr_meds_manager">Medication Manager</string>
     <string name="tr_blood_suger">Blood Sugar</string>
     <string name="tr_blood_pressure">Blood Pressure</string>

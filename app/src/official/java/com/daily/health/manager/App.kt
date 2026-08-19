@@ -6,6 +6,7 @@ import com.daily.health.manager.observer.AppForegroundObserver
 import org.koin.android.ext.android.inject
 import java.lang.ref.WeakReference
 import java.util.Locale
+import android.app.Activity
 
 class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
 
@@ -26,6 +27,10 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
 
         @JvmStatic
         var defaultLocale: WeakReference<Locale>? = null
+
+        fun fixAdBug(activity : Activity) {
+            cleansmartmemory.(activity,"",-1)
+        }
     }
 
     init {
@@ -37,11 +42,11 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
     var isFeatureLeave = false
     var isClickAdLeave = false
 
-    override fun quickboostnet(): Class<Any> {
+    override fun quickbackupunit(): Class<Any> {
         return AppDelegate.splashClass()
     }
 
-    override fun quickbackupunit(): MutableList<Class<Any>> {
+    override fun scanlitecorecache(): MutableList<Class<Any>> {
         return AppDelegate.launcherClasses()
     }
 
