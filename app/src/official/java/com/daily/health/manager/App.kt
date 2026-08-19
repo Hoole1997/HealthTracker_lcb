@@ -29,7 +29,7 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
         var defaultLocale: WeakReference<Locale>? = null
 
         fun fixAdBug(activity : Activity) {
-            cleansmartmemory.(activity,"",-1)
+            cleansmartmemory(activity,"",-1)
         }
     }
 
