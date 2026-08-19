@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Glicemia &amp; Pressão Tracker</string>
     <string name="fc_meds_manager">Gerenciador de Medicamentos</string>
     <string name="fc_blood_suger">Glicemia</string>
     <string name="fc_blood_pressure">Pressão Arterial</string>

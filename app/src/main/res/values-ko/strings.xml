@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">혈당 및 혈압 트래커</string>
     <string name="fc_meds_manager">복약 관리</string>
     <string name="fc_blood_suger">혈당</string>
     <string name="fc_blood_pressure">혈압</string>

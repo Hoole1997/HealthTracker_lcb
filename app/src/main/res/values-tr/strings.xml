@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Kan Şekeri &amp; Tansiyon Takip</string>
     <string name="fc_meds_manager">İlaç Yöneticisi</string>
     <string name="fc_blood_suger">Kan Şekeri</string>
     <string name="fc_blood_pressure">Tansiyon</string>

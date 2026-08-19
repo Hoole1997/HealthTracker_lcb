@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Health Monitor</string>
+    <string name="app_name" translatable="false">Health Monitor Launcher</string>
     <string name="fc_meds_manager">Medication Manager</string>
     <string name="fc_blood_suger">Blood Sugar</string>
     <string name="fc_blood_pressure">Blood Pressure</string>
