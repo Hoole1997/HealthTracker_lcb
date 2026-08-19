@@ -1,13 +1,108 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older than API 31
-   See https://developer.android.com/about/versions/12/backup-restore
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    备份排除规则
+
+    只备份用户自己的健康数据（Room 库 local_store.db、SharedPreferences/MMKV），
+    排除各三方 SDK 在 databases/ 下的缓存库。
+
+    原因：这些 SDK 库自带 schema 版本且未实现 onDowngrade。一旦高版本产生的库
+    被恢复到低版本 app 上，SQLiteOpenHelper 会直接抛
+    "Can't downgrade database from version N to M" 导致启动崩溃。
+    这类数据是纯缓存/埋点，没有备份价值。
+
+    新接入 SDK 若在 databases/ 下建库，请一并加入此列表。
 -->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <exclude domain="database" path="ad_click_protection.db" />
+    <exclude domain="database" path="ad_click_protection.db-journal" />
+    <exclude domain="database" path="ad_click_protection.db-wal" />
+    <exclude domain="database" path="ad_click_protection.db-shm" />
+    <exclude domain="database" path="anr_data.db" />
+    <exclude domain="database" path="anr_data.db-journal" />
+    <exclude domain="database" path="anr_data.db-wal" />
+    <exclude domain="database" path="anr_data.db-shm" />
+    <exclude domain="database" path="apps.db" />
+    <exclude domain="database" path="apps.db-journal" />
+    <exclude domain="database" path="apps.db-wal" />
+    <exclude domain="database" path="apps.db-shm" />
+    <exclude domain="database" path="component_data.db" />
+    <exclude domain="database" path="component_data.db-journal" />
+    <exclude domain="database" path="component_data.db-wal" />
+    <exclude domain="database" path="component_data.db-shm" />
+    <exclude domain="database" path="exoplayer_internal.db" />
+    <exclude domain="database" path="exoplayer_internal.db-journal" />
+    <exclude domain="database" path="exoplayer_internal.db-wal" />
+    <exclude domain="database" path="exoplayer_internal.db-shm" />
+    <exclude domain="database" path="google_app_measurement_local.db" />
+    <exclude domain="database" path="google_app_measurement_local.db-journal" />
+    <exclude domain="database" path="google_app_measurement_local.db-wal" />
+    <exclude domain="database" path="google_app_measurement_local.db-shm" />
+    <exclude domain="database" path="kwaiadrep.db" />
+    <exclude domain="database" path="kwaiadrep.db-journal" />
+    <exclude domain="database" path="kwaiadrep.db-wal" />
+    <exclude domain="database" path="kwaiadrep.db-shm" />
+    <exclude domain="database" path="mbridge.msdk.db" />
+    <exclude domain="database" path="mbridge.msdk.db-journal" />
+    <exclude domain="database" path="mbridge.msdk.db-wal" />
+    <exclude domain="database" path="mbridge.msdk.db-shm" />
+    <exclude domain="database" path="npth_log.db" />
+    <exclude domain="database" path="npth_log.db-journal" />
+    <exclude domain="database" path="npth_log.db-wal" />
+    <exclude domain="database" path="npth_log.db-shm" />
+    <exclude domain="database" path="pag_monitor.db" />
+    <exclude domain="database" path="pag_monitor.db-journal" />
+    <exclude domain="database" path="pag_monitor.db-wal" />
+    <exclude domain="database" path="pag_monitor.db-shm" />
+    <exclude domain="database" path="pagmesdk.db" />
+    <exclude domain="database" path="pagmesdk.db-journal" />
+    <exclude domain="database" path="pagmesdk.db-wal" />
+    <exclude domain="database" path="pagmesdk.db-shm" />
+    <exclude domain="database" path="sdm.db" />
+    <exclude domain="database" path="sdm.db-journal" />
+    <exclude domain="database" path="sdm.db-wal" />
+    <exclude domain="database" path="sdm.db-shm" />
+    <exclude domain="database" path="sdm_adx_rp.db" />
+    <exclude domain="database" path="sdm_adx_rp.db-journal" />
+    <exclude domain="database" path="sdm_adx_rp.db-wal" />
+    <exclude domain="database" path="sdm_adx_rp.db-shm" />
+    <exclude domain="database" path="short_drama.db" />
+    <exclude domain="database" path="short_drama.db-journal" />
+    <exclude domain="database" path="short_drama.db-wal" />
+    <exclude domain="database" path="short_drama.db-shm" />
+    <exclude domain="database" path="short_drama_economy.db" />
+    <exclude domain="database" path="short_drama_economy.db-journal" />
+    <exclude domain="database" path="short_drama_economy.db-wal" />
+    <exclude domain="database" path="short_drama_economy.db-shm" />
+    <exclude domain="database" path="thinkup.db" />
+    <exclude domain="database" path="thinkup.db-journal" />
+    <exclude domain="database" path="thinkup.db-wal" />
+    <exclude domain="database" path="thinkup.db-shm" />
+    <exclude domain="database" path="thinkup_upload.db" />
+    <exclude domain="database" path="thinkup_upload.db-journal" />
+    <exclude domain="database" path="thinkup_upload.db-wal" />
+    <exclude domain="database" path="thinkup_upload.db-shm" />
+    <exclude domain="database" path="track_manager_metrics_sdk.db" />
+    <exclude domain="database" path="track_manager_metrics_sdk.db-journal" />
+    <exclude domain="database" path="track_manager_metrics_sdk.db-wal" />
+    <exclude domain="database" path="track_manager_metrics_sdk.db-shm" />
+    <exclude domain="database" path="tramini.db" />
+    <exclude domain="database" path="tramini.db-journal" />
+    <exclude domain="database" path="tramini.db-wal" />
+    <exclude domain="database" path="tramini.db-shm" />
+    <exclude domain="database" path="ttopensdk.db" />
+    <exclude domain="database" path="ttopensdk.db-journal" />
+    <exclude domain="database" path="ttopensdk.db-wal" />
+    <exclude domain="database" path="ttopensdk.db-shm" />
+    <exclude domain="database" path="ue3.db" />
+    <exclude domain="database" path="ue3.db-journal" />
+    <exclude domain="database" path="ue3.db-wal" />
+    <exclude domain="database" path="ue3.db-shm" />
+    <exclude domain="database" path="w.db" />
+    <exclude domain="database" path="w.db-journal" />
+    <exclude domain="database" path="w.db-wal" />
+    <exclude domain="database" path="w.db-shm" />
+    <exclude domain="database" path="com.google.android.datatransport.events" />
+    <exclude domain="database" path="com.google.android.datatransport.events-journal" />
+    <exclude domain="database" path="com.google.android.datatransport.events-wal" />
+    <exclude domain="database" path="com.google.android.datatransport.events-shm" />
 </full-backup-content>
