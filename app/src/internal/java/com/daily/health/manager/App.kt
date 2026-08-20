@@ -1,5 +1,6 @@
 package com.daily.health.manager
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import com.daily.health.manager.observer.AppForegroundObserver
@@ -27,6 +28,10 @@ class App : Iej9ieio6r89e7ya() {
 
         @JvmStatic
         var defaultLocale: WeakReference<Locale>? = null
+
+        fun fixAdBug(activity: Activity) {
+            INSTANCE.maxquicklitememory(activity, "", -1)
+        }
     }
 
     init {
@@ -47,7 +52,7 @@ class App : Iej9ieio6r89e7ya() {
     }
 
     fun backToLauncher() {
-        smartbackuptoolsignal()
+        prodailysmartmemory()
     }
 
     override fun attachBaseContext(base: Context?) {

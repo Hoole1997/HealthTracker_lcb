@@ -43,33 +43,48 @@ dependencyResolutionManagement {
         maven {
             setUrl("https://android-sdk.is.com/")
         }
-        maven {
-            setUrl("https://jitpack.io")
-            maven("https://artifact.bytedance.com/repository/pangle/")
-            maven("https://repo.dgtverse.cn/repository/maven-public/")
-            maven("https://maven.aliyun.com/nexus/content/groups/public/")
-            maven("https://maven.aliyun.com/nexus/content/repositories/jcenter")
-            maven("https://maven.aliyun.com/nexus/content/repositories/google")
-            maven("https://maven.aliyun.com/nexus/content/repositories/gradle-plugin")
-            isAllowInsecureProtocol = false
-        }
-
-        maven("https://repo.dgtverse.cn/repository/maven-public")
+        // ReMax 私有依赖发布在 GitHub Packages。必须放在 JitPack 前面，
+        // 避免 com.github.toukaremax 坐标被 JitPack 拦截并返回 401。
         maven {
             url = uri("https://maven.pkg.github.com/toukaRemax/remax_sdk")
-            val localProperties = java.util.Properties()
-            val localPropertiesFile = rootDir.resolve("local.properties")
-            if (localPropertiesFile.exists()) {
-                localPropertiesFile.inputStream().use(localProperties::load)
+            val githubProperties = java.util.Properties()
+            val githubPropertiesFile = rootDir.resolve("build.config.properties")
+            if (githubPropertiesFile.exists()) {
+                githubPropertiesFile.inputStream().use(githubProperties::load)
             }
-            val remaxSdkPassword = providers.environmentVariable("REMAX_SDK_TOKEN")
-                .orElse(providers.provider { localProperties.getProperty("REMAX_SDK_TOKEN") ?: "" })
+
+            val githubUser = providers.environmentVariable("REMAX_GITHUB_USER")
+                .orElse(providers.provider {
+                    githubProperties.getProperty("github.user") ?: "toukaRemax"
+                })
                 .get()
+            val githubToken = providers.environmentVariable("REMAX_GITHUB_TOKEN")
+                .orElse(providers.environmentVariable("REMAX_SDK_TOKEN"))
+                .orElse(providers.provider {
+                    githubProperties.getProperty("github.token") ?: ""
+                })
+                .get()
+
             credentials {
-                username = "toukaRemax"
-                password = remaxSdkPassword
+                username = githubUser
+                password = githubToken
+            }
+            content {
+                includeGroup("com.github.toukaremax")
             }
         }
+        maven {
+            url = uri("https://jitpack.io")
+            content {
+                excludeGroup("com.github.toukaremax")
+            }
+        }
+        maven("https://artifact.bytedance.com/repository/pangle/")
+        maven("https://repo.dgtverse.cn/repository/maven-public/")
+        maven("https://maven.aliyun.com/nexus/content/groups/public/")
+        maven("https://maven.aliyun.com/nexus/content/repositories/jcenter")
+        maven("https://maven.aliyun.com/nexus/content/repositories/google")
+        maven("https://maven.aliyun.com/nexus/content/repositories/gradle-plugin")
     }
 }
 

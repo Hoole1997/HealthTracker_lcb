@@ -5,6 +5,13 @@ build/
 
 # Local configuration file (sdk path, etc)
 local.properties
+# Private GitHub Packages credentials
+/build.config.properties
+
+# Generated release signing material and aggregated CI secrets
+/scripts/*.jks.base64
+/scripts/*.jks.base64.oneline
+/scripts/*-secrets-template.json
 
 # Log/OS Files
 *.log

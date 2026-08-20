@@ -79,7 +79,7 @@ fun loadChannelConfig(
 val internalChannel = loadChannelConfig(
     name = "internal",
     scriptPath = "../scripts/internal.gradle",
-    launcherUnityDependency = "com.launcher.unity:com.leafmotivation.quizguessoncolor-BloodPressureLog:1.0.4",
+    launcherUnityDependency = "com.launcher.unity:com.leafmotivation.quizguessoncolor-BloodPressureLog:1.0.5",
 )
 val officialChannel = loadChannelConfig(
     name = "official",
