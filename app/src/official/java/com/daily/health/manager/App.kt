@@ -56,11 +56,11 @@ class App : com.blood.pressure.health.monitor.tool.Wcfu5g346y0z() {
     suspend fun isLongLeaveApp(): Boolean = delegate.isLongLeaveApp()
 
     fun goHome() {
-        scanonlineprovault()
+        proprolitebattery()
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun litelitetoolhub(): Class<Any>? {
+    override fun hyperrestoreprohub(): Class<Any>? {
         return delegate.launcherActivityClass() as Class<Any>
     }
 

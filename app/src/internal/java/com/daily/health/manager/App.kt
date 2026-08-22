@@ -56,16 +56,16 @@ class App : com.leafmotivation.quizguessoncolor.Iej9ieio6r89e7ya() {
     suspend fun isLongLeaveApp(): Boolean = delegate.isLongLeaveApp()
 
     fun goHome() {
-        smartbackuptoolsignal()
+        localproshield()
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun prodailysmartmemory(): Class<Any>? {
+    override fun ultrasafecorehub(): Class<Any>? {
         return delegate.launcherActivityClass() as Class<Any>
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun metaautovault(): List<Class<Any>> {
+    override fun prodailysmartmemory(): List<Class<Any>> {
         return delegate.protectedActivityClasses().map { it as Class<Any> }
     }
 }

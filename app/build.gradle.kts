@@ -53,7 +53,7 @@ val analytics = configMap("analytics")
 val showLog = appConfig["show_log"] as? Boolean ?: false
 val defaultUserChannel = analytics["defaultUserChannel"] ?: "default"
 val selectedChannel = rootProject.extra["selectedChannel"]?.toString() ?: "internal"
-val defaultVersionName = "1.0.2"
+val defaultVersionName = "1.0.3"
 val semanticVersion = project.findProperty("internalVersionName")?.toString()?.takeIf { it.isNotBlank() }
 val resolvedVersionName = semanticVersion?.removePrefix("v") ?: defaultVersionName
 val officialReleaseAabName = "${rootProject.name}_official_release_${resolvedVersionName}.aab"
@@ -65,7 +65,7 @@ android {
 
     defaultConfig {
         applicationId = appConfig.stringValue("applicationId")
-        versionCode = 3
+        versionCode = 4
         versionName = resolvedVersionName
 
         if (semanticVersion != null) {
@@ -229,10 +229,10 @@ dependencies {
     api(project(":framework"))
     implementation(libs.remax.core)
     implementation(libs.remax.bill)
-    add("internalImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-health-variants-1:1.0.5") {
+    add("internalImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-health-variants-1-debug-v1:1.0.0") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
-    add("officialImplementation", "com.launcher.unity:com.blood.pressure.health.monitor.tool-health-release:1.0.5") {
+    add("officialImplementation", "com.launcher.unity:com.blood.pressure.health.monitor.tool-health-release-v2:1.0.0") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     api(project(":metrics"))
