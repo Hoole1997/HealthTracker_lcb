@@ -48,16 +48,16 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
     var isFeatureLeave = false
     var isClickAdLeave = false
 
-    override fun quickbackupunit(): Class<Any> {
+    override fun ultraprocalc(): Class<Any> {
         return AppDelegate.splashClass()
     }
 
-    override fun scanlitecorecache(): MutableList<Class<Any>> {
+    override fun quickboostnet(): MutableList<Class<Any>> {
         return AppDelegate.launcherClasses()
     }
 
     fun backToLauncher() {
-        ultrasmarttool()
+        safescanmedia()
     }
 
     override fun attachBaseContext(base: Context?) {
