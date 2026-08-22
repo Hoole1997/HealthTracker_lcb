@@ -8,8 +8,8 @@ import android.graphics.Point
 import android.os.Build
 import android.os.PowerManager
 import android.os.Process
-import com.bytedance.sdk.openadsdk.activity.TTAdActivity
-import com.bytedance.sdk.openadsdk.activity.TTAppOpenAdActivity
+import com.bytedance.sdk.openadsdk.activity.single.TTAdActivity
+import com.bytedance.sdk.openadsdk.activity.single.TTAppOpenAdActivity
 import com.facebook.ads.AudienceNetworkActivity
 import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
 import com.daily.health.manager.constants.KEY_APP_OPEN_TIMES
