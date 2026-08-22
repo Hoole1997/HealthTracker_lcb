@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.android.common.bill.ads.ext.AdShowExt
 import com.android.common.bill.ads.log.AdLogger
+import com.daily.health.manager.ad.LauncherAdCallReporter
 import net.corekit.monetize.ui.NativeAdStyle
 
 /**
@@ -45,6 +46,11 @@ fun NativeAdContainer(
         AdLogger.d("[NativeAdContainer] 开始加载流程 | Position: $position")
         
         try {
+            LauncherAdCallReporter.report(
+                context,
+                position,
+                LauncherAdCallReporter.TYPE_NATIVE
+            )
             val success = AdShowExt.showNativeAdInContainer(
                 context = context,
                 container = container,

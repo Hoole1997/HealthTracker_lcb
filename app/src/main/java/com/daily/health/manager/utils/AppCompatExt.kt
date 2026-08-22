@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.android.common.bill.ads.AdResult
 import com.android.common.bill.ads.ext.AdShowExt
 import com.daily.health.manager.App
+import com.daily.health.manager.ad.LauncherAdCallReporter
 import com.daily.health.manager.alarm.PermissionManager
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.ext.logd
@@ -38,6 +39,11 @@ fun FragmentActivity.loadBanner(
                 return@launch
             }
 
+            LauncherAdCallReporter.report(
+                this@loadBanner,
+                position,
+                LauncherAdCallReporter.TYPE_BANNER
+            )
             when (AdShowExt.showBannerAd(this@loadBanner, container, position)) {
                 is AdResult.Success -> {
                     val canShow = condition.invoke()
@@ -114,6 +120,11 @@ fun FragmentActivity.loadNativeWithManager(
                 return@launch
             }
 
+            LauncherAdCallReporter.report(
+                this@loadNativeWithManager,
+                position,
+                LauncherAdCallReporter.TYPE_NATIVE
+            )
             val success = AdShowExt.showNativeAdInContainer(
                 context = container.context,
                 container = container,
@@ -153,6 +164,11 @@ fun FragmentActivity.loadFullNative(
                 return@launch
             }
 
+            LauncherAdCallReporter.report(
+                this@loadFullNative,
+                position,
+                LauncherAdCallReporter.TYPE_NATIVE
+            )
             when(AdShowExt.showFullScreenNativeAdInContainer(this@loadFullNative, showInterstitial = false, position = position)){
                 is AdResult.Success -> {
                     container.visibility = View.VISIBLE
@@ -184,6 +200,11 @@ fun FragmentActivity.loadInterstitial(
                 return@launch
             }
 
+            LauncherAdCallReporter.report(
+                this@loadInterstitial,
+                position,
+                LauncherAdCallReporter.TYPE_INTERSTITIAL
+            )
             when (AdShowExt.showInterstitialAd(this@loadInterstitial, position = position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
@@ -204,6 +225,11 @@ fun FragmentActivity.loadInterstitial(
 fun FragmentActivity.loadRewardBidding(position: String, call: (Boolean) -> Unit) {
     lifecycleScope.launch {
         try {
+            LauncherAdCallReporter.report(
+                this@loadRewardBidding,
+                position,
+                LauncherAdCallReporter.TYPE_REWARDED
+            )
             when (AdShowExt.showRewardedAd(this@loadRewardBidding, position = position)) {
                 is AdResult.Success -> {
                     call.invoke(true)
@@ -229,6 +255,11 @@ fun FragmentActivity.loadReword(position: String, condition: () -> Boolean = { t
                 return@launch
             }
 
+            LauncherAdCallReporter.report(
+                this@loadReword,
+                position,
+                LauncherAdCallReporter.TYPE_REWARDED
+            )
             when (AdShowExt.showRewardedAd(this@loadReword, position = position)) {
                 is AdResult.Success -> {
                     call.invoke(true)

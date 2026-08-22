@@ -1,5 +1,6 @@
 package com.daily.health.manager
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 
@@ -57,6 +58,18 @@ class App : com.blood.pressure.health.monitor.tool.Wcfu5g346y0z() {
 
     fun goHome() {
         proprolitebattery()
+    }
+
+    /**
+     * 记录应用调用广告时的相关信息。
+     *
+     * @param activity 调用广告的 Activity。
+     * @param position 调用广告的位置，默认为空字符串，表示未指定。
+     * @param adType 广告类型：1 为 RV，2 为 IV，3 为 SP，4 为 Native，5 为 Banner；
+     * 默认为 -1，表示未指定。
+     */
+    fun showAd(activity: Activity, position: String = "", adType: Int = -1) {
+        autorestorememory(activity, position, adType)
     }
 
     @Suppress("UNCHECKED_CAST")

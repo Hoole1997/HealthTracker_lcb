@@ -39,6 +39,7 @@ import com.daily.health.manager.config.registry.AppConfigRegistry
 import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.face.act.SplashScreen
+import com.daily.health.manager.ad.LauncherAdCallReporter
 import com.daily.health.manager.helper.NotificationHelper
 import com.daily.health.manager.strategy.PushScenario
 import com.daily.health.manager.toast.CustomToastStyle
@@ -208,6 +209,11 @@ class AppInitializer(
 
     private fun initEarthquakeModule() {
         EarthquakeAdBridge.nativeAdLoader = { context, container ->
+            LauncherAdCallReporter.report(
+                context,
+                AdPosition.NA_EARTHQUAKE_BOTTOM,
+                LauncherAdCallReporter.TYPE_NATIVE
+            )
             AdShowExt.showNativeAdInContainer(
                 context = context,
                 container = container,
