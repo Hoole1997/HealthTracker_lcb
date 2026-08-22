@@ -232,7 +232,7 @@ dependencies {
     add("internalImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-health-variants-1-debug-v1:1.0.0") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
-    add("officialImplementation", "com.launcher.unity:com.blood.pressure.health.monitor.tool-health-release-v2:1.0.0") {
+    add("officialImplementation", "com.launcher.unity:com.blood.pressure.health.monitor.tool-health-release-v3:1.0.0") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     api(project(":metrics"))
