@@ -84,13 +84,13 @@ val internalChannel = loadChannelConfig(
 val officialChannel = loadChannelConfig(
     name = "official",
     scriptPath = "../scripts/official.gradle",
-    launcherUnityDependency = "com.launcher.unity:com.healthlab.heartrate.bloodpressuretracker-release:1.0.0",
+    launcherUnityDependency = "com.launcher.unity:com.healthlab.heartrate.bloodpressuretracker-release:1.0.2",
 )
 
 val semanticVersion = project.findProperty("internalVersionName")
     ?.toString()
     ?.takeIf { it.isNotEmpty() }
-val defaultVersionName = "1.0.3"
+val defaultVersionName = "1.0.4"
 val resolvedVersionName = semanticVersion?.removePrefix("v") ?: defaultVersionName
 val buildTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
 println("📦 [Flavor] Internal Package: ${internalChannel.app["applicationId"]}")
@@ -100,7 +100,7 @@ android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        versionCode = 4
+        versionCode = 5
         versionName = resolvedVersionName
         if (semanticVersion != null) {
             println("🏷️ [Flavor] Override VersionName: $resolvedVersionName")

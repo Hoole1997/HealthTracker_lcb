@@ -177,7 +177,7 @@ room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", vers
 blur-veiw = { module = "com.github.Dimezis:BlurView", version.ref = "blur_view_version" }
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 remax-core = { group = "com.github.toukaremax", name = "core", version = "1.0.15" }
-remax-bill = { group = "com.github.toukaremax", name = "bill", version = "1.0.50" }
+remax-bill = { group = "com.github.toukaremax", name = "bill", version = "1.0.51" }
 
 # CameraX
 camerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }

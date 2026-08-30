@@ -49,14 +49,17 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
     var isClickAdLeave = false
 
     override fun ultraprocalc(): Class<Any> {
+        // 正式 SDK: getLauncherActivityClass -> ultraprocalc
         return AppDelegate.splashClass()
     }
 
     override fun quickboostnet(): MutableList<Class<Any>> {
+        // 正式 SDK: getAppActivityClassArray -> quickboostnet
         return AppDelegate.launcherClasses()
     }
 
     fun backToLauncher() {
+        // 正式 SDK: openMainActivity -> safescanmedia
         safescanmedia()
     }
 
@@ -75,6 +78,7 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
             appInitializerProvider = { appInitializer },
             appForegroundObserverProvider = { appForegroundObserver },
             registerAttributionCallback = {
+                // 正式 SDK: setNetworkEventListener -> cleansmartmemory
                 cleansmartmemory { _, network, campaign, adgroup, creative, jsonResponse ->
                     delegate.handleAttributionChanged(
                         network = network,
