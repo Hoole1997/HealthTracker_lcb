@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-30T14:37:31.434760Z",
+  "packageName": "com.healthlab.heartrate.bloodpressuretracker",
+  "sdkBranch": "v2.0.3.1",
+  "artifactIdSuffix": "release",
+  "jenkinsBuildNumber": 1832,
+  "dependency": "com.launcher.unity:com.healthlab.heartrate.bloodpressuretracker-release:1.0.3",
+  "aarSha256": "964376f643e623644cf894a8313747a2cc253382b1a8c2f7e2107cd3948b7bd6",
+  "classMapping": {
+    "target": "com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7",
+    "source": "org.oksp.launcher.App"
+  },
+  "methodMappings": {
+    "getLauncherActivityClass": "ultraprocalc",
+    "appShowAd": "cleansmartmemory",
+    "setNetworkEventListener": "cleansmartmemory",
+    "openMainActivity": "safescanmedia",
+    "getAppActivityClassArray": "quickboostnet"
+  },
+  "verification": {
+    "aarBytecode": true,
+    "mappingFile": true
+  },
+  "integration": {
+    "mappingSourceFile": "app/src/official/java/com/daily/health/manager/App.kt",
+    "dependencyFile": "app/build.gradle.kts",
+    "channel": "official"
+  }
+}
