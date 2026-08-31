@@ -1,5 +1,7 @@
 package com.daily.health.manager.face.act
 
+import com.daily.health.manager.face.theme.setBrandedContent
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -106,7 +108,7 @@ class ProfileActivity: BaseInterActivity<BaseViewModel, TrActivityProfileBinding
             composeView.setViewCompositionStrategy(
                 ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
             )
-            composeView.setContent {
+            composeView.setBrandedContent {
                 ProfileScreen(
                     launchMode = launchMode,
                     age = age,
@@ -389,15 +391,15 @@ private fun GenderCard(
     onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(16.dp)
-    val labelColor = if (selected) colorResource(R.color.c5) else colorResource(R.color.t1)
-    val backgroundColor = if (selected) Color(0x1F1D6BF2) else Color(0xFFF9F9FA)
-    val borderColor = colorResource(R.color.c5)
+    val labelColor = if (selected) colorResource(R.color.tr_entry_primary) else colorResource(R.color.t1)
+    val backgroundColor = if (selected) colorResource(R.color.tr_entry_gender_selected) else colorResource(R.color.tr_entry_gender_surface)
+    val borderColor = colorResource(R.color.tr_entry_primary)
 
     Surface(
         modifier = modifier.height(179.dp),
         shape = shape,
         color = backgroundColor,
-        border = if (selected) androidx.compose.foundation.BorderStroke(1.dp, borderColor) else null,
+        border = if (selected) androidx.compose.foundation.BorderStroke(2.dp, borderColor) else null,
         onClick = onClick,
         enabled = true,
         tonalElevation = 0.dp,
@@ -408,7 +410,7 @@ private fun GenderCard(
                 painter = painterResource(iconRes),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(width = 102.dp, height = 127.dp)
+                    .size(width = 127.dp, height = 127.dp)
                     .align(Alignment.BottomCenter),
             )
             Text(
@@ -431,8 +433,8 @@ private fun PrimaryActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val shape = RoundedCornerShape(24.dp)
-    val bg = if (enabled) colorResource(R.color.c5) else colorResource(R.color.color_C7C7CC)
+    val shape = RoundedCornerShape(10.dp)
+    val bg = if (enabled) colorResource(R.color.tr_entry_primary) else colorResource(R.color.brand_primary_disabled)
     val textColor = Color.White
 
     Surface(

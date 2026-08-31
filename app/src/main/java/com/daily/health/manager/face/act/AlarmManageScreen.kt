@@ -1,5 +1,7 @@
 package com.daily.health.manager.face.act
 
+import com.daily.health.manager.face.theme.setBrandedContent
+
 import android.os.Bundle
 import com.daily.health.manager.databinding.TrActivityAlarmManagerBinding
 import com.daily.health.manager.face.viewmodel.AlarmViewModel
@@ -26,7 +28,7 @@ class AlarmManageScreen : BaseMVVMActivity<AlarmViewModel, TrActivityAlarmManage
 
         mViewBind.composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
+            setBrandedContent {
                 AlarmListContent(
                     viewModel = mViewModel,
                     onBack = { finish() }

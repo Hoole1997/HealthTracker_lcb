@@ -1,5 +1,7 @@
 package com.daily.health.manager.face.act
 
+import com.daily.health.manager.face.theme.setBrandedContent
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -89,7 +91,7 @@ class InsightsDetailAct :
             composeView.setViewCompositionStrategy(
                 ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
             )
-            composeView.setContent {
+            composeView.setBrandedContent {
                 InsightsDetailScreen(
                     articleTitle = title,
                     content = spannableContent,
@@ -124,7 +126,7 @@ class InsightsDetailAct :
             spannableBuilder.removeSpan(quoteSpan)
             spannableBuilder.setSpan(
                 com.daily.health.manager.face.widget.CustomQuoteSpan(
-                    ContextCompat.getColor(this@InsightsDetailAct, R.color.color_3b82f6),
+                    ContextCompat.getColor(this@InsightsDetailAct, R.color.brand_primary),
                     stripeWidth = 10,
                     gapWidth = 20
                 ),

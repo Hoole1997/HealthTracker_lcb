@@ -30,10 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,11 +48,9 @@ import com.daily.health.manager.face.act.reportGuide
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import kotlinx.coroutines.launch
 
-private val OnboardingBlue = Color(0xFF1D6BF2)
 private val OnboardingTextPrimary = Color(0xFF333333)
 private val OnboardingTextSecondary = Color(0xFF666666)
-private val OnboardingIndicatorInactive = Color(0xFFD2E2FF)
-private val OnboardingPanel = Color(0xFFF4F8FF)
+private val OnboardingPanel = Color.White
 
 private val OnboardingPanelShape = GenericShape { size, _ ->
     val sideY = size.height * (29.8833f / 394f)
@@ -92,9 +90,9 @@ private data class OnboardingPageUi(
     @StringRes val descriptionRes: Int,
     @StringRes val buttonRes: Int,
     val showArrow: Boolean,
-    val imageTop: Dp,
-    val imageWidth: Dp,
-    val imageHeight: Dp,
+    val imageTop: Dp = 95.5.dp,
+    val imageWidth: Dp = 327.dp,
+    val imageHeight: Dp = 327.dp,
     val titleWidth: Dp = 319.dp,
     val descriptionWidth: Dp,
     val descriptionHeight: Dp = 66.dp,
@@ -146,9 +144,6 @@ private val PreviewOnboardingPages = listOf(
         descriptionRes = R.string.tr_onboarding_desc_1,
         buttonRes = R.string.tr_next,
         showArrow = true,
-        imageTop = 139.dp,
-        imageWidth = 264.2.dp,
-        imageHeight = 216.9.dp,
         descriptionWidth = 312.dp,
         descriptionHeight = 66.dp,
         imageScale = ContentScale.Fit
@@ -159,9 +154,6 @@ private val PreviewOnboardingPages = listOf(
         descriptionRes = R.string.tr_onboarding_desc_2,
         buttonRes = R.string.tr_next,
         showArrow = true,
-        imageTop = 183.dp,
-        imageWidth = 264.2.dp,
-        imageHeight = 173.2.dp,
         descriptionWidth = 312.dp,
         descriptionHeight = 66.dp,
         imageScale = ContentScale.Fit
@@ -172,9 +164,6 @@ private val PreviewOnboardingPages = listOf(
         descriptionRes = R.string.tr_onboarding_desc_3,
         buttonRes = R.string.tr_next,
         showArrow = true,
-        imageTop = 144.dp,
-        imageWidth = 264.2.dp,
-        imageHeight = 221.3.dp,
         descriptionWidth = 338.dp,
         descriptionHeight = 66.dp,
         imageScale = ContentScale.Fit
@@ -185,9 +174,6 @@ private val PreviewOnboardingPages = listOf(
         descriptionRes = R.string.tr_onboarding_desc_4,
         buttonRes = R.string.tr_onboarding_start,
         showArrow = false,
-        imageTop = 107.dp,
-        imageWidth = 264.2.dp,
-        imageHeight = 267.2.dp,
         descriptionWidth = 338.dp,
         descriptionHeight = 110.dp,
         imageScale = ContentScale.Fit
@@ -240,22 +226,11 @@ private fun OnboardingScreen(
 ) {
     val current = pages[currentPage]
     val textLayout = rememberTextLayout(current)
-    val configuration = LocalConfiguration.current
-    val density = LocalDensity.current
-    val screenHeight = remember(configuration, density) {
-        with(density) { configuration.screenHeightDp.dp.toPx() }
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color.White, Color(0xFFEAF2FF)),
-                    startY = screenHeight * 0.15f,
-                    endY = screenHeight
-                )
-            )
+            // The new illustrations already contain their background; keep the existing layout on white.
+            .background(Color.White)
     ) {
         content()
 
@@ -342,15 +317,15 @@ private fun OnboardingPagination(
     currentPage: Int,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.width(113.dp).height(6.dp)) {
+    Box(modifier = modifier.width(50.dp).height(8.dp)) {
         repeat(pageCount) { index ->
             Box(
                 modifier = Modifier
-                    .offset(x = (29 * index).dp)
-                    .width(26.dp)
-                    .height(6.dp)
+                    .offset(x = (14 * index).dp)
+                    .width(8.dp)
+                    .height(8.dp)
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
-                    .background(if (index == currentPage) OnboardingBlue else OnboardingIndicatorInactive)
+                    .background(if (index == currentPage) colorResource(R.color.tr_entry_primary) else colorResource(R.color.tr_entry_indicator_inactive))
             )
         }
     }
@@ -370,7 +345,7 @@ private fun OnboardingActionButton(
             .height(44.dp),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(37.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = OnboardingBlue,
+            containerColor = colorResource(R.color.tr_entry_primary),
             contentColor = Color.White
         ),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)

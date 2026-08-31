@@ -30,7 +30,7 @@
         app:npv_ShownCount="3"
         app:npv_TextArray="@array/tr_hours"
         app:npv_TextColorNormal="@color/color_BFBFBF"
-        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextColorSelected="@color/brand_primary"
         app:npv_TextSizeNormal="@dimen/sp_24"
         app:npv_TextSizeSelected="@dimen/sp_24"
         app:npv_WrapSelectorWheel="true" />
@@ -65,7 +65,7 @@
         app:npv_ShownCount="3"
         app:npv_TextArray="@array/tr_minutes"
         app:npv_TextColorNormal="@color/color_BFBFBF"
-        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextColorSelected="@color/brand_primary"
         app:npv_TextSizeNormal="@dimen/sp_24"
         app:npv_TextSizeSelected="@dimen/sp_24"
         app:npv_WrapSelectorWheel="true" />

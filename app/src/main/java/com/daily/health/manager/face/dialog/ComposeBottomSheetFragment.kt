@@ -1,5 +1,7 @@
 package com.daily.health.manager.face.dialog
 
+import com.daily.health.manager.face.theme.setBrandedContent
+
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -57,7 +59,7 @@ abstract class ComposeBottomSheetFragment :
     override fun initView(view: View, savedInstanceState: Bundle?) {
         mViewBind?.composeView?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent { ComposeContent() }
+            setBrandedContent { ComposeContent() }
         }
     }
 

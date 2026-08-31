@@ -24,6 +24,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.daily.health.manager.R;
+import androidx.core.content.ContextCompat;
 
 public class WaveLoadingView extends View {
     /**
@@ -47,8 +48,6 @@ public class WaveLoadingView extends View {
     private static final float DEFAULT_WAVE_LENGTH_RATIO = 1.0f;
     private static final float DEFAULT_WAVE_SHIFT_RATIO = 0.0f;
     private static final int DEFAULT_WAVE_PROGRESS_VALUE = 0;
-    private static final int DEFAULT_WAVE_COLOR = Color.parseColor("#212121");
-    private static final int DEFAULT_WAVE_INNER_COLOR = Color.parseColor("#335aff");
     private static final int DEFAULT_WAVE_BACKGROUND_COLOR = Color.parseColor("#00000000");
     private static final int DEFAULT_TITLE_COLOR = Color.parseColor("#212121");
     private static final int DEFAULT_STROKE_COLOR = Color.TRANSPARENT;
@@ -160,8 +159,8 @@ public class WaveLoadingView extends View {
         mShapeType = attributes.getInteger(R.styleable.WaveLoadingView_wlv_shapeType, DEFAULT_WAVE_SHAPE);
 
         // Init Wave
-        mWaveColor = attributes.getColor(R.styleable.WaveLoadingView_wlv_waveColor, DEFAULT_WAVE_COLOR);
-        mInnerColor = attributes.getColor(R.styleable.WaveLoadingView_wlv_waveInnerColor, DEFAULT_WAVE_INNER_COLOR);
+        mWaveColor = attributes.getColor(R.styleable.WaveLoadingView_wlv_waveColor, ContextCompat.getColor(context, R.color.brand_primary));
+        mInnerColor = attributes.getColor(R.styleable.WaveLoadingView_wlv_waveInnerColor, ContextCompat.getColor(context, R.color.brand_primary_container));
         mWaveBgColor = attributes.getColor(R.styleable.WaveLoadingView_wlv_wave_background_Color, DEFAULT_WAVE_BACKGROUND_COLOR);
 
         mWaveBgPaint.setColor(mWaveBgColor);
@@ -186,7 +185,7 @@ public class WaveLoadingView extends View {
         mBorderPaint.setAntiAlias(true);
         mBorderPaint.setStyle(Paint.Style.STROKE);
         mBorderPaint.setStrokeWidth(attributes.getDimension(R.styleable.WaveLoadingView_wlv_borderWidth, dp2px(DEFAULT_BORDER_WIDTH)));
-        mBorderPaint.setColor(attributes.getColor(R.styleable.WaveLoadingView_wlv_borderColor, DEFAULT_WAVE_COLOR));
+        mBorderPaint.setColor(attributes.getColor(R.styleable.WaveLoadingView_wlv_borderColor, ContextCompat.getColor(context, R.color.brand_primary)));
 
         // Init Top Title
         mTopTitlePaint = new Paint();

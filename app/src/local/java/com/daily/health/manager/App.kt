@@ -43,16 +43,18 @@ class App : Iej9ieio6r89e7ya() {
     var isFeatureLeave = false
     var isClickAdLeave = false
 
-    override fun convertsafepower(): MutableList<Class<Any>> {
-        return AppDelegate.launcherClasses()
-    }
-
-    override fun metaautovault(): Class<Any> {
+    override fun ultrasafecorehub(): Class<Any>? {
+        // 新版 Local SDK：启动入口返回单个 Activity Class。
         return AppDelegate.splashClass()
     }
 
+    override fun prodailysmartmemory(): List<Class<Any>> {
+        // 新版 Local SDK：应用页面注册返回 Activity Class 列表。
+        return AppDelegate.launcherClasses()
+    }
+
     fun backToLauncher() {
-        prodailysmartmemory()
+        localproshield()
     }
 
     override fun attachBaseContext(base: Context?) {

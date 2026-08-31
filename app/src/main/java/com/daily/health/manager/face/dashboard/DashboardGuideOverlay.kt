@@ -1,7 +1,6 @@
 package com.daily.health.manager.face.dashboard
 
 import android.graphics.Rect
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -10,9 +9,13 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -80,20 +83,11 @@ enum class HomeGuideStep {
 
 @Immutable
 private data class HomeGuideLayoutSpec(
-    val messageLeft: Float,
     val messageWidth: Float,
     val messageTopFromHighlightBottom: Float,
-    val buttonLeft: Float,
-    val buttonTopFromHighlightBottom: Float,
-    val arrowLeft: Float,
-    val arrowTopFromHighlightBottom: Float,
-    val arrowWidth: Float,
-    val arrowHeight: Float,
     val handLeftFromActionLeft: Float,
     val handTopFromActionTop: Float,
     val handSize: Float,
-    val spotlightCornerRadius: Float = 12f,
-    @DrawableRes val arrowRes: Int,
     @StringRes val messageRes: Int,
 )
 
@@ -113,53 +107,29 @@ private val HomeGuideStep.actionTarget: HomeGuideTarget
 
 private fun HomeGuideStep.layoutSpec(): HomeGuideLayoutSpec = when (this) {
     HomeGuideStep.HEART_RATE -> HomeGuideLayoutSpec(
-        messageLeft = 55.5f,
         messageWidth = 264f,
-        messageTopFromHighlightBottom = 100f,
-        buttonLeft = 216f,
-        buttonTopFromHighlightBottom = 140f,
-        arrowLeft = 27f,
-        arrowTopFromHighlightBottom = 4f,
-        arrowWidth = 77f,
-        arrowHeight = 75f,
+        messageTopFromHighlightBottom = 68f,
         handLeftFromActionLeft = 75f,
-        handTopFromActionTop = 58f,
-        handSize = 123f,
-        arrowRes = R.mipmap.tr_ic_guide_arrow_1,
+        handTopFromActionTop = 24f,
+        handSize = 80f,
         messageRes = R.string.tr_guide_hr_des,
     )
 
     HomeGuideStep.BLOOD_PRESSURE -> HomeGuideLayoutSpec(
-        messageLeft = 76f,
         messageWidth = 240f,
-        messageTopFromHighlightBottom = 90f,
-        buttonLeft = 216f,
-        buttonTopFromHighlightBottom = 140f,
-        arrowLeft = 45f,
-        arrowTopFromHighlightBottom = 4f,
-        arrowWidth = 77f,
-        arrowHeight = 75f,
-        handLeftFromActionLeft = 95f,
-        handTopFromActionTop = -8f,
-        handSize = 114f,
-        arrowRes = R.mipmap.tr_ic_guide_arrow_1,
+        messageTopFromHighlightBottom = 80f,
+        handLeftFromActionLeft = 50f,
+        handTopFromActionTop = 8f,
+        handSize = 80f,
         messageRes = R.string.tr_guide_bp_des,
     )
 
     HomeGuideStep.BLOOD_SUGAR -> HomeGuideLayoutSpec(
-        messageLeft = 81f,
         messageWidth = 213f,
-        messageTopFromHighlightBottom = 60f,
-        buttonLeft = 200f,
-        buttonTopFromHighlightBottom = 110f,
-        arrowLeft = 136f,
-        arrowTopFromHighlightBottom = -40f,
-        arrowWidth = 73f,
-        arrowHeight = 75f,
-        handLeftFromActionLeft = 80f,
-        handTopFromActionTop = 0f,
-        handSize = 114f,
-        arrowRes = R.mipmap.tr_ic_guide_arrow_2,
+        messageTopFromHighlightBottom = 80f,
+        handLeftFromActionLeft = 50f,
+        handTopFromActionTop = 8f,
+        handSize = 80f,
         messageRes = R.string.tr_guide_bs_des,
     )
 }
@@ -242,16 +212,25 @@ internal fun HomeFeatureGuideOverlay(
         val screenHeightScale = maxHeight / 903.dp
         val assetScale = screenWidthScale
         val density = LocalDensity.current
-        val arrowOffsetX = with(density) { (layout.arrowLeft.dp * screenWidthScale).roundToPx() }
-        val arrowOffsetY = with(density) { (layout.arrowTopFromHighlightBottom.dp * screenHeightScale).roundToPx() }
-        val messageOffsetX = with(density) { (layout.messageLeft.dp * screenWidthScale).roundToPx() }
         val messageOffsetY = with(density) { (layout.messageTopFromHighlightBottom.dp * screenHeightScale).roundToPx() }
         val contentWidth = layout.messageWidth.dp * screenWidthScale
-        val buttonOffsetX = with(density) { (layout.buttonLeft.dp * screenWidthScale).roundToPx() }
-        val buttonOffsetY = with(density) { (layout.buttonTopFromHighlightBottom.dp * screenHeightScale).roundToPx() }
+        // Grid targets occupy half the screen. Keep the bubble and pointer inside the viewport,
+        // near the highlighted tile, rather than reusing full-width-card coordinates.
+        val viewportWidth = with(density) { maxWidth.roundToPx() }
+        val contentWidthPx = with(density) { contentWidth.roundToPx() }
+        val edgeMargin = with(density) { 12.dp.roundToPx() }
+        val messageOffsetX = (highlightRect.centerX() - contentWidthPx / 2)
+            .coerceIn(edgeMargin, (viewportWidth - contentWidthPx - edgeMargin).coerceAtLeast(edgeMargin))
+        val handWidthPx = with(density) { (layout.handSize.dp * assetScale).roundToPx() }
         val handOffsetX = with(density) { (layout.handLeftFromActionLeft.dp * screenWidthScale).roundToPx() }
         val handOffsetY = with(density) { (layout.handTopFromActionTop.dp * screenHeightScale).roundToPx() }
-        val spotlightCorner = with(density) { (layout.spotlightCornerRadius.dp * screenWidthScale).toPx() }
+        val spotlightCorner = with(density) {
+            if (step == HomeGuideStep.HEART_RATE) {
+                HomeCardShape.heroCornerRadius(highlightRect.width().toDp()).toPx()
+            } else {
+                HomeCardShape.featureCornerRadius.toPx()
+            }
+        }
 
         Box(
             modifier = Modifier
@@ -273,60 +252,67 @@ internal fun HomeFeatureGuideOverlay(
                 }
         )
 
+        // The exported connector and bubble follow the measured card anchor, so changing
+        // artwork does not change the existing spotlight or target click handling.
         Image(
-            painter = painterResource(id = layout.arrowRes),
+            painter = painterResource(R.mipmap.tr_ic_guide_arrow_1),
             contentDescription = null,
             modifier = Modifier
                 .offset {
                     IntOffset(
-                        x = arrowOffsetX,
-                        y = highlightRect.bottom + arrowOffsetY,
+                        messageOffsetX + with(density) { (contentWidth / 2 - 3.dp).roundToPx() },
+                        highlightRect.bottom,
                     )
                 }
-                .size(layout.arrowWidth.dp * assetScale, layout.arrowHeight.dp * assetScale)
+                .size(6.dp, with(density) { messageOffsetY.toDp() }.coerceAtLeast(1.dp))
                 .graphicsLayer { alpha = arrowAlpha.value },
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.FillBounds,
         )
 
-        Text(
-            text = stringResource(id = layout.messageRes),
-            color = Color.White,
-            fontSize = 13.sp,
-            lineHeight = 16.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Start,
+        Column(
             modifier = Modifier
-                .offset {
-                    IntOffset(
-                        x = messageOffsetX,
-                        y = highlightRect.bottom + messageOffsetY,
-                    )
-                }
+                .offset { IntOffset(messageOffsetX, highlightRect.bottom + messageOffsetY) }
                 .width(contentWidth),
-        )
-
-        Box(
-            modifier = Modifier
-                .offset {
-                    IntOffset(
-                        x = buttonOffsetX,
-                        y = highlightRect.bottom + buttonOffsetY,
-                    )
-                }
-                .size(width = 92.dp * screenWidthScale, height = 32.dp * screenHeightScale)
-                .border(width = 1.dp, color = Color.White, shape = RoundedCornerShape(35.dp))
-                .background(color = Color.Transparent, shape = RoundedCornerShape(35.dp))
-                .pointerInput(step) {
-                    detectTapGestures(onTap = { onNextClick() })
-                }
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = stringResource(id = R.string.tr_next),
-                color = Color.White,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.align(Alignment.Center),
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Image(
+                    painter = painterResource(R.drawable.tr_home_guide_bubble),
+                    contentDescription = null,
+                    modifier = Modifier.matchParentSize(),
+                    contentScale = ContentScale.FillBounds,
+                )
+                Text(
+                    text = stringResource(layout.messageRes),
+                    color = Color.White,
+                    fontSize = 13.sp,
+                    lineHeight = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 12.dp),
+                )
+            }
+            // Place the action after the measured message, allowing translations to wrap safely.
+            Box(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .size(width = 104.dp, height = 48.dp)
+                    .border(1.dp, Color.White, RoundedCornerShape(35.dp))
+                    .clickable(onClick = onNextClick),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(
+                        R.string.tr_guide_step_action,
+                        stringResource(R.string.tr_next),
+                        step.ordinal + 1,
+                        HomeGuideStep.entries.size,
+                    ),
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
         }
 
         Image(
@@ -335,7 +321,7 @@ internal fun HomeFeatureGuideOverlay(
             modifier = Modifier
                 .offset {
                     IntOffset(
-                        x = actionRect.left + handOffsetX,
+                        x = (actionRect.left + handOffsetX).coerceIn(edgeMargin, (viewportWidth - handWidthPx - edgeMargin).coerceAtLeast(edgeMargin)),
                         y = actionRect.top + handOffsetY + handFloatY.value.roundToInt(),
                     )
                 }

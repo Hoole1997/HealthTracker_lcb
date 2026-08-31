@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tr_home_greeting_morning">Good Morning 👋</string>
+    <string name="tr_home_greeting_noon">Good Noon 👋</string>
+    <string name="tr_home_greeting_afternoon">Good Afternoon 👋</string>
+    <string name="tr_home_greeting_evening">Good Evening 👋</string>
+    <string name="tr_home_greeting_subtitle">Take charge of your health today</string>
+    <string name="tr_home_health_overview">Health Overview</string>
+    <string name="tr_home_water_target">of %1$s %2$s</string>
+</resources>

@@ -38,69 +38,70 @@ class NotificationResourceMapper {
      * 根据 iconType 获取通知资源
      */
     fun getNotificationResources(iconType: Int): NotificationResources {
+        // Action color follows the brand; metric-specific notification artwork stays unchanged.
         return when (iconType) {
             1 -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
                 background = R.drawable.tr_bg_hr_notify,
                 largeIcon = R.drawable.tr_ic_homepage_notify,
                 decorIcon = R.drawable.tr_bg_homepage_notify_icon,
-                btnTextColor = R.color.color_FF4420
+                btnTextColor = R.color.brand_primary
             )
             2 -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
                 background = R.drawable.tr_bg_bs_notify,
                 largeIcon = R.drawable.tr_ic_bs_notify,
                 decorIcon = R.mipmap.tr_bg_bs_notify_icon,
-                btnTextColor = R.color.color_02BC77
+                btnTextColor = R.color.brand_primary
             )
             3 -> NotificationResources(
                 smallIcon = R.drawable.tr_ic_notifcation_pb,
                 background = R.drawable.tr_bg_bp_notify,
                 largeIcon = R.drawable.tr_ic_bp_notify,
                 decorIcon = R.mipmap.tr_bg_bp_notify_icon,
-                btnTextColor = R.color.color_2AA1FC
+                btnTextColor = R.color.brand_primary
             )
             4 -> NotificationResources(
                 smallIcon = R.drawable.tr_ic_cholesterol_notify,
                 background = R.drawable.tr_bg_cholesterol_notify,
                 largeIcon = R.drawable.tr_ic_cholesterol_notify,
                 decorIcon = R.mipmap.tr_bg_cholesterol_notify_icon,
-                btnTextColor = R.color.color_F0832D
+                btnTextColor = R.color.brand_primary
             )
             5 -> NotificationResources(
                 smallIcon = R.drawable.tr_ic_bmi_notify,
                 background = R.drawable.tr_bg_bmi_notify,
                 largeIcon = R.drawable.tr_ic_bmi_notify,
                 decorIcon = R.mipmap.tr_bg_bmi_notify_icon,
-                btnTextColor = R.color.color_30A6ED
+                btnTextColor = R.color.brand_primary
             )
             6 -> NotificationResources(
                 smallIcon = R.drawable.ic_notification_bs,
                 background = R.drawable.tr_bg_hr_notify,
                 largeIcon = R.drawable.tr_ic_hr_notify,
                 decorIcon = R.mipmap.tr_bg_hr_notify_icon,
-                btnTextColor = R.color.color_FF4420
+                btnTextColor = R.color.brand_primary
             )
             7 -> NotificationResources(
                 smallIcon = R.drawable.tr_ic_statistical_notify,
                 background = R.drawable.tr_bg_bs_notify,
                 largeIcon = R.drawable.tr_ic_statistical_notify,
                 decorIcon = R.drawable.tr_bg_statistical_notify_icon,
-                btnTextColor = R.color.color_02BC77
+                btnTextColor = R.color.brand_primary
             )
             9 -> NotificationResources(
                 smallIcon = R.drawable.tr_ic_hydrate_notify,
                 background = R.drawable.tr_bg_bmi_notify,
                 largeIcon = R.drawable.tr_ic_hydrate_notify,
                 decorIcon = R.mipmap.tr_bg_hydrate_notify_icon,
-                btnTextColor = R.color.color_30A6ED
+                btnTextColor = R.color.brand_primary
             )
             10 -> NotificationResources(
                 smallIcon = R.drawable.tr_ic_step_notify,
                 background = R.drawable.tr_bg_cholesterol_notify,
                 largeIcon = R.drawable.tr_ic_step_notify,
                 decorIcon = R.mipmap.tr_bg_step_notify_icon,
-                btnTextColor = R.color.color_F0832D
+                btnTextColor = R.color.brand_primary
             )
             11 -> NotificationResources(
                 smallIcon = com.android.common.weather.R.drawable.ic_cloudy,

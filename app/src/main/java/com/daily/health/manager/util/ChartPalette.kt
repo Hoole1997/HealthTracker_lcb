@@ -24,7 +24,8 @@ object ChartPalette {
     val lineBmi: Int = color(R.color.chart_line_bmi)
 
     @ColorInt
-    val columnSteps: Int = color(R.color.c5)
+    // Chart series retain their original meaning when the application's brand changes.
+    val columnSteps: Int = color(R.color.chart_column_steps)
 
     @ColorInt
     val lineCholesterolTg: Int = color(R.color.chart_line_cholesterol_tg)

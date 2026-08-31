@@ -8,8 +8,9 @@
     <net.lucode.hackware.magicindicator.MagicIndicator
         android:id="@+id/magic_indicator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
-        android:background="@color/tr_subpage_bg"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginHorizontal="12dp"
+        android:background="@color/c1"
         android:paddingBottom="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

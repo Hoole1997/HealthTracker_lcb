@@ -197,7 +197,7 @@ public class CircularProgressView extends View {
         this.mBackgroundPaint.setAntiAlias(true);
         this.mBackgroundPaint.setDither(true);
         this.mBackgroundPaint.setStrokeWidth(obtainStyledAttributes.getDimension(R.styleable.CircularProgressView_backWidth, 6.0f));
-        this.mBackgroundPaint.setColor(obtainStyledAttributes.getColor(R.styleable.CircularProgressView_backColor, Color.YELLOW));
+        this.mBackgroundPaint.setColor(obtainStyledAttributes.getColor(R.styleable.CircularProgressView_backColor, ContextCompat.getColor(context, R.color.brand_primary_container)));
         Paint progressPaint = new Paint();
         this.mProgressPaint = progressPaint;
         progressPaint.setStyle(Paint.Style.STROKE);
@@ -205,9 +205,9 @@ public class CircularProgressView extends View {
         this.mProgressPaint.setAntiAlias(true);
         this.mProgressPaint.setDither(true);
         this.mProgressPaint.setStrokeWidth(obtainStyledAttributes.getDimension(R.styleable.CircularProgressView_progWidth, 6.0f));
-        this.mProgressPaint.setColor(obtainStyledAttributes.getColor(R.styleable.CircularProgressView_progColor, Color.BLUE));
-        int startColor = obtainStyledAttributes.getColor(R.styleable.CircularProgressView_progStartColor, Color.WHITE);
-        int endColor = obtainStyledAttributes.getColor(R.styleable.CircularProgressView_progFirstColor, Color.RED);
+        this.mProgressPaint.setColor(obtainStyledAttributes.getColor(R.styleable.CircularProgressView_progColor, ContextCompat.getColor(context, R.color.brand_primary)));
+        int startColor = obtainStyledAttributes.getColor(R.styleable.CircularProgressView_progStartColor, ContextCompat.getColor(context, R.color.brand_primary_container));
+        int endColor = obtainStyledAttributes.getColor(R.styleable.CircularProgressView_progFirstColor, ContextCompat.getColor(context, R.color.brand_primary));
         if (startColor != -1 && endColor != -1) {
             this.mProgressColors = new int[]{startColor, endColor};
         } else {

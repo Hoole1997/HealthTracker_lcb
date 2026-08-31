@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The action label itself is localized through tr_next; this only formats its progress. -->
+    <string name="tr_guide_step_action" translatable="false">%1$s(%2$d/%3$d)</string>
+</resources>

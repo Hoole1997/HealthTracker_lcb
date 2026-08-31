@@ -28,7 +28,8 @@ import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
+import com.daily.health.manager.face.widget.InsightCategoryTitleView
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 
 class InsightTabFragment: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBinding>() {
 
@@ -105,34 +106,18 @@ class InsightTabFragment: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBind
                     override fun getTitleView(
                         context: Context?,
                         index: Int
-                    ) = ColorTransitionPagerTitleView(requireContext()).apply {
-                        normalColor = ContextCompat.getColor(requireContext(), R.color.color_999)
-                        selectedColor = ContextCompat.getColor(requireContext(), R.color.tr_home_tab_selected)
-                        setTextSize(TypedValue.COMPLEX_UNIT_SP,16f)
+                    ) = InsightCategoryTitleView(requireContext()).apply {
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP,14f)
                         text = getString(insightCategories[index].titleRes)
                         typeface = getRobotoBold(requireContext())
                         clickWithDuration {
                             binding.viewpager.setCurrentItem(index,true)
                         }
-                        val paddingStart = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics).toInt()
-                        if(index == 0){
-                            setPadding(paddingStart, 0, paddingStart / 2, 0)
-                        }else if( index == insightCategories.size - 1){
-                            setPadding(paddingStart / 2,0,paddingStart,0)
-                        }
+
                     }
 
-                    override fun getIndicator(context: Context?) = LinePagerIndicator(requireContext()).apply {
-                        setColors(ContextCompat.getColor(requireContext(), R.color.tr_home_tab_selected))
-                        val displayMetrics = resources.displayMetrics
-                        val width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40f, displayMetrics)
-                        val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, displayMetrics)
-                        val radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 22f, displayMetrics)
-                        roundRadius = radius
-                        mode = LinePagerIndicator.MODE_EXACTLY
-                        lineWidth = width
-                        lineHeight = height
-                    }
+                    override fun getIndicator(context: Context?): IPagerIndicator? = null
+
                 }
             }
 

@@ -153,34 +153,41 @@ class TrackerTabFragment: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBin
     private fun setupHealthCards() {
         mViewBind?.run {
             // Blood Sugar
-            includeBs.ivIcon.setImageResource(R.mipmap.tr_home_card_bs)
+            includeBs.ivIcon.setImageResource(R.drawable.img_home_blood_sugar)
+            includeBs.root.setBackgroundResource(R.drawable.tr_bg_tracker_bs)
             includeBs.tvTitle.text = getString(R.string.tr_blood_suger)
 
             // Blood Pressure
-            includeBp.ivIcon.setImageResource(R.mipmap.tr_home_card_bp)
+            includeBp.ivIcon.setImageResource(R.drawable.img_home_blood_pressure)
+            includeBp.root.setBackgroundResource(R.drawable.tr_bg_tracker_bp)
             includeBp.tvTitle.text = getString(R.string.tr_blood_pressure)
 
             // Heart Rate
-            includeHr.ivIcon.setImageResource(R.mipmap.tr_home_hero_heart)
+            includeHr.ivIcon.setImageResource(R.drawable.img_record_heart_rate)
+            includeHr.root.setBackgroundResource(R.drawable.tr_bg_tracker_hr)
             includeHr.tvTitle.text = getString(R.string.tr_heart_rate)
 
             // Cholesterol
-            includeCho.ivIcon.setImageResource(R.mipmap.tr_home_card_cholesterol)
+            includeCho.ivIcon.setImageResource(R.drawable.img_home_cholesterol)
+            includeCho.root.setBackgroundResource(R.drawable.tr_bg_tracker_cho)
             includeCho.tvTitle.text = getString(R.string.tr_cholesterol)
 
             // BMI (组合 Weight + BMI)
-            includeBmi.ivIcon.setImageResource(R.mipmap.tr_home_card_weight)
+            includeBmi.ivIcon.setImageResource(R.drawable.img_home_weight_bmi)
+            includeBmi.root.setBackgroundResource(R.drawable.tr_bg_tracker_bmi)
             "${getString(R.string.tr_weight)} & ${getString(R.string.tr_bmi)}".also { includeBmi.tvTitle.text = it }
 
             // Steps
-            includeStep.ivIcon.setImageResource(R.mipmap.tr_home_card_step)
+            includeStep.ivIcon.setImageResource(R.drawable.img_home_step_count)
+            includeStep.root.setBackgroundResource(R.drawable.tr_bg_tracker_step)
             includeStep.tvTitle.text = getString(R.string.tr_step_count)
             includeStep.btnAdd.apply {
                 text = getString(R.string.tr_settings)
             }
 
             // Hydrate
-            includeHydrate.ivIcon.setImageResource(R.mipmap.tr_home_card_water)
+            includeHydrate.ivIcon.setImageResource(R.drawable.img_home_drink_water)
+            includeHydrate.root.setBackgroundResource(R.drawable.tr_bg_tracker_hydrate)
             includeHydrate.tvTitle.text = getString(R.string.tr_hydrate)
             includeHydrate.btnAdd.apply {
                 text = getString(R.string.tr_settings)

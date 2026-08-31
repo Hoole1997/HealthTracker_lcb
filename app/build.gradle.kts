@@ -127,7 +127,7 @@ dependencies {
     api(project(":framework"))
     implementation(libs.remax.core)
     implementation(libs.remax.bill)
-    add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-BloodPressureLog:1.0.5") {
+    add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-BloodPressureLog:1.0.6") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     add("googleImplementation", "com.launcher.unity:com.healthlab.heartrate.bloodpressuretracker-release:1.0.3") {

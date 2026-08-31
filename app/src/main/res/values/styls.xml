@@ -14,9 +14,9 @@
         <item name="fontFamily">@font/inter_medium</item>
         <item name="android:letterSpacing">0</item>
         <item name="android:textSize">@dimen/sp_18</item>
-        <item name="android:textColor">@color/white90</item>
+        <item name="android:textColor">@color/brand_on_primary</item>
         <item name="backgroundTint">@color/tr_selector_btn_color</item>
-        <item name="rippleColor">@color/c5_8</item>
+        <item name="rippleColor">@color/brand_primary_ripple</item>
     </style>
 
 
@@ -25,7 +25,7 @@
         <item name="fontFamily">@font/inter_medium</item>
         <item name="android:textColor">@color/color_999</item>
         <item name="backgroundTint">#f6f6f6</item>
-        <item name="rippleColor">@color/c5_8</item>
+        <item name="rippleColor">@color/brand_primary_ripple</item>
     </style>
 
     <!-- Custom DatePicker Theme -->
@@ -62,19 +62,19 @@
     <!-- Custom DatePicker Button Style -->
     <style name="CustomDatePickerButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/c5</item>
-        <item name="rippleColor">@color/c5_8</item>
+        <item name="rippleColor">@color/brand_primary_ripple</item>
     </style>
 
     <!-- Custom DatePicker Positive Button (确认按钮) -->
     <style name="CustomDatePickerPositiveButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/tr_datepicker_positive_button_selector</item>
-        <item name="rippleColor">@color/c5_8</item>
+        <item name="rippleColor">@color/brand_primary_ripple</item>
     </style>
 
     <!-- Custom DatePicker Negative Button (取消按钮) -->
     <style name="CustomDatePickerNegativeButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/c5</item>
-        <item name="rippleColor">@color/c5_8</item>
+        <item name="rippleColor">@color/brand_primary_ripple</item>
     </style>
 
     <!-- Custom DatePicker Header Theme -->

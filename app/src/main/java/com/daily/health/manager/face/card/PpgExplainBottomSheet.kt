@@ -175,7 +175,7 @@ private fun IllustrationArea() {
             .height(200.dp)
             .padding(horizontal = 20.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFF0FAF8)),
+            .background(colorResource(R.color.brand_primary_surface)),
         contentAlignment = Alignment.Center
     ) {
         // 左侧背景波纹

@@ -12,6 +12,7 @@ import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import androidx.core.content.ContextCompat
 import com.daily.health.manager.R
 import com.daily.health.manager.data.enums.BsUnit
 import com.healthtracker.framework.ext.logd
@@ -66,13 +67,13 @@ class RulerView @JvmOverloads constructor(
     private var scrollableMaxScale = 100f
     private var firstScale = 50f
 
-    // 颜色配置
-    private var bgColor = 0xfffcfffc.toInt()
+    // Selection and ruler defaults use the brand; caller-provided XML colors still take precedence.
+    private var bgColor = ContextCompat.getColor(context, R.color.brand_primary_surface)
     private var smallScaleColor = 0xff999999.toInt()
     private var midScaleColor = 0xff666666.toInt()
-    private var largeScaleColor = 0xff50b586.toInt()
+    private var largeScaleColor = ContextCompat.getColor(context, R.color.brand_primary)
     private var scaleNumColor = 0xff333333.toInt()
-    private var indicatorColor = 0xff50b586.toInt()
+    private var indicatorColor = ContextCompat.getColor(context, R.color.brand_primary)
 
     // 尺寸配置
     private var smallScaleStroke = 1f

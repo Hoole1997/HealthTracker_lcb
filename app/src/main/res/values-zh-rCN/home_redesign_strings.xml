@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tr_home_greeting_morning">早上好 👋</string>
+    <string name="tr_home_greeting_noon">中午好 👋</string>
+    <string name="tr_home_greeting_afternoon">下午好 👋</string>
+    <string name="tr_home_greeting_evening">晚上好 👋</string>
+    <string name="tr_home_greeting_subtitle">从今天开始，关注您的健康</string>
+    <string name="tr_home_health_overview">健康概览</string>
+    <string name="tr_home_water_target">目标 %1$s %2$s</string>
+</resources>

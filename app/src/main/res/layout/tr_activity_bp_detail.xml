@@ -109,7 +109,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_9AE4C9"
+                android:textColor="@color/brand_primary_container"
                 android:text="@string/tr_systolic"/>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -121,7 +121,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_systolic"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_9AE4C9"
+                android:textColor="@color/brand_primary_container"
                 android:text="@string/tr_diastolic"/>
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_pulse"
@@ -132,7 +132,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_systolic"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_9AE4C9"
+                android:textColor="@color/brand_primary_container"
                 android:text="@string/tr_pulse"/>
 
 
@@ -277,7 +277,7 @@
                 android:layout_marginHorizontal="@dimen/dp_16"
                 app:layout_constraintTop_toBottomOf="@id/bp_status_view"
                 android:background="@drawable/tr_bg_rect_white_12"
-                android:backgroundTint="#EEF5FF"/>
+                android:backgroundTint="@color/brand_primary_surface"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

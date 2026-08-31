@@ -108,7 +108,7 @@
                 app:layout_constraintEnd_toEndOf="@id/tv_weight_value"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_9AE4C9"
+                android:textColor="@color/brand_primary_container"
                 android:text="@string/tr_weight"/>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -120,7 +120,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_weight"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_9AE4C9"
+                android:textColor="@color/brand_primary_container"
                 android:text="@string/tr_height"/>
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_bmi"
@@ -131,7 +131,7 @@
                 app:layout_constraintStart_toStartOf="@id/tv_bmi_value"
                 app:layout_constraintTop_toTopOf="@id/tv_weight"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_9AE4C9"
+                android:textColor="@color/brand_primary_container"
                 android:text="@string/tr_bmi"/>
 
 
@@ -269,7 +269,7 @@
                 android:layout_marginHorizontal="@dimen/dp_16"
                 app:layout_constraintTop_toBottomOf="@id/bp_status_view"
                 android:background="@drawable/tr_bg_rect_white_12"
-                android:backgroundTint="#EEF5FF"/>
+                android:backgroundTint="@color/brand_primary_surface"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

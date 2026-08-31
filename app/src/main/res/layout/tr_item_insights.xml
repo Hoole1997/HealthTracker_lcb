@@ -9,7 +9,7 @@
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/c1"
     app:cardCornerRadius="@dimen/dp_12"
-    app:cardElevation="@dimen/dp_12">
+    app:cardElevation="@dimen/dp_2">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             app:layout_constraintDimensionRatio="343:186"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/tr_blood_sugar_img01_detail" />
+            app:srcCompat="@drawable/tr_insights_cover_placeholder" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title"

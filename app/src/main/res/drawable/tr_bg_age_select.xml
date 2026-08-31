@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle" android:useLevel="false">
-    <solid android:color="@color/color_F9F9FA"/>
+    <solid android:color="@color/tr_entry_age_selected"/>
     <size android:height="@dimen/dp_56"/>
     <corners android:radius="@dimen/dp_28"/>
 

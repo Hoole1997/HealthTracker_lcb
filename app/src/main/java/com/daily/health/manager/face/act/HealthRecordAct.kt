@@ -1,5 +1,7 @@
 package com.daily.health.manager.face.act
 
+import com.daily.health.manager.face.theme.setBrandedContent
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -478,7 +480,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         binding.cvMeasureEntry.setViewCompositionStrategy(
             ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
         )
-        binding.cvMeasureEntry.setContent {
+        binding.cvMeasureEntry.setBrandedContent {
             val lastRecord by heartRateViewModel.latestPpgRecord.collectAsState()
             HeartRateMeasureEntry(
                 lastBpm = lastRecord?.heartRateBpm,
@@ -837,7 +839,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         mViewBind.composeView.setViewCompositionStrategy(
             ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
         )
-        mViewBind.composeView.setContent {
+        mViewBind.composeView.setBrandedContent {
             HealthRecordHost(type)
         }
     }

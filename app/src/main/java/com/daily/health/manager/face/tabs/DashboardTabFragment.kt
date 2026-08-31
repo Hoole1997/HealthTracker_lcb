@@ -10,6 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.daily.health.manager.data.enums.HeartRateStatus
+import com.daily.health.manager.face.settings.PreferenceCenterAct
 import com.daily.health.manager.R
 import com.daily.health.manager.config.HydrateSettingManager
 import com.daily.health.manager.data.entity.BloodSugarRecord
@@ -107,6 +109,7 @@ class DashboardTabFragment : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBindi
                         todayTotalIntakeMl = todayTotalIntakeMl,
                         todayStepStat = todayStepStat,
                     ),
+                    onSettingsClick = { requireActivity().startActivity<PreferenceCenterAct>() },
                     onHeartRateClick = {
                         navigateToActivityWithProfileCheck(PendingActivityType.HEART_RATE)
                     },
@@ -207,6 +210,8 @@ class DashboardTabFragment : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBindi
             value = bpmText,
             valueUnit = getString(R.string.tr_bpm),
             footerText = footerText,
+            statusLabel = record?.let { getString(HeartRateStatus.fromHeartRate(it.heartRateBpm).statusTextRes) },
+            statusColorRes = record?.let { HeartRateStatus.fromHeartRate(it.heartRateBpm).colorRes },
         )
     }
 
@@ -242,7 +247,7 @@ class DashboardTabFragment : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBindi
                 unit = BsUnit.MG_DL.displayName,
             ),
             HomeFeatureCardUi.Bmi(
-                title = getString(R.string.tr_weight_and_bmi),
+                title = getString(R.string.tr_weight),
                 value = bmiRecord?.getDisplayWeightValue() ?: "--",
                 unit = BmiUnit.getWeightUnitLabel(),
             ),

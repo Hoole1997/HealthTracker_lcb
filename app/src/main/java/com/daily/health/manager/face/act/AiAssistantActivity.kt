@@ -1,5 +1,7 @@
 package com.daily.health.manager.face.act
 
+import com.daily.health.manager.face.theme.setBrandedContent
+
 import android.os.Bundle
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.daily.health.manager.databinding.TrActivityAlarmManagerBinding
@@ -16,7 +18,7 @@ class AiAssistantActivity : BaseMVVMActivity<BaseViewModel, TrActivityAlarmManag
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
+            setBrandedContent {
                 AiAssistantScreen(
                     onBack = { finish() }
                 )

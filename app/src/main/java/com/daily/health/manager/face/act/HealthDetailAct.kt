@@ -1,5 +1,7 @@
 package com.daily.health.manager.face.act
 
+import com.daily.health.manager.face.theme.setBrandedContent
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -169,7 +171,7 @@ class HealthDetailAct : BaseInterActivity<BaseViewModel, TrActivityHealthDetailB
         mViewBind.composeView.setViewCompositionStrategy(
             ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
         )
-        mViewBind.composeView.setContent {
+        mViewBind.composeView.setBrandedContent {
             HealthDetailHost(type = type)
         }
     }

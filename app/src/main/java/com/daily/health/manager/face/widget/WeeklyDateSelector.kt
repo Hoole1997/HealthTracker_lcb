@@ -85,7 +85,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
     private val viewPager: ViewPager2 = root.findViewById(R.id.viewPager)
 
     // 自定义属性
-    private var selectedBackgroundColor: Int = Color.parseColor("#1D6BF2")
+    private var selectedBackgroundColor: Int = androidx.core.content.ContextCompat.getColor(context, R.color.brand_primary)
     private var unselectedTextColor: Int = Color.parseColor("#666666")
     private var selectedTextColor: Int = Color.WHITE
     private var selectedWeekTextColor: Int = selectedBackgroundColor
@@ -343,6 +343,7 @@ class WeeklyDateSelector @JvmOverloads constructor(
                 val isToday = DateTimeUtils.isSameDay(dayDate, today)
                 val isPastDate = disablePastDates && dayDate.before(today) && !DateTimeUtils.isSameDay(dayDate, today)
                 
+                dayView.isSelected = isSelected
                 if (isSelected) {
                     tvDayNumber.setBackgroundResource(dayNumberSelectedBackgroundResId)
                     tvDayNumber.setTextColor(selectedTextColor)
@@ -477,6 +478,13 @@ class WeeklyDateSelector @JvmOverloads constructor(
     }
 
     // 公共API方法
+    /** Labels must follow this selector's configured week order; dates are not modified. */
+    fun setWeekdayLabels(labels: List<String>) {
+        require(labels.size == 7) { "Exactly seven weekday labels are required" }
+        customWeekdayNames = labels.toTypedArray()
+        weekAdapter.notifyDataSetChanged()
+    }
+
     fun setSelectedDate(date: Date) {
         // 检查是否为重复设置同一日期
         val isDateChanged = !DateTimeUtils.isSameDay(selectedDate, date)

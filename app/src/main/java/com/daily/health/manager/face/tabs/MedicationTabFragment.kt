@@ -93,6 +93,9 @@ class MedicationTabFragment: BaseMVVMFragment<MedsViewModel, TrFragmentMedsBindi
      */
     private fun setupWeeklyDateSelector() {
         mViewBind?.run {
+            // Existing translations are Monday-first; this screen displays Sunday first.
+            val labels = resources.getStringArray(R.array.tr_week_simple).toList()
+            weeklyDateSelector.setWeekdayLabels(listOf(labels.last()) + labels.dropLast(1))
             // WeeklyDateSelector 在初始化时已经默认选中当前日期，无需重复设置
             // weeklyDateSelector.setDefaultSelectedDate() // 已优化：跳过重复的默认日期设置
             
@@ -181,6 +184,9 @@ class MedicationTabFragment: BaseMVVMFragment<MedsViewModel, TrFragmentMedsBindi
 
          // 根据数据是否为空显示/隐藏空状态视图
          mViewBind?.run {
+             // Only the empty/list surface changes; reminder data and actions are untouched.
+             root.setBackgroundResource(if (reminderItems.isEmpty()) R.color.c1 else R.color.tr_subpage_bg)
+             vBottomFade.visibility = if (reminderItems.isEmpty()) View.GONE else View.VISIBLE
              if (reminderItems.isEmpty()) {
                  tvEmpty.visibility = View.VISIBLE
                  rvRemind.visibility = View.GONE

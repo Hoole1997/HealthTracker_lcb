@@ -1,23 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">@color/c5</color>
-    <color name="colorPrimary">@color/c1</color>
-    <color name="colorPrimaryDark">@color/c1</color>
+    <!-- Shared brand palette for XML and Compose. Keep c5 aliases for existing callers. -->
+    <color name="brand_primary">#7679FF</color>
+    <color name="brand_on_primary">#FFFFFF</color>
+    <color name="brand_primary_container">#EDEDFF</color>
+    <color name="brand_primary_surface">#F3F3FF</color>
+    <color name="brand_primary_strong">#4446A6</color>
+    <color name="brand_primary_disabled">#ADAAFF</color>
+    <color name="brand_primary_track">#C2C3FF</color>
+    <color name="brand_primary_translucent">#407679FF</color>
+    <color name="brand_primary_ripple">#337679FF</color>
+    <color name="colorAccent">@color/brand_primary</color>
+    <color name="colorPrimary">@color/brand_primary</color>
+    <color name="colorPrimaryDark">@color/brand_primary_strong</color>
 
     <color name="bg_window">@color/color_f8f8f8</color>
 
     <color name="c1">@color/white</color>
-    <color name="c5">#1D6BF2</color>
+    <color name="c5">@color/brand_primary</color>
+    <!-- Figma lcb4 entry-flow palette. Keep medical/chart status colors independent. -->
+    <color name="tr_entry_primary">@color/brand_primary</color>
+    <color name="tr_entry_progress_track">@color/brand_primary_track</color>
+    <color name="tr_entry_indicator_inactive">#D1D2FF</color>
+    <color name="tr_entry_selected_surface">@color/brand_primary_surface</color>
+    <color name="tr_entry_gender_selected">@color/brand_primary_translucent</color>
+    <color name="tr_entry_gender_surface">#F7F7FA</color>
+    <color name="tr_entry_age_selected">@color/brand_primary_container</color>
+    <color name="tr_home_heart_accent">#FF5B61</color>
     <color name="tr_home_host_bg_top">#CCE6FB</color>
     <color name="tr_home_host_bg">#F5F8FD</color>
     <color name="tr_subpage_bg">#F5F7FB</color>
-    <color name="tr_home_tab_selected">#1B1D2C</color>
-    <color name="tr_home_tab_unselected">#999999</color>
-    <color name="tr_meds_primary">#1B1D2C</color>
-    <color name="tr_meds_chip_bg">#F0F0F0</color>
-    <color name="tr_meds_media_bg">#F9F9FA</color>
-    <color name="tr_meds_media_icon">#B0B0B0</color>
-    <color name="c5_8">#D2E2FF</color>
+    <color name="tr_home_tab_selected">@color/tr_entry_primary</color>
+    <color name="tr_home_tab_unselected">#C9C9C9</color>
+    <color name="tr_meds_primary">@color/tr_entry_primary</color>
+    <color name="tr_meds_chip_bg">#E4E4FF</color>
+    <color name="tr_meds_media_bg">#EFEFFB</color>
+    <color name="tr_meds_media_icon">@color/tr_entry_primary</color>
+    <color name="tr_meds_disabled">@color/brand_primary_disabled</color>
+    <color name="tr_insights_chip_surface">#F4F3FE</color>
+    <color name="tr_insights_chip_text">#696889</color>
+    <color name="c5_8">@color/brand_primary_container</color>
     <color name="t1">#333333</color>
     <color name="color_444">#444444</color>
     <color name="color_BFBFBF">#BFBFBF</color>
@@ -39,7 +61,9 @@
     <color name="color_DFF5FF">#DFF5FF</color>
     <color name="color_E5F9F2">#E5F9F2</color>
     <color name="color_low">#3489FE</color>
-    <color name="color_normal">@color/c5</color>
+    <!-- These colors encode medical/statistical meaning, not brand styling. -->
+    <color name="color_normal">#1D6BF2</color>
+    <color name="tr_stat_max">#1D6BF2</color>
     <color name="color_prediabetes">#FFB901</color>
     <color name="color_diabetes">#FA0202</color>
     <color name="color_13ABA1">#13ABA1</color>
@@ -74,6 +98,7 @@
     <color name="color_4AD7FF">#4AD7FF</color>
 
     <!-- Chart specific colors -->
+    <color name="chart_column_steps">#1D6BF2</color>
     <color name="chart_line_bp_systolic">@color/color_FF6B4D</color>
     <color name="chart_line_bp_diastolic">@color/color_4AD7FF</color>
     <color name="chart_line_bs">@color/color_FF6B4D</color>

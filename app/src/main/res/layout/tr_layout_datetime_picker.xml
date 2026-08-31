@@ -25,7 +25,7 @@
         app:npv_ShowDivider="false"
         app:npv_ShownCount="3"
         app:npv_TextColorNormal="@color/color_BFBFBF"
-        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextColorSelected="@color/brand_primary"
         app:npv_TextSizeNormal="@dimen/sp_14"
         app:npv_TextSizeSelected="@dimen/sp_14"
         app:npv_WrapSelectorWheel="false" />
@@ -45,7 +45,7 @@
         app:npv_ShowDivider="false"
         app:npv_ShownCount="3"
         app:npv_TextColorNormal="@color/color_BFBFBF"
-        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextColorSelected="@color/brand_primary"
         app:npv_TextSizeNormal="@dimen/sp_14"
         app:npv_TextSizeSelected="@dimen/sp_14"
         app:npv_WrapSelectorWheel="true" />
@@ -65,7 +65,7 @@
         app:npv_ShowDivider="false"
         app:npv_ShownCount="3"
         app:npv_TextColorNormal="@color/color_BFBFBF"
-        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextColorSelected="@color/brand_primary"
         app:npv_TextSizeNormal="@dimen/sp_14"
         app:npv_TextSizeSelected="@dimen/sp_14"
         app:npv_WrapSelectorWheel="true" />
@@ -84,7 +84,7 @@
         app:npv_ShowDivider="false"
         app:npv_ShownCount="3"
         app:npv_TextColorNormal="@color/color_BFBFBF"
-        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextColorSelected="@color/brand_primary"
         app:npv_TextSizeNormal="@dimen/sp_14"
         app:npv_TextSizeSelected="@dimen/sp_14"
         app:npv_WrapSelectorWheel="true" />
@@ -118,7 +118,7 @@
         app:npv_ShowDivider="false"
         app:npv_ShownCount="3"
         app:npv_TextColorNormal="@color/color_BFBFBF"
-        app:npv_TextColorSelected="@color/t1"
+        app:npv_TextColorSelected="@color/brand_primary"
         app:npv_TextSizeNormal="@dimen/sp_14"
         app:npv_TextSizeSelected="@dimen/sp_14"
         app:npv_WrapSelectorWheel="true" />

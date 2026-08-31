@@ -1,5 +1,7 @@
 package com.daily.health.manager.face.act
 
+import com.daily.health.manager.face.theme.setBrandedContent
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.compose.foundation.BorderStroke
@@ -84,7 +86,7 @@ class LanguageAct: BaseMVVMActivity<BaseViewModel, TrActivityLanguageSelectBindi
             composeView.setViewCompositionStrategy(
                 ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
             )
-            composeView.setContent {
+            composeView.setBrandedContent {
                 LanguageSelectScreen(
                     applyChange = applyChange,
                     list = languageList,
@@ -197,7 +199,7 @@ private fun LanguageSelectScreen(
 
     val bgColor = colorResource(R.color.c1)
     val titleColor = colorResource(R.color.t1)
-    val primaryColor = colorResource(R.color.c5)
+    val primaryColor = colorResource(R.color.tr_entry_primary)
 
     Column(
         modifier = Modifier
@@ -212,16 +214,16 @@ private fun LanguageSelectScreen(
                     onClick = { onConfirm(selectedIndex) },
                     enabled = confirmEnabled,
                     colors = ButtonDefaults.textButtonColors(
-                        contentColor = colorResource(R.color.c5),
+                        contentColor = colorResource(R.color.tr_entry_primary),
                         disabledContentColor = Color(android.graphics.Color.DKGRAY)
                     ),
                     contentPadding = ButtonDefaults.TextButtonContentPadding
                 ) {
-                    val confirmColor = if (confirmEnabled) colorResource(R.color.c5) else Color(android.graphics.Color.DKGRAY)
-                    Text(
-                        text = stringResource(R.string.tr_confirm),
-                        color = confirmColor,
-                        fontSize = 16.sp,
+                    Image(
+                        painter = painterResource(R.drawable.tr_entry_confirm),
+                        contentDescription = stringResource(R.string.tr_confirm),
+                        modifier = Modifier.size(width = 36.dp, height = 25.dp),
+                        alpha = if (confirmEnabled) 1f else 0.38f,
                     )
                 }
             }
@@ -230,7 +232,7 @@ private fun LanguageSelectScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = colorResource(R.color.bg_window))
+                .background(bgColor)
                 .weight(1f),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -263,9 +265,9 @@ private fun LanguageItem(
     titleFontFamily: FontFamily,
     titleFontWeight: FontWeight,
 ) {
-    val shape = RoundedCornerShape(8.dp)
-    val bgColor = if (isSelected) colorResource(R.color.color_EFFBF7) else Color.White
-    val borderColor = if (isSelected) colorResource(R.color.c5) else Color.Transparent
+    val shape = RoundedCornerShape(10.dp)
+    val bgColor = if (isSelected) colorResource(R.color.tr_entry_selected_surface) else colorResource(R.color.color_f7f7f7)
+    val borderColor = if (isSelected) colorResource(R.color.tr_entry_primary) else Color.Transparent
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -291,13 +293,13 @@ private fun LanguageItem(
                 fontWeight = titleFontWeight,
                 modifier = Modifier.weight(1f)
             )
-            if (isSelected) {
-                Image(
-                    painter = painterResource(R.drawable.tr_ic_checked),
-                    contentDescription = "selected",
-                    modifier = Modifier.size(18.dp)
-                )
-            }
+            Image(
+                painter = painterResource(
+                    if (isSelected) R.drawable.tr_entry_radio_selected else R.drawable.tr_entry_radio_unselected
+                ),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+            )
         }
     }
 }

@@ -20,9 +20,9 @@
         app:npv_ShowDivider="false"
         app:npv_ShownCount="3"
         app:npv_TextColorNormal="@color/color_BFBFBF"
-        app:npv_TextColorSelected="@color/c5"
+        app:npv_TextColorSelected="@color/tr_entry_primary"
         app:npv_TextSizeNormal="@dimen/sp_24"
-        app:npv_TextSizeSelected="@dimen/sp_24"
+        app:npv_TextSizeSelected="@dimen/sp_32"
         app:npv_WrapSelectorWheel="true"
         tools:npv_TextArray="@array/tr_hours" />
 

@@ -58,11 +58,13 @@ class InsightsArticleAdapter(
             }
             val imagePath = article.listImagePath
             if (imagePath.isNullOrEmpty()) {
-                binding.ivImg.setImageResource(R.drawable.tr_bg_rect_white_12)
+                Glide.with(binding.ivImg).clear(binding.ivImg)
+                binding.ivImg.setImageResource(R.drawable.tr_insights_cover_placeholder)
             } else {
                 Glide.with(binding.ivImg)
                     .load(File(imagePath))
-                    .placeholder(R.drawable.tr_bg_rect_white_12)
+                    .placeholder(R.drawable.tr_insights_cover_placeholder)
+                    .error(R.drawable.tr_insights_cover_placeholder)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.ivImg)
             }

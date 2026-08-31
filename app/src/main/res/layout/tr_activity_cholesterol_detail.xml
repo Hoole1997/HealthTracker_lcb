@@ -110,7 +110,7 @@
                 app:layout_constraintEnd_toEndOf="@id/tv_hdl_value"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_9AE4C9"
+                android:textColor="@color/brand_primary_container"
                 android:text="@string/tr_cholesterol_hdl_label"/>
 
             <!-- TC/HDL Label -->
@@ -123,7 +123,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_hdl_label"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_9AE4C9"
+                android:textColor="@color/brand_primary_container"
                 android:text="@string/tr_tc_hdl"/>
 
             <!-- LDL/HDL Label -->
@@ -136,7 +136,7 @@
                 app:layout_constraintStart_toStartOf="@id/tv_ldl_hdl_value"
                 app:layout_constraintTop_toTopOf="@id/tv_hdl_label"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_9AE4C9"
+                android:textColor="@color/brand_primary_container"
                 android:text="@string/tr_ldl_hdl"/>
 
 
@@ -285,7 +285,7 @@
                 android:layout_marginHorizontal="@dimen/dp_16"
                 app:layout_constraintTop_toBottomOf="@id/cholesterol_status_view"
                 android:background="@drawable/tr_bg_rect_white_12"
-                android:backgroundTint="#EEF5FF"/>
+                android:backgroundTint="@color/brand_primary_surface"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

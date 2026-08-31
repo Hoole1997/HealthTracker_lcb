@@ -73,7 +73,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
 
     companion object {
         private const val TAG = "MainActivity"
-        private const val HOME_BACKGROUND_COLOR = "#F0F3FC"
+        private const val HOME_BACKGROUND_COLOR = "#FFFFFF"
     }
 
     private var homeFrg: DashboardTabFragment? = null
@@ -192,6 +192,8 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         }
         with(mViewBind) {
             applyHostBackgroundForTab(position)
+            // Home owns its greeting/settings header inside the scrolling grid; other tabs keep this bar.
+            if (position == 0) areaBar.gone() else areaBar.visible()
             llWeather.gone()
             tvTitle.visible()
             ivRemind.gone()
@@ -222,15 +224,20 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
 
                 2 -> {
                     ReportDataManager.reportData("Insights_tab_enter",mapOf())
-                    ivRemind.gone()
+                    ivRemind.visible()
+                    ivRemind.setImageResource(R.drawable.ic_home_settings)
+                    ivRemind.contentDescription = getString(R.string.tr_settings)
+                    ivRemind.clickWithDuration { startActivity<PreferenceCenterAct>() }
                     R.string.tr_insights
                 }
 
                 3 -> {
                     ReportDataManager.reportData("Tracker_tab_enter",mapOf())
-                    // Record页面：隐藏提醒按钮
-                    ivRemind.gone()
-                    R.string.tr_tracker
+                    ivRemind.visible()
+                    ivRemind.setImageResource(R.drawable.ic_home_settings)
+                    ivRemind.contentDescription = getString(R.string.tr_settings)
+                    ivRemind.clickWithDuration { startActivity<PreferenceCenterAct>() }
+                    R.string.tr_record
                 }
 
                 else -> R.string.tr_home
@@ -449,10 +456,10 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
             removeAllTabs()
 
             val tabs = arrayListOf(
-                Pair(R.drawable.tr_selector_nav_home, R.string.tr_home),
-                Pair(R.drawable.tr_selector_nav_meds, R.string.tr_meds),
-                Pair(R.drawable.tr_selector_nav_insights, R.string.tr_insights),
-                Pair(R.drawable.tr_selector_nav_record, R.string.tr_tracker)
+                Pair(R.drawable.tr_nav_home, R.string.tr_home),
+                Pair(R.drawable.tr_nav_meds, R.string.tr_meds),
+                Pair(R.drawable.tr_nav_insights, R.string.tr_insights),
+                Pair(R.drawable.tr_nav_record, R.string.tr_record)
             )
 
             for (tab in tabs) {
@@ -486,6 +493,7 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
             customView = TrLayoutHomeTabItemBinding.inflate(layoutInflater, tabLayout, false).let {
                 it.tvTabText.text = title
                 it.ivTabIcon.setImageResource(icon)
+                it.ivTabIcon.contentDescription = title
 
                 it.root
             }

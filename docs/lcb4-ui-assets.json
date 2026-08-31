@@ -1,0 +1,493 @@
+{
+  "figmaFile": "dVsTL6ggoDPXVPcEKg856G",
+  "encoding": "Downloaded Figma originals, scaled to Android display density where needed, lossless WebP encoding; no generated artwork",
+  "assets": [
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_guide_1.webp",
+      "figmaNode": "5289:1187",
+      "sourceDimensions": [
+        2048,
+        2048
+      ],
+      "outputDimensions": [
+        981,
+        981
+      ],
+      "sourceSha256": "20d4b98aaf48cf5c48a9fc8f016e3a006d91a966f5775dc4cdb868c603a401e8",
+      "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_guide_2.webp",
+      "figmaNode": "5289:1222",
+      "sourceDimensions": [
+        2048,
+        2048
+      ],
+      "outputDimensions": [
+        981,
+        981
+      ],
+      "sourceSha256": "5b6ac21d32fe90c58fdbabb9f76968cdb3ea8aca1fce1a4b32349e7fb2c8dc8a",
+      "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_guide_3.webp",
+      "figmaNode": "5289:1257",
+      "sourceDimensions": [
+        2048,
+        2048
+      ],
+      "outputDimensions": [
+        981,
+        981
+      ],
+      "sourceSha256": "816471a084abc71f8a0e157e9187064447b81094f0f773fc6bd795bdd138cf29",
+      "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_guide_4.webp",
+      "figmaNode": "5289:1292",
+      "sourceDimensions": [
+        2048,
+        2048
+      ],
+      "outputDimensions": [
+        981,
+        981
+      ],
+      "sourceSha256": "ab14ad4b866d2df5f75280e8b6c83f08bb97aee94cd5082af75f5d63d6a86ea9",
+      "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_male.webp",
+      "figmaNode": "5289:1367",
+      "sourceDimensions": [
+        2176,
+        1920
+      ],
+      "outputDimensions": [
+        381,
+        336
+      ],
+      "sourceSha256": "a91bc153f7c354d186eb7ed05950236d896af25aea917047907743424beb06d7",
+      "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_female.webp",
+      "figmaNode": "5289:1369",
+      "sourceDimensions": [
+        2080,
+        1856
+      ],
+      "outputDimensions": [
+        381,
+        340
+      ],
+      "sourceSha256": "bda3c628acea695dd8be1fe088426d905d1a78c194895c1c69e516658d69a119",
+      "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_bg_splash.webp",
+      "figmaNode": "5292:1522",
+      "sourceDimensions": [
+        853,
+        1844
+      ],
+      "outputDimensions": [
+        853,
+        1844
+      ],
+      "sourceSha256": "44ae4adc654002b0d67934aab558c059ae4242a601f6ee8507efe36c7de6360e"
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_logo_sq.webp",
+      "figmaNode": "5292:1563",
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "outputDimensions": [
+        330,
+        330
+      ],
+      "sourceSha256": "9c94a27a85736048f3d6ccbd65a83ea23fa658fc6cec1f537fca7261fecd3902",
+      "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_guide_hand.webp",
+      "figmaNode": "5289:572",
+      "sourceDimensions": [
+        188,
+        210
+      ],
+      "outputDimensions": [
+        188,
+        210
+      ],
+      "sourceSha256": "6b81218f20cbb3521d18cd98bdbcde789c541d1fa2ddec80a90f0927ce39febb"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/img_home_heart_rate.webp",
+      "figmaNode": "5289:463",
+      "sourceDimensions": [
+        2046,
+        768
+      ],
+      "outputDimensions": [
+        646,
+        631
+      ],
+      "sourceSha256": "c7c874f5cbc82043854115ebb140c4804654c551a2e970ca8ce4c38c19ab4d58",
+      "crop": [
+        1400,
+        69,
+        2046,
+        700
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/img_home_heart_background.webp",
+      "figmaNode": "5289:544",
+      "sourceDimensions": [
+        686,
+        432
+      ],
+      "outputDimensions": [
+        686,
+        432
+      ],
+      "sourceSha256": "3443636c1fe56a1da8a087340df2dceec177684e96ea50576a757a775da44940",
+      "sourceKind": "Figma-exported image fill including authored crop/mask; avoids the black border in the raw upload"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/img_home_blood_pressure.webp",
+      "figmaNode": "5289:505",
+      "sourceDimensions": [
+        2048,
+        1888
+      ],
+      "outputDimensions": [
+        405,
+        373
+      ],
+      "sourceSha256": "bddc510ed99b62e997c580ee7fe0d110663ebb5271fa2d7baa1238b54cfa0d11",
+      "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/img_home_blood_sugar.webp",
+      "figmaNode": "5289:495",
+      "sourceDimensions": [
+        216,
+        260
+      ],
+      "outputDimensions": [
+        216,
+        260
+      ],
+      "sourceSha256": "8c571ba6692d47c1c9fa6c4e04d78abc43ef7af3e74ef01f5ee1ae572f6e8848"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/img_home_cholesterol.webp",
+      "figmaNode": "5289:539",
+      "sourceDimensions": [
+        255,
+        218
+      ],
+      "outputDimensions": [
+        255,
+        218
+      ],
+      "sourceSha256": "f489277d40a1c5e494fb430b3b9455ffa25ab0675cefac9ad4e0eac26c5d6b4d"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/img_home_weight_bmi.webp",
+      "figmaNode": "5289:491",
+      "sourceDimensions": [
+        494,
+        309
+      ],
+      "outputDimensions": [
+        494,
+        309
+      ],
+      "sourceSha256": "5005a0031a38769c074b3c417969b5a1edb64e8695a7653288bc024c0645b241"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/img_home_drink_water.webp",
+      "figmaNode": "5289:538",
+      "sourceDimensions": [
+        249,
+        358
+      ],
+      "outputDimensions": [
+        249,
+        358
+      ],
+      "sourceSha256": "d7e4c35e7aa6c6e54f2b708e02e8da3e3a4debff78191ae11ac5621ae8c19e7f"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/img_home_step_count.webp",
+      "figmaNode": "5289:537",
+      "sourceDimensions": [
+        256,
+        246
+      ],
+      "outputDimensions": [
+        256,
+        246
+      ],
+      "sourceSha256": "f781870e3d7b35175dd660304c26dcd1a53153110dca42016d1fa6bcd07434e7"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_entry_radio_selected.webp",
+      "figmaNode": [
+        "5289:1185",
+        "5289:1186"
+      ],
+      "outputDimensions": [
+        62,
+        62
+      ],
+      "sourceSha256": "a55bac4e81a15f8838461d09d8bc21c06dc241e2e8d1b86b166b7ce352b89f72",
+      "conversion": "Figma-exported SVG rasterization or original export crop; no redrawing"
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_guide_arrow_1.webp",
+      "figmaNode": "5289:569",
+      "outputDimensions": [
+        18,
+        193
+      ],
+      "sourceSha256": "ad2f7fa39dae7bbb82f9ebe2f61d946e457651d8ce8c47e17855a298d3a22664",
+      "conversion": "Figma-exported SVG rasterization or original export crop; no redrawing"
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_guide_arrow_2.webp",
+      "figmaNode": "5289:569",
+      "outputDimensions": [
+        18,
+        193
+      ],
+      "sourceSha256": "ad2f7fa39dae7bbb82f9ebe2f61d946e457651d8ce8c47e17855a298d3a22664",
+      "conversion": "Figma-exported SVG rasterization or original export crop; no redrawing"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_guide_bubble.webp",
+      "figmaNode": "5289:562",
+      "outputDimensions": [
+        876,
+        175
+      ],
+      "sourceSha256": "ce15322f3b75557169ab869b7fcb13338f9b13497aee4efc39d7b8efc2e2ba0f",
+      "conversion": "Figma-exported SVG rasterization or original export crop; no redrawing"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_splash_year_badge.webp",
+      "figmaNode": [
+        "5292:1564",
+        "5292:1565"
+      ],
+      "outputDimensions": [
+        51,
+        18
+      ],
+      "sourceSha256": "0aaa3d959fd5d54660fab3b3775bf299b934cd7ae13b43e3abbfb444316076c4",
+      "conversion": "Figma-exported SVG rasterization or original export crop; no redrawing"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_entry_confirm.webp",
+      "figmaNode": "5289:1166",
+      "sourceSha256": "c7623a3896e9dc32610020c08f6a2078d37e26d1f67ac3039dc0e885862eff65",
+      "outputDimensions": [
+        108,
+        76
+      ],
+      "conversion": "Original Figma SVG rasterized at Android xxhdpi"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_entry_radio_unselected.webp",
+      "figmaNode": "5289:1182",
+      "sourceSha256": "9ec96c6dc008bab332818024a05372382861b862ff332c14ee1480d4126cb6f1",
+      "outputDimensions": [
+        62,
+        62
+      ],
+      "conversion": "Original Figma SVG rasterized at Android xxhdpi"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_settings.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgGroup1000008249",
+      "sourceSha256": "ed03da4f743cc6b525c6bb9e477c6edfd2aec21eeb961f0962381b08d894e8d0",
+      "outputDimensions": [
+        132,
+        132
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_measure_arrow.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgGroup1000008251",
+      "sourceSha256": "394dbbe7f72f81cf135532f5c1ab3fb317db34d812dd58572abc812976e5a6b1",
+      "outputDimensions": [
+        72,
+        72
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_bp_arrow.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgGroup1000008252",
+      "sourceSha256": "f1494b090cf6a02487c9a23d4843247dd380b24b46049ed9079f3451d4508595",
+      "outputDimensions": [
+        48,
+        48
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_bs_arrow.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgGroup1000008253",
+      "sourceSha256": "252d3e8329bc107b5ce61c20dcb04057d79fc55b1792370b1435522c40cfbc1e",
+      "outputDimensions": [
+        48,
+        48
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_nav_home.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "img3",
+      "sourceSha256": "befbdefab8777895763ee3324b4a9262d9343a1d45567fea368dcb3893e5e889",
+      "outputDimensions": [
+        72,
+        72
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_nav_meds.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgVector11",
+      "sourceSha256": "97819985680f59d2507ab7b619616e18a1b9dfae7e423ac866c9d03e5ae27071",
+      "outputDimensions": [
+        72,
+        69
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_nav_insights.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "img21",
+      "sourceSha256": "2d6522df22891e2fea3d7896f12c9e547694cb859d2bdebab2ec3bffe3060d84",
+      "outputDimensions": [
+        72,
+        72
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_nav_record.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "img2",
+      "sourceSha256": "df87e25b5059ead6270e84b6d4688c26dad8916b908d69dbc9b15dcede57ba8b",
+      "outputDimensions": [
+        72,
+        72
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_ring_bp.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgEllipse2422",
+      "sourceSha256": "68d3fd7a539caf151df44be67761871cf295fb2b78de9f59b3996278e8c4e9a9",
+      "outputDimensions": [
+        168,
+        168
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_ring_bs.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgEllipse2423",
+      "sourceSha256": "edd8f87f5b47ca574d82b040f337a95eb3f9abfe72eb946f19ad7537f902281a",
+      "outputDimensions": [
+        168,
+        168
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_ring_cholesterol.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgEllipse2424",
+      "sourceSha256": "f6e2df2a9399d476c1ce04f5b400f2ec4052fd3dc9a87e7688a8161c94fe9261",
+      "outputDimensions": [
+        168,
+        168
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_ring_weight.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgEllipse2426",
+      "sourceSha256": "10f99ef0fa22234feb71d4cddc6a283e81ad7ce72616bc3caab64e7ec838ce98",
+      "outputDimensions": [
+        168,
+        168
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_ring_water.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgEllipse2425",
+      "sourceSha256": "844ef2e82cf4f905f585296be0cf66dbb579970e26d03a022dea37e222cfff4a",
+      "outputDimensions": [
+        168,
+        168
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_home_ring_step.webp",
+      "figmaNode": "5289:3",
+      "figmaAsset": "imgEllipse2427",
+      "sourceSha256": "78b7c76147909f71f4332345a921871e762dfbc43f82cb5c389b7a1eb4f896f9",
+      "outputDimensions": [
+        168,
+        168
+      ]
+    },
+    {
+      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_meds_empty.webp",
+      "figmaNode": "5289:610",
+      "figmaAsset": "imgImage441",
+      "sourceSha256": "bd259bc089a30ad7c14367ec3832b101f8602a4168909b384c44d1e5a39f8e39",
+      "outputDimensions": [
+        519,
+        519
+      ],
+      "conversion": "Original uploaded illustration with Figma grayscale treatment; alpha preserved, Android xxhdpi"
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/tr_insights_cover_placeholder.webp",
+      "figmaNode": "5289:1374",
+      "sourceSha256": "7876b68337ca1aab2c081289fe87ab25d668a27a98000faaff12b2fe59ae6c73",
+      "outputDimensions": [
+        640,
+        413
+      ]
+    },
+    {
+      "resource": "app/src/main/res/drawable-nodpi/img_record_heart_rate.webp",
+      "figmaNode": "5292:1573",
+      "sourceSha256": "fc243276aa6a037f9ee7c00325db5bd3f6e1fb300f33e482a34751f2b5226a5c",
+      "outputDimensions": [
+        72,
+        65
+      ],
+      "crop": [
+        112,
+        210,
+        567,
+        622
+      ]
+    }
+  ]
+}
