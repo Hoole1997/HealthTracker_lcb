@@ -1,0 +1,72 @@
+// 版本与渠道参数统一在这里维护；SDK/API 等公共版本仍由版本目录管理。
+ext {
+    // AdMob配置 (正式 ID)
+    admob = [applicationId: "",
+             adUnitIds    : [banner      : "",
+                             interstitial: "",
+                             splash      : "",
+                             native      : "",
+                             full_native : "",
+                             rewarded    : "",
+                             rewarded_interstitial: ""
+             ]
+    ]
+
+    // Google Ad Manager 配置 (正式环境暂未配置，保持为空)
+    gam = [adUnitIds: [banner      : "",
+                       interstitial: "",
+                       splash      : "",
+                       native      : "",
+                       full_native : "",
+                       rewarded    : ""
+    ]]
+
+    // Pangle配置（穿山甲）- 来自原 playstore 变体配置
+    pangle = [applicationId: "",
+              adUnitIds    : [banner      : "",
+                              interstitial: "",
+                              splash      : "",
+                              native      : "",
+                              full_native : "",
+                              rewarded    : ""
+              ]
+    ]
+
+    // TopOn配置 - 来自原 playstore 变体配置
+    topon = [applicationId: "",
+             appKey       : "",
+             adUnitIds    : [banner      : "",
+                             interstitial: "",
+                             splash      : "",
+                             native      : "",
+                             full_native : "",
+                             rewarded    : ""
+             ]
+    ]
+
+    // 应用参数覆盖 (正式版关闭 Log)
+    app = [applicationId: "com.healthlab.heartrate.bloodpressuretracker",
+           versionCode  : 1,
+           versionName  : "1.0.0",
+           show_log     : false,
+           string_fog   : false,
+           shifter_mode : "google"
+    ]
+
+    // 业务 URL (正式官网)
+    // ⚠️ 必须包含所有字段，Groovy ext 是整体覆盖而非合并
+    url = [privacyUrl: "https://quantumorphlyr.com/privacy.html",
+           teamUrl   : "https://quantumorphlyr.com/TermsOfUse.html",
+           fcmUrl    : "",
+           fcmPkg    : "",
+           email     : "quantumorphlyr@gmail.com"
+    ]
+
+    // 统计归因 (正式 Token)
+    // TODO: 如果正式环境有独立的 Adjust/ThinkingData Token，请在此替换
+    analytics = [adjustAppToken        : "rmar8rz965ts",
+                 thinkingDataAppId     : "fc996b212a7d4bc2b70946a6940931f3",
+                 thinkingDataServerUrl : "https://limset.quantumorphlyr.com",
+                 defaultUserChannel    : "natural"
+    ]
+}

@@ -1,11 +1,9 @@
 import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
-import com.android.build.api.dsl.ApplicationProductFlavor
-import com.android.build.api.dsl.VariantDimension
+import convention.config.configureChannel
+import convention.config.configureReleaseSigning
+import convention.config.loadChannelConfig
+import convention.config.registerReleaseMetadata
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import kotlin.collections.get
-import kotlin.collections.plusAssign
 
 plugins {
     // 使用自定义插件
@@ -25,89 +23,17 @@ plugins {
     id("activityGuard")
 }
 
-// 引入统一的签名配置脚本
-apply(from = "../scripts/sign.gradle")
-
 // 引入动态混淆字典生成脚本
 apply(from = "generate-dictionary.gradle.kts")
 
-data class ChannelConfig(
-    val name: String,
-    val launcherUnityDependency: String,
-    val admob: Map<*, *>,
-    val admobUnit: Map<*, *>,
-    val gam: Map<*, *>,
-    val gamUnit: Map<*, *>,
-    val pangle: Map<*, *>,
-    val pangleUnit: Map<*, *>,
-    val topon: Map<*, *>,
-    val toponUnit: Map<*, *>,
-    val app: Map<*, *>,
-    val urls: Map<*, *>,
-    val analytics: Map<*, *>,
-)
-
-fun loadChannelConfig(
-    name: String,
-    scriptPath: String,
-    launcherUnityDependency: String,
-): ChannelConfig {
-    project.apply(from = scriptPath)
-
-    val admob = extensions.extraProperties["admob"] as Map<*, *>
-    val gam = extensions.extraProperties["gam"] as Map<*, *>
-    val pangle = extensions.extraProperties["pangle"] as Map<*, *>
-    val topon = extensions.extraProperties["topon"] as Map<*, *>
-
-    return ChannelConfig(
-        name = name,
-        launcherUnityDependency = launcherUnityDependency,
-        admob = admob,
-        admobUnit = admob["adUnitIds"] as Map<*, *>,
-        gam = gam,
-        gamUnit = gam["adUnitIds"] as Map<*, *>,
-        pangle = pangle,
-        pangleUnit = pangle["adUnitIds"] as Map<*, *>,
-        topon = topon,
-        toponUnit = topon["adUnitIds"] as Map<*, *>,
-        app = extensions.extraProperties["app"] as Map<*, *>,
-        urls = extensions.extraProperties["url"] as Map<*, *>,
-        analytics = extensions.extraProperties["analytics"] as Map<*, *>,
-    )
-}
-
-val internalChannel = loadChannelConfig(
-    name = "internal",
-    scriptPath = "../scripts/internal.gradle",
-    launcherUnityDependency = "com.launcher.unity:com.leafmotivation.quizguessoncolor-BloodPressureLog:1.0.5",
-)
-val officialChannel = loadChannelConfig(
-    name = "official",
-    scriptPath = "../scripts/official.gradle",
-    launcherUnityDependency = "com.launcher.unity:com.healthlab.heartrate.bloodpressuretracker-release:1.0.3",
-)
-
-val semanticVersion = project.findProperty("internalVersionName")
-    ?.toString()
-    ?.takeIf { it.isNotEmpty() }
-val defaultVersionName = "1.0.5"
-val resolvedVersionName = semanticVersion?.removePrefix("v") ?: defaultVersionName
-val buildTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
-println("📦 [Flavor] Internal Package: ${internalChannel.app["applicationId"]}")
-println("📦 [Flavor] Official Package: ${officialChannel.app["applicationId"]}")
+// 渠道参数和版本由各自的 config.gradle 管理，应用脚本只负责组装。
+val localChannel = loadChannelConfig("local", project)
+val googleChannel = loadChannelConfig("google", project)
 
 android {
     namespace = "com.daily.health.manager"
 
     defaultConfig {
-        versionCode = 6
-        versionName = resolvedVersionName
-        if (semanticVersion != null) {
-            println("🏷️ [Flavor] Override VersionName: $resolvedVersionName")
-        }
-
-        setProperty("archivesBaseName", "${rootProject.name}-v${versionName}(${versionCode})_${buildTime}")
-
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
         }
@@ -124,33 +50,22 @@ android {
         getByName("main").java.srcDir("build/generated/source/junk/kotlin")
     }
 
-    // Ensure junk code is generated before compilation
-    // Using afterEvaluate to ensure tasks are registered
-    // Note: The script registers "generateJunkCode".
-    // We hook it to preBuild
-
-    
-
-
-
     flavorDimensions += "channel"
     productFlavors {
-        create("internal") {
+        create("local") {
             dimension = "channel"
-            configureChannel(internalChannel)
-            if (semanticVersion == null) {
-                versionNameSuffix = "-internal"
-            }
+            isDefault = true
+            configureChannel(localChannel, project)
         }
-        create("official") {
+        create("google") {
             dimension = "channel"
-            configureChannel(officialChannel)
+            configureChannel(googleChannel, project)
         }
     }
 
     buildTypes {
         release {
-//            isShrinkResources = true
+            isShrinkResources = false
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -165,7 +80,7 @@ android {
             firebaseAppDistribution {
                 // 🚀 同时兼容 FIREBASE_APP_ID 和 INTERNAL_FIREBASE_APP_ID (CI 中使用的名称)
                 appId = System.getenv("FIREBASE_APP_ID") ?: System.getenv("INTERNAL_FIREBASE_APP_ID") ?: ""
-                serviceCredentialsFile = rootProject.file("scripts/google-services-json-key.json").absolutePath
+                serviceCredentialsFile = rootProject.file("signing/google-services-json-key.json").absolutePath
                 releaseNotesFile = rootProject.file("release_notes.txt").absolutePath
                 groups = "internal-testers"
             }
@@ -197,14 +112,9 @@ android {
     }
 }
 
-// 调用统一签名配置脚本设置签名
-apply<Any> {
-    extensions.extraProperties["setupSigningConfigs"]?.let { setupFn ->
-        if (setupFn is groovy.lang.Closure<*>) {
-            setupFn.call(android)
-        }
-    }
-}
+// 签名及 CI 元数据独立于业务依赖，避免构建文件继续堆积工具逻辑。
+configureReleaseSigning(android)
+registerReleaseMetadata(android)
 
 tasks.withType<AbstractArchiveTask>().configureEach {
     isPreserveFileTimestamps = false
@@ -217,10 +127,10 @@ dependencies {
     api(project(":framework"))
     implementation(libs.remax.core)
     implementation(libs.remax.bill)
-    add("internalImplementation", internalChannel.launcherUnityDependency) {
+    add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-BloodPressureLog:1.0.5") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
-    add("officialImplementation", officialChannel.launcherUnityDependency) {
+    add("googleImplementation", "com.launcher.unity:com.healthlab.heartrate.bloodpressuretracker-release:1.0.3") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     api(project(":metrics"))
@@ -278,50 +188,6 @@ dependencies {
     
     // Lottie Compose (心率测量动画)
     implementation(libs.lottie.compose)
-}
-
-fun ApplicationProductFlavor.configureChannel(config: ChannelConfig) {
-    applicationId = config.app["applicationId"] as String
-    addChannelBuildConfig(config)
-}
-
-fun VariantDimension.addChannelBuildConfig(config: ChannelConfig) {
-    val defaultUserChannel = config.analytics["defaultUserChannel"] ?: "default"
-
-    buildConfigField("boolean", "showLog", (config.app["show_log"] as Boolean).toString())
-    buildConfigField("String", "PRIVACY_POLICY", "\"${config.urls["privacyUrl"]}\"")
-    buildConfigField("String", "FCM_URL", "\"${config.urls["fcmUrl"]}\"")
-    buildConfigField("String", "FCM_PKG", "\"${config.urls["fcmPkg"]}\"")
-    buildConfigField("String", "FEEDBACK_EMAIL", "\"${config.urls["email"]}\"")
-    buildConfigField("String", "DEFAULT_USER_CHANNEL", "\"$defaultUserChannel\"")
-    buildConfigField("String", "ADMOB_APPLICATION_ID", "\"${config.admob["applicationId"]}\"")
-    buildConfigField("String", "ADMOB_SPLASH_ID", "\"${config.admobUnit["splash"]}\"")
-    buildConfigField("String", "ADMOB_BANNER_ID", "\"${config.admobUnit["banner"]}\"")
-    buildConfigField("String", "ADMOB_INTERSTITIAL_ID", "\"${config.admobUnit["interstitial"]}\"")
-    buildConfigField("String", "ADMOB_NATIVE_ID", "\"${config.admobUnit["native"]}\"")
-    buildConfigField("String", "ADMOB_FULL_NATIVE_ID", "\"${config.admobUnit["full_native"]}\"")
-    buildConfigField("String", "ADMOB_REWARDED_ID", "\"${config.admobUnit["rewarded"]}\"")
-    buildConfigField("String", "GAM_SPLASH_ID", "\"${config.gamUnit["splash"]}\"")
-    buildConfigField("String", "GAM_BANNER_ID", "\"${config.gamUnit["banner"]}\"")
-    buildConfigField("String", "GAM_INTERSTITIAL_ID", "\"${config.gamUnit["interstitial"]}\"")
-    buildConfigField("String", "GAM_NATIVE_ID", "\"${config.gamUnit["native"]}\"")
-    buildConfigField("String", "GAM_FULL_NATIVE_ID", "\"${config.gamUnit["full_native"]}\"")
-    buildConfigField("String", "GAM_REWARDED_ID", "\"${config.gamUnit["rewarded"]}\"")
-    buildConfigField("String", "PANGLE_APPLICATION_ID", "\"${config.pangle["applicationId"]}\"")
-    buildConfigField("String", "PANGLE_SPLASH_ID", "\"${config.pangleUnit["splash"]}\"")
-    buildConfigField("String", "PANGLE_BANNER_ID", "\"${config.pangleUnit["banner"]}\"")
-    buildConfigField("String", "PANGLE_INTERSTITIAL_ID", "\"${config.pangleUnit["interstitial"]}\"")
-    buildConfigField("String", "PANGLE_NATIVE_ID", "\"${config.pangleUnit["native"]}\"")
-    buildConfigField("String", "PANGLE_FULL_NATIVE_ID", "\"${config.pangleUnit["full_native"]}\"")
-    buildConfigField("String", "PANGLE_REWARDED_ID", "\"${config.pangleUnit["rewarded"]}\"")
-    buildConfigField("String", "TOPON_APPLICATION_ID", "\"${config.topon["applicationId"]}\"")
-    buildConfigField("String", "TOPON_APP_KEY", "\"${config.topon["appKey"]}\"")
-    buildConfigField("String", "TOPON_SPLASH_ID", "\"${config.toponUnit["splash"]}\"")
-    buildConfigField("String", "TOPON_BANNER_ID", "\"${config.toponUnit["banner"]}\"")
-    buildConfigField("String", "TOPON_INTERSTITIAL_ID", "\"${config.toponUnit["interstitial"]}\"")
-    buildConfigField("String", "TOPON_NATIVE_ID", "\"${config.toponUnit["native"]}\"")
-    buildConfigField("String", "TOPON_FULL_NATIVE_ID", "\"${config.toponUnit["full_native"]}\"")
-    buildConfigField("String", "TOPON_REWARDED_ID", "\"${config.toponUnit["rewarded"]}\"")
 }
 
 // ==================== activityGuard 四大组件混淆配置 ====================

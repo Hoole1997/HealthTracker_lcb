@@ -1,3 +1,5 @@
+import convention.config.loadChannelConfig
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -5,13 +7,8 @@ plugins {
     alias(libs.plugins.android.stringfog.convention)
 }
 
-fun loadAnalyticsConfig(scriptPath: String): Map<*, *> {
-    project.apply(from = scriptPath)
-    return extensions.extraProperties["analytics"] as Map<*, *>
-}
-
-val internalAnalyticsConfig = loadAnalyticsConfig("../scripts/internal.gradle")
-val officialAnalyticsConfig = loadAnalyticsConfig("../scripts/official.gradle")
+val localAnalyticsConfig = loadChannelConfig("local", project).analytics
+val googleAnalyticsConfig = loadChannelConfig("google", project).analytics
 
 android {
     namespace = "net.corekit.metrics"
@@ -23,13 +20,13 @@ android {
 
     flavorDimensions += "channel"
     productFlavors {
-        create("internal") {
+        create("local") {
             dimension = "channel"
-            configureAnalytics(internalAnalyticsConfig)
+            configureAnalytics(localAnalyticsConfig)
         }
-        create("official") {
+        create("google") {
             dimension = "channel"
-            configureAnalytics(officialAnalyticsConfig)
+            configureAnalytics(googleAnalyticsConfig)
         }
     }
 

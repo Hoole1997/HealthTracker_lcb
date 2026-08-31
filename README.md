@@ -1,4 +1,60 @@
-# HealthTracker 项目改动说明（血糖统计页）
+# HealthTracker
+
+## 构建配置（lcb4）
+
+与 GPSPhoto 一致使用 `google` / `local` 渠道。原 `official` 对应 `google`，原 `internal` 对应 `local`；包名、Firebase 配置、Launcher SDK、广告及统计参数保持原值，不自动替换为新项目参数。
+
+| 配置 | 位置 |
+| --- | --- |
+| Google 版本号及渠道参数 | [`app/src/google/config.gradle`](app/src/google/config.gradle) 的 `app.versionName` / `app.versionCode` |
+| Local 版本号及渠道参数 | [`app/src/local/config.gradle`](app/src/local/config.gradle) 的 `app.versionName` / `app.versionCode` |
+| Google 签名配置 / 证书 | [`app/src/google/sign.properties`](app/src/google/sign.properties) / `google-release.keystore`（CI 首次生成） |
+| Local 签名配置 / 证书 | [`app/src/local/sign.properties`](app/src/local/sign.properties) / `debug.jks`（来自 GPSPhoto） |
+| 公共依赖和 SDK 版本 | `gradle/libs.versions.toml`（未调整） |
+| 渠道配置、签名和产物元数据加载 | `build-common/src/main/kotlin/convention/config/` |
+| GitHub 构建 | [`.github/workflows/android-google-aab.yml`](.github/workflows/android-google-aab.yml) |
+
+当前版本保持 `1.0.5` / `6`；Local 自动追加 `-local`。两个渠道的版本可独立修改。
+
+使用 JDK 17（若终端默认 Java 25，请先 `export JAVA_HOME=$(/usr/libexec/java_home -v 17)`）。本地/代理编译验证只使用 Local，Google 正式包交给 GitHub Actions；不要运行会包含 Google 的聚合构建任务：
+
+```bash
+./gradlew :app:assembleLocalDebug
+./gradlew :app:assembleLocalRelease
+# 可选：本次构建覆盖版本，不修改配置文件；versionCode 需为正整数。
+./gradlew :app:assembleLocalDebug -PversionName=1.0.6 -PversionCode=7
+./gradlew :app:writeGoogleReleaseMetadata
+```
+
+元数据写入 `app/build/outputs/release-metadata.properties`，与 Google 实际构建版本共用解析逻辑。CI 将 AAB 命名为 `BloodPressureLog_google_release_<versionName>.aab`，同时上传 R8 mapping。`printGoogleReleaseVersionName` / `printGoogleReleaseAabName` 也可用于人工查看。
+
+### 签名与新项目首次构建
+
+- 每个渠道的签名配置和证书都放在自己的目录。`sign.properties` 中维护 `storeFile`、`storePassword`、`keyAlias`、`keyPassword`，证书文件名相对当前渠道目录。
+- Local Debug / Release 均使用 GPSPhoto 的 `app/src/local/debug.jks`（alias `key0`，store/key password `123456`），不再使用本机 `~/.android/debug.keystore`。Google 使用 `app/src/google/google-release.keystore`，不会复用 Local 或旧 lcb3 证书。
+- **保留首次自动生成逻辑**：CI 缺少 Google 证书时创建新证书，先上传 7 天备份，再提交回本次构建分支。后续构建复用此文件；现有证书损坏或密码错误直接失败，不覆盖它。如果分支保护阻止写入，构建停止，请从备份恢复证书并提交后重试。
+- 与 GPSPhoto 一样，默认 alias 为 `google`，store/key password 为 `google123456`。证书会进入 Git 历史，适用于受控私有仓库；如需不同密码，在首次生成前设置以下 Secrets，后续保持一致。不要删除已发布项目的证书重新生成。
+- 证书初始化脚本 `bash scripts/ensure_google_keystore.sh` 从 `app/src/google/sign.properties` 读取默认值，CI 环境变量可覆盖。配置按单行 `key=value` 保存；复杂密码建议通过 Secrets 提供。
+- Gradle 优先级为 `-P` > 环境变量 > 对应渠道的 `sign.properties`。环境变量中的证书路径相对仓库根目录；Google 使用下表变量，Local 使用独立的 `LOCAL_ANDROID_SIGNING_*`，避免受正式 CI 凭据影响。不再使用根目录签名模板或 `signing/signing.properties`。
+
+| 可选签名变量 / Secret | 默认值 |
+| --- | --- |
+| `ANDROID_SIGNING_STORE_PASSWORD` | `google123456` |
+| `ANDROID_SIGNING_KEY_ALIAS` | `google` |
+| `ANDROID_SIGNING_KEY_PASSWORD` | Google `sign.properties` 中的 `keyPassword`；自定义时与 store password 分别配置 |
+| `ANDROID_SIGNING_STORE_FILE`（本地 Gradle / 脚本） | `app/src/google/google-release.keystore` |
+
+### GitHub Actions
+
+推送 `main` / `lcb4` 或手动运行 **Build google signed AAB**，构建所选分支最新提交；手动可覆盖 versionName/versionCode。新证书自动提交仅修改证书文件，不重复触发构建。仓库需允许 Actions 读写内容；私有依赖需为 `GITHUB_TOKEN` 授权，或设置 `REMAX_GITHUB_USER` / `REMAX_GITHUB_TOKEN`（兼容 `GH_PACKAGES_USER` / `GH_PACKAGES_TOKEN` 和 `REMAX_SDK_TOKEN`）。不再读取旧 `LCB_3_SECRETS` 聚合配置，避免新项目误用 lcb3 证书。
+
+工作流只构建并上传 GitHub artifacts，不自动发布 Google Play / Firebase。Firebase App Distribution 的 Gradle 能力仍保留，服务账号文件改放 `signing/google-services-json-key.json`，发布说明仍放根目录 `release_notes.txt`。
+
+### scripts 清理
+
+仅保留 `scripts/ensure_google_keystore.sh`。渠道配置移入对应 source set；删除旧发布入口、失效的 Figma 包装脚本、一次性资源/ViewBinding 修复脚本及飞书调试脚本。原 keystore、签名 properties 和密钥模板已迁入本机忽略目录 `signing/legacy/`，不参与新项目构建、不提交；原工作区已暂存的其他删除保持不变。
+
+## 历史改动说明（血糖统计页）
 
 本次改动目标：将健康统计页适配为血糖统计视图，统一单位显示、修复统计逻辑、并改进图表与历史列表的呈现一致性。
 

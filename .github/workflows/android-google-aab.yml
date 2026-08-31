@@ -1,0 +1,146 @@
+name: Build google signed AAB
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'Optional versionName override (defaults to google/config.gradle)'
+        required: false
+        type: string
+      version_code:
+        description: 'Optional versionCode override'
+        required: false
+        type: string
+  push:
+    branches: [main, lcb4]
+    paths-ignore:
+      - app/src/google/google-release.keystore
+
+permissions:
+  contents: write
+  packages: read
+
+# Queued builds read the latest branch state and reuse its newly persisted signing key.
+concurrency:
+  group: google-release-signing
+  cancel-in-progress: false
+
+jobs:
+  build-google-aab:
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_SIGNING_STORE_FILE: app/src/google/google-release.keystore
+      # Empty overrides fall back to app/src/google/sign.properties in both script and Gradle.
+      ANDROID_SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+      ANDROID_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
+      ANDROID_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+      REMAX_GITHUB_USER: ${{ secrets.REMAX_GITHUB_USER || secrets.GH_PACKAGES_USER || 'toukaRemax' }}
+      REMAX_GITHUB_TOKEN: ${{ secrets.REMAX_GITHUB_TOKEN || secrets.REMAX_SDK_TOKEN || secrets.GH_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
+      GRADLE_JVM_ARGS: -Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8
+
+    steps:
+      - name: Require a branch for persistent signing
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          if [[ "$REF_TYPE" != branch ]]; then
+            echo "::error::Run this workflow on a branch so its signing key can be saved."
+            exit 1
+          fi
+
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+        with:
+          # Read the latest branch commit after waiting in the signing queue.
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Ensure google release keystore exists
+        id: signing
+        run: bash scripts/ensure_google_keystore.sh
+
+      - name: Back up newly generated keystore
+        if: always() && steps.signing.outputs.created == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: google-release-keystore-${{ github.run_id }}
+          path: app/src/google/google-release.keystore
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Persist new project keystore on selected branch
+        if: steps.signing.outputs.created == 'true'
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$ANDROID_SIGNING_STORE_FILE"
+          git commit -m 'chore: add google release keystore'
+          # Stop if persistence fails; the backup above allows recovery without losing the key.
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+
+      - name: Build signed google release AAB
+        env:
+          VERSION_NAME: ${{ inputs.version_name }}
+          VERSION_CODE: ${{ inputs.version_code }}
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+          VERSION_ARGS=()
+          [[ -z "$VERSION_NAME" ]] || VERSION_ARGS+=("-PversionName=$VERSION_NAME")
+          [[ -z "$VERSION_CODE" ]] || VERSION_ARGS+=("-PversionCode=$VERSION_CODE")
+          ./gradlew :app:writeGoogleReleaseMetadata :app:bundleGoogleRelease \
+            "${VERSION_ARGS[@]}" \
+            "-Dorg.gradle.jvmargs=$GRADLE_JVM_ARGS" \
+            -Dkotlin.daemon.jvm.options=-Xmx1g \
+            -x lint --max-workers=2 --no-parallel --no-configuration-cache --stacktrace
+
+      - name: Prepare AAB artifact
+        id: artifact
+        run: |
+          set -euo pipefail
+          # Parse Gradle-generated metadata as data; never scrape Kotlin source or eval it.
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          metadata = dict(line.split('=', 1) for line in
+                          Path('app/build/outputs/release-metadata.properties').read_text().splitlines())
+          bundles = list(Path('app/build/outputs/bundle/googleRelease').glob('*.aab'))
+          if len(bundles) != 1:
+              raise SystemExit(f'Expected one AAB, found {len(bundles)}')
+          target = bundles[0].with_name(metadata['aab_name'])
+          bundles[0].rename(target)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f"name={metadata['aab_name']}\npath={target}\n")
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write(f"Google AAB: {target.name}\n\nVersion: {metadata['version_name']} "
+                            f"({metadata['version_code']})\n")
+          PY
+
+      - name: Upload signed AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.name }}
+          path: ${{ steps.artifact.outputs.path }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload R8 mapping
+        uses: actions/upload-artifact@v4
+        with:
+          name: google-release-mapping-${{ github.run_number }}
+          path: app/build/outputs/mapping/googleRelease/mapping.txt
+          if-no-files-found: error
+          retention-days: 30
