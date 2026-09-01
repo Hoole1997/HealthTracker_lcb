@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.daily.health.manager.R
 import com.daily.health.manager.data.enums.BsUnit
 import com.daily.health.manager.databinding.TrActivityTargetRangeBinding
-import com.daily.health.manager.face.adapter.TargetRangeAdapter
+import com.daily.health.manager.presentation.glucose.GlucoseTargetRangeAdapter
 import com.daily.health.manager.face.dialog.ConfirmDialog
 import com.daily.health.manager.face.dialog.RangeEditDialog
 import com.daily.health.manager.face.viewmodel.TargetRangeViewModel
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
  */
 class TargetRangeAct : BaseMVVMActivity<TargetRangeViewModel, TrActivityTargetRangeBinding>() {
 
-    private lateinit var adapter: TargetRangeAdapter
+    private lateinit var adapter: GlucoseTargetRangeAdapter
     private var hasChanged = false  // 标记是否有修改
 
     override fun createViewBinding() = TrActivityTargetRangeBinding.inflate(layoutInflater)
@@ -54,7 +54,7 @@ class TargetRangeAct : BaseMVVMActivity<TargetRangeViewModel, TrActivityTargetRa
      * 设置RecyclerView
      */
     private fun setupRecyclerView() {
-        adapter = TargetRangeAdapter(
+        adapter = GlucoseTargetRangeAdapter(
             currentUnit = mViewModel.currentUnit.value,
             onItemClick = { rangeItem ->
                 showEditDialog(rangeItem)
@@ -80,7 +80,7 @@ class TargetRangeAct : BaseMVVMActivity<TargetRangeViewModel, TrActivityTargetRa
         lifecycleScope.launch {
             mViewModel.currentUnit.collect { unit ->
                 // 单位变化时更新adapter
-                adapter = TargetRangeAdapter(
+                adapter = GlucoseTargetRangeAdapter(
                     currentUnit = unit,
                     onItemClick = { rangeItem ->
                         showEditDialog(rangeItem)

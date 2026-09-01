@@ -15,7 +15,7 @@ import com.daily.health.manager.R
 import com.daily.health.manager.databinding.TrFragmentInsightsBinding
 import com.daily.health.manager.databinding.TrItemInsightsViewpageBinding
 import com.daily.health.manager.face.act.InsightsDetailAct
-import com.daily.health.manager.face.adapter.InsightsArticleAdapter
+import com.daily.health.manager.presentation.news.NewsArticleAdapter
 import com.daily.health.manager.utils.InsightAssetPreparer
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
@@ -139,7 +139,7 @@ class InsightTabFragment: BaseMVVMFragment<BaseViewModel, TrFragmentInsightsBind
             val itemBinding = TrItemInsightsViewpageBinding.inflate(inflater, container, false)
             itemBinding.rvInsights.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                adapter = InsightsArticleAdapter(::openArticleDetail).also { adapter ->
+                adapter = NewsArticleAdapter(::openArticleDetail).also { adapter ->
                     adapter.submitList(
                         InsightAssetPreparer.getArticles(categories[position].assetKey)
                     )

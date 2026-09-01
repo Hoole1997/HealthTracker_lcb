@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.history
+package com.daily.health.manager.presentation.history
 
 import android.content.Context
 import com.daily.health.manager.App
@@ -11,7 +11,7 @@ import java.util.Date
  * 心率历史记录项
  * 包装 HeartRateRecord 并实现统一的显示接口
  */
-class HeartRateHistoryItem(private val record: HeartRateRecord) : HistoryRecordItem() {
+class HeartRateHistoryRow(private val record: HeartRateRecord) : HealthHistoryRow() {
 
     override fun getId(): Long = record.id
 
@@ -41,7 +41,7 @@ class HeartRateHistoryItem(private val record: HeartRateRecord) : HistoryRecordI
         return null
     }
 
-    override fun getLeveColorRes(): Int {
+    override fun getLevelColorRes(): Int {
         val status = HeartRateStatus.fromHeartRate(record.heartRateBpm)
         return status.colorRes
     }

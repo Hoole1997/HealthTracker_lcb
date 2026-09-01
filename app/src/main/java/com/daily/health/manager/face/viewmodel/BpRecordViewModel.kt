@@ -7,7 +7,7 @@ import com.daily.health.manager.data.repository.BloodPressureRepository
 import com.daily.health.manager.data.repository.HealthTagRepository
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.constants.KEY_LAST_RECORD_TYPE
-import com.daily.health.manager.face.history.HistoryRecordItem
+import com.daily.health.manager.presentation.history.HealthHistoryRow
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.util.SpUtils
@@ -117,7 +117,7 @@ class BpRecordViewModel(
                     bloodPressureRepository.addTagsToBloodPressureRecord(editingRecordId!!, _selectedTagIds.value)
 
                     _isSaved.value = true
-                    SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BLOOD_PRESSURE.ordinal)
+                    SpUtils.putInt(KEY_LAST_RECORD_TYPE, HealthHistoryRow.RecordType.BLOOD_PRESSURE.ordinal)
                     SaveRecordResult.Updated(editingRecordId!!)
                 } ?: SaveRecordResult.Failed("Record not found")
             } else {
@@ -133,7 +133,7 @@ class BpRecordViewModel(
                 _isSaved.value = true
                 com.healthtracker.framework.util.SpUtils.putInt(
                     com.daily.health.manager.constants.KEY_LAST_RECORD_TYPE,
-                    com.daily.health.manager.face.history.HistoryRecordItem.RecordType.BLOOD_PRESSURE.ordinal
+                    com.daily.health.manager.presentation.history.HealthHistoryRow.RecordType.BLOOD_PRESSURE.ordinal
                 )
                 SaveRecordResult.Created(newRecordId)
             }

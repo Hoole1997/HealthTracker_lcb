@@ -11,7 +11,7 @@ import com.daily.health.manager.data.repository.HealthTagRepository
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.data.utils.TagUtils
 import com.daily.health.manager.constants.KEY_LAST_RECORD_TYPE
-import com.daily.health.manager.face.history.HistoryRecordItem
+import com.daily.health.manager.presentation.history.HealthHistoryRow
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.TAG
 import com.healthtracker.framework.util.SpUtils
@@ -203,7 +203,7 @@ class BmiRecordViewModel(
                     if (rows > 0) {
                         _isSaved.value = true
                         BodyMetricsPreferences.save(height.toDouble(), weight.toDouble())
-                        SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BMI_RECORD.ordinal)
+                        SpUtils.putInt(KEY_LAST_RECORD_TYPE, HealthHistoryRow.RecordType.BMI_RECORD.ordinal)
                         onResult(SaveRecordResult.Updated(recordId))
                     }
                 } else {
@@ -220,7 +220,7 @@ class BmiRecordViewModel(
                         _isSaved.value = true
                         BodyMetricsPreferences.save(height.toDouble(), weight.toDouble())
                         editingRecordId = newId
-                        SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BMI_RECORD.ordinal)
+                        SpUtils.putInt(KEY_LAST_RECORD_TYPE, HealthHistoryRow.RecordType.BMI_RECORD.ordinal)
                         onResult(SaveRecordResult.Created(newId))
                     }
                 }

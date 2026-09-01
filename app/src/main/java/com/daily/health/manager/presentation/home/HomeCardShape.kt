@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.dashboard
+package com.daily.health.manager.presentation.home
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp

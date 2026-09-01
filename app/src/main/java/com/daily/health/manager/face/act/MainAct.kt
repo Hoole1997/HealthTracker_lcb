@@ -29,8 +29,8 @@ import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.TrActivityMainBinding
 import com.daily.health.manager.databinding.TrLayoutHomeTabItemBinding
 import com.daily.health.manager.face.adapter.FragmentsAdapter
-import com.daily.health.manager.face.dashboard.HomeFeatureGuideOverlay
-import com.daily.health.manager.face.dashboard.HomeGuideOverlayUi
+import com.daily.health.manager.presentation.home.HomeFeatureGuideOverlay
+import com.daily.health.manager.presentation.home.HomeGuideOverlayUi
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.dialog.ActivityPerRequestDialog

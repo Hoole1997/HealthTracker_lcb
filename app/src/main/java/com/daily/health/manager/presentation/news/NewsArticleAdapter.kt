@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.adapter
+package com.daily.health.manager.presentation.news
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -16,9 +16,9 @@ import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.util.isLeast9
 import java.io.File
 
-class InsightsArticleAdapter(
+class NewsArticleAdapter(
     private val onItemClick: (InsightAssetPreparer.InsightArticle) -> Unit
-) : ListAdapter<InsightAssetPreparer.InsightArticle, InsightsArticleAdapter.ArticleViewHolder>(
+) : ListAdapter<InsightAssetPreparer.InsightArticle, NewsArticleAdapter.ArticleViewHolder>(
     DiffCallback
 ) {
 

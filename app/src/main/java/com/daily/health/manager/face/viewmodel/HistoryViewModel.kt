@@ -14,7 +14,7 @@ import com.daily.health.manager.data.repository.CholesterolRepository
 import com.daily.health.manager.data.repository.HeartRateRepository
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.data.enums.BloodSugarStatus
-import com.daily.health.manager.face.history.HistoryRecordItem
+import com.daily.health.manager.presentation.history.HealthHistoryRow
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
@@ -62,10 +62,10 @@ class HistoryViewModel(
     // 记录类型（默认血糖）
     private val _recordType = MutableStateFlow(
         savedStateHandle.get<Int>(KEY_RECORD_TYPE)?.let {
-            HistoryRecordItem.RecordType.values()[it]
-        } ?: HistoryRecordItem.RecordType.BLOOD_SUGAR
+            HealthHistoryRow.RecordType.values()[it]
+        } ?: HealthHistoryRow.RecordType.BLOOD_SUGAR
     )
-    val recordType: StateFlow<HistoryRecordItem.RecordType> = _recordType.asStateFlow()
+    val recordType: StateFlow<HealthHistoryRow.RecordType> = _recordType.asStateFlow()
 
     // 血糖状态类型筛选（null表示全部，非null表示具体状态）
     private val _selectedBloodSugarStatus = MutableStateFlow<BloodSugarStatus?>(
@@ -187,7 +187,7 @@ class HistoryViewModel(
     /**
      * 设置历史记录类型
      */
-    fun setHistoryType(recordType: HistoryRecordItem.RecordType) {
+    fun setHistoryType(recordType: HealthHistoryRow.RecordType) {
         _recordType.value = recordType
         savedStateHandle[KEY_RECORD_TYPE] = recordType.ordinal
         // 数据会通过setupDataLoading()中的combine自动重新加载
@@ -252,7 +252,7 @@ class HistoryViewModel(
     private data class FilterParams(
         val startDate: Long,
         val endDate: Long,
-        val recordType: HistoryRecordItem.RecordType,
+        val recordType: HealthHistoryRow.RecordType,
         val selectedStatus: BloodSugarStatus?
     )
 
@@ -284,19 +284,19 @@ class HistoryViewModel(
                 _errorMessage.value = null
 
                 when (params.recordType) {
-                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+                    HealthHistoryRow.RecordType.BLOOD_SUGAR -> {
                         loadBloodSugarRecordsWithFilter(params)
                     }
-                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+                    HealthHistoryRow.RecordType.BLOOD_PRESSURE -> {
                         loadBloodPressureRecordsWithFilter(params)
                     }
-                    HistoryRecordItem.RecordType.CHOLESTEROL -> {
+                    HealthHistoryRow.RecordType.CHOLESTEROL -> {
                         loadCholesterolRecordsWithFilter(params)
                     }
-                    HistoryRecordItem.RecordType.HEART_RATE -> {
+                    HealthHistoryRow.RecordType.HEART_RATE -> {
                         loadHeartRateRecordsWithFilter(params)
                     }
-                    HistoryRecordItem.RecordType.BMI_RECORD -> {
+                    HealthHistoryRow.RecordType.BMI_RECORD -> {
                         loadBmiRecordsWithFilter(params)
                     }
                 }

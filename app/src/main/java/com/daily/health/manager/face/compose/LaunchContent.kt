@@ -50,7 +50,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.daily.health.manager.R
 import com.daily.health.manager.data.utils.DateTimeUtils
-import com.daily.health.manager.face.history.HistoryRecordItem
+import com.daily.health.manager.presentation.history.HealthHistoryRow
 import com.healthtracker.framework.R as FrameworkR
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
@@ -108,7 +108,7 @@ private fun AutoSizeSingleLineText(
 @Composable
 internal fun LaunchContent(
     startAnimationFlow: StateFlow<Boolean>,
-    recentRecordFlow: StateFlow<HistoryRecordItem?>,
+    recentRecordFlow: StateFlow<HealthHistoryRow?>,
     onAnimationCompleted: () -> Unit
 ) {
     val startAnimation by startAnimationFlow.collectAsState()
@@ -242,15 +242,15 @@ internal fun LaunchContent(
 @Composable
 private fun RecentRecordCard(
     modifier: Modifier = Modifier,
-    item: HistoryRecordItem
+    item: HealthHistoryRow
 ) {
     val context = LocalContext.current
 
     val typeName = when (item.getRecordType()) {
-        HistoryRecordItem.RecordType.BLOOD_PRESSURE -> stringResource(id = R.string.tr_blood_pressure)
-        HistoryRecordItem.RecordType.BLOOD_SUGAR -> stringResource(id = R.string.tr_blood_suger)
-        HistoryRecordItem.RecordType.HEART_RATE -> stringResource(id = R.string.tr_heart_rate)
-        HistoryRecordItem.RecordType.BMI_RECORD -> stringResource(id = R.string.tr_bmi)
+        HealthHistoryRow.RecordType.BLOOD_PRESSURE -> stringResource(id = R.string.tr_blood_pressure)
+        HealthHistoryRow.RecordType.BLOOD_SUGAR -> stringResource(id = R.string.tr_blood_suger)
+        HealthHistoryRow.RecordType.HEART_RATE -> stringResource(id = R.string.tr_heart_rate)
+        HealthHistoryRow.RecordType.BMI_RECORD -> stringResource(id = R.string.tr_bmi)
         else -> ""
     }
 
@@ -261,10 +261,10 @@ private fun RecentRecordCard(
 
     val statusText = when {
         statusValue.isNullOrBlank() -> null
-        item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_PRESSURE -> {
+        item.getRecordType() == HealthHistoryRow.RecordType.BLOOD_PRESSURE -> {
             "${stringResource(id = R.string.tr_pulse)}:$statusValue"
         }
-        item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_SUGAR -> {
+        item.getRecordType() == HealthHistoryRow.RecordType.BLOOD_SUGAR -> {
             "${stringResource(id = R.string.tr_status)}:$statusValue"
         }
         else -> statusValue

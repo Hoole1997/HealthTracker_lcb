@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.history
+package com.daily.health.manager.presentation.history
 
 import android.content.Context
 import com.daily.health.manager.R
@@ -14,7 +14,7 @@ import java.util.Date
  * BMI 历史记录项
  * 包装 BmiRecord 并实现统一的显示接口
  */
-class BmiHistoryItem(private val record: BmiRecord) : HistoryRecordItem() {
+class BmiHistoryRow(private val record: BmiRecord) : HealthHistoryRow() {
 
     override fun getId(): Long = record.id
 
@@ -59,7 +59,7 @@ class BmiHistoryItem(private val record: BmiRecord) : HistoryRecordItem() {
         return "$heightStr : $displayHeight$heightUnitLabel  $weightStr : $displayWeight$weightUnitLabel"
     }
 
-    override fun getLeveColorRes(): Int {
+    override fun getLevelColorRes(): Int {
         val bmi = calculateBmi()
         val category = BMIEnum.fromBmi(bmi)
         return category.colorRes

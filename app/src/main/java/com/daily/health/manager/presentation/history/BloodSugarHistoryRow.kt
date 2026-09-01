@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.history
+package com.daily.health.manager.presentation.history
 
 import android.content.Context
 import com.daily.health.manager.R
@@ -12,7 +12,7 @@ import java.util.Date
  * 血糖历史记录项
  * 包装BloodSugarRecord并实现统一的显示接口
  */
-class BloodSugarHistoryItem(private val record: BloodSugarRecord) : HistoryRecordItem() {
+class BloodSugarHistoryRow(private val record: BloodSugarRecord) : HealthHistoryRow() {
     
     override fun getId(): Long = record.id
     
@@ -54,7 +54,7 @@ class BloodSugarHistoryItem(private val record: BloodSugarRecord) : HistoryRecor
         return level
     }
 
-    override fun getLeveColorRes() = getLevel().colorRes
+    override fun getLevelColorRes() = getLevel().colorRes
 
     override fun getRecordType(): RecordType {
         return RecordType.BLOOD_SUGAR

@@ -19,7 +19,7 @@ import com.daily.health.manager.databinding.TrActivitySplashBinding
 import com.daily.health.manager.feature.NotificationFeatureSwitch
 import com.daily.health.manager.hasNewGuide
 import com.daily.health.manager.receiver.NotificationActionReceiver
-import com.daily.health.manager.face.history.HistoryRecordItem
+import com.daily.health.manager.presentation.history.HealthHistoryRow
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.viewmodel.SplashViewModel
 import com.daily.health.manager.util.logEvent

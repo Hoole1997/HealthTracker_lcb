@@ -16,7 +16,7 @@ import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.databinding.TrActivityAddReminderBinding
-import com.daily.health.manager.face.adapter.ReminderTimeAdapter
+import com.daily.health.manager.presentation.medication.MedicationTimeAdapter
 import com.daily.health.manager.face.dialog.AlarmTimeSelectDialog
 import com.daily.health.manager.face.dialog.DosesTimesDialog
 import com.daily.health.manager.face.dialog.ImgGetTypeDialog
@@ -57,7 +57,7 @@ class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddRemi
         }
 
 
-    private lateinit var timeAdapter: ReminderTimeAdapter
+    private lateinit var timeAdapter: MedicationTimeAdapter
 
     override fun createViewBinding() = TrActivityAddReminderBinding.inflate(layoutInflater)
 
@@ -162,7 +162,7 @@ class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddRemi
     }
 
     private fun setupRecyclerView() {
-        timeAdapter = ReminderTimeAdapter { position ->
+        timeAdapter = MedicationTimeAdapter { position ->
             showTimePickerDialog(position)
         }
 
@@ -200,7 +200,7 @@ class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddRemi
             tvDoseCount.text = state.dailyDoses.toString()
 
             // 更新时间列表
-            timeAdapter.updateTimes(state.reminderTimes)
+            timeAdapter.submitReminderTimes(state.reminderTimes)
 
             // 更新保存按钮状态和文字
             btnSave.isEnabled = state.isFormValid

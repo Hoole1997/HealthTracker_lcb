@@ -24,13 +24,13 @@ import com.daily.health.manager.tips.HealthMetric
 import com.daily.health.manager.tips.HealthTips
 import com.daily.health.manager.face.chart.HealthLineChartManager
 import com.daily.health.manager.face.dialog.StatusSelectDialog
-import com.daily.health.manager.face.history.BloodPressureHistoryItem
-import com.daily.health.manager.face.history.BloodSugarHistoryItem
-import com.daily.health.manager.face.history.BmiHistoryItem
-import com.daily.health.manager.face.history.CholesterolHistoryItem
-import com.daily.health.manager.face.history.HeartRateHistoryItem
-import com.daily.health.manager.face.history.HistoryAdapter
-import com.daily.health.manager.face.history.HistoryRecordItem
+import com.daily.health.manager.presentation.history.BloodPressureHistoryRow
+import com.daily.health.manager.presentation.history.BloodSugarHistoryRow
+import com.daily.health.manager.presentation.history.BmiHistoryRow
+import com.daily.health.manager.presentation.history.CholesterolHistoryRow
+import com.daily.health.manager.presentation.history.HeartRateHistoryRow
+import com.daily.health.manager.presentation.history.HealthHistoryAdapter
+import com.daily.health.manager.presentation.history.HealthHistoryRow
 import com.daily.health.manager.face.widget.StatisticDimensionMenu
 import com.daily.health.manager.viewmodel.HealthStatisticsViewModel
 import com.daily.health.manager.viewmodel.StatisticDimension
@@ -104,7 +104,7 @@ class HealthStatisticsAct :
     private val chartManagerFactory: HealthLineChartManager.Factory by inject()
 
     private var chartManager: HealthLineChartManager? = null
-    private val historyAdapter = HistoryAdapter().apply { showDeleteButton = false }
+    private val historyAdapter = HealthHistoryAdapter().apply { showDeleteButton = false }
     private var latestDateRange: HealthStatisticsViewModel.DateRange? = null
     private var isHistorySectionVisible: Boolean = false
     private var isHistoryListVisible: Boolean = false
@@ -213,18 +213,18 @@ class HealthStatisticsAct :
     }
 
     private fun setupHistoryList() {
-        historyAdapter.setOnItemClickListener(object : HistoryAdapter.OnItemClickListener {
-            override fun onItemClick(item: HistoryRecordItem, position: Int) {
+        historyAdapter.setOnItemClickListener(object : HealthHistoryAdapter.OnItemClickListener {
+            override fun onItemClick(item: HealthHistoryRow, position: Int) {
                 when (item.getRecordType()) {
-                    HistoryRecordItem.RecordType.BLOOD_SUGAR -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.BLOOD_SUGAR, item.getId())
-                    HistoryRecordItem.RecordType.BLOOD_PRESSURE -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.BLOOD_PRESSURE, item.getId())
-                    HistoryRecordItem.RecordType.CHOLESTEROL -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.CHOLESTEROL, item.getId())
-                    HistoryRecordItem.RecordType.HEART_RATE -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.HEART_RATE, item.getId())
-                    HistoryRecordItem.RecordType.BMI_RECORD -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.BMI, item.getId())
+                    HealthHistoryRow.RecordType.BLOOD_SUGAR -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.BLOOD_SUGAR, item.getId())
+                    HealthHistoryRow.RecordType.BLOOD_PRESSURE -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.BLOOD_PRESSURE, item.getId())
+                    HealthHistoryRow.RecordType.CHOLESTEROL -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.CHOLESTEROL, item.getId())
+                    HealthHistoryRow.RecordType.HEART_RATE -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.HEART_RATE, item.getId())
+                    HealthHistoryRow.RecordType.BMI_RECORD -> HealthDetailAct.start(this@HealthStatisticsAct, HealthDetailAct.DetailType.BMI, item.getId())
                 }
             }
 
-            override fun onDeleteClick(item: HistoryRecordItem, position: Int) {
+            override fun onDeleteClick(item: HealthHistoryRow, position: Int) {
                 // 删除入口在统计页关闭
             }
         })
@@ -237,12 +237,12 @@ class HealthStatisticsAct :
     private fun setupActions() {
         mViewBind.tvAllHistory.clickWithDuration {
             val recordType = when (mViewModel.selectedMetricType.value) {
-                HealthMetric.BLOOD_SUGAR -> HistoryRecordItem.RecordType.BLOOD_SUGAR
-                HealthMetric.BLOOD_PRESSURE -> HistoryRecordItem.RecordType.BLOOD_PRESSURE
-                HealthMetric.CHOLESTEROL -> HistoryRecordItem.RecordType.CHOLESTEROL
-                HealthMetric.HEART_RATE -> HistoryRecordItem.RecordType.HEART_RATE
-                HealthMetric.BMI -> HistoryRecordItem.RecordType.BMI_RECORD
-                else -> HistoryRecordItem.RecordType.BLOOD_SUGAR
+                HealthMetric.BLOOD_SUGAR -> HealthHistoryRow.RecordType.BLOOD_SUGAR
+                HealthMetric.BLOOD_PRESSURE -> HealthHistoryRow.RecordType.BLOOD_PRESSURE
+                HealthMetric.CHOLESTEROL -> HealthHistoryRow.RecordType.CHOLESTEROL
+                HealthMetric.HEART_RATE -> HealthHistoryRow.RecordType.HEART_RATE
+                HealthMetric.BMI -> HealthHistoryRow.RecordType.BMI_RECORD
+                else -> HealthHistoryRow.RecordType.BLOOD_SUGAR
             }
             HistoryRecordAct.start(this, recordType = recordType)
         }
@@ -321,11 +321,11 @@ class HealthStatisticsAct :
         collectLatest(mViewModel.historyPreview) { records ->
             val items = records.mapNotNull { record ->
                 when (mViewModel.selectedMetricType.value) {
-                    HealthMetric.BLOOD_SUGAR -> (record as? BloodSugarRecord)?.let { BloodSugarHistoryItem(it) }
-                    HealthMetric.BLOOD_PRESSURE -> (record as? BloodPressureRecord)?.let { BloodPressureHistoryItem(it) }
-                    HealthMetric.CHOLESTEROL -> (record as? CholesterolRecord)?.let { CholesterolHistoryItem(it) }
-                    HealthMetric.HEART_RATE -> (record as? HeartRateRecord)?.let { HeartRateHistoryItem(it) }
-                    HealthMetric.BMI -> (record as? BmiRecord)?.let { BmiHistoryItem(it) }
+                    HealthMetric.BLOOD_SUGAR -> (record as? BloodSugarRecord)?.let { BloodSugarHistoryRow(it) }
+                    HealthMetric.BLOOD_PRESSURE -> (record as? BloodPressureRecord)?.let { BloodPressureHistoryRow(it) }
+                    HealthMetric.CHOLESTEROL -> (record as? CholesterolRecord)?.let { CholesterolHistoryRow(it) }
+                    HealthMetric.HEART_RATE -> (record as? HeartRateRecord)?.let { HeartRateHistoryRow(it) }
+                    HealthMetric.BMI -> (record as? BmiRecord)?.let { BmiHistoryRow(it) }
                     else -> null
                 }
             }

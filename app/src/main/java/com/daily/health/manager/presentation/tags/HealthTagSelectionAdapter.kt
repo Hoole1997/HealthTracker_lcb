@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.adapter
+package com.daily.health.manager.presentation.tags
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -21,15 +21,16 @@ import com.healthtracker.framework.ext.visible
  * @param tagType 标签类型（血糖或血压）
  * @param onTagClick 标签点击回调
  */
-class HealthTagAdapter(
+class HealthTagSelectionAdapter(
     private val tagType: TagType,
     private val onTagClick: (HealthTag) -> Unit
-) : ListAdapter<HealthTagAdapter.TagItem, HealthTagAdapter.TagViewHolder>(TagDiffCallback()) {
+) : ListAdapter<HealthTagSelectionAdapter.TagItem, HealthTagSelectionAdapter.TagViewHolder>(TagDiffCallback()) {
 
-    private var isDelectMode = false
+    private var deletionModeEnabled = false
 
-    fun switchDelectMode(isDelete: Boolean){
-        isDelectMode = isDelete
+    // 只更新删除模式的展示；标签删除仍由页面原有回调处理。
+    fun setDeletionMode(isDelete: Boolean){
+        deletionModeEnabled = isDelete
         notifyItemRangeChanged(0,itemCount)
     }
 
@@ -57,14 +58,14 @@ class HealthTagAdapter(
                 // 设置标签文本
                 tvLabel.text = item.displayText
 
-                if (isDelectMode) {
+                if (deletionModeEnabled) {
                     ivLabelDelete.visible()
                 } else {
                     ivLabelDelete.gone()
                 }
 
                 // 设置选中状态样式
-                if (item.isSelected && !isDelectMode) {
+                if (item.isSelected && !deletionModeEnabled) {
                     tvLabel.setTextColor(
                         ContextCompat.getColor(
                             tvLabel.context,

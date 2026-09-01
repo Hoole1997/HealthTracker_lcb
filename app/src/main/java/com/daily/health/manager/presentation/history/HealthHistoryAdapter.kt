@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.history
+package com.daily.health.manager.presentation.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,7 +17,7 @@ import com.healthtracker.framework.ext.visible
  * 历史记录适配器
  * 支持多种健康记录类型的统一显示
  */
-class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
+class HealthHistoryAdapter : ListAdapter<HealthHistoryRow, RecyclerView.ViewHolder>(
     HistoryDiffCallback()
 ) {
 
@@ -33,14 +33,14 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
          * @param item 被点击的记录项
          * @param position 位置
          */
-        fun onItemClick(item: HistoryRecordItem, position: Int)
+        fun onItemClick(item: HealthHistoryRow, position: Int)
         
         /**
          * 删除按钮点击事件
          * @param item 要删除的记录项
          * @param position 位置
          */
-        fun onDeleteClick(item: HistoryRecordItem, position: Int)
+        fun onDeleteClick(item: HealthHistoryRow, position: Int)
     }
     
     private var itemClickListener: OnItemClickListener? = null
@@ -63,11 +63,11 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position).getRecordType()) {
-            HistoryRecordItem.RecordType.CHOLESTEROL -> VIEW_TYPE_CHOLESTEROL
-            HistoryRecordItem.RecordType.BLOOD_SUGAR,
-            HistoryRecordItem.RecordType.BLOOD_PRESSURE,
-            HistoryRecordItem.RecordType.HEART_RATE,
-            HistoryRecordItem.RecordType.BMI_RECORD -> VIEW_TYPE_SIMPLE
+            HealthHistoryRow.RecordType.CHOLESTEROL -> VIEW_TYPE_CHOLESTEROL
+            HealthHistoryRow.RecordType.BLOOD_SUGAR,
+            HealthHistoryRow.RecordType.BLOOD_PRESSURE,
+            HealthHistoryRow.RecordType.HEART_RATE,
+            HealthHistoryRow.RecordType.BMI_RECORD -> VIEW_TYPE_SIMPLE
         }
     }
 
@@ -91,14 +91,14 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
         val item = getItem(position)
         when (holder) {
             is SimpleHistoryViewHolder -> holder.bind(item)
-            is CholesterolViewHolder -> holder.bind(item as CholesterolHistoryItem)
+            is CholesterolViewHolder -> holder.bind(item as CholesterolHistoryRow)
         }
     }
 
     inner class SimpleHistoryViewHolder(private val binding: TrItemHistoryRecordBinding) :
         RecyclerView.ViewHolder(binding.root) {
         
-        fun bind(item: HistoryRecordItem) {
+        fun bind(item: HealthHistoryRow) {
             with(binding) {
                 // 设置主要数值
                 tvValue1.text = item.getPrimaryValue()
@@ -119,7 +119,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
                         // 血压：显示 "Pulse: xxx"
                         tvStatus.text = "${tvStatus.context.getString(R.string.tr_pulse)}:$status"
                     } else {
-                        if(item.getRecordType() == HistoryRecordItem.RecordType.BLOOD_SUGAR){
+                        if(item.getRecordType() == HealthHistoryRow.RecordType.BLOOD_SUGAR){
                             // 血糖：显示 "Status: xxx"
                             tvStatus.text = "${tvStatus.context.getString(R.string.tr_status)}:$status"
                         }else{
@@ -143,7 +143,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
                 // 设置左侧颜色标记
                 vRangeFlag.backgroundTintList = ContextCompat.getColorStateList(
                     vRangeFlag.context,
-                    item.getLeveColorRes()
+                    item.getLevelColorRes()
                 )
 
                 // 设置记录时间
@@ -176,7 +176,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
         private val binding: TrItemCholHistoryRecordBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: CholesterolHistoryItem) {
+        fun bind(item: CholesterolHistoryRow) {
             with(binding) {
                 // 设置三大核心指标（大字体显示）
                 tvHdlValue.text = item.getHdlValue()
@@ -191,7 +191,7 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
                 // 设置等级显示（根据风险等级设置文字颜色）
                 tvLeve.text = item.getLevel(tvLeve.context)
                 tvLeve.setTextColor(
-                    ContextCompat.getColor(tvLeve.context, item.getLeveColorRes())
+                    ContextCompat.getColor(tvLeve.context, item.getLevelColorRes())
                 )
 
                 // 设置记录时间
@@ -219,23 +219,23 @@ class HistoryAdapter : ListAdapter<HistoryRecordItem, RecyclerView.ViewHolder>(
     /**
      * DiffUtil回调，用于高效更新列表
      */
-    private class HistoryDiffCallback : DiffUtil.ItemCallback<HistoryRecordItem>() {
-        override fun areItemsTheSame(oldItem: HistoryRecordItem, newItem: HistoryRecordItem): Boolean {
+    private class HistoryDiffCallback : DiffUtil.ItemCallback<HealthHistoryRow>() {
+        override fun areItemsTheSame(oldItem: HealthHistoryRow, newItem: HealthHistoryRow): Boolean {
             return oldItem.getId() == newItem.getId() && 
                    oldItem.getRecordType() == newItem.getRecordType()
         }
         
-        override fun areContentsTheSame(oldItem: HistoryRecordItem, newItem: HistoryRecordItem): Boolean {
+        override fun areContentsTheSame(oldItem: HealthHistoryRow, newItem: HealthHistoryRow): Boolean {
             // 基础字段比较
             val baseEquals = oldItem.getPrimaryValue() == newItem.getPrimaryValue() &&
                              oldItem.getSecondaryValue() == newItem.getSecondaryValue() &&
                              oldItem.getRecordTime() == newItem.getRecordTime() &&
-                             oldItem.getLeveColorRes() == newItem.getLeveColorRes()
+                             oldItem.getLevelColorRes() == newItem.getLevelColorRes()
 
             if (!baseEquals) return false
 
             // 胆固醇记录需要额外比较 6 个指标
-            if (oldItem is CholesterolHistoryItem && newItem is CholesterolHistoryItem) {
+            if (oldItem is CholesterolHistoryRow && newItem is CholesterolHistoryRow) {
                 return oldItem.getHdlValue() == newItem.getHdlValue() &&
                        oldItem.getLdlValue() == newItem.getLdlValue() &&
                        oldItem.getTgValue() == newItem.getTgValue() &&

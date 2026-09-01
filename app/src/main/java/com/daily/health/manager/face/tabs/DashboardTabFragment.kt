@@ -27,12 +27,12 @@ import com.daily.health.manager.face.act.HistoryRecordAct
 import com.daily.health.manager.face.act.HydrateAct
 import com.daily.health.manager.face.act.MainAct
 import com.daily.health.manager.face.act.ProfileActivity
-import com.daily.health.manager.face.dashboard.DashboardSurface
-import com.daily.health.manager.face.dashboard.HomeGuideOverlayUi
-import com.daily.health.manager.face.dashboard.HomeGuideStep
-import com.daily.health.manager.face.dashboard.HomeGuideTarget
-import com.daily.health.manager.face.dashboard.HomeFeatureCardUi
-import com.daily.health.manager.face.dashboard.HomeHeroUi
+import com.daily.health.manager.presentation.home.HomeOverviewContent
+import com.daily.health.manager.presentation.home.HomeGuideOverlayUi
+import com.daily.health.manager.presentation.home.HomeGuideStep
+import com.daily.health.manager.presentation.home.HomeGuideTarget
+import com.daily.health.manager.presentation.home.MetricTileUi
+import com.daily.health.manager.presentation.home.HeartSummaryUi
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.tracker.HealthType
 import com.daily.health.manager.face.tracker.trackEnterPageClick
@@ -99,7 +99,7 @@ class DashboardTabFragment : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBindi
             val todayStepStat by mViewModel.todayStepStat.collectAsStateWithLifecycle()
 
             HealthTrackerTheme {
-                DashboardSurface(
+                HomeOverviewContent(
                     hero = buildHeroUi(heartRateRecord),
                     cards = buildCardUiList(
                         bloodSugarRecord = bloodSugarRecord,
@@ -200,10 +200,10 @@ class DashboardTabFragment : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBindi
         }
     }
 
-    private fun buildHeroUi(record: HeartRateRecord?): HomeHeroUi {
+    private fun buildHeroUi(record: HeartRateRecord?): HeartSummaryUi {
         val bpmText = record?.heartRateBpm?.toString() ?: "--"
         val footerText = record?.recordTime?.let(::formatAbsoluteTime) ?: getString(R.string.tr_click_to_record)
-        return HomeHeroUi(
+        return HeartSummaryUi(
             title = getString(R.string.tr_heart_rate),
             subtitle = getString(R.string.tr_home_heart_subtitle),
             cta = getString(R.string.tr_measure_now),
@@ -222,15 +222,15 @@ class DashboardTabFragment : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBindi
         bmiRecord: BmiRecord?,
         todayTotalIntakeMl: Int,
         todayStepStat: DailyStepStat?,
-    ): List<HomeFeatureCardUi> {
+    ): List<MetricTileUi> {
         val targetMl = HydrateSettingManager.getDailyTargetMl()
         return listOf(
-            HomeFeatureCardUi.BloodPressure(
+            MetricTileUi.BloodPressure(
                 title = getString(R.string.tr_blood_pressure),
                 value = bloodPressureRecord?.let { "${it.systolicPressure}/${it.diastolicPressure}" } ?: "-/-",
                 unit = getString(R.string.tr_mmHg),
             ),
-            HomeFeatureCardUi.BloodSugar(
+            MetricTileUi.BloodSugar(
                 title = getString(R.string.tr_blood_suger),
                 value = bloodSugarRecord?.getFormattedDisplayValue() ?: "--",
                 unit = bloodSugarRecord?.let {
@@ -241,23 +241,23 @@ class DashboardTabFragment : BaseMVVMFragment<HomeViewModel, TrFragmentHomeBindi
                     }
                 } ?: BsUnit.MG_DL.displayName,
             ),
-            HomeFeatureCardUi.Cholesterol(
+            MetricTileUi.Cholesterol(
                 title = getString(R.string.tr_cholesterol),
                 value = formatCholesterolValue(cholesterolRecord),
                 unit = BsUnit.MG_DL.displayName,
             ),
-            HomeFeatureCardUi.Bmi(
+            MetricTileUi.Bmi(
                 title = getString(R.string.tr_weight),
                 value = bmiRecord?.getDisplayWeightValue() ?: "--",
                 unit = BmiUnit.getWeightUnitLabel(),
             ),
-            HomeFeatureCardUi.Hydrate(
+            MetricTileUi.Hydrate(
                 title = getString(R.string.tr_hydrate),
                 currentValue = todayTotalIntakeMl.toString(),
                 targetValue = targetMl.toString(),
                 unit = getString(R.string.tr_ml).lowercase(Locale.ROOT),
             ),
-            HomeFeatureCardUi.StepCount(
+            MetricTileUi.StepCount(
                 title = getString(R.string.tr_step_count),
                 stepsValue = todayStepStat?.steps?.toString() ?: "0",
                 stepsUnit = getString(R.string.tr_text_steps).lowercase(Locale.ROOT),

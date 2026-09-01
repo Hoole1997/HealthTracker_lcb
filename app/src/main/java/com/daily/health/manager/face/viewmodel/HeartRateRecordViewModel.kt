@@ -10,7 +10,7 @@ import com.daily.health.manager.data.repository.HealthTagRepository
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.data.utils.TagUtils
 import com.daily.health.manager.constants.KEY_LAST_RECORD_TYPE
-import com.daily.health.manager.face.history.HistoryRecordItem
+import com.daily.health.manager.presentation.history.HealthHistoryRow
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.util.SpUtils
@@ -158,7 +158,7 @@ class HeartRateRecordViewModel(
                     )
                     if (newId > 0) {
                         editingRecordId = newId
-                        SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.HEART_RATE.ordinal)
+                        SpUtils.putInt(KEY_LAST_RECORD_TYPE, HealthHistoryRow.RecordType.HEART_RATE.ordinal)
                         onResult(SaveRecordResult.Created(newId))
                     } else {
                         onResult(SaveRecordResult.Failed("创建失败"))
@@ -177,7 +177,7 @@ class HeartRateRecordViewModel(
                         if (rows > 0) {
                             com.healthtracker.framework.util.SpUtils.putInt(
                                 com.daily.health.manager.constants.KEY_LAST_RECORD_TYPE,
-                                com.daily.health.manager.face.history.HistoryRecordItem.RecordType.HEART_RATE.ordinal
+                                com.daily.health.manager.presentation.history.HealthHistoryRow.RecordType.HEART_RATE.ordinal
                             )
                             onResult(SaveRecordResult.Updated(updated.id))
                         } else {

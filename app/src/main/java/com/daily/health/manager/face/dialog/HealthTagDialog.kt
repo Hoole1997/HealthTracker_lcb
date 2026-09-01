@@ -15,7 +15,7 @@ import com.daily.health.manager.R
 import com.daily.health.manager.data.entity.HealthTag
 import com.daily.health.manager.data.enums.TagType
 import com.daily.health.manager.databinding.TrDialogLabelSelectBinding
-import com.daily.health.manager.face.adapter.HealthTagAdapter
+import com.daily.health.manager.presentation.tags.HealthTagSelectionAdapter
 import com.daily.health.manager.face.dialog.ConfirmDialog.Companion.BUTTON_OK
 import com.healthtracker.framework.base.fragment.BaseBottomSheetDialogFragment
 import com.healthtracker.framework.base.fragment.DialogListener
@@ -47,7 +47,7 @@ class HealthTagDialog(
     )
 
     private val selectLabels = selectedTags?.toMutableList() ?: mutableListOf()
-    private lateinit var tagAdapter: HealthTagAdapter
+    private lateinit var tagAdapter: HealthTagSelectionAdapter
 
     private var pendingNewTagName: String? = null
     private var isDeleteMode = false
@@ -152,7 +152,7 @@ class HealthTagDialog(
             }
 
             // 初始化Adapter
-            tagAdapter = HealthTagAdapter(
+            tagAdapter = HealthTagSelectionAdapter(
                 tagType = tagType,
                 onTagClick = { tag ->
                     handleTagSelection(tag)
@@ -268,7 +268,7 @@ class HealthTagDialog(
             // 删除标签按钮：切换删除模式
             ivDelete.clickWithDuration {
                 isDeleteMode = !isDeleteMode
-                tagAdapter.switchDelectMode(isDeleteMode)
+                tagAdapter.setDeletionMode(isDeleteMode)
             }
 
             // 取消按钮

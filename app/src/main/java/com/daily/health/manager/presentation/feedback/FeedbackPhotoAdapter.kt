@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.adapter
+package com.daily.health.manager.presentation.feedback
 
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
@@ -14,8 +14,8 @@ import com.daily.health.manager.R
  *
  * 展示反馈图片，动态排列方式
  */
-class ChoosePhotoRCVAdapter(private val data: List<String>, private val listener: ChoosePhotoRCVListener) :
-        RecyclerView.Adapter<ChoosePhotoRCVAdapter.RecyclerViewHolder>() {
+class FeedbackPhotoAdapter(private val data: List<String>, private val listener: PhotoActionListener) :
+        RecyclerView.Adapter<FeedbackPhotoAdapter.RecyclerViewHolder>() {
 
     var picSize = 140
     var showAddPhoto = true
@@ -34,14 +34,14 @@ class ChoosePhotoRCVAdapter(private val data: List<String>, private val listener
             }
             else -> {
                 //反馈图片
-                showPhoto(holder.photoIV, data[position])
+                loadPhotoPreview(holder.photoIV, data[position])
                 holder.deleteIV.visibility = View.VISIBLE
             }
         }
     }
 
     //显示图片
-    private fun showPhoto(imageView: ImageView, filePath: String) {
+    private fun loadPhotoPreview(imageView: ImageView, filePath: String) {
         try {
             Glide.with(imageView.context).load(filePath).thumbnail(0.4f).override(picSize, picSize).into(imageView)
         } catch (e: Throwable) {
@@ -64,21 +64,21 @@ class ChoosePhotoRCVAdapter(private val data: List<String>, private val listener
             photoIV.setOnClickListener {
                 //修复点击其他图片也能选择相册的问题
                 if (data.isEmpty() || adapterPosition == data.size) {
-                    listener.onClickAddPhoto()
+                    listener.onAddPhotoRequested()
                 }
             }
 
             deleteIV.setOnClickListener {
-                listener.onClickDelPhoto(adapterPosition)
+                listener.onPhotoRemovalRequested(adapterPosition)
             }
         }
 
     }
 
-    interface ChoosePhotoRCVListener {
+    interface PhotoActionListener {
 
-        fun onClickAddPhoto()
+        fun onAddPhotoRequested()
 
-        fun onClickDelPhoto(position: Int)
+        fun onPhotoRemovalRequested(position: Int)
     }
 }

@@ -13,7 +13,7 @@ import com.daily.health.manager.data.enums.BloodSugarStatus
 import com.daily.health.manager.helper.BloodSugarNotificationContent
 import com.daily.health.manager.util.BloodSugarScaleHelper
 import com.daily.health.manager.constants.KEY_LAST_RECORD_TYPE
-import com.daily.health.manager.face.history.HistoryRecordItem
+import com.daily.health.manager.presentation.history.HealthHistoryRow
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.ext.loge
@@ -161,12 +161,12 @@ class BsRecordViewModel(
             if (editingRecordId != null) {
                 // 更新现有记录
                 updateExistingRecord()
-                SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BLOOD_SUGAR.ordinal)
+                SpUtils.putInt(KEY_LAST_RECORD_TYPE, HealthHistoryRow.RecordType.BLOOD_SUGAR.ordinal)
                 SaveRecordResult.Updated(editingRecordId!!)
             } else {
                 // 创建新记录
                 val newRecordId = createNewRecord()
-                SpUtils.putInt(KEY_LAST_RECORD_TYPE, HistoryRecordItem.RecordType.BLOOD_SUGAR.ordinal)
+                SpUtils.putInt(KEY_LAST_RECORD_TYPE, HealthHistoryRow.RecordType.BLOOD_SUGAR.ordinal)
                 SaveRecordResult.Created(newRecordId)
             }
         } catch (e: Exception) {

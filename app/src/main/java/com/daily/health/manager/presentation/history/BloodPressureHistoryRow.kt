@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.history
+package com.daily.health.manager.presentation.history
 
 import android.content.Context
 import com.daily.health.manager.App
@@ -11,7 +11,7 @@ import java.util.Date
  * 血压历史记录项
  * 包装BloodPressureRecord并实现统一的显示接口
  */
-class BloodPressureHistoryItem(private val record: BloodPressureRecord) : HistoryRecordItem() {
+class BloodPressureHistoryRow(private val record: BloodPressureRecord) : HealthHistoryRow() {
     
     override fun getId(): Long = record.id
     
@@ -45,7 +45,7 @@ class BloodPressureHistoryItem(private val record: BloodPressureRecord) : Histor
     }
     
     override fun getStatus(context: Context) = "${record.pulseRate} BPM"
-    override fun getLeveColorRes() = record.getBloodPressureCategoryEnum().colorRes
+    override fun getLevelColorRes() = record.getBloodPressureCategoryEnum().colorRes
 
     override fun getRecordType(): RecordType {
         return RecordType.BLOOD_PRESSURE

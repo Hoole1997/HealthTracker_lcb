@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.dashboard
+package com.daily.health.manager.presentation.home
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable

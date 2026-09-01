@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.dashboard
+package com.daily.health.manager.presentation.home
 
 import android.graphics.Rect
 import androidx.annotation.DrawableRes
@@ -62,9 +62,9 @@ private fun LayoutCoordinates.toAndroidWindowRect(): Rect {
 }
 
 @Composable
-fun DashboardSurface(
-    hero: HomeHeroUi,
-    cards: List<HomeFeatureCardUi>,
+fun HomeOverviewContent(
+    hero: HeartSummaryUi,
+    cards: List<MetricTileUi>,
     onHeartRateClick: () -> Unit,
     onBloodSugarCardClick: () -> Unit,
     onBloodSugarRecordClick: () -> Unit,
@@ -130,7 +130,7 @@ private fun HomeHeader(onSettingsClick: () -> Unit) {
 }
 
 @Composable
-private fun HeroCard(hero: HomeHeroUi, onClick: () -> Unit, onBounds: (Rect) -> Unit, onActionBounds: (Rect) -> Unit) {
+private fun HeroCard(hero: HeartSummaryUi, onClick: () -> Unit, onBounds: (Rect) -> Unit, onActionBounds: (Rect) -> Unit) {
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val cardWidth = maxWidth
         val accent = colorResource(R.color.tr_home_heart_accent)
@@ -187,17 +187,17 @@ private fun HeroCard(hero: HomeHeroUi, onClick: () -> Unit, onBounds: (Rect) -> 
 }
 
 private data class MetricVisuals(val background: Color, @DrawableRes val image: Int, @DrawableRes val ring: Int)
-private fun HomeFeatureCardUi.visuals(): MetricVisuals = when (this) {
-    is HomeFeatureCardUi.BloodPressure -> MetricVisuals(Color(0xFFF4F8FE), R.drawable.img_home_blood_pressure, R.drawable.tr_home_ring_bp)
-    is HomeFeatureCardUi.BloodSugar -> MetricVisuals(Color(0xFFFFF5F6), R.drawable.img_home_blood_sugar, R.drawable.tr_home_ring_bs)
-    is HomeFeatureCardUi.Cholesterol -> MetricVisuals(Color(0xFFFFFAF0), R.drawable.img_home_cholesterol, R.drawable.tr_home_ring_cholesterol)
-    is HomeFeatureCardUi.Bmi -> MetricVisuals(Color(0xFFF7F4FF), R.drawable.img_home_weight_bmi, R.drawable.tr_home_ring_weight)
-    is HomeFeatureCardUi.Hydrate -> MetricVisuals(Color(0xFFF2F9FF), R.drawable.img_home_drink_water, R.drawable.tr_home_ring_water)
-    is HomeFeatureCardUi.StepCount -> MetricVisuals(Color(0xFFF1FCF8), R.drawable.img_home_step_count, R.drawable.tr_home_ring_step)
+private fun MetricTileUi.visuals(): MetricVisuals = when (this) {
+    is MetricTileUi.BloodPressure -> MetricVisuals(Color(0xFFF4F8FE), R.drawable.img_home_blood_pressure, R.drawable.tr_home_ring_bp)
+    is MetricTileUi.BloodSugar -> MetricVisuals(Color(0xFFFFF5F6), R.drawable.img_home_blood_sugar, R.drawable.tr_home_ring_bs)
+    is MetricTileUi.Cholesterol -> MetricVisuals(Color(0xFFFFFAF0), R.drawable.img_home_cholesterol, R.drawable.tr_home_ring_cholesterol)
+    is MetricTileUi.Bmi -> MetricVisuals(Color(0xFFF7F4FF), R.drawable.img_home_weight_bmi, R.drawable.tr_home_ring_weight)
+    is MetricTileUi.Hydrate -> MetricVisuals(Color(0xFFF2F9FF), R.drawable.img_home_drink_water, R.drawable.tr_home_ring_water)
+    is MetricTileUi.StepCount -> MetricVisuals(Color(0xFFF1FCF8), R.drawable.img_home_step_count, R.drawable.tr_home_ring_step)
 }
 
 @Composable
-private fun FeatureCard(card: HomeFeatureCardUi, onClick: () -> Unit, onRecordClick: () -> Unit,
+private fun FeatureCard(card: MetricTileUi, onClick: () -> Unit, onRecordClick: () -> Unit,
                         onBounds: ((Rect) -> Unit)?, onActionBounds: ((Rect) -> Unit)?) {
     val visual = card.visuals()
     val recordDescription = "${stringResource(R.string.tr_add_now)} ${card.title}"
@@ -209,28 +209,28 @@ private fun FeatureCard(card: HomeFeatureCardUi, onClick: () -> Unit, onRecordCl
             Row(Modifier.fillMaxWidth().heightIn(min = 24.dp), verticalAlignment = Alignment.Top) {
                 Text(card.title, color = HomeText, fontSize = 14.sp, fontWeight = FontWeight.Medium,
                     modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
-                if (card is HomeFeatureCardUi.BloodPressure || card is HomeFeatureCardUi.BloodSugar) {
-                    Image(painterResource(if (card is HomeFeatureCardUi.BloodPressure) R.drawable.tr_home_bp_arrow else R.drawable.tr_home_bs_arrow),
+                if (card is MetricTileUi.BloodPressure || card is MetricTileUi.BloodSugar) {
+                    Image(painterResource(if (card is MetricTileUi.BloodPressure) R.drawable.tr_home_bp_arrow else R.drawable.tr_home_bs_arrow),
                         null, Modifier.padding(start = 4.dp).size(16.dp))
                 }
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
                 Column(Modifier.weight(1f).padding(bottom = 4.dp)) {
                     val value = when (card) {
-                        is HomeFeatureCardUi.BloodPressure -> card.value
-                        is HomeFeatureCardUi.BloodSugar -> card.value
-                        is HomeFeatureCardUi.Cholesterol -> card.value
-                        is HomeFeatureCardUi.Bmi -> card.value
-                        is HomeFeatureCardUi.Hydrate -> card.currentValue
-                        is HomeFeatureCardUi.StepCount -> card.stepsValue
+                        is MetricTileUi.BloodPressure -> card.value
+                        is MetricTileUi.BloodSugar -> card.value
+                        is MetricTileUi.Cholesterol -> card.value
+                        is MetricTileUi.Bmi -> card.value
+                        is MetricTileUi.Hydrate -> card.currentValue
+                        is MetricTileUi.StepCount -> card.stepsValue
                     }
                     val unit = when (card) {
-                        is HomeFeatureCardUi.BloodPressure -> card.unit
-                        is HomeFeatureCardUi.BloodSugar -> card.unit
-                        is HomeFeatureCardUi.Cholesterol -> card.unit
-                        is HomeFeatureCardUi.Bmi -> card.unit
-                        is HomeFeatureCardUi.Hydrate -> stringResource(R.string.tr_home_water_target, card.targetValue, card.unit)
-                        is HomeFeatureCardUi.StepCount -> card.stepsUnit
+                        is MetricTileUi.BloodPressure -> card.unit
+                        is MetricTileUi.BloodSugar -> card.unit
+                        is MetricTileUi.Cholesterol -> card.unit
+                        is MetricTileUi.Bmi -> card.unit
+                        is MetricTileUi.Hydrate -> stringResource(R.string.tr_home_water_target, card.targetValue, card.unit)
+                        is MetricTileUi.StepCount -> card.stepsUnit
                     }
                     Text(value, color = HomeText, fontSize = 18.sp, fontWeight = FontWeight.Bold,
                         maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -247,49 +247,49 @@ private fun FeatureCard(card: HomeFeatureCardUi, onClick: () -> Unit, onRecordCl
     }
 }
 
-private fun HomeFeatureCardUi.homeCardKey(): String = when (this) {
-    is HomeFeatureCardUi.BloodPressure -> "blood_pressure"
-    is HomeFeatureCardUi.BloodSugar -> "blood_sugar"
-    is HomeFeatureCardUi.Bmi -> "bmi"
-    is HomeFeatureCardUi.Cholesterol -> "cholesterol"
-    is HomeFeatureCardUi.StepCount -> "step_count"
-    is HomeFeatureCardUi.Hydrate -> "hydrate"
+private fun MetricTileUi.homeCardKey(): String = when (this) {
+    is MetricTileUi.BloodPressure -> "blood_pressure"
+    is MetricTileUi.BloodSugar -> "blood_sugar"
+    is MetricTileUi.Bmi -> "bmi"
+    is MetricTileUi.Cholesterol -> "cholesterol"
+    is MetricTileUi.StepCount -> "step_count"
+    is MetricTileUi.Hydrate -> "hydrate"
 }
 
-private fun List<HomeFeatureCardUi>.inHomeDisplayOrder(): List<HomeFeatureCardUi> {
+private fun List<MetricTileUi>.inHomeDisplayOrder(): List<MetricTileUi> {
     return sortedBy { card ->
         when (card) {
-            is HomeFeatureCardUi.BloodPressure -> 0
-            is HomeFeatureCardUi.BloodSugar -> 1
-            is HomeFeatureCardUi.Bmi -> 3
-            is HomeFeatureCardUi.Cholesterol -> 2
-            is HomeFeatureCardUi.StepCount -> 5
-            is HomeFeatureCardUi.Hydrate -> 4
+            is MetricTileUi.BloodPressure -> 0
+            is MetricTileUi.BloodSugar -> 1
+            is MetricTileUi.Bmi -> 3
+            is MetricTileUi.Cholesterol -> 2
+            is MetricTileUi.StepCount -> 5
+            is MetricTileUi.Hydrate -> 4
         }
     }
 }
 
 
-private fun guideCardTargetForCard(card: HomeFeatureCardUi): HomeGuideTarget? = when (card) {
-    is HomeFeatureCardUi.BloodPressure -> HomeGuideTarget.BLOOD_PRESSURE_CARD
-    is HomeFeatureCardUi.BloodSugar -> HomeGuideTarget.BLOOD_SUGAR_CARD
-    is HomeFeatureCardUi.Cholesterol,
-    is HomeFeatureCardUi.Bmi,
-    is HomeFeatureCardUi.Hydrate,
-    is HomeFeatureCardUi.StepCount -> null
+private fun guideCardTargetForCard(card: MetricTileUi): HomeGuideTarget? = when (card) {
+    is MetricTileUi.BloodPressure -> HomeGuideTarget.BLOOD_PRESSURE_CARD
+    is MetricTileUi.BloodSugar -> HomeGuideTarget.BLOOD_SUGAR_CARD
+    is MetricTileUi.Cholesterol,
+    is MetricTileUi.Bmi,
+    is MetricTileUi.Hydrate,
+    is MetricTileUi.StepCount -> null
 }
 
-private fun guideRecordTargetForCard(card: HomeFeatureCardUi): HomeGuideTarget? = when (card) {
-    is HomeFeatureCardUi.BloodPressure -> HomeGuideTarget.BLOOD_PRESSURE_RECORD
-    is HomeFeatureCardUi.BloodSugar -> HomeGuideTarget.BLOOD_SUGAR_RECORD
-    is HomeFeatureCardUi.Cholesterol,
-    is HomeFeatureCardUi.Bmi,
-    is HomeFeatureCardUi.Hydrate,
-    is HomeFeatureCardUi.StepCount -> null
+private fun guideRecordTargetForCard(card: MetricTileUi): HomeGuideTarget? = when (card) {
+    is MetricTileUi.BloodPressure -> HomeGuideTarget.BLOOD_PRESSURE_RECORD
+    is MetricTileUi.BloodSugar -> HomeGuideTarget.BLOOD_SUGAR_RECORD
+    is MetricTileUi.Cholesterol,
+    is MetricTileUi.Bmi,
+    is MetricTileUi.Hydrate,
+    is MetricTileUi.StepCount -> null
 }
 
 private fun actionForCard(
-    card: HomeFeatureCardUi,
+    card: MetricTileUi,
     onBloodSugarCardClick: () -> Unit,
     onBloodPressureClick: () -> Unit,
     onCholesterolClick: () -> Unit,
@@ -297,16 +297,16 @@ private fun actionForCard(
     onHydrateClick: () -> Unit,
     onStepCountClick: () -> Unit,
 ): () -> Unit = when (card) {
-    is HomeFeatureCardUi.BloodPressure -> onBloodPressureClick
-    is HomeFeatureCardUi.BloodSugar -> onBloodSugarCardClick
-    is HomeFeatureCardUi.Cholesterol -> onCholesterolClick
-    is HomeFeatureCardUi.Bmi -> onBmiClick
-    is HomeFeatureCardUi.Hydrate -> onHydrateClick
-    is HomeFeatureCardUi.StepCount -> onStepCountClick
+    is MetricTileUi.BloodPressure -> onBloodPressureClick
+    is MetricTileUi.BloodSugar -> onBloodSugarCardClick
+    is MetricTileUi.Cholesterol -> onCholesterolClick
+    is MetricTileUi.Bmi -> onBmiClick
+    is MetricTileUi.Hydrate -> onHydrateClick
+    is MetricTileUi.StepCount -> onStepCountClick
 }
 
 private fun recordActionForCard(
-    card: HomeFeatureCardUi,
+    card: MetricTileUi,
     onBloodSugarRecordClick: () -> Unit,
     onBloodPressureClick: () -> Unit,
     onCholesterolClick: () -> Unit,
@@ -314,10 +314,10 @@ private fun recordActionForCard(
     onHydrateClick: () -> Unit,
     onStepCountClick: () -> Unit,
 ): () -> Unit = when (card) {
-    is HomeFeatureCardUi.BloodPressure -> onBloodPressureClick
-    is HomeFeatureCardUi.BloodSugar -> onBloodSugarRecordClick
-    is HomeFeatureCardUi.Cholesterol -> onCholesterolClick
-    is HomeFeatureCardUi.Bmi -> onBmiClick
-    is HomeFeatureCardUi.Hydrate -> onHydrateClick
-    is HomeFeatureCardUi.StepCount -> onStepCountClick
+    is MetricTileUi.BloodPressure -> onBloodPressureClick
+    is MetricTileUi.BloodSugar -> onBloodSugarRecordClick
+    is MetricTileUi.Cholesterol -> onCholesterolClick
+    is MetricTileUi.Bmi -> onBmiClick
+    is MetricTileUi.Hydrate -> onHydrateClick
+    is MetricTileUi.StepCount -> onStepCountClick
 }

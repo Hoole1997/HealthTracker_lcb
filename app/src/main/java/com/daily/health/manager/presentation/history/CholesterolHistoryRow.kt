@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.history
+package com.daily.health.manager.presentation.history
 
 import android.content.Context
 import com.daily.health.manager.data.entity.CholesterolRecord
@@ -12,7 +12,7 @@ import java.util.Date
  * 胆固醇历史记录项
  * 包装 CholesterolRecord 并实现统一的显示接口
  */
-class CholesterolHistoryItem(private val record: CholesterolRecord) : HistoryRecordItem() {
+class CholesterolHistoryRow(private val record: CholesterolRecord) : HealthHistoryRow() {
 
     override fun getId(): Long = record.id
 
@@ -42,7 +42,7 @@ class CholesterolHistoryItem(private val record: CholesterolRecord) : HistoryRec
         return null
     }
 
-    override fun getLeveColorRes(): Int {
+    override fun getLevelColorRes(): Int {
         val level = getCholesterolLevel()
         return level.colorRes
     }

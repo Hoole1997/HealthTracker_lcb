@@ -13,7 +13,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.daily.health.manager.App
 import com.daily.health.manager.R
 import com.daily.health.manager.databinding.TrActivityFeedbackBinding
-import com.daily.health.manager.face.adapter.ChoosePhotoRCVAdapter
+import com.daily.health.manager.presentation.feedback.FeedbackPhotoAdapter
 import com.daily.health.manager.face.dialog.ImgGetTypeDialog
 import com.daily.health.manager.utils.FeedbackUtils
 import com.healthtracker.framework.base.BaseMVVMActivity
@@ -36,7 +36,7 @@ class FeedbackAct: BaseMVVMActivity<BaseViewModel, TrActivityFeedbackBinding>() 
     private val photoUris = mutableListOf<Uri>()
     
     // 图片适配器
-    private lateinit var photoAdapter: ChoosePhotoRCVAdapter
+    private lateinit var photoAdapter: FeedbackPhotoAdapter
     
     // 图片选择启动器
     private val imagePickerLauncher = registerForActivityResult(
@@ -125,14 +125,14 @@ class FeedbackAct: BaseMVVMActivity<BaseViewModel, TrActivityFeedbackBinding>() 
     
     private fun setupRecyclerView() {
         // 初始化适配器
-        photoAdapter = ChoosePhotoRCVAdapter(
+        photoAdapter = FeedbackPhotoAdapter(
             photoList,
-            object : ChoosePhotoRCVAdapter.ChoosePhotoRCVListener {
-                override fun onClickAddPhoto() {
+            object : FeedbackPhotoAdapter.PhotoActionListener {
+                override fun onAddPhotoRequested() {
                     handleAddPhoto()
                 }
                 
-                override fun onClickDelPhoto(position: Int) {
+                override fun onPhotoRemovalRequested(position: Int) {
                     handleDeletePhoto(position)
                 }
             }

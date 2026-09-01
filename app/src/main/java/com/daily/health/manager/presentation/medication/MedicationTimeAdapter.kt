@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.adapter
+package com.daily.health.manager.presentation.medication
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,13 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.daily.health.manager.databinding.TrItemRemindMedsTimeBinding
 import com.healthtracker.framework.ext.click
 
-class ReminderTimeAdapter(
+/** 只展示给药时间并转发点击位置，不参与提醒时间计算和闹钟调度。 */
+class MedicationTimeAdapter(
     private val onTimeClick: (Int) -> Unit
-) : RecyclerView.Adapter<ReminderTimeAdapter.TimeViewHolder>() {
+) : RecyclerView.Adapter<MedicationTimeAdapter.TimeViewHolder>() {
 
     private var timeList = listOf<String>()
 
-    fun updateTimes(newTimes: List<String>) {
+    fun submitReminderTimes(newTimes: List<String>) {
         timeList = newTimes
         notifyDataSetChanged()
     }

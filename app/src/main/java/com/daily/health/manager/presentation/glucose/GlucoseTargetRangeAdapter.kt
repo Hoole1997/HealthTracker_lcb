@@ -1,4 +1,4 @@
-package com.daily.health.manager.face.adapter
+package com.daily.health.manager.presentation.glucose
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -15,10 +15,10 @@ import com.healthtracker.framework.ext.click
 /**
  * 血糖目标范围列表适配器
  */
-class TargetRangeAdapter(
+class GlucoseTargetRangeAdapter(
     private val currentUnit: BsUnit,
     private val onItemClick: (RangeItem) -> Unit
-) : ListAdapter<RangeItem, TargetRangeAdapter.ViewHolder>(RangeItemDiffCallback()) {
+) : ListAdapter<RangeItem, GlucoseTargetRangeAdapter.ViewHolder>(GlucoseRangeDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = TrItemTargetRangeBinding.inflate(
@@ -74,7 +74,7 @@ class TargetRangeAdapter(
 /**
  * DiffUtil 回调用于高效更新列表
  */
-class RangeItemDiffCallback : DiffUtil.ItemCallback<RangeItem>() {
+class GlucoseRangeDiffCallback : DiffUtil.ItemCallback<RangeItem>() {
     override fun areItemsTheSame(oldItem: RangeItem, newItem: RangeItem): Boolean {
         return oldItem.status.statusType == newItem.status.statusType
     }
