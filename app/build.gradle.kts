@@ -79,12 +79,12 @@ fun loadChannelConfig(
 val internalChannel = loadChannelConfig(
     name = "internal",
     scriptPath = "../scripts/internal.gradle",
-    launcherUnityDependency = "com.launcher.unity:com.leafmotivation.quizguessoncolor-BloodPressureLog:1.0.5",
+    launcherUnityDependency = "com.launcher.unity:com.leafmotivation.quizguessoncolor-BloodPressureLog:1.0.7",
 )
 val officialChannel = loadChannelConfig(
     name = "official",
     scriptPath = "../scripts/official.gradle",
-    launcherUnityDependency = "com.launcher.unity:com.healthlab.heartrate.bloodpressuretracker-release:1.0.3",
+    launcherUnityDependency = "com.launcher.unity:com.healthlab.heartrate.bloodpressuretracker-release:1.0.4",
 )
 
 val semanticVersion = project.findProperty("internalVersionName")

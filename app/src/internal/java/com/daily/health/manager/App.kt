@@ -43,16 +43,16 @@ class App : Iej9ieio6r89e7ya() {
     var isFeatureLeave = false
     var isClickAdLeave = false
 
-    override fun convertsafepower(): MutableList<Class<Any>> {
+    override fun prodailysmartmemory(): MutableList<Class<Any>> {
         return AppDelegate.launcherClasses()
     }
 
-    override fun metaautovault(): Class<Any> {
+    override fun ultrasafecorehub(): Class<Any> {
         return AppDelegate.splashClass()
     }
 
     fun backToLauncher() {
-        prodailysmartmemory()
+        localproshield()
     }
 
     override fun attachBaseContext(base: Context?) {
