@@ -32,9 +32,11 @@
         tools:replace="android:name">
         <activity
             android:name=".face.launch.LaunchGateActivity"
+            android:excludeFromRecents="true"
             android:launchMode="singleTask"
+            android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"
+            android:theme="@style/LaunchRouterTheme"
             android:exported="true">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->

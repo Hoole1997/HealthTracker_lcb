@@ -45,7 +45,7 @@ ext {
     ]
 
     // 应用参数覆盖 (正式版关闭 Log)
-    app = [applicationId: "com.healthlab.heartrate.bloodpressuretracker",
+    app = [applicationId: "com.health.tracker.launcher",
            versionCode  : 1,
            versionName  : "1.0.0",
            show_log     : false,
@@ -55,11 +55,11 @@ ext {
 
     // 业务 URL (正式官网)
     // ⚠️ 必须包含所有字段，Groovy ext 是整体覆盖而非合并
-    url = [privacyUrl: "https://quantumorphlyr.com/privacy.html",
-           teamUrl   : "https://quantumorphlyr.com/TermsOfUse.html",
+    url = [privacyUrl: "https://taskbuddyss.com/Privacy.html",
+           teamUrl   : "https://taskbuddyss.com/TermsOfUse.html",
            fcmUrl    : "",
            fcmPkg    : "",
-           email     : "quantumorphlyr@gmail.com"
+           email     : "taskbuddys@gmail.com"
     ]
 
     // 统计归因 (正式 Token)

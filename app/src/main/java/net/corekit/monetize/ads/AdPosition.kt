@@ -1,8 +1,6 @@
 package net.corekit.monetize.ads
 
 object AdPosition {
-    const val SP_APP_START = "SP_AppStart"
-
     const val IV_BLOOD_SUGAR_BACK = "IV_BloodSugar_back"
     const val IV_BLOOD_PRESSURE_BACK = "IV_BloodPressure_back"
     const val IV_CHOLESTEROL_BACK = "IV_Cholesterol_back"

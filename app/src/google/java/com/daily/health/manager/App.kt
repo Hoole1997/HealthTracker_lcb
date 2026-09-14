@@ -97,11 +97,4 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
         super.onConfigurationChanged(newConfig)
     }
 
-    fun setLeaveTime() {
-        delegate.setLeaveTime()
-    }
-
-    suspend fun isLongLeaveApp(): Boolean {
-        return delegate.isLongLeaveApp()
-    }
 }

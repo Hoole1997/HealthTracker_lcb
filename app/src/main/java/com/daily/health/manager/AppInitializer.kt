@@ -1,7 +1,6 @@
 package com.daily.health.manager
 
 import android.app.Application
-import android.content.Intent
 import android.os.Looper
 import android.view.Gravity
 import com.android.common.bill.BillConfig
@@ -25,7 +24,6 @@ import com.android.common.bill.ui.NativeAdStyle
 import com.android.common.bill.ui.NativeAdStyleType
 import com.android.common.bill.ui.pangle.PangleNativeAdStyle
 import com.android.common.bill.ui.topon.ToponNativeAdStyle
-import com.blankj.utilcode.util.ActivityUtils
 import com.daily.health.manager.config.registry.AppConfigRegistry
 import com.daily.health.manager.constants.KEY_APP_FIRST_START_TIME
 import com.daily.health.manager.feature.NotificationFeatureSwitch
@@ -41,9 +39,7 @@ import com.daily.health.manager.ad.renderer.DefaultToponNativeAdRenderer
 import com.daily.health.manager.helper.NotificationHelper
 import com.daily.health.manager.strategy.PushScenario
 import com.daily.health.manager.toast.CustomToastStyle
-import com.daily.health.manager.face.launch.LaunchGateActivity
 import com.daily.health.manager.utils.InsightAssetPreparer
-import com.daily.health.manager.utils.isAdPage
 import com.daily.health.manager.work.HealthWorkTask
 import com.healthtracker.earthquake.EarthquakeAdBridge
 import com.healthtracker.earthquake.push.EarthquakePushInitializer
@@ -99,53 +95,6 @@ class AppInitializer(
                 remoteConfigManager.refreshConfig()
             }
 
-            if (!NotificationFeatureSwitch.hotResumeSplashAdEnabled) {
-                if (BuildState.debug) "Hot-resume splash flow disabled by product decision".logd(TAG)
-                return
-            }
-
-            initScope.launch(Dispatchers.Main) {
-                try {
-
-                    if(App.INSTANCE.isLongLeaveApp()){
-                        if(BuildState.debug) "长时间离开应用，不检查离开原因，都尝试走开屏".logd(TAG)
-                    }else{
-                        if(BuildState.debug) "短时间离开应用，检查离开原因".logd(TAG)
-                        if(App.INSTANCE.isGoSetting){
-                            if(BuildState.debug) "去授权离开的应用，返回不走开屏".logd(TAG)
-                            App.INSTANCE.isGoSetting = false
-                            return@launch
-                        }
-                        if(App.INSTANCE.isFeatureLeave){
-                            if(BuildState.debug) "功能需要离开应用，返回不走开屏".logd(TAG)
-                            App.INSTANCE.isFeatureLeave = false
-                            return@launch
-                        }
-
-                        if(App.INSTANCE.isClickAdLeave){
-                            if(BuildState.debug) "点击广告离开应用，返回不走开屏".logd(TAG)
-                            App.INSTANCE.isClickAdLeave = false
-                            return@launch
-                        }
-                    }
-
-
-
-                    //检查是否满足展示开屏广告条件
-                    val topActivity = ActivityUtils.getTopActivity()
-                    "回到前台,尝试重走启动页 topActivity:${topActivity::class.java.simpleName}".logd(TAG)
-                    if (!ActivityUtils.isActivityExistsInStack(LaunchGateActivity::class.java) && !isAdPage(topActivity
-                        )) {
-                        startSplashActivity()
-
-                    }else{
-                        "当前前台页面是启动页或广告页面，或引导页面，不重新走启动页面".logd(TAG)
-                    }
-                }catch (e: Throwable){
-                    e.printStackTrace()
-                }
-            }
-
         }
 
         override fun onScreenLocked() {
@@ -161,22 +110,6 @@ class AppInitializer(
 
         override fun onAppBackground() {
             super.onAppBackground()
-            App.INSTANCE.setLeaveTime()
-        }
-    }
-
-    fun startSplashActivity() {
-        if (!NotificationFeatureSwitch.hotResumeSplashAdEnabled) {
-            if (BuildState.debug) "startSplashActivity skipped: hot-resume splash disabled".logd(TAG)
-            return
-        }
-        try {
-            val intent = Intent(application, LaunchGateActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            application.startActivity(intent)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 

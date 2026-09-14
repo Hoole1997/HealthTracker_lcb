@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager.widget.ViewPager
 import com.android.common.weather.WeatherActivity
+import com.android.common.bill.ads.util.GoogleMobileAdsConsentManager
 import com.android.common.weather.util.TemperaturePreferences
 import com.android.common.weather.util.WeatherIconMapper
 import com.app.raise.AppraiseManager
@@ -51,6 +52,7 @@ import com.daily.health.manager.service.HealthServiceConstants
 import com.daily.health.manager.strategy.PushScenario
 import com.daily.health.manager.utils.loadBanner
 import com.google.android.material.tabs.TabLayout
+import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.gone
@@ -335,6 +337,16 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         // Banner 和权限流程
         lifecycleScope.launch {
             awaitResumedIfNeeded()
+            // 启动页移除后，由首个业务页面承接权限和广告同意流程。
+            if (NotificationFeatureSwitch.notificationPermissionPromptEnabled) {
+                checkNotificationPermissionFlow()
+            }
+            try {
+                GoogleMobileAdsConsentManager.getInstance(this@MainAct)
+                    .gatherConsent(this@MainAct)
+            } catch (error: Exception) {
+                if (BuildState.debug) "广告同意流程异常: ${error.message}".logd(TAG)
+            }
             val homeFragment = homeFrgReady.await()
             homeFragment.onNotificationPermissionFlowFinished()
             if (currentTabIndex == 0) {

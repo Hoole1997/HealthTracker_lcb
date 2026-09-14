@@ -44,7 +44,6 @@ import com.daily.health.manager.utils.WebViewZygote
 import com.daily.health.manager.utils.getCurProcessName
 import com.healthtracker.earthquake.EarthquakeActivity
 import com.healthtracker.framework.BuildState
-import com.healthtracker.framework.ext.logd
 import com.healthtracker.framework.lifecycle.AppLifecycleManager
 import com.healthtracker.framework.util.LanguageUtils
 import com.healthtracker.framework.util.isLeast8
@@ -55,7 +54,6 @@ import net.corekit.core.controller.ChannelUserController
 import net.corekit.core.log.CoreLogger
 import net.corekit.metrics.adjust.AdjustTracker
 import net.corekit.metrics.log.MetricsLogger
-import net.corekit.monetize.ads.config.AdConfigManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import java.util.Locale
@@ -67,7 +65,6 @@ internal class AppDelegate(
 ) {
     private var isMainProcess: Boolean? = null
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private var leaveAppTime = 0L
 
     fun installMultiDex() {
         MultiDex.install(application)
@@ -141,20 +138,6 @@ internal class AppDelegate(
             updateDefaultLocale(locale)
             LanguageUtils.attachBaseContext(application)
         }
-    }
-
-    fun setLeaveTime() {
-        leaveAppTime = System.currentTimeMillis()
-    }
-
-    suspend fun isLongLeaveApp(): Boolean {
-        val leaveTime = System.currentTimeMillis() - leaveAppTime
-        val configLongLeaveTime = AdConfigManager.getLongLeaveTime() * 1000L
-        if (BuildState.debug) {
-            "leaveTime = $leaveTime ms configLongLeaveTime = $configLongLeaveTime ms".logd(TAG)
-        }
-
-        return leaveTime > configLongLeaveTime
     }
 
     private fun initializeAttachBaseContextConfig() {

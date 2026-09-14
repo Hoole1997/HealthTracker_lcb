@@ -18,10 +18,11 @@
 
     </style>
 
-    <style name="SplashTheme" parent="@style/TransparentTheme">
-        <item name="android:windowBackground">@color/c1</item>
+    <style name="LaunchRouterTheme" parent="@style/TransparentTheme">
+        <!-- 路由 Activity 不绘制页面，直接保留系统当前窗口直到目标页面就绪。 -->
+        <item name="android:windowDisablePreview">true</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 
     <style name="TransparentTheme" parent="@style/AppTheme">

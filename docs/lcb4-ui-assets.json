@@ -87,33 +87,6 @@
       "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
     },
     {
-      "resource": "app/src/main/res/drawable-nodpi/tr_bg_splash.webp",
-      "figmaNode": "5292:1522",
-      "sourceDimensions": [
-        853,
-        1844
-      ],
-      "outputDimensions": [
-        853,
-        1844
-      ],
-      "sourceSha256": "44ae4adc654002b0d67934aab558c059ae4242a601f6ee8507efe36c7de6360e"
-    },
-    {
-      "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_logo_sq.webp",
-      "figmaNode": "5292:1563",
-      "sourceDimensions": [
-        1254,
-        1254
-      ],
-      "outputDimensions": [
-        330,
-        330
-      ],
-      "sourceSha256": "9c94a27a85736048f3d6ccbd65a83ea23fa658fc6cec1f537fca7261fecd3902",
-      "androidDensity": "xxhdpi / 3 pixels per dp at the existing maximum display size"
-    },
-    {
       "resource": "app/src/main/res/mipmap-xxhdpi/tr_ic_guide_hand.webp",
       "figmaNode": "5289:572",
       "sourceDimensions": [
@@ -279,19 +252,6 @@
         175
       ],
       "sourceSha256": "ce15322f3b75557169ab869b7fcb13338f9b13497aee4efc39d7b8efc2e2ba0f",
-      "conversion": "Figma-exported SVG rasterization or original export crop; no redrawing"
-    },
-    {
-      "resource": "app/src/main/res/drawable-nodpi/tr_splash_year_badge.webp",
-      "figmaNode": [
-        "5292:1564",
-        "5292:1565"
-      ],
-      "outputDimensions": [
-        51,
-        18
-      ],
-      "sourceSha256": "0aaa3d959fd5d54660fab3b3775bf299b934cd7ae13b43e3abbfb444316076c4",
       "conversion": "Figma-exported SVG rasterization or original export crop; no redrawing"
     },
     {

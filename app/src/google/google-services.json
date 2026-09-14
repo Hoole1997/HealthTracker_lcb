@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "509564564991",
-    "project_id": "ag777e483e21-2b90f-gp",
-    "storage_bucket": "ag777e483e21-2b90f-gp.firebasestorage.app"
+    "project_number": "165694530878",
+    "project_id": "ag2a34102592-b9d4d-gp",
+    "storage_bucket": "ag2a34102592-b9d4d-gp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:509564564991:android:08b33133a646edf7b463ca",
+        "mobilesdk_app_id": "1:165694530878:android:1d76ad5bcc6be532e1f86f",
         "android_client_info": {
-          "package_name": "com.healthlab.heartrate.bloodpressuretracker"
+          "package_name": "com.health.tracker.launcher"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC3Ld2s45AUEhZoIr8Qq4tZEZRp0ZpCIYs"
+          "current_key": "AIzaSyBeasv3I1XglUvYXPYBPpIRFLWiioQMReI"
         }
       ],
       "services": {

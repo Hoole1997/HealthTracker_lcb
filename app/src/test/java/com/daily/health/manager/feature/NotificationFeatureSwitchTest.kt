@@ -9,7 +9,6 @@ class NotificationFeatureSwitchTest {
     fun notifications_are_globally_disabled() {
         assertFalse(NotificationFeatureSwitch.notificationsEnabled)
         assertFalse(NotificationFeatureSwitch.reminderEntryEnabled)
-        assertFalse(NotificationFeatureSwitch.hotResumeSplashAdEnabled)
         assertFalse(NotificationFeatureSwitch.notificationPermissionPromptEnabled)
     }
 }

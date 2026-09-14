@@ -34,7 +34,6 @@ import com.daily.health.manager.strategy.PushMessageRepository
 import com.daily.health.manager.strategy.PushMessageSelector
 import com.daily.health.manager.strategy.PushOrchestrator
 import com.daily.health.manager.face.chart.HealthLineChartManager
-import com.daily.health.manager.face.viewmodel.SplashViewModel
 import com.daily.health.manager.face.viewmodel.MainViewModel
 import com.daily.health.manager.face.viewmodel.HomeViewModel
 import com.daily.health.manager.face.viewmodel.MedsViewModel
@@ -142,7 +141,6 @@ val databaseModule = module {
     single { AlarmNotificationManager(get<Context>()) }
     single { MedicineReminderRepository(get(), get(), get()) }
 
-    factory { SplashViewModel(get(), get(), get(), get(), get()) }
 
     factory { HomeViewModel(get(), get(), get(), get(), get(), get()) }
     factory { MedsViewModel(get()) }

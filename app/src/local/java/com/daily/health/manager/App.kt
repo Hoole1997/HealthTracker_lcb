@@ -90,11 +90,4 @@ class App : Iej9ieio6r89e7ya() {
         super.onConfigurationChanged(newConfig)
     }
 
-    fun setLeaveTime() {
-        delegate.setLeaveTime()
-    }
-
-    suspend fun isLongLeaveApp(): Boolean {
-        return delegate.isLongLeaveApp()
-    }
 }
