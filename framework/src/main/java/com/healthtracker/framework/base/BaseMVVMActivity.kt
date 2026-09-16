@@ -126,9 +126,7 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
         ViewCompat.setOnApplyWindowInsetsListener(mViewBind.root){
                 view,insets ->
             if(!isFullscreen() && !hasStatusbarPlaceView()){
-                val statuBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-                val captionBas = insets.getInsets(WindowInsetsCompat.Type.captionBar())
-                mViewBind.root.updatePadding(top = max(statuBars.top,captionBas.top))
+                applyStatusBarInsets(view, insets)
                 setStatusBarColor2(getStatusBarColor())
             }
             if(!isFullscreenWithNavigationBar()){
@@ -274,6 +272,13 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompa
     }
 
     protected open fun getStatusBarColor() = R.color.white
+
+    /** 默认由宿主避让顶部系统栏；沉浸式页面可重写，将内容避让交给自己的布局。 */
+    protected open fun applyStatusBarInsets(view: View, insets: WindowInsetsCompat) {
+        val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+        val captionBar = insets.getInsets(WindowInsetsCompat.Type.captionBar())
+        view.updatePadding(top = max(statusBars.top, captionBar.top))
+    }
 
     /**
      * 注意：Flow扩展函数已迁移到 FlowExtensions.kt

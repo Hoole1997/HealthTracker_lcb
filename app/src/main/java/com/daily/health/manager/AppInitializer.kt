@@ -17,9 +17,8 @@ import com.android.common.bill.BillConfig.pangleNativeRenderer
 import com.android.common.bill.BillConfig.topon
 import com.android.common.bill.BillConfig.toponFullScreenNativeRenderer
 import com.android.common.bill.BillConfig.toponNativeRenderer
-import com.android.common.bill.ads.PreloadController
 import com.android.common.bill.ads.bidding.AppOpenBiddingInitializer
-import com.android.common.bill.ads.ext.AdShowExt
+import com.daily.health.manager.utils.showNativeAd
 import com.android.common.bill.ui.NativeAdStyle
 import com.android.common.bill.ui.NativeAdStyleType
 import com.android.common.bill.ui.pangle.PangleNativeAdStyle
@@ -147,11 +146,10 @@ class AppInitializer(
     }
 
     private fun initEarthquakeModule() {
-        EarthquakeAdBridge.nativeAdLoader = { context, container ->
-            AdShowExt.showNativeAdInContainer(
-                context = context,
+        EarthquakeAdBridge.nativeAdLoader = { _, container ->
+            showNativeAd(
                 container = container,
-                styleType = NativeAdStyleType.LARGE,
+                style = NativeAdStyleType.LARGE,
                 position = AdPosition.NA_EARTHQUAKE_BOTTOM
             )
         }
@@ -252,7 +250,7 @@ class AppInitializer(
             toponFullScreenNativeRenderer = DefaultToponFullScreenNativeAdRenderer()
             adLoadingDialogRenderer = DefaultAdLoadingDialogRenderer()
         }
-        PreloadController.preloadAll(application)
+        // 不做无 PositionName 的统一预加载：业务广告检查开关后按需请求。
     }
     
     /**

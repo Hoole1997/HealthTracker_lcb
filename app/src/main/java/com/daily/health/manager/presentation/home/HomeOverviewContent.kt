@@ -11,12 +11,17 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -77,13 +82,19 @@ fun HomeOverviewContent(
     onSettingsClick: () -> Unit = {},
 ) {
     val orderedCards = remember(cards) { cards.inHomeDisplayOrder() }
-    BoxWithConstraints(Modifier.fillMaxSize()) {
+    // 先绘制背景再避让系统栏，让渐变覆盖状态栏，滚动内容始终位于安全区域内。
+    // 底部间距由宿主导航布局负责，这里只处理顶部及横向刘海区域。
+    Box(
+        Modifier.fillMaxSize()
+            .background(
+                Brush.verticalGradient(0f to Color(0xFFF1EFFD), 0.5f to Color.White, 1f to Color.White)
+            )
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))
+    ) {
         // Keep two columns, but let card height grow for small screens and long translations.
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize().background(
-                Brush.verticalGradient(0f to Color(0xFFF1EFFD), 0.5f to Color.White, 1f to Color.White)
-            ),
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),

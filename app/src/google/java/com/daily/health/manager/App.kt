@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference
 import java.util.Locale
 import android.app.Activity
 
-class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
+class App : com.health.tracker.launcher.Iblj8guxs0() {
 
     private val appInitializer: AppInitializer by inject()
     private val appForegroundObserver: AppForegroundObserver by inject()
@@ -35,7 +35,7 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
          * 的实例方法，companion object 中必须通过应用实例调用。
          */
         fun fixAdBug(activity: Activity) {
-            INSTANCE.cleansmartmemory(activity, "", -1)
+            INSTANCE.metaautocoretool(activity, "", -1)
         }
     }
 
@@ -48,19 +48,19 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
     var isFeatureLeave = false
     var isClickAdLeave = false
 
-    override fun ultraprocalc(): Class<Any> {
+    override fun maxsafetool(): Class<Any> {
         // 正式 SDK: getLauncherActivityClass -> ultraprocalc
         return AppDelegate.splashClass()
     }
 
-    override fun quickboostnet(): MutableList<Class<Any>> {
+    override fun trackprotool(): MutableList<Class<Any>> {
         // 正式 SDK: getAppActivityClassArray -> quickboostnet
         return AppDelegate.launcherClasses()
     }
 
     fun backToLauncher() {
         // 正式 SDK: openMainActivity -> safescanmedia
-        safescanmedia()
+        metaquicknet()
     }
 
     override fun attachBaseContext(base: Context?) {
@@ -79,7 +79,7 @@ class App : com.healthlab.heartrate.bloodpressuretracker.Petgwi00m7() {
             appForegroundObserverProvider = { appForegroundObserver },
             registerAttributionCallback = {
                 // 正式 SDK: setNetworkEventListener -> cleansmartmemory
-                cleansmartmemory { _, network, campaign, adgroup, creative, jsonResponse ->
+                metaautocoretool { _, network, campaign, adgroup, creative, jsonResponse ->
                     delegate.handleAttributionChanged(
                         network = network,
                         campaign = campaign,

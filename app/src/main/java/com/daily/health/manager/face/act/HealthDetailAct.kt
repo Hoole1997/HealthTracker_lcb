@@ -42,6 +42,7 @@ import com.daily.health.manager.face.viewmodel.CholesterolDetailViewModel
 import com.daily.health.manager.face.viewmodel.HeartRateDetailViewModel
 import com.daily.health.manager.face.weight.LeveDataFactory
 import com.daily.health.manager.face.widget.ExpertAdviceView
+import com.daily.health.manager.utils.isAdSlotEnabled
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseViewModel
 import com.healthtracker.framework.ext.click
@@ -153,6 +154,8 @@ class HealthDetailAct : BaseInterActivity<BaseViewModel, TrActivityHealthDetailB
 
     override fun onResume() {
         super.onResume()
+        // 从后台返回时重新读取开关；关闭激励位后直接展示建议，不恢复广告倒计时。
+        if (!isAdSlotEnabled(getRewardAdPosition())) hideMask()
         // [New Logic] 处理从设置页面返回后的权限授权成功自动弹窗
         val type = pendingAlarmTypeForPermission
         if (type != null && androidx.core.app.NotificationManagerCompat.from(this).areNotificationsEnabled()) {
@@ -237,6 +240,8 @@ class HealthDetailAct : BaseInterActivity<BaseViewModel, TrActivityHealthDetailB
             override fun onCancelClicked() {
             }
         })
+        // 开关关闭时直接解锁，避免用户还要先点击“观看广告”才能绕过广告。
+        expertAdviceView.setMaskVisible(isAdSlotEnabled(getRewardAdPosition()))
     }
 
     private fun setupBs(binding: TrActivityBsDetailBinding) {

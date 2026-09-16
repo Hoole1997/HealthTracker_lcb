@@ -88,7 +88,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BloodPressureLog"
+rootProject.name = "HealthTrackerLauncher"
 include(":app")
 include(":framework")
 include(":metrics")

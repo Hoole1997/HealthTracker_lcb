@@ -158,8 +158,9 @@ class ExpertAdviceView @JvmOverloads constructor(
             listener?.onGetTipClicked()
         }
 
-        // 初始化遮罩状态（自动控制模糊）
-        setMaskVisible(isMaskVisible)
+        // 构造时仅绘制外观；由宿主配置监听器及广告开关后决定是否弹出解锁提示。
+        // 否则 XML 的 showMask 会在开关判断之前触发弹窗和倒计时。
+        updateMaskAppearance(isMaskVisible)
     }
     /**
      * 设置专家建议文本（支持 HTML 格式）
@@ -174,18 +175,7 @@ class ExpertAdviceView @JvmOverloads constructor(
      * @param visible true 显示遮罩和模糊，false 隐藏遮罩和模糊
      */
     fun setMaskVisible(visible: Boolean) {
-        isMaskVisible = visible
-
-        // 同步控制模糊效果
-        binding.blurView.isVisible = visible
-        if (visible) {
-            setupBlurEffect()
-        }
-        // 同步控制遮罩层
-        binding.clMask.isVisible = visible
-
-        // 更新容器高度
-        updateContainerHeight(visible)
+        updateMaskAppearance(visible)
 
         // 控制按钮显示（不自动开始倒计时）
         if (visible) {
@@ -208,6 +198,14 @@ class ExpertAdviceView @JvmOverloads constructor(
             // 隐藏遮罩时停止倒计时
             stopCountdown()
         }
+    }
+
+    private fun updateMaskAppearance(visible: Boolean) {
+        isMaskVisible = visible
+        binding.blurView.isVisible = visible
+        if (visible) setupBlurEffect()
+        binding.clMask.isVisible = visible
+        updateContainerHeight(visible)
     }
 
     /**

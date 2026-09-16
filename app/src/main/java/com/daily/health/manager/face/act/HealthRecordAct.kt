@@ -65,7 +65,7 @@ import com.daily.health.manager.face.widget.NumberPickerView
 import com.daily.health.manager.util.BloodSugarScaleHelper
 import com.daily.health.manager.util.CholesterolMetrics
 import com.daily.health.manager.utils.loadNative
-import com.daily.health.manager.utils.showInter
+import com.daily.health.manager.utils.loadInterstitial
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -1094,7 +1094,7 @@ class HealthRecordAct : BaseInterActivity<BaseViewModel, TrActivityHealthRecordB
         }
         
         SaveCompleteDialog.show(supportFragmentManager) {
-            showInter(savePosition) {
+            loadInterstitial(savePosition) {
                 HealthDetailAct.start(this@HealthRecordAct, detailType, recordId)
                 finish()
             }

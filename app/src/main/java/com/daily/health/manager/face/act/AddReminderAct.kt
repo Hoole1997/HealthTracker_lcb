@@ -23,7 +23,7 @@ import com.daily.health.manager.face.dialog.ImgGetTypeDialog
 import com.daily.health.manager.face.viewmodel.AddReminderUiState
 import com.daily.health.manager.face.viewmodel.AddReminderViewModel
 import com.daily.health.manager.face.viewmodel.SaveState
-import com.daily.health.manager.utils.showInter
+import com.daily.health.manager.utils.loadInterstitial
 import com.healthtracker.framework.ext.click
 import com.healthtracker.framework.ext.clickWithDuration
 import com.healthtracker.framework.ext.collectLatest
@@ -228,7 +228,7 @@ class AddReminderAct : BaseInterActivity<AddReminderViewModel, TrActivityAddRemi
             }
 
             is SaveState.Success -> {
-                showInter(position = AdPosition.IV_ADD_MEDS_SAVE){
+                loadInterstitial(position = AdPosition.IV_ADD_MEDS_SAVE){
                     finish()
                 }
             }

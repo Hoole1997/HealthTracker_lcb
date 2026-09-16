@@ -19,7 +19,7 @@ import com.daily.health.manager.face.act.MainAct
 import com.daily.health.manager.face.chart.HealthLineChartManager
 import com.daily.health.manager.face.viewmodel.TrackerViewModel
 import com.daily.health.manager.utils.loadNative
-import com.daily.health.manager.utils.showInter
+import com.daily.health.manager.utils.loadInterstitial
 import com.healthtracker.framework.BuildState
 import com.healthtracker.framework.base.fragment.BaseMVVMFragment
 import com.healthtracker.framework.ext.clickWithDuration
@@ -232,7 +232,7 @@ class TrackerTabFragment: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBin
             // Blood Sugar - 点击卡片跳转历史记录
             includeBs.root.clickWithDuration {
                 if(includeBs.chartView.isVisible){
-                    requireActivity().showInter(AdPosition.IV_BLOOD_SUGAR_TRACK_ENTER) {
+                    requireActivity().loadInterstitial(AdPosition.IV_BLOOD_SUGAR_TRACK_ENTER) {
                         HealthStatisticsAct.start(requireActivity(), HealthMetric.BLOOD_SUGAR)
                     }
                 }else{
@@ -246,7 +246,7 @@ class TrackerTabFragment: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBin
             // Blood Pressure
             includeBp.root.clickWithDuration {
                 if(includeBp.chartView.isVisible){
-                    requireActivity().showInter(AdPosition.IV_BLOOD_PRESSURE_TRACK_ENTER) {
+                    requireActivity().loadInterstitial(AdPosition.IV_BLOOD_PRESSURE_TRACK_ENTER) {
                         HealthStatisticsAct.start(requireActivity(), HealthMetric.BLOOD_PRESSURE)
                     }
                 }else{
@@ -260,7 +260,7 @@ class TrackerTabFragment: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBin
             // Heart Rate
             includeHr.root.clickWithDuration {
                 if(includeHr.chartView.isVisible){
-                    requireActivity().showInter(AdPosition.IV_HEART_RATE_TRACK_ENTER) {
+                    requireActivity().loadInterstitial(AdPosition.IV_HEART_RATE_TRACK_ENTER) {
                         HealthStatisticsAct.start(requireActivity(), HealthMetric.HEART_RATE)
                     }
                 }else{
@@ -274,7 +274,7 @@ class TrackerTabFragment: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBin
             // Cholesterol
             includeCho.root.clickWithDuration {
                 if(includeCho.chartView.isVisible){
-                    requireActivity().showInter(AdPosition.IV_CHOLESTEROL_TRACK_ENTER) {
+                    requireActivity().loadInterstitial(AdPosition.IV_CHOLESTEROL_TRACK_ENTER) {
                         HealthStatisticsAct.start(requireActivity(), HealthMetric.CHOLESTEROL)
                     }
                 }else{
@@ -288,7 +288,7 @@ class TrackerTabFragment: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBin
             // BMI
             includeBmi.root.clickWithDuration {
                 if(includeBmi.chartView.isVisible){
-                    requireActivity().showInter(AdPosition.IV_BMI_TRACK_ENTER) {
+                    requireActivity().loadInterstitial(AdPosition.IV_BMI_TRACK_ENTER) {
                         HealthStatisticsAct.start(requireActivity(), HealthMetric.BMI)
                     }
                 }else{
@@ -301,7 +301,7 @@ class TrackerTabFragment: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBin
 
             includeStep.root.clickWithDuration {
                 if (includeStep.chartView.isVisible) {
-                    requireActivity().showInter(AdPosition.IV_WALK_TRACK_ENTER) {
+                    requireActivity().loadInterstitial(AdPosition.IV_WALK_TRACK_ENTER) {
                         HealthStatisticsAct.start(requireActivity(), HealthMetric.STEPS)
                     }
                 } else {
@@ -313,7 +313,7 @@ class TrackerTabFragment: BaseMVVMFragment<TrackerViewModel, TrFragmentRecordBin
 
             includeHydrate.root.clickWithDuration {
                 if (includeHydrate.chartView.isVisible) {
-                    requireActivity().showInter(AdPosition.IV_WATER_TRACK_ENTER) {
+                    requireActivity().loadInterstitial(AdPosition.IV_WATER_TRACK_ENTER) {
                         HealthStatisticsAct.start(requireActivity(), HealthMetric.HYDRATION)
                     }
                 } else {

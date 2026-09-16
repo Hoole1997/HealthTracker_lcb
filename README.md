@@ -32,21 +32,21 @@
 
 - 每个渠道的签名配置和证书都放在自己的目录。`sign.properties` 中维护 `storeFile`、`storePassword`、`keyAlias`、`keyPassword`，证书文件名相对当前渠道目录。
 - Local Debug / Release 均使用 GPSPhoto 的 `app/src/local/debug.jks`（alias `key0`，store/key password `123456`），不再使用本机 `~/.android/debug.keystore`。Google 使用 `app/src/google/google-release.keystore`，不会复用 Local 或旧 lcb3 证书。
-- **保留首次自动生成逻辑**：CI 缺少 Google 证书时创建新证书，先上传 7 天备份，再提交回本次构建分支。后续构建复用此文件；现有证书损坏或密码错误直接失败，不覆盖它。如果分支保护阻止写入，构建停止，请从备份恢复证书并提交后重试。
-- 与 GPSPhoto 一样，默认 alias 为 `google`，store/key password 为 `google123456`。证书会进入 Git 历史，适用于受控私有仓库；如需不同密码，在首次生成前设置以下 Secrets，后续保持一致。不要删除已发布项目的证书重新生成。
-- 证书初始化脚本 `bash scripts/ensure_google_keystore.sh` 从 `app/src/google/sign.properties` 读取默认值，CI 环境变量可覆盖。配置按单行 `key=value` 保存；复杂密码建议通过 Secrets 提供。
+- **保留首次自动生成逻辑**：仅 lcb4 的 GitHub Runner 在缺少 Google 证书时创建新证书，先上传 7 天备份，再提交回 lcb4。构建前从远程 lcb4 读取该文件；现有证书损坏或密码错误直接失败，不覆盖它。如果分支保护阻止写入，构建停止，请从备份恢复证书并提交后重试。
+- GitHub 正式构建必须配置以下签名 Secrets，首次生成使用强随机密码，之后保持一致。加密的 keystore 会进入 lcb4 的 Git 历史，密码不提交到仓库。不要删除已发布项目的证书重新生成。
+- 证书初始化脚本 `scripts/ensure_google_keystore.sh` 仅允许 lcb4 的 GitHub Actions 在证书缺失时创建它；已存在的证书只验证，不覆盖。工作流从 Secrets 传入密码和 alias。
 - Gradle 优先级为 `-P` > 环境变量 > 对应渠道的 `sign.properties`。环境变量中的证书路径相对仓库根目录；Google 使用下表变量，Local 使用独立的 `LOCAL_ANDROID_SIGNING_*`，避免受正式 CI 凭据影响。不再使用根目录签名模板或 `signing/signing.properties`。
 
-| 可选签名变量 / Secret | 默认值 |
+| 签名变量 / Secret | GitHub 构建配置 |
 | --- | --- |
-| `ANDROID_SIGNING_STORE_PASSWORD` | `google123456` |
-| `ANDROID_SIGNING_KEY_ALIAS` | `google` |
-| `ANDROID_SIGNING_KEY_PASSWORD` | Google `sign.properties` 中的 `keyPassword`；自定义时与 store password 分别配置 |
+| `ANDROID_SIGNING_STORE_PASSWORD` | 必填，首次生成后保持一致 |
+| `ANDROID_SIGNING_KEY_ALIAS` | 必填，首次生成后保持一致 |
+| `ANDROID_SIGNING_KEY_PASSWORD` | 必填，首次生成后保持一致 |
 | `ANDROID_SIGNING_STORE_FILE`（本地 Gradle / 脚本） | `app/src/google/google-release.keystore` |
 
 ### GitHub Actions
 
-推送 `main` / `lcb4` 或手动运行 **Build google signed AAB**，构建所选分支最新提交；手动可覆盖 versionName/versionCode。新证书自动提交仅修改证书文件，不重复触发构建。仓库需允许 Actions 读写内容；私有依赖需为 `GITHUB_TOKEN` 授权，或设置 `REMAX_GITHUB_USER` / `REMAX_GITHUB_TOKEN`（兼容 `GH_PACKAGES_USER` / `GH_PACKAGES_TOKEN` 和 `REMAX_SDK_TOKEN`）。不再读取旧 `LCB_3_SECRETS` 聚合配置，避免新项目误用 lcb3 证书。
+推送 `lcb4` 或在 `lcb4` 手动运行 **Build lcb4 google signed AAB**，构建 lcb4 最新提交；手动可覆盖 versionName/versionCode。其他分支不能运行此工作流。新证书自动提交到 lcb4，仅修改证书文件，不重复触发构建。仓库需允许 Actions 读写内容；私有依赖需为 `GITHUB_TOKEN` 授权，或设置 `REMAX_GITHUB_USER` / `REMAX_GITHUB_TOKEN`（兼容 `GH_PACKAGES_USER` / `GH_PACKAGES_TOKEN` 和 `REMAX_SDK_TOKEN`）。不再读取旧 `LCB_3_SECRETS` 聚合配置，避免新项目误用 lcb3 证书。
 
 工作流只构建并上传 GitHub artifacts，不自动发布 Google Play / Firebase。Firebase App Distribution 的 Gradle 能力仍保留，服务账号文件改放 `signing/google-services-json-key.json`，发布说明仍放根目录 `release_notes.txt`。
 

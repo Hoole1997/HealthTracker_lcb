@@ -30,6 +30,11 @@ created=false
 mkdir -p "$(dirname "$ANDROID_SIGNING_STORE_FILE")"
 
 if [[ ! -e "$ANDROID_SIGNING_STORE_FILE" ]]; then
+    # Release identity is created by the lcb4 workflow, never by a developer machine.
+    if [[ "${GITHUB_ACTIONS:-}" != true || "${GITHUB_REF_NAME:-}" != lcb4 ]]; then
+        echo "Missing signing key. Run the GitHub Actions workflow on lcb4 to create and persist it." >&2
+        exit 1
+    fi
     # JKS supports distinct key/store passwords; keytool receives passwords through env.
     keytool -genkeypair -storetype JKS \
         -keystore "$ANDROID_SIGNING_STORE_FILE" \

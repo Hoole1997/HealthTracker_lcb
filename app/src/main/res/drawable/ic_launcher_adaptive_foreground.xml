@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 前景层为可见区域的 1.5 倍，按比例内缩 1/6，将完整原图映射到可见区域。
+     不能使用固定 dp：设置页等小尺寸图标会被固定留白挤小。 -->
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
     android:drawable="@drawable/ic_launcher_square"
-    android:inset="18dp" />
+    android:inset="16.666667%" />

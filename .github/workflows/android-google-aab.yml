@@ -1,4 +1,4 @@
-name: Build google signed AAB
+name: Build lcb4 google signed AAB
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
         required: false
         type: string
   push:
-    branches: [main, lcb4]
+    branches: [lcb4]
     paths-ignore:
       - app/src/google/google-release.keystore
 
@@ -22,15 +22,16 @@ permissions:
 
 # Queued builds read the latest branch state and reuse its newly persisted signing key.
 concurrency:
-  group: google-release-signing
+  group: lcb4-google-release-signing
   cancel-in-progress: false
 
 jobs:
   build-google-aab:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     env:
       ANDROID_SIGNING_STORE_FILE: app/src/google/google-release.keystore
-      # Empty overrides fall back to app/src/google/sign.properties in both script and Gradle.
+      # Release credentials are required Secrets; the keystore itself is versioned on lcb4.
       ANDROID_SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
       ANDROID_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
       ANDROID_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
@@ -39,20 +40,21 @@ jobs:
       GRADLE_JVM_ARGS: -Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8
 
     steps:
-      - name: Require a branch for persistent signing
+      - name: Require lcb4 for release signing
         env:
           REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
-          if [[ "$REF_TYPE" != branch ]]; then
-            echo "::error::Run this workflow on a branch so its signing key can be saved."
+          if [[ "$REF_TYPE" != branch || "$REF_NAME" != lcb4 ]]; then
+            echo "::error::Run this workflow on lcb4; release signing keys are stored only on lcb4."
             exit 1
           fi
 
-      - name: Checkout selected branch
+      - name: Checkout lcb4
         uses: actions/checkout@v4
         with:
           # Read the latest branch commit after waiting in the signing queue.
-          ref: ${{ github.ref_name }}
+          ref: lcb4
           fetch-depth: 0
 
       - name: Set up JDK 17
@@ -63,6 +65,14 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Validate signing Secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${ANDROID_SIGNING_STORE_PASSWORD:?Missing ANDROID_SIGNING_STORE_PASSWORD Secret}"
+          : "${ANDROID_SIGNING_KEY_ALIAS:?Missing ANDROID_SIGNING_KEY_ALIAS Secret}"
+          : "${ANDROID_SIGNING_KEY_PASSWORD:?Missing ANDROID_SIGNING_KEY_PASSWORD Secret}"
 
       - name: Ensure google release keystore exists
         id: signing
@@ -77,18 +87,27 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Persist new project keystore on selected branch
+      - name: Persist new project keystore on lcb4
         if: steps.signing.outputs.created == 'true'
         env:
-          TARGET_BRANCH: ${{ github.ref_name }}
+          TARGET_BRANCH: lcb4
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- "$ANDROID_SIGNING_STORE_FILE"
-          git commit -m 'chore: add google release keystore'
+          git commit -m 'chore: add lcb4 google release keystore [skip ci]'
           # Stop if persistence fails; the backup above allows recovery without losing the key.
           git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+
+      - name: Read committed signing key from lcb4
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Always build with the certificate stored in lcb4, including the first run.
+          git fetch origin lcb4
+          git restore --source=refs/remotes/origin/lcb4 -- "$ANDROID_SIGNING_STORE_FILE"
+          test -s "$ANDROID_SIGNING_STORE_FILE"
 
       - name: Build signed google release AAB
         env:

@@ -6,8 +6,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -87,8 +91,6 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
     private val permissionManager: PermissionManager by inject()
     @Restore
     private var currentTabIndex = 0
-
-    private val bannerShowComplete = CompletableDeferred<Boolean>()
 
     private val homeFrgReady = CompletableDeferred<DashboardTabFragment>()
     private val hostHomeGuideOverlayUi = MutableStateFlow<HomeGuideOverlayUi?>(null)
@@ -187,11 +189,8 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
      */
     private fun updateUIForTabPosition(position: Int) {
         hostCurrentTab.value = position
-        window.statusBarColor = if (position == 0 && hostHomeGuideOverlayUi.value != null) {
-            android.graphics.Color.parseColor("#99000000")
-        } else {
-            android.graphics.Color.TRANSPARENT
-        }
+        // 切换 Tab 时重新分发 Insets，避免 Home 和普通页面沿用彼此的顶部留白。
+        ViewCompat.requestApplyInsets(mViewBind.root)
         with(mViewBind) {
             applyHostBackgroundForTab(position)
             // Home owns its greeting/settings header inside the scrolling grid; other tabs keep this bar.
@@ -355,27 +354,15 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
                 checkAndShowRateDialogAfterOnboarding()
             }
             awaitResumedIfNeeded()
-            loadBanner(mViewBind.adViewContainer, AdPosition.BA_HOME_BOTTOM, onClose = {
-                if (!bannerShowComplete.isCompleted) {
-                    bannerShowComplete.complete(true)
-                }
-            }) {
-                if (!bannerShowComplete.isCompleted) {
-                    bannerShowComplete.complete(it)
-                }
-            }
-            bannerShowComplete.await()
+            // Banner 自己处理加载结果，不再把回调转成 Deferred 进行第二次等待。
+            loadBanner(mViewBind.adViewContainer, AdPosition.BA_HOME_BOTTOM)
         }
         
         lifecycleScope.launch {
             val homeFragment = homeFrgReady.await()
             homeFragment.homeGuideOverlayUi.collect { overlayUi ->
+                // Home 引导层随根布局覆盖状态栏，无需再给系统栏叠加一次遮罩。
                 hostHomeGuideOverlayUi.value = overlayUi
-                window.statusBarColor = if (overlayUi != null && currentTabIndex == 0) {
-                    android.graphics.Color.parseColor("#99000000")
-                } else {
-                    android.graphics.Color.TRANSPARENT
-                }
             }
         }
 
@@ -688,6 +675,15 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         } ?: {
             trackEnterPageClick(HealthType.WALKING_STEPS)
             startActivity<StepCountAct>()
+        }
+    }
+
+    override fun applyStatusBarInsets(view: View, insets: WindowInsetsCompat) {
+        if (hostCurrentTab.value == 0) {
+            // Home 的背景延伸到状态栏，标题和按钮由 Compose 按安全区域避让。
+            view.updatePadding(top = 0)
+        } else {
+            super.applyStatusBarInsets(view, insets)
         }
     }
 

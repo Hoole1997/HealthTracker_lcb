@@ -1,2 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <!-- 与原图边缘衔接，为系统裁切及图标动效提供不透明底色。 -->
+    <color name="ic_launcher_background">#F23D45</color>
+</resources>

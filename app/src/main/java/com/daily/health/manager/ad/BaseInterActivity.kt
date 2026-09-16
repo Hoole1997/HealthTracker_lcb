@@ -1,15 +1,14 @@
 package com.daily.health.manager.ad
 
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.daily.health.manager.face.act.HealthDetailAct
 import com.daily.health.manager.face.act.HealthRecordAct
 import com.daily.health.manager.face.act.HealthStatisticsAct
 import com.daily.health.manager.face.act.HydrateAct
 import com.daily.health.manager.face.act.StepCountAct
-import com.daily.health.manager.utils.loadRewardBidding
-import com.daily.health.manager.utils.showInter
+import com.daily.health.manager.utils.loadReward
+import com.daily.health.manager.utils.loadInterstitial
 import net.corekit.monetize.ads.AdPosition
 import com.healthtracker.framework.base.BaseMVVMActivity
 import com.healthtracker.framework.base.BaseViewModel
@@ -18,7 +17,6 @@ import com.daily.health.manager.face.tracker.trackEnterTrackPageClick
 import com.daily.health.manager.face.tracker.trackNewRecordPageBack
 import com.daily.health.manager.face.tracker.trackResultPageBack
 import com.daily.health.manager.face.tracker.trackTrackPageBack
-import kotlinx.coroutines.launch
 
 abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVMActivity<VM,VB>() {
 
@@ -32,7 +30,7 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 进入页面时立即展示插页广告
-        showInter(getBackAdPosition()) {}
+        loadInterstitial(getBackAdPosition()) {}
         if(this is HealthStatisticsAct){
             trackEnterTrackPageClick(getCurrentHealthType())
         }
@@ -151,11 +149,10 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
     }
 
     protected fun showReword(){
-       lifecycleScope.launch {
-           loadRewardBidding(getRewardAdPosition()) {
-               hideMask()
-           }
-       }
+        loadReward(getRewardAdPosition()) {
+            // call 表示广告流程结束；成功、失败或关闭都继续解锁，不按结果拦截业务。
+            hideMask()
+        }
     }
 
 
@@ -165,4 +162,3 @@ abstract class BaseInterActivity<VM : BaseViewModel, VB : ViewBinding>: BaseMVVM
 
 
 }
-
