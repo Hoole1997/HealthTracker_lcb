@@ -3,10 +3,6 @@ name: Build lcb4 google signed AAB
 on:
   workflow_dispatch:
     inputs:
-      signing_backup_public_key:
-        description: 'One-time signing credential backup, encrypted to this RSA public key'
-        required: false
-        type: string
       version_name:
         description: 'Optional versionName override (defaults to google/config.gradle)'
         required: false
@@ -31,7 +27,6 @@ concurrency:
 
 jobs:
   build-google-aab:
-    if: ${{ inputs.signing_backup_public_key == '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -168,43 +163,3 @@ jobs:
           path: app/build/outputs/mapping/googleRelease/mapping.txt
           if-no-files-found: error
           retention-days: 30
-
-  encrypted-signing-backup:
-    if: ${{ github.ref == 'refs/heads/lcb4' && inputs.signing_backup_public_key != '' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Encrypt signing credentials for the repository owner
-        env:
-          BACKUP_PUBLIC_KEY: ${{ inputs.signing_backup_public_key }}
-          STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
-        run: |
-          set -euo pipefail
-          umask 077
-          python3 - <<'PY'
-          import json, os, subprocess
-          from pathlib import Path
-          Path('public.pem').write_text(os.environ['BACKUP_PUBLIC_KEY'])
-          credentials = {
-              'storeFile': 'app/src/google/google-release.keystore',
-              'storePassword': os.environ['STORE_PASSWORD'],
-              'keyAlias': os.environ['KEY_ALIAS'],
-              'keyPassword': os.environ['KEY_PASSWORD'],
-          }
-          assert all(credentials.values()), 'Missing signing credentials'
-          with open('signing-credentials.enc', 'wb') as encrypted:
-              subprocess.run([
-                  'openssl', 'pkeyutl', '-encrypt', '-pubin', '-inkey', 'public.pem',
-                  '-pkeyopt', 'rsa_padding_mode:oaep', '-pkeyopt', 'rsa_oaep_md:sha256',
-              ], input=json.dumps(credentials).encode(), stdout=encrypted, check=True)
-          PY
-      - name: Upload encrypted signing backup
-        uses: actions/upload-artifact@v4
-        with:
-          name: lcb4-signing-credentials-${{ github.run_id }}
-          path: signing-credentials.enc
-          if-no-files-found: error
-          retention-days: 1
