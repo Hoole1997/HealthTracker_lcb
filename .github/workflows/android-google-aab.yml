@@ -31,10 +31,10 @@ jobs:
     timeout-minutes: 60
     env:
       ANDROID_SIGNING_STORE_FILE: app/src/google/google-release.keystore
-      # Release credentials are required Secrets; the keystore itself is versioned on lcb4.
-      ANDROID_SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
-      ANDROID_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
-      ANDROID_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+      # Fixed signing credentials; generation and Gradle signing use the same values.
+      ANDROID_SIGNING_STORE_PASSWORD: health123456
+      ANDROID_SIGNING_KEY_ALIAS: google
+      ANDROID_SIGNING_KEY_PASSWORD: health123456
       REMAX_GITHUB_USER: ${{ secrets.REMAX_GITHUB_USER || secrets.GH_PACKAGES_USER || 'toukaRemax' }}
       REMAX_GITHUB_TOKEN: ${{ secrets.REMAX_GITHUB_TOKEN || secrets.REMAX_SDK_TOKEN || secrets.GH_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
       GRADLE_JVM_ARGS: -Xmx6g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8
@@ -65,14 +65,6 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-
-      - name: Validate signing Secrets
-        shell: bash
-        run: |
-          set -euo pipefail
-          : "${ANDROID_SIGNING_STORE_PASSWORD:?Missing ANDROID_SIGNING_STORE_PASSWORD Secret}"
-          : "${ANDROID_SIGNING_KEY_ALIAS:?Missing ANDROID_SIGNING_KEY_ALIAS Secret}"
-          : "${ANDROID_SIGNING_KEY_PASSWORD:?Missing ANDROID_SIGNING_KEY_PASSWORD Secret}"
 
       - name: Ensure google release keystore exists
         id: signing

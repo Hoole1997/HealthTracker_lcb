@@ -33,15 +33,15 @@
 - 每个渠道的签名配置和证书都放在自己的目录。`sign.properties` 中维护 `storeFile`、`storePassword`、`keyAlias`、`keyPassword`，证书文件名相对当前渠道目录。
 - Local Debug / Release 均使用 GPSPhoto 的 `app/src/local/debug.jks`（alias `key0`，store/key password `123456`），不再使用本机 `~/.android/debug.keystore`。Google 使用 `app/src/google/google-release.keystore`，不会复用 Local 或旧 lcb3 证书。
 - **保留首次自动生成逻辑**：仅 lcb4 的 GitHub Runner 在缺少 Google 证书时创建新证书，先上传 7 天备份，再提交回 lcb4。构建前从远程 lcb4 读取该文件；现有证书损坏或密码错误直接失败，不覆盖它。如果分支保护阻止写入，构建停止，请从备份恢复证书并提交后重试。
-- GitHub 正式构建必须配置以下签名 Secrets，首次生成使用强随机密码，之后保持一致。加密的 keystore 会进入 lcb4 的 Git 历史，密码不提交到仓库。不要删除已发布项目的证书重新生成。
-- 证书初始化脚本 `scripts/ensure_google_keystore.sh` 仅允许 lcb4 的 GitHub Actions 在证书缺失时创建它；已存在的证书只验证，不覆盖。工作流从 Secrets 传入密码和 alias。
+- Google 签名库密码和私钥密码固定为 `health123456`，alias 固定为 `google`。工作流和 Google `sign.properties` 使用相同配置，不随机生成密码或别名，也不读取旧的签名 Secrets。
+- 证书初始化脚本 `scripts/ensure_google_keystore.sh` 仅允许 lcb4 的 GitHub Actions 在证书缺失时创建它；已存在的证书只验证，不覆盖。新证书仍自动提交回 lcb4，后续构建读取并复用该分支文件。
 - Gradle 优先级为 `-P` > 环境变量 > 对应渠道的 `sign.properties`。环境变量中的证书路径相对仓库根目录；Google 使用下表变量，Local 使用独立的 `LOCAL_ANDROID_SIGNING_*`，避免受正式 CI 凭据影响。不再使用根目录签名模板或 `signing/signing.properties`。
 
 | 签名变量 / Secret | GitHub 构建配置 |
 | --- | --- |
-| `ANDROID_SIGNING_STORE_PASSWORD` | 必填，首次生成后保持一致 |
-| `ANDROID_SIGNING_KEY_ALIAS` | 必填，首次生成后保持一致 |
-| `ANDROID_SIGNING_KEY_PASSWORD` | 必填，首次生成后保持一致 |
+| `ANDROID_SIGNING_STORE_PASSWORD` | 固定为 `health123456` |
+| `ANDROID_SIGNING_KEY_ALIAS` | 固定为 `google` |
+| `ANDROID_SIGNING_KEY_PASSWORD` | 固定为 `health123456` |
 | `ANDROID_SIGNING_STORE_FILE`（本地 Gradle / 脚本） | `app/src/google/google-release.keystore` |
 
 ### GitHub Actions
