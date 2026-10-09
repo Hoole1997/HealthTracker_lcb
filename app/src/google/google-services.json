@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "165694530878",
-    "project_id": "ag2a34102592-b9d4d-gp",
-    "storage_bucket": "ag2a34102592-b9d4d-gp.firebasestorage.app"
+    "project_number": "801593496262",
+    "project_id": "ag9e6f8a8de1-d5a1b-gp",
+    "storage_bucket": "ag9e6f8a8de1-d5a1b-gp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:165694530878:android:1d76ad5bcc6be532e1f86f",
+        "mobilesdk_app_id": "1:801593496262:android:5299df39e6aa3190527dc7",
         "android_client_info": {
-          "package_name": "com.health.tracker.launcher"
+          "package_name": "com.health.tracker.launcher.tool"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBeasv3I1XglUvYXPYBPpIRFLWiioQMReI"
+          "current_key": "AIzaSyB_3hwGy_JltUEf9RlaUIwTWhymA_LLmFs"
         }
       ],
       "services": {
