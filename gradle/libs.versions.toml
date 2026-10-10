@@ -18,7 +18,8 @@ targetSdk = "37"
 
 firebaseAppDist = "5.1.1"
 
-agp = "8.6.0"
+# Browser 1.9.0 requires AGP >= 8.9.1; pair this with Gradle wrapper 8.11.1.
+agp = "8.9.1"
 kotlin = "2.1.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
