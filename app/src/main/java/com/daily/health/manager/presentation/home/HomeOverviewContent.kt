@@ -56,6 +56,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daily.health.manager.R
+import com.daily.health.manager.face.compose.HealthDisclaimer
 import kotlin.math.roundToInt
 
 private val HomeText = Color(0xFF18212D)
@@ -101,6 +102,9 @@ fun HomeOverviewContent(
         ) {
             item(key = "greeting", span = { GridItemSpan(maxLineSpan) }) {
                 HomeHeader(onSettingsClick)
+            }
+            item(key = "disclaimer", span = { GridItemSpan(maxLineSpan) }) {
+                HealthDisclaimer()
             }
             item(key = "heart", span = { GridItemSpan(maxLineSpan) }) {
                 HeroCard(hero, onHeartRateClick,

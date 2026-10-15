@@ -1,6 +1,8 @@
 package com.daily.health.manager.face.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,11 +38,14 @@ fun AiAssistantScreen(
             title = stringResource(id = R.string.tr_ai_assistant_title),
             onBack = onBack
         )
+        HealthDisclaimer(modifier = Modifier.padding(horizontal = 16.dp))
 
         // 空状态内容居中
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally

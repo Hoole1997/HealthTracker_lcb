@@ -45,6 +45,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.databinding.TrActivityInsightsDetailBinding
+import com.daily.health.manager.face.compose.HealthDisclaimer
 import com.daily.health.manager.utils.InsightAssetPreparer
 import com.daily.health.manager.utils.loadNative
 import com.healthtracker.framework.base.BaseViewModel
@@ -195,10 +196,12 @@ private fun InsightsDetailScreen(
             .background(colorResource(R.color.c1))
     ) {
         InsightsTopBar(onBack = onBack)
+        HealthDisclaimer(modifier = Modifier.padding(horizontal = 16.dp))
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f)
                 .verticalScroll(scrollState)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)

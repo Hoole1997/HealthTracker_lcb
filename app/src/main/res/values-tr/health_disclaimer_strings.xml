@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shared disclosure text and accessibility labels for the collapsible notice. -->
+    <string name="tr_health_disclaimer">Yalnızca günlük sağlık yönetimi ve kayıt tutma amaçlıdır. Bu uygulama tıbbi bir cihaz değildir, tıbbi tavsiye sunmaz ve herhangi bir hastalığı teşhis etme, tedavi etme, iyileştirme veya önleme amacı taşımaz. Uygulamadaki kayıtlar, hesaplamalar ve tahminler yalnızca günlük sağlık konusunda referans amaçlıdır ve tıbbi kararlar almak için kullanılmamalıdır. Tıbbi konularla ilgili sorularınız varsa mutlaka bir sağlık uzmanına danışın.</string>
+    <string name="tr_heart_rate_disclaimer">Yalnızca günlük sağlık ve fitness konusunda referans amaçlıdır. Bu uygulama tıbbi bir cihaz değildir. Bu özellik, telefonunuzun kamerasını ve flaşını kullanarak kalp atış hızını tahmin eder. Sonuçlar cihaz, ışık, parmağın yerleşimi, fiziksel aktivite ve diğer etkenlerden etkilenebilir ve hatalı olabilir. Bu uygulama tıbbi tavsiye sunmaz, herhangi bir hastalığı teşhis etme, tedavi etme, iyileştirme veya önleme amacı taşımaz ve sağlık uzmanlarının ya da profesyonel tıbbi cihazların yerini alamaz. Bu sonuçları hastalık durumunu değerlendirmek, ilaç kullanımını değiştirmek veya tıbbi kararlar almak için kullanmayın. Bu özellik acil müdahale veya sürekli izleme amacı taşımaz. Kendinizi iyi hissetmiyorsanız veya tıbbi sorularınız varsa bir sağlık uzmanına danışın; acil durumlarda derhal tıbbi yardım alın.</string>
+    <string name="tr_heart_rate_disclaimer_short">Kamera ile tahmin edilen kalp atış hızı hatalı olabilir ve yalnızca sağlık ve fitness konusunda referans amaçlıdır. Bu uygulama tıbbi bir cihaz değildir, herhangi bir hastalığı teşhis etme, tedavi etme, iyileştirme veya önleme amacı taşımaz ve profesyonel tıbbi tavsiyenin yerini alamaz. Kendinizi iyi hissetmiyorsanız bir sağlık uzmanına danışın.</string>
+    <string name="tr_health_disclaimer_expand">Sorumluluk reddi bildirimini genişlet</string>
+    <string name="tr_health_disclaimer_collapse">Sorumluluk reddi bildirimini daralt</string>
+    <string name="tr_health_disclaimer_expanded">Genişletildi</string>
+    <string name="tr_health_disclaimer_collapsed">Daraltıldı</string>
+</resources>

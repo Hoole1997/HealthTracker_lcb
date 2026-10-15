@@ -70,10 +70,13 @@ fun AlarmListContent(
 
     Scaffold(
         topBar = {
-            HealthTopBar(
-                title = stringResource(R.string.tr_alarm_management),
-                onBack = onBack
-            )
+            Column {
+                HealthTopBar(
+                    title = stringResource(R.string.tr_alarm_management),
+                    onBack = onBack
+                )
+                HealthDisclaimer(modifier = Modifier.padding(horizontal = 16.dp))
+            }
         },
         containerColor = colorResource(R.color.bg_window)
     ) { paddingValues ->

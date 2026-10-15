@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shared disclosure text and accessibility labels for the collapsible notice. -->
+    <string name="tr_health_disclaimer">Apenas para a gestão e o registro da saúde no dia a dia. Este aplicativo não é um dispositivo médico, não fornece aconselhamento médico e não se destina a diagnosticar, tratar, curar ou prevenir qualquer doença. Os registros, cálculos e estimativas do aplicativo servem apenas como referência para a saúde no dia a dia e não devem ser usados para tomar decisões médicas. Em caso de dúvidas médicas, consulte sempre um profissional de saúde.</string>
+    <string name="tr_heart_rate_disclaimer">Apenas como referência para a saúde e o condicionamento físico no dia a dia. Este aplicativo não é um dispositivo médico. Este recurso estima a frequência cardíaca usando a câmera e o flash do celular. Os resultados podem ser afetados pelo dispositivo, pela iluminação, pela posição do dedo, pela atividade física e por outros fatores, e podem conter erros. Este aplicativo não fornece aconselhamento médico, não se destina a diagnosticar, tratar, curar ou prevenir qualquer doença e não substitui profissionais de saúde nem equipamentos médicos profissionais. Não use esses resultados para avaliar uma doença, alterar medicamentos ou tomar decisões médicas. Este recurso não se destina ao atendimento de emergência nem ao monitoramento contínuo. Se sentir mal-estar ou tiver dúvidas médicas, consulte um profissional de saúde; em caso de emergência, procure ajuda médica imediatamente.</string>
+    <string name="tr_heart_rate_disclaimer_short">As estimativas de frequência cardíaca pela câmera podem conter erros e servem apenas como referência para a saúde e o condicionamento físico. Este aplicativo não é um dispositivo médico, não se destina a diagnosticar, tratar, curar ou prevenir qualquer doença e não substitui o aconselhamento médico profissional. Se sentir mal-estar, consulte um profissional de saúde.</string>
+    <string name="tr_health_disclaimer_expand">Expandir aviso de isenção de responsabilidade</string>
+    <string name="tr_health_disclaimer_collapse">Recolher aviso de isenção de responsabilidade</string>
+    <string name="tr_health_disclaimer_expanded">Expandido</string>
+    <string name="tr_health_disclaimer_collapsed">Recolhido</string>
+</resources>

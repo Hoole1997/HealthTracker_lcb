@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 可收起的统一免责声明，以及供辅助功能使用的操作与状态文案。 -->
+    <string name="tr_health_disclaimer">仅用于日常健康管理与记录。本应用程序并非医疗设备，不提供医疗建议，也不用于诊断、治疗、治愈或预防任何疾病。应用中的记录、计算和估算结果仅供日常健康参考，不应用于医疗决策。如有医疗相关疑问，请务必咨询医疗专业人士。</string>
+    <string name="tr_heart_rate_disclaimer">仅供日常健康与健身参考，本应用程序并非医疗设备。本功能通过手机摄像头和闪光灯估算心率，结果可能受设备、光线、手指放置及身体活动等因素影响，存在误差。本应用程序不提供医疗建议，不用于诊断、治疗、治愈或预防任何疾病，不能替代医疗专业人士或专业医疗设备。请勿据此判断病情、调整用药或作出医疗决定。本功能不用于急救或持续监护。如有不适或医疗相关疑问，请咨询医疗专业人士；紧急情况请立即寻求医疗救助。</string>
+    <string name="tr_heart_rate_disclaimer_short">摄像头估算的心率可能存在误差，仅供健康与健身参考。本应用程序并非医疗设备，不用于诊断、治疗、治愈或预防任何疾病，不能替代专业医疗建议。如有不适，请咨询医疗专业人士。</string>
+    <string name="tr_health_disclaimer_expand">展开免责声明</string>
+    <string name="tr_health_disclaimer_collapse">收起免责声明</string>
+    <string name="tr_health_disclaimer_expanded">已展开</string>
+    <string name="tr_health_disclaimer_collapsed">已收起</string>
+</resources>

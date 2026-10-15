@@ -44,6 +44,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
+        <!-- 工具栏与筛选栏共享容器，免责声明放在标题行下方。 -->
+        <com.daily.health.manager.face.widget.HealthDisclaimerView
+            android:id="@+id/health_disclaimer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_back" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_filter_date_range"
             android:layout_width="wrap_content"
@@ -57,7 +67,7 @@
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_back"
+            app:layout_constraintTop_toBottomOf="@id/health_disclaimer"
             tools:text="Sep 1, 2025 - Sep 9, 2025" />
 
         <androidx.appcompat.widget.AppCompatTextView

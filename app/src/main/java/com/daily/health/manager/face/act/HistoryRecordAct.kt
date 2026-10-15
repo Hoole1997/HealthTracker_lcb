@@ -62,6 +62,15 @@ class HistoryRecordAct: BaseMVVMActivity<HistoryViewModel, TrActivityHistoryReco
             HealthHistoryRow.RecordType.BLOOD_SUGAR.ordinal
         )
         val recordType = HealthHistoryRow.RecordType.values()[recordTypeOrdinal]
+
+        // 心率历史同时包含手动记录与摄像头估算，按记录类型选择相应说明。
+        mViewBind.healthDisclaimer.setTextResource(
+            if (recordType == HealthHistoryRow.RecordType.HEART_RATE) {
+                R.string.tr_heart_rate_disclaimer
+            } else {
+                R.string.tr_health_disclaimer
+            }
+        )
         
         // mViewModel.initialize(recordType = recordType) 
         // SavedStateHandle会自动处理RECORD_TYPE参数 injection

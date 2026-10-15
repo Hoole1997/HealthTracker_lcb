@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shared disclosure text and accessibility labels for the collapsible notice. -->
+    <string name="tr_health_disclaimer">For everyday health management and recordkeeping only. This app is not a medical device, does not provide medical advice, and is not intended to diagnose, treat, cure, or prevent any disease. Records, calculations, and estimates in the app are for everyday health reference only and must not be used for medical decisions. If you have any medical questions, always consult a healthcare professional.</string>
+    <string name="tr_heart_rate_disclaimer">For everyday health and fitness reference only. This app is not a medical device. This feature estimates heart rate using your phone’s camera and flash. Results may be affected by your device, lighting, finger placement, physical activity, and other factors, and may be inaccurate. This app does not provide medical advice, is not intended to diagnose, treat, cure, or prevent any disease, and cannot replace healthcare professionals or professional medical equipment. Do not use these results to assess a medical condition, change medication, or make medical decisions. This feature is not intended for emergency care or continuous monitoring. If you feel unwell or have medical questions, consult a healthcare professional; in an emergency, seek immediate medical help.</string>
+    <string name="tr_heart_rate_disclaimer_short">Camera-based heart rate estimates may be inaccurate and are for health and fitness reference only. This app is not a medical device, is not intended to diagnose, treat, cure, or prevent any disease, and cannot replace professional medical advice. If you feel unwell, consult a healthcare professional.</string>
+    <string name="tr_health_disclaimer_expand">Expand disclaimer</string>
+    <string name="tr_health_disclaimer_collapse">Collapse disclaimer</string>
+    <string name="tr_health_disclaimer_expanded">Expanded</string>
+    <string name="tr_health_disclaimer_collapsed">Collapsed</string>
+</resources>

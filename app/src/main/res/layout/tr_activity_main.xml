@@ -101,12 +101,23 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- 首页自带滚动头部；其余功能 Tab 在宿主 toolbar 下复用免责声明。 -->
+    <com.daily.health.manager.face.widget.HealthDisclaimerView
+        android:id="@+id/health_disclaimer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/area_bar" />
+
     <com.daily.health.manager.face.weight.CustomViewPager
         android:id="@+id/view_pager_home"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/tb_nav"
-        app:layout_constraintTop_toBottomOf="@id/area_bar" />
+        app:layout_constraintTop_toBottomOf="@id/health_disclaimer" />
 
     <View
         android:id="@+id/v_nav_shadow"

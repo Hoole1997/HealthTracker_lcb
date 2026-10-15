@@ -107,7 +107,20 @@ fun PpgExplainBottomSheet(
             Spacer(modifier = Modifier.height(20.dp))
             StepItem(3, stringResource(R.string.tr_ppg_tips_step3))
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 在可滚动的帮助正文中完整展示，与心率页面共用同一份本地化说明。
+            Text(
+                text = stringResource(R.string.tr_heart_rate_disclaimer),
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                color = colorResource(R.color.color_666),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Got it 按钮
             Button(

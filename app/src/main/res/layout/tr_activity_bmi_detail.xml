@@ -73,6 +73,16 @@
             app:srcCompat="@drawable/tr_ic_header_delete" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- 固定在工具栏下方，展开后由约束自动下移页面内容。 -->
+    <com.daily.health.manager.face.widget.HealthDisclaimerView
+        android:id="@+id/health_disclaimer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_bar" />
+
 
 
     <androidx.core.widget.NestedScrollView
@@ -84,7 +94,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/action_bar">
+        app:layout_constraintTop_toBottomOf="@id/health_disclaimer">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

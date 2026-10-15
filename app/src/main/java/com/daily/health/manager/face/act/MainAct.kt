@@ -194,7 +194,13 @@ class MainAct : BaseMVVMActivity<MainViewModel, TrActivityMainBinding>(), Permis
         with(mViewBind) {
             applyHostBackgroundForTab(position)
             // Home owns its greeting/settings header inside the scrolling grid; other tabs keep this bar.
-            if (position == 0) areaBar.gone() else areaBar.visible()
+            if (position == 0) {
+                areaBar.gone()
+                healthDisclaimer.gone()
+            } else {
+                areaBar.visible()
+                healthDisclaimer.visible()
+            }
             llWeather.gone()
             tvTitle.visible()
             ivRemind.gone()

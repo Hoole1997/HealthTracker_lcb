@@ -48,6 +48,7 @@ import com.daily.health.manager.R
 import com.daily.health.manager.ad.BaseInterActivity
 import com.daily.health.manager.constants.KEY_HAS_ADD_PROFILE
 import com.daily.health.manager.databinding.TrActivityProfileBinding
+import com.daily.health.manager.face.compose.HealthDisclaimer
 import com.daily.health.manager.getUserAge
 import com.daily.health.manager.isMale
 import com.daily.health.manager.face.widget.NumberPickerView
@@ -217,6 +218,7 @@ private fun ProfileScreen(
             .background(colorResource(R.color.c1))
     ) {
         ProfileTopBar(onBack = onBack)
+        HealthDisclaimer(modifier = Modifier.padding(horizontal = 16.dp))
 
         Column(
             modifier = Modifier

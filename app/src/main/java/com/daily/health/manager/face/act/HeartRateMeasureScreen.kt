@@ -19,19 +19,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -83,6 +87,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import kotlinx.coroutines.delay
 import com.daily.health.manager.R
 import com.daily.health.manager.databinding.TrActivityLanguageSelectBinding
+import com.daily.health.manager.face.compose.HealthDisclaimer
 import com.daily.health.manager.face.dialog.SaveCompleteDialog
 import com.daily.health.manager.face.theme.HealthTrackerTheme
 import com.daily.health.manager.face.viewmodel.HeartRateMeasureViewModel
@@ -382,16 +387,23 @@ private fun HeartRateMeasureScreenContent(
     ) {
         // Top Bar - 白色背景
         TopBar(onBackClick = onBackClick, onHelpClick = onHelpClick)
+        HealthDisclaimer(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            textRes = R.string.tr_heart_rate_disclaimer,
+        )
 
-        // Content
-        Column(
+        BoxWithConstraints(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (hasPermission) {
                 MeasureContent(
+                    // 正文按自然高度滚动，视口只作为最小高度；不在无界滚动内容中使用 weight。
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .heightIn(min = maxHeight),
                     measureState = mapUiMeasureState(measureUiState.measureState),
                     progress = (measureUiState.progress * 100).toInt(),
                     measuredBpm = measureUiState.currentBpm ?: 0,
@@ -568,7 +580,8 @@ private fun MeasureContent(
     signalQuality: ViewModelSignalQuality = ViewModelSignalQuality.NO_SIGNAL,
     isFingerDetected: Boolean = false,
     onUseMeasurement: () -> Unit,
-    onSurfaceProviderReady: (androidx.camera.core.Preview.SurfaceProvider) -> Unit
+    onSurfaceProviderReady: (androidx.camera.core.Preview.SurfaceProvider) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     // 获取 Context 用于震动
     val context = LocalContext.current
@@ -600,8 +613,7 @@ private fun MeasureContent(
     }
     
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(32.dp))
@@ -622,7 +634,7 @@ private fun MeasureContent(
 
                 // 免责声明文案
                 Text(
-                    text = stringResource(R.string.tr_measure_disclaimer),
+                    text = stringResource(R.string.tr_heart_rate_disclaimer_short),
                     fontSize = 14.sp,
                     color = colorResource(R.color.t1),
                     textAlign = TextAlign.Center,
@@ -646,7 +658,8 @@ private fun MeasureContent(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 MeasureBottomArea(
-                    modifier = Modifier.weight(1f)
+                    // 光圈向上偏移 73dp，需要为整张引导图保留空间；这只是插图区域的最小高度。
+                    modifier = Modifier.heightIn(min = 280.dp)
                 ) {
                     // 手机图片
                     Image(
@@ -699,7 +712,6 @@ private fun MeasureContent(
                 MeasureStatusHeader()
                 
                 MeasureBottomArea(
-                    modifier = Modifier.weight(1f),
                     showBackground = false
                 ) {
                     // 底部提示区域
@@ -753,7 +765,6 @@ private fun MeasureContent(
                 )
 
                 MeasureBottomArea(
-                    modifier = Modifier.weight(1f),
                     showBackground = false
                 ) {
                     // 恢复底部 Lottie 心电图动画
@@ -779,7 +790,7 @@ private fun MeasureContent(
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(32.dp))
             }
         }
 
@@ -1086,9 +1097,11 @@ private fun MeasureBottomArea(
             contentScale = ContentScale.FillWidth,
         )
 
-        // 内容区域
+        // 让图片和文字决定自然高度；fillMaxSize/weight 会在滚动容器中丢失可靠的高度约束。
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center),
             contentAlignment = Alignment.Center,
             content = content
         )

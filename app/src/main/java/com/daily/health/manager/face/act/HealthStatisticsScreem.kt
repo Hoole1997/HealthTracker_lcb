@@ -417,6 +417,14 @@ class HealthStatisticsAct :
     }
 
     private fun updateUIForMetricType(metricType: HealthMetric) {
+        // 指标切换时同步说明，避免心率估算说明遗留到其他健康统计页。
+        mViewBind.healthDisclaimer.setTextResource(
+            if (metricType == HealthMetric.HEART_RATE) {
+                R.string.tr_heart_rate_disclaimer
+            } else {
+                R.string.tr_health_disclaimer
+            }
+        )
         mViewBind.llBpChartDes.root.gone()
         mViewBind.llChoChartDes.root.gone()
         when (metricType) {

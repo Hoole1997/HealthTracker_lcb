@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- XML 宿主仅配置文案资源，交互和状态仍由公共组件管理。 -->
+    <declare-styleable name="HealthDisclaimerView">
+        <attr name="healthDisclaimerText" format="reference" />
+    </declare-styleable>
+</resources>

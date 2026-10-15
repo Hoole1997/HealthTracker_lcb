@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shared disclosure text and accessibility labels for the collapsible notice. -->
+    <string name="tr_health_disclaimer">日常の健康管理と記録のみを目的としています。本アプリは医療機器ではなく、医療上の助言を提供するものではありません。また、いかなる疾患の診断、治療、治癒、予防も目的としていません。アプリ内の記録、計算および推定結果は、日常の健康管理の参考としてのみご利用いただき、医療上の判断には使用しないでください。医療に関するご質問がある場合は、必ず医療専門家にご相談ください。</string>
+    <string name="tr_heart_rate_disclaimer">日常の健康管理とフィットネスの参考としてのみご利用ください。本アプリは医療機器ではありません。本機能はスマートフォンのカメラとフラッシュを使用して心拍数を推定します。結果は端末、光の状態、指の置き方、身体活動などの影響を受け、誤差が生じる場合があります。本アプリは医療上の助言を提供するものではなく、いかなる疾患の診断、治療、治癒、予防も目的としていません。医療専門家や専門の医療機器に代わるものではありません。結果を基に病状を判断したり、服薬を変更したり、医療上の判断を行ったりしないでください。本機能は救急医療や継続的な監視を目的としていません。体調がすぐれない場合や医療に関するご質問がある場合は、医療専門家にご相談ください。緊急時は直ちに医療機関の助けを求めてください。</string>
+    <string name="tr_heart_rate_disclaimer_short">カメラによる心拍数の推定には誤差が生じる場合があり、健康管理とフィットネスの参考としてのみご利用ください。本アプリは医療機器ではなく、いかなる疾患の診断、治療、治癒、予防も目的としていません。専門的な医療上の助言に代わるものではありません。体調がすぐれない場合は、医療専門家にご相談ください。</string>
+    <string name="tr_health_disclaimer_expand">免責事項を展開</string>
+    <string name="tr_health_disclaimer_collapse">免責事項を折りたたむ</string>
+    <string name="tr_health_disclaimer_expanded">展開済み</string>
+    <string name="tr_health_disclaimer_collapsed">折りたたみ済み</string>
+</resources>
