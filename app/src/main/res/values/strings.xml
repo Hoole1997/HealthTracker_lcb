@@ -1247,6 +1247,8 @@
     <string name="tr_drink_now">View Now</string>
     <string name="tr_hydrate_quick_add">Quick Add</string>
     <string name="tr_step_count">Step Count</string>
+    <string name="tr_step_sensor_unavailable">This device does not support step counting.</string>
+    <string name="tr_step_tracking_unavailable">Step counting could not start. Reopen this page to try again.</string>
     <string name="tr_today">Today</string>
     <string name="tr_unit_km" translatable="false">km</string>
     <string name="tr_kcal" translatable="false">Kcal</string>

@@ -22,7 +22,9 @@ data class LocalEntity11(
     @ColumnInfo(name = "c07")
     val lastRaw: Int,
     @ColumnInfo(name = "c08")
-    val updatedAt: Long
+    val updatedAt: Long,
+    @ColumnInfo(name = "c09", defaultValue = "-1")
+    val bootCount: Int = -1,
 )
 
 typealias DailyStepStat = LocalEntity11

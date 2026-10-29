@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.daily.health.manager.data.converter.DateTimeConverter
 import com.daily.health.manager.data.dao.AlarmDao
@@ -55,7 +56,7 @@ import com.daily.health.manager.data.entity.DailyStepStat
         HydrateReminder::class,
         DailyStepStat::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(DateTimeConverter::class)
@@ -125,6 +126,13 @@ abstract class LocalDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: LocalDatabase? = null
 
+        /** 保留既有健康记录；-1 表示升级前尚未记录启动次数。 */
+        internal val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE t11 ADD COLUMN c09 INTEGER NOT NULL DEFAULT -1")
+            }
+        }
+
         /**
          * 获取数据库实例
          * 使用单例模式确保全局只有一个数据库实例
@@ -139,6 +147,7 @@ abstract class LocalDatabase : RoomDatabase() {
                     LocalDatabase::class.java,
                     DATABASE_NAME
                 )
+                    .addMigrations(MIGRATION_2_3)
                     .addCallback(object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)

@@ -10,10 +10,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import com.daily.health.manager.data.utils.DateTimeUtils
 import com.daily.health.manager.data.utils.toLocalEpochDay
+import com.daily.health.manager.steps.StepCounterAccumulator
+import com.daily.health.manager.steps.StepCounterReading
+import com.daily.health.manager.steps.StepCounterState
+import java.util.Date
 
-class StepRepository private constructor(private val appContext: Context, private val dao: StepDao) {
+class StepRepository internal constructor(private val dao: StepDao) {
     companion object {
         private const val STEP_LENGTH_RATIO = 0.414  // 文档公式：身高(米) * 0.414 = 步幅(米)
         private const val KCAL_COEFFICIENT = 0.7
@@ -21,10 +27,8 @@ class StepRepository private constructor(private val appContext: Context, privat
         @Volatile private var INSTANCE: StepRepository? = null
         fun get(appContext: Context): StepRepository {
             return INSTANCE ?: synchronized(this) {
-                val db = HealthDatabase.getDatabase(appContext)
-                val instance = StepRepository(appContext.applicationContext, db.stepDao())
-                INSTANCE = instance
-                instance
+                INSTANCE ?: StepRepository(HealthDatabase.getDatabase(appContext.applicationContext).stepDao())
+                    .also { INSTANCE = it }
             }
         }
     }
@@ -33,66 +37,42 @@ class StepRepository private constructor(private val appContext: Context, privat
         val startOfDay = DateTimeUtils.getTodayRange().first
         return startOfDay.toLocalEpochDay()
     }
-    private var lastPersistTs = 0L
-    private var lastPersistSteps = 0
+    private val writeMutex = Mutex()
 
     fun observeToday(): Flow<DailyStepStat?> = dao.observeByDate(currentEpochDay())
 
     fun range(startEpochDay: Long, endEpochDay: Long): Flow<List<DailyStepStat>> = dao.getRange(startEpochDay, endEpochDay)
 
-    suspend fun handleRawStep(raw: Int) {
+    suspend fun handleReading(reading: StepCounterReading) {
+        if (reading.rawSteps < 0) return
         withContext(Dispatchers.IO) {
-            val epochDay = currentEpochDay()
-            val now = System.currentTimeMillis()
-            val existing = dao.getByDate(epochDay)
-            val baseline = when {
-                existing == null -> raw
-                raw < existing.baselineRaw || raw < existing.lastRaw -> raw
-                else -> existing.baselineRaw
-            }
-            val steps = (raw - baseline).coerceAtLeast(0)
-            val heightCm = BodyMetricsPreferences.getHeightCm()
-            val stepLengthMeters = (heightCm / 100.0) * STEP_LENGTH_RATIO
-            val distanceKm = steps * stepLengthMeters / 1000.0
-            val weightKg = BodyMetricsPreferences.getWeightKg()
-            val durationSeconds = (steps / STEP_FREQUENCY_PER_MINUTE * 60.0).toInt()
-            val kcal = distanceKm * weightKg * KCAL_COEFFICIENT
+            writeMutex.withLock {
+                val epochDay = Date(reading.recordedAtMillis).toLocalEpochDay()
+                val existing = dao.getByDate(epochDay)
+                val previous = existing?.let { StepCounterState(it.steps, it.baselineRaw, it.lastRaw, it.bootCount) }
+                val next = StepCounterAccumulator.update(previous, reading.rawSteps, reading.bootCount)
+                val heightCm = BodyMetricsPreferences.getHeightCm()
+                val stepLengthMeters = (heightCm / 100.0) * STEP_LENGTH_RATIO
+                val distanceKm = next.steps * stepLengthMeters / 1000.0
+                val weightKg = BodyMetricsPreferences.getWeightKg()
+                val durationSeconds = (next.steps / STEP_FREQUENCY_PER_MINUTE * 60.0).toInt()
+                val kcal = distanceKm * weightKg * KCAL_COEFFICIENT
 
-            val shouldPersist = (now - lastPersistTs) >= 2000L || (steps - lastPersistSteps) >= 5
-            if (!shouldPersist && existing != null) return@withContext
-
-            if (existing == null) {
+                // 步数与原始值、启动次数一次写入；不节流丢弃末尾 1～4 步。
                 dao.upsert(
                     DailyStepStat(
                         dateEpochDay = epochDay,
-                        steps = steps,
+                        steps = next.steps,
                         distanceKm = distanceKm,
                         kcal = kcal,
                         durationSeconds = durationSeconds,
-                        baselineRaw = baseline,
-                        lastRaw = raw,
-                        updatedAt = now
+                        baselineRaw = next.baselineRaw,
+                        lastRaw = next.lastRaw,
+                        updatedAt = reading.recordedAtMillis,
+                        bootCount = next.bootCount,
                     )
                 )
-            } else {
-                dao.updateMetrics(epochDay, steps, distanceKm, kcal, durationSeconds, raw, now)
-                if (baseline != existing.baselineRaw) {
-                    dao.upsert(
-                        existing.copy(
-                            baselineRaw = baseline,
-                            lastRaw = raw,
-                            steps = steps,
-                            distanceKm = distanceKm,
-                            kcal = kcal,
-                            durationSeconds = durationSeconds,
-                            updatedAt = now
-                        )
-                    )
-                }
             }
-
-            lastPersistTs = now
-            lastPersistSteps = steps
         }
     }
 

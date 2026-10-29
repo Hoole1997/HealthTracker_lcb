@@ -1,7 +1,7 @@
 // 版本与渠道参数统一在这里维护；SDK/API 等公共版本仍由版本目录管理。
 ext {
     // AdMob配置 (正式 ID)
-    admob = [applicationId: "",
+    admob = [applicationId: "ca-app-pub-4412436975960630~1905598245",
              adUnitIds    : [banner      : "",
                              interstitial: "",
                              splash      : "",

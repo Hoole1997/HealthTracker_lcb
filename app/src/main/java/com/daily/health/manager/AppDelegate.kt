@@ -40,6 +40,7 @@ import com.daily.health.manager.face.act.TargetRangeAct
 import com.daily.health.manager.face.act.UninstallConfirmActivity
 import com.daily.health.manager.face.act.UninstallResenActivity
 import com.daily.health.manager.observer.AppForegroundObserver
+import com.daily.health.manager.steps.StepTrackingManager
 import com.daily.health.manager.utils.WebViewZygote
 import com.daily.health.manager.utils.getCurProcessName
 import com.healthtracker.earthquake.EarthquakeActivity
@@ -89,7 +90,7 @@ internal class AppDelegate(
         AdjustTracker.init(application)
         registerAttributionCallback()
 
-        startKoin {
+        val koinApplication = startKoin {
             androidContext(application)
             modules(
                 appModule,
@@ -114,6 +115,7 @@ internal class AppDelegate(
 
         appInitializer.registerLifecycleObservers()
         appForegroundObserverProvider().initialize()
+        koinApplication.koin.get<StepTrackingManager>().initialize()
     }
 
     fun handleAttributionChanged(

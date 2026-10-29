@@ -21,18 +21,6 @@ interface LocalDao11 {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(stat: DailyStepStat)
 
-    @Query(
-        "UPDATE t11 SET c02 = :steps, c03 = :distanceKm, c04 = :kcal, c05 = :durationSeconds, c07 = :lastRaw, c08 = :updatedAt WHERE c01 = :dateEpochDay"
-    )
-    suspend fun updateMetrics(
-        dateEpochDay: Long,
-        steps: Int,
-        distanceKm: Double,
-        kcal: Double,
-        durationSeconds: Int,
-        lastRaw: Int,
-        updatedAt: Long
-    )
 }
 
 typealias StepDao = LocalDao11

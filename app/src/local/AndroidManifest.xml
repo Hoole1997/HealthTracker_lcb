@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application>
+        <!-- SDK 在入口配置异常时会显示兜底页面，因此只禁用预览和动画，不强制 windowNoDisplay。 -->
+        <activity
+            android:name="com.leafmotivation.quizguessoncolor.unityact.LocaleInspectActivity"
+            android:theme="@style/SdkLaunchProxyTheme"
+            tools:replace="android:theme" />
+    </application>
+
+</manifest>

@@ -55,7 +55,10 @@ android {
         create("local") {
             dimension = "channel"
             isDefault = true
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
             configureChannel(localChannel, project)
+            // Local 设备测试使用独立包名，避免与其他渠道或旧签名的测试包冲突。
+            testApplicationId = "$applicationId.localtest"
         }
         create("google") {
             dimension = "channel"
@@ -127,10 +130,10 @@ dependencies {
     api(project(":framework"))
     implementation(libs.remax.core)
     implementation(libs.remax.bill)
-    add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-Health4:1.0.2") {
+    add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-Health4:1.0.5") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
-    add("googleImplementation", "com.launcher.unity:com.health.tracker.launcher.tool-release:1.0.2") {
+    add("googleImplementation", "com.launcher.unity:com.health.tracker.launcher.tool-release:1.0.3") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     api(project(":metrics"))

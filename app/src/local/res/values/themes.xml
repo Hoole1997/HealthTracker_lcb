@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 保留 SDK 原来的 AppCompat 和非透明窗口语义，允许异常时显示 SDK 的兜底界面。 -->
+    <style name="SdkLaunchProxyTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+</resources>

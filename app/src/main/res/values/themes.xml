@@ -18,8 +18,9 @@
 
     </style>
 
-    <style name="LaunchRouterTheme" parent="@style/TransparentTheme">
-        <!-- 路由 Activity 不绘制页面，直接保留系统当前窗口直到目标页面就绪。 -->
+    <style name="LaunchRouterTheme" parent="@style/AppTheme">
+        <!-- 同步路由不创建窗口，避免透明 Activity 仍参与窗口和任务转场。 -->
+        <item name="android:windowNoDisplay">true</item>
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@null</item>

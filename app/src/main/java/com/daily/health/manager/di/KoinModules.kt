@@ -11,6 +11,9 @@ import com.daily.health.manager.config.parsers.PushMessageParser
 import com.daily.health.manager.config.registry.AppConfigRegistry
 import com.daily.health.manager.data.database.HealthDatabase
 import com.daily.health.manager.data.repo.StepRepository
+import com.daily.health.manager.steps.AndroidStepCounterSource
+import com.daily.health.manager.steps.StepCounterSource
+import com.daily.health.manager.steps.StepTrackingManager
 import com.daily.health.manager.data.repository.BloodPressureRepository
 import com.daily.health.manager.data.repository.BloodSugarRepository
 import com.daily.health.manager.data.repository.BmiRepository
@@ -75,6 +78,11 @@ val appModule = module {
     single<CoroutineDispatcher>(named("DefaultDispatcher")) { Dispatchers.Default }
 
     single { StepRepository.get(get<Context>()) }
+    single<StepCounterSource> { AndroidStepCounterSource(get<Context>()) }
+    single {
+        val repository = get<StepRepository>()
+        StepTrackingManager(get(), repository::handleReading)
+    }
 
     single { PermissionManager() }
     single { NotificationResourceMapper() }

@@ -10,5 +10,6 @@ class NotificationFeatureSwitchTest {
         assertFalse(NotificationFeatureSwitch.notificationsEnabled)
         assertFalse(NotificationFeatureSwitch.reminderEntryEnabled)
         assertFalse(NotificationFeatureSwitch.notificationPermissionPromptEnabled)
+        assertFalse(NotificationFeatureSwitch.foregroundServiceEnabled)
     }
 }

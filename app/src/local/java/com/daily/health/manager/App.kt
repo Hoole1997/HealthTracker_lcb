@@ -43,18 +43,18 @@ class App : Iej9ieio6r89e7ya() {
     var isFeatureLeave = false
     var isClickAdLeave = false
 
-    override fun ultrasafecorehub(): Class<Any>? {
-        // 新版 Local SDK：启动入口返回单个 Activity Class。
+    override fun convertsafepower(): Class<Any>? {
+        // Local SDK 1.0.5 通过此方法获取应用启动页面。
         return AppDelegate.splashClass()
     }
 
-    override fun prodailysmartmemory(): List<Class<Any>> {
-        // 新版 Local SDK：应用页面注册返回 Activity Class 列表。
+    override fun neolitelitepanel(): List<Class<Any>> {
+        // Local SDK 1.0.5 通过此方法获取应用页面列表。
         return AppDelegate.launcherClasses()
     }
 
     fun backToLauncher() {
-        localproshield()
+        metaautovault()
     }
 
     override fun attachBaseContext(base: Context?) {

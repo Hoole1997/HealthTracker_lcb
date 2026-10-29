@@ -1,7 +1,9 @@
 package com.daily.health.manager.face.launch
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.blankj.utilcode.util.ActivityUtils
 import com.daily.health.manager.constants.KEY_FROM_SHORTCUT
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
  *
  * 渠道 SDK、通知和桌面快捷入口都依赖一个统一 Activity 入口，因此保留该类；它不再
  * inflate 布局、展示启动内容或请求开屏广告，只负责保持原有 Intent 分发行为。
+ * 配合 windowNoDisplay 主题，所有路由必须同步启动目标页面并结束自身，避免中转窗口参与转场。
  */
 class LaunchGateActivity : AppCompatActivity() {
 
@@ -53,6 +56,17 @@ class LaunchGateActivity : AppCompatActivity() {
         if (hasRouted || isFinishing) return
         hasRouted = true
 
+        // windowNoDisplay 只用于我们能控制的同步路由；正常、提前返回及异常路径都必须结束自身。
+        try {
+            dispatchRoute(sourceIntent)
+        } catch (error: Exception) {
+            Log.e(TAG, "Unable to route application entry", error)
+        } finally {
+            finish()
+        }
+    }
+
+    private fun dispatchRoute(sourceIntent: Intent) {
         try {
             reportOpen(sourceIntent)
             dispatchNotificationClick(sourceIntent)
@@ -63,8 +77,7 @@ class LaunchGateActivity : AppCompatActivity() {
 
         if (sourceIntent.getStringExtra(KEY_FROM_SHORTCUT) == UNINSTALL) {
             trackUninstallClick()
-            startActivity(Intent(this, UninstallResenActivity::class.java))
-            finish()
+            forwardTo(Intent(this, UninstallResenActivity::class.java))
             return
         }
 
@@ -80,12 +93,17 @@ class LaunchGateActivity : AppCompatActivity() {
 
     private fun navigateToApplication(sourceIntent: Intent) {
         if (ActivityUtils.isActivityExistsInStack(MainAct::class.java)) {
-            finish()
             return
         }
         val targetActivity = if (hasNewGuide()) MainAct::class.java else GuideAct::class.java
-        startActivity(Intent(this, targetActivity).apply { putExtras(sourceIntent) })
-        finish()
+        forwardTo(Intent(this, targetActivity).apply { putExtras(sourceIntent) })
+    }
+
+    private fun forwardTo(targetIntent: Intent) {
+        // 路由不是可见页面；显式禁用此次启动动画，避免目标页面再次播放系统默认转场。
+        targetIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        val options = ActivityOptions.makeCustomAnimation(this, 0, 0)
+        startActivity(targetIntent, options.toBundle())
     }
 
     private fun dispatchNotificationClick(sourceIntent: Intent) {

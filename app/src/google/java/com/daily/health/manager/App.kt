@@ -48,19 +48,19 @@ class App : com.health.tracker.launcher.tool.Ybl221y4() {
     var isFeatureLeave = false
     var isClickAdLeave = false
 
-    override fun battery(): Class<Any> {
+    override fun scansmartnote(): Class<Any>? {
         // 正式 SDK: getLauncherActivityClass -> ultraprocalc
         return AppDelegate.splashClass()
     }
 
-    override fun filtersafecenter(): MutableList<Class<Any>> {
+    override fun autoscanvault(): List<Class<Any>> {
         // 正式 SDK: getAppActivityClassArray -> quickboostnet
         return AppDelegate.launcherClasses()
     }
 
     fun backToLauncher() {
         // 正式 SDK: openMainActivity -> safescanmedia
-        maxsafekit()
+        corepanel()
     }
 
     override fun attachBaseContext(base: Context?) {
