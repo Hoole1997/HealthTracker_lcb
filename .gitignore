@@ -13,6 +13,9 @@ local.properties
 
 # Log/OS Files
 *.log
+# Python release-validation tooling
+__pycache__/
+*.py[cod]
 
 # Android Studio generated files and folders
 captures/

@@ -234,14 +234,5 @@
 -dontwarn java.lang.invoke.MethodHandles
 -dontwarn java.lang.invoke.MethodHandles$Lookup
 
-# ==================== 优化规则 ====================
-
-# 移除未使用的代码
--dontwarn **
--ignorewarnings
-
-# 优化代码
--optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
--optimizationpasses 5
--allowaccessmodification
--dontpreverify
+# 该模块不导出宿主级压缩/优化策略，也不全局忽略 R8 告警。
+# 应用的混淆策略由 app 模块统一维护。

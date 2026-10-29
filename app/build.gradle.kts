@@ -73,6 +73,7 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
+                "proguard-launcher-sdk.pro",
                 "proguard-obfuscation.pro"
             )
             configure<CrashlyticsExtension> {
