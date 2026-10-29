@@ -134,7 +134,7 @@ dependencies {
     add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-Health4:1.0.5") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
-    add("googleImplementation", "com.launcher.unity:com.health.tracker.launcher.tool-release:1.0.3") {
+    add("googleImplementation", "com.launcher.unity:com.health.tracker.launcher.tool-release:1.0.4") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     api(project(":metrics"))
