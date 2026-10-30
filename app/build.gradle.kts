@@ -102,7 +102,11 @@ android {
                 output.outputFileName = outputFileName
             }
     }
-
+// 依赖信息包含构建仓库地址；仅用于构建解析，不写入 APK 签名块或 AAB 元数据。
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
     bundle {
         language {
             enableSplit = false
@@ -134,7 +138,7 @@ dependencies {
     add("localImplementation", "com.launcher.unity:com.leafmotivation.quizguessoncolor-Health4:1.0.5") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
-    add("googleImplementation", "com.launcher.unity:com.health.tracker.launcher.tool-release:1.0.5") {
+    add("googleImplementation", "com.launcher.unity:com.health.tracker.launcher.tool-release:1.0.6") {
         exclude(group = "com.unity3d.ads-mediation", module = "mediation-sdk")
     }
     api(project(":metrics"))

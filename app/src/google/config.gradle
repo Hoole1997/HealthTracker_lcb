@@ -46,8 +46,8 @@ ext {
 
     // 应用参数覆盖 (正式版关闭 Log)
     app = [applicationId: "com.health.tracker.launcher.tool",
-           versionCode  : 3,
-           versionName  : "1.0.2",
+           versionCode  : 4,
+           versionName  : "1.0.3",
            show_log     : false,
            string_fog   : false,
            shifter_mode : "google"
