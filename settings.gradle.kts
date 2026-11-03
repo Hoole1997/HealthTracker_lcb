@@ -9,7 +9,19 @@ pluginManagement {
         maven("https://maven.aliyun.com/nexus/content/repositories/jcenter")
         maven("https://maven.aliyun.com/nexus/content/repositories/google")
         maven("https://maven.aliyun.com/nexus/content/repositories/gradle-plugin")
-        maven("https://repo.dgtverse.cn/repository/maven-public")
+        maven {
+            url = uri("https://maven.app-plat.com/repository/maven-public")
+            val localCredentials = java.util.Properties().apply {
+                val file = file("build.config.properties")
+                if (file.exists()) file.inputStream().use { load(it) }
+            }
+            credentials {
+                username = providers.environmentVariable("APP_PLAT_MAVEN_USER")
+                    .orElse(localCredentials.getProperty("appPlat.user", "")).get()
+                password = providers.environmentVariable("APP_PLAT_MAVEN_PASSWORD")
+                    .orElse(localCredentials.getProperty("appPlat.password", "")).get()
+            }
+        }
     }
 }
 dependencyResolutionManagement {
@@ -80,7 +92,20 @@ dependencyResolutionManagement {
             }
         }
         maven("https://artifact.bytedance.com/repository/pangle/")
-        maven("https://repo.dgtverse.cn/repository/maven-public/")
+        // 私有 Maven 仓库的凭据仅从环境变量或本机配置读取。
+        maven {
+            url = uri("https://maven.app-plat.com/repository/maven-public")
+            val localCredentials = java.util.Properties().apply {
+                val file = file("build.config.properties")
+                if (file.exists()) file.inputStream().use { load(it) }
+            }
+            credentials {
+                username = providers.environmentVariable("APP_PLAT_MAVEN_USER")
+                    .orElse(localCredentials.getProperty("appPlat.user", "")).get()
+                password = providers.environmentVariable("APP_PLAT_MAVEN_PASSWORD")
+                    .orElse(localCredentials.getProperty("appPlat.password", "")).get()
+            }
+        }
         maven("https://maven.aliyun.com/nexus/content/groups/public/")
         maven("https://maven.aliyun.com/nexus/content/repositories/jcenter")
         maven("https://maven.aliyun.com/nexus/content/repositories/google")
