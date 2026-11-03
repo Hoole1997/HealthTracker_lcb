@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 将完整圆角 logo 放在自适应图标的安全区域内，避免系统遮罩裁掉右下角文字。 -->
+<!-- 自适应图标前景画布比可见区域大；内缩六分之一使方形原图铺满系统遮罩。 -->
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_launcher_round_source"
-    android:inset="28.5%" />
+    android:drawable="@drawable/ic_launcher_square"
+    android:inset="16.666667%" />
